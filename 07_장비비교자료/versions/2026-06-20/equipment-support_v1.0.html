@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <base href="../../">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>촬영지원장비 비교 대시보드</title>
+  <style>
+    :root{--ink:#20242a;--muted:#66717d;--line:#d9e0e6;--paper:#f8f6f1;--panel:#fff;--accent:#176b87;--good:#2d7558;--warn:#9f3a32;--warm:#8d5b12}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Arial,sans-serif;line-height:1.5}
+    header{padding:36px 26px 22px;background:#efe9dd;border-bottom:1px solid var(--line)}
+    main{max-width:1540px;margin:0 auto;padding:24px}
+    h1{margin:0 0 8px;font-size:clamp(30px,4vw,50px);line-height:1.08}
+    h2{margin:34px 0 12px;font-size:24px}
+    h3{margin:0 0 8px;font-size:17px}
+    p{margin:0 0 10px}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .lead{max-width:1080px;color:#3f4a54}
+    .small{font-size:13px;color:var(--muted)}
+    .top-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+    .top-nav a{display:inline-flex;align-items:center;border:1px solid #cdd7dd;border-radius:999px;background:#fff;padding:8px 12px;font-weight:900;color:var(--accent);text-decoration:none}
+    .top-nav a:hover{background:#eef6f7;text-decoration:none}
+    .notice,.card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:15px}
+    .notice{border-left:5px solid var(--accent)}
+    .cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:18px 0}
+    .card strong{display:block;font-size:20px;margin-bottom:4px}
+    .dashboard{margin:22px 0 28px;background:#fff;border:1px solid #cfd9df;border-radius:10px;overflow:hidden;box-shadow:0 10px 28px rgba(35,45,54,.06)}
+    .dash-head{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end;padding:20px 22px;background:linear-gradient(135deg,#ffffff 0%,#f2f7f8 58%,#f7f1e7 100%);border-bottom:1px solid var(--line)}
+    .dash-head h2{margin:0 0 6px;font-size:26px}
+    .dash-head p{max-width:960px;color:#50606d}
+    .dash-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .dash-actions button{padding:9px 12px;border-radius:999px}
+    .controls{position:sticky;top:0;z-index:4;display:grid;grid-template-columns:1.5fr repeat(5,minmax(124px,1fr));gap:8px;padding:12px 14px;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+    button,select,input{font:inherit;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);padding:10px}
+    button{cursor:pointer;font-weight:800}
+    button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:12px 14px;background:#fbfcfc;border-bottom:1px solid var(--line)}
+    .stat{border:1px solid #dce4e9;border-radius:8px;padding:10px 12px;background:#fff}
+    .stat strong{display:block;font-size:22px;line-height:1.1}
+    .stat span{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+    .compare-body{display:grid;grid-template-columns:240px 1fr;gap:16px;padding:16px;background:#f8fafb}
+    .group-index{position:sticky;top:82px;align-self:start;max-height:calc(100vh - 100px);overflow:auto;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px}
+    .group-index h3{font-size:14px;margin:2px 0 8px}
+    .group-index a{display:flex;justify-content:space-between;gap:8px;border-radius:6px;padding:8px 9px;color:#2d3741;font-size:13px}
+    .group-index a:hover{background:#edf5f7;text-decoration:none}
+    .group-index .count{color:#6a7782}
+    .groups{display:grid;gap:16px}
+    .group{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+    .group-title{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 15px;background:#25313a;color:#fff}
+    .group-title h3{font-size:18px}
+    .group-title span{font-size:13px;color:#d9e5ea}
+    .item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;padding:12px}
+    .item-card{display:grid;grid-template-rows:148px auto;min-width:0;background:#fff;border:1px solid #d7e0e6;border-radius:8px;overflow:hidden;box-shadow:0 2px 0 rgba(25,34,42,.03)}
+    .photo-box{position:relative;display:grid;place-items:center;background:#f3f6f7;border-bottom:1px solid #dce4e9;overflow:hidden}
+    .photo-box img{width:100%;height:100%;object-fit:contain;padding:10px}
+    .photo-fallback{display:none;width:100%;height:100%;place-items:center;padding:14px;text-align:center;color:#61717c;font-weight:900;background:linear-gradient(145deg,#f6f7f7,#edf4f6)}
+    .photo-box.no-image img{display:none}
+    .photo-box.no-image .photo-fallback{display:grid}
+    .item-body{display:grid;gap:8px;padding:11px}
+    .item-top{display:flex;gap:6px;align-items:center;justify-content:space-between}
+    .pill{display:inline-flex;align-items:center;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:900;white-space:nowrap}
+    .brand-pill{background:#e8f2f4;color:#176b87}
+    .type-pill{background:#f5eee2;color:#8a5a15}
+    .priority-pill{background:#edf7f1;color:#2d7558}
+    .item-body h3{font-size:16px;line-height:1.25;margin:0;min-height:40px}
+    .price{font-weight:950;font-size:18px;color:#151a1f}
+    .meta{display:grid;grid-template-columns:1fr;gap:5px;font-size:13px;color:#35414b}
+    .meta div{display:grid;grid-template-columns:72px 1fr;gap:7px}
+    .meta b{color:#6b7782}
+    .note{font-size:13px;color:#53616d;margin:0;min-height:42px}
+    .link{font-size:13px;font-weight:900}
+    .compact .item-grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+    .compact .item-card{grid-template-rows:112px auto}
+    .compact .item-body h3{font-size:14px;min-height:34px}
+    .compact .note{display:none}
+    .calc-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+    .calc-output{grid-column:span 4;border:1px solid var(--line);background:#fbfcfc;border-radius:8px;padding:13px}
+    .calc-output strong{font-size:22px;color:var(--good)}
+    .table-wrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:8px}
+    table{width:100%;min-width:1320px;border-collapse:collapse}
+    th,td{padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;font-size:14px}
+    th{position:sticky;top:0;background:#f0f4f6;z-index:2;font-size:13px;white-space:nowrap}
+    tr:hover td{background:#fbfdfe}
+    .thumb{width:92px;height:70px;object-fit:contain;background:#f7f8f9;border:1px solid #e5ebef;border-radius:6px;display:block}
+    .tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 7px;font-size:12px;background:#fff;color:#42505c}
+    .source-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+    .source-list a{font-size:13px}
+    @media(max-width:1100px){.cards,.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{grid-template-columns:1fr 1fr}.compare-body{grid-template-columns:1fr}.group-index{position:static;max-height:none}.calc-grid{grid-template-columns:1fr 1fr}.calc-output{grid-column:span 2}.source-list{grid-template-columns:1fr}}
+    @media(max-width:760px){main{padding:15px}.cards,.stats,.controls,.calc-grid{grid-template-columns:1fr}.calc-output{grid-column:span 1}.dash-head{grid-template-columns:1fr}.dash-actions{justify-content:flex-start}.item-grid{grid-template-columns:1fr}th{top:0}}
+  </style>
+  <link rel="stylesheet" href="assets/equipment-theme.css">
+</head>
+<body>
+<header>
+  <nav class="top-nav" aria-label="장비 비교자료 분류">
+    <a href="00_장비비교_목차_latest.html">목차</a>
+    <a href="01_카메라_비교표_latest.html">카메라</a>
+    <a href="02_렌즈_비교표_latest.html">렌즈</a>
+    <a href="03_필터_비교표_latest.html">필터</a>
+    <a href="04_조명_비교표_latest.html">조명</a>
+    <a href="05_악세사리_비교표_latest.html">악세사리</a>
+    <a href="06_촬영지원장비_비교표_latest.html">촬영지원</a>
+  </nav>
+  <h1>촬영지원장비 비교 대시보드</h1>
+  <p class="lead">스탠드, 붐, 그립, 카트, 파워뱅크, V마운트 배터리, 현장 소모품을 조명 악세사리와 분리해서 보는 페이지입니다. 구매 목적은 “촬영을 실제로 굴러가게 만드는 기반 장비”를 빠뜨리지 않는 것입니다.</p>
+  <p class="small">기준일 2026-06-20 · 가격은 원화 기준 예산가 · 해외가 확인 항목은 1 USD ≈ ₩1,530 단순 환산 · 국내 실구매가는 구매 직전 재확인 필요</p>
+</header>
+<main>
+  <section class="cards" aria-label="촬영지원장비 큰 분류">
+    <div class="card"><strong>스탠드</strong><span class="small">컴팩트, 마스터, C-스탠드, 콤보, 백라이트 스탠드를 하중과 높이로 비교.</span></div>
+    <div class="card"><strong>붐·그립·안전</strong><span class="small">그립헤드, 암, 슈퍼클램프, 샌드백, 애플박스처럼 현장 고정에 필요한 장비.</span></div>
+    <div class="card"><strong>카트·운반</strong><span class="small">접이식 멀티카트부터 프로덕션 카트까지 적재중량과 차 적재성을 같이 확인.</span></div>
+    <div class="card"><strong>전원</strong><span class="small">파워뱅크와 V마운트 배터리는 Wh, 연속출력W, 충전 방식으로 비교.</span></div>
+    <div class="card"><strong>현장 필수품</strong><span class="small">테이블, 케이스, 멀티탭, 케이블, 벨크로, 배경 지지처럼 촬영 당일 빠지기 쉬운 것.</span></div>
+  </section>
+
+  <section class="notice">
+    <h2>분리 기준</h2>
+    <p>소프트박스, 엄브렐러, 랜턴, 프레넬처럼 <strong>빛 모양을 바꾸는 것</strong>은 악세사리 페이지에 두고, 이 페이지는 <strong>세우기, 고정하기, 옮기기, 전원 공급하기, 현장 정리하기</strong>에 필요한 장비만 모읍니다.</p>
+  </section>
+
+  <section class="dashboard" id="supportDashboard">
+    <div class="dash-head">
+      <div>
+        <h2>같은 역할끼리 보는 비교군</h2>
+        <p>브랜드별 나열보다 먼저 “작은 조명용 스탠드”, “C-스탠드”, “전원 1kWh급”, “로케이션 카트”처럼 실제 선택 단위로 묶었습니다.</p>
+      </div>
+      <div class="dash-actions" aria-label="표시 밀도">
+        <button class="active" id="comfortableView" type="button">사진 크게</button>
+        <button id="compactView" type="button">촘촘히</button>
+      </div>
+    </div>
+    <div class="controls">
+      <input id="search" type="search" placeholder="모델, 브랜드, 규격, 용도 검색">
+      <select id="category"><option value="">분류 전체</option></select>
+      <select id="group"><option value="">비교군 전체</option></select>
+      <select id="brand"><option value="">브랜드 전체</option></select>
+      <select id="priority"><option value="">우선순위 전체</option></select>
+      <select id="sort">
+        <option value="group">같은 역할 우선</option>
+        <option value="price">낮은 가격순</option>
+        <option value="priority">우선순위순</option>
+        <option value="brand">브랜드순</option>
+      </select>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="compare-body">
+      <aside class="group-index">
+        <h3>비교군 바로가기</h3>
+        <div id="groupIndex"></div>
+      </aside>
+      <div class="groups" id="groups"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>파워뱅크 사용시간 계산기</h2>
+    <p class="small">촬영 현장에서는 정격 용량을 전부 쓰기 어렵기 때문에 85% 효율로 계산합니다. 예: 2048Wh 파워뱅크로 300W 지속광 1개를 돌리면 약 5.8시간.</p>
+    <div class="calc-grid">
+      <label>전원 장비
+        <select id="powerSelect"></select>
+      </label>
+      <label>총 소비전력 W
+        <input id="wattInput" type="number" min="1" value="300">
+      </label>
+      <label>효율
+        <select id="effInput">
+          <option value="0.85">85% 일반 계산</option>
+          <option value="0.75">75% 추운 야외/손실 큼</option>
+          <option value="0.9">90% 보수적 손실 적음</option>
+        </select>
+      </label>
+      <label>여유율
+        <select id="reserveInput">
+          <option value="1">잔량까지 사용</option>
+          <option value="0.8">20% 남기기</option>
+          <option value="0.7">30% 남기기</option>
+        </select>
+      </label>
+      <div class="calc-output" id="calcOutput"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>개별 제품 상세표</h2>
+    <p class="small">범위 표기가 아니라 개별 모델 한 줄 기준입니다. 같은 제품도 국내 판매처, 세트 구성, 배송비에 따라 달라지므로 최종 구매 직전에는 확인 링크에서 재확인합니다.</p>
+    <div class="table-wrap">
+      <table id="detailTable">
+        <thead>
+          <tr>
+            <th>분류</th><th>사진</th><th>브랜드</th><th>모델</th><th>핵심 규격</th><th>하중/용량</th><th>원화 예산가</th><th>추천도</th><th>활용 메모</th><th>확인</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>확인한 주요 출처</h2>
+    <p class="small">가격과 스펙이 변하는 장비라 공식/대표 판매 페이지를 같이 남깁니다. 페이지 안의 제품 카드에도 각 제품 확인 링크가 들어 있습니다.</p>
+    <div class="source-list">
+      <a href="https://www.manfrotto.com/global-en/photo-master-stand-air-cushioned-1004bac/" target="_blank" rel="noreferrer">Manfrotto 1004BAC 공식 스펙</a>
+      <a href="https://www.manfrotto.com/global-en/c-stand-kit-30-with-detachable-base-a2030dkit/" target="_blank" rel="noreferrer">Avenger A2030DKIT 공식 스펙</a>
+      <a href="https://www.kuposhop.com/en/product-672820/KUPO-40-inch-Master-C-Stand-W-Sliding-Leg-Quick-Release-Kit-CL-40MK.html" target="_blank" rel="noreferrer">Kupo 40인치 C-Stand 공식 스펙</a>
+      <a href="https://rocknrollercart.com/collections/multi-carts" target="_blank" rel="noreferrer">RockNRoller Multi-Cart 라인업</a>
+      <a href="https://www.dji.com/power-1000/specs" target="_blank" rel="noreferrer">DJI Power 1000 공식 스펙</a>
+      <a href="https://us.ecoflow.com/products/delta-2-max-portable-power-station" target="_blank" rel="noreferrer">EcoFlow DELTA 2 Max 공식 스펙</a>
+      <a href="https://www.smallrig.com/smallrig-VB99-Pro-mini-V-Mount-Battery-4292.html" target="_blank" rel="noreferrer">SmallRig VB99 Pro 공식 스펙</a>
+      <a href="https://fred.stlouisfed.org/series/DEXKOUS" target="_blank" rel="noreferrer">USD/KRW 참고 환율 데이터</a>
+    </div>
+  </section>
+</main>
+<script>
+const rows=[
+  {category:"스탠드",group:"휴대용 라이트 스탠드",brand:"Manfrotto",model:"1052BAC Compact Stand",spec:"최대 237cm, 접이 86cm, 에어쿠션",capacity:"하중 5kg, 무게 1.23kg",price:150000,priority:"높음",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/1/0/1052bac-blk-alu-ac-compact.jpg",link:"https://www.manfrotto.com/global-en/compact-photo-stand-air-cushioned-and-portable-1052bac/",note:"가벼운 지속광, V1/AD100, 리플렉터용 기본 스탠드."},
+  {category:"스탠드",group:"기본 마스터 스탠드",brand:"Manfrotto",model:"1004BAC Master Stand",spec:"최대 366cm, 접이 107cm, 에어쿠션",capacity:"하중 9kg, 무게 2.4kg",price:275000,priority:"높음",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/1/0/1004bac-blk-alu-ac-master-stand.jpg",link:"https://www.manfrotto.com/global-en/photo-master-stand-air-cushioned-1004bac/",note:"한 사람이 들고 다니기 좋은 표준급. 300W 이하 조명과 작은 소프트박스에 적합."},
+  {category:"스탠드",group:"콤비 붐 스탠드",brand:"Manfrotto",model:"420B Combi Boom Stand",spec:"최대 약 390cm, 붐 길이 약 191cm",capacity:"수직 하중 9kg, 붐 사용 약 0.9~2kg",price:467000,priority:"중간",wh:0,image:"",link:"https://www.bhphotovideo.com/c/product/546705-REG/Manfrotto_420B_420B_Combi_Boom_Stand.html",note:"소형 조명/마이크/헤어라이트를 위에서 내릴 때 좋지만 샌드백 필수."},
+  {category:"스탠드",group:"C-스탠드 40인치",brand:"Avenger",model:"A2030DKIT Turtle Base C-Stand",spec:"최대 300cm, 40인치 암+그립헤드 포함",capacity:"하중 10kg급, 크롬 스틸",price:520000,priority:"높음",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/s/t/stand-avenger-c-stand-30-detachable-kit-a2030dkit.jpg",link:"https://www.manfrotto.com/global-en/c-stand-kit-30-with-detachable-base-a2030dkit/",note:"사진/영상 현장에서 가장 표준적인 C-스탠드 세트."},
+  {category:"스탠드",group:"C-스탠드 40인치",brand:"Kupo",model:"CL-40MK Master C-Stand Kit",spec:"최대 313cm, 슬라이딩 레그, 암+KCP-200 포함",capacity:"하중 10kg, 무게 9.05kg",price:460000,priority:"높음",wh:0,image:"https://www.kuposhop.com/comm/upimage/p_210518_03085.jpg",link:"https://www.kuposhop.com/en/product-672820/KUPO-40-inch-Master-C-Stand-W-Sliding-Leg-Quick-Release-Kit-CL-40MK.html",note:"가격 대비 구성이 좋아 첫 C-스탠드 후보로 보기 좋음."},
+  {category:"스탠드",group:"C-스탠드 40인치",brand:"Matthews",model:"Hollywood Pro 40 C-Stand Kit",spec:"40인치 C-스탠드, 슬라이딩 레그, 암+그립헤드",capacity:"하중 10kg급",price:542000,priority:"중간",wh:0,image:"https://www.msegrip.com/cdn/shop/files/339567_40HollywoodDoubleRiser_RGB002.jpg?crop=center&height=1200&v=1728244793&width=1200",link:"https://www.msegrip.com/products/hollywood-pro-40-c-stand-w-sliding-leg-low-profile-base-includes-grip-head-arm",note:"내구성과 현장 표준성이 강점. 가격은 올라감."},
+  {category:"스탠드",group:"중대형 콤보 스탠드",brand:"Avenger",model:"A1020CS Combo Stand 20",spec:"최대 198~200cm, 28mm 리시버+16mm 스피곳",capacity:"하중 35kg, 무게 7.2kg",price:520000,priority:"중간",wh:0,image:"",link:"https://www.bhphotovideo.com/c/product/3532-REG/Avenger_A1020CS_A1020CS_Low_Boy.html",note:"큰 지속광, 대형 소프트박스, 붐 베이스용. 높이는 낮지만 하중 여유가 큼."},
+  {category:"스탠드",group:"중형 키트 스탠드",brand:"Matthews",model:"Medium Duty Maxi Kit Stand",spec:"알루미늄/블랙 키트 스탠드",capacity:"하중 약 25lb급",price:430000,priority:"중간",wh:0,image:"https://www.msegrip.com/cdn/shop/files/B387485KitMedDutyMaxiclosed.jpg?crop=center&height=1200&v=1754421677&width=1200",link:"https://www.msegrip.com/products/kit-medium-duty-maxi-black-aluminum",note:"C-스탠드보다 이동성이 필요하지만 일반 스탠드보다 튼튼해야 할 때."},
+  {category:"스탠드",group:"저각/배경 스탠드",brand:"Manfrotto",model:"003 Backlite Stand",spec:"바닥 가까운 저각 조명용",capacity:"소형 조명/배경광",price:78000,priority:"낮음",wh:0,image:"",link:"https://www.manfrotto.com/global-en/backlite-stand-black-003/",note:"배경 분리광, 바닥광, 작은 플래시 위치 잡기용."},
+
+  {category:"붐·그립·안전",group:"기본 그립",brand:"Manfrotto",model:"035 Super Clamp",spec:"13~55mm 파이프 클램프, 16mm 소켓",capacity:"하중 15kg, 무게 0.43kg",price:53000,priority:"높음",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/l/i/lighting-clamp-avenger-super-clamp-035.jpg",link:"https://www.manfrotto.com/global-en/super-photo-clamp-without-stud-aluminium-035/",note:"스탠드, 봉, 테이블에 소형 조명/암을 붙이는 현장 필수품."},
+  {category:"붐·그립·안전",group:"기본 그립",brand:"Kupo",model:"KCP-200 2.5 Grip Head",spec:"5/8, 1/2, 3/8, 1/4 V-jaw",capacity:"무게 780g",price:44000,priority:"높음",wh:0,image:"https://www.kuposhop.com/comm/upimage/p_240306_06758.jpg",link:"https://www.kuposhop.com/en/product-672849/KUPO-2-1-2-inch-Grip-Head-W-Big-Handle-KCP-200.html",note:"암, 플래그, 확산천, 반사판 고정의 기본 부품."},
+  {category:"붐·그립·안전",group:"기본 그립",brand:"Avenger",model:"D520 40 Grip Arm",spec:"40인치 암, 그립헤드용",capacity:"플래그/소형 악세사리",price:85000,priority:"높음",wh:0,image:"",link:"https://www.manfrotto.com/global-en/40-grip-arm-silver-d520/",note:"C-스탠드에 물려 빛 가림, 반사판, 소형 악세사리 위치 잡기."},
+  {category:"붐·그립·안전",group:"안전 웨이트",brand:"Impact",model:"Filled Saddle Sandbag 15 lb",spec:"15lb 충전 샌드백, 방수 코듀라",capacity:"6.8kg",price:34000,priority:"높음",wh:0,image:"",link:"https://www.bhphotovideo.com/c/product/1161029-REG/impact_sbf_b_15_saddle_sandbag_15lb.html",note:"스탠드 1개당 최소 1개 기준. 붐/야외/큰 소프트박스는 2개 이상."},
+  {category:"붐·그립·안전",group:"안전 웨이트",brand:"Impact",model:"Empty Pro Sandbag Kit 15 lb x6",spec:"빈 샌드백 6개 세트",capacity:"각 15lb 충전 가능",price:126000,priority:"중간",wh:0,image:"",link:"https://www.bhphotovideo.com/c/product/983922-REG/impact_pro_15_lb_sandbag.html/specs",note:"국내에서 모래/쌀/샷백 충전해서 여러 스탠드에 분산하기 좋음."},
+  {category:"붐·그립·안전",group:"세트 보조",brand:"Matthews",model:"Full Apple Box",spec:"12x8x20인치, 9-ply 합판",capacity:"인물/장비 받침",price:121000,priority:"중간",wh:0,image:"https://www.msegrip.com/cdn/shop/products/259535_full-apple-box_01_1500.jpg?crop=center&height=1200&v=1762200801&width=1200",link:"https://www.msegrip.com/products/full-apple-box",note:"피사체 키 높이, 제품 높이, 낮은 조명 받침에 계속 쓰임."},
+  {category:"붐·그립·안전",group:"세트 보조",brand:"Matthews",model:"Apple Box Set",spec:"Full, Half, Quarter, Pancake 4종",capacity:"세트 높이 조절",price:360000,priority:"낮음",wh:0,image:"",link:"https://www.filmtools.com/filmtools-apple-box-set-kit.html",note:"스튜디오 고정 운용이면 세트가 편함. 로케이션은 Full/Quarter부터."},
+  {category:"붐·그립·안전",group:"세트 보조",brand:"Generic",model:"A-Clamp / Spring Clamp Set",spec:"대/중/소 클램프 6~12개",capacity:"배경지/천/리플렉터 고정",price:25000,priority:"높음",wh:0,image:"",link:"https://www.bhphotovideo.com/c/search?q=spring%20clamp%20photography",note:"가격은 낮지만 현장 누락 시 가장 불편한 소모성 그립."},
+
+  {category:"카트·운반",group:"접이식 멀티카트",brand:"RockNRoller",model:"R6RT Mini",spec:"최대 42.5인치, 8인치 후륜",capacity:"하중 500lb",price:383000,priority:"중간",wh:0,image:"",link:"https://rocknrollercart.com/collections/multi-carts",note:"차 적재 공간이 좁고 장비가 중간 정도일 때."},
+  {category:"카트·운반",group:"접이식 멀티카트",brand:"RockNRoller",model:"R8RT Mid",spec:"중형 멀티카트",capacity:"하중 500lb급",price:429000,priority:"높음",wh:0,image:"",link:"https://rocknrollercart.com/collections/multi-carts",note:"스탠드, 조명가방, 카메라가방을 한 번에 옮기는 현실적인 시작점."},
+  {category:"카트·운반",group:"접이식 멀티카트",brand:"RockNRoller",model:"R12RT All Terrain",spec:"34~52인치, 10인치 후륜+8인치 전륜",capacity:"하중 500lb, 무게 약 36lb",price:505000,priority:"높음",wh:0,image:"",link:"https://rocknrollercart.com/collections/multi-carts",note:"잔디, 자갈, 주차장 이동이 많으면 R8보다 R12RT가 편함."},
+  {category:"카트·운반",group:"접이식 멀티카트",brand:"RockNRoller",model:"R18RT Mega Plus",spec:"최대 60인치, 대형 휠",capacity:"하중 700lb",price:612000,priority:"중간",wh:0,image:"",link:"https://rocknrollercart.com/collections/multi-carts",note:"장비가 많거나 어시스트가 있을 때. 차량 적재 길이 확인 필요."},
+  {category:"카트·운반",group:"프로덕션 핸드트럭",brand:"Magliner",model:"Gemini Junior Convertible",spec:"2륜/4륜 전환, 플랫폼 길이 약 47.5인치",capacity:"핸드트럭 500lb, 플랫폼 1000lb",price:869000,priority:"중간",wh:0,image:"",link:"https://mappcaster.com/products/6htgk1839-magline-gemini-junior-handtruck",note:"현장 장비 운반 표준급. 접이식 카트보다 튼튼하지만 부피가 큼."},
+  {category:"카트·운반",group:"프로덕션 카트",brand:"Inovativ",model:"Voyager 36 NXT",spec:"약 39.9x24.7x40.9인치, 공구 없이 조립",capacity:"카메라/모니터/DIT 카트",price:5350000,priority:"낮음",wh:0,image:"",link:"https://www.bhphotovideo.com/c/product/1451673-REG/inovativ_vn_0036_voyager_36_nxt_equipment.html",note:"상업 영상/대형 현장용. 사진 위주면 마지막 단계 업그레이드."},
+  {category:"카트·운반",group:"케이스·가방",brand:"Pelican",model:"1510 Protector Carry-On",spec:"기내용 하드케이스",capacity:"카메라/렌즈/소형 악세사리",price:350000,priority:"중간",wh:0,image:"",link:"https://www.pelican.com/us/en/product/cases/carry-on-case/protector/1510/",note:"차량 이동과 비/충격이 잦으면 장비 보호용으로 가치가 큼."},
+  {category:"카트·운반",group:"케이스·가방",brand:"Think Tank",model:"Production Manager 40",spec:"대형 롤링 기어 케이스",capacity:"스탠드 제외 조명/카메라 악세사리",price:620000,priority:"낮음",wh:0,image:"",link:"https://www.thinktankphoto.com/products/production-manager-40",note:"조명 악세사리와 케이블을 한 번에 정리하는 고급 선택지."},
+
+  {category:"파워뱅크·배터리",group:"휴대 전원 0.7~1kWh",brand:"EcoFlow",model:"RIVER 2 Pro",spec:"768Wh, AC 800W",capacity:"LiFePO4, 소형 지속광/충전",price:763000,priority:"중간",wh:768,image:"",link:"https://us.ecoflow.com/products/river-2-pro-portable-power-station",note:"가벼운 로케이션, 카메라/노트북/LED 60~120W 보조 전원."},
+  {category:"파워뱅크·배터리",group:"휴대 전원 1kWh급",brand:"EcoFlow",model:"DELTA 2",spec:"1024Wh, AC 1800W",capacity:"확장 배터리 지원",price:916000,priority:"높음",wh:1024,image:"",link:"https://us.ecoflow.com/products/delta-2-portable-power-station",note:"300W 지속광 1개와 카메라 충전까지 버티는 현실적인 시작점."},
+  {category:"파워뱅크·배터리",group:"휴대 전원 1kWh급",brand:"DJI",model:"Power 1000",spec:"1024Wh, AC 2200W, USB-C 140W x2",capacity:"약 13kg, LFP",price:1069000,priority:"높음",wh:1024,image:"",link:"https://www.dji.com/power-1000/specs",note:"DJI 드론/카메라 충전까지 같이 굴릴 때 강점. 출력 여유가 좋음."},
+  {category:"파워뱅크·배터리",group:"휴대 전원 1kWh급",brand:"Anker",model:"SOLIX C1000",spec:"1056Wh, AC 1800W, 피크 2400W",capacity:"LiFePO4",price:1223000,priority:"중간",wh:1056,image:"https://cdn.shopify.com/s/files/1/0854/3820/2186/files/cq5dam.web.1280.1280_6_-Photoroom1.png?v=1733921194",link:"https://www.anker.com/products/a1761",note:"빠른 충전과 안정성이 장점. 국내 판매가 확인 후 비교."},
+  {category:"파워뱅크·배터리",group:"휴대 전원 1kWh급",brand:"BLUETTI",model:"AC180",spec:"1152Wh, AC 1800W, 1440W 입력",capacity:"LiFePO4",price:916000,priority:"중간",wh:1152,image:"",link:"https://www.bluettipower.com/pages/ac180",note:"가격 대비 용량이 좋고, 1시간대 급속충전 계열."},
+  {category:"파워뱅크·배터리",group:"휴대 전원 1kWh급",brand:"Jackery",model:"Explorer 1000 Plus",spec:"1264Wh, AC 2000W",capacity:"확장 배터리 지원",price:1529000,priority:"중간",wh:1264,image:"",link:"https://www.jackery.com/products/explorer-1000-plus-portable-power-station",note:"용량이 1kWh급보다 조금 넉넉. 캠핑/야외 촬영 겸용."},
+  {category:"파워뱅크·배터리",group:"휴대 전원 2kWh급",brand:"EcoFlow",model:"DELTA 2 Max",spec:"2048Wh, AC 2400W, 서지 4800W",capacity:"확장 배터리 2개 지원",price:1376000,priority:"높음",wh:2048,image:"https://us.ecoflow.com/cdn/shop/files/ecoflow-us-ecoflow-delta-2-max-portable-power-station-d2m-delta-2-max-portable-power-station-1182569251.png?v=1754036926",link:"https://us.ecoflow.com/products/delta-2-max-portable-power-station",note:"300~600W 지속광을 오래 쓰려면 2kWh급부터 체감이 큼."},
+  {category:"파워뱅크·배터리",group:"휴대 전원 2kWh급",brand:"BLUETTI",model:"AC200L",spec:"2048Wh, AC 2400W",capacity:"LiFePO4, 대용량",price:2140000,priority:"중간",wh:2048,image:"",link:"https://www.bluettipower.com/products/ac200l",note:"고출력 지속광과 노트북/충전기를 한 번에 돌릴 때."},
+  {category:"파워뱅크·배터리",group:"V마운트 배터리",brand:"SmallRig",model:"VB99 Pro",spec:"98.872Wh, USB-C 100W, D-Tap, 8V/12V",capacity:"항공 반입 친화 99Wh급",price:268000,priority:"높음",wh:99,image:"https://static.smallrig.com/mall/img/public/1730711646131_.JPG",link:"https://www.smallrig.com/smallrig-VB99-Pro-mini-V-Mount-Battery-4292.html",note:"카메라 리그, 모니터, 소형 LED, 노트북 보조 충전에 실용적."},
+  {category:"파워뱅크·배터리",group:"V마운트 배터리",brand:"SmallRig",model:"VB155",spec:"155Wh, V-Mount, USB-C/D-Tap",capacity:"중형 리그/조명",price:427000,priority:"중간",wh:155,image:"",link:"https://www.smallrig.com/smallrig-VB155-mini-V-Mount-Battery-3581.html",note:"항공 반입 제약은 확인 필요. 스튜디오/차량 이동이면 유용."},
+  {category:"파워뱅크·배터리",group:"V마운트 배터리",brand:"FXLION",model:"NANO TWO",spec:"98Wh, USB-C, D-Tap",capacity:"소형 V마운트",price:381000,priority:"중간",wh:98,image:"",link:"https://www.fxlion.net/nano-two",note:"작은 리그용 고급 대안. 국내 유통가 확인 필요."},
+  {category:"파워뱅크·배터리",group:"V마운트 배터리",brand:"IDX",model:"DUO-C98P",spec:"97Wh, D-Tap, USB-C PD",capacity:"방송/프로덕션 계열",price:427000,priority:"낮음",wh:97,image:"",link:"https://idxtek.com/products/duo-c98p",note:"신뢰성이 중요하고 기존 충전기/플레이트 호환이 있을 때."},
+
+  {category:"현장 필수품",group:"전원 케이블",brand:"Generic",model:"접지 멀티탭 5~6구",spec:"개별 스위치, 과부하 차단, 접지",capacity:"AC 분배",price:35000,priority:"높음",wh:0,image:"",link:"https://search.shopping.naver.com/search/all?query=%EC%A0%91%EC%A7%80%20%EB%A9%80%ED%8B%B0%ED%83%AD%206%EA%B5%AC",note:"파워뱅크와 벽전원 모두에서 제일 먼저 부족해지는 기본품."},
+  {category:"현장 필수품",group:"전원 케이블",brand:"Generic",model:"릴선/연장선 10~20m",spec:"접지, 1.5SQ 이상 권장",capacity:"로케이션 전원 연장",price:65000,priority:"높음",wh:0,image:"",link:"https://search.shopping.naver.com/search/all?query=%EC%A0%91%EC%A7%80%20%EB%A6%B4%EC%84%A0%2020m",note:"전원 위치가 멀 때. 조명 출력 합산 후 허용전류 확인."},
+  {category:"현장 필수품",group:"케이블 관리",brand:"Generic",model:"벨크로 타이/라벨 세트",spec:"케이블 색상 구분, 네임라벨",capacity:"정리/분실 방지",price:20000,priority:"높음",wh:0,image:"",link:"https://search.shopping.naver.com/search/all?query=%EB%B2%A8%ED%81%AC%EB%A1%9C%20%EC%BC%80%EC%9D%B4%EB%B8%94%ED%83%80%EC%9D%B4",note:"수빈이가 공부할 때도 케이블별 역할을 구분하기 쉬움."},
+  {category:"현장 필수품",group:"배경 지지",brand:"Generic",model:"Background Stand Kit",spec:"2스탠드+크로스바+가방",capacity:"천/종이/무지 배경",price:120000,priority:"중간",wh:0,image:"",link:"https://search.shopping.naver.com/search/all?query=%EC%B4%AC%EC%98%81%20%EB%B0%B0%EA%B2%BD%EC%A7%80%20%EC%8A%A4%ED%83%A0%EB%93%9C",note:"인물/제품 간이 배경용. 무거운 롤지는 더 튼튼한 스탠드 필요."},
+  {category:"현장 필수품",group:"작업면",brand:"Generic",model:"접이식 테이블 1200",spec:"1200x600mm급",capacity:"노트북/렌즈/필터/충전 스테이션",price:60000,priority:"중간",wh:0,image:"",link:"https://search.shopping.naver.com/search/all?query=%EC%A0%91%EC%9D%B4%EC%8B%9D%20%ED%85%8C%EC%9D%B4%EB%B8%94%201200",note:"장비를 바닥에 놓지 않는 것만으로 현장 효율이 올라감."},
+  {category:"현장 필수품",group:"툴 정리",brand:"Milwaukee",model:"PACKOUT Tool Box",spec:"모듈형 공구함",capacity:"클램프/테이프/케이블/공구",price:250000,priority:"낮음",wh:0,image:"",link:"https://www.milwaukeetool.com/Products/48-22-8424",note:"조명 그립이 많아지면 한 박스에 규칙적으로 담기 좋음."},
+  {category:"현장 필수품",group:"소모품",brand:"Generic",model:"Gaffer Tape 2인치",spec:"무광 천테이프",capacity:"케이블 고정/마킹/응급 보수",price:25000,priority:"높음",wh:0,image:"",link:"https://search.shopping.naver.com/search/all?query=gaffer%20tape%202%EC%9D%B8%EC%B9%98",note:"덕테이프보다 잔사가 적어 촬영 현장에서는 가퍼테이프가 기본."}
+];
+
+const priorityRank={"높음":1,"중간":2,"낮음":3};
+const money=(value)=>"₩"+Number(value).toLocaleString("ko-KR");
+const unique=(key)=>[...new Set(rows.map((row)=>row[key]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"ko"));
+
+function fillSelect(id,key,label){
+  const select=document.getElementById(id);
+  unique(key).forEach((value)=>{
+    const option=document.createElement("option");
+    option.value=value;
+    option.textContent=value;
+    select.appendChild(option);
+  });
+}
+
+function filteredRows(){
+  const q=document.getElementById("search").value.trim().toLowerCase();
+  const category=document.getElementById("category").value;
+  const group=document.getElementById("group").value;
+  const brand=document.getElementById("brand").value;
+  const priority=document.getElementById("priority").value;
+  const sort=document.getElementById("sort").value;
+  let list=rows.filter((row)=>{
+    const hay=[row.category,row.group,row.brand,row.model,row.spec,row.capacity,row.note,row.priority].join(" ").toLowerCase();
+    return (!q || hay.includes(q)) && (!category || row.category===category) && (!group || row.group===group) && (!brand || row.brand===brand) && (!priority || row.priority===priority);
+  });
+  if(sort==="price") list=list.sort((a,b)=>a.price-b.price);
+  if(sort==="priority") list=list.sort((a,b)=>priorityRank[a.priority]-priorityRank[b.priority] || a.price-b.price);
+  if(sort==="brand") list=list.sort((a,b)=>a.brand.localeCompare(b.brand,"ko") || a.price-b.price);
+  if(sort==="group") list=list.sort((a,b)=>a.category.localeCompare(b.category,"ko") || a.group.localeCompare(b.group,"ko") || priorityRank[a.priority]-priorityRank[b.priority] || a.price-b.price);
+  return list;
+}
+
+function renderStats(list){
+  const total=list.length;
+  const high=list.filter((row)=>row.priority==="높음").length;
+  const power=list.filter((row)=>row.wh>0).length;
+  const avg=total?Math.round(list.reduce((sum,row)=>sum+row.price,0)/total):0;
+  const max=total?Math.max(...list.map((row)=>row.price)):0;
+  document.getElementById("stats").innerHTML=[
+    `<div class="stat"><strong>${total}</strong><span>표시 제품</span></div>`,
+    `<div class="stat"><strong>${high}</strong><span>우선순위 높음</span></div>`,
+    `<div class="stat"><strong>${power}</strong><span>전원 계산 가능</span></div>`,
+    `<div class="stat"><strong>${money(avg)}</strong><span>평균 예산가</span></div>`,
+    `<div class="stat"><strong>${money(max)}</strong><span>최고가 항목</span></div>`
+  ].join("");
+}
+
+function card(row){
+  const noImage=row.image?"":" no-image";
+  return `<article class="item-card">
+    <div class="photo-box${noImage}">
+      <img src="${row.image}" alt="${row.brand} ${row.model}" loading="lazy" onerror="this.parentElement.classList.add('no-image')">
+      <div class="photo-fallback">${row.brand}<br>${row.model}</div>
+    </div>
+    <div class="item-body">
+      <div class="item-top"><span class="pill brand-pill">${row.brand}</span><span class="pill type-pill">${row.category}</span></div>
+      <h3>${row.model}</h3>
+      <div class="price">${money(row.price)}</div>
+      <div class="meta">
+        <div><b>비교군</b><span>${row.group}</span></div>
+        <div><b>규격</b><span>${row.spec}</span></div>
+        <div><b>하중</b><span>${row.capacity}</span></div>
+        <div><b>추천</b><span><span class="pill priority-pill">${row.priority}</span></span></div>
+      </div>
+      <p class="note">${row.note}</p>
+      <a class="link" href="${row.link}" target="_blank" rel="noreferrer">제품 확인</a>
+    </div>
+  </article>`;
+}
+
+function renderGroups(){
+  const list=filteredRows();
+  renderStats(list);
+  const grouped=new Map();
+  list.forEach((row)=>{
+    const key=row.category+" · "+row.group;
+    if(!grouped.has(key)) grouped.set(key,[]);
+    grouped.get(key).push(row);
+  });
+  document.getElementById("groupIndex").innerHTML=[...grouped.entries()].map(([key,items],index)=>`<a href="#support-group-${index}"><span>${key}</span><span class="count">${items.length}</span></a>`).join("");
+  document.getElementById("groups").innerHTML=[...grouped.entries()].map(([key,items],index)=>`<section class="group" id="support-group-${index}">
+    <div class="group-title"><h3>${key}</h3><span>${items.length}개</span></div>
+    <div class="item-grid">${items.map(card).join("")}</div>
+  </section>`).join("");
+  renderTable(list);
+}
+
+function renderTable(list){
+  document.querySelector("#detailTable tbody").innerHTML=list.map((row)=>`<tr>
+    <td><span class="tag">${row.category}</span><br><span class="small">${row.group}</span></td>
+    <td>${row.image?`<img class="thumb" src="${row.image}" alt="${row.brand} ${row.model}" loading="lazy">`:`<span class="small">${row.brand}<br>${row.model}</span>`}</td>
+    <td>${row.brand}</td>
+    <td><strong>${row.model}</strong></td>
+    <td>${row.spec}</td>
+    <td>${row.capacity}</td>
+    <td><strong>${money(row.price)}</strong></td>
+    <td>${row.priority}</td>
+    <td>${row.note}</td>
+    <td><a href="${row.link}" target="_blank" rel="noreferrer">확인</a></td>
+  </tr>`).join("");
+}
+
+function renderPowerOptions(){
+  const select=document.getElementById("powerSelect");
+  rows.filter((row)=>row.wh>0).sort((a,b)=>a.wh-b.wh).forEach((row)=>{
+    const option=document.createElement("option");
+    option.value=row.wh;
+    option.textContent=`${row.brand} ${row.model} · ${row.wh}Wh`;
+    select.appendChild(option);
+  });
+  const delta=rows.find((row)=>row.model==="DELTA 2 Max");
+  if(delta) select.value=delta.wh;
+}
+
+function renderCalc(){
+  const wh=Number(document.getElementById("powerSelect").value || 0);
+  const watt=Math.max(1,Number(document.getElementById("wattInput").value || 1));
+  const eff=Number(document.getElementById("effInput").value);
+  const reserve=Number(document.getElementById("reserveInput").value);
+  const hours=(wh*eff*reserve)/watt;
+  const output=document.getElementById("calcOutput");
+  output.innerHTML=`<strong>약 ${hours.toFixed(1)}시간</strong><br><span class="small">${wh}Wh × ${(eff*100).toFixed(0)}% × ${(reserve*100).toFixed(0)}% ÷ ${watt}W 기준입니다. 고출력 조명은 순간 피크와 인버터 정격도 같이 확인하세요.</span>`;
+}
+
+["category","group","brand","priority"].forEach((key)=>fillSelect(key,key,key));
+["search","category","group","brand","priority","sort"].forEach((id)=>document.getElementById(id).addEventListener("input",renderGroups));
+document.getElementById("comfortableView").addEventListener("click",()=>{
+  document.getElementById("supportDashboard").classList.remove("compact");
+  document.getElementById("comfortableView").classList.add("active");
+  document.getElementById("compactView").classList.remove("active");
+});
+document.getElementById("compactView").addEventListener("click",()=>{
+  document.getElementById("supportDashboard").classList.add("compact");
+  document.getElementById("compactView").classList.add("active");
+  document.getElementById("comfortableView").classList.remove("active");
+});
+renderPowerOptions();
+["powerSelect","wattInput","effInput","reserveInput"].forEach((id)=>document.getElementById(id).addEventListener("input",renderCalc));
+renderGroups();
+renderCalc();
+</script>
+<script src="assets/equipment-theme.js"></script>
+</body>
+</html>

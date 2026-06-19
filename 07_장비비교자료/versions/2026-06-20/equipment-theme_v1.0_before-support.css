@@ -100,12 +100,12 @@ a{color:var(--accent-strong) !important}
   left:50% !important;
   right:auto !important;
   transform:translateX(-50%) !important;
-  width:min(calc(100vw - 28px),1120px) !important;
+  width:min(calc(100vw - 28px),980px) !important;
   height:auto !important;
   margin:0 !important;
   padding:8px !important;
   display:grid !important;
-  grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+  grid-template-columns:repeat(6,minmax(0,1fr)) !important;
   gap:5px !important;
   background:rgba(255,255,255,.86) !important;
   border:1px solid rgba(188,199,204,.74) !important;
@@ -342,7 +342,7 @@ code{
 @media(max-width:1100px){
   .top-nav{
     width:calc(100vw - 18px) !important;
-    grid-template-columns:repeat(7,max-content) !important;
+    grid-template-columns:repeat(6,max-content) !important;
     justify-content:start !important;
     overflow-x:auto !important;
     scrollbar-width:none;

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-20",
+  "updated_at": "2026-06-19",
   "canonical_folder": "07_장비비교자료",
   "local_entry": "07_장비비교자료/index.html",
   "future_public_base_url": "https://bucket0825.github.io/note/07_장비비교자료/",
@@ -12,8 +12,8 @@
   "files": [
     {
       "name": "00_장비비교_목차_latest.html",
-      "version": "v1.5",
-      "role": "6분류 장비 비교자료 목차"
+      "version": "v1.4",
+      "role": "5분류 장비 비교자료 목차"
     },
     {
       "name": "01_카메라_비교표_latest.html",
@@ -41,14 +41,9 @@
       "role": "조명 악세사리 비교 최신본"
     },
     {
-      "name": "06_촬영지원장비_비교표_latest.html",
-      "version": "v1.0",
-      "role": "스탠드, 그립, 카트, 파워뱅크, V마운트, 현장 필수품 비교 최신본"
-    },
-    {
       "name": "assets/equipment-theme.css",
-      "version": "v1.1",
-      "role": "공통 포토북 톤 디자인과 7개 고정 상단 목차 스타일"
+      "version": "v1.0",
+      "role": "공통 포토북 톤 디자인과 고정 상단 목차 스타일"
     },
     {
       "name": "assets/equipment-theme.js",
