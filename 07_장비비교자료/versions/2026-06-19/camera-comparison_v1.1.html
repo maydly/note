@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <base href="../../">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>카메라 바디 비교 대시보드</title>
+  <style>
+    :root{--ink:#20242a;--muted:#66717d;--line:#d9e0e6;--paper:#f8f6f1;--panel:#fff;--accent:#176b87;--warm:#b96800;--good:#2d7558}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Arial,sans-serif;line-height:1.5}
+    header{padding:34px 26px 22px;background:#efe9dd;border-bottom:1px solid var(--line)}main{max-width:1540px;margin:0 auto;padding:24px}
+    h1{margin:0 0 8px;font-size:clamp(30px,4vw,48px);line-height:1.08}h2{margin:28px 0 10px;font-size:24px}h3{margin:0 0 8px;font-size:17px}p{margin:0 0 10px}
+    a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}.lead{max-width:1040px;color:#3f4a54}.small{font-size:13px;color:var(--muted)}
+    .top-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.top-nav a{display:inline-flex;border:1px solid #cdd7dd;border-radius:999px;background:#fff;padding:8px 12px;font-weight:900}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:18px 0}.card,.panel,.notice{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:15px;min-width:0}.card strong{display:block;font-size:19px;margin-bottom:5px}
+    .notice{border-left:5px solid var(--accent)}
+    .learning-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:10px}.learn-card{border:1px solid var(--line);border-radius:8px;background:#fbfcfc;padding:12px}.learn-card strong{display:block;font-size:15px;margin-bottom:6px;color:#1f3038}.learn-card p{font-size:13px;color:#53616d;margin:0}
+    .guide-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin-top:12px}.guide-block{border:1px solid var(--line);border-radius:8px;background:#fbfcfc;padding:12px;min-width:0}.guide-block h3{font-size:18px;margin:0 0 8px}
+    .guide-table-wrap,.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff;max-width:100%}.guide-table,.data-table{width:100%;border-collapse:collapse}.guide-table{min-width:620px}.data-table{min-width:1180px}.guide-table th,.guide-table td,.data-table th,.data-table td{padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;font-size:13px}.guide-table th,.data-table th{background:#f0f4f6;white-space:nowrap}.guide-table td:first-child{font-weight:900;color:#1f3038;white-space:nowrap}
+    .dashboard{margin:22px 0 28px;background:#fff;border:1px solid #cfd9df;border-radius:10px;overflow:hidden;box-shadow:0 10px 28px rgba(35,45,54,.06)}
+    .dash-head{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:end;padding:18px 20px;background:linear-gradient(135deg,#fff 0%,#f2f7f8 55%,#f7f1e7 100%);border-bottom:1px solid var(--line)}.dash-head h2{margin:0 0 5px}
+    .dash-controls{display:grid;grid-template-columns:1.5fr repeat(5,minmax(130px,1fr));gap:8px;padding:12px 14px;background:#fff;border-bottom:1px solid var(--line)}
+    button,select,input{font:inherit;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);padding:10px}button{cursor:pointer;font-weight:900}button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .dash-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:12px 14px;background:#fbfcfc;border-bottom:1px solid var(--line)}.stat{border:1px solid #dce4e9;border-radius:8px;padding:10px 12px;background:#fff}.stat strong{display:block;font-size:22px;line-height:1.1}.stat span{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+    .empty{padding:24px;text-align:center;color:#53616d;background:#fff}.pill{display:inline-flex;align-items:center;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:900;white-space:nowrap}.brand-pill{background:#e8f2f4;color:#176b87}.tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 7px;font-size:12px;background:#fff;color:#42505c}
+    .price{font-weight:950;white-space:nowrap}.thumb{width:92px;height:70px;object-fit:contain;background:#f7f8f9;border:1px solid #e5ebef;border-radius:6px;display:block}.photo-cell{width:110px}
+    @media(max-width:1100px){.cards,.learning-grid,.guide-grid{grid-template-columns:1fr 1fr}.dash-controls{grid-template-columns:1fr 1fr 1fr}.dash-stats{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:760px){main{padding:15px}.cards,.learning-grid,.guide-grid,.dash-head,.dash-controls,.dash-stats{grid-template-columns:1fr}}
+  
+    .split-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:18px 0}.split-link{display:block;background:#fff;border:1px solid var(--line);border-radius:8px;padding:18px;min-height:132px}.split-link strong{display:block;font-size:22px;margin-bottom:8px}.split-link span{display:block;color:var(--muted)}
+    .page-note{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.page-note span{border:1px solid #d5dee4;border-radius:999px;background:#fff;padding:6px 10px;font-size:13px;font-weight:800;color:#3c4952}
+    .tier-board{display:grid;gap:14px;padding:14px;background:#fbfcfc}.tier-block{border:1px solid var(--line);border-radius:8px;background:#fff;overflow:hidden}.tier-block-head{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;padding:13px 14px;background:#f3f7f8;border-bottom:1px solid var(--line)}.tier-block h3{margin:0;font-size:18px}.tier-count{font-weight:950;color:var(--accent);white-space:nowrap}.tier-table-wrap{overflow:auto}.tier-table{width:100%;min-width:980px;border-collapse:collapse}.tier-table th,.tier-table td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;font-size:13px}.tier-table th{background:#f8fafb;white-space:nowrap}.tier-table tr:last-child td{border-bottom:0}.tier-rank{display:inline-flex;justify-content:center;align-items:center;width:24px;height:24px;border-radius:999px;background:#e8f2f4;color:#176b87;font-weight:950}
+
+  </style>
+</head>
+<body>
+<header>
+  <h1>카메라 바디 비교 대시보드</h1>
+  <p class="lead">카메라 바디만 따로 분리했습니다. Sony A7M4 보유 기준에서 A7M5 업그레이드, Canon·Nikon·Fujifilm·Panasonic Lumix·Ricoh 비교군, 그리고 필름 바디 영역을 한 페이지에서 봅니다.</p>
+  <p class="small">기준일 2026-06-19 · 가격은 원화 기준으로만 표시 · 해외 가격 확인 항목은 1 USD ≈ ₩1,540 단순 환산</p>
+  <nav class="top-nav">
+    <a href="00_장비비교_목차_latest.html">목차</a>
+    <a href="03_렌즈_필터_비교표_latest.html">렌즈·필터 비교</a>
+    <a href="01_조명_비교표_latest.html">조명 비교</a>
+  </nav>
+</header>
+<main>
+  <section class="cards">
+    <div class="card"><strong>디지털 바디</strong><span class="small">A7M5, R6/R5, Nikon Zf/Z6III/Z8, Lumix S5II, Fujifilm X/GFX, Ricoh GR 계열.</span></div>
+    <div class="card"><strong>비교군 중심</strong><span class="small">풀프레임 하이브리드, 영상 특화, 고화소, 레트로 조작계, 고정렌즈 컴팩트로 분리.</span></div>
+    <div class="card"><strong>필름 바디</strong><span class="small">필름 바디는 렌즈 마운트와 상태 체크를 중심으로 추후 추가할 공간을 분리.</span></div>
+  </section>
+
+  <section class="notice">
+    <h2>정리 원칙</h2>
+    <p>이 페이지는 카메라 바디만 봅니다. 렌즈, 레거시 렌즈, 어댑터, 필터는 별도 페이지로 분리했습니다.</p>
+  </section>
+
+  <section class="panel">
+    <h2>수빈이 공부용 기준</h2>
+    <p class="small">카메라와 렌즈는 스펙을 외우는 것보다 “어떤 결과를 만드는 요소인지”를 먼저 이해하면 비교가 쉬워집니다.</p>
+    <div class="learning-grid">
+      <div class="learn-card"><strong>1. 센서 크기</strong><p>풀프레임은 심도와 고감도 여유, APS-C/MFT는 휴대성과 망원 효율, 중형은 해상도와 톤 여유가 장점입니다.</p></div>
+      <div class="learn-card"><strong>2. 마운트</strong><p>렌즈 선택지를 결정합니다. 바디보다 렌즈군이 오래 가므로 마운트별 생태계를 먼저 봅니다.</p></div>
+      <div class="learn-card"><strong>3. 화각</strong><p>광각은 공간, 표준은 자연스러움, 망원은 압축과 배경 정리에 강합니다. mm 숫자는 센서 크기와 같이 봅니다.</p></div>
+      <div class="learn-card"><strong>4. 조리개</strong><p>F값이 낮을수록 밝고 배경흐림이 커지지만 가격·무게도 올라갑니다. F1.4, F1.8, F2.8, F4는 용도가 다릅니다.</p></div>
+      <div class="learn-card"><strong>5. AF와 안정화</strong><p>인물·행사는 AF와 IBIS/OIS가 중요하고, 제품·스튜디오는 해상도와 색 안정성이 더 중요할 수 있습니다.</p></div>
+      <div class="learn-card"><strong>6. 영상 스펙</strong><p>4K/6K/8K보다 코덱, 비트뎁스, 로그, 롤링셔터, 발열, 저장매체를 함께 봐야 합니다.</p></div>
+      <div class="learn-card"><strong>7. 무게</strong><p>렌즈 포함 실제 세트 무게가 촬영 피로를 결정합니다. 짐벌·핸드헬드·여행은 무게가 스펙입니다.</p></div>
+      <div class="learn-card"><strong>8. 중고/리셀</strong><p>카메라와 렌즈는 리셀도 구매 판단입니다. 인기 마운트와 대표 렌즈는 감가가 상대적으로 안정적입니다.</p></div>
+      <div class="learn-card"><strong>9. 필름 렌즈 호환</strong><p>필름은 바디보다 렌즈 마운트 확인이 먼저입니다. 같은 브랜드라도 FD/EF, Nikon F 세대, Fujica X/XF가 다릅니다.</p></div>
+      <div class="learn-card"><strong>10. A7M4 어댑터</strong><p>A7M4는 E마운트라 수동 필름 SLR 렌즈 적응성이 좋습니다. 다만 AF, EXIF, 조리개 제어, 손떨림 보정 설정을 따로 봐야 합니다.</p></div>
+      <div class="learn-card"><strong>11. AF 어댑터 구분</strong><p>LA-EA5는 A마운트 AF 렌즈용이고, Techart LM-EA9는 수동렌즈를 어댑터 이동으로 AF처럼 쓰는 쪽입니다.</p></div>
+      <div class="learn-card"><strong>12. 필터 캐릭터</strong><p>82mm 필터는 렌즈보다 결과물이 바로 바뀝니다. Mist, Star, CPL, VND, Soft Focus를 용도별로 따로 봅니다.</p></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>카메라 비교군 빠른 기준</h2>
+    <p class="small">아래 표의 `비교군` 필터로 같은 급끼리 먼저 보면 됩니다. Sony는 현재 A7M4 사용자의 A7M5 업그레이드 판단용으로 포함합니다.</p>
+    <div class="guide-table-wrap">
+      <table class="guide-table">
+        <thead><tr><th>비교군</th><th>같이 볼 모델</th><th>판단 포인트</th></tr></thead>
+        <tbody>
+          <tr><td>풀프레임 하이브리드</td><td>Sony A7M5, Canon R6/R6 Mark II/R6 Mark III, Nikon Z6III, Lumix S5II</td><td>사진·영상 균형, AF, 카드 비용, 렌즈 생태계</td></tr>
+          <tr><td>영상 특화</td><td>Canon R6 V, Lumix S5IIX</td><td>EVF 유무, 냉각, RAW/ProRes, 장시간 촬영 안정성</td></tr>
+          <tr><td>고화소/상업</td><td>Canon R5/R5 Mark II, Nikon Z8, Fujifilm X-H2, GFX100S II</td><td>해상도, 상업 촬영, 파일 크기, 렌즈·저장 비용</td></tr>
+          <tr><td>레트로·감성 조작계</td><td>Nikon Z f, Fujifilm X-T5, X-E5, X-Pro3, X100V/X100VI</td><td>조작감, 뷰파인더, 필름 느낌, 들고 나가고 싶은지</td></tr>
+          <tr><td>후지 APS-C</td><td>X-H2S, X-H2, X-T5, X-S20, X-T50, X-E5, X-T30 III, X-M5, X-Pro3</td><td>필름 시뮬레이션, 크기, IBIS, EVF 유무, 렌즈 비용</td></tr>
+          <tr><td>고정렌즈 컴팩트</td><td>Canon PowerShot V1, Lumix L10, Ricoh GR III/IIIx/IV, Fujifilm X half/X100V/X100VI, GFX100RF</td><td>화각 고정 여부, 휴대성, EVF 유무, 스냅/여행/영상 비중</td></tr>
+          <tr><td>중형 GFX</td><td>GFX50S II, GFX100S II, GFX100 II, GFX100RF</td><td>화질은 압도적이지만 가격·무게·렌즈 비용이 완전히 다른 급</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="dashboard">
+    <div class="dash-head">
+      <div>
+        <h2>카메라 같은급 비교</h2>
+        <p class="small">아래는 필터를 만지지 않아도 바로 보이는 같은급 묶음입니다. 디지털 바디는 용도/체급 기준, 필름 바디는 마운트와 운용 방식 기준으로 묶었습니다.</p>
+      </div>
+    </div>
+    <div class="tier-board" id="cameraTierBoard"></div>
+  </section>
+
+  <section class="dashboard">
+    <div class="dash-head">
+      <div>
+        <h2>카메라 바디 비교</h2>
+        <p class="small">Sony·Canon·Nikon·Panasonic Lumix·Fujifilm·Ricoh 바디를 비교군, 센서, 마운트, 가격 기준으로 필터링합니다.</p>
+      </div>
+    </div>
+    <div class="dash-controls">
+      <input id="cameraSearch" type="search" placeholder="브랜드, 모델, 마운트, 비교군 검색">
+      <select id="cameraBrand"><option value="">브랜드 전체</option></select>
+      <select id="cameraMount"><option value="">마운트 전체</option></select>
+      <select id="cameraSensor"><option value="">센서 전체</option></select>
+      <select id="cameraUse"><option value="">비교군 전체</option></select>
+      <select id="cameraSort"><option value="price">낮은 가격순</option><option value="brand">브랜드순</option><option value="sensor">센서순</option></select>
+    </div>
+    <div class="dash-stats" id="cameraStats"></div>
+    <div class="table-wrap">
+      <table class="data-table" id="cameraTable">
+        <thead>
+          <tr><th>사진</th><th>브랜드</th><th>모델</th><th>비교군</th><th>센서/마운트</th><th>사진 핵심</th><th>영상 핵심</th><th>무게/운용</th><th>원화 가격</th><th>메모</th><th>확인</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="empty" id="cameraEmpty">조건에 맞는 카메라 바디가 없습니다.</div>
+    </div>
+  </section>
+
+  <section class="dashboard">
+    <div class="dash-head">
+      <div>
+        <h2>필름 카메라 비교</h2>
+        <p class="small">필름 바디는 상태와 렌즈 호환이 가격보다 중요합니다. 셔터, 노출계, 거리계, 스크린, 부품 수급을 같이 봅니다.</p>
+      </div>
+    </div>
+    <div class="dash-controls">
+      <input id="filmCameraSearch" type="search" placeholder="브랜드, 모델, 마운트, 필름 포맷 검색">
+      <select id="filmCameraBrand"><option value="">브랜드 전체</option></select>
+      <select id="filmCameraMount"><option value="">마운트 전체</option></select>
+      <select id="filmCameraFormat"><option value="">필름 포맷 전체</option></select>
+      <select id="filmCameraType"><option value="">카메라 유형 전체</option></select>
+      <select id="filmCameraSort"><option value="price">낮은 가격순</option><option value="brand">브랜드순</option><option value="mount">마운트순</option></select>
+    </div>
+    <div class="dash-stats" id="filmCameraStats"></div>
+    <div class="table-wrap">
+      <table class="data-table" id="filmCameraTable">
+        <thead>
+          <tr><th>사진</th><th>브랜드</th><th>모델</th><th>포맷/유형</th><th>렌즈 마운트</th><th>핵심 확인</th><th>원화 가격</th><th>메모</th><th>확인</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="empty" id="filmCameraEmpty">조건에 맞는 필름 카메라가 없습니다.</div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+const cameraRows=[
+  {
+    img:"https://www.sony.co.uk/image/921c7202d895631a44388842d0a4622b?fmt=pjpeg&bgcolor=FFFFFF&bgc=FFFFFF&wid=2515&hei=1320",
+    brand:"Sony",
+    model:"Alpha 7 V / A7M5 / ILCE-7M5",
+    use:"풀프레임 하이브리드",
+    sensor:"풀프레임 33MP partially stacked",
+    mount:"Sony E",
+    photo:"A7M4의 직접 업그레이드 후보. 더 빠른 센서 읽기, AI AF, 30fps 블랙아웃 프리 연사",
+    video:"4K 120p, 7K 오버샘플링 4K 60p 계열. A7M4보다 영상 여유가 큼",
+    weight:"기존 FE 렌즈/필터/어댑터 운용 유지. A7M4 보유자는 렌즈 자산을 그대로 활용 가능",
+    krw:"약 ₩4,408,000",
+    memo:"Sony 공식 ILCE-7M5 확인. A7M4에서 바디만 올릴지, 렌즈에 먼저 투자할지 비교용",
+    link:"https://www.sony.co.uk/electronics/interchangeable-lens-cameras/ilce-7m5"
+  },
+  {
+    img:"https://s7d1.scene7.com/is/image/canon/7084C002-r6-markiii-body-primary-01?fmt=webp-alpha&wid=380",
+    brand:"Canon",
+    model:"EOS R6 Mark III",
+    use:"풀프레임 하이브리드",
+    sensor:"풀프레임 32.5MP",
+    mount:"Canon RF",
+    photo:"R6 계열 최신형. 32.5MP라 R6 II보다 크롭 여유가 늘고, 인물·행사·스냅 모두 균형형",
+    video:"7K RAW, 오픈게이트 7K, 4K 120p 계열. 영상도 강하지만 장시간 발열은 확인",
+    weight:"약 699g. CFexpress Type B + SD라 카드 비용 추가",
+    krw:"약 ₩4,255,000",
+    memo:"R6급 최신 구매 후보. R6 II보다 비싸지만 해상도·영상 여유가 큼",
+    link:"https://www.usa.canon.com/shop/p/eos-r6-mark-iii"
+  },
+  {
+    img:"https://s7d1.scene7.com/is/image/canon/7250C002_eos-r6v-body-primary?fmt=webp-alpha&wid=800&hei=800",
+    brand:"Canon",
+    model:"EOS R6 V",
+    use:"영상 특화",
+    sensor:"풀프레임 32.5MP",
+    mount:"Canon RF",
+    photo:"R6 Mark III 센서 기반이지만 EVF와 기계식 셔터가 없어 사진 주력 바디로는 주의",
+    video:"7K RAW, 오픈게이트 7K, 액티브 쿨링, 세로 영상 UI. 영상 제작자용 R6 계열",
+    weight:"약 650g대. EVF 없음, 냉각 팬 있음",
+    krw:"약 ₩3,799,000",
+    memo:"R6 Mark III와 같은 급으로 보되, 사진보다 영상/콘텐츠 제작용으로 분리",
+    link:"https://www.usa.canon.com/shop/p/eos-r6-v-body"
+  },
+  {
+    img:"https://s7d1.scene7.com/is/image/canon/5666C002_eos_r6_mark_ii_body_primary?fmt=webp-alpha&wid=800&hei=800",
+    brand:"Canon",
+    model:"EOS R6 Mark II",
+    use:"풀프레임 하이브리드",
+    sensor:"풀프레임 24.2MP",
+    mount:"Canon RF",
+    photo:"24MP라 파일 부담이 낮고 AF·연사·행사 운용이 좋은 실전형",
+    video:"4K 60p 10bit 중심. R6 III보다 영상 확장성은 낮지만 가격 효율이 좋음",
+    weight:"약 670g. 듀얼 SD라 카드 비용이 낮음",
+    krw:"약 ₩3,039,000",
+    memo:"R6 Mark III와 가격 차이가 크면 가성비 후보. 신품/중고 둘 다 확인",
+    link:"https://www.usa.canon.com/shop/p/eos-r6-mark-ii"
+  },
+  {
+    img:"https://static.bhphoto.com/images/images500x500/canon_eos_r6_mirrorless_digital_1594288743_1567325.jpg",
+    brand:"Canon",
+    model:"EOS R6",
+    use:"풀프레임 하이브리드",
+    sensor:"풀프레임 20.1MP",
+    mount:"Canon RF",
+    photo:"원래 R6. 저화소지만 고감도·인물·행사에 아직 쓸 만한 중고 후보",
+    video:"4K 60p 가능하지만 발열·녹화시간 이슈를 확인해야 함",
+    weight:"약 680g. 듀얼 SD",
+    krw:"중고 기준 약 ₩2,100,000",
+    memo:"신품 구매 후보가 아니라 R6 Mark II와 가격 차이를 보는 중고 확인 항목",
+    link:"https://www.bhphotovideo.com/c/product/1567325-REG/canon_eos_r6_mirrorless_digital.html"
+  },
+  {
+    img:"https://s7d1.scene7.com/is/image/canon/6536C002_Primary?fmt=webp-alpha&wid=380",
+    brand:"Canon",
+    model:"EOS R5 Mark II",
+    use:"고화소/상업",
+    sensor:"풀프레임 45MP stacked",
+    mount:"Canon RF",
+    photo:"고화소, 빠른 센서, Eye Control AF, 상업·인물·제품·크롭 여유가 강함",
+    video:"8K 60 RAW, 4K 120p 계열. 고사양 영상은 카드·발열·저장비용까지 같이 봄",
+    weight:"약 746g. CFexpress Type B + SD",
+    krw:"약 ₩5,927,000",
+    memo:"R5급 최신 고화소 후보. RF L렌즈 비용까지 세트 예산으로 봐야 함",
+    link:"https://www.usa.canon.com/shop/p/eos-r5-mark-ii"
+  },
+  {
+    img:"https://s7d1.scene7.com/is/image/canon/4147C002_eos-r5-body_primary?fmt=webp-alpha&wid=800&hei=800",
+    brand:"Canon",
+    model:"EOS R5",
+    use:"고화소/상업",
+    sensor:"풀프레임 45MP",
+    mount:"Canon RF",
+    photo:"45MP 고화소와 좋은 색/AF. R5 Mark II보다 저렴한 고화소 진입 후보",
+    video:"8K 가능하지만 발열·녹화 안정성은 최신형 대비 주의",
+    weight:"약 738g. CFexpress Type B + SD",
+    krw:"약 ₩4,559,000",
+    memo:"가격이 충분히 내려갔을 때만 매력. 영상 장시간이면 R5 II/R6 III와 비교",
+    link:"https://www.usa.canon.com/shop/p/eos-r5"
+  },
+  {
+    img:"https://s7d1.scene7.com/is/image/canon/6390C001_PowerShot_V1_primary?fmt=webp-alpha&wid=380",
+    brand:"Canon",
+    model:"PowerShot V1",
+    use:"고정렌즈 컴팩트",
+    sensor:"1.4형 22.3MP",
+    mount:"고정렌즈 16-50mm 상당",
+    photo:"스마트폰보다 나은 휴대용 기록/스냅. 큰 센서 컴팩트 중 영상 친화형",
+    video:"브이로그·스트리밍 지향. 4K 중심, 내장 렌즈라 세팅이 빠름",
+    weight:"약 426g. 렌즈 교환 없음",
+    krw:"약 ₩1,291,000",
+    memo:"GR/X100/L10보다 영상 쪽에 더 가까운 컴팩트 후보",
+    link:"https://www.usa.canon.com/shop/p/powershot-v1"
+  },
+  {
+    img:"https://imaging.nikon.com/imaging/lineup/mirrorless/z_f/img/product_01_01.jpg",
+    brand:"Nikon",
+    model:"Z f",
+    use:"레트로 풀프레임",
+    sensor:"풀프레임 24.5MP",
+    mount:"Nikon Z",
+    photo:"필름 바디 같은 조작감, 24MP 풀프레임, 색/흑백 모드와 손맛이 강점",
+    video:"4K 중심. 영상 전용보다는 사진+감성 조작계 쪽",
+    weight:"약 710g. SD + microSD 조합은 호불호 있음",
+    krw:"약 ₩3,112,000",
+    memo:"후지 X-T/X-E 감성 조작계와 비교하기 좋지만 센서는 풀프레임",
+    link:"https://imaging.nikon.com/imaging/lineup/mirrorless/z_f/"
+  },
+  {
+    img:"https://imaging.nikon.com/imaging/lineup/mirrorless/z6_3/img/product_01_01.jpg",
+    brand:"Nikon",
+    model:"Z6III",
+    use:"풀프레임 하이브리드",
+    sensor:"풀프레임 24.5MP partially stacked",
+    mount:"Nikon Z",
+    photo:"R6 II/R6 III와 직접 비교할 Nikon 하이브리드. AF·연사·EVF가 강함",
+    video:"6K RAW, 4K 120p 계열. 가격 대비 영상 스펙이 좋음",
+    weight:"약 760g. CFexpress Type B + SD",
+    krw:"약 ₩3,036,000",
+    memo:"R6 II, S5IIX와 같은 가격대 하이브리드 핵심 비교군",
+    link:"https://imaging.nikon.com/imaging/lineup/mirrorless/z6_3/"
+  },
+  {
+    img:"https://imaging.nikon.com/imaging/lineup/mirrorless/z_8/img/product_01_01.jpg",
+    brand:"Nikon",
+    model:"Z8",
+    use:"고화소/상업",
+    sensor:"풀프레임 45.7MP stacked",
+    mount:"Nikon Z",
+    photo:"Z9급 센서를 작은 바디에 넣은 고화소·스포츠·상업 후보",
+    video:"8.3K RAW, 4K 120p 계열. 영상/사진 모두 강한 프로급",
+    weight:"약 910g. 배터리와 카드까지 포함하면 체감 무게 큼",
+    krw:"약 ₩5,164,000",
+    memo:"Canon R5 Mark II와 직접 비교. 렌즈군과 카드 비용까지 같이 봐야 함",
+    link:"https://imaging.nikon.com/imaging/lineup/mirrorless/z_8/"
+  },
+  {
+    img:"https://www.panasonic.com/content/dam/pim/uk/en/DC/DC-S5M/DC-S5M2/ast-1851179.jpg",
+    brand:"Panasonic Lumix",
+    model:"S5II",
+    use:"풀프레임 하이브리드",
+    sensor:"풀프레임 24.2MP",
+    mount:"L-Mount",
+    photo:"사진도 충분하지만 핵심은 안정적인 하이브리드 운용. L마운트 렌즈 비용 확인",
+    video:"6K/4K 10bit, 위상차 AF, 손떨림 보정. 가성비 영상 바디",
+    weight:"약 740g. 듀얼 SD",
+    krw:"약 ₩2,277,000",
+    memo:"R6 II/Z6III보다 저렴하면 영상 가성비가 매우 좋음",
+    link:"https://www.panasonic.com/uk/consumer/cameras-camcorders/lumix-mirrorless-cameras/lumix-s-full-frame-cameras/dc-s5m2.html"
+  },
+  {
+    img:"https://www.panasonic.com/content/dam/pim/uk/en/DC/DC-S5M/DC-S5M2X/ast-1824751.jpg",
+    brand:"Panasonic Lumix",
+    model:"S5IIX",
+    use:"영상 특화",
+    sensor:"풀프레임 24.2MP",
+    mount:"L-Mount",
+    photo:"사진 성능은 S5II와 비슷. 외관 블랙아웃과 영상 기능 차이가 핵심",
+    video:"ProRes, 외장 SSD, RAW HDMI, 스트리밍 등 S5II보다 영상 확장성 좋음",
+    weight:"약 740g. 듀얼 SD",
+    krw:"약 ₩2,733,000",
+    memo:"영상 비중이 높으면 S5II보다 우선. 사진 위주면 S5II가 효율적",
+    link:"https://www.panasonic.com/uk/consumer/cameras-camcorders/lumix-mirrorless-cameras/lumix-s-full-frame-cameras/dc-s5m2x.html"
+  },
+  {
+    img:"https://www.panasonic.com/content/dam/pim/uk/en/DC/DC-S9/DC-S9/ast-2586734.jpg",
+    brand:"Panasonic Lumix",
+    model:"S9",
+    use:"컴팩트 풀프레임",
+    sensor:"풀프레임 24.2MP",
+    mount:"L-Mount",
+    photo:"EVF 없는 작은 풀프레임. LUT/JPEG 색 작업과 휴대성이 강점",
+    video:"6K 오픈게이트, LUT 워크플로우. 장시간/프로 포트는 S5IIX가 우위",
+    weight:"약 486g. EVF 없음",
+    krw:"약 ₩2,280,000",
+    memo:"L10/X100VI와 휴대성 비교, S5II와 렌즈 교환식 비교로 같이 봄",
+    link:"https://www.panasonic.com/uk/consumer/cameras-camcorders/lumix-mirrorless-cameras/lumix-s-full-frame-cameras/dc-s9.html"
+  },
+  {
+    img:"https://www.panasonic.com/content/dam/pim/uk/en/DC/DC-L10/DC-L10/ast-3310350.jpg",
+    brand:"Panasonic Lumix",
+    model:"L10",
+    use:"고정렌즈 컴팩트",
+    sensor:"4/3형 20.4MP",
+    mount:"고정렌즈 24-75mm 상당 F1.7-2.8",
+    photo:"X100/GR보다 줌 편의성이 큼. Leica 줌렌즈와 EVF, 핫슈가 강점",
+    video:"5.7K/4K 계열, Real Time LUT. IBIS 부재는 확인 필요",
+    weight:"약 508g. 렌즈 교환 없음",
+    krw:"약 ₩2,279,000",
+    memo:"X100VI, GR IV, Canon V1과 비교할 고정렌즈 컴팩트 핵심 후보",
+    link:"https://www.panasonic.com/uk/consumer/cameras-camcorders/lumix-digital-cameras/premium-compact-cameras/dc-l10.html"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16756924_MAIN00_Image_X-H2S_front_CMOS_3.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"X-H2S",
+    use:"후지 APS-C 속도형",
+    sensor:"APS-C 26.1MP stacked",
+    mount:"Fujifilm X",
+    photo:"후지 X 중 속도·AF·연사 쪽 플래그십. 행사/움직임/영상에 유리",
+    video:"6.2K, 4K 120p 계열. X-H2보다 해상도는 낮고 속도는 빠름",
+    weight:"약 660g. CFexpress Type B + SD",
+    krw:"약 ₩4,104,000",
+    memo:"후지에서 R6/Z6III처럼 빠른 하이브리드 역할",
+    link:"https://www.fujifilm-x.com/en-us/products/cameras/x-h2s/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16757045_MAIN00_Image_X-H2_front_CMOS_3.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"X-H2",
+    use:"후지 APS-C 고화소",
+    sensor:"APS-C 40.2MP",
+    mount:"Fujifilm X",
+    photo:"40MP라 제품/풍경/스튜디오에 유리. APS-C 렌즈로 고화소 운용",
+    video:"8K 30p, 4K 60p. 고화소 APS-C 영상도 가능",
+    weight:"약 660g. CFexpress Type B + SD",
+    krw:"약 ₩3,191,000",
+    memo:"R5/Z8 같은 풀프레임 고화소와는 체급이 다르지만 후지 X의 상위 고화소",
+    link:"https://www.fujifilm-x.com/en-us/products/cameras/x-h2/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16782301_MAIN00_Image_X-T5_front_CMOS_black_4.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"X-T5",
+    use:"후지 APS-C 클래식",
+    sensor:"APS-C 40.2MP",
+    mount:"Fujifilm X",
+    photo:"다이얼 조작, 40MP, IBIS. 후지 감성과 실사용 균형이 좋음",
+    video:"6.2K 30p, 4K 60p. 사진 중심 바디지만 영상도 충분",
+    weight:"약 557g. 듀얼 SD",
+    krw:"약 ₩2,887,000",
+    memo:"Z f와 감성 조작계 비교, X-H2보다 작고 사진 친화적",
+    link:"https://www.fujifilm-x.com/en-us/products/cameras/x-t5/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16781852_MAIN00_Image_X-S20_front_Sensor.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"X-S20",
+    use:"후지 APS-C 입문/영상",
+    sensor:"APS-C 26.1MP",
+    mount:"Fujifilm X",
+    photo:"그립 좋고 작음. 필름 시뮬레이션 입문과 여행용으로 효율적",
+    video:"6.2K 30p, 4K 60p. 작은 영상 하이브리드로 좋음",
+    weight:"약 491g. 단일 SD",
+    krw:"약 ₩2,280,000",
+    memo:"X-T50보다 조작성은 현대식, X-M5보다 안정적인 바디",
+    link:"https://www.fujifilm-x.com/en-us/products/cameras/x-s20/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16828222_MAIN00_Image_X-T50_front_CMOS_black_4.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"X-T50",
+    use:"후지 APS-C 클래식",
+    sensor:"APS-C 40.2MP",
+    mount:"Fujifilm X",
+    photo:"작은 바디에 40MP와 필름 시뮬레이션 다이얼. 여행/스냅용",
+    video:"6.2K 30p, 4K 60p. 발열·그립은 상위기보다 제한",
+    weight:"약 438g. 단일 SD",
+    krw:"약 ₩2,279,000",
+    memo:"X100VI 느낌을 렌즈교환식으로 쓰고 싶을 때 비교",
+    link:"https://www.fujifilm-x.com/en-us/products/cameras/x-t50/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16949923_Image_MAIN00_X-E5_front_CMOS_silver_1.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"X-E5",
+    use:"후지 APS-C 레인지파인더형",
+    sensor:"APS-C 40.2MP",
+    mount:"Fujifilm X",
+    photo:"X100VI와 비슷한 감성의 렌즈교환식. 40MP, IBIS, 작은 렌즈 조합에 좋음",
+    video:"6.2K 30p, 4K 60p. 영상 전용보다는 스냅/여행 우선",
+    weight:"약 445g. 단일 SD",
+    krw:"약 ₩2,583,000",
+    memo:"X100VI가 고정렌즈라 답답하면 X-E5 + 23mm 조합으로 비교",
+    link:"https://www.fujifilm-x.com/en-us/products/cameras/x-e5/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16957346_Image_MAIN00_X-T30__front_CMOS_silver_1.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"X-T30 III",
+    use:"후지 APS-C 입문",
+    sensor:"APS-C 26.1MP",
+    mount:"Fujifilm X",
+    photo:"작고 저렴한 후지 입문. 다이얼 감성과 26MP 색감을 공부하기 좋음",
+    video:"6.2K 30p, 4K 60p. IBIS 없음",
+    weight:"약 378g. 단일 SD",
+    krw:"약 ₩1,519,000",
+    memo:"후지 렌즈를 작게 시작하려면 X-M5보다 사진 조작감이 좋음",
+    link:"https://www.fujifilm-x.com/en-us/products/cameras/x-t30-iii/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16900678_MAIN00_ImageX-M5_front_CMOS_black_3.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"X-M5",
+    use:"후지 APS-C 초소형",
+    sensor:"APS-C 26.1MP",
+    mount:"Fujifilm X",
+    photo:"EVF 없는 초소형 X마운트. 가볍게 색감/렌즈 경험하기 좋음",
+    video:"6.2K 30p, 4K 60p. 브이로그·일상 영상에 유리",
+    weight:"약 355g. EVF 없음",
+    krw:"약 ₩1,368,000",
+    memo:"가격은 좋지만 사진 공부용 뷰파인더가 필요하면 X-T30 III/X-T50 우선",
+    link:"https://www.fujifilm-x.com/en-us/products/cameras/x-m5/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/6/0/600021360_MAIN_kihon_frontSensor_titaniumBlack_6_3.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"X-Pro3",
+    use:"후지 APS-C 레인지파인더형",
+    sensor:"APS-C 26.1MP",
+    mount:"Fujifilm X",
+    photo:"하이브리드 OVF/EVF와 숨김 LCD. 촬영 경험은 좋지만 최신성은 낮음",
+    video:"4K 30p. 영상 목적이면 제외",
+    weight:"약 497g. 듀얼 SD",
+    krw:"중고 기준 약 ₩2,700,000",
+    memo:"신품 구매 후보라기보다 후지 조작감/감성 공부용 중고 확인 항목",
+    link:"https://shopusa.fujifilm-x.com/x-pro3-x-pro3/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16642939_MAIN_X100V_silver_front_2.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"X100V",
+    use:"고정렌즈 컴팩트",
+    sensor:"APS-C 26.1MP",
+    mount:"고정렌즈 35mm 상당 F2",
+    photo:"X100 감성의 대표 모델. 35mm 고정화각, 하이브리드 뷰파인더",
+    video:"4K 30p. 영상용보다는 사진/스냅",
+    weight:"약 478g. 렌즈 교환 없음",
+    krw:"중고 기준 약 ₩2,000,000",
+    memo:"단종/중고 중심. 가격이 높으면 X100VI, X-E5, L10과 비교",
+    link:"https://www.fujifilm-x.com/en-us/products/cameras/x100v/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16821822_MAIN00_Image_X100__front_Silver_7.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"X100VI",
+    use:"고정렌즈 컴팩트",
+    sensor:"APS-C 40.2MP",
+    mount:"고정렌즈 35mm 상당 F2",
+    photo:"X100V의 최신 대체. 40MP, IBIS, 필름 시뮬레이션, 하이브리드 뷰파인더",
+    video:"6.2K 30p, 4K 60p. 영상도 좋아졌지만 고정렌즈 사진 바디로 보는 게 맞음",
+    weight:"약 521g. 렌즈 교환 없음",
+    krw:"약 ₩2,736,000",
+    memo:"GR IV보다 크지만 뷰파인더/35mm/후지 색감이 강점",
+    link:"https://www.fujifilm-x.com/en-us/products/cameras/x100vi/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16954071_MAIN00_Image_X_half_front_Black_1.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"X half",
+    use:"고정렌즈 컴팩트",
+    sensor:"1형 17.7MP",
+    mount:"고정렌즈 32mm 상당 F2.8",
+    photo:"디지털 half-frame 컨셉. 세로 프레임, 필름카메라 모드, 재미 중심",
+    video:"FHD 중심. RAW 없음, 기술 스펙보다 놀이와 기록성",
+    weight:"약 240g. 렌즈 교환 없음",
+    krw:"약 ₩836,000",
+    memo:"X100/GR의 진지한 스냅과 다른 장난감·공부용 감성 컴팩트",
+    link:"https://www.fujifilm-x.com/en-us/products/cameras/x-hf1/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/6/0/600023616_MAIN00_Image_GFX100S__front_CMOS.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"GFX100S II",
+    use:"중형 고화소",
+    sensor:"GFX 102MP",
+    mount:"Fujifilm G",
+    photo:"중형 102MP를 비교적 작은 바디로. 제품·인물·상업·대형 출력용",
+    video:"4K 중심. 영상보다 사진 품질 우선",
+    weight:"약 883g. GF 렌즈까지 붙이면 세트 무거움",
+    krw:"약 ₩7,905,000",
+    memo:"R5/Z8보다 훨씬 큰 센서. 렌즈 비용과 작업 속도를 감수할 때만",
+    link:"https://www.fujifilm-x.com/en-us/products/cameras/gfx100s-ii/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/6/0/600023590_MAIN00_Image_GFX100__front_CMOS.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"GFX100 II",
+    use:"중형 고화소 플래그십",
+    sensor:"GFX 102MP HS",
+    mount:"Fujifilm G",
+    photo:"GFX 상위기. 102MP와 더 빠른 센서, 상업/패션/광고용",
+    video:"8K 등 GFX 중 영상도 강함. 저장·렌즈·워크플로우 비용 큼",
+    weight:"약 1030g. 중형 렌즈 포함 세트 예산 큼",
+    krw:"약 ₩12,161,000",
+    memo:"구매 후보라기보다 GFX 상한선 기준점으로 두는 모델",
+    link:"https://www.fujifilm-x.com/en-us/products/cameras/gfx100-ii/"
+  },
+  {
+    img:"https://asset.fujifilm.com/www/is/files/2025-03/d0ff9e276c9cef7d1a710c16e45ab364/news_12197_01.jpg",
+    brand:"Fujifilm",
+    model:"GFX100RF",
+    use:"중형 고정렌즈 컴팩트",
+    sensor:"GFX 102MP",
+    mount:"고정렌즈 28mm 상당 F4",
+    photo:"중형 센서를 고정렌즈 스냅으로 쓰는 특수한 모델. 화질과 휴대성의 독특한 조합",
+    video:"사진 중심. 영상 목적이면 다른 바디 우선",
+    weight:"약 735g. 렌즈 교환 없음",
+    krw:"약 ₩8,513,000",
+    memo:"X100VI/GR/L10과 같은 고정렌즈지만 가격·화질 체급은 완전히 다름",
+    link:"https://www.fujifilm-x.com/en-us/products/cameras/gfx100rf/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/6/0/600022316_MAIN00_Image_GFX50S-II_frontCMOS_2.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"GFX50S II",
+    use:"중형 고화소",
+    sensor:"GFX 51.4MP",
+    mount:"Fujifilm G",
+    photo:"중형 입문으로 좋았던 모델. 최신 AF/속도보다 톤과 해상도 중심",
+    video:"영상용으로는 약함",
+    weight:"약 900g. GF 렌즈 포함 무게 큼",
+    krw:"중고 기준 약 ₩4,300,000",
+    memo:"공식 단종. 중고 상태와 GF 렌즈 예산을 같이 봐야 함",
+    link:"https://www.fujifilm-x.com/en-us/products/cameras/gfx50s-ii/"
+  },
+  {
+    img:"https://www.ricoh-imaging.co.jp/english/products/gr-3/spec/img/01_spec_img_01.png",
+    brand:"Ricoh",
+    model:"GR III",
+    use:"고정렌즈 컴팩트",
+    sensor:"APS-C 24.2MP",
+    mount:"고정렌즈 28mm 상당 F2.8",
+    photo:"주머니에 들어가는 APS-C 스냅. 28mm 거리감 공부에 좋음",
+    video:"영상은 약함. 사진 전용 스냅으로 보는 게 맞음",
+    weight:"약 257g. EVF 없음",
+    krw:"단종/중고 기준 약 ₩1,600,000",
+    memo:"공식상 GR III는 단종 표기. 신품 구매보다 GR IV/IIIx 재고와 같이 비교",
+    link:"https://www.ricoh-imaging.co.jp/english/products/gr-3/"
+  },
+  {
+    img:"https://www.ricoh-imaging.co.jp/english/products/gr-3/spec/img/01_spec_img_02.png",
+    brand:"Ricoh",
+    model:"GR IIIx",
+    use:"고정렌즈 컴팩트",
+    sensor:"APS-C 24.2MP",
+    mount:"고정렌즈 40mm 상당 F2.8",
+    photo:"GR III보다 좁은 40mm. 인물·디테일·일상 기록이 더 자연스러움",
+    video:"영상은 약함. 사진 전용 스냅",
+    weight:"약 262g. EVF 없음",
+    krw:"약 ₩1,600,000",
+    memo:"28mm가 부담스러우면 GR IIIx가 더 잘 맞을 수 있음",
+    link:"https://www.ricoh-imaging.co.jp/english/products/gr-3/"
+  },
+  {
+    img:"https://www.ricoh-imaging.co.jp/resources/english/products/gr-4/top/img/camera.png",
+    brand:"Ricoh",
+    model:"GR IV",
+    use:"고정렌즈 컴팩트",
+    sensor:"APS-C 25.7MP",
+    mount:"고정렌즈 28mm 상당 F2.8",
+    photo:"GR III의 최신 대체. 새 센서, 새 렌즈, 개선 AF/손떨림 보정",
+    video:"사진 중심. 영상용으로는 Canon V1/L10이 더 적합",
+    weight:"약 262g. EVF 없음",
+    krw:"약 ₩2,280,000",
+    memo:"GR III가 단종이라 실제 신품 구매 후보는 GR IV까지 같이 봐야 함",
+    link:"https://www.ricoh-imaging.co.jp/english/products/gr-4/"
+  }
+];
+
+const filmCameraRows=[
+  {
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Canon_AE-1_Program.jpg/960px-Canon_AE-1_Program.jpg",
+    brand:"Canon",
+    model:"AE-1 Program",
+    format:"35mm 필름",
+    type:"수동초점 SLR",
+    mount:"Canon FD",
+    check:"셔터 스퀵, 노출계, 배터리실 부식, 프리즘/스크린 먼지, FD 렌즈 조리개 작동",
+    krw:"약 ₩280,000",
+    memo:"입문·공부용으로 유명하지만 인기가 높아 상태 대비 비쌀 수 있음. FD 렌즈와 같이 봐야 함",
+    link:"https://en.wikipedia.org/wiki/Canon_AE-1_Program"
+  },
+  {
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Canon_A-1.jpg/960px-Canon_A-1.jpg",
+    brand:"Canon",
+    model:"A-1",
+    format:"35mm 필름",
+    type:"전자식 SLR",
+    mount:"Canon FD",
+    check:"전자 셔터, LCD 표시, 모드 다이얼, 셔터 소음, 렌즈 마운트 유격",
+    krw:"약 ₩330,000",
+    memo:"AE-1보다 기능이 많아 공부용으로 좋지만 전자부 고장 리스크 확인",
+    link:"https://en.wikipedia.org/wiki/Canon_A-1"
+  },
+  {
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Canon_new_F-1-Camera.jpg/960px-Canon_new_F-1-Camera.jpg",
+    brand:"Canon",
+    model:"New F-1",
+    format:"35mm 필름",
+    type:"프로 SLR",
+    mount:"Canon FD",
+    check:"셔터 전 구간, 파인더/스크린 교체품, 모터드라이브 접점, 미러댐퍼",
+    krw:"약 ₩780,000",
+    memo:"FD 시스템 상위 바디. 렌즈와 바디 상태가 좋으면 오래 쓰기 좋지만 예산은 올라감",
+    link:"https://en.wikipedia.org/wiki/Canon_New_F-1"
+  },
+  {
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Canon_T90.jpg/960px-Canon_T90.jpg",
+    brand:"Canon",
+    model:"T90",
+    format:"35mm 필름",
+    type:"전자식 SLR",
+    mount:"Canon FD",
+    check:"전자부, 셔터 고착, 배터리실, LCD, 버튼 반응",
+    krw:"약 ₩250,000",
+    memo:"FD 렌즈를 전자식 운용감으로 쓰는 바디. 고장 리스크를 가격에 반영해야 함",
+    link:"https://en.wikipedia.org/wiki/Canon_T90"
+  },
+  {
+    img:"https://upload.wikimedia.org/wikipedia/commons/8/80/Canon_EOS_3.jpg",
+    brand:"Canon",
+    model:"EOS 3",
+    format:"35mm 필름",
+    type:"AF SLR",
+    mount:"Canon EF",
+    check:"AF 센서, 셔터막, 필름 이송, 커맨드 다이얼, EF 렌즈 호환",
+    krw:"약 ₩450,000",
+    memo:"EF 렌즈를 필름과 디지털 양쪽에서 공부하기 좋음. RF 렌즈는 사용 불가",
+    link:"https://en.wikipedia.org/wiki/Canon_EOS-3"
+  },
+  {
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Canon_EOS-1V.jpg/960px-Canon_EOS-1V.jpg",
+    brand:"Canon",
+    model:"EOS-1V",
+    format:"35mm 필름",
+    type:"프로 AF SLR",
+    mount:"Canon EF",
+    check:"셔터 카운트, 방진방적 고무, AF, PB-E2 그립 상태, 필름 이송",
+    krw:"약 ₩1,200,000",
+    memo:"Canon EF 필름 플래그십. EF L렌즈를 같이 운용하려면 가장 단단한 선택지",
+    link:"https://en.wikipedia.org/wiki/Canon_EOS-1V"
+  },
+  {
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Nikon_FM2.jpg/960px-Nikon_FM2.jpg",
+    brand:"Nikon",
+    model:"FM2",
+    format:"35mm 필름",
+    type:"기계식 SLR",
+    mount:"Nikon F AI/AI-S",
+    check:"셔터 속도, 노출계, 파인더, 필름실 스펀지, AI 연동레버",
+    krw:"약 ₩500,000",
+    memo:"전통적인 수동 필름 공부용. AI-S 50mm, 35mm, 105mm와 잘 맞음",
+    link:"https://en.wikipedia.org/wiki/Nikon_FM2"
+  },
+  {
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Nikon_FE2_1.jpg/960px-Nikon_FE2_1.jpg",
+    brand:"Nikon",
+    model:"FE2",
+    format:"35mm 필름",
+    type:"전자식 SLR",
+    mount:"Nikon F AI/AI-S",
+    check:"전자 셔터, 노출계, 조리개 우선 AE, 셔터 1/4000 작동",
+    krw:"약 ₩420,000",
+    memo:"FM2보다 자동노출 공부가 편함. 전자식이라 배터리/회로 상태 확인",
+    link:"https://en.wikipedia.org/wiki/Nikon_FE2"
+  },
+  {
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Nikon_FM3A_with_50mm_lens.JPG/960px-Nikon_FM3A_with_50mm_lens.JPG",
+    brand:"Nikon",
+    model:"FM3A",
+    format:"35mm 필름",
+    type:"기계+전자식 SLR",
+    mount:"Nikon F AI/AI-S",
+    check:"셔터 전 구간, AE, 파인더, 상판 찌그러짐, 가격 프리미엄",
+    krw:"약 ₩1,250,000",
+    memo:"수동 필름 Nikon의 로망급. 실사용 가성비보다 소장/완성도 쪽",
+    link:"https://en.wikipedia.org/wiki/Nikon_FM3A"
+  },
+  {
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Nikon_F3.jpg/960px-Nikon_F3.jpg",
+    brand:"Nikon",
+    model:"F3",
+    format:"35mm 필름",
+    type:"프로 SLR",
+    mount:"Nikon F AI/AI-S",
+    check:"LCD, 셔터, HP 파인더, 모터드라이브 접점, 미러댐퍼",
+    krw:"약 ₩700,000",
+    memo:"니콘 필름 프로 바디의 대표. AI-S 렌즈 공부와 실사용 균형이 좋음",
+    link:"https://en.wikipedia.org/wiki/Nikon_F3"
+  },
+  {
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Nikon_F4_1.jpg/960px-Nikon_F4_1.jpg",
+    brand:"Nikon",
+    model:"F4",
+    format:"35mm 필름",
+    type:"프로 AF SLR",
+    mount:"Nikon F AF/AI",
+    check:"AF 모터, LCD 누액, 그립 배터리실, 무게, AF-D 렌즈 작동",
+    krw:"약 ₩350,000",
+    memo:"AI-S와 AF-D를 같이 운용하기 좋은 과도기 바디. 무겁지만 호환 폭이 넓음",
+    link:"https://en.wikipedia.org/wiki/Nikon_F4"
+  },
+  {
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Nikon_F5.jpg/960px-Nikon_F5.jpg",
+    brand:"Nikon",
+    model:"F5",
+    format:"35mm 필름",
+    type:"프로 AF SLR",
+    mount:"Nikon F AF/AF-D/AF-S",
+    check:"셔터 카운트, 그립 고무, AF, 필름 이송, 무게 감당",
+    krw:"약 ₩520,000",
+    memo:"AF 필름 니콘의 실사용 강자. AF-D 렌즈를 빠르게 쓰기 좋음",
+    link:"https://en.wikipedia.org/wiki/Nikon_F5"
+  },
+  {
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Nikon-F6_MG_2034.jpg/960px-Nikon-F6_MG_2034.jpg",
+    brand:"Nikon",
+    model:"F6",
+    format:"35mm 필름",
+    type:"프로 AF SLR",
+    mount:"Nikon F AF-D/AF-S/G",
+    check:"상태 대비 가격, 부품 수급, AF-S/G 렌즈 운용, 셔터 카운트",
+    krw:"약 ₩2,600,000",
+    memo:"니콘 마지막 세대 필름 플래그십. 가격이 높아 구매보다 기준점으로 보기 좋음",
+    link:"https://en.wikipedia.org/wiki/Nikon_F6"
+  },
+  {
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Nikon_F100.jpg/960px-Nikon_F100.jpg",
+    brand:"Nikon",
+    model:"F100",
+    format:"35mm 필름",
+    type:"AF SLR",
+    mount:"Nikon F AF-D/AF-S/G",
+    check:"고무 끈적임, 필름 도어 래치, AF, LCD, 커맨드 다이얼",
+    krw:"약 ₩380,000",
+    memo:"F5보다 가볍고 실사용성이 좋아 AF 필름 니콘 입문 후보로 좋음",
+    link:"https://en.wikipedia.org/wiki/Nikon_F100"
+  },
+  {
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Fujica_ST801_front_2016_China_P%26E.jpg/960px-Fujica_ST801_front_2016_China_P%26E.jpg",
+    brand:"Fujifilm",
+    model:"Fujica ST801",
+    format:"35mm 필름",
+    type:"수동초점 SLR",
+    mount:"M42 스크류",
+    check:"M42 조리개 핀, 노출계, 셔터, 나사산 마모, 무한대 초점",
+    krw:"약 ₩220,000",
+    memo:"M42 렌즈 공부용. Takumar/Helios 계열과 A7M4 어댑터 공부로 이어지기 좋음",
+    link:"https://camera-wiki.org/wiki/Fujica_ST801"
+  },
+  {
+    img:"https://farm8.staticflickr.com/7795/17222143068_c6e0ff022b_z.jpg",
+    brand:"Fujifilm",
+    model:"Fujica AX-5",
+    format:"35mm 필름",
+    type:"전자식 SLR",
+    mount:"Fujica X",
+    check:"전자부, 셔터, 노출계, X-Fujinon 렌즈 수급, 배터리실",
+    krw:"약 ₩200,000",
+    memo:"현대 Fujifilm X마운트와 다름. 렌즈 매물이 적어 렌즈부터 확인",
+    link:"https://camera-wiki.org/wiki/Fujica_AX-5"
+  },
+  {
+    img:"https://farm4.static.flickr.com/3327/3418780346_f590eba624.jpg",
+    brand:"Fujifilm",
+    model:"GA645",
+    format:"120 중형 필름",
+    type:"AF 고정렌즈 레인지파인더형",
+    mount:"고정렌즈 60mm F4",
+    check:"LCD, 필름 이송, AF, 렌즈 셔터, 플렉스 케이블, 세로 프레임 조작감",
+    krw:"약 ₩1,150,000",
+    memo:"중형을 작고 빠르게 쓰는 후보. 렌즈 교환이 아니라 바디 상태가 곧 렌즈 상태",
+    link:"https://camera-wiki.org/wiki/Fujifilm_GA645"
+  },
+  {
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/0290_Fuji_Professional_GW690III_%285461171245%29.jpg/960px-0290_Fuji_Professional_GW690III_%285461171245%29.jpg",
+    brand:"Fujifilm",
+    model:"GW690III",
+    format:"120 중형 필름 6x9",
+    type:"고정렌즈 레인지파인더",
+    mount:"고정렌즈 90mm F3.5",
+    check:"렌즈 헤이즈, 셔터, 거리계 정렬, 필름 카운터, 큰 바디 휴대성",
+    krw:"약 ₩1,250,000",
+    memo:"중형 6x9 대형 네거티브. 풍경/인물 톤은 좋지만 휴대성과 필름 비용 큼",
+    link:"https://camera-wiki.org/wiki/Fujica_GW690"
+  },
+  {
+    img:"https://farm3.static.flickr.com/2545/3794103933_4491299df6.jpg",
+    brand:"Fujifilm",
+    model:"GF670",
+    format:"120 중형 필름 6x6/6x7",
+    type:"접이식 레인지파인더",
+    mount:"고정렌즈 80mm F3.5",
+    check:"벨로우즈 빛샘, 거리계, 렌즈 셔터, 접이 구조, 가격 프리미엄",
+    krw:"약 ₩3,800,000",
+    memo:"최상급 휴대 중형 후보. 가격이 높아 구매보다 상한선 기준으로 보기 좋음",
+    link:"https://camera-wiki.org/wiki/Fujifilm_GF670"
+  },
+  {
+    img:"https://farm5.static.flickr.com/4004/4321947595_32bd9a154e.jpg",
+    brand:"Fujifilm",
+    model:"Klasse S",
+    format:"35mm 필름",
+    type:"고정렌즈 컴팩트",
+    mount:"고정렌즈 38mm F2.8",
+    check:"플래시, 렌즈 배리어, LCD, AF, 필름 이송, 고가 컴팩트 프리미엄",
+    krw:"약 ₩1,300,000",
+    memo:"GR/X100 계열 스냅 감성과 비교할 만한 고급 필름 컴팩트. 가격은 높음",
+    link:"https://camera-wiki.org/wiki/Fujifilm_Klasse_S"
+  }
+];
+
+function priceNumber(v){const raw=String(v||"").replace(/[^\d]/g,"");return raw?Number(raw):999999999}
+function fillSelect(select, values){[...new Set(values.filter(Boolean))].sort().forEach(v=>select.add(new Option(v,v)))}
+function renderStats(target, rows, labels){
+  document.querySelector(target).innerHTML=labels.map(([label,value])=>`<div class="stat"><strong>${value}</strong><span>${label}</span></div>`).join("");
+}
+function imgCell(x){const alt=x.model||x.adapter||x.mount||"제품 이미지";return x.img?`<a href="${x.img}" target="_blank" rel="noreferrer"><img class="thumb" src="${x.img}" alt="${alt}"></a>`:"<span class='small'>사진 추가 예정</span>"}
+function linkCell(x){return x.link?`<a href="${x.link}" target="_blank" rel="noreferrer">제품 확인</a>`:"<span class='small'>-</span>"}
+function setupAdapters(){
+  const tbody=document.querySelector("#adapterTable tbody");
+  fillSelect(adapterMount,adapterRows.map(x=>x.mount)); fillSelect(adapterType,adapterRows.map(x=>x.type)); fillSelect(adapterControl,adapterRows.map(x=>x.control)); fillSelect(adapterPriority,adapterRows.map(x=>x.priority));
+  const priorityRank={"AF 수동렌즈 1순위":0,"1순위":1,"2순위":2,"A마운트 AF용":3,"조건부":4,"A7M4 대상 아님":9};
+  function render(){
+    const q=adapterSearch.value.trim().toLowerCase();
+    let rows=adapterRows.filter(x=>(!q||JSON.stringify(x).toLowerCase().includes(q))&&(!adapterMount.value||x.mount===adapterMount.value)&&(!adapterType.value||x.type===adapterType.value)&&(!adapterControl.value||x.control===adapterControl.value)&&(!adapterPriority.value||x.priority===adapterPriority.value));
+    rows.sort((a,b)=>adapterSort.value==="mount"?a.mount.localeCompare(b.mount,"ko"):adapterSort.value==="price"?priceNumber(a.krw)-priceNumber(b.krw):(priorityRank[a.priority]||9)-(priorityRank[b.priority]||9)||priceNumber(a.krw)-priceNumber(b.krw));
+    tbody.innerHTML=rows.map(x=>`<tr><td class="photo-cell">${imgCell(x)}</td><td><strong>${x.mount}</strong></td><td>${x.adapter}<br><span class="tag">${x.type}</span></td><td>${x.body}</td><td>${x.control}</td><td>${x.caution}</td><td><span class="price">${x.krw}</span></td><td><span class="pill brand-pill">${x.priority}</span></td><td>${linkCell(x)}</td></tr>`).join("");
+    adapterEmpty.style.display=rows.length?"none":"block";
+    renderStats("#adapterStats",[...rows],[["표시 항목",rows.length],["렌즈 마운트",new Set(rows.map(x=>x.mount)).size],["어댑터 유형",new Set(rows.map(x=>x.type)).size],["조작 방식",new Set(rows.map(x=>x.control)).size],["우선순위",new Set(rows.map(x=>x.priority)).size]]);
+  }
+  [adapterSearch,adapterMount,adapterType,adapterControl,adapterPriority,adapterSort].forEach(el=>el.addEventListener("input",render));
+  render();
+}
+function setupCameraTierComparison(){
+  const target=document.querySelector("#cameraTierBoard");
+  if(!target) return;
+  const groups=[
+    {title:"풀프레임 하이브리드", note:"A7M5, R6 계열, Z6III, S5II처럼 사진과 영상을 같이 보는 중심급", rows:cameraRows.filter(x=>x.use==="풀프레임 하이브리드")},
+    {title:"영상 특화 풀프레임", note:"장시간 영상, 냉각, RAW/ProRes, EVF 유무를 우선 보는 급", rows:cameraRows.filter(x=>x.use==="영상 특화")},
+    {title:"고화소/상업 바디", note:"상업 촬영, 크롭 여유, 대형 출력, 파일 크기까지 같이 봐야 하는 급", rows:cameraRows.filter(x=>["고화소/상업","중형 고화소","중형 고화소 플래그십"].includes(x.use))},
+    {title:"레트로/감성 조작계", note:"스펙만이 아니라 조작감, 들고 나가고 싶은지, 필름 시뮬레이션을 같이 보는 급", rows:cameraRows.filter(x=>["Nikon Z f","X-T5","X-E5","X-Pro3","X100V","X100VI"].includes(x.model))},
+    {title:"후지 APS-C 바디", note:"후지 X마운트 안에서 고화소, 속도, 입문, 초소형, 레인지파인더형을 비교", rows:cameraRows.filter(x=>x.brand==="Fujifilm"&&x.mount==="Fujifilm X")},
+    {title:"고정렌즈 컴팩트", note:"렌즈 교환 없이 스냅/여행/영상 기록을 보는 급. GR, X100, V1, L10을 같이 비교", rows:cameraRows.filter(x=>x.use.includes("고정렌즈 컴팩트"))},
+    {title:"중형 GFX", note:"풀프레임과 같은 예산표로 보면 안 되는 화질/가격/렌즈비용 상위급", rows:cameraRows.filter(x=>x.sensor.includes("GFX"))},
+    {title:"필름 입문 SLR", note:"수동 조작, 노출계, 셔터 상태, 기본 단렌즈 구성이 핵심인 필름 입문급", rows:filmCameraRows.filter(x=>["수동초점 SLR","전자식 SLR","기계식 SLR","기계+전자식 SLR"].includes(x.type))},
+    {title:"필름 AF/프로 SLR", note:"EF 또는 Nikon F AF 렌즈 운용, 셔터/AF/필름 이송 상태를 보는 급", rows:filmCameraRows.filter(x=>x.type.includes("AF")||x.type.includes("프로"))},
+    {title:"중형/고급 필름 컴팩트", note:"렌즈 교환보다 바디 상태와 고정렌즈 상태가 가격을 결정하는 급", rows:filmCameraRows.filter(x=>x.format.includes("120")||x.type.includes("고정렌즈 컴팩트"))}
+  ];
+  function digitalRow(x,i){
+    return `<tr><td><span class="tier-rank">${i+1}</span></td><td class="photo-cell">${imgCell(x)}</td><td><span class="pill brand-pill">${x.brand}</span><br><strong>${x.model}</strong></td><td>${x.sensor}<br><span class="small">${x.mount}</span></td><td>${x.photo}</td><td>${x.video}</td><td>${x.weight}</td><td><span class="price">${x.krw}</span></td><td>${x.memo}</td><td>${linkCell(x)}</td></tr>`;
+  }
+  function filmRow(x,i){
+    return `<tr><td><span class="tier-rank">${i+1}</span></td><td class="photo-cell">${imgCell(x)}</td><td><span class="pill brand-pill">${x.brand}</span><br><strong>${x.model}</strong></td><td>${x.format}<br><span class="small">${x.type}</span></td><td>${x.mount}</td><td>${x.check}</td><td><span class="price">${x.krw}</span></td><td>${x.memo}</td><td>${linkCell(x)}</td></tr>`;
+  }
+  target.innerHTML=groups.map(group=>{
+    const rows=[...group.rows].sort((a,b)=>priceNumber(a.krw)-priceNumber(b.krw));
+    const isFilm=rows[0]&&("format" in rows[0]);
+    const head=isFilm?`<tr><th>순</th><th>사진</th><th>브랜드/모델</th><th>포맷/유형</th><th>마운트</th><th>상태 체크</th><th>원화 가격</th><th>판단 메모</th><th>확인</th></tr>`:`<tr><th>순</th><th>사진</th><th>브랜드/모델</th><th>센서/마운트</th><th>사진 핵심</th><th>영상 핵심</th><th>무게/운용</th><th>원화 가격</th><th>판단 메모</th><th>확인</th></tr>`;
+    const body=rows.map((x,i)=>isFilm?filmRow(x,i):digitalRow(x,i)).join("");
+    return `<article class="tier-block"><div class="tier-block-head"><div><h3>${group.title}</h3><p class="small">${group.note}</p></div><div class="tier-count">${rows.length}개</div></div><div class="tier-table-wrap"><table class="tier-table"><thead>${head}</thead><tbody>${body}</tbody></table></div></article>`;
+  }).join("");
+}
+function setupCameras(){
+  const tbody=document.querySelector("#cameraTable tbody");
+  fillSelect(cameraBrand,cameraRows.map(x=>x.brand)); fillSelect(cameraMount,cameraRows.map(x=>x.mount)); fillSelect(cameraSensor,cameraRows.map(x=>x.sensor)); fillSelect(cameraUse,cameraRows.map(x=>x.use));
+  function render(){
+    const q=cameraSearch.value.trim().toLowerCase();
+    let rows=cameraRows.filter(x=>(!q||JSON.stringify(x).toLowerCase().includes(q))&&(!cameraBrand.value||x.brand===cameraBrand.value)&&(!cameraMount.value||x.mount===cameraMount.value)&&(!cameraSensor.value||x.sensor===cameraSensor.value)&&(!cameraUse.value||x.use===cameraUse.value));
+    rows.sort((a,b)=>cameraSort.value==="brand"?a.brand.localeCompare(b.brand,"ko"):cameraSort.value==="sensor"?a.sensor.localeCompare(b.sensor,"ko"):priceNumber(a.krw)-priceNumber(b.krw));
+    tbody.innerHTML=rows.map(x=>`<tr><td class="photo-cell">${imgCell(x)}</td><td><span class="pill brand-pill">${x.brand}</span></td><td><strong>${x.model}</strong></td><td><span class="tag">${x.use}</span></td><td>${x.sensor}<br><span class="small">${x.mount}</span></td><td>${x.photo}</td><td>${x.video}</td><td>${x.weight}</td><td><span class="price">${x.krw}</span></td><td>${x.memo}</td><td>${linkCell(x)}</td></tr>`).join("");
+    cameraEmpty.style.display=rows.length?"none":"block";
+    renderStats("#cameraStats",[...rows],[["표시 항목",rows.length],["브랜드",new Set(rows.map(x=>x.brand)).size],["마운트",new Set(rows.map(x=>x.mount)).size],["센서",new Set(rows.map(x=>x.sensor)).size],["용도",new Set(rows.map(x=>x.use)).size]]);
+  }
+  [cameraSearch,cameraBrand,cameraMount,cameraSensor,cameraUse,cameraSort].forEach(el=>el.addEventListener("input",render));
+  render();
+}
+function setupLenses(){
+  const tbody=document.querySelector("#lensTable tbody");
+  fillSelect(lensBrand,lensRows.map(x=>x.brand)); fillSelect(lensMount,lensRows.map(x=>x.mount)); fillSelect(lensType,lensRows.map(x=>x.type)); fillSelect(lensUse,lensRows.map(x=>x.use));
+  function render(){
+    const q=lensSearch.value.trim().toLowerCase();
+    let rows=lensRows.filter(x=>(!q||JSON.stringify(x).toLowerCase().includes(q))&&(!lensBrand.value||x.brand===lensBrand.value)&&(!lensMount.value||x.mount===lensMount.value)&&(!lensType.value||x.type===lensType.value)&&(!lensUse.value||x.use===lensUse.value));
+    rows.sort((a,b)=>lensSort.value==="brand"?a.brand.localeCompare(b.brand,"ko"):lensSort.value==="focal"?a.focal.localeCompare(b.focal,"ko"):priceNumber(a.krw)-priceNumber(b.krw));
+    tbody.innerHTML=rows.map(x=>`<tr><td class="photo-cell">${imgCell(x)}</td><td><span class="pill brand-pill">${x.brand}</span></td><td><strong>${x.model}</strong><br><span class="tag">${x.type}</span></td><td>${x.mount}</td><td>${x.focal}</td><td>${x.weight}</td><td>${x.feature}</td><td><span class="price">${x.krw}</span></td><td>${x.memo}</td><td>${linkCell(x)}</td></tr>`).join("");
+    lensEmpty.style.display=rows.length?"none":"block";
+    renderStats("#lensStats",[...rows],[["표시 항목",rows.length],["브랜드",new Set(rows.map(x=>x.brand)).size],["마운트",new Set(rows.map(x=>x.mount)).size],["유형",new Set(rows.map(x=>x.type)).size],["용도",new Set(rows.map(x=>x.use)).size]]);
+  }
+  [lensSearch,lensBrand,lensMount,lensType,lensUse,lensSort].forEach(el=>el.addEventListener("input",render));
+  render();
+}
+function setupFilmCameras(){
+  const tbody=document.querySelector("#filmCameraTable tbody");
+  fillSelect(filmCameraBrand,filmCameraRows.map(x=>x.brand)); fillSelect(filmCameraMount,filmCameraRows.map(x=>x.mount)); fillSelect(filmCameraFormat,filmCameraRows.map(x=>x.format)); fillSelect(filmCameraType,filmCameraRows.map(x=>x.type));
+  function render(){
+    const q=filmCameraSearch.value.trim().toLowerCase();
+    let rows=filmCameraRows.filter(x=>(!q||JSON.stringify(x).toLowerCase().includes(q))&&(!filmCameraBrand.value||x.brand===filmCameraBrand.value)&&(!filmCameraMount.value||x.mount===filmCameraMount.value)&&(!filmCameraFormat.value||x.format===filmCameraFormat.value)&&(!filmCameraType.value||x.type===filmCameraType.value));
+    rows.sort((a,b)=>filmCameraSort.value==="brand"?a.brand.localeCompare(b.brand,"ko"):filmCameraSort.value==="mount"?a.mount.localeCompare(b.mount,"ko"):priceNumber(a.krw)-priceNumber(b.krw));
+    tbody.innerHTML=rows.map(x=>`<tr><td class="photo-cell">${imgCell(x)}</td><td><span class="pill brand-pill">${x.brand}</span></td><td><strong>${x.model}</strong></td><td>${x.format}<br><span class="small">${x.type}</span></td><td>${x.mount}</td><td>${x.check}</td><td><span class="price">${x.krw}</span></td><td>${x.memo}</td><td>${linkCell(x)}</td></tr>`).join("");
+    filmCameraEmpty.style.display=rows.length?"none":"block";
+    renderStats("#filmCameraStats",[...rows],[["표시 항목",rows.length],["브랜드",new Set(rows.map(x=>x.brand)).size],["마운트",new Set(rows.map(x=>x.mount)).size],["필름 포맷",new Set(rows.map(x=>x.format)).size],["유형",new Set(rows.map(x=>x.type)).size]]);
+  }
+  [filmCameraSearch,filmCameraBrand,filmCameraMount,filmCameraFormat,filmCameraType,filmCameraSort].forEach(el=>el.addEventListener("input",render));
+  render();
+}
+function setupFilmLenses(){
+  const tbody=document.querySelector("#filmLensTable tbody");
+  fillSelect(filmLensBrand,filmLensRows.map(x=>x.brand)); fillSelect(filmLensMount,filmLensRows.map(x=>x.mount)); fillSelect(filmLensType,filmLensRows.map(x=>x.type)); fillSelect(filmLensUse,filmLensRows.map(x=>x.use));
+  function render(){
+    const q=filmLensSearch.value.trim().toLowerCase();
+    let rows=filmLensRows.filter(x=>(!q||JSON.stringify(x).toLowerCase().includes(q))&&(!filmLensBrand.value||x.brand===filmLensBrand.value)&&(!filmLensMount.value||x.mount===filmLensMount.value)&&(!filmLensType.value||x.type===filmLensType.value)&&(!filmLensUse.value||x.use===filmLensUse.value));
+    rows.sort((a,b)=>filmLensSort.value==="mount"?a.mount.localeCompare(b.mount,"ko"):filmLensSort.value==="focal"?a.focal.localeCompare(b.focal,"ko"):priceNumber(a.krw)-priceNumber(b.krw));
+    tbody.innerHTML=rows.map(x=>`<tr><td class="photo-cell">${imgCell(x)}</td><td><span class="pill brand-pill">${x.brand}</span></td><td><strong>${x.model}</strong><br><span class="tag">${x.type}</span></td><td>${x.mount}</td><td>${x.focal}</td><td>${x.compatibility}</td><td>${x.condition}</td><td><span class="price">${x.krw}</span></td><td>${x.memo}</td><td>${linkCell(x)}</td></tr>`).join("");
+    filmLensEmpty.style.display=rows.length?"none":"block";
+    renderStats("#filmLensStats",[...rows],[["표시 항목",rows.length],["브랜드",new Set(rows.map(x=>x.brand)).size],["마운트",new Set(rows.map(x=>x.mount)).size],["유형",new Set(rows.map(x=>x.type)).size],["용도",new Set(rows.map(x=>x.use)).size]]);
+  }
+  [filmLensSearch,filmLensBrand,filmLensMount,filmLensType,filmLensUse,filmLensSort].forEach(el=>el.addEventListener("input",render));
+  render();
+}
+
+setupCameraTierComparison();
+setupCameras();
+setupFilmCameras();
+</script>
+</body>
+</html>

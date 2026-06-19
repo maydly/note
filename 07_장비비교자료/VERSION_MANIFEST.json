@@ -1,0 +1,59 @@
+{
+  "updated_at": "2026-06-19",
+  "canonical_folder": "07_장비비교자료",
+  "local_entry": "07_장비비교자료/index.html",
+  "future_public_base_url": "https://bucket0825.github.io/note/07_장비비교자료/",
+  "integration_target": "bucket0825.github.io/note",
+  "rule": "latest 파일이 최신본이며, versions/YYYY-MM-DD 폴더는 보존본이다. HTML 내부 링크와 로컬 assets는 GitHub Pages 배포를 위해 상대경로로 유지한다.",
+  "asset_roots": [
+    "07_장비비교자료/assets",
+    "07_장비비교자료/assets/lighting"
+  ],
+  "files": [
+    {
+      "name": "00_장비비교_목차_latest.html",
+      "version": "v1.4",
+      "role": "5분류 장비 비교자료 목차"
+    },
+    {
+      "name": "01_카메라_비교표_latest.html",
+      "version": "v1.3",
+      "role": "카메라 바디 비교 최신본"
+    },
+    {
+      "name": "02_렌즈_비교표_latest.html",
+      "version": "v1.1",
+      "role": "현행 렌즈, 레거시 렌즈, A7M4 어댑터 비교 최신본"
+    },
+    {
+      "name": "03_필터_비교표_latest.html",
+      "version": "v1.3",
+      "role": "보유 필터와 82mm 우선 몽환·감성 구매 추천 필터 비교 최신본"
+    },
+    {
+      "name": "04_조명_비교표_latest.html",
+      "version": "v1.6",
+      "role": "순간광과 지속광 본체 비교 최신본"
+    },
+    {
+      "name": "05_악세사리_비교표_latest.html",
+      "version": "v1.1",
+      "role": "조명 악세사리 비교 최신본"
+    },
+    {
+      "name": "assets/equipment-theme.css",
+      "version": "v1.0",
+      "role": "공통 포토북 톤 디자인과 고정 상단 목차 스타일"
+    },
+    {
+      "name": "assets/equipment-theme.js",
+      "version": "v1.0",
+      "role": "현재 페이지 상단 목차 활성 표시"
+    }
+  ],
+  "compatibility_redirects": [
+    "01_조명_비교표_latest.html",
+    "02_카메라_바디_비교표_latest.html",
+    "03_렌즈_필터_비교표_latest.html"
+  ]
+}

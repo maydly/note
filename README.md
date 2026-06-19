@@ -6,6 +6,7 @@
 
 - `index.html`: 전체 공부 노트 목록
 - `styles.css`: 공통 디자인 스타일
+- `07_장비비교자료/`: 카메라, 렌즈, 필터, 조명, 악세사리 비교자료
 - `studies/collage-design.html`: 예시 공부 노트
 - `studies/template.html`: 새 노트를 만들 때 복사해서 쓰는 템플릿
 
@@ -23,3 +24,8 @@
 4. Branch는 `main`, folder는 `/root`로 설정합니다.
 
 설정 후 보통 `https://사용자명.github.io/저장소명/` 주소로 접속할 수 있습니다.
+
+현재 공개 기준 주소는 아래와 같습니다.
+
+- 메인: `https://bucket0825.github.io/note/`
+- 장비 비교자료: `https://bucket0825.github.io/note/07_장비비교자료/`

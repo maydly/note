@@ -1,0 +1,1165 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <base href="../../">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>조명 비교 대시보드</title>
+  <style>
+    :root{--ink:#20242a;--muted:#66717d;--line:#d9e0e6;--paper:#f8f6f1;--panel:#fff;--accent:#176b87;--owned:#b96800;--good:#2d7558;--warn:#9f3a32}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Arial,sans-serif;line-height:1.5}
+    header{padding:36px 26px 22px;background:#efe9dd;border-bottom:1px solid var(--line)}main{max-width:1540px;margin:0 auto;padding:24px}
+    h1{margin:0 0 8px;font-size:clamp(30px,4vw,50px);line-height:1.08}h2{margin:34px 0 12px;font-size:24px}h3{margin:0 0 8px;font-size:17px}p{margin:0 0 10px}
+    .lead{max-width:1040px;color:#3f4a54}.small{font-size:13px;color:var(--muted)}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+    .notice,.card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:15px}.notice{border-left:5px solid var(--accent)}
+    .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0}.card strong{display:block;font-size:20px;margin-bottom:4px}
+    .controls{position:sticky;top:0;z-index:3;display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:8px;margin:18px 0 12px;padding:12px;background:rgba(248,246,241,.96);border:1px solid var(--line);border-radius:8px;backdrop-filter:blur(8px)}
+    #accessorySection .controls{position:static;backdrop-filter:none}
+    button,select,input{font:inherit;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);padding:10px}button{cursor:pointer;font-weight:800}button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .category-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:22px 0 10px}
+    .view-buttons{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0 8px}
+    .table-wrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:8px}table{width:100%;min-width:1380px;border-collapse:collapse}th,td{padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;font-size:14px}th{position:sticky;top:0;background:#f0f4f6;z-index:2;font-size:13px;white-space:nowrap}
+    tr:hover td{background:#fbfdfe}.section-row td{background:#25313a;color:#fff;font-weight:900;font-size:15px;border-bottom:0}.owned-row td{background:#fff8ea}
+    .brand{display:inline-block;min-width:82px;text-align:center;background:#eef4f6;color:var(--accent);border-radius:999px;padding:2px 8px;font-size:12px;font-weight:900}.owned{display:inline-block;background:#fff0d5;color:var(--owned);border-radius:999px;padding:2px 8px;font-size:12px;font-weight:900;margin-top:4px}
+    .price{font-weight:900;white-space:nowrap}.sub{display:block;font-size:12px;color:var(--muted)}.score{font-weight:900;color:var(--good)}.warn{font-weight:900;color:var(--warn)}
+    .photo-cell{width:110px}.thumb{width:92px;height:70px;object-fit:contain;background:#f7f8f9;border:1px solid #e5ebef;border-radius:6px;display:block}.no-photo{width:92px;height:70px;display:grid;place-items:center;background:#f4f5f5;border:1px dashed #cbd3da;border-radius:6px;color:#6b7580;font-size:12px;text-align:center}
+    .tags{display:flex;flex-wrap:wrap;gap:4px}.tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 7px;font-size:12px;background:#fff;color:#42505c}
+    .matrix{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.matrix table{min-width:0}.matrix th,.matrix td{font-size:13px}
+    .learning-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:10px}
+    .learn-card{border:1px solid var(--line);border-radius:8px;background:#fbfcfc;padding:12px}
+    .learn-card strong{display:block;font-size:15px;margin-bottom:6px;color:#1f3038}.learn-card p{font-size:13px;color:#53616d;margin:0}
+    .guide-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:12px}.guide-block{border:1px solid var(--line);border-radius:8px;background:#fbfcfc;padding:12px}.guide-block h3{font-size:18px;margin:0 0 8px}
+    .guide-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff}.guide-table{min-width:920px}.guide-table th{position:static}.guide-table th,.guide-table td{font-size:13px}.guide-table td:first-child{font-weight:900;color:#1f3038;white-space:nowrap}
+    .compare-dashboard{margin:22px 0 28px;background:#fff;border:1px solid #cfd9df;border-radius:10px;overflow:hidden;box-shadow:0 10px 28px rgba(35,45,54,.06)}
+    .dash-head{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end;padding:20px 22px;background:linear-gradient(135deg,#ffffff 0%,#f2f7f8 55%,#f7f1e7 100%);border-bottom:1px solid var(--line)}
+    .dash-head h2{margin:0 0 6px;font-size:26px}.dash-head p{max-width:920px;color:#50606d}
+    .dash-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.dash-actions button{padding:9px 12px;border-radius:999px}.dash-actions button.active{background:#20242a;border-color:#20242a;color:#fff}
+    .dash-controls{position:sticky;top:0;z-index:4;display:grid;grid-template-columns:1.5fr repeat(5,minmax(130px,1fr));gap:8px;padding:12px 14px;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+    .dash-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:12px 14px;background:#fbfcfc;border-bottom:1px solid var(--line)}
+    .stat{border:1px solid #dce4e9;border-radius:8px;padding:10px 12px;background:#fff}.stat strong{display:block;font-size:22px;line-height:1.1}.stat span{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+    .compare-body{display:grid;grid-template-columns:240px 1fr;gap:16px;padding:16px;background:#f8fafb}
+    .group-index{position:sticky;top:82px;align-self:start;max-height:calc(100vh - 100px);overflow:auto;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px}
+    .group-index h3{font-size:14px;margin:2px 0 8px}.group-index a{display:flex;justify-content:space-between;gap:8px;border-radius:6px;padding:8px 9px;color:#2d3741;font-size:13px}.group-index a:hover{background:#edf5f7;text-decoration:none}.group-index .count{color:#6a7782}
+    .compare-groups{display:grid;gap:16px}.compare-group{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+    .compare-group-title{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 15px;background:#25313a;color:#fff}.compare-group-title h3{margin:0;font-size:18px}.compare-group-title span{font-size:13px;color:#d9e5ea}
+    .item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;padding:12px}
+    .equip-card{display:grid;grid-template-rows:148px auto;min-width:0;background:#fff;border:1px solid #d7e0e6;border-radius:8px;overflow:hidden;box-shadow:0 2px 0 rgba(25,34,42,.03)}
+    .equip-card.owned-card{border-color:#d79b45;box-shadow:0 0 0 2px rgba(217,155,69,.14)}
+    .equip-card .photo-box{display:grid;place-items:center;background:#f3f6f7;border-bottom:1px solid #dce4e9;overflow:hidden}.equip-card img{width:100%;height:100%;object-fit:contain;padding:10px}
+    .equip-body{display:grid;gap:8px;padding:11px}.equip-top{display:flex;gap:6px;align-items:center;justify-content:space-between}.pill{display:inline-flex;align-items:center;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:900;white-space:nowrap}.pill.brand-pill{background:#e8f2f4;color:#176b87}.pill.domain-pill{background:#f5eee2;color:#8a5a15}.pill.owned-pill{background:#fff0d5;color:#9b5b00}
+    .equip-body h3{font-size:16px;line-height:1.25;margin:0;min-height:40px}.equip-price{font-weight:950;font-size:18px;color:#151a1f}.equip-meta{display:grid;grid-template-columns:1fr;gap:5px;font-size:13px;color:#35414b}.equip-meta div{display:grid;grid-template-columns:62px 1fr;gap:7px}.equip-meta b{color:#6b7782}.equip-note{font-size:13px;color:#53616d;margin:0;min-height:40px}.equip-link{font-size:13px;font-weight:900}
+    .compact .item-grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}.compact .equip-card{grid-template-rows:112px auto}.compact .equip-body h3{font-size:14px;min-height:34px}.compact .equip-note{display:none}
+    .hidden{display:none!important}
+    @media(max-width:1100px){.dash-controls{grid-template-columns:1fr 1fr 1fr}.dash-stats{grid-template-columns:repeat(2,1fr)}.compare-body{grid-template-columns:1fr}.group-index{position:static;max-height:none}.learning-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:980px){main{padding:15px}.cards,.controls,.view-buttons,.category-tabs,.matrix,.learning-grid{grid-template-columns:1fr}.dash-head{grid-template-columns:1fr}.dash-actions{justify-content:flex-start}.dash-controls{grid-template-columns:1fr}.dash-stats{grid-template-columns:1fr}.item-grid{grid-template-columns:1fr}th{top:0}}
+  
+    .top-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.top-nav a{display:inline-flex;align-items:center;border:1px solid #cdd7dd;border-radius:999px;background:#fff;padding:8px 12px;font-weight:900;color:var(--accent);text-decoration:none}.top-nav a:hover{background:#eef6f7;text-decoration:none}
+  </style>
+</head>
+<body>
+<header>
+  <nav class="top-nav" aria-label="장비 비교자료 분류">
+    <a href="00_장비비교_목차_latest.html">목차</a>
+    <a href="01_카메라_비교표_latest.html">카메라</a>
+    <a href="02_렌즈_비교표_latest.html">렌즈</a>
+    <a href="03_필터_비교표_latest.html">필터</a>
+    <a href="04_조명_비교표_latest.html">조명</a>
+    <a href="05_악세사리_비교표_latest.html">악세사리</a>
+  </nav>
+  <h1>조명 비교 대시보드</h1>
+  <p class="lead">사진이 틀리면 비교가 더 헷갈리므로, 정확한 제품 사진을 확보한 장비만 사진을 표시했습니다. 나머지는 빈 사진칸으로 두고, 링크도 브랜드 메인이 아니라 해당 모델 페이지 또는 확인 가능한 제품 페이지로 연결했습니다.</p>
+  <p class="small">기준일 2026-06-18 · 해외 대표가를 원화로 환산 · 가격/무게/규격은 대표값이라 구매 직전 국내 판매가와 공식 스펙 재확인 필요</p>
+</header>
+<main>
+  <section class="cards">
+    <div class="card"><strong>네 보유</strong><span class="small">Godox Lux Junior, iT30 Pro, V1은 보유 표시. 미니/직광과 실전 스피드라이트로 분리.</span></div>
+    <div class="card"><strong>비교 기준</strong><span class="small">출력, 가격, 크기·무게, 마운트/어댑터, 용도별로 같은 데이터를 다르게 정렬.</span></div>
+    <div class="card"><strong>사진 원칙</strong><span class="small">확실한 사진만 표시. 같은 사진 돌려쓰기, 임의 SVG, 브랜드 메인 링크 제거.</span></div>
+    <div class="card"><strong>추가 브랜드</strong><span class="small">Broncolor, Elinchrom, Westcott, Neewer, SmallRig, Zhiyun, COLBOR, Viltrox 포함.</span></div>
+  </section>
+
+  <section class="notice">
+    <h2>보는 방법</h2>
+    <p>먼저 <strong>순간광 / 지속광 / 액세서리</strong>를 고르고, 그 안에서 <strong>출력 / 가격 / 크기·무게 / 마운트 / 용도</strong> 기준으로 다시 정렬해 보세요.</p>
+    <p class="small">순간광은 W가 아니라 Ws 기준으로 봅니다. GN만 공개된 미니 플래시는 공식 GN과 비교용 Ws 체급을 분리해서 표시했습니다. 지속광 W는 소비전력 기준이라 lux와 완전 동일하지 않습니다.</p>
+  </section>
+
+  <section class="panel">
+    <h2>수빈이 공부용 기준</h2>
+    <p class="small">이 자료는 구매표이면서 조명 체계를 익히는 공부 자료입니다. 제품을 외우기보다 아래 기준으로 먼저 분류하면 새 제품이 들어와도 같은 급을 찾기 쉽습니다.</p>
+    <div class="learning-grid">
+      <div class="learn-card"><strong>1. 순간광</strong><p>사진용 플래시입니다. Ws가 클수록 순간 출력 여유가 크고, 햇빛·큰 소프트박스·전신 촬영에 유리합니다.</p></div>
+      <div class="learn-card"><strong>2. 지속광</strong><p>영상/라이브/제품 세팅에서 계속 켜두는 빛입니다. W만 보지 말고 COB, 패널, 튜브, 매트처럼 빛 모양도 같이 봅니다.</p></div>
+      <div class="learn-card"><strong>3. 액세서리</strong><p>소프트박스·랜턴·엄브렐러·프레넬·프로젝션은 빛의 성격을 바꿉니다. 본체보다 마운트 호환이 먼저입니다.</p></div>
+      <div class="learn-card"><strong>4. 구매 판단</strong><p>같은 급에서 가격, 무게, 마운트, 이미 가진 장비와의 연결성을 봅니다. 싼 장비라도 액세서리 생태계가 맞아야 오래 씁니다.</p></div>
+      <div class="learn-card"><strong>5. 소프트박스 세트</strong><p>크기만 보지 말고 내부 디퓨저, 외부 디퓨저, 그리드, 스피드링/마운트 포함 여부를 한 세트로 확인합니다.</p></div>
+      <div class="learn-card"><strong>6. 엄브렐러 표면</strong><p>투과는 넓게 퍼지고, 화이트 반사는 부드럽고, 실버 반사는 선명합니다. 딥형은 빛 방향을 더 잡기 쉽습니다.</p></div>
+    </div>
+  </section>
+
+
+
+  <section class="panel modifier-guide">
+    <h2>액세서리 공부/구매 기준표</h2>
+    <p class="small">아래 두 표는 실제 제품 목록이 아니라 고르는 기준입니다. 브랜드 필터를 더럽히지 않도록 제품 카탈로그와 분리했습니다.</p>
+    <div class="guide-grid">
+      <div class="guide-block">
+        <h3>소프트박스 세트 기준</h3>
+        <div class="guide-table-wrap">
+          <table class="guide-table">
+            <thead><tr><th>크기 기준</th><th>주 용도</th><th>세트 확인</th><th>권장 본체</th><th>가격 감각</th></tr></thead>
+            <tbody>
+              <tr><td>1x2ft / 30x60cm</td><td>작은 제품, 헤어, 림</td><td>내부 디퓨저 + 외부 디퓨저 + 그리드 + 스피드링</td><td>V1+브라켓, AD100~AD200, 60~120W COB</td><td>약 7~18만원</td></tr>
+              <tr><td>1x3ft / 30x90cm</td><td>인물 림, 전신 세로 라인</td><td>그리드 포함 여부가 중요</td><td>AD200~AD400, 120~300W COB</td><td>약 9~34만원</td></tr>
+              <tr><td>1x4ft / 30x120cm</td><td>전신 림, 긴 제품 하이라이트</td><td>스탠드 안정성까지 확인</td><td>AD300~AD600, 300W급 COB</td><td>약 12~42만원</td></tr>
+              <tr><td>2x2ft / 60x60cm</td><td>작은 제품, 상반신 보조광</td><td>정사각 그리드 전용 여부</td><td>AD100~AD300, 100~300W COB</td><td>약 8~26만원</td></tr>
+              <tr><td>2x3ft / 60x90cm</td><td>1인 인물 주광 기본</td><td>내부 디퓨저가 빠지면 핫스팟 생김</td><td>AD300~AD400, 200~500W COB</td><td>약 10~38만원</td></tr>
+              <tr><td>2x4ft / 60x120cm</td><td>상반신~전신, 제품 면광원</td><td>그리드 있으면 배경 오염 줄임</td><td>AD400~AD600, 300~600W COB</td><td>약 14~52만원</td></tr>
+              <tr><td>3x4ft / 90x120cm</td><td>전신 인물, 넓은 제품 주광</td><td>스탠드/붐/모래주머니 같이 계산</td><td>AD400~AD800, 500W급 이상</td><td>약 16~68만원</td></tr>
+              <tr><td>4x6ft / 120x180cm</td><td>광고, 그룹, 대형 제품</td><td>공간과 출력이 먼저 맞아야 함</td><td>AD600 이상, 600W 이상, 팩헤드</td><td>약 22~120만원+</td></tr>
+              <tr><td>3ft Octa / 90cm</td><td>1인 인물 기본 옥타</td><td>그리드 포함 세트 추천</td><td>AD300~AD400, 200~500W COB</td><td>약 16~41만원</td></tr>
+              <tr><td>4ft Octa / 120cm</td><td>전신, 2인, 부드러운 주광</td><td>접이식 구조와 그리드 확인</td><td>AD400~AD600, 500W급 COB</td><td>약 23~60만원</td></tr>
+              <tr><td>5ft Octa / 150cm</td><td>큰 스튜디오, 패션, 그룹</td><td>천장고와 스탠드 하중 확인</td><td>AD600 이상, 600W 이상</td><td>약 35~95만원+</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="guide-block">
+        <h3>엄브렐러 표면 기준</h3>
+        <div class="guide-table-wrap">
+          <table class="guide-table">
+            <thead><tr><th>타입</th><th>빛 성격</th><th>장점</th><th>주의점</th><th>추천 용도</th></tr></thead>
+            <tbody>
+              <tr><td>투과 화이트</td><td>빛이 우산을 통과해 넓게 퍼짐</td><td>싸고 부드럽고 빠름</td><td>배경/벽으로 빛이 많이 샘</td><td>스피드라이트, 작은 공간 fill</td></tr>
+              <tr><td>반사 화이트</td><td>부드러운 반사광</td><td>피부 표현이 안정적</td><td>실버보다 출력 효율 낮음</td><td>인물 주광, 초보 안전 선택</td></tr>
+              <tr><td>반사 실버</td><td>대비와 선명도가 올라감</td><td>출력 효율 좋고 질감이 살아남</td><td>피부 결이 거칠어 보일 수 있음</td><td>패션, 남성 인물, 제품 텍스처</td></tr>
+              <tr><td>딥 화이트</td><td>부드럽지만 방향성이 있음</td><td>일반 화이트보다 제어 쉬움</td><td>가격과 부피 증가</td><td>인물 주광, 로케이션</td></tr>
+              <tr><td>딥 실버</td><td>선명하고 방향성 강함</td><td>캐치라이트와 구조감 좋음</td><td>광질이 강해질 수 있음</td><td>뷰티, 패션, 강한 키라이트</td></tr>
+              <tr><td>딥 트랜스루센트</td><td>투과형인데 딥 구조로 조금 더 제어</td><td>넓고 부드러운 공간광</td><td>빛 번짐은 여전히 큼</td><td>그룹, 영상 fill, 큰 공간</td></tr>
+              <tr><td>디퓨저 커버</td><td>반사 우산 앞을 막아 소프트박스처럼 만듦</td><td>부드럽고 빛샘 감소</td><td>출력 손실 발생</td><td>화이트/실버 우산을 더 부드럽게</td></tr>
+              <tr><td>백패널</td><td>투과 우산 뒤로 새는 빛 차단</td><td>방향 제어 향상</td><td>모델별 호환 확인 필요</td><td>좁은 공간에서 투과 우산 쓸 때</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="compare-dashboard" id="compareDashboard">
+    <div class="dash-head">
+      <div>
+        <h2>같은 급끼리 보는 비교 대시보드</h2>
+        <p>브랜드별 나열이 아니라 미니 플래시, 100~200Ws, 300~400Ws, 500~800Ws, 팩헤드, COB 출력대, 패널·튜브·매트, 액세서리 종류별로 먼저 묶었습니다.</p>
+      </div>
+      <div class="dash-actions" aria-label="표시 밀도">
+        <button class="active" id="comfortableView" type="button">사진 크게</button>
+        <button id="compactView" type="button">촘촘히</button>
+      </div>
+    </div>
+    <div class="dash-controls">
+      <input id="dashSearch" type="search" placeholder="모델, 브랜드, 규격, 용도 검색">
+      <select id="dashDomain"><option value="">분류 전체</option></select>
+      <select id="dashBrand"><option value="">브랜드 전체</option></select>
+      <select id="dashGroup"><option value="">비교군 전체</option></select>
+      <select id="dashMount"><option value="">마운트 전체</option></select>
+      <select id="dashSort">
+        <option value="group">같은 급 우선</option>
+        <option value="price">낮은 가격순</option>
+        <option value="brand">브랜드순</option>
+        <option value="priority">실전 우선순위</option>
+      </select>
+    </div>
+    <div class="dash-stats" id="dashStats"></div>
+    <div class="compare-body">
+      <aside class="group-index">
+        <h3>비교군 바로가기</h3>
+        <div id="dashIndex"></div>
+      </aside>
+      <div class="compare-groups" id="dashGroups"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>개별 모델·사이즈별 상세 라인업표</h2>
+    <p class="small">아래 표는 제품군 범위가 아니라 개별 모델·개별 사이즈를 한 줄씩 정리한 표입니다. 가격도 범위 표기가 아니라 행마다 원화 기준으로 따로 표시합니다.</p>
+    <div class="controls">
+      <input id="lineupSearch" type="search" placeholder="브랜드, 모델군, 규격 검색">
+      <select id="lineupBrand"><option value="">브랜드 전체</option></select>
+      <select id="lineupDomain"><option value="">순간광/지속광/액세서리 전체</option></select>
+      <select id="lineupMount"><option value="">마운트/규격 전체</option></select>
+      <select id="lineupPriority"><option value="">우선순위 전체</option></select>
+    </div>
+    <div class="table-wrap">
+      <table id="lineupTable">
+        <thead>
+          <tr>
+            <th>분류</th><th>사진</th><th>브랜드</th><th>개별 모델·사이즈</th><th>출력·크기·규격</th><th>Ws/GN 비교</th><th>색온도</th><th>마운트/호환</th><th>원화 가격</th><th>비교군/메모</th><th>구분</th><th>확인</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <nav class="category-tabs" aria-label="큰 분류">
+    <button class="active" data-category="strobe">순간광 기준</button>
+    <button data-category="continuous">지속광 기준</button>
+    <button data-category="accessory">액세서리 기준</button>
+    <button data-category="all">전체 보기</button>
+  </nav>
+
+  <section id="gearSection">
+    <div class="view-buttons">
+      <button class="active" data-view="power">출력 기준</button>
+      <button data-view="price">금액 기준</button>
+      <button data-view="size">크기·무게 기준</button>
+      <button data-view="mount">마운트/어댑터 기준</button>
+      <button data-view="use">용도 기준</button>
+    </div>
+    <div class="controls">
+      <input id="search" type="search" placeholder="모델명, 브랜드, 특징 검색">
+      <select id="brand"><option value="">브랜드 전체</option></select>
+      <select id="type"><option value="">유형 전체</option></select>
+      <select id="owned"><option value="">보유 포함 전체</option><option value="owned">내 보유만</option><option value="not-owned">미보유만</option></select>
+      <select id="photo"><option value="">사진 상태 전체</option><option value="has">사진 있는 것만</option><option value="none">사진 없는 것만</option></select>
+    </div>
+    <div class="table-wrap">
+      <table id="table">
+        <thead>
+          <tr>
+            <th id="groupHead">출력 기준 그룹</th><th>사진</th><th>브랜드</th><th>모델</th><th>공식출력 / Ws체급</th><th>색온도</th><th>가격</th><th>크기·무게</th><th>마운트/어댑터</th><th>용도/비교 포인트</th><th>링크</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="matrix" id="guideSection">
+    <div class="panel">
+      <h2>Maydly 기준 추천</h2>
+      <table>
+        <tr><th>상황</th><th>추천</th><th>이유</th></tr>
+        <tr><td>지금 보유 장비 활용</td><td>V1 + iT30 Pro + Lux Junior</td><td>V1은 실전 보조광, iT30/Lux는 직광 룩 담당.</td></tr>
+        <tr><td>사진 주광 1대 추가</td><td>Godox AD400Pro</td><td>출력·무게·가격 균형. 개인 스튜디오/야외 인물에 현실적.</td></tr>
+        <tr><td>사진 2등 세트</td><td>AD400Pro 2대 또는 AD400 + AD200</td><td>주광/림/배경광 구성이 쉬움.</td></tr>
+        <tr><td>영상 주광</td><td>Nanlite FC-500B 또는 Aputure LS 600x Pro</td><td>FC는 가성비, Aputure는 현장 표준성.</td></tr>
+        <tr><td>상업 렌탈급</td><td>Profoto/Broncolor 팩 시스템</td><td>개인 구매 전 렌탈 테스트 권장.</td></tr>
+      </table>
+    </div>
+    <div class="panel">
+      <h2>마운트 감각</h2>
+      <table>
+        <tr><th>규격</th><th>해당 장비</th><th>의미</th></tr>
+        <tr><td>Godox X</td><td>V1, AD100~AD600, QT 등</td><td>트리거/무선 제어 생태계. 네 보유 V1과 이어짐.</td></tr>
+        <tr><td>Bowens</td><td>Godox AD400/600, Nanlite FC/Forza, Aputure 일부</td><td>소프트박스 선택지가 가장 많고 저렴함.</td></tr>
+        <tr><td>Profoto OCF/Profoto</td><td>A2, B10X, Pro-D3 등</td><td>액세서리 고가지만 현장 표준성 높음.</td></tr>
+        <tr><td>Broncolor</td><td>Siros, Scoro/Satos + Pulso 등</td><td>제품/광고 스튜디오급 광질·정밀 제어.</td></tr>
+        <tr><td>전용/미니</td><td>Lux, iT30, LS60x, MOLUS 등</td><td>휴대성 중심. 대형 확산재와는 별도 어댑터 필요.</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section id="accessorySection" class="hidden">
+    <h2>액세서리 비교</h2>
+    <p class="small">액세서리는 “본체에 맞는 마운트”가 제일 중요합니다. Bowens는 Godox/Aputure/Nanlite/SmallRig/COLBOR 쪽에서 넓게 쓰이고, Profoto와 Broncolor는 각자 전용 생태계로 보는 게 안전합니다.</p>
+    <div class="controls">
+      <input id="accSearch" type="search" placeholder="액세서리명, 용도, 마운트 검색">
+      <select id="accKind"><option value="">액세서리 종류 전체</option></select>
+      <select id="accMount"><option value="">마운트 전체</option></select>
+      <select id="accUse"><option value="">용도 전체</option></select>
+      <select id="accBrand"><option value="">브랜드 전체</option></select>
+    </div>
+    <div class="table-wrap">
+      <table id="accessoryTable">
+        <thead>
+          <tr>
+            <th>종류</th><th>사진</th><th>브랜드</th><th>모델/제품군</th><th>개별 크기</th><th>마운트/규격</th><th>원화 가격</th><th>같이 쓰는 본체</th><th>용도</th><th>확인</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script>
+const rate=1370;
+const lineup=[
+{d:"순간광",b:"Godox",name:"Lux Junior",spec:"GN12 / 레트로 미니 플래시",mount:"핫슈 / 수동",krw:"약 94,000원",memo:"보유 장비. 직광 감성·스냅용.",p:"보유"},
+{d:"순간광",b:"Godox",name:"Lux Senior",spec:"GN14 / 레트로 플래시",mount:"핫슈 / 수동",krw:"약 191,000원",memo:"Lux Junior보다 큰 레트로 직광 플래시.",p:"보조"},
+{d:"순간광",b:"Godox",name:"iM30",spec:"GN15급 / 초소형 미니 플래시",mount:"핫슈 / 수동",krw:"약 62,000원",memo:"작고 저렴한 직광 스냅용.",p:"보조"},
+{d:"순간광",b:"Godox",name:"iT30 Pro",spec:"GN15 / TTL·HSS 미니 플래시",mount:"핫슈 / Godox X",krw:"약 103,000원",memo:"보유 장비. 미니인데 TTL/HSS/무선 연동 가능.",p:"보유"},
+{d:"순간광",b:"Godox",name:"TT350",spec:"GN36급 / AA 소형 스피드라이트",mount:"Godox X / 카메라별 버전",krw:"약 116,000원",memo:"소형 TTL 스피드라이트.",p:"입문"},
+{d:"순간광",b:"Godox",name:"V350",spec:"GN36급 / 리튬 소형 스피드라이트",mount:"Godox X / 카메라별 버전",krw:"약 205,000원",memo:"TT350의 리튬 배터리 성격.",p:"입문"},
+{d:"순간광",b:"Godox",name:"TT685II",spec:"GN60급 / AA 스피드라이트",mount:"Godox X / 카메라별 버전",krw:"약 177,000원",memo:"저렴한 실전 TTL 스피드라이트.",p:"입문"},
+{d:"순간광",b:"Godox",name:"V860III",spec:"GN60급 / 리튬 스피드라이트",mount:"Godox X / 카메라별 버전",krw:"약 314,000원",memo:"리튬 배터리 기반 실전 스피드라이트.",p:"핵심"},
+{d:"순간광",b:"Godox",name:"V1",spec:"76Ws급 / 라운드헤드",mount:"Godox X / AK-R1 / S2 브라켓",krw:"약 273,000원",memo:"보유 장비. 온카메라와 오프카메라 보조광 겸용.",p:"보유"},
+{d:"순간광",b:"Godox",name:"V1Pro",spec:"76Ws급 / 라운드헤드 상위",mount:"Godox X / AK-R1 / SU-1",krw:"약 451,000원",memo:"연속 풀발광과 보조 플래시가 강점.",p:"핵심"},
+{d:"순간광",b:"Godox",name:"AD100Pro",spec:"100Ws / 초소형 배터리 스트로브",mount:"Godox X / 전용·S2 Bowens",krw:"약 410,000원",memo:"림·헤어·보조광. 주광은 제한적.",p:"보조"},
+{d:"순간광",b:"Godox",name:"AD200Pro II",spec:"200Ws / 포켓 스트로브",mount:"Godox X / S2 Bowens",krw:"약 547,000원",memo:"V1보다 강한 휴대용 보조·소형 주광.",p:"핵심"},
+{d:"순간광",b:"Godox",name:"AD300Pro",spec:"300Ws / 소형 배터리 모노라이트",mount:"Godox X / Godox·S2 Bowens",krw:"약 684,000원",memo:"가벼운 야외 인물 주광 하한선.",p:"핵심"},
+{d:"순간광",b:"Godox",name:"AD400Pro",spec:"400Ws / 배터리 모노라이트",mount:"Godox X / Bowens 어댑터",krw:"약 889,000원",memo:"Maydly 사진 주광 1순위급.",p:"핵심"},
+{d:"순간광",b:"Godox",name:"AD600Pro II",spec:"600Ws / 고출력 배터리 모노라이트",mount:"Godox X / Bowens",krw:"약 1,232,000원",memo:"전신·큰 소프트박스·낮 야외 대응.",p:"핵심"},
+{d:"순간광",b:"Godox",name:"AD800Pro",spec:"800Ws / 신형 고출력 배터리",mount:"Godox X / Bowens",krw:"약 1,369,000원",memo:"AD600보다 여유 있는 출력.",p:"핵심"},
+{d:"순간광",b:"Godox",name:"AD1200Pro Pack",spec:"1200Ws / 배터리 팩헤드",mount:"Godox X / 전용 헤드",krw:"약 2,327,000원",memo:"헤드 분리형 야외 고출력.",p:"상업"},
+{d:"순간광",b:"Godox",name:"P2400 Pack",spec:"2400Ws / AC 팩 시스템",mount:"Godox X / H2400P·R2400",krw:"약 8,493,000원",memo:"Godox 최상위 팩헤드 시스템.",p:"상업"},
+{d:"순간광",b:"Godox",name:"MS300V",spec:"300Ws / 입문 AC 모노라이트",mount:"Godox X / Bowens",krw:"약 218,000원",memo:"고정 스튜디오 저예산 순간광.",p:"입문"},
+{d:"순간광",b:"Godox",name:"SK400II-V",spec:"400Ws / AC 모노라이트",mount:"Godox X / Bowens",krw:"약 245,000원",memo:"입문 스튜디오 순간광.",p:"입문"},
+{d:"순간광",b:"Godox",name:"DP600III-V",spec:"600Ws / AC 모노라이트",mount:"Godox X / Bowens",krw:"약 506,000원",memo:"배터리 필요 없는 고정 공간용.",p:"스튜디오"},
+{d:"순간광",b:"Godox",name:"QT600III",spec:"600Ws / 고속 AC 모노라이트",mount:"Godox X / Bowens",krw:"약 958,000원",memo:"짧은 발광시간과 반복 촬영.",p:"스튜디오"},
+{d:"순간광",b:"Godox",name:"QT1200III",spec:"1200Ws / 고속 AC 모노라이트",mount:"Godox X / Bowens",krw:"약 1,643,000원",memo:"제품·패션·강한 출력의 AC 세팅.",p:"스튜디오"},
+
+{d:"순간광",b:"Profoto",name:"A10",spec:"76Ws / 온카메라 플래시",mount:"Profoto AirX / Clic",krw:"약 1,500,000원",memo:"프리미엄 온카메라·Profoto 입구.",p:"프리미엄"},
+{d:"순간광",b:"Profoto",name:"A2",spec:"100Ws / 소형 오프카메라",mount:"Profoto AirX / Clic·OCF",krw:"약 1,363,000원",memo:"AD100Pro급 출력의 프리미엄 대안.",p:"프리미엄"},
+{d:"순간광",b:"Profoto",name:"B10X",spec:"250Ws / 배터리 모노라이트",mount:"Profoto AirX / OCF",krw:"약 3,007,000원",memo:"사진+간단 영상 하이브리드.",p:"프리미엄"},
+{d:"순간광",b:"Profoto",name:"B10X Plus",spec:"500Ws / 배터리 모노라이트",mount:"Profoto AirX / OCF",krw:"약 3,418,000원",memo:"야외 인물 프리미엄 주광.",p:"프리미엄"},
+{d:"순간광",b:"Profoto",name:"Pro-B3",spec:"750Ws / 배터리 액션 모노라이트",mount:"Profoto AirX / Profoto",krw:"약 5,610,000원",memo:"짧은 발광시간·액션·상업 로케이션.",p:"상업"},
+{d:"순간광",b:"Profoto",name:"D2 500",spec:"500Ws / AC 모노라이트",mount:"Profoto AirTTL / Profoto",krw:"약 2,322,000원",memo:"전원형 상업 스튜디오 표준.",p:"상업"},
+{d:"순간광",b:"Profoto",name:"D2 1000",spec:"1000Ws / AC 모노라이트",mount:"Profoto AirTTL / Profoto",krw:"약 3,144,000원",memo:"제품·패션·큰 확산재용.",p:"상업"},
+{d:"순간광",b:"Profoto",name:"D30",spec:"500Ws급 / 신형 AC 모노라이트",mount:"Profoto AirX / Profoto",krw:"약 2,733,000원",memo:"D2와 Pro-D3 사이 신형 포지션.",p:"상업"},
+{d:"순간광",b:"Profoto",name:"Pro-D3 750",spec:"750Ws / 상업 AC 모노라이트",mount:"Profoto AirX / Profoto",krw:"약 4,103,000원",memo:"반복 발광·내구·색 안정성.",p:"상업"},
+{d:"순간광",b:"Profoto",name:"Pro-D3 1250",spec:"1250Ws / 상업 AC 모노라이트",mount:"Profoto AirX / Profoto",krw:"약 5,473,000원",memo:"대형 세트와 강한 출력.",p:"상업"},
+{d:"순간광",b:"Profoto",name:"Pro-11 Pack",spec:"2400Ws / 팩 시스템",mount:"Profoto AirX / ProHead",krw:"약 25,194,000원",memo:"렌탈·최상위 상업 스튜디오급.",p:"렌탈"},
+{d:"순간광",b:"Profoto",name:"ProHead Plus",spec:"Pro-11용 헤드",mount:"Profoto Pro",krw:"약 4,314,000원",memo:"Pro-11 표준 헤드. 팩과 별도 구매.",p:"렌탈"},
+
+{d:"순간광",b:"Broncolor",name:"Siros 400 S",spec:"400Ws / AC 모노라이트",mount:"Broncolor RFS / Broncolor",krw:"약 3,102,000원",memo:"Broncolor 입문 AC 모노라이트.",p:"프리미엄"},
+{d:"순간광",b:"Broncolor",name:"Siros 800 S",spec:"800Ws / AC 모노라이트",mount:"Broncolor RFS / Broncolor",krw:"약 4,000,000원",memo:"제품·패션 스튜디오용.",p:"프리미엄"},
+{d:"순간광",b:"Broncolor",name:"Siros 400 L",spec:"400Ws / 배터리 모노라이트",mount:"Broncolor RFS / Broncolor",krw:"약 4,759,000원",memo:"Broncolor 배터리 모노라이트.",p:"프리미엄"},
+{d:"순간광",b:"Broncolor",name:"Siros 800 L",spec:"800Ws / 배터리 모노라이트",mount:"Broncolor RFS / Broncolor",krw:"약 5,444,000원",memo:"고출력 배터리 프리미엄.",p:"프리미엄"},
+{d:"순간광",b:"Broncolor",name:"Move 1200 L",spec:"1200Ws / 배터리 팩",mount:"Broncolor RFS / 전용 헤드",krw:"약 9,590,000원",memo:"야외 상업 촬영용 팩헤드.",p:"상업"},
+{d:"순간광",b:"Broncolor",name:"Scoro 1600 S",spec:"1600Ws / AC 팩",mount:"Broncolor RFS / Pulso·Picolite",krw:"약 21,304,000원",memo:"제품사진 최상급 팩 시스템.",p:"렌탈"},
+{d:"순간광",b:"Broncolor",name:"Scoro 3200 S",spec:"3200Ws / AC 팩",mount:"Broncolor RFS / Pulso·Picolite",krw:"약 27,386,000원",memo:"초고출력·정밀 제어 팩.",p:"렌탈"},
+{d:"순간광",b:"Broncolor",name:"Pulso G",spec:"팩용 플래시 헤드",mount:"Broncolor",krw:"약 4,110,000원",memo:"Scoro/Satos/Move용 표준 헤드.",p:"상업"},
+{d:"순간광",b:"Broncolor",name:"Picolite",spec:"소형 특수 헤드",mount:"Broncolor",krw:"약 3,000,000원",memo:"제품·정밀 광학용 특수 헤드.",p:"상업"},
+
+{d:"지속광",b:"Godox",name:"ML60II Bi",spec:"70W급 / 소형 COB",mount:"Godox / 어댑터",krw:"약 273,000원",memo:"휴대형 영상 보조광.",p:"입문"},
+{d:"지속광",b:"Godox",name:"SL100Bi",spec:"100W / COB",mount:"Bowens",krw:"약 341,000원",memo:"실내 영상 입문.",p:"입문"},
+{d:"지속광",b:"Godox",name:"SL200III Bi",spec:"200W / COB",mount:"Bowens",krw:"약 547,000원",memo:"1인 인터뷰 주광 하한선.",p:"입문"},
+{d:"지속광",b:"Godox",name:"KNOWLED M300Bi",spec:"300W급 / 프로 COB",mount:"Bowens / DMX",krw:"약 1,232,000원",memo:"Godox 프로 지속광 300급.",p:"프로"},
+{d:"지속광",b:"Godox",name:"KNOWLED M600Bi",spec:"600W급 / 프로 COB",mount:"Bowens / DMX",krw:"약 2,464,000원",memo:"대형 확산재·스튜디오 영상.",p:"프로"},
+{d:"지속광",b:"Godox",name:"MG1200Bi",spec:"1200W급 / 시네마 COB",mount:"G-Mount",krw:"약 4,794,000원",memo:"대형 현장용 고출력 지속광.",p:"프로"},
+
+{d:"지속광",b:"Aputure",name:"LS 60x",spec:"60W / 바이컬러 소형",mount:"전용 / Bowens 어댑터",krw:"약 574,000원",memo:"휴대형 빔 조절 조명.",p:"입문"},
+{d:"지속광",b:"Aputure",name:"LS 300d II",spec:"350W급 / daylight",mount:"Bowens / Sidus",krw:"약 1,506,000원",memo:"daylight 300급 표준.",p:"핵심"},
+{d:"지속광",b:"Aputure",name:"LS 300x",spec:"350W급 / 바이컬러",mount:"Bowens / Sidus",krw:"약 1,643,000원",memo:"혼합광 대응 300급.",p:"핵심"},
+{d:"지속광",b:"Aputure",name:"LS 600d Pro",spec:"720W급 / daylight",mount:"Bowens / Sidus / DMX",krw:"약 2,589,000원",memo:"고출력 daylight 주광.",p:"핵심"},
+{d:"지속광",b:"Aputure",name:"LS 600x Pro",spec:"720W급 / 바이컬러",mount:"Bowens / Sidus / DMX",krw:"약 3,000,000원",memo:"Maydly 영상 주광 고급 후보.",p:"핵심"},
+{d:"지속광",b:"Aputure",name:"LS 1200d Pro",spec:"1200W / daylight",mount:"Bowens / Sidus / DMX",krw:"약 4,096,000원",memo:"대형 현장과 강한 확산재.",p:"프로"},
+{d:"지속광",b:"Aputure",name:"STORM 80c",spec:"80W / 컬러 COB",mount:"전용 / BLAIR",krw:"약 821,000원",memo:"소형 고품질 컬러 COB.",p:"연출"},
+{d:"지속광",b:"Aputure",name:"STORM 1000c",spec:"1000W / 풀컬러",mount:"전자접점 / Sidus / DMX",krw:"약 6,836,000원",memo:"고출력 컬러 상업 영상.",p:"프로"},
+{d:"지속광",b:"Aputure",name:"STORM 1200x",spec:"1200W / 바이컬러",mount:"전자접점 / Sidus / DMX",krw:"약 8,206,000원",memo:"고출력 바이컬러 플래그십.",p:"프로"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran 100x S",spec:"100W / 바이컬러 COB",mount:"Bowens / Sidus",krw:"약 273,000원",memo:"입문 영상 주광.",p:"가성비"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran 200d S",spec:"200W / daylight COB",mount:"Bowens / Sidus",krw:"약 478,000원",memo:"밝기 우선 200W급.",p:"가성비"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran 200x S",spec:"200W / 바이컬러 COB",mount:"Bowens / Sidus",krw:"약 547,000원",memo:"1인 인터뷰 주광 가성비.",p:"가성비"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran 300c",spec:"300W / RGBWW COB",mount:"Bowens / Sidus",krw:"약 780,000원",memo:"컬러 연출 가능한 COB.",p:"연출"},
+{d:"지속광",b:"amaran(아마란)",name:"F21c",spec:"100W / RGBWW 플렉스 패널",mount:"전용 / Sidus",krw:"약 958,000원",memo:"부드러운 면광원.",p:"연출"},
+{d:"지속광",b:"amaran(아마란)",name:"F22c",spec:"200W / RGBWW 플렉스 패널",mount:"전용 / Sidus",krw:"약 1,232,000원",memo:"대형 면광원.",p:"연출"},
+
+{d:"지속광",b:"Nanlite",name:"FC-60B",spec:"70W급 / 바이컬러 COB",mount:"Bowens 어댑터 / Nanlink",krw:"약 218,000원",memo:"소형 보조광.",p:"가성비"},
+{d:"지속광",b:"Nanlite",name:"FC-120B",spec:"120W / 바이컬러 COB",mount:"Bowens / Nanlink",krw:"약 341,000원",memo:"작은 인터뷰 주광.",p:"가성비"},
+{d:"지속광",b:"Nanlite",name:"FC-300B",spec:"350W급 / 바이컬러 COB",mount:"Bowens / Nanlink",krw:"약 684,000원",memo:"300급 가성비 주광.",p:"가성비"},
+{d:"지속광",b:"Nanlite",name:"FC-500B",spec:"520W급 / 바이컬러 COB",mount:"Bowens / Nanlink",krw:"약 958,000원",memo:"영상 주광 가성비 핵심.",p:"핵심"},
+{d:"지속광",b:"Nanlite",name:"Forza 60B II",spec:"60W / 바이컬러 COB",mount:"FM / Bowens 어댑터",krw:"약 410,000원",memo:"소형 프로 보조광.",p:"입문"},
+{d:"지속광",b:"Nanlite",name:"Forza 300B II",spec:"350W급 / 바이컬러 COB",mount:"Bowens / Nanlink",krw:"약 958,000원",memo:"300급 프로 운용감.",p:"핵심"},
+{d:"지속광",b:"Nanlite",name:"Forza 500B II",spec:"500W급 / 바이컬러 COB",mount:"Bowens / Nanlink",krw:"약 1,506,000원",memo:"개인 스튜디오 현실 후보.",p:"핵심"},
+{d:"지속광",b:"Nanlite",name:"Forza 720B",spec:"800W급 / 바이컬러 COB",mount:"Bowens / Nanlink",krw:"약 2,327,000원",memo:"큰 확산재와 중대형 공간.",p:"핵심"},
+{d:"지속광",b:"Nanlite",name:"PavoTube II 15C",spec:"RGBWW 튜브",mount:"전용 / Nanlink",krw:"약 273,000원",memo:"배경·헤어·무드 조명.",p:"연출"},
+{d:"지속광",b:"Nanlite",name:"PavoTube II 30C",spec:"RGBWW 튜브",mount:"전용 / Nanlink",krw:"약 451,000원",memo:"인물 배경 연출 기본 튜브.",p:"연출"},
+{d:"지속광",b:"Nanlite",name:"PavoTube II 60C",spec:"RGBWW 대형 튜브",mount:"전용 / Nanlink",krw:"약 766,000원",memo:"전신·공간 연출.",p:"연출"},
+
+{d:"액세서리",b:"Godox",name:"QR-P70",spec:"70cm / 원터치 파라볼릭",mount:"Bowens",krw:"약 136,000원",memo:"좁은 공간·상반신·AD200/300급.",p:"소프트박스"},
+{d:"액세서리",b:"Godox",name:"QR-P90",spec:"90cm / 원터치 파라볼릭",mount:"Bowens",krw:"약 163,000원",memo:"1인 인물 주광 기본 크기.",p:"소프트박스"},
+{d:"액세서리",b:"Godox",name:"QR-P120",spec:"120cm / 원터치 파라볼릭",mount:"Bowens",krw:"약 204,000원",memo:"전신·2인·넓은 확산.",p:"소프트박스"},
+{d:"액세서리",b:"Godox",name:"QR-P150T",spec:"150cm / 대형 파라볼릭",mount:"Bowens",krw:"약 204,000원",memo:"AD600급 이상 권장. 넓은 공간용.",p:"소프트박스"},
+{d:"액세서리",b:"Aputure",name:"Light Dome Mini III",spec:"약 58cm / 소프트박스",mount:"Bowens",krw:"약 177,000원",memo:"작은 공간·상반신·휴대 세팅.",p:"소프트박스"},
+{d:"액세서리",b:"Aputure",name:"Light Dome III",spec:"약 90cm / 소프트박스",mount:"Bowens",krw:"약 300,000원",memo:"영상/사진 겸용 기본 주광.",p:"소프트박스"},
+{d:"액세서리",b:"Aputure",name:"Light OctaDome 120",spec:"120cm / 대형 옥타",mount:"Bowens",krw:"약 492,000원",memo:"전신·넓은 인터뷰 주광.",p:"소프트박스"},
+{d:"액세서리",b:"Aputure",name:"Lantern",spec:"2.2ft / 약 66cm",mount:"Bowens",krw:"약 122,000원",memo:"작은 공간 확산·인터뷰.",p:"랜턴"},
+{d:"액세서리",b:"amaran(아마란)",name:"Lantern 90",spec:"90cm",mount:"Bowens",krw:"약 136,000원",memo:"더 넓은 공간 확산.",p:"랜턴"},
+{d:"액세서리",b:"Nanlite",name:"LT-80 Lantern",spec:"80cm",mount:"Bowens",krw:"약 192,000원",memo:"중형 공간 확산.",p:"랜턴"},
+{d:"액세서리",b:"Nanlite",name:"LT-120 Lantern",spec:"120cm",mount:"Bowens",krw:"약 342,000원",memo:"큰 공간 확산.",p:"랜턴"},
+{d:"액세서리",b:"Profoto",name:"OCF Softbox Octa 2'",spec:"2ft / OCF 옥타",mount:"Profoto OCF",krw:"약 245,000원",memo:"A2/B10X 휴대용 주광.",p:"소프트박스"},
+{d:"액세서리",b:"Profoto",name:"Umbrella Deep White S",spec:"S / 딥 엄브렐러",mount:"Umbrella / Profoto",krw:"약 171,000원",memo:"빠른 로케이션 확산.",p:"엄브렐러"},
+{d:"액세서리",b:"Aputure",name:"F10 Fresnel",spec:"10 inch / 집광 렌즈",mount:"Bowens",krw:"약 300,000원",memo:"LS 600/1200 계열 집광.",p:"프레넬"},
+{d:"액세서리",b:"Godox",name:"XPro II",spec:"C/N/S/F/O/L 버전",mount:"Godox X 2.4GHz",krw:"약 122,000원",memo:"V1·AD·QT 무선 제어.",p:"트리거"}
+];
+lineup.push(...[
+{d:"순간광",b:"Godox",name:"Lux Master",spec:"레트로 플래시 / 외장 플래시 튜브",mount:"핫슈 / 수동",krw:"약 342,000원",memo:"Lux 계열 상위 레트로 룩.",p:"보조",img:"https://www.godox.com/static/upload/image/20240418/1713423021174096.jpg",link:"https://www.godox.com/product-a/Flash/Lux-Master.html"},
+{d:"순간광",b:"Godox",name:"Lux Elf",spec:"GN6급 / 초소형 레트로 플래시",mount:"핫슈 / 수동",krw:"약 67,000원",memo:"Lux Junior보다 더 작은 직광 감성용.",p:"보조",img:"https://www.godox.com/static/upload/image/20240408/1712568989184608.jpg",link:"https://www.godox.com/product-a/Flash/LUX-ELF.html"},
+{d:"순간광",b:"Godox",name:"Lux Cadet",spec:"GN10급 / 레트로 미니 플래시",mount:"핫슈 / 수동",krw:"약 95,000원",memo:"Lux Junior와 같은 미니 직광 비교군.",p:"보조",img:"https://www.godox.com/static/upload/image/20231128/1701162610854280.jpg",link:"https://www.godox.com/product-a/Lux-Cadet.html"},
+{d:"순간광",b:"Viltrox",name:"Vintage Z1 Pro",spec:"24Ws / TTL·1/8000s HSS 레트로 플래시",mount:"핫슈 / S·N·F·C 버전",krw:"약 79,000원",memo:"Lux Junior/iT30 Pro와 같은 미니 레트로 비교군. TTL/HSS, 1초 재충전, USB-C 충전.",p:"보조",img:"https://cdn.shopify.com/s/files/1/0104/0380/7298/files/Vintage_Z1_Pro.png?v=1779249343",link:"https://viltrox.com/products/vintage-z1-pro-camera-flash"},
+{d:"순간광",b:"Godox",name:"V100",spec:"100Ws급 / 터치스크린 라운드헤드",mount:"Godox X / AK-R1",krw:"약 451,000원",memo:"V1/V1Pro보다 출력 여유가 큰 온카메라 플래시.",p:"핵심",img:"https://www.godox.com/static/upload/image/20241220/1734676204889949.jpg",link:"https://www.godox.com/product-b/Flash/V100.html"},
+{d:"순간광",b:"Godox",name:"V480",spec:"소형 리튬 스피드라이트",mount:"Godox X / 카메라별 버전",krw:"약 260,000원",memo:"V350과 V860III 사이급 최신 휴대형.",p:"입문",img:"https://www.godox.com/static/upload/image/20250603/1748917347510844.jpg",link:"https://www.godox.com/product-e/Flash/V480.html"},
+{d:"순간광",b:"Godox",name:"AD100Pro II",spec:"100Ws / 배터리 스트로브 2세대",mount:"Godox X / 전용·S2 Bowens",krw:"약 478,000원",memo:"AD100Pro 후속. 보조·림라이트용.",p:"보조",img:"https://www.godox.com/static/upload/image/20260105/1767592823735187.jpg",link:"https://www.godox.com/product-e/AD100ProII.html"},
+{d:"순간광",b:"Godox",name:"AD300Pro II",spec:"300Ws / 배터리 모노라이트 2세대",mount:"Godox X / Godox·S2 Bowens",krw:"약 821,000원",memo:"AD300Pro 후속. 야외 인물 주광 하한선.",p:"핵심",img:"https://www.godox.com/static/upload/image/20251205/1764923949744296.jpg",link:"https://www.godox.com/product-e/AD300ProII.html"},
+{d:"순간광",b:"Godox",name:"AD400Pro II",spec:"400Ws / 배터리 모노라이트 2세대",mount:"Godox X / Bowens 어댑터",krw:"약 1,095,000원",memo:"AD400Pro 후속. 개인 스튜디오·로케이션 주광 핵심.",p:"핵심",img:"https://www.godox.com/static/upload/image/20250821/1755746503840504.jpg",link:"https://www.godox.com/product-e/AD400ProII.html"},
+{d:"지속광",b:"Aputure",name:"STORM 400x",spec:"400W급 / 바이컬러 BLAIR",mount:"Aputure 전자접점 / Sidus",krw:"약 1,451,000원",memo:"STORM 계열 중 400W급 최신 바이컬러.",p:"프로",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/STORM_400x-4_850c8b9e-a631-49bc-8905-ca53e8b6b3c2.png?v=1770728510",link:"https://www.aputure.com/products/storm-400x/"},
+{d:"지속광",b:"Aputure",name:"STORM 700x",spec:"700W급 / 바이컬러 BLAIR",mount:"Aputure 전자접점 / Sidus",krw:"약 2,315,000원",memo:"600x Pro와 1200x 사이급.",p:"프로",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/STORM700x_3.png?v=1760693781",link:"https://www.aputure.com/products/storm-700x/"},
+{d:"지속광",b:"Aputure",name:"STORM XT52",spec:"5200W급 / 초고출력 시네마",mount:"Aputure 전자접점 / DMX",krw:"약 17,947,000원",memo:"렌탈·대형 현장급 초고출력.",p:"렌탈",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/XT52-Medium-1_7c2aa054-c23a-4769-bb4e-3c779c383f39.png?v=1743557637",link:"https://www.aputure.com/products/storm-xt52/"},
+{d:"지속광",b:"Aputure",name:"NOVA II 1x1",spec:"RGBWW 패널 / 1x1",mount:"Sidus / DMX",krw:"약 2,602,000원",memo:"컬러 패널. COB가 아니라 면광원 기준 비교.",p:"연출",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/Aputure_NOVA_II_1x1_Clean_x1000_8.png?v=1780967038",link:"https://www.aputure.com/products/nova-ii-1x1/"},
+{d:"지속광",b:"Aputure",name:"NOVA II 2x1",spec:"RGBWW 패널 / 2x1",mount:"Sidus / DMX",krw:"약 5,055,000원",memo:"큰 면광원 컬러 패널.",p:"연출",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/NOVA_II_2x1-3.png?v=1757576011",link:"https://www.aputure.com/products/nova-ii-2x1/"},
+{d:"지속광",b:"Aputure",name:"INFINIBAR PB3",spec:"RGBWW 픽셀 바 / 1ft",mount:"Sidus / 전용 커넥터",krw:"약 410,000원",memo:"소형 배경·세트 연출 바.",p:"연출",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/InfinibarPB3-1.png?v=1696989597",link:"https://www.aputure.com/products/infinibar-pb3/"},
+{d:"지속광",b:"Aputure",name:"INFINIBAR PB6",spec:"RGBWW 픽셀 바 / 2ft",mount:"Sidus / 전용 커넥터",krw:"약 656,000원",memo:"인물 배경·선형 하이라이트.",p:"연출",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/InfinibarPB6-1.png?v=1696989615",link:"https://www.aputure.com/products/infinibar-pb6/"},
+{d:"지속광",b:"Aputure",name:"INFINIBAR PB12",spec:"RGBWW 픽셀 바 / 4ft",mount:"Sidus / 전용 커넥터",krw:"약 875,000원",memo:"전신·공간 라인 조명.",p:"연출",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/InfinibarPB12-1_80b9a046-7b90-46ce-ad6c-b876f60cc7c9.png?v=1696989628",link:"https://www.aputure.com/products/infinibar-pb12/"},
+{d:"지속광",b:"Nanlite",name:"FC-120C",spec:"120W급 / RGBW 컬러 COB",mount:"Bowens / Nanlink",krw:"약 273,000원",memo:"FC-120B의 컬러 버전 비교군.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/FC-120C_8.jpg?v=1757432840",link:"https://nanliteus.com/products/fc-120c-full-color-led-spotlight"},
+{d:"지속광",b:"Nanlite",name:"FC-500C",spec:"500W급 / RGBW 컬러 COB",mount:"Bowens / Nanlink",krw:"약 780,000원",memo:"FC-500B의 컬러 버전.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/FC-500C_1.jpg?v=1757435987",link:"https://nanliteus.com/products/fc-500c-rgbw-color-led-spotlight"},
+{d:"지속광",b:"Nanlite",name:"FC-720B",spec:"720W급 / 바이컬러 COB",mount:"Bowens / Nanlink",krw:"약 684,000원",memo:"FC 계열 고출력 가성비.",p:"핵심",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/Nanlite-FC-720B-2.jpg?v=1770097474",link:"https://nanliteus.com/products/fc-720b-bi-color-led-spotlight"},
+{d:"지속광",b:"Nanlite",name:"Forza 60C",spec:"60W급 / RGBLAC 컬러 COB",mount:"FM / Bowens 어댑터",krw:"약 526,000원",memo:"소형 컬러 COB.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/nanlite-forza-60c-lifestyle.jpg?v=1758290639",link:"https://nanliteus.com/products/forza-60c-rgblac-led-spotlight-kit-includes-battery-grip-and-bowens-mount-adapter"},
+{d:"지속광",b:"Nanlite",name:"PavoSlim 60B",spec:"1x1 / 바이컬러 패널",mount:"전용 / Nanlink",krw:"약 601,000원",memo:"휴대형 면광원.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/PS60bqr-main.jpg?v=1759290747",link:"https://nanliteus.com/products/pavoslim-60b-1x1-bi-color-led-panel-light"},
+{d:"지속광",b:"Nanlite",name:"PavoSlim 120B",spec:"2x1 / 바이컬러 패널",mount:"전용 / Nanlink",krw:"약 862,000원",memo:"인터뷰·인물용 넓은 면광원.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/PS120B-3.jpg?v=1759154580",link:"https://nanliteus.com/products/pavoslim-120b-2x1-bi-color-led-panel-light-with-pop-up-softbox"},
+{d:"지속광",b:"Nanlite",name:"PavoSlim 240B",spec:"2x2 / 바이컬러 패널",mount:"전용 / Nanlink",krw:"약 1,576,000원",memo:"대형 면광원 패널.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/PavoSlim240B_11.jpg?v=1759150910",link:"https://nanliteus.com/products/pavoslim-240b-2x2-bi-color-led-panel-light"},
+{d:"지속광",b:"Nanlite",name:"PavoTube II 6C",spec:"10인치 / RGBWW 튜브",mount:"전용 / Nanlink",krw:"약 85,000원",memo:"작은 배경 포인트·제품 디테일.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/6c-1.jpg?v=1755804513",link:"https://nanliteus.com/products/pavotube-ii-6c-rgbww-led-tube-light"},
+{d:"지속광",b:"Nanlite",name:"PavoTube II 15XR",spec:"2ft / RGBWW 픽셀 튜브 / CRMX",mount:"전용 / Nanlink·CRMX",krw:"약 547,000원",memo:"15C의 CRMX/픽셀 상위 비교군.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/PavoTube_II_15XR-main.jpg?v=1757192097",link:"https://nanliteus.com/products/pavotube-ii-15xr"},
+{d:"지속광",b:"Nanlite",name:"PavoTube II 30XR",spec:"4ft / RGBWW 픽셀 튜브 / CRMX",mount:"전용 / Nanlink·CRMX",krw:"약 793,000원",memo:"30C의 CRMX/픽셀 상위 비교군.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/nanlite-pavotube-ii-30xr-main.jpg?v=1757176090",link:"https://nanliteus.com/products/pavotube-ii-30xr-4-rgbww-led-pixel-tube-with-built-in-crmx"},
+{d:"액세서리",b:"Aputure",name:"Light Dome 40",spec:"40cm / 소형 소프트박스",mount:"Bowens",krw:"약 136,000원",memo:"소형 COB·좁은 공간용.",p:"소프트박스",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/Light_Dome_40-8.png?v=1755051267",link:"https://www.aputure.com/products/light-dome-40/"},
+{d:"액세서리",b:"Aputure",name:"Light Dome 150",spec:"150cm / 대형 소프트박스",mount:"Bowens",krw:"약 369,000원",memo:"전신·그룹·넓은 인터뷰.",p:"소프트박스",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/Light_Dome_150_e2f4b21d-41ef-4b60-9c96-227dc92a73eb.png?v=1758598319",link:"https://www.aputure.com/products/light-dome-150/"},
+{d:"액세서리",b:"Aputure",name:"Lantern 30",spec:"30cm / 소형 랜턴",mount:"Bowens",krw:"약 81,000원",memo:"작은 테이블·협소 공간 확산.",p:"랜턴",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/Lantern30-7.png?v=1731911685",link:"https://www.aputure.com/products/lantern-30/"},
+{d:"액세서리",b:"Nanlite",name:"Rapid 90 Parabolic",spec:"90cm / 그리드 포함",mount:"Bowens",krw:"약 245,000원",memo:"1인 주광 빠른 세팅.",p:"소프트박스",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/sp-rp90-main_d0c60175-0065-4d46-bd7c-559a30d197e3.jpg?v=1758395017",link:"https://nanliteus.com/products/rapid-90-parabolic-softbox-with-grid-and-bowens-mount-35in"},
+{d:"액세서리",b:"Nanlite",name:"Rapid 120 Parabolic",spec:"120cm / 그리드 포함",mount:"Bowens",krw:"약 273,000원",memo:"전신·넓은 면광원.",p:"소프트박스",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/SB-RP120-main.jpg?v=1758338087",link:"https://nanliteus.com/products/rapid-120-parabolic-softbox-with-grid-and-bowens-mount-47in"}
+]);
+const lineupCorrections={
+"Godox|Lux Junior":{img:"assets/lighting/godox_lux.png",link:"https://www.godox.com/product-a/Lux-Junior.html"},
+"Godox|Lux Senior":{img:"https://www.godox.com/static/upload/image/20220713/1657702088735558.jpg",link:"https://www.godox.com/product-a/Lux-Senior.html"},
+"Godox|iM30":{img:"https://www.godox.com/static/upload/image/20240919/1726736258292414.jpg",link:"https://www.godox.com/product-a/iM30.html"},
+"Godox|iT30 Pro":{img:"assets/lighting/godox_it30.jpg",link:"https://www.godox.com/product-e/iT30Pro.html"},
+"Godox|TT350":{img:"https://www.godox.com/static/upload/image/20220118/1642470907824755.jpg",link:"https://www.godox.com/product-d/TT350.html"},
+"Godox|V350":{img:"https://www.godox.com/static/upload/image/20220118/1642468588960645.jpg",link:"https://www.godox.com/product-d/V350.html"},
+"Godox|TT685II":{img:"https://www.godox.com/static/upload/image/20220120/1642643758848762.jpg",link:"https://www.godox.com/product-d/TT685II.html"},
+"Godox|V860III":{img:"https://www.godox.com/static/upload/image/20220117/1642421451101997.jpg",link:"https://www.godox.com/product-d/V860III.html"},
+"Godox|V1":{img:"assets/lighting/godox_v1_official.png",link:"https://www.godox.com/product-d/V1.html"},
+"Godox|V1Pro":{img:"assets/lighting/godox_v1pro.jpg",link:"https://www.godox.com/product-b/V1Pro.html"},
+"Godox|AD100Pro":{img:"assets/lighting/godox_ad100.jpg",link:"https://www.godox.com/product-d/AD100Pro.html"},
+"Godox|AD200Pro II":{img:"assets/lighting/godox_ad200.jpg",link:"https://www.godox.com/product-b/Flash/AD200ProII.html"},
+"Godox|AD300Pro":{img:"assets/lighting/godox_ad300.jpg",link:"https://www.godox.com/product-d/AD300Pro.html"},
+"Godox|AD400Pro":{img:"assets/lighting/godox_ad400.jpg",link:"https://www.godox.com/product-d/AD400Pro.html"},
+"Godox|AD600Pro II":{img:"assets/lighting/godox_ad600.jpg",link:"https://www.godox.com/product-b/Flash/AD600ProII.html"},
+"Godox|AD800Pro":{img:"https://www.godox.com/static/upload/image/20260110/1768014842332509.jpg",link:"https://www.godox.com/product-e/AD800Pro.html"},
+"Godox|AD1200Pro Pack":{img:"https://www.godox.com/static/upload/image/20220916/1663318186985161.jpg",link:"https://www.godox.com/product-d/AD1200Pro.html"},
+"Godox|P2400 Pack":{img:"assets/lighting/godox_p2400_official.jpg",link:"https://www.godox.com/product-b/P2400.html"},
+"Godox|MS300V":{img:"https://www.godox.com/static/upload/image/20221215/1671092282835280.jpg",link:"https://www.godox.com/product-d/MSV-Series.html"},
+"Godox|SK400II-V":{img:"https://www.godox.com/static/upload/image/20221215/1671092446552378.jpg",link:"https://www.godox.com/product-d/SKIIV-Series.html"},
+"Godox|DP600III-V":{img:"https://www.godox.com/static/upload/image/20220927/1664244048776801.jpg",link:"https://www.godox.com/product-d/DPIIIV-Series.html"},
+"Godox|QT600III":{img:"assets/lighting/godox_qt600.jpg",link:"https://www.godox.com/product-d/QTIII.html"},
+"Godox|QT1200III":{img:"assets/lighting/godox_qt600.jpg",link:"https://www.godox.com/product-d/QTIII.html"},
+"Profoto|A10":{img:"assets/lighting/profoto_a10_official.jpg",link:"https://www.profoto.com/us/en/shop/products/lights/on-camera-flashes/profoto-a10/"},
+"Profoto|A2":{img:"https://www.profoto.com/globalassets/inriver/resources/901250_a_a2_right.png",link:"https://www.profoto.com/us/en/shop/products/lights/monolights/battery-powered/profoto-a2/"},
+"Profoto|B10X":{img:"assets/lighting/profoto_b10x_official.png",link:"https://www.profoto.com/us/en/shop/products/lights/monolights/battery-powered/profoto-b10x-and-b10x-plus/"},
+"Profoto|B10X Plus":{img:"assets/lighting/profoto_b10x_official.png",link:"https://www.profoto.com/us/en/shop/products/lights/monolights/battery-powered/profoto-b10x-and-b10x-plus/"},
+"Profoto|Pro-B3":{img:"https://www.profoto.com/globalassets/inriver/resources/901081-901082_a_profoto-pro-b3-right_productimage.png",link:"https://www.profoto.com/us/en/shop/products/lights/monolights/battery-powered/profoto-pro-b3/"},
+"Profoto|D2 500":{img:"assets/lighting/profoto_d2_official.png",link:"https://www.profoto.com/us/en/shop/products/lights/monolights/mains-powered/profoto-d2/"},
+"Profoto|D2 1000":{img:"assets/lighting/profoto_d2_official.png",link:"https://www.profoto.com/us/en/shop/products/lights/monolights/mains-powered/profoto-d2/"},
+"Profoto|D30":{img:"https://www.profoto.com/globalassets/inriver/resources/901071_a_profoto-d30-right_productimage.png",link:"https://www.profoto.com/us/en/shop/products/lights/monolights/mains-powered/profoto-d30/"},
+"Profoto|Pro-D3 750":{img:"assets/lighting/profoto_d3_official.png",link:"https://www.profoto.com/us/en/shop/products/lights/monolights/mains-powered/profoto-pro-d3/"},
+"Profoto|Pro-D3 1250":{img:"assets/lighting/profoto_d3_official.png",link:"https://www.profoto.com/us/en/shop/products/lights/monolights/mains-powered/profoto-pro-d3/"},
+"Profoto|Pro-11 Pack":{img:"assets/lighting/profoto_pro11_official.jpg",link:"https://www.profoto.com/us/en/shop/products/lights/studio-packs/packs/profoto-pro-11/"},
+"Profoto|ProHead Plus":{img:"assets/lighting/profoto_prohead.png",link:"https://www.profoto.com/us/en/shop/products/lights/studio-packs/heads/prohead-plus-uv-250w-with-zoom-reflector/"},
+"Broncolor|Siros 400 S":{img:"assets/lighting/broncolor_siros_s.png",link:"https://broncolor.swiss/products/siros-s"},
+"Broncolor|Siros 800 S":{img:"assets/lighting/broncolor_siros_s.png",link:"https://broncolor.swiss/products/siros-s"},
+"Broncolor|Siros 400 L":{img:"assets/lighting/broncolor_siros.jpg",link:"https://broncolor.swiss/products/siros-l"},
+"Broncolor|Siros 800 L":{img:"assets/lighting/broncolor_siros.jpg",link:"https://broncolor.swiss/products/siros-l"},
+"Broncolor|Move 1200 L":{img:"assets/lighting/broncolor_scoro.jpg",link:"https://broncolor.swiss/products/move"},
+"Broncolor|Scoro 1600 S":{img:"assets/lighting/broncolor_scoro.jpg",link:"https://broncolor.swiss/products/scoro-s"},
+"Broncolor|Scoro 3200 S":{img:"assets/lighting/broncolor_scoro.jpg",link:"https://broncolor.swiss/products/scoro-s"},
+"Broncolor|Pulso G":{img:"assets/lighting/broncolor_pulso.jpg",link:"https://broncolor.swiss/products/pulso-g"},
+"Broncolor|Picolite":{img:"assets/lighting/broncolor_pulso.jpg",link:"https://broncolor.swiss/products/picolite"},
+"Aputure|LS 60x":{krw:"약 574,000원",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/LS60x-_2.png?v=1774402526",link:"https://www.aputure.com/products/ls-60x/"},
+"Aputure|LS 300d II":{krw:"약 1,040,000원",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/LS300dII-_1.png?v=1708329371",link:"https://www.aputure.com/products/ls-300d-ii/"},
+"Aputure|LS 300x":{krw:"약 1,095,000원",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/LS300x-_1.png?v=1708329336",link:"https://www.aputure.com/products/ls-300x/"},
+"Aputure|LS 600d Pro":{krw:"약 1,941,000원",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/LS600dPro-_1.png?v=1708329212",link:"https://www.aputure.com/products/ls-600d-pro/"},
+"Aputure|LS 600x Pro":{krw:"약 1,908,000원",img:"assets/lighting/aputure_600x.png",link:"https://www.aputure.com/products/ls-600x-pro/"},
+"Aputure|LS 1200d Pro":{krw:"약 2,322,000원",img:"assets/lighting/aputure_1200d.png",link:"https://www.aputure.com/products/ls-1200d-pro/"},
+"Aputure|STORM 80c":{krw:"약 821,000원",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/06.png?v=1774509842",link:"https://www.aputure.com/products/storm-80c/"},
+"Aputure|STORM 1000c":{krw:"약 4,096,000원",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/17_e6f24930-9523-46ff-a284-918d4f52eee3.png?v=1774336337",link:"https://www.aputure.com/products/storm-1000c/"},
+"Aputure|STORM 1200x":{krw:"약 4,096,000원",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/Storm1200x_121e4cdc-728d-4739-afd0-8669a428ae31.png?v=1774336290",link:"https://www.aputure.com/products/storm-1200x/"},
+"Aputure|Light Dome Mini III":{krw:"약 149,000원",img:"assets/lighting/aputure_light_dome_mini.png",link:"https://www.aputure.com/products/light-dome-mini-iii/"},
+"Aputure|Light Dome III":{krw:"약 255,000원",img:"assets/lighting/aputure_light_dome_iii.png",link:"https://www.aputure.com/products/light-dome-iii/"},
+"Aputure|Light OctaDome 120":{krw:"약 141,000원",img:"assets/lighting/aputure_light_octadome.png",link:"https://www.aputure.com/products/light-octadome-120/"},
+"Aputure|Lantern":{krw:"약 122,000원",img:"assets/lighting/aputure_lantern.png",link:"https://www.aputure.com/products/lantern/"},
+"amaran(아마란)|Lantern 90":{krw:"약 190,000원",img:"assets/lighting/amaran_lantern90.jpg",link:"https://www.aputure.com/products/lantern-90/"},
+"Aputure|F10 Fresnel":{krw:"약 255,000원",img:"assets/lighting/aputure_fresnel.png",link:"https://www.aputure.com/products/f10-fresnel/"},
+"Nanlite|FC-60B":{krw:"약 174,000원",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/FC60B_1.jpg?v=1757542081",link:"https://nanliteus.com/products/fc-60b-bi-color-led-spotlight"},
+"Nanlite|FC-120B":{krw:"약 245,000원",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/FC-120B_6.jpg?v=1757540717",link:"https://nanliteus.com/products/fc-120b-bi-color-led-spotlight"},
+"Nanlite|FC-500B":{krw:"약 547,000원",img:"assets/lighting/nanlite_fc500b.jpg",link:"https://nanliteus.com/products/fc-500b-bi-color-led-spotlight"},
+"Nanlite|Forza 60B II":{krw:"약 349,000원",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/forza-60b-main.jpg?v=1759077526",link:"https://nanliteus.com/products/forza-60b-ii-bi-color-led-spotlight"},
+"Nanlite|Forza 300B II":{krw:"약 1,369,000원",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/forza-300b-main.jpg?v=1757270401",link:"https://nanliteus.com/products/forza-300b-ii-bi-color-led-spotlight"},
+"Nanlite|Forza 500B II":{krw:"약 2,054,000원",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/forza-500b-main-2.jpg?v=1757270161",link:"https://nanliteus.com/products/forza-500b-ii-led-spotlight"},
+"Nanlite|Forza 720B":{krw:"약 2,602,000원",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/forza-720b-main.jpg?v=1757268943",link:"https://nanliteus.com/products/forza-720b-bi-color-led-spotlight-with-rolling-case"},
+"Nanlite|PavoTube II 15C":{krw:"약 210,000원",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/c15-sq-7.jpg?v=1759935688",link:"https://nanliteus.com/products/pavotube-ii-15c-2-foot-rgbww-led-tube-light"},
+"Nanlite|PavoTube II 30C":{krw:"약 273,000원",img:"assets/lighting/nanlite_tube.jpg",link:"https://nanliteus.com/products/pavotube-ii-30c-4-foot-rgbww-led-tube-light"},
+"Godox|QR-P70":{img:"assets/lighting/godox_qrp70.jpg",link:"https://www.godox.com/product-d/1200.html"},
+"Godox|QR-P90":{img:"assets/lighting/godox_qrp90_size.jpg",link:"https://www.godox.com/product-d/1200.html"},
+"Godox|QR-P120":{img:"assets/lighting/godox_qrp120.jpg",link:"https://www.godox.com/product-d/1200.html"},
+"Godox|QR-P150T":{img:"assets/lighting/godox_qr_series_1.png",link:"https://www.godox.com/product-d/QR-Series.html"},
+"Godox|ML60II Bi":{img:"https://www.godox.com/static/upload/image/20231208/1702027747842086.jpg",link:"https://www.godox.com/product-b/ML60IIBi.html"},
+"Godox|SL100Bi":{img:"https://www.godox.com/static/upload/image/20220328/1648434685829450.jpg",link:"https://www.godox.com/product-d/SL100D-SL100Bi.html"},
+"Godox|SL200III Bi":{img:"https://www.godox.com/static/upload/image/20230301/1677662555213898.png",link:"https://www.godox.com/product-d/SLIII.html"},
+"Godox|KNOWLED M300Bi":{img:"https://www.knowled.com/static/upload/image/20260306/1772765451274696.jpg",link:"https://www.knowled.com/product-b/1452.html"},
+"Godox|KNOWLED M600Bi":{img:"https://www.knowled.com/static/upload/image/20220802/1659434122991510.jpg",link:"https://www.knowled.com/product-b/M600Bi.html"},
+"Godox|MG1200Bi":{img:"https://www.knowled.com/static/upload/image/20230609/1686292318773965.jpg",link:"https://www.knowled.com/product-b/MG1200Bi.html"},
+"amaran(아마란)|amaran 100x S":{img:"assets/lighting/aputure_amaran.jpg",link:"https://amarancreators.com/products/amaran-100x-s"},
+"amaran(아마란)|amaran 200d S":{img:"assets/lighting/aputure_amaran.jpg",link:"https://amarancreators.com/products/amaran-200d-s"},
+"amaran(아마란)|amaran 200x S":{img:"assets/lighting/aputure_amaran.jpg",link:"https://amarancreators.com/products/amaran-200x-s"},
+"amaran(아마란)|amaran 300c":{img:"assets/lighting/aputure_amaran.jpg",link:"https://amarancreators.com/products/amaran-300c"},
+"amaran(아마란)|F21c":{img:"assets/lighting/aputure_amaran.jpg",link:"https://amarancreators.com/products/f21c"},
+"amaran(아마란)|F22c":{img:"assets/lighting/aputure_amaran.jpg",link:"https://amarancreators.com/products/f22c"},
+"Nanlite|FC-300B":{img:"assets/lighting/nanlite_fc300b.png",link:"https://nanliteus.com/products/fc-300b-bi-color-led-spotlight"},
+"Nanlite|PavoTube II 60C":{img:"assets/lighting/nanlite_tube.jpg",link:"https://nanliteus.com/products/pavotube-ii-60c-8-foot-rgbww-led-tube-light"},
+"Nanlite|LT-80 Lantern":{img:"assets/lighting/nanlite_lt80.jpg",link:"https://nanliteus.com/products/lantern-80-easy-up-softbox-with-bowens-mount-31in"},
+"Nanlite|LT-120 Lantern":{img:"assets/lighting/nanlite_lt120.jpg",link:"https://nanliteus.com/products/lantern-120-easy-up-softbox-with-bowens-mount-47in"},
+"Profoto|OCF Softbox Octa 2'":{img:"assets/lighting/profoto_ocf_octa.png",link:"https://www.profoto.com/us/en/shop/products/light-shaping-tools/softboxes/ocf-softbox-octa/"},
+"Profoto|Umbrella Deep White S":{img:"assets/lighting/profoto_umbrella_deep.png",link:"https://www.profoto.com/us/en/shop/products/light-shaping-tools/umbrellas/umbrella-deep-white/"},
+"Godox|XPro II":{img:"assets/lighting/godox_xproii.jpg",link:"https://www.godox.com/product-a/XPro-II.html"}
+};
+lineup.forEach(x=>Object.assign(x,lineupCorrections[`${x.b}|${x.name}`]||{}));
+function addLineupRows(rows){
+  const seen=new Set(lineup.map(x=>`${x.d}|${x.b}|${x.name}`));
+  rows.forEach(x=>{
+    const key=`${x.d}|${x.b}|${x.name}`;
+    if(!seen.has(key)){lineup.push(x);seen.add(key)}
+  });
+}
+addLineupRows([
+{d:"순간광",b:"Godox",name:"iM20",spec:"미니 플래시 / 초소형 직광",mount:"핫슈 / 수동",krw:"약 55,000원",memo:"iM30보다 더 작은 휴대 직광 비교군.",p:"보조",img:"https://www.godox.com/static/upload/image/20241224/1735033490874012.jpg",link:"https://www.godox.com/product-a/iM20-iM22.html"},
+{d:"순간광",b:"Godox",name:"iM22",spec:"미니 플래시 / 초소형 직광",mount:"핫슈 / 수동",krw:"약 69,000원",memo:"iM20 상위 미니 직광.",p:"보조",img:"https://www.godox.com/static/upload/image/20241224/1735033490874012.jpg",link:"https://www.godox.com/product-a/iM20-iM22.html"},
+{d:"순간광",b:"Godox",name:"iM30 Pro",spec:"미니 플래시 / Pro 버전",mount:"핫슈 / 수동",krw:"약 95,000원",memo:"iM30보다 조작성 높은 미니 라인.",p:"보조",img:"https://www.godox.com/static/upload/image/20260602/1780384665572052.png",link:"https://www.godox.com/product-e/iM30Pro.html"},
+{d:"순간광",b:"Godox",name:"iA32",spec:"GN15급 / AA 미니 플래시",mount:"핫슈 / 수동",krw:"약 82,000원",memo:"저가 미니 직광, Lux·iM 계열 비교.",p:"보조",img:"https://www.godox.com/static/upload/image/20241230/1735521274619027.jpg",link:"https://www.godox.com/product-a/iA32.html"},
+{d:"순간광",b:"Godox",name:"iT20",spec:"미니 TTL 플래시",mount:"핫슈 / 카메라별 버전",krw:"약 95,000원",memo:"iT30 Pro보다 더 작은 TTL 미니.",p:"보조",img:"https://www.godox.com/static/upload/image/20250617/1750140746350291.jpg",link:"https://www.godox.com/product-e/iT20-iT22.html"},
+{d:"순간광",b:"Godox",name:"iT22",spec:"미니 TTL 플래시",mount:"핫슈 / 카메라별 버전",krw:"약 109,000원",memo:"iT20과 iT30 Pro 사이 미니 TTL.",p:"보조",img:"https://www.godox.com/static/upload/image/20250617/1750140746350291.jpg",link:"https://www.godox.com/product-e/iT20-iT22.html"},
+{d:"순간광",b:"Godox",name:"iT32",spec:"미니 TTL 플래시",mount:"핫슈 / 카메라별 버전",krw:"약 136,000원",memo:"iT30 Pro 상위급 미니 TTL 비교군.",p:"보조",img:"https://www.godox.com/static/upload/image/20251108/1762574594488543.jpg",link:"https://www.godox.com/product-e/iT32-X5.html"},
+{d:"순간광",b:"Godox",name:"X5",spec:"iT32용 무선 컨트롤 모듈",mount:"Godox X / 핫슈",krw:"약 68,000원",memo:"iT32와 묶이는 미니 시스템 부속.",p:"트리거",img:"https://www.godox.com/static/upload/image/20251108/1762574594488543.jpg",link:"https://www.godox.com/product-e/iT32-X5.html"},
+{d:"순간광",b:"Godox",name:"TT520III",spec:"GN33급 / 입문 수동 플래시",mount:"핫슈 / 수동",krw:"약 82,000원",memo:"초저가 수동 스피드라이트.",p:"입문",img:"https://www.godox.com/static/upload/image/20250416/1744774736574866.png",link:"https://www.godox.com/product-e/Flash/TT520III.html"},
+{d:"순간광",b:"Godox",name:"TT685",spec:"GN60급 / TTL 스피드라이트",mount:"Godox X / 카메라별 버전",krw:"약 150,000원",memo:"TT685II 이전 세대. 중고 비교용.",p:"입문",img:"https://www.godox.com/static/upload/image/20220303/1646301682996637.png",link:"https://www.godox.com/product-d/TT685.html"},
+{d:"순간광",b:"Godox",name:"V850III",spec:"GN60급 / 리튬 수동 스피드라이트",mount:"Godox X / 수동",krw:"약 218,000원",memo:"TTL보다 수동·가성비 중심.",p:"입문",img:"https://www.godox.com/static/upload/image/20220303/1646301682996637.png",link:"https://www.godox.com/product-d/V850III.html"},
+{d:"순간광",b:"Godox",name:"V1 mid",spec:"라운드헤드 / 미드 버전",mount:"Godox X / 카메라별 버전",krw:"약 300,000원",memo:"V1 계열 최신 파생 모델.",p:"핵심",img:"https://www.godox.com/static/upload/image/20260130/1769756798442275.jpg",link:"https://www.godox.com/product-e/Flash/V1mid.html"},
+{d:"순간광",b:"Godox",name:"Lux Senior Color Edition",spec:"GN14 / 컬러 레트로 플래시",mount:"핫슈 / 수동",krw:"약 205,000원",memo:"Lux Senior 색상판. 기능은 Senior와 같은 급.",p:"보조",img:"",link:"https://www.godox.com/product-a/Lux-Senior-Retro-Camera-Flash-Color-Edition.html"},
+{d:"순간광",b:"Godox",name:"AD600BM",spec:"600Ws / 수동 배터리 모노라이트",mount:"Godox X / Bowens",krw:"약 780,000원",memo:"TTL 없는 AD600 수동형. 중고·가성비 비교.",p:"핵심",img:"https://www.godox.com/static/upload/image/20220303/1646296699443058.png",link:"https://www.godox.com/product-d/AD600M-AD600BM.html"},
+{d:"순간광",b:"Godox",name:"AD600BM II",spec:"600Ws / 수동 배터리 모노라이트 2세대",mount:"Godox X / Bowens",krw:"약 958,000원",memo:"AD600BM 후속. AD600Pro II와 가격/기능 비교.",p:"핵심",img:"",link:"https://www.godox.com/product-e/Flash/AD600BMII.html"},
+{d:"순간광",b:"Godox",name:"AD-S200",spec:"AD200용 스틱 플래시 헤드",mount:"AD200 계열",krw:"약 163,000원",memo:"AD200을 막대형 면광원처럼 쓰는 특수 헤드.",p:"헤드",img:"https://www.godox.com/static/upload/image/20230727/1690443686631923.jpg",link:"https://www.godox.com/product-c/AD-S200.html"},
+{d:"순간광",b:"Godox",name:"H200R",spec:"AD200용 라운드 헤드",mount:"AD200 계열 / AK-R1",krw:"약 122,000원",memo:"AD200을 V1식 라운드헤드로 바꾸는 헤드.",p:"헤드",img:"https://www.godox.com/static/upload/image/20220711/1657519277152735.png",link:"https://www.godox.com/product-d/H200R.html"},
+{d:"순간광",b:"Godox",name:"EC200",spec:"AD200 연장 헤드",mount:"AD200 계열",krw:"약 82,000원",memo:"AD200 본체를 내려두고 헤드만 가볍게 쓰는 케이블 헤드.",p:"헤드",img:"https://www.godox.com/static/upload/image/20220711/1657519277152735.png",link:"https://www.godox.com/product-d/EC200.html"},
+{d:"순간광",b:"Godox",name:"R200",spec:"200Ws / 링 플래시 헤드",mount:"AD200 계열",krw:"약 204,000원",memo:"AD200용 링 플래시. 인물·매크로 특수광.",p:"헤드",img:"https://www.godox.com/static/upload/image/20220622/1655887977572415.jpg",link:"https://www.godox.com/product-c/R200.html"},
+{d:"순간광",b:"Godox",name:"R1200",spec:"1200Ws / AD1200Pro 링 헤드",mount:"AD1200Pro",krw:"약 821,000원",memo:"AD1200Pro 전용 링 플래시 헤드.",p:"헤드",img:"",link:"https://www.godox.com/product-d/R1200.html"},
+{d:"순간광",b:"Godox",name:"R2400",spec:"2400Ws / P2400 링 헤드",mount:"P2400",krw:"약 1,506,000원",memo:"P2400용 링 플래시 헤드.",p:"헤드",img:"",link:"https://www.godox.com/product-b/R2400.html"},
+{d:"순간광",b:"Godox",name:"MS200V",spec:"200Ws / 입문 AC 모노라이트",mount:"Godox X / Bowens",krw:"약 178,000원",memo:"소형 스튜디오 배경·보조광.",p:"입문",img:"https://www.godox.com/static/upload/image/20221215/1671092282835280.jpg",link:"https://www.godox.com/product-d/MSV-Series.html"},
+{d:"순간광",b:"Godox",name:"SK300III-V",spec:"300Ws / AC 모노라이트",mount:"Godox X / Bowens",krw:"약 220,000원",memo:"입문 스튜디오 주광 하한선.",p:"입문",img:"",link:"https://www.godox.com/product-e/SK300IIIV-SK400IIIV.html"},
+{d:"순간광",b:"Godox",name:"SK400III-V",spec:"400Ws / AC 모노라이트",mount:"Godox X / Bowens",krw:"약 260,000원",memo:"SK300III-V보다 출력 여유 있는 입문형.",p:"입문",img:"",link:"https://www.godox.com/product-e/SK300IIIV-SK400IIIV.html"},
+{d:"순간광",b:"Godox",name:"DP400III-V",spec:"400Ws / AC 모노라이트",mount:"Godox X / Bowens",krw:"약 410,000원",memo:"SK/MS보다 상위 스튜디오 AC.",p:"스튜디오",img:"https://www.godox.com/static/upload/image/20220927/1664244048776801.jpg",link:"https://www.godox.com/product-d/DPIIIV-Series.html"},
+{d:"순간광",b:"Godox",name:"DP800III-V",spec:"800Ws / AC 모노라이트",mount:"Godox X / Bowens",krw:"약 650,000원",memo:"고정 스튜디오 대형 확산재용.",p:"스튜디오",img:"https://www.godox.com/static/upload/image/20220927/1664244048776801.jpg",link:"https://www.godox.com/product-d/DPIIIV-Series.html"},
+{d:"순간광",b:"Godox",name:"DP1000III-V",spec:"1000Ws / AC 모노라이트",mount:"Godox X / Bowens",krw:"약 780,000원",memo:"제품·전신·대형 소프트박스용.",p:"스튜디오",img:"https://www.godox.com/static/upload/image/20220927/1664244048776801.jpg",link:"https://www.godox.com/product-d/DPIIIV-Series.html"},
+{d:"순간광",b:"Godox",name:"QT400III",spec:"400Ws / 고속 AC 모노라이트",mount:"Godox X / Bowens",krw:"약 730,000원",memo:"액션·제품·빠른 발광시간.",p:"스튜디오",img:"assets/lighting/godox_qt600.jpg",link:"https://www.godox.com/product-d/QTIII.html"},
+{d:"순간광",b:"Godox",name:"QS400II",spec:"400Ws / AC 모노라이트",mount:"Godox X / Bowens",krw:"약 355,000원",memo:"SK와 DP 사이 고정 스튜디오급.",p:"스튜디오",img:"",link:"https://www.godox.com/product-d/QSII-Series.html"},
+{d:"순간광",b:"Godox",name:"QS600II",spec:"600Ws / AC 모노라이트",mount:"Godox X / Bowens",krw:"약 465,000원",memo:"고정 스튜디오 600Ws 가성비.",p:"스튜디오",img:"",link:"https://www.godox.com/product-d/QSII-Series.html"},
+{d:"지속광",b:"Godox",name:"ML40Bi",spec:"40W / 바이컬러 미니 COB",mount:"Godox 미니 / 어댑터",krw:"약 177,000원",memo:"휴대형 소형 지속광.",p:"입문",img:"",link:"https://www.godox.com/product-e/ML40Bi-ML40R.html"},
+{d:"지속광",b:"Godox",name:"ML40R",spec:"40W / RGB 미니 COB",mount:"Godox 미니 / 어댑터",krw:"약 218,000원",memo:"소형 컬러 연출 COB.",p:"연출",img:"",link:"https://www.godox.com/product-e/ML40Bi-ML40R.html"},
+{d:"지속광",b:"Godox",name:"ML80Bi",spec:"80W / 바이컬러 COB",mount:"Godox 미니 / 어댑터",krw:"약 273,000원",memo:"ML60II Bi보다 출력 여유.",p:"입문",img:"",link:"https://www.godox.com/product-e/ML80Bi-ML150Bi.html"},
+{d:"지속광",b:"Godox",name:"ML150Bi",spec:"150W / 바이컬러 COB",mount:"Godox 미니 / Bowens 어댑터",krw:"약 410,000원",memo:"작은 인터뷰 주광 후보.",p:"입문",img:"",link:"https://www.godox.com/product-e/ML80Bi-ML150Bi.html"},
+{d:"지속광",b:"Godox",name:"ML100Bi",spec:"100W / 바이컬러 포켓 COB",mount:"Godox 미니 / Bowens 어댑터",krw:"약 314,000원",memo:"휴대형 100W급 주광.",p:"입문",img:"",link:"https://www.godox.com/product-b/ML100Bi.html"},
+{d:"지속광",b:"Godox",name:"ML100R",spec:"100W / RGB COB",mount:"Godox 미니 / 어댑터",krw:"약 382,000원",memo:"소형 컬러 COB.",p:"연출",img:"",link:"https://www.godox.com/product-b/ML100R.html"},
+{d:"지속광",b:"Godox",name:"RS60Bi",spec:"60W / 바이컬러 COB",mount:"Godox 미니",krw:"약 218,000원",memo:"저가 휴대형 바이컬러.",p:"입문",img:"https://www.godox.com/static/upload/image/20241227/1735286367925483.jpg",link:"https://www.godox.com/product-b/RS60Bi-RS60R.html"},
+{d:"지속광",b:"Godox",name:"RS100R",spec:"100W / RGB COB",mount:"Godox 미니",krw:"약 341,000원",memo:"RS 계열 100W 컬러 조명.",p:"연출",img:"https://www.godox.com/static/upload/image/20241227/1735286929214038.jpg",link:"https://www.godox.com/product-b/RS100Bi-RS100R.html"},
+{d:"지속광",b:"Godox",name:"SL60IID",spec:"60W / daylight COB",mount:"Bowens",krw:"약 150,000원",memo:"저가 Bowens 지속광 입문.",p:"입문",img:"",link:"https://www.godox.com/product-d/SL60IID-SL60IIBi.html"},
+{d:"지속광",b:"Godox",name:"SL60IIBi",spec:"60W / 바이컬러 COB",mount:"Bowens",krw:"약 190,000원",memo:"SL60II의 바이컬러 버전.",p:"입문",img:"",link:"https://www.godox.com/product-d/SL60IID-SL60IIBi.html"},
+{d:"지속광",b:"Godox",name:"SL150R",spec:"150W / RGB COB",mount:"Bowens",krw:"약 574,000원",memo:"컬러 COB, 제품·영상 연출.",p:"연출",img:"",link:"https://www.godox.com/product-b/SL150R-SL300R.html"},
+{d:"지속광",b:"Godox",name:"SL300R",spec:"300W / RGB COB",mount:"Bowens",krw:"약 958,000원",memo:"300W 컬러 COB.",p:"연출",img:"",link:"https://www.godox.com/product-b/SL150R-SL300R.html"},
+{d:"지속광",b:"Godox",name:"LE200Bi",spec:"200W / Litemons 바이컬러",mount:"Bowens",krw:"약 382,000원",memo:"저가 200W급 바이컬러.",p:"가성비",img:"",link:"https://www.godox.com/product-e/LE200Bi-LE300Bi-LE600Bi.html"},
+{d:"지속광",b:"Godox",name:"LE300Bi",spec:"300W / Litemons 바이컬러",mount:"Bowens",krw:"약 547,000원",memo:"300W급 가성비 지속광.",p:"가성비",img:"",link:"https://www.godox.com/product-e/LE200Bi-LE300Bi-LE600Bi.html"},
+{d:"지속광",b:"Godox",name:"LE600Bi",spec:"600W / Litemons 바이컬러",mount:"Bowens",krw:"약 958,000원",memo:"600W급 저가 대안.",p:"가성비",img:"",link:"https://www.godox.com/product-e/LE200Bi-LE300Bi-LE600Bi.html"},
+{d:"지속광",b:"Godox",name:"LA150R",spec:"150W / Litemons RGB",mount:"Bowens",krw:"약 410,000원",memo:"입문 컬러 COB.",p:"연출",img:"",link:"https://www.godox.com/product-b/Litemons/LA150R-LA200R-LA300R-LA300Bi.html"},
+{d:"지속광",b:"Godox",name:"LA200R",spec:"200W / Litemons RGB",mount:"Bowens",krw:"약 547,000원",memo:"200W급 컬러 COB.",p:"연출",img:"",link:"https://www.godox.com/product-b/Litemons/LA150R-LA200R-LA300R-LA300Bi.html"},
+{d:"지속광",b:"Godox",name:"LA300R",spec:"300W / Litemons RGB",mount:"Bowens",krw:"약 780,000원",memo:"300W급 컬러 COB.",p:"연출",img:"",link:"https://www.godox.com/product-b/Litemons/LA150R-LA200R-LA300R-LA300Bi.html"},
+{d:"지속광",b:"Godox",name:"TL30",spec:"30cm / RGB 튜브",mount:"전용 / Godox Light",krw:"약 136,000원",memo:"작은 배경 포인트 튜브.",p:"연출",img:"https://www.godox.com/static/upload/image/20220303/1646302468871491.png",link:"https://www.godox.com/product-d/TL30.html"},
+{d:"지속광",b:"Godox",name:"TL60",spec:"60cm / RGB 튜브",mount:"전용 / Godox Light",krw:"약 273,000원",memo:"배경·헤어·무드 조명.",p:"연출",img:"https://www.godox.com/static/upload/image/20220303/1646302468871491.png",link:"https://www.godox.com/product-d/TL60.html"},
+{d:"지속광",b:"Godox",name:"TL120",spec:"120cm / RGB 튜브",mount:"전용 / Godox Light",krw:"약 410,000원",memo:"전신·공간 라인 조명.",p:"연출",img:"",link:"https://www.godox.com/product-d/TL120.html"},
+{d:"지속광",b:"Godox",name:"TL180",spec:"180cm / RGB 튜브",mount:"전용 / Godox Light",krw:"약 547,000원",memo:"큰 공간·전신 연출 튜브.",p:"연출",img:"",link:"https://www.godox.com/product-d/TL180.html"},
+{d:"지속광",b:"Aputure",name:"LS 600d",spec:"600W급 / daylight COB",mount:"Bowens / Sidus",krw:"약 1,195,000원",memo:"600d Pro보다 단순한 daylight 고출력.",p:"핵심",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/LS600d-_1.png?v=1708329257",link:"https://www.aputure.com/products/ls-600d/"},
+{d:"지속광",b:"Aputure",name:"LS 600c Pro II",spec:"600W급 / 컬러 COB",mount:"Bowens / Sidus / DMX",krw:"약 2,041,000원",memo:"600W급 RGBWW 프로 COB.",p:"연출",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/LS-600c-Pro-II_V-mount_US_-2.png?v=1761181845",link:"https://www.aputure.com/products/ls-600c-pro-ii/"},
+{d:"지속광",b:"Aputure",name:"Electro Storm CS15",spec:"1500W급 / 컬러 시네마 COB",mount:"전자접점 / DMX",krw:"약 5,362,000원",memo:"대형 현장용 고출력 컬러 조명.",p:"프로",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/CS15_Meuium_Barndoor-5.png?v=1703557992",link:"https://www.aputure.com/products/electro-storm-cs15/"},
+{d:"지속광",b:"Aputure",name:"Electro Storm XT26",spec:"2600W급 / 바이컬러 시네마 COB",mount:"전자접점 / DMX",krw:"약 6,130,000원",memo:"고출력 렌탈 현장급 바이컬러.",p:"렌탈",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/XT26_Meuium_Barndoor-5.png?v=1703558287",link:"https://www.aputure.com/products/electro-storm-xt26/"},
+{d:"지속광",b:"Aputure",name:"Nova P300c",spec:"300W급 / RGBWW 패널",mount:"Sidus / DMX",krw:"약 1,629,000원",memo:"컬러 패널 300급.",p:"연출",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/NOVAP300c-2_9862608c-9182-459b-aabd-dbd48558fa10.png?v=1699441297",link:"https://www.aputure.com/products/nova-p300c/"},
+{d:"지속광",b:"Aputure",name:"Nova P600c",spec:"600W급 / RGBWW 패널",mount:"Sidus / DMX",krw:"약 2,302,000원",memo:"고출력 컬러 면광원.",p:"연출",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/NOVAP600c-4_48e6cada-c44d-45a1-9f3c-9a9c6397695e.png?v=1699441391",link:"https://www.aputure.com/products/nova-p600c/"},
+{d:"지속광",b:"Aputure",name:"INFINIMAT 1x2",spec:"1x2 / LED 매트",mount:"INFINIMAT 컨트롤",krw:"약 1,165,000원",memo:"작은 공간·제품·차량 내부용 매트.",p:"연출",img:"",link:"https://www.aputure.com/products/infinimat-1x2/"},
+{d:"지속광",b:"Aputure",name:"INFINIMAT 1x4",spec:"1x4 / LED 매트",mount:"INFINIMAT 컨트롤",krw:"약 1,507,000원",memo:"세로·가로 라인형 면광원.",p:"연출",img:"",link:"https://www.aputure.com/products/infinimat-1x4/"},
+{d:"지속광",b:"Aputure",name:"INFINIMAT 2x4",spec:"2x4 / LED 매트",mount:"INFINIMAT 컨트롤",krw:"약 1,850,000원",memo:"인터뷰·공간용 중형 매트.",p:"연출",img:"",link:"https://www.aputure.com/products/infinimat-2x4/"},
+{d:"지속광",b:"Aputure",name:"INFINIMAT 4x4",spec:"4x4 / LED 매트",mount:"INFINIMAT 컨트롤",krw:"약 4,384,000원",memo:"큰 면광원, 렌탈급 세트.",p:"프로",img:"",link:"https://www.aputure.com/products/infinimat-4x4/"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran 60d S",spec:"65W / daylight COB",mount:"Bowens / Sidus",krw:"약 273,000원",memo:"소형 daylight 입문.",p:"가성비",img:"assets/lighting/aputure_amaran.jpg",link:"https://amarancreators.com/products/amaran-60d-s"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran 60x S",spec:"65W / 바이컬러 COB",mount:"Bowens / Sidus",krw:"약 314,000원",memo:"소형 바이컬러 입문.",p:"가성비",img:"assets/lighting/aputure_amaran.jpg",link:"https://amarancreators.com/products/amaran-60x-s"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran 150c",spec:"150W / RGBWW COB",mount:"Bowens / Sidus",krw:"약 547,000원",memo:"작은 컬러 COB 주광.",p:"연출",img:"assets/lighting/aputure_amaran.jpg",link:"https://amarancreators.com/products/amaran-150c"},
+{d:"지속광",b:"amaran(아마란)",name:"F21x",spec:"100W / 바이컬러 플렉스 패널",mount:"전용 / Sidus",krw:"약 684,000원",memo:"F21c의 바이컬러 버전.",p:"연출",img:"assets/lighting/aputure_amaran.jpg",link:"https://amarancreators.com/products/f21x"},
+{d:"지속광",b:"amaran(아마란)",name:"F22x",spec:"200W / 바이컬러 플렉스 패널",mount:"전용 / Sidus",krw:"약 958,000원",memo:"F22c의 바이컬러 버전.",p:"연출",img:"assets/lighting/aputure_amaran.jpg",link:"https://amarancreators.com/products/f22x"},
+{d:"지속광",b:"Nanlite",name:"Evoke 5C",spec:"5색 엔진 / 소형 풀컬러",mount:"전용",krw:"약 300,000원",memo:"초소형 컬러 포인트 조명.",p:"연출",img:"http://nanliteus.com/cdn/shop/files/evoke-5c-8.jpg?v=1776225433",link:"https://nanliteus.com/products/evoke-5c-led-full-color-spotlight"},
+{d:"지속광",b:"Nanlite",name:"Evoke 150C",spec:"150W급 / 풀컬러 스팟",mount:"NL Mount / Bowens 어댑터",krw:"약 1,185,000원",memo:"소형 고품질 컬러 COB.",p:"연출",img:"",link:"https://nanliteus.com/products/evoke-150c-led-full-color-spotlight"},
+{d:"지속광",b:"Nanlite",name:"Evoke 600C",spec:"600W급 / 풀컬러 스팟",mount:"NL Mount / DMX",krw:"약 2,829,000원",memo:"고출력 풀컬러 프로 조명.",p:"프로",img:"",link:"https://nanliteus.com/products/evoke-600c-led-full-color-spotlight"},
+{d:"지속광",b:"Nanlite",name:"FC-720C",spec:"720W급 / RGBW 컬러 COB",mount:"Bowens / Nanlink",krw:"약 821,000원",memo:"FC-720B의 컬러 버전.",p:"연출",img:"",link:"https://nanliteus.com/products/fc-720c-rgbw-led-spotlight"},
+{d:"지속광",b:"Nanlite",name:"PavoSlim 60C",spec:"1x1 / RGBWW 패널",mount:"전용 / Nanlink",krw:"약 821,000원",memo:"60B의 컬러 패널 버전.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/PS60C-1.jpg?v=1759291712",link:"https://nanliteus.com/products/pavoslim-60c-1x1-rgbww-led-panel-light"},
+{d:"지속광",b:"Nanlite",name:"PavoSlim 120C",spec:"2x1 / RGBWW 패널",mount:"전용 / Nanlink",krw:"약 875,000원",memo:"2x1 컬러 면광원.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/PS120C-1.jpg?v=1759154901",link:"https://nanliteus.com/products/pavoslim-120c-2x1-rgbww-led-panel-light-with-pop-up-softbox"},
+{d:"지속광",b:"Nanlite",name:"PavoSlim 240C",spec:"2x2 / RGBWW 패널",mount:"전용 / Nanlink",krw:"약 2,124,000원",memo:"대형 컬러 면광원.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/PavoSlim240C_3.jpg?v=1759151683",link:"https://nanliteus.com/products/pavoslim-240c-2x2-rgbww-led-panel-light"},
+{d:"지속광",b:"Nanlite",name:"PavoSlim 360C",spec:"4x4급 / RGBWW 패널",mount:"전용 / Nanlink",krw:"약 3,411,000원",memo:"대형 프로 컬러 패널.",p:"프로",img:"",link:"https://nanliteus.com/products/pavoslim-360c-rgbww-led-panel-light"},
+{d:"지속광",b:"Nanlite",name:"PavoTube II 6XR",spec:"10인치 / RGBWW 픽셀 튜브 / CRMX",mount:"전용 / Nanlink·CRMX",krw:"약 204,000원",memo:"초소형 CRMX 튜브.",p:"연출",img:"",link:"https://nanliteus.com/products/pavotube-ii-6xr"},
+{d:"지속광",b:"SmallRig",name:"RC 60B",spec:"60W / 바이컬러 COB",mount:"미니 Bowens 어댑터",krw:"약 230,000원",memo:"소형 가성비 영상 조명.",p:"가성비",img:"assets/lighting/smallrig_rc.jpg",link:"https://www.smallrig.com/"},
+{d:"지속광",b:"SmallRig",name:"RC 120B",spec:"120W / 바이컬러 COB",mount:"Bowens",krw:"약 300,000원",memo:"입문 인터뷰 주광.",p:"가성비",img:"assets/lighting/smallrig_rc.jpg",link:"https://www.smallrig.com/"},
+{d:"지속광",b:"SmallRig",name:"RC 220B Pro",spec:"220W / 바이컬러 COB",mount:"Bowens",krw:"약 430,000원",memo:"가성비 200W급 영상 주광.",p:"가성비",img:"assets/lighting/smallrig_rc220b.png",link:"https://www.smallrig.com/RC-220B-Pro-COB-LED-Video-Light.html"},
+{d:"지속광",b:"SmallRig",name:"RC 350B",spec:"350W / 바이컬러 COB",mount:"Bowens",krw:"약 820,000원",memo:"300W급 가성비 후보.",p:"가성비",img:"assets/lighting/smallrig_rc.jpg",link:"https://www.smallrig.com/"},
+{d:"지속광",b:"Zhiyun",name:"MOLUS X60RGB",spec:"60W / RGB COB",mount:"전용 / Bowens 어댑터",krw:"약 270,000원",memo:"초소형 컬러 조명.",p:"연출",img:"assets/lighting/zhiyun_x60rgb.png",link:"https://www.zhiyun-tech.com/"},
+{d:"지속광",b:"Zhiyun",name:"MOLUS X100",spec:"100W / 소형 COB",mount:"전용 / Bowens 어댑터",krw:"약 370,000원",memo:"가방에 넣는 100W급.",p:"가성비",img:"assets/lighting/zhiyun_x100rgb.jpg",link:"https://www.zhiyun-tech.com/"},
+{d:"지속광",b:"Zhiyun",name:"MOLUS G200",spec:"200W / 부스트 COB",mount:"Bowens",krw:"약 550,000원",memo:"작은 본체의 200W급 조명.",p:"가성비",img:"assets/lighting/zhiyun_g200.png",link:"https://www.zhiyun-tech.com/"},
+{d:"지속광",b:"COLBOR",name:"CL60",spec:"65W / COB",mount:"전용 / Bowens 어댑터",krw:"약 160,000원",memo:"초저가 소형 COB.",p:"가성비",img:"assets/lighting/colbor_cl220.jpg",link:"https://www.colborlight.com/"},
+{d:"지속광",b:"COLBOR",name:"CL100X",spec:"110W / 바이컬러 COB",mount:"Bowens",krw:"약 280,000원",memo:"입문 바이컬러 COB.",p:"가성비",img:"assets/lighting/colbor_cl220.jpg",link:"https://www.colborlight.com/"},
+{d:"지속광",b:"COLBOR",name:"CL220",spec:"220W / COB",mount:"Bowens",krw:"약 450,000원",memo:"저가 220W급.",p:"가성비",img:"assets/lighting/colbor_cl220.jpg",link:"https://www.colborlight.com/products/co-cl220"},
+{d:"지속광",b:"COLBOR",name:"CL330",spec:"330W / COB",mount:"Bowens",krw:"약 720,000원",memo:"300W급 가성비 조명.",p:"가성비",img:"assets/lighting/colbor_cl220.jpg",link:"https://www.colborlight.com/"},
+{d:"순간광",b:"Elinchrom",name:"ONE",spec:"131Ws / 배터리 모노라이트",mount:"Elinchrom OCF",krw:"약 1,095,000원",memo:"A2/AD100보다 출력 높은 소형 프리미엄.",p:"프리미엄",img:"assets/lighting/elinchrom_three.jpg",link:"https://www.elinchrom.com/"},
+{d:"순간광",b:"Elinchrom",name:"FIVE",spec:"522Ws / 배터리 모노라이트",mount:"Elinchrom OCF",krw:"약 2,260,000원",memo:"B10X Plus/AD600 사이 비교군.",p:"프리미엄",img:"assets/lighting/elinchrom_three.jpg",link:"https://www.elinchrom.com/"},
+{d:"순간광",b:"Westcott",name:"FJ80 II",spec:"80Ws / 라운드헤드 스피드라이트",mount:"FJ Wireless",krw:"약 548,000원",memo:"V1/A10 사이 미국식 대안.",p:"보조",img:"assets/lighting/westcott_fj400.jpg",link:"https://www.fjwestcott.com/"},
+{d:"순간광",b:"Westcott",name:"FJ200",spec:"200Ws / 배터리 스트로브",mount:"FJ Wireless / Bowens",krw:"약 685,000원",memo:"AD200Pro II급 출력 비교군.",p:"핵심",img:"assets/lighting/westcott_fj400.jpg",link:"https://www.fjwestcott.com/"},
+{d:"순간광",b:"Westcott",name:"FJ800",spec:"800Ws / AC 스트로브",mount:"FJ Wireless / Bowens",krw:"약 1,781,000원",memo:"고출력 AC 스트로브, QT/Pro-D3 하위 가격대.",p:"스튜디오",img:"assets/lighting/westcott_fj400.jpg",link:"https://www.fjwestcott.com/"},
+{d:"순간광",b:"Neewer",name:"Q4",spec:"400Ws / 배터리 스트로브",mount:"Neewer Q / Bowens",krw:"약 520,000원",memo:"AD400Pro 저가 대안.",p:"가성비",img:"assets/lighting/neewer_q3.jpg",link:"https://neewer.com/"},
+{d:"순간광",b:"Neewer",name:"Q6",spec:"600Ws / 배터리 스트로브",mount:"Neewer Q / Bowens",krw:"약 780,000원",memo:"AD600 계열 저가 대안.",p:"가성비",img:"assets/lighting/neewer_q3.jpg",link:"https://neewer.com/"},
+{d:"지속광",b:"Neewer",name:"MS150B",spec:"150W / 바이컬러 COB",mount:"Bowens",krw:"약 260,000원",memo:"입문 영상 조명.",p:"가성비",img:"assets/lighting/neewer_q3.jpg",link:"https://neewer.com/"},
+{d:"지속광",b:"Neewer",name:"CB200C",spec:"200W / RGB COB",mount:"Bowens",krw:"약 480,000원",memo:"저가 컬러 COB.",p:"연출",img:"assets/lighting/neewer_q3.jpg",link:"https://neewer.com/"},
+{d:"순간광",b:"Broncolor",name:"Satos 1600",spec:"1600Ws / 최신 팩 시스템",mount:"Broncolor / Pulso·Picolite",krw:"약 23,000,000원",memo:"Scoro 이후급 최상위 팩 시스템.",p:"렌탈",img:"assets/lighting/broncolor_scoro.jpg",link:"https://broncolor.swiss/"},
+{d:"순간광",b:"Broncolor",name:"Satos 3200",spec:"3200Ws / 최신 팩 시스템",mount:"Broncolor / Pulso·Picolite",krw:"약 30,000,000원",memo:"대형 상업·제품 촬영 최상위.",p:"렌탈",img:"assets/lighting/broncolor_scoro.jpg",link:"https://broncolor.swiss/"},
+{d:"지속광",b:"Broncolor",name:"LED F160",spec:"160W / 지속광",mount:"Broncolor / Pulso 액세서리",krw:"약 2,700,000원",memo:"Broncolor 액세서리 생태계와 쓰는 지속광.",p:"프리미엄",img:"assets/lighting/broncolor_pulso.jpg",link:"https://broncolor.swiss/"}
+]);
+addLineupRows([
+{d:"지속광",b:"amaran(아마란)",name:"amaran Ray 60c",spec:"60W / OmniColor 풀컬러 COB",mount:"Bowens / amaran 앱",krw:"약 259,000원",memo:"신형 Ray 최저 출력. 휴대·책상·작은 제품 연출용.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/files/amaran_Ray_60c-05_8e02979d-5952-4631-9597-c8795523edc0.png?v=1763452945",link:"https://amarancreators.com/pages/amaran-ray-60c"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran Ray 120c",spec:"120W / OmniColor 풀컬러 COB",mount:"Bowens / amaran 앱",krw:"약 355,000원",memo:"작은 인터뷰·제품 촬영에서 컬러까지 필요한 급.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/files/amaran_Ray_120c-06.png?v=1763452973",link:"https://amarancreators.com/pages/amaran-ray-120c"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran Ray 360c",spec:"360W / OmniColor 풀컬러 COB",mount:"Bowens / amaran 앱",krw:"약 588,000원",memo:"300W급 컬러 COB. 150c/300c 후속 감각으로 비교.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/files/amaranRay360c-2.png?v=1763019115",link:"https://amarancreators.com/pages/amaran-ray-360c"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran Ray 660c",spec:"660W / OmniColor 풀컬러 COB",mount:"Bowens / amaran 앱",krw:"약 958,000원",memo:"600W급 컬러 COB. Nanlite FC-720C/Godox LE600Bi와 비교.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/files/amaranRay660c-5.png?v=1763019086",link:"https://amarancreators.com/pages/amaran-ray-660c"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran Halo 60x",spec:"60W / 바이컬러 COB",mount:"Bowens / amaran 앱",krw:"약 163,000원",memo:"신형 Halo 입문급. 60x S와 같은 소형 바이컬러 위치.",p:"가성비",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/files/amaranHalo60x-01.png?v=1772094061",link:"https://amarancreators.com/pages/amaran-halo-60x"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran Halo 100x",spec:"100W / 바이컬러 COB",mount:"Bowens / amaran 앱",krw:"약 218,000원",memo:"100x S 후속 포지션. 입문 인터뷰 주광.",p:"가성비",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/files/amaranHalo100x-13.png?v=1772094147",link:"https://amarancreators.com/pages/amaran-halo-100x"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran Halo 200x",spec:"200W / 바이컬러 COB",mount:"Bowens / amaran 앱",krw:"약 273,000원",memo:"200x S 후속 포지션. 1인 인터뷰 가성비 핵심.",p:"가성비",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/files/amaranHalo200x.png?v=1772437280",link:"https://amarancreators.com/pages/amaran-halo-200x"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran Halo 300x",spec:"300W / 바이컬러 COB",mount:"Bowens / amaran 앱",krw:"약 410,000원",memo:"300W급 바이컬러. 작은 스튜디오 주광 후보.",p:"가성비",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/files/amaranHalo300x.png?v=1772436944",link:"https://amarancreators.com/pages/amaran-halo-300x"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran Halo 600x",spec:"600W / 바이컬러 COB",mount:"Bowens / amaran 앱",krw:"약 643,000원",memo:"600W급 바이컬러 가성비. FC-720B/LE600Bi와 비교.",p:"가성비",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/files/amaranHalo600x-1.png?v=1772437177",link:"https://amarancreators.com/pages/amaran-halo-600x"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran Pano 60c",spec:"60W / 풀컬러 패널",mount:"전용 / amaran 앱",krw:"약 226,000원",memo:"작은 면광원. COB보다 부드럽고 세팅이 단순.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/files/Pano_60c-Black-4_6d4df88c-7130-4925-b96d-530edb64c024.png?v=1742895801",link:"https://amarancreators.com/pages/amaran-pano-60c"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran Pano 120c",spec:"120W / 풀컬러 패널",mount:"전용 / amaran 앱",krw:"약 396,000원",memo:"Pano 60c보다 큰 면광원. 책상·라이브·제품용.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/files/amaranPano120cKit_Charcoal_Clean_0001_x1000_2338db15-d0ce-4708-a7f3-64d03e45cfba.png?v=1774336787",link:"https://amarancreators.com/pages/amaran-pano-120c"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran Verge",spec:"데스크/스트리밍용 패널",mount:"전용 / amaran 앱",krw:"약 108,000원",memo:"카메라 위/책상 근거리용. 촬영장 주광보다는 크리에이터 조명.",p:"입문",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/files/amaranVerge_Charcoal_Clean_0001_v2.png?v=1770782536",link:"https://amarancreators.com/pages/amaran-verge"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran Verge Max",spec:"대형 데스크/스트리밍 패널",mount:"전용 / amaran 앱",krw:"약 355,000원",memo:"Verge보다 큰 면광원. 책상·강의·라이브용.",p:"입문",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/files/amaranVergeMax_-3_e187ed8c-a29b-4d5a-b018-1fb0316a3ec0.png?v=1764057586",link:"https://amarancreators.com/pages/amaran-verge-max"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran T2c",spec:"2ft / 20W RGBWW 튜브",mount:"전용 / USB-C / DMX 어댑터",krw:"약 273,000원",memo:"배경·헤어·제품 포인트용 기본 튜브.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/products/T2c_b097934e-65b2-4bfc-bf67-b3dda5892265.png?v=1774335564",link:"https://amarancreators.com/pages/amaran-t2c"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran T4c",spec:"4ft / 40W RGBWW 튜브",mount:"전용 / USB-C / DMX 어댑터",krw:"약 451,000원",memo:"전신·공간 라인 조명. Nanlite PavoTube 30C급 비교.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/products/T4C_bc341bd6-aff0-4ec1-8f37-ce965c4238df.png?v=1774336048",link:"https://amarancreators.com/pages/amaran-t4c"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran PT1c",spec:"1ft / 배터리 픽셀 튜브",mount:"전용 / USB-C / DMX 어댑터",krw:"약 204,000원",memo:"짧은 픽셀 튜브. 제품·배경 포인트.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/products/amaranPT1-2.png?v=1710517467",link:"https://amarancreators.com/pages/amaran-pt1c"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran PT2c",spec:"2ft / 배터리 픽셀 튜브",mount:"전용 / USB-C / DMX 어댑터",krw:"약 382,000원",memo:"픽셀 이펙트 가능한 2ft 튜브.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/products/amaranPT2-2.png?v=1710517453",link:"https://amarancreators.com/pages/amaran-pt2c"},
+{d:"지속광",b:"amaran(아마란)",name:"amaran PT4c",spec:"4ft / 배터리 픽셀 튜브",mount:"전용 / USB-C / DMX 어댑터",krw:"약 293,000원",memo:"4ft 픽셀 튜브. 현재 프로모션가 기준이라 변동 가능.",p:"연출",img:"https://cdn.shopify.com/s/files/1/0862/5432/1947/files/color_block_02-e1677627062968-1000x749.webp?v=1713819028",link:"https://amarancreators.com/pages/amaran-pt4c"}
+]);
+addLineupRows([
+{d:"액세서리",b:"Godox",name:"QR-P60T",spec:"60cm / 원터치 파라볼릭 소프트박스",mount:"Bowens",krw:"약 95,000원",memo:"작은 방·상반신·AD100/AD200+S2용.",p:"소프트박스",img:"assets/lighting/godox_qr_series_2.png",link:"https://www.godox.com/product-d/QR-Series.html"},
+{d:"액세서리",b:"Godox",name:"QR-P70T",spec:"70cm / 원터치 파라볼릭 소프트박스",mount:"Bowens",krw:"약 122,000원",memo:"1인 상반신, 휴대 세팅.",p:"소프트박스",img:"assets/lighting/godox_qr_series_3.png",link:"https://www.godox.com/product-d/QR-Series.html"},
+{d:"액세서리",b:"Godox",name:"QR-P90T",spec:"90cm / 원터치 파라볼릭 소프트박스",mount:"Bowens",krw:"약 163,000원",memo:"1인 인물 주광 기본 사이즈.",p:"소프트박스",img:"assets/lighting/godox_qr_series_4.png",link:"https://www.godox.com/product-d/QR-Series.html"},
+{d:"액세서리",b:"Godox",name:"QR-P120T",spec:"120cm / 원터치 파라볼릭 소프트박스",mount:"Bowens",krw:"약 204,000원",memo:"전신·2인·넓은 면광원.",p:"소프트박스",img:"assets/lighting/godox_qr_series_5.png",link:"https://www.godox.com/product-d/QR-Series.html"},
+{d:"액세서리",b:"Godox",name:"CS-50T Lantern",spec:"50cm / 접이식 랜턴",mount:"Bowens",krw:"약 89,000원",memo:"작은 공간 전체 확산.",p:"랜턴",img:"https://www.godox.com/static/upload/image/20230918/1695027211359751.png",link:"https://www.godox.com/product-d/CS-Series.html"},
+{d:"액세서리",b:"Godox",name:"CS-65T Lantern",spec:"65cm / 접이식 랜턴",mount:"Bowens",krw:"약 103,000원",memo:"1인 인터뷰 공간 확산.",p:"랜턴",img:"https://www.godox.com/static/upload/image/20230918/1695027211359751.png",link:"https://www.godox.com/product-d/CS-Series.html"},
+{d:"액세서리",b:"Godox",name:"CS-85T Lantern",spec:"85cm / 접이식 랜턴",mount:"Bowens",krw:"약 108,000원",memo:"2인 인터뷰·넓은 실내 확산.",p:"랜턴",img:"https://www.godox.com/static/upload/image/20230918/1695027211359751.png",link:"https://www.godox.com/product-d/CS-Series.html"},
+{d:"액세서리",b:"Godox",name:"Parabolic 68",spec:"68cm / 포커싱 파라볼릭",mount:"Godox 파라볼릭 시스템",krw:"약 821,000원",memo:"제품·인물용 집중도 높은 고급 반사 시스템.",p:"엄브렐러",img:"",link:"https://www.godox.com/product-d/Parabolic-68-88-128-158.html"},
+{d:"액세서리",b:"Godox",name:"Parabolic 88",spec:"88cm / 포커싱 파라볼릭",mount:"Godox 파라볼릭 시스템",krw:"약 1,095,000원",memo:"1인 인물·패션용 집중/확산 조절.",p:"엄브렐러",img:"",link:"https://www.godox.com/product-d/Parabolic-68-88-128-158.html"},
+{d:"액세서리",b:"Godox",name:"Parabolic 128",spec:"128cm / 포커싱 파라볼릭",mount:"Godox 파라볼릭 시스템",krw:"약 1,643,000원",memo:"전신·패션·넓은 면광원.",p:"엄브렐러",img:"",link:"https://www.godox.com/product-d/Parabolic-68-88-128-158.html"},
+{d:"액세서리",b:"Godox",name:"Parabolic 158",spec:"158cm / 포커싱 파라볼릭",mount:"Godox 파라볼릭 시스템",krw:"약 2,190,000원",memo:"대형 스튜디오·그룹·광고 촬영.",p:"엄브렐러",img:"",link:"https://www.godox.com/product-d/Parabolic-68-88-128-158.html"},
+{d:"액세서리",b:"Godox",name:"AK-R1",spec:"라운드헤드 자석 액세서리 키트",mount:"Godox 라운드헤드",krw:"약 82,000원",memo:"V1/V100/H200R용 돔·그리드·젤 키트.",p:"기타",img:"https://www.godox.com/static/upload/image/20220303/1646302730181659.png",link:"https://www.godox.com/product-d/AK-R1.html"},
+{d:"액세서리",b:"Godox",name:"AK-R21 Projection",spec:"라운드헤드 프로젝션 어댑터",mount:"Godox 라운드헤드",krw:"약 150,000원",memo:"V1/V100/AD100Pro용 고보·패턴 투사.",p:"프로젝션",img:"https://www.godox.com/static/upload/image/20221219/1671443714259356.jpg",link:"https://www.godox.com/product-b/AK-R21.html"},
+{d:"액세서리",b:"Godox",name:"MLP19K Projection",spec:"19도 / 프로젝션 렌즈 키트",mount:"Bowens",krw:"약 410,000원",memo:"Godox 지속광용 컷팅·고보.",p:"프로젝션",img:"",link:"https://www.godox.com/product-b/MLP.html"},
+{d:"액세서리",b:"Godox",name:"MLP26K Projection",spec:"26도 / 프로젝션 렌즈 키트",mount:"Bowens",krw:"약 410,000원",memo:"중간 각도 고보·스팟.",p:"프로젝션",img:"",link:"https://www.godox.com/product-b/MLP.html"},
+{d:"액세서리",b:"Godox",name:"MLP36K Projection",spec:"36도 / 프로젝션 렌즈 키트",mount:"Bowens",krw:"약 410,000원",memo:"넓은 배경 패턴·스팟.",p:"프로젝션",img:"",link:"https://www.godox.com/product-b/MLP.html"},
+{d:"액세서리",b:"Aputure",name:"Aputure Mount Lantern 120",spec:"120cm / 대형 랜턴",mount:"Aputure 전자접점",krw:"약 410,000원",memo:"STORM 계열용 대형 공간 확산.",p:"랜턴",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/A-MountLantern120.png?v=1750814479",link:"https://www.aputure.com/products/aputure-mount-lantern-120/"},
+{d:"액세서리",b:"Aputure",name:"Aputure Mount Light Dome 150",spec:"150cm / 대형 소프트박스",mount:"Aputure 전자접점",krw:"약 684,000원",memo:"STORM 계열용 대형 주광.",p:"소프트박스",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/A-Mount_Light_Dome_150-02.png?v=1750902981",link:"https://www.aputure.com/products/aputure-mount-light-dome-150/"},
+{d:"액세서리",b:"Aputure",name:"CF4 Fresnel",spec:"4 inch / 컴팩트 프레넬",mount:"Aputure 전자접점",krw:"약 273,000원",memo:"STORM 80c 등 소형 전자접점 조명.",p:"프레넬",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/d6e8971cdd28251864a0d9791e18fffb.png?v=1732784698",link:"https://www.aputure.com/products/cf4-fresnel/"},
+{d:"액세서리",b:"Aputure",name:"CF7 Fresnel",spec:"7 inch / 프레넬",mount:"Aputure 전자접점",krw:"약 410,000원",memo:"STORM 400/700급 집광.",p:"프레넬",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/CF7-1.png?v=1757461676",link:"https://www.aputure.com/products/cf7-fresnel/"},
+{d:"액세서리",b:"Aputure",name:"CF10 Fresnel",spec:"10 inch / 프레넬",mount:"Aputure 전자접점",krw:"약 547,000원",memo:"고출력 STORM 집광.",p:"프레넬",img:"",link:"https://www.aputure.com/products/cf10-fresnel/"},
+{d:"액세서리",b:"Aputure",name:"CF12 Fresnel",spec:"12 inch / 프레넬",mount:"Aputure 전자접점",krw:"약 1,095,000원",memo:"대형 현장용 집중광.",p:"프레넬",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/Storm1000c_CF12Fresnel-8_1.png?v=1731380737",link:"https://www.aputure.com/products/cf12-fresnel/"},
+{d:"액세서리",b:"Aputure",name:"CF16 Fresnel",spec:"16 inch / 프레넬",mount:"Aputure 전자접점",krw:"약 2,050,000원",memo:"렌탈·대형 현장급 집광.",p:"프레넬",img:"",link:"https://www.aputure.com/products/cf16-fresnel/"},
+{d:"액세서리",b:"Aputure",name:"Spotlight Mount II 19°",spec:"19도 / 프로젝션 렌즈 키트",mount:"Bowens",krw:"약 821,000원",memo:"좁은 빔·컷팅·고보.",p:"프로젝션",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/SpotlightMountII19_LensKit_1.png?v=1773311135",link:"https://www.aputure.com/products/spotlight-mount-ii-19-lens-kit/"},
+{d:"액세서리",b:"Aputure",name:"Spotlight Mount II 26°",spec:"26도 / 프로젝션 렌즈 키트",mount:"Bowens",krw:"약 821,000원",memo:"중간 각도 컷팅·제품 포인트.",p:"프로젝션",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/SpotlightMountII26_LensKit_1.png?v=1773311142",link:"https://www.aputure.com/products/spotlight-mount-ii-26-lens-kit/"},
+{d:"액세서리",b:"Aputure",name:"Spotlight Mount II 36°",spec:"36도 / 프로젝션 렌즈 키트",mount:"Bowens",krw:"약 821,000원",memo:"인물·배경 패턴용 넓은 투사.",p:"프로젝션",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/SpotlightMountII36_LensKit_10.png?v=1773311659",link:"https://www.aputure.com/products/spotlight-mount-ii-36-lens-kit/"},
+{d:"액세서리",b:"Nanlite",name:"Rapid 60 Softbox FM",spec:"60cm / 그리드 포함",mount:"FM Mount",krw:"약 163,000원",memo:"Forza 60 계열 전용 빠른 소프트박스.",p:"소프트박스",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/SB-FM-RP60-main.jpg?v=1758224894",link:"https://nanliteus.com/products/rapid-60-softbox-with-grid-and-fm-mount"},
+{d:"액세서리",b:"Nanlite",name:"Octagonal Softbox 40 FM",spec:"40cm / 옥타",mount:"FM Mount",krw:"약 75,000원",memo:"Forza 60 계열 소형 소프트박스.",p:"소프트박스",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/SB-FMM-O-40-main-1.jpg?v=1758219717",link:"https://nanliteus.com/products/40cm-octagonal-softbox-for-fm-mount"},
+{d:"액세서리",b:"Nanlite",name:"Octagonal Softbox 60 FM",spec:"60cm / 옥타",mount:"FM Mount",krw:"약 89,000원",memo:"Forza 60 계열 상반신용.",p:"소프트박스",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/SB-FMM-O-60-main.jpg?v=1758217812",link:"https://nanliteus.com/products/60cm-octagonal-softbox-for-fm-mount"},
+{d:"액세서리",b:"Nanlite",name:"Rectangular Softbox 90x60",spec:"90x60cm / 사각 소프트박스",mount:"Bowens",krw:"약 47,000원",memo:"제품·인물 세로 라이트.",p:"소프트박스",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/SB-RT-90X60-2.jpg?v=1758681864",link:"https://nanliteus.com/products/rectangular-softbox-90x60-with-bowens-mount-35x24in"},
+{d:"액세서리",b:"Nanlite",name:"Stripbank Softbox 12x55",spec:"12x55in / 스트립",mount:"Bowens",krw:"약 67,000원",memo:"림라이트·제품 엣지 하이라이트.",p:"소프트박스",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/SB-ST-140X30-4.jpg?v=1770826845",link:"https://nanliteus.com/products/stripbank-softbox-with-bowens-mount-12x55in-1"},
+{d:"액세서리",b:"Nanlite",name:"Translucent Deep Umbrella 165",spec:"165cm / 투과 딥 엄브렐러",mount:"Umbrella shaft",krw:"약 102,000원",memo:"큰 면광원·빠른 확산.",p:"엄브렐러",img:"",link:"https://nanliteus.com/products/translucent-deep-umbrella-165cm"},
+{d:"액세서리",b:"Nanlite",name:"Silver Deep Umbrella 135",spec:"135cm / 실버 딥 엄브렐러",mount:"Umbrella shaft",krw:"약 92,000원",memo:"대비감 있는 반사 주광.",p:"엄브렐러",img:"",link:"https://nanliteus.com/products/silver-deep-umbrella-135cm"},
+{d:"액세서리",b:"Nanlite",name:"FL-11 Fresnel",spec:"FM Mount / 프레넬",mount:"FM Mount",krw:"약 108,000원",memo:"Forza 60 계열 집광.",p:"프레넬",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/FL-11-Fresnel-main.jpg?v=1759077623",link:"https://nanliteus.com/products/fl-11-fresnel-lens-and-barndoors-for-forza-fm-mount-lights"},
+{d:"액세서리",b:"Nanlite",name:"FL-20G Fresnel",spec:"Bowens / 프레넬",mount:"Bowens",krw:"약 218,000원",memo:"FC/Forza 고출력 COB 집광.",p:"프레넬",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/FL-20G-main.jpg?v=1758591036",link:"https://nanliteus.com/products/fl-20g-fresnel-lens-for-bowens-mount"},
+{d:"액세서리",b:"Nanlite",name:"PJ-FMM 19° Projection",spec:"19도 / 프로젝션",mount:"FM Mount",krw:"약 341,000원",memo:"Forza 60 계열 고보·컷팅.",p:"프로젝션",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/PJ-FMM-19-main.jpg?v=1758288724",link:"https://nanliteus.com/products/forza-pj-fmm-projection-attachment-with-19-lens-for-fm-mount"},
+{d:"액세서리",b:"Nanlite",name:"PJ-FMM 36° Projection",spec:"36도 / 프로젝션",mount:"FM Mount",krw:"약 382,000원",memo:"Forza 60 계열 넓은 투사.",p:"프로젝션",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/PJ-FMM-36-main.jpg?v=1758288724",link:"https://nanliteus.com/products/forza-pj-fmm-projection-attachment-with-36-lens-for-fm-mount"},
+{d:"액세서리",b:"Nanlite",name:"PJ-BM 19° Projection",spec:"19도 / 프로젝션",mount:"Bowens",krw:"약 862,000원",memo:"Bowens 고출력 조명 컷팅·고보.",p:"프로젝션",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/PJ-BM-19-main.jpg?v=1758304370",link:"https://nanliteus.com/products/pj-bm-projection-attachment-with-19-lens-for-bowens-mount"},
+{d:"액세서리",b:"Nanlite",name:"PJ-BM 36° Projection",spec:"36도 / 프로젝션",mount:"Bowens",krw:"약 821,000원",memo:"Bowens 고출력 조명 넓은 투사.",p:"프로젝션",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/PJ-BM-36-main.jpg?v=1758298791",link:"https://nanliteus.com/products/pj-bm-projection-attachment-with-36-lens-for-bowens-mount"},
+{d:"액세서리",b:"Profoto",name:"Clic Softbox Octa 2.3'",spec:"2.3ft / 접이식",mount:"Profoto Clic",krw:"약 410,000원",memo:"A10/A2용 빠른 소프트박스.",p:"소프트박스",img:"assets/lighting/profoto_ocf_octa.png",link:"https://www.profoto.com/"},
+{d:"액세서리",b:"Profoto",name:"OCF Softbox 1x3'",spec:"1x3ft / 스트립",mount:"Profoto OCF",krw:"약 340,000원",memo:"B10X/A2 림라이트·제품 엣지.",p:"소프트박스",img:"assets/lighting/profoto_ocf_octa.png",link:"https://www.profoto.com/"},
+{d:"액세서리",b:"Profoto",name:"OCF Softbox 2x3'",spec:"2x3ft / 사각",mount:"Profoto OCF",krw:"약 380,000원",memo:"로케이션 인물 주광.",p:"소프트박스",img:"assets/lighting/profoto_ocf_octa.png",link:"https://www.profoto.com/"},
+{d:"액세서리",b:"Profoto",name:"OCF Softbox Octa 3'",spec:"3ft / 옥타",mount:"Profoto OCF",krw:"약 410,000원",memo:"B10X/B10X Plus 기본 주광.",p:"소프트박스",img:"assets/lighting/profoto_ocf_octa.png",link:"https://www.profoto.com/"},
+{d:"액세서리",b:"Profoto",name:"Umbrella Deep White M",spec:"M / 딥 엄브렐러",mount:"Umbrella shaft",krw:"약 210,000원",memo:"빠른 로케이션 확산.",p:"엄브렐러",img:"assets/lighting/profoto_umbrella_deep.png",link:"https://www.profoto.com/us/en/shop/products/light-shaping-tools/umbrellas/umbrella-deep-white/"},
+{d:"액세서리",b:"Profoto",name:"Umbrella Deep White L",spec:"L / 딥 엄브렐러",mount:"Umbrella shaft",krw:"약 300,000원",memo:"넓은 인물 주광.",p:"엄브렐러",img:"assets/lighting/profoto_umbrella_deep.png",link:"https://www.profoto.com/us/en/shop/products/light-shaping-tools/umbrellas/umbrella-deep-white/"},
+{d:"액세서리",b:"Profoto",name:"Zoom Reflector",spec:"표준 리플렉터",mount:"Profoto",krw:"약 380,000원",memo:"Profoto 헤드 기본 성격의 반사갓.",p:"프레넬",img:"assets/lighting/profoto_prohead.png",link:"https://www.profoto.com/"},
+{d:"액세서리",b:"Profoto",name:"Magnum Reflector",spec:"고효율 리플렉터",mount:"Profoto",krw:"약 680,000원",memo:"출력 효율을 올리는 강한 반사갓.",p:"프레넬",img:"assets/lighting/profoto_prohead.png",link:"https://www.profoto.com/"},
+{d:"액세서리",b:"Broncolor",name:"Para 88",spec:"88cm / 포커싱 파라볼릭",mount:"Broncolor",krw:"약 4,100,000원",memo:"상업 인물·제품, 집중도 높은 Broncolor 대표 액세서리.",p:"엄브렐러",img:"assets/lighting/broncolor_para88.jpg",link:"https://broncolor.swiss/"},
+{d:"액세서리",b:"Broncolor",name:"Para 133",spec:"133cm / 포커싱 파라볼릭",mount:"Broncolor",krw:"약 6,000,000원",memo:"전신·패션 주광.",p:"엄브렐러",img:"assets/lighting/broncolor_para88.jpg",link:"https://broncolor.swiss/"},
+{d:"액세서리",b:"Broncolor",name:"Para 177",spec:"177cm / 포커싱 파라볼릭",mount:"Broncolor",krw:"약 8,500,000원",memo:"대형 광고·패션 스튜디오.",p:"엄브렐러",img:"assets/lighting/broncolor_para88.jpg",link:"https://broncolor.swiss/"},
+{d:"액세서리",b:"Broncolor",name:"Para 222",spec:"222cm / 포커싱 파라볼릭",mount:"Broncolor",krw:"약 13,000,000원",memo:"렌탈급 초대형 파라볼릭.",p:"엄브렐러",img:"assets/lighting/broncolor_para88.jpg",link:"https://broncolor.swiss/"},
+{d:"액세서리",b:"Broncolor",name:"Softbox 60x60",spec:"60x60cm",mount:"Broncolor",krw:"약 480,000원",memo:"제품·상반신 작은 면광원.",p:"소프트박스",img:"assets/lighting/accessory_contact.jpg",link:"https://broncolor.swiss/"},
+{d:"액세서리",b:"Broncolor",name:"Softbox 90x120",spec:"90x120cm",mount:"Broncolor",krw:"약 680,000원",memo:"인물 주광·제품 대형 면광원.",p:"소프트박스",img:"assets/lighting/accessory_contact.jpg",link:"https://broncolor.swiss/"},
+{d:"액세서리",b:"Broncolor",name:"Octabox 150",spec:"150cm / 옥타",mount:"Broncolor",krw:"약 950,000원",memo:"전신·패션용 큰 원형 캐치라이트.",p:"소프트박스",img:"assets/lighting/accessory_contact.jpg",link:"https://broncolor.swiss/"},
+{d:"액세서리",b:"Westcott",name:"Rapid Box Switch Octa M",spec:"M / 인서트 교체형",mount:"Switch / Bowens·Profoto 등",krw:"약 273,000원",memo:"브랜드 섞어 쓰는 경우 유용.",p:"소프트박스",img:"assets/lighting/westcott_rapidbox.jpg",link:"https://www.fjwestcott.com/products/rapid-box-switch-octa-m"}
+]);
+
+
+const groupOrder=[
+"순간광 · 미니/레트로/온카메라",
+"순간광 · 100Ws 초소형",
+"순간광 · 200~300Ws 휴대형",
+"순간광 · 300~500Ws 주광",
+"순간광 · 600~1250Ws 고출력",
+"순간광 · AC 모노라이트",
+"순간광 · 팩헤드/프로헤드",
+"지속광 · 100W 이하 COB",
+"지속광 · 100~300W COB",
+"지속광 · 300~800W COB",
+"지속광 · 1000W 이상/시네마",
+"지속광 · 패널/매트",
+"지속광 · 튜브/바",
+"액세서리 · 소프트박스",
+"액세서리 · 랜턴",
+"액세서리 · 엄브렐러",
+"액세서리 · 프레넬/집광",
+"액세서리 · 프로젝션/고보",
+"액세서리 · 트리거/무선",
+"액세서리 · 기타"
+];
+function priceNumber(x){
+  const raw=String(x.krw||"").replace(/[^\d]/g,"");
+  return raw?Number(raw):999999999;
+}
+function wattNumber(x){
+  const s=`${x.spec||""} ${x.name||""}`;
+  const m=s.match(/(\d+(?:\.\d+)?)\s*(?:Ws|W|급)/i);
+  return m?Number(m[1]):0;
+}
+function compareGroup(x){
+  const name=x.name||"", spec=x.spec||"", p=x.p||"";
+  if(x.d==="액세서리"){
+    if(/소프트|Softbox|Octa|Dome|QR-P|Rapid|Strip|Box/i.test(`${name} ${p}`)) return "액세서리 · 소프트박스";
+    if(/랜턴|Lantern|CS-/i.test(`${name} ${p}`)) return "액세서리 · 랜턴";
+    if(/엄브렐러|Umbrella|Para/i.test(`${name} ${p}`)) return "액세서리 · 엄브렐러";
+    if(/프레넬|Fresnel|집광|Reflector/i.test(`${name} ${p}`)) return "액세서리 · 프레넬/집광";
+    if(/프로젝션|Projection|Spotlight|Gobo|고보/i.test(`${name} ${p}`)) return "액세서리 · 프로젝션/고보";
+    if(/트리거|Trigger|XPro|Air|Remote|무선/i.test(`${name} ${p}`)) return "액세서리 · 트리거/무선";
+    return "액세서리 · 기타";
+  }
+  if(x.d==="순간광"){
+    if(/Lux|iM|iT|Z1|TT|V1|V100|V480|V850|V860|A10|FJ80/i.test(name)) return "순간광 · 미니/레트로/온카메라";
+    if(/AD100|A2|ONE\b/i.test(name)) return "순간광 · 100Ws 초소형";
+    if(/AD200|FJ200|THREE|Q3|R200|H200|EC200/i.test(name)) return "순간광 · 200~300Ws 휴대형";
+    if(/AD300|AD400|B10X$|D2 500|Siros 400|FJ400|Q4|DP400|QT400|QS400|SK400|SK300/i.test(name)) return "순간광 · 300~500Ws 주광";
+    if(/AD600|AD800|B10X Plus|Pro-B3|D2 1000|Pro-D3|Siros 800|FIVE|FJ800|Q6|DP800|DP1000|QT600|QT1200|QS600/i.test(name)) return "순간광 · 600~1250Ws 고출력";
+    if(/Pack|ProHead|Pulso|Picolite|Scoro|Satos|Move|P2400|AD1200|R1200|R2400/i.test(name)) return "순간광 · 팩헤드/프로헤드";
+    if(/MS|SK|DP|QT|QS|GS|D30/i.test(name)) return "순간광 · AC 모노라이트";
+    return "순간광 · 기타";
+  }
+  if(/PavoTube|INFINIBAR|Tube|TL\d|PB\d/i.test(name)) return "지속광 · 튜브/바";
+  if(/PavoSlim|Nova|NOVA|Panel|패널|F21|F22|INFINIMAT|Mat|매트/i.test(name)) return "지속광 · 패널/매트";
+  const watts=wattNumber(x);
+  if(watts>=1000||/STORM XT|Electro Storm|1200|1500|2600|5200|CS15|XT26/i.test(name)) return "지속광 · 1000W 이상/시네마";
+  if(watts>=300) return "지속광 · 300~800W COB";
+  if(watts>=100) return "지속광 · 100~300W COB";
+  return "지속광 · 100W 이하 COB";
+}
+function linePriority(x){
+  const order={"보유":0,"핵심":1,"가성비":2,"입문":3,"보조":4,"연출":5,"프로":6,"프리미엄":7,"상업":8,"스튜디오":9,"렌탈":10,"헤드":11,"트리거":12};
+  return order[x.p]??50;
+}
+const flashMeta={
+"Godox|Lux Elf":{output:"공식 GN6 / Ws 미공개 · 비교체급 약 2Ws",ws:2,cct:"6000K ±200K"},
+"Godox|Lux Cadet":{output:"공식 GN10 / Ws 미공개 · 비교체급 약 3Ws",ws:3,cct:"6000K ±200K"},
+"Godox|Lux Junior":{output:"공식 GN12 / Ws 미공개 · 비교체급 약 4Ws",ws:4,cct:"6000K ±200K"},
+"Godox|Lux Senior":{output:"공식 GN14 / Ws 미공개 · 비교체급 약 5Ws",ws:5,cct:"6000K ±200K"},
+"Godox|Lux Master":{output:"공식 Ws 확인 필요 / 레트로 외장튜브 플래시",ws:12,cct:"약 5600K 계열"},
+"Godox|iM30":{output:"공식 GN15 / Ws 미공개 · 비교체급 약 5~6Ws",ws:6,cct:"약 5600K 계열"},
+"Godox|iT20":{output:"공식 Ws 확인 필요 / 미니 TTL · 비교체급 약 4~6Ws",ws:5,cct:"약 5600K 계열"},
+"Godox|iT22":{output:"공식 Ws 확인 필요 / 미니 TTL · 비교체급 약 5~7Ws",ws:6,cct:"약 5600K 계열"},
+"Godox|iT30 Pro":{output:"공식 GN15 / Ws 미공개 · 비교체급 약 6Ws",ws:6,cct:"약 5600K 계열"},
+"Godox|iT32":{output:"공식 Ws 확인 필요 / 미니 TTL · 비교체급 약 8~12Ws",ws:10,cct:"약 5600K 계열"},
+"Viltrox|Vintage Z1 Pro":{output:"공식 24Ws / GN12",ws:24,cct:"6000K ±200K"},
+"Godox|TT350":{output:"공식 GN36 / Ws 미공개 · 비교체급 약 30~35Ws",ws:32,cct:"약 5600K 계열"},
+"Godox|V350":{output:"공식 GN36 / Ws 미공개 · 비교체급 약 30~35Ws",ws:32,cct:"약 5600K 계열"},
+"Godox|TT685II":{output:"공식 GN60 / Ws 미공개 · 비교체급 약 60~76Ws",ws:70,cct:"약 5600K 계열"},
+"Godox|V860III":{output:"공식 GN60 / Ws 미공개 · 비교체급 약 60~76Ws",ws:70,cct:"약 5600K 계열"},
+"Godox|V1":{output:"공식 76Ws",ws:76,cct:"약 5600K 계열"},
+"Godox|V1Pro":{output:"공식 76Ws",ws:76,cct:"플래시 약 5600K 계열 / 모델링램프 3300K"},
+"Godox|V100":{output:"공식 100Ws",ws:100,cct:"약 5600K 계열"},
+"Godox|V480":{output:"공식 Ws 확인 필요 / V350~V860 사이급",ws:50,cct:"약 5600K 계열"},
+"Profoto|A10":{output:"공식 76Ws",ws:76,cct:"약 5600K 계열"}
+};
+function itemName(x){return x.name||x.m||""}
+function itemKey(x){return `${x.b}|${itemName(x)}`}
+function isFlashItem(x){return x.d==="순간광"||["온카메라 플래시","배터리 스트로브","AC 스트로브","파워팩/헤드"].includes(x.type)}
+function flashMetaFor(x){return flashMeta[itemKey(x)]||{}}
+function flashOutputText(x){
+  if(!isFlashItem(x)) return x.spec||x.power||"-";
+  const meta=flashMetaFor(x);
+  if(meta.output) return meta.output;
+  const raw=`${x.spec||x.power||""}`;
+  const ws=raw.match(/(\d+(?:\.\d+)?)\s*Ws/i);
+  if(ws) return `공식 ${ws[1]}Ws`;
+  const gn=raw.match(/GN\s?(\d+(?:\.\d+)?)/i);
+  if(gn) return `공식 GN${gn[1]} / Ws 미공개`;
+  return raw||"공식 출력 확인 필요";
+}
+function flashCctText(x){
+  if(!isFlashItem(x)) return "-";
+  const meta=flashMetaFor(x);
+  return meta.cct||"약 5500~5700K 계열";
+}
+function strobeWsNumber(x){
+  const meta=flashMetaFor(x);
+  if(meta.ws) return meta.ws;
+  if(x.watts) return x.watts;
+  const raw=`${x.spec||x.power||""}`;
+  const ws=raw.match(/(\d+(?:\.\d+)?)\s*Ws/i);
+  return ws?Number(ws[1]):0;
+}
+function renderDashboard(){
+  const root=document.querySelector("#compareDashboard");
+  if(!root) return;
+  const q=document.querySelector("#dashSearch").value.trim().toLowerCase();
+  const domain=document.querySelector("#dashDomain").value;
+  const brand=document.querySelector("#dashBrand").value;
+  const group=document.querySelector("#dashGroup").value;
+  const mount=document.querySelector("#dashMount").value;
+  const sort=document.querySelector("#dashSort").value;
+  let rows=lineup.map(x=>({...x,group:compareGroup(x),priceValue:priceNumber(x)})).filter(x=>
+    (!q||JSON.stringify(x).toLowerCase().includes(q))&&
+    (!domain||x.d===domain)&&
+    (!brand||x.b===brand)&&
+    (!group||x.group===group)&&
+    (!mount||x.mount.includes(mount))
+  );
+  const stats=[
+    ["전체 항목",rows.length],
+    ["순간광",rows.filter(x=>x.d==="순간광").length],
+    ["지속광",rows.filter(x=>x.d==="지속광").length],
+    ["액세서리",rows.filter(x=>x.d==="액세서리").length],
+    ["브랜드",new Set(rows.map(x=>x.b)).size]
+  ];
+  document.querySelector("#dashStats").innerHTML=stats.map(([label,value])=>`<div class="stat"><strong>${value}</strong><span>${label}</span></div>`).join("");
+  const groupMap=new Map();
+  rows.forEach(x=>{
+    if(!groupMap.has(x.group)) groupMap.set(x.group,[]);
+    groupMap.get(x.group).push(x);
+  });
+  const groups=[...groupMap.keys()].sort((a,b)=>(groupOrder.indexOf(a)<0?99:groupOrder.indexOf(a))-(groupOrder.indexOf(b)<0?99:groupOrder.indexOf(b))||a.localeCompare(b,"ko"));
+  document.querySelector("#dashIndex").innerHTML=groups.map(g=>`<a href="#dash-${g.replace(/[^\w가-힣]+/g,"-")}"><span>${g.replace(" · ","<br>")}</span><span class="count">${groupMap.get(g).length}</span></a>`).join("");
+  document.querySelector("#dashGroups").innerHTML=groups.map(g=>{
+    let items=groupMap.get(g);
+    items.sort((a,b)=>{
+      if(sort==="price") return a.priceValue-b.priceValue||a.b.localeCompare(b.b,"ko");
+      if(sort==="brand") return a.b.localeCompare(b.b,"ko")||a.name.localeCompare(b.name,"ko");
+      if(sort==="priority") return linePriority(a)-linePriority(b)||a.priceValue-b.priceValue;
+      return linePriority(a)-linePriority(b)||wattNumber(a)-wattNumber(b)||a.priceValue-b.priceValue;
+    });
+    return `<section class="compare-group" id="dash-${g.replace(/[^\w가-힣]+/g,"-")}">
+      <div class="compare-group-title"><h3>${g}</h3><span>${items.length}개 모델/사이즈</span></div>
+      <div class="item-grid">${items.map(x=>{
+        const photo=x.img?`<a class="photo-box" href="${x.img}" target="_blank" rel="noreferrer"><img src="${x.img}" alt="${x.name}"></a>`:`<div class="photo-box"><div class="no-photo">정확한<br>사진 확인중</div></div>`;
+        const owned=x.p==="보유";
+        return `<article class="equip-card ${owned?"owned-card":""}">
+          ${photo}
+          <div class="equip-body">
+            <div class="equip-top"><span class="pill brand-pill">${x.b}</span><span class="pill domain-pill">${x.d}</span></div>
+            <h3>${x.name}</h3>
+            <div class="equip-price">${x.krw}</div>
+            <div class="equip-meta">
+              <div><b>규격</b><span>${x.spec}</span></div>
+              ${isFlashItem(x)?`<div><b>Ws/GN</b><span>${flashOutputText(x)}</span></div><div><b>색온도</b><span>${flashCctText(x)}</span></div>`:""}
+              <div><b>마운트</b><span>${x.mount}</span></div>
+              <div><b>구분</b><span>${owned?'<span class="pill owned-pill">내 보유</span>':x.p}</span></div>
+            </div>
+            <p class="equip-note">${x.memo}</p>
+            ${x.link?`<a class="equip-link" href="${x.link}" target="_blank" rel="noreferrer">제품 페이지</a>`:""}
+          </div>
+        </article>`;
+      }).join("")}</div>
+    </section>`;
+  }).join("");
+}
+function setupDashboard(){
+  const fields=["dashSearch","dashDomain","dashBrand","dashGroup","dashMount","dashSort"].map(id=>document.querySelector("#"+id));
+  if(fields.some(el=>!el)) return;
+  const dashDomain=document.querySelector("#dashDomain"), dashBrand=document.querySelector("#dashBrand"), dashGroup=document.querySelector("#dashGroup"), dashMount=document.querySelector("#dashMount");
+  [...new Set(lineup.map(x=>x.d))].sort().forEach(v=>dashDomain.add(new Option(v,v)));
+  [...new Set(lineup.map(x=>x.b))].sort().forEach(v=>dashBrand.add(new Option(v,v)));
+  [...new Set(lineup.map(compareGroup))].sort((a,b)=>(groupOrder.indexOf(a)<0?99:groupOrder.indexOf(a))-(groupOrder.indexOf(b)<0?99:groupOrder.indexOf(b))||a.localeCompare(b,"ko")).forEach(v=>dashGroup.add(new Option(v,v)));
+  [...new Set(lineup.map(x=>x.mount.split(" / ")[0]))].sort().forEach(v=>dashMount.add(new Option(v,v)));
+  fields.forEach(el=>el.addEventListener("input",renderDashboard));
+  document.querySelector("#comfortableView").onclick=()=>{
+    document.querySelector("#compareDashboard").classList.remove("compact");
+    document.querySelector("#comfortableView").classList.add("active");
+    document.querySelector("#compactView").classList.remove("active");
+  };
+  document.querySelector("#compactView").onclick=()=>{
+    document.querySelector("#compareDashboard").classList.add("compact");
+    document.querySelector("#compactView").classList.add("active");
+    document.querySelector("#comfortableView").classList.remove("active");
+  };
+  renderDashboard();
+}
+setupDashboard();
+const gear=[
+{b:"Godox",m:"Lux Junior",owned:true,type:"온카메라 플래시",power:"GN12",watts:0,usd:69,weight:"약 130g",size:"초소형",mount:"핫슈 / 수동",adapter:"전용/미니",use:"직광 감성, 스냅, 필름카메라 느낌",img:"assets/lighting/godox_lux.png",link:"https://www.godox.com/product-a/Lux-Junior.html"},
+{b:"Godox",m:"iT30 Pro",owned:true,type:"온카메라 플래시",power:"GN15",watts:0,usd:75,weight:"약 120g",size:"초소형",mount:"핫슈 / Godox X 2.4GHz",adapter:"전용/미니",use:"여행, 스냅, TTL/HSS 미니 플래시",img:"assets/lighting/godox_it30.jpg",link:"https://www.godox.com/product-e/iT30Pro.html"},
+{b:"Viltrox",m:"Vintage Z1 Pro",type:"온카메라 플래시",power:"24Ws",watts:24,usd:50.99,krwValue:79000,krwText:"약 79,000원",weight:"초소형",size:"초소형",mount:"핫슈 / S·N·F·C 버전",adapter:"전용/미니",use:"레트로 직광, TTL/HSS 스냅, Lux Junior/iT30 Pro 비교군",img:"https://cdn.shopify.com/s/files/1/0104/0380/7298/files/Vintage_Z1_Pro.png?v=1779249343",link:"https://viltrox.com/products/vintage-z1-pro-camera-flash"},
+{b:"Godox",m:"V1",owned:true,type:"온카메라 플래시",power:"76Ws급",watts:76,usd:199,weight:"약 530g",size:"소형",mount:"핫슈 / Godox X",adapter:"AK-R1 / S2 브라켓",use:"실전 온카메라, 오프카메라 보조광",img:"assets/lighting/godox_v1_official.png",link:"https://www.godox.com/product-d/V1.html"},
+{b:"Godox",m:"V1Pro",type:"온카메라 플래시",power:"76Ws급",watts:76,usd:329,weight:"약 580g",size:"소형",mount:"핫슈 / Godox X",adapter:"AK-R1 / S2 브라켓",use:"행사, 웨딩, 연속 발광 많은 촬영",img:"assets/lighting/godox_v1pro.jpg",link:"https://www.godox.com/product-b/V1Pro.html"},
+{b:"Profoto",m:"A10",type:"온카메라 플래시",power:"76Ws",watts:76,usd:1095,weight:"약 560g",size:"소형",mount:"핫슈 / Profoto Air",adapter:"Profoto Clic",use:"프리미엄 온카메라, Profoto 시스템 입구",img:"assets/lighting/profoto_a10_official.jpg",link:"https://www.profoto.com/us/en/shop/products/lights/on-camera-flashes/profoto-a10/"},
+
+{b:"Godox",m:"AD100Pro",type:"배터리 스트로브",power:"100Ws",watts:100,usd:299,weight:"약 524g",size:"초소형",mount:"Godox X",adapter:"Godox 전용 / S2로 Bowens",use:"휴대 보조광, 림, 헤어라이트",img:"assets/lighting/godox_ad100.jpg",link:"https://www.godox.com/product-d/AD100Pro.html"},
+{b:"Godox",m:"AD200Pro",type:"배터리 스트로브",power:"200Ws",watts:200,usd:399,weight:"약 590g",size:"포켓",mount:"Godox X",adapter:"S2 브라켓으로 Bowens",use:"V1보다 강한 보조광, 야외 소형 세트",img:"assets/lighting/godox_ad200.jpg",link:"https://www.godox.com/product-d/AD200Pro.html"},
+{b:"Neewer",m:"Q3",type:"배터리 스트로브",power:"200Ws",watts:200,usd:279,weight:"약 1.4kg",size:"소형",mount:"Neewer Q",adapter:"Bowens",use:"저가 200Ws TTL/HSS 대안",img:"assets/lighting/neewer_q3.jpg",link:"https://neewer.com/products/neewer-q3-200w-2-4g-ttl-flash-strobe-1-8000-hss-cordless-monolight-66600955"},
+{b:"Elinchrom",m:"THREE",type:"배터리 스트로브",power:"261Ws",watts:261,usd:999,weight:"약 1.65kg",size:"소형",mount:"Elinchrom OCF",adapter:"Elinchrom OCF",use:"색 안정성과 휴대성 중시",img:"assets/lighting/elinchrom_three.jpg",link:"https://www.elinchrom.com/en/Home/Shop/Flashes___Lights/Battery_Flash/Elinchrom_THREE_Off-Camera_Flash_Kit?id=EL-20941"},
+{b:"Godox",m:"AD300Pro",type:"배터리 스트로브",power:"300Ws",watts:300,usd:499,weight:"약 1.25kg",size:"소형",mount:"Godox X",adapter:"Godox 전용 / S2로 Bowens",use:"1인 야외 인물 주광 하한선",img:"assets/lighting/godox_ad300.jpg",link:"https://www.godox.com/product-d/AD300Pro.html"},
+{b:"Godox",m:"AD400Pro",type:"배터리 스트로브",power:"400Ws",watts:400,usd:649,weight:"약 2.1kg",size:"중형",mount:"Godox X",adapter:"Bowens 기본 어댑터",use:"사진 주광 1순위, 야외 인물 균형형",img:"assets/lighting/godox_ad400.jpg",link:"https://www.godox.com/product-d/AD400Pro.html"},
+{b:"Westcott",m:"FJ400",type:"배터리 스트로브",power:"400Ws",watts:400,usd:700,weight:"약 2.4kg",size:"중형",mount:"FJ 무선",adapter:"Bowens",use:"AD400Pro와 같은 급의 미국식 대안",img:"assets/lighting/westcott_fj400.jpg",link:"https://westcottu.com/flash-power-vs-portability-comparing-fj400-fj200-strobes"},
+{b:"Godox",m:"AD600Pro",type:"배터리 스트로브",power:"600Ws",watts:600,usd:899,weight:"약 3.0kg",size:"대형",mount:"Godox X",adapter:"Bowens",use:"큰 소프트박스, 전신, 낮 야외",img:"assets/lighting/godox_ad600.jpg",link:"https://www.godox.com/product-d/AD600Pro.html"},
+{b:"Profoto",m:"B10X Plus",type:"배터리 스트로브",power:"500Ws",watts:500,usd:2495,weight:"약 1.9kg",size:"중형",mount:"Profoto AirX",adapter:"Profoto OCF",use:"프리미엄 야외 인물, 빠른 현장 세팅",img:"assets/lighting/profoto_b10x_official.png",link:"https://www.profoto.com/us/en/shop/products/lights/monolights/battery-powered/profoto-b10x-and-b10x-plus/"},
+{b:"Broncolor",m:"Siros 400 L",type:"배터리 스트로브",power:"400Ws",watts:400,usd:3474,weight:"약 3.2kg",size:"대형",mount:"Broncolor RFS",adapter:"Broncolor",use:"프리미엄 색 안정성, 제품/패션",img:"assets/lighting/broncolor_siros.jpg",link:"https://broncolor.swiss/products/siros-l"},
+
+{b:"Godox",m:"QT600III",type:"AC 스트로브",power:"600Ws",watts:600,usd:699,weight:"약 3kg",size:"중형",mount:"Godox X",adapter:"Bowens",use:"스튜디오 고속/반복 촬영",img:"assets/lighting/godox_qt600.jpg",link:"https://www.godox.com/product-d/QTIII.html"},
+{b:"Profoto",m:"D2 500",type:"AC 스트로브",power:"500Ws",watts:500,usd:1695,weight:"약 3kg",size:"중형",mount:"Profoto AirTTL",adapter:"Profoto",use:"상업 스튜디오 표준 입문",img:"assets/lighting/profoto_d2_official.png",link:"https://www.profoto.com/us/en/shop/products/lights/monolights/mains-powered/profoto-d2/"},
+{b:"Profoto",m:"Pro-D3 750",type:"AC 스트로브",power:"750Ws",watts:750,usd:2995,weight:"약 4.2kg",size:"대형",mount:"Profoto AirX",adapter:"Profoto",use:"상업 스튜디오, 반복 발광 안정성",img:"assets/lighting/profoto_d3_official.png",link:"https://www.profoto.com/us/en/shop/products/lights/monolights/mains-powered/profoto-pro-d3/"},
+{b:"Broncolor",m:"Siros 800 S",type:"AC 스트로브",power:"800Ws",watts:800,usd:2264,weight:"약 4.3kg",size:"대형",mount:"Broncolor RFS",adapter:"Broncolor",use:"제품/패션 스튜디오 프리미엄 모노라이트",img:"assets/lighting/broncolor_siros_s.png",link:"https://broncolor.swiss/products/siros-s"},
+
+{b:"Godox",m:"P2400 Pack",type:"파워팩/헤드",power:"2400Ws",watts:2400,usd:6199,weight:"팩 약 11kg",size:"팩 시스템",mount:"Godox 2.4GHz",adapter:"H2400P/R2400 헤드",use:"대형 스튜디오, 상업 제품 촬영",img:"assets/lighting/godox_p2400_official.jpg",link:"https://www.godox.com/product-b/P2400.html"},
+{b:"Profoto",m:"Pro-11 Pack",type:"파워팩/헤드",power:"2400Ws",watts:2400,usd:18389,weight:"팩 약 13kg",size:"팩 시스템",mount:"Profoto AirX",adapter:"ProHead Plus 등",use:"렌탈/최상위 상업 스튜디오",img:"assets/lighting/profoto_pro11_official.jpg",link:"https://www.profoto.com/at/en/shop/products/lights/studio-packs/packs/profoto-pro-11/"},
+{b:"Profoto",m:"ProHead Plus",type:"파워팩/헤드",power:"헤드",watts:0,usd:3149,weight:"헤드 약 2.2kg",size:"헤드",mount:"Profoto Pro",adapter:"Pro-11 권장 헤드",use:"Pro-11용 표준 플래시 헤드",img:"assets/lighting/profoto_prohead.png",link:"https://www.profoto.com/bg/en/shop/products/lights/studio-packs/heads/prohead-plus-uv-250w-with-zoom-reflector/"},
+{b:"Broncolor",m:"Scoro 3200 S",type:"파워팩/헤드",power:"3200Ws",watts:3200,usd:15550,weight:"팩 시스템",size:"팩 시스템",mount:"Broncolor RFS",adapter:"Pulso/Picolite 등",use:"제품사진 최상급, 정밀 제어",img:"assets/lighting/broncolor_scoro.jpg",link:"https://broncolor.swiss/products/scoro-s"},
+{b:"Broncolor",m:"Pulso G",type:"파워팩/헤드",power:"헤드",watts:0,usd:3000,weight:"헤드",size:"헤드",mount:"Broncolor",adapter:"Scoro/Satos/Move",use:"Broncolor 팩용 표준 헤드",img:"assets/lighting/broncolor_pulso.jpg",link:"https://broncolor.swiss/products/pulso-g"},
+
+{b:"Aputure",m:"amaran 200x S",type:"지속광",power:"200W",watts:200,usd:399,weight:"약 1.5kg",size:"소형",mount:"Sidus Link",adapter:"Bowens",use:"입문 영상 주광, 1인 인터뷰",img:"assets/lighting/aputure_amaran.jpg",link:"https://www.aputure.com/products/"},
+{b:"SmallRig",m:"RC 220B Pro",type:"지속광",power:"220W",watts:220,usd:314,weight:"약 1.8kg",size:"소형",mount:"전용 앱",adapter:"Bowens",use:"저예산 영상 COB",img:"assets/lighting/smallrig_rc220b.png",link:"https://www.smallrig.com/RC-220B-Pro-COB-LED-Video-Light.html"},
+{b:"COLBOR",m:"CL220",type:"지속광",power:"220W",watts:220,usd:329,weight:"약 1.6kg",size:"소형",mount:"전용",adapter:"Bowens",use:"저가 220W 영상 COB",img:"assets/lighting/colbor_cl220.jpg",link:"https://www.colborlight.com/products/co-cl220"},
+{b:"Nanlite",m:"FC-300B",type:"지속광",power:"350W",watts:350,usd:499,weight:"약 2.3kg",size:"중형",mount:"Nanlink",adapter:"Bowens",use:"가성비 300W급 영상 주광",img:"assets/lighting/nanlite_fc300b.png",link:"https://www.focusnordic.com/products/video/led-lighting/fresnel-monolights/nanlite-fc-300b-led-bi-color-spot-light"},
+{b:"Nanlite",m:"FC-500B",type:"지속광",power:"520W",watts:520,usd:699,weight:"약 3.2kg",size:"중형",mount:"Nanlink",adapter:"Bowens",use:"영상 주광 가성비 1순위권",img:"assets/lighting/nanlite_fc500b.jpg",link:"https://nanliteus.com/products/fc-500b-bi-color-led-spotlight"},
+{b:"Aputure",m:"LS 600x Pro",type:"지속광",power:"720W급",watts:720,usd:2190,weight:"헤드 약 4.6kg",size:"대형",mount:"Sidus Link / DMX",adapter:"Bowens",use:"영상 주광 표준급, 혼합광 대응",img:"assets/lighting/aputure_600x.png",link:"https://www.aputure.com/products/ls-600x-pro/"},
+{b:"Aputure",m:"LS 1200d Pro",type:"지속광",power:"1200W",watts:1200,usd:2990,weight:"대형 세트",size:"초대형",mount:"Sidus Link / DMX",adapter:"Bowens",use:"대형 현장, 강한 daylight",img:"assets/lighting/aputure_1200d.png",link:"https://www.aputure.com/products/ls-1200d-pro/"},
+{b:"Nanlite",m:"PavoTube II 30C",type:"튜브/패널",power:"튜브 RGB",watts:0,usd:329,weight:"약 1.4kg",size:"튜브",mount:"Nanlink/DMX",adapter:"전용 클램프",use:"배경, 헤어라이트, 무드 조명",img:"assets/lighting/nanlite_tube.jpg",link:"https://nanliteus.com/"}
+];
+const views={
+power:{label:"출력 기준 그룹",group:x=>x.type==="온카메라 플래시"?(strobeWsNumber(x)<10?"미니 플래시 10Ws 이하":strobeWsNumber(x)<40?"미니 플래시 10~40Ws":strobeWsNumber(x)<90?"온카메라 60~80Ws급":"온카메라 100Ws급"):x.type==="파워팩/헤드"?"1200Ws 이상 팩·헤드":strobeWsNumber(x)===0?"무드/특수":strobeWsNumber(x)<250?"100~220급":strobeWsNumber(x)<450?"300~400급":strobeWsNumber(x)<900?"500~800급":"1000급 이상"},
+price:{label:"금액 기준 그룹",group:x=>gearKrwValue(x)<200000?"20만원 이하":gearKrwValue(x)<700000?"20~70만원":gearKrwValue(x)<1500000?"70~150만원":gearKrwValue(x)<4000000?"150~400만원":"400만원 이상"},
+size:{label:"크기·무게 기준 그룹",group:x=>x.size},
+mount:{label:"마운트/어댑터 기준 그룹",group:x=>x.adapter},
+use:{label:"용도 기준 그룹",group:x=>x.use.includes("영상")||x.type==="지속광"?"영상/지속광":x.use.includes("상업")||x.type==="파워팩/헤드"?"상업/렌탈급":x.type==="온카메라 플래시"?"온카메라/스냅":"사진 스트로브"}
+};
+function krw(v){return new Intl.NumberFormat("ko-KR",{style:"currency",currency:"KRW",maximumFractionDigits:0}).format(Math.round(v/1000)*1000)}
+function gearKrwValue(x){return x.krwValue||x.usd*rate}
+function eff(x){return strobeWsNumber(x)?krw(gearKrwValue(x)/strobeWsNumber(x)):"-"}
+const lineupTbody=document.querySelector("#lineupTable tbody");
+const lineupSearch=document.querySelector("#lineupSearch");
+const lineupBrand=document.querySelector("#lineupBrand");
+const lineupDomain=document.querySelector("#lineupDomain");
+const lineupMount=document.querySelector("#lineupMount");
+const lineupPriority=document.querySelector("#lineupPriority");
+[...new Set(lineup.map(x=>x.b))].sort().forEach(v=>lineupBrand.add(new Option(v,v)));
+[...new Set(lineup.map(x=>x.d))].sort().forEach(v=>lineupDomain.add(new Option(v,v)));
+[...new Set(lineup.map(x=>x.mount.split(" / ")[0]))].sort().forEach(v=>lineupMount.add(new Option(v,v)));
+[...new Set(lineup.map(x=>x.p))].sort().forEach(v=>lineupPriority.add(new Option(v,v)));
+function renderLineup(){
+  const q=lineupSearch.value.trim().toLowerCase();
+  lineupTbody.innerHTML="";
+  lineup.filter(x=>
+    (!q||JSON.stringify(x).toLowerCase().includes(q))&&
+    (!lineupBrand.value||x.b===lineupBrand.value)&&
+    (!lineupDomain.value||x.d===lineupDomain.value)&&
+    (!lineupMount.value||x.mount.includes(lineupMount.value))&&
+    (!lineupPriority.value||x.p===lineupPriority.value)
+  ).sort((a,b)=>a.d.localeCompare(b.d,"ko")||a.b.localeCompare(b.b,"ko")||a.name.localeCompare(b.name,"ko"))
+  .forEach(x=>{
+    const photo=x.img?`<a href="${x.img}" target="_blank" rel="noreferrer"><img class="thumb" src="${x.img}" alt="${x.name}"></a>`:`<div class="no-photo">사진<br>추가 필요</div>`;
+    const link=x.link?`<a href="${x.link}" target="_blank" rel="noreferrer">제품 확인</a>`:`<span class="small">-</span>`;
+    lineupTbody.insertAdjacentHTML("beforeend",`<tr>
+      <td><span class="tag">${x.d}</span></td>
+      <td class="photo-cell">${photo}</td>
+      <td><span class="brand">${x.b}</span></td>
+      <td><strong>${x.name}</strong></td>
+      <td>${x.spec}</td>
+      <td>${flashOutputText(x)}</td>
+      <td>${flashCctText(x)}</td>
+      <td>${x.mount}</td>
+      <td><span class="price">${x.krw}</span></td>
+      <td>${x.memo}</td>
+      <td><span class="tag">${x.p}</span></td>
+      <td>${link}</td>
+    </tr>`);
+  });
+}
+[lineupSearch,lineupBrand,lineupDomain,lineupMount,lineupPriority].forEach(el=>el.addEventListener("input",renderLineup));
+renderLineup();
+let view="power";
+let category="strobe";
+const tbody=document.querySelector("#table tbody"), groupHead=document.querySelector("#groupHead");
+const brandSel=document.querySelector("#brand"), typeSel=document.querySelector("#type");
+[...new Set(gear.map(x=>x.b))].sort().forEach(v=>brandSel.add(new Option(v,v)));
+[...new Set(gear.map(x=>x.type))].sort().forEach(v=>typeSel.add(new Option(v,v)));
+function categoryMatch(x){
+  if(category==="all") return true;
+  if(category==="continuous") return x.type==="지속광" || x.type==="튜브/패널";
+  if(category==="strobe") return x.type==="온카메라 플래시" || x.type==="배터리 스트로브" || x.type==="AC 스트로브" || x.type==="파워팩/헤드";
+  return true;
+}
+function syncCategoryUI(){
+  const gearSection=document.querySelector("#gearSection");
+  const accessorySection=document.querySelector("#accessorySection");
+  const guideSection=document.querySelector("#guideSection");
+  gearSection.classList.toggle("hidden", category==="accessory");
+  guideSection.classList.toggle("hidden", category==="accessory");
+  accessorySection.classList.toggle("hidden", category!=="accessory");
+}
+function render(){
+  const q=document.querySelector("#search").value.trim().toLowerCase(), b=brandSel.value, t=typeSel.value, o=document.querySelector("#owned").value, p=document.querySelector("#photo").value;
+  groupHead.textContent=views[view].label; tbody.innerHTML="";
+  let rows=gear.filter(x=>categoryMatch(x)&&(!q||JSON.stringify(x).toLowerCase().includes(q))&&(!b||x.b===b)&&(!t||x.type===t)&&(!o||(o==="owned"?x.owned:!x.owned))&&(!p||(p==="has"?x.img:!x.img)));
+  rows.sort((a,b)=>views[view].group(a).localeCompare(views[view].group(b),"ko") || strobeWsNumber(a)-strobeWsNumber(b) || a.usd-b.usd);
+  let cur="";
+  rows.forEach(x=>{
+    const g=views[view].group(x);
+    if(g!==cur){cur=g; tbody.insertAdjacentHTML("beforeend",`<tr class="section-row"><td colspan="11">${g}</td></tr>`)}
+    tbody.insertAdjacentHTML("beforeend",`<tr class="${x.owned?"owned-row":""}">
+      <td><span class="tag">${g}</span></td>
+      <td class="photo-cell">${x.img?`<a href="${x.img}" target="_blank"><img class="thumb" src="${x.img}" alt="${x.m}"></a>`:`<div class="no-photo">정확한<br>사진 미확보</div>`}</td>
+      <td><span class="brand">${x.b}</span></td>
+      <td><strong>${x.m}</strong>${x.owned?'<br><span class="owned">내 보유</span>':""}</td>
+      <td>${x.power}<span class="sub">${flashOutputText(x)}</span><span class="sub">${x.type}</span></td>
+      <td>${flashCctText(x)}</td>
+      <td><span class="price">${x.krwText||krw(gearKrwValue(x))}</span><span class="sub">단가 ${eff(x)}/W·Ws</span></td>
+      <td>${x.weight}<span class="sub">${x.size}</span></td>
+      <td>${x.mount}<span class="sub">${x.adapter}</span></td>
+      <td>${x.use}</td>
+      <td><a href="${x.link}" target="_blank" rel="noreferrer">제품 확인</a></td>
+    </tr>`);
+  });
+}
+document.querySelectorAll(".view-buttons button").forEach(btn=>btn.onclick=()=>{document.querySelectorAll(".view-buttons button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");view=btn.dataset.view;render()});
+document.querySelectorAll(".category-tabs button").forEach(btn=>btn.onclick=()=>{
+  document.querySelectorAll(".category-tabs button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  category=btn.dataset.category;
+  syncCategoryUI();
+  render();
+  renderAccessories();
+});
+["search","brand","type","owned","photo"].forEach(id=>document.querySelector("#"+id).addEventListener("input",render));
+syncCategoryUI();
+render();
+
+const accessories=[
+{kind:"소프트박스",b:"Godox",m:"QR-P70 Quick Release Parabolic",sizes:"70cm",mount:"Bowens",usd:99,body:"AD200Pro+S2, AD300Pro, 작은 공간",use:"상반신/휴대 세팅, 좁은 공간 주광",img:"assets/lighting/godox_qrp70.jpg",link:"https://www.godox.com/product-d/1200.html"},
+{kind:"소프트박스",b:"Godox",m:"QR-P90 Quick Release Parabolic",sizes:"90cm",mount:"Bowens",usd:119,body:"AD300Pro, AD400Pro, 1인 인물",use:"인물 주광 기본 사이즈",img:"assets/lighting/godox_qrp90_size.jpg",link:"https://www.godox.com/product-d/1200.html"},
+{kind:"소프트박스",b:"Godox",m:"QR-P120 Quick Release Parabolic",sizes:"120cm",mount:"Bowens",usd:149,body:"AD400Pro, AD600Pro, 전신/2인",use:"부드러운 전신/넓은 인터뷰 주광",img:"assets/lighting/godox_qrp120.jpg",link:"https://www.godox.com/product-d/1200.html"},
+{kind:"소프트박스",b:"Godox",m:"QR-P150T Quick Release Parabolic",sizes:"150cm",mount:"Bowens",usd:149,body:"AD600Pro 이상, 넓은 스튜디오",use:"매우 큰 면광원, 전신/그룹 촬영",img:"assets/lighting/godox_qr_series_1.png",link:"https://www.godox.com/product-d/QR-Series.html"},
+{kind:"소프트박스",b:"Aputure",m:"Light Dome Mini III",sizes:"약 58cm",mount:"Bowens",usd:129,body:"amaran 100/200, LS 60/300, 작은 공간",use:"상반신/소형 인터뷰, 휴대 세팅",img:"assets/lighting/aputure_light_dome_mini.png",link:"https://www.aputure.com/products/light-dome-mini-iii/"},
+{kind:"소프트박스",b:"Aputure",m:"Light Dome III",sizes:"약 90cm",mount:"Bowens",usd:219,body:"Aputure LS/amaran, Nanlite, Godox Bowens",use:"영상/사진 겸용 부드러운 주광",img:"assets/lighting/aputure_light_dome_iii.png",link:"https://www.aputure.com/products/light-dome-iii/"},
+{kind:"소프트박스",b:"Aputure",m:"Light OctaDome 120",sizes:"120cm",mount:"Bowens",usd:359,body:"LS 600x/1200d, FC/Forza 500급 이상",use:"전신/넓은 인터뷰 주광",img:"assets/lighting/aputure_light_octadome.png",link:"https://www.aputure.com/products/light-octadome-120/"},
+{kind:"소프트박스",b:"Nanlite",m:"Parabolic Softbox 120",sizes:"120cm",mount:"Bowens",usd:169,body:"FC-500B, Forza 500B II 이상",use:"전신/넓은 면광원",img:"assets/lighting/nanlite_para120.jpg",link:"https://www.vistek.ca/store/439255/nanlite-parabolic-softbox-120cm-for-forza-bowens-mount"},
+{kind:"소프트박스",b:"Westcott",m:"Rapid Box Switch Octa M",sizes:"M",mount:"Switch insert / Bowens·Profoto 등",usd:199,body:"FJ400, Godox, Profoto 등 인서트 교체",use:"브랜드 혼용 스튜디오, 빠른 접이식",img:"assets/lighting/westcott_rapidbox.jpg",link:"https://www.fjwestcott.com/products/rapid-box-switch-octa-m"},
+{kind:"소프트박스",b:"Profoto",m:"OCF Softbox Octa 2'",sizes:"2ft",mount:"Profoto OCF",usd:179,body:"A2, B10X, 작은 공간",use:"상반신/휴대용 Profoto 주광",img:"assets/lighting/profoto_ocf_octa.png",link:"https://www.profoto.com/us/en/shop/products/light-shaping-tools/softboxes/ocf-softbox-octa/"},
+{kind:"엄브렐러",b:"Profoto",m:"Umbrella Deep White S",sizes:"S",mount:"Umbrella shaft / Profoto",usd:125,body:"Profoto D/B/Pro 계열, 일반 엄브렐러 홀더",use:"빠른 세팅, 부드러운 확산, 로케이션",img:"assets/lighting/profoto_umbrella_deep.png",link:"https://www.profoto.com/us/en/shop/products/light-shaping-tools/umbrellas/umbrella-deep-white/"},
+{kind:"랜턴",b:"Aputure",m:"Lantern",sizes:"2.2ft / 약 66cm",mount:"Bowens",usd:89,body:"Aputure/Nanlite/Godox Bowens 지속광",use:"공간 전체를 부드럽게 채우는 인터뷰/실내광",img:"assets/lighting/aputure_lantern.png",link:"https://www.aputure.com/products/lantern/"},
+{kind:"랜턴",b:"amaran(아마란)",m:"Lantern 90",sizes:"90cm",mount:"Bowens",usd:99,body:"amaran/Aputure/Nanlite/Godox Bowens 지속광",use:"더 넓은 공간 확산, 2인 인터뷰",img:"assets/lighting/amaran_lantern90.jpg",link:"https://amarancreators.com/products/amaran-lantern-90"},
+{kind:"랜턴",b:"Nanlite",m:"LT-80 Lantern Softbox",sizes:"80cm",mount:"Bowens",usd:139.9,body:"Forza, FC, Bowens COB",use:"중형 공간 확산, 인터뷰",img:"assets/lighting/nanlite_lt80.jpg",link:"https://nanliteus.com/products/lantern-80-easy-up-softbox-with-bowens-mount-31in"},
+{kind:"랜턴",b:"Nanlite",m:"LT-120 Lantern Softbox",sizes:"120cm",mount:"Bowens",usd:249.9,body:"Forza 300/500/720, FC-500B",use:"큰 공간 확산, 넓은 실내 분위기광",img:"assets/lighting/nanlite_lt120.jpg",link:"https://www.bhphotovideo.com/c/product/1568679-REG/nanlite_lt_120_lantern_120_easy_up_47.html"},
+{kind:"집광/프레넬",b:"Aputure",m:"F10 Fresnel",sizes:"10 inch",mount:"Bowens",usd:219,body:"LS 600d/x, LS 1200d 등 고출력 COB",use:"빛을 모아 멀리 보내거나 태양광 느낌 만들기",img:"assets/lighting/aputure_fresnel.png",link:"https://www.aputure.com/products/f10-fresnel/"},
+{kind:"트리거",b:"Godox",m:"XPro II",sizes:"C / N / S / F / O / L 마운트 버전",mount:"Godox X 2.4GHz",usd:89,body:"V1, AD100~AD600, QT/DP/MS 등 Godox X",use:"카메라에서 출력/그룹/TTL/HSS 제어",img:"assets/lighting/godox_xproii.jpg",link:"https://www.godox.com/product-a/XPro-II.html"}
+];
+accessories.push(...[
+{kind:"소프트박스",b:"Godox",m:"QR-P60T Quick Release Parabolic",sizes:"60cm",mount:"Bowens",usd:69,body:"AD100/AD200+S2, 작은 COB",use:"좁은 공간·상반신·휴대 세팅",img:"assets/lighting/godox_qr_series_2.png",link:"https://www.godox.com/product-d/QR-Series.html"},
+{kind:"소프트박스",b:"Godox",m:"QR-P70T Quick Release Parabolic",sizes:"70cm",mount:"Bowens",usd:89,body:"AD200/AD300, 100~300W COB",use:"1인 상반신, 빠른 접이식 세팅",img:"assets/lighting/godox_qr_series_3.png",link:"https://www.godox.com/product-d/QR-Series.html"},
+{kind:"소프트박스",b:"Godox",m:"QR-P90T Quick Release Parabolic",sizes:"90cm",mount:"Bowens",usd:119,body:"AD300/AD400, 300~500W COB",use:"인물 주광 기본 크기",img:"assets/lighting/godox_qr_series_4.png",link:"https://www.godox.com/product-d/QR-Series.html"},
+{kind:"소프트박스",b:"Godox",m:"QR-P120T Quick Release Parabolic",sizes:"120cm",mount:"Bowens",usd:149,body:"AD400/AD600, 500W급 COB 이상",use:"전신·2인·넓은 면광원",img:"assets/lighting/godox_qr_series_5.png",link:"https://www.godox.com/product-d/QR-Series.html"},
+{kind:"소프트박스",b:"Godox",m:"QR-P150T Quick Release Parabolic",sizes:"150cm",mount:"Bowens",usd:169,body:"AD600/AD1200, 600W급 COB 이상",use:"전신·그룹·큰 스튜디오",img:"assets/lighting/godox_qr_series_6.png",link:"https://www.godox.com/product-d/QR-Series.html"},
+{kind:"랜턴",b:"Godox",m:"CS-50T Collapsible Lantern",sizes:"50cm",mount:"Bowens",usd:65,body:"작은 COB, AD200/AD300+S2",use:"작은 방·테이블·상반신 공간 확산",img:"https://www.godox.com/static/upload/image/20230918/1695027211359751.png",link:"https://www.godox.com/product-d/CS-Series.html"},
+{kind:"랜턴",b:"Godox",m:"CS-65T Collapsible Lantern",sizes:"65cm",mount:"Bowens",usd:75,body:"100~300W COB, AD300/AD400",use:"1인 인터뷰·중형 공간 확산",img:"https://www.godox.com/static/upload/image/20230918/1695027211359751.png",link:"https://www.godox.com/product-d/CS-Series.html"},
+{kind:"랜턴",b:"Godox",m:"CS-85T Collapsible Lantern",sizes:"85cm",mount:"Bowens",usd:79,body:"300~600W COB, AD400/AD600",use:"2인 인터뷰·넓은 공간 확산",img:"https://www.godox.com/static/upload/image/20230918/1695027211359751.png",link:"https://www.godox.com/product-d/CS-Series.html"},
+{kind:"소프트박스",b:"Aputure",m:"Light Dome 40",sizes:"40cm",mount:"Bowens",usd:99,body:"STORM 80c+어댑터, LS 60, amaran 100/200",use:"좁은 공간·상반신·작은 제품",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/Light_Dome_40-8.png?v=1755051267",link:"https://www.aputure.com/products/light-dome-40/"},
+{kind:"소프트박스",b:"Aputure",m:"Light Dome 150",sizes:"150cm",mount:"Bowens",usd:269,body:"LS 600/1200, STORM 700/1000/1200",use:"전신·그룹·대형 인터뷰 주광",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/Light_Dome_150_e2f4b21d-41ef-4b60-9c96-227dc92a73eb.png?v=1758598319",link:"https://www.aputure.com/products/light-dome-150/"},
+{kind:"랜턴",b:"Aputure",m:"Lantern 30",sizes:"30cm",mount:"Bowens",usd:59,body:"소형 COB, 좁은 공간",use:"테이블·작은 방·소품 공간 확산",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/Lantern30-7.png?v=1731911685",link:"https://www.aputure.com/products/lantern-30/"},
+{kind:"집광/프레넬",b:"Aputure",m:"Fresnel 2x",sizes:"2x",mount:"Bowens",usd:95,body:"LS 120d/300d/300x, amaran Bowens",use:"소형·중형 COB 집광",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/Fresnel2x_916936fe-09b1-43b3-b7d5-c8fbf43ccfc0.png?v=1705385975",link:"https://www.aputure.com/products/fresnel-2x/"},
+{kind:"프로젝션",b:"Aputure",m:"Spotlight Mini Zoom",sizes:"19°~36° zoom",mount:"Mini ProLock",usd:424,body:"STORM 80c 계열",use:"고보·컷팅·제품 포인트 조명",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/AputureSpotlightMiniZoom-1.png?v=1697782369",link:"https://www.aputure.com/products/spotlight-mini-zoom/"},
+{kind:"프로젝션",b:"Aputure",m:"Spotlight Mini 19° Lens Kit",sizes:"19°",mount:"Mini ProLock",usd:349,body:"STORM 80c 계열",use:"좁은 빔·고보·배경 패턴",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/Spotlight_Mini_19_-1.png?v=1752826885",link:"https://www.aputure.com/products/spotlight-mini-19-lens-kit/"},
+{kind:"프로젝션",b:"Aputure",m:"Spotlight Mini 36° Lens Kit",sizes:"36°",mount:"Mini ProLock",usd:349,body:"STORM 80c 계열",use:"넓은 빔·인물 포인트·배경 패턴",img:"https://cdn.shopify.com/s/files/1/1343/1935/files/Spotlight_Mini_36_-1.png?v=1752826918",link:"https://www.aputure.com/products/spotlight-mini-36-lens-kit/"},
+{kind:"소프트박스",b:"Nanlite",m:"Rapid 60 Softbox",sizes:"60cm",mount:"FM Mount",usd:119,body:"Forza 60B/60C/60CR",use:"소형 COB 주광·상반신",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/SB-FM-RP60-main.jpg?v=1758224894",link:"https://nanliteus.com/products/rapid-60-softbox-with-grid-and-fm-mount"},
+{kind:"소프트박스",b:"Nanlite",m:"Octagonal Softbox 40",sizes:"40cm",mount:"FM Mount",usd:54.9,body:"Forza 60 계열",use:"작은 제품·좁은 공간",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/SB-FMM-O-40-main-1.jpg?v=1758219717",link:"https://nanliteus.com/products/40cm-octagonal-softbox-for-fm-mount"},
+{kind:"소프트박스",b:"Nanlite",m:"Octagonal Softbox 60",sizes:"60cm",mount:"FM Mount",usd:64.9,body:"Forza 60 계열",use:"상반신·작은 인터뷰",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/SB-FMM-O-60-main.jpg?v=1758217812",link:"https://nanliteus.com/products/60cm-octagonal-softbox-for-fm-mount"},
+{kind:"소프트박스",b:"Nanlite",m:"Rapid 90 Parabolic",sizes:"90cm",mount:"Bowens",usd:179,body:"FC-300/500, Forza 300/500",use:"1인 인물 주광",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/sp-rp90-main_d0c60175-0065-4d46-bd7c-559a30d197e3.jpg?v=1758395017",link:"https://nanliteus.com/products/rapid-90-parabolic-softbox-with-grid-and-bowens-mount-35in"},
+{kind:"소프트박스",b:"Nanlite",m:"Rapid 120 Parabolic",sizes:"120cm",mount:"Bowens",usd:199,body:"FC-500/720, Forza 500/720",use:"전신·2인·넓은 면광원",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/SB-RP120-main.jpg?v=1758338087",link:"https://nanliteus.com/products/rapid-120-parabolic-softbox-with-grid-and-bowens-mount-47in"},
+{kind:"소프트박스",b:"Nanlite",m:"Rectangular Softbox 90x60",sizes:"90x60cm",mount:"Bowens",usd:34,body:"FC/Forza/Godox/Aputure Bowens",use:"세로 인물·제품·공간 제어",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/SB-RT-90X60-2.jpg?v=1758681864",link:"https://nanliteus.com/products/rectangular-softbox-90x60-with-bowens-mount-35x24in"},
+{kind:"소프트박스",b:"Nanlite",m:"Stripbank Softbox",sizes:"12x55in",mount:"Bowens",usd:49,body:"FC/Forza/Godox/Aputure Bowens",use:"림라이트·제품 엣지·세로 하이라이트",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/SB-ST-140X30-4.jpg?v=1770826845",link:"https://nanliteus.com/products/stripbank-softbox-with-bowens-mount-12x55in-1"},
+{kind:"집광/프레넬",b:"Nanlite",m:"FL-11 Fresnel",sizes:"FM Mount",mount:"FM Mount",usd:79,body:"Forza 60 계열",use:"소형 COB 집광·스팟",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/FL-11-Fresnel-main.jpg?v=1759077623",link:"https://nanliteus.com/products/fl-11-fresnel-lens-and-barndoors-for-forza-fm-mount-lights"},
+{kind:"집광/프레넬",b:"Nanlite",m:"FL-20G Fresnel",sizes:"Bowens",mount:"Bowens",usd:159,body:"Forza 300/500/720, FC-500/720",use:"고출력 COB 집광·태양광 느낌",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/FL-20G-main.jpg?v=1758591036",link:"https://nanliteus.com/products/fl-20g-fresnel-lens-for-bowens-mount"},
+{kind:"프로젝션",b:"Nanlite",m:"PJ-FMM 19° Projection",sizes:"19°",mount:"FM Mount",usd:249,body:"Forza 60 계열",use:"고보·컷팅·작은 스팟",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/PJ-FMM-19-main.jpg?v=1758288724",link:"https://nanliteus.com/products/forza-pj-fmm-projection-attachment-with-19-lens-for-fm-mount"},
+{kind:"프로젝션",b:"Nanlite",m:"PJ-FMM 36° Projection",sizes:"36°",mount:"FM Mount",usd:279,body:"Forza 60 계열",use:"넓은 고보·배경 패턴",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/PJ-FMM-36-main.jpg?v=1758288724",link:"https://nanliteus.com/products/forza-pj-fmm-projection-attachment-with-36-lens-for-fm-mount"},
+{kind:"프로젝션",b:"Nanlite",m:"PJ-BM 19° Projection",sizes:"19°",mount:"Bowens",usd:629,body:"FC/Forza Bowens, Godox/Aputure Bowens",use:"고출력 Bowens 고보·컷팅",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/PJ-BM-19-main.jpg?v=1758304370",link:"https://nanliteus.com/products/pj-bm-projection-attachment-with-19-lens-for-bowens-mount"},
+{kind:"프로젝션",b:"Nanlite",m:"PJ-BM 36° Projection",sizes:"36°",mount:"Bowens",usd:599,body:"FC/Forza Bowens, Godox/Aputure Bowens",use:"넓은 Bowens 고보·배경 패턴",img:"https://cdn.shopify.com/s/files/1/0764/8722/9669/files/PJ-BM-36-main.jpg?v=1758298791",link:"https://nanliteus.com/products/pj-bm-projection-attachment-with-36-lens-for-bowens-mount"}
+]);
+const accessoryCorrections={
+"Aputure|Light Dome Mini III":{usd:109},
+"Aputure|Light Dome III":{usd:186},
+"Aputure|Light OctaDome 120":{usd:103},
+"Aputure|Lantern":{usd:89},
+"amaran(아마란)|Lantern 90":{usd:139,link:"https://www.aputure.com/products/lantern-90"},
+"Aputure|F10 Fresnel":{usd:186},
+"Nanlite|LT-80 Lantern Softbox":{usd:139.9,link:"https://nanliteus.com/products/lantern-80-easy-up-softbox-with-bowens-mount-31in"},
+"Nanlite|LT-120 Lantern Softbox":{usd:249.9,link:"https://nanliteus.com/products/lantern-120-easy-up-softbox-with-bowens-mount-47in"}
+};
+accessories.forEach(x=>Object.assign(x,accessoryCorrections[`${x.b}|${x.m}`]||{}));
+const accSeen=new Set(accessories.map(x=>`${x.b}|${x.m}`));
+lineup.filter(x=>x.d==="액세서리").forEach(x=>{
+  const key=`${x.b}|${x.name}`;
+  if(!accSeen.has(key)){
+    accessories.push({
+      kind:x.p||"기타",
+      b:x.b,
+      m:x.name,
+      sizes:x.spec,
+      mount:x.mount,
+      krwText:x.krw,
+      usd:0,
+      body:x.memo,
+      use:x.memo,
+      img:x.img,
+      link:x.link||"#"
+    });
+    accSeen.add(key);
+  }
+});
+const accTbody=document.querySelector("#accessoryTable tbody");
+const accSearch=document.querySelector("#accSearch"), accKind=document.querySelector("#accKind"), accMount=document.querySelector("#accMount"), accUse=document.querySelector("#accUse"), accBrand=document.querySelector("#accBrand");
+[...new Set(accessories.map(x=>x.kind))].sort().forEach(v=>accKind.add(new Option(v,v)));
+[...new Set(accessories.map(x=>x.mount))].sort().forEach(v=>accMount.add(new Option(v,v)));
+[...new Set(accessories.map(x=>x.b))].sort().forEach(v=>accBrand.add(new Option(v,v)));
+["인물 주광","영상/인터뷰","공간 확산","빠른 세팅","무선 제어"].forEach(v=>accUse.add(new Option(v,v)));
+function renderAccessories(){
+  const q=accSearch.value.trim().toLowerCase();
+  accTbody.innerHTML="";
+  accessories.filter(x=>
+    (!q||JSON.stringify(x).toLowerCase().includes(q))&&
+    (!accKind.value||x.kind===accKind.value)&&
+    (!accMount.value||x.mount===accMount.value)&&
+    (!accBrand.value||x.b===accBrand.value)&&
+    (!accUse.value||x.use.includes(accUse.value)||x.body.includes(accUse.value))
+  ).sort((a,b)=>a.kind.localeCompare(b.kind,"ko")||a.mount.localeCompare(b.mount,"ko")||((a.usd||priceNumber({krw:a.krwText}))-(b.usd||priceNumber({krw:b.krwText}))))
+  .forEach(x=>{
+    const price=x.krwText||krw(x.usd*rate);
+    accTbody.insertAdjacentHTML("beforeend",`<tr>
+      <td><span class="tag">${x.kind}</span></td>
+      <td class="photo-cell"><a href="${x.img}" target="_blank"><img class="thumb" src="${x.img}" alt="${x.m}"></a></td>
+      <td><span class="brand">${x.b}</span></td>
+      <td><strong>${x.m}</strong></td>
+      <td><div class="tags">${x.sizes.split(" / ").map(size=>`<span class="tag">${size}</span>`).join("")}</div></td>
+      <td>${x.mount}</td>
+      <td><span class="price">${price}</span></td>
+      <td>${x.body}</td>
+      <td>${x.use}</td>
+      <td><a href="${x.link}" target="_blank" rel="noreferrer">제품 확인</a></td>
+    </tr>`);
+  });
+}
+[accSearch,accKind,accMount,accUse,accBrand].forEach(el=>el.addEventListener("input",renderAccessories));
+renderAccessories();
+</script>
+</body>
+</html>

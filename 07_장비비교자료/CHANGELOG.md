@@ -1,0 +1,47 @@
+# 장비 비교자료 변경기록
+
+## 2026-06-19
+
+- `03_필터_비교표_latest.html` v1.3 갱신.
+- `현재 보유 장비·보유 스크류 필터`와 `보유 필터 효과표`를 `현재 보유 스크류 필터·효과표` 한 섹션으로 병합.
+- 보유 필터 표에 구경, 종류, 작동 방식, 효과 성격, 강도, 운용 메모를 한 번에 볼 수 있도록 재구성.
+- `00_장비비교_목차_latest.html` v1.4 갱신.
+- `03_필터_비교표_latest.html` v1.2 갱신.
+- 필터 구매 추천 기준을 82mm 우선, 77mm는 82mm 부재/불리한 경우만 고려하도록 변경.
+- 보유 77mm 필터는 링 운용 가능한 자산으로 보고 같은 효과군의 82mm 중복 구매 추천을 제외.
+- 몽환·감성 표현용 추천을 Glimmerglass, Smoque, Soft/FX, Pearlescent, Double Fog, Bronze Glimmerglass, Black Satin, Dream FX, Starscape, R72, CineBloom, Morphic, Hollywood Black Magic 계열로 재정리.
+- 추천 표에 `중복 판단` 열과 82mm/77mm 예외 통계를 추가.
+- `00_장비비교_목차_latest.html` v1.3 갱신.
+- 공통 디자인 테마 `assets/equipment-theme.css` v1.0 추가.
+- 현재 페이지 목차 활성 표시용 `assets/equipment-theme.js` v1.0 추가.
+- 모든 최신 페이지에 목차, 카메라, 렌즈, 필터, 조명, 악세사리 상단 고정 내비게이션 적용.
+- 전체 페이지 톤을 포토북/에디토리얼 참고 무드에 맞춰 밝은 회백색 배경, 얇은 구분선, 화이트 패널, 옅은 하늘색 포인트 중심으로 변경.
+- `00_장비비교_목차_latest.html` v1.2 갱신.
+- `01_카메라_비교표_latest.html` v1.3 갱신.
+- `02_렌즈_비교표_latest.html` v1.1 갱신.
+- `03_필터_비교표_latest.html` v1.1 갱신.
+- `04_조명_비교표_latest.html` v1.6 갱신.
+- `05_악세사리_비교표_latest.html` v1.1 갱신.
+- `lighting-brand-comparison.html` v1.3
+- Viltrox `Vintage Z1 Pro` 추가.
+- 공식 제품 페이지 기준으로 TTL, 1/8000s HSS, 24Ws, 1초 재충전, USB-C, S/N/F/C 핫슈 버전, 원화 약 79,000원 표시.
+- `lighting-brand-comparison.html` v1.4
+- 순간광 표에 `Ws/GN 비교`와 `색온도` 표시 추가.
+- GN만 공개된 미니 플래시는 공식 GN과 비교용 Ws 체급을 분리 표시.
+- 출력 기준 그룹을 온카메라 플래시도 Ws 체급 기준으로 다시 나누도록 수정.
+- `07_장비비교자료/index.html` 추가.
+- 파일 위치 및 버전관리 규정 문서 추가.
+- 최신 원본 위치를 `07_장비비교자료/*_latest.html`로 고정.
+- 프로젝트 루트의 기존 HTML 파일명은 최신본으로 이동시키는 안내/리다이렉트 파일로 전환.
+- `versions/2026-06-19/`에 날짜별 보존본 생성.
+- `VERSION_MANIFEST.json` 추가.
+- 목차를 카메라, 렌즈, 필터, 조명, 악세사리 5분류 구조로 재설계.
+- `01_카메라_비교표_latest.html` v1.2 생성.
+- `02_렌즈_비교표_latest.html` v1.0 생성.
+- `03_필터_비교표_latest.html` v1.0 생성.
+- `04_조명_비교표_latest.html` v1.5 생성.
+- `05_악세사리_비교표_latest.html` v1.0 생성.
+- 이전 통합 파일명인 `01_조명_비교표_latest.html`, `02_카메라_바디_비교표_latest.html`, `03_렌즈_필터_비교표_latest.html`은 호환 리다이렉트로 전환.
+- 추후 `https://bucket0825.github.io/note/` 통합을 고려해 내부 링크를 상대경로 기준으로 유지.
+- 조명 로컬 이미지를 `07_장비비교자료/assets/lighting/` 안으로 복사하고 최신 조명/악세사리 페이지의 이미지 경로를 self-contained 구조로 변경.
+- 이미지 확장자와 실제 파일 타입을 검증하고, HTML로 잘못 저장된 `.jpg` 참조를 실제 제품 이미지로 교체.

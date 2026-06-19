@@ -174,6 +174,11 @@ a {
   border-style: dashed;
 }
 
+.note-card--featured {
+  background: linear-gradient(180deg, #fefcf7 0%, #f2f7f8 100%);
+  border-color: #c9dce4;
+}
+
 .note-card__tag {
   color: var(--accent);
   font-size: 10px;

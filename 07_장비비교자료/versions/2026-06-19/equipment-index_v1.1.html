@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <base href="../../">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>장비 비교자료 목차</title>
+  <style>
+    :root{--ink:#20242a;--muted:#66717d;--line:#d9e0e6;--paper:#f8f6f1;--panel:#fff;--accent:#176b87;--soft:#eef6f7;--warm:#8d5b12}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Arial,sans-serif;line-height:1.5}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+    header{background:#efe9dd;border-bottom:1px solid var(--line);padding:34px 26px 24px}main{max-width:1280px;margin:0 auto;padding:24px}h1{margin:0 0 8px;font-size:clamp(32px,4vw,52px);line-height:1.06}h2{font-size:24px;margin:28px 0 12px}p{margin:0 0 10px}.lead{max-width:940px;color:#3f4a54}.small{font-size:13px;color:var(--muted)}
+    .top-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.top-nav a{display:inline-flex;align-items:center;border:1px solid #cdd7dd;border-radius:999px;background:#fff;padding:8px 12px;font-weight:900;color:var(--accent);text-decoration:none}.top-nav a:hover{background:#eef6f7;text-decoration:none}
+    .category-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:20px 0 18px}.category-card{display:grid;grid-template-rows:auto 1fr auto;gap:10px;min-height:238px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px;color:var(--ink);box-shadow:0 8px 22px rgba(35,45,54,.05)}.category-card:hover{border-color:#b9ccd4;text-decoration:none;box-shadow:0 12px 28px rgba(35,45,54,.08)}.category-card .num{font-size:13px;font-weight:950;color:var(--warm)}.category-card strong{display:block;font-size:26px;line-height:1.1}.category-card span{display:block;color:#53616d;font-size:14px}.category-card .go{align-self:end;color:var(--accent);font-weight:950}
+    .panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;margin-top:16px}.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.rule{background:#fbfcfc;border:1px solid var(--line);border-radius:8px;padding:13px}.rule strong{display:block;margin-bottom:4px}.file-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff}.file-table{width:100%;min-width:820px;border-collapse:collapse}.file-table th,.file-table td{padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;font-size:14px}.file-table th{background:#f0f4f6}.file-table tr:last-child td{border-bottom:0}.tag{display:inline-block;border:1px solid #d5dee4;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:900;background:#fff;color:#3f4a54}code{background:#eef3f5;border:1px solid #d9e2e8;border-radius:4px;padding:1px 5px}
+    @media(max-width:1100px){.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.rules{grid-template-columns:1fr 1fr}}@media(max-width:680px){main{padding:15px}.category-grid,.rules{grid-template-columns:1fr}.category-card{min-height:176px}}
+  </style>
+</head>
+<body>
+<header>
+  <h1>장비 비교자료 목차</h1>
+  <p class="lead">앞으로 이 자료는 아래 5개 분류로만 들어갑니다. 카메라, 렌즈, 필터, 조명, 악세사리를 섞지 않고, 각 페이지 안에서는 같은급 비교와 상세표를 따로 봅니다.</p>
+  <p class="small">기준일 2026-06-19 · 최신 원본은 모두 <code>07_장비비교자료/*_latest.html</code> 파일입니다.</p>
+  <nav class="top-nav" aria-label="장비 비교자료 분류">
+    <a href="00_장비비교_목차_latest.html">목차</a>
+    <a href="01_카메라_비교표_latest.html">카메라</a>
+    <a href="02_렌즈_비교표_latest.html">렌즈</a>
+    <a href="03_필터_비교표_latest.html">필터</a>
+    <a href="04_조명_비교표_latest.html">조명</a>
+    <a href="05_악세사리_비교표_latest.html">악세사리</a>
+  </nav>
+</header>
+<main>
+  <section class="category-grid" aria-label="장비 비교자료 5분류">
+    <a class="category-card" href="01_카메라_비교표_latest.html"><span class="num">01</span><strong>카메라</strong><span>Canon, Nikon, Fujifilm, Lumix, Ricoh, Sony A7M5 업그레이드와 필름 바디를 바디 기준으로 비교합니다.</span><span class="go">카메라 페이지 열기</span></a>
+    <a class="category-card" href="02_렌즈_비교표_latest.html"><span class="num">02</span><strong>렌즈</strong><span>현행 50/85/24-105/24-70/70-200/16-35와 A7M4 레거시 렌즈·어댑터 후보를 분리해서 봅니다.</span><span class="go">렌즈 페이지 열기</span></a>
+    <a class="category-card" href="03_필터_비교표_latest.html"><span class="num">03</span><strong>필터</strong><span>현재 보유 필터와 82mm 구매 추천 필터를 섞지 않고 효과별로 정리합니다.</span><span class="go">필터 페이지 열기</span></a>
+    <a class="category-card" href="04_조명_비교표_latest.html"><span class="num">04</span><strong>조명</strong><span>순간광과 지속광 본체를 Ws/W, 색온도, 가격, 크기, 마운트 기준으로 같은급끼리 비교합니다.</span><span class="go">조명 페이지 열기</span></a>
+    <a class="category-card" href="05_악세사리_비교표_latest.html"><span class="num">05</span><strong>악세사리</strong><span>소프트박스, 랜턴, 엄브렐러, 프레넬, 프로젝션, 트리거를 사이즈·마운트·세트 구성 중심으로 봅니다.</span><span class="go">악세사리 페이지 열기</span></a>
+  </section>
+
+  <section class="panel">
+    <h2>관리 규칙</h2>
+    <div class="rules">
+      <div class="rule"><strong>1. 최신본</strong><span class="small">항상 이 폴더의 <code>*_latest.html</code>만 수정합니다.</span></div>
+      <div class="rule"><strong>2. 분류</strong><span class="small">카메라·렌즈·필터·조명·악세사리를 서로 다른 페이지로 유지합니다.</span></div>
+      <div class="rule"><strong>3. 보존본</strong><span class="small">변경 전/후 보존은 <code>versions/YYYY-MM-DD</code>에 남깁니다.</span></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>정확한 최신 파일</h2>
+    <div class="file-table-wrap">
+      <table class="file-table">
+        <thead><tr><th>분류</th><th>최신 파일</th><th>현재 버전</th><th>역할</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag">목차</span></td><td><a href="00_장비비교_목차_latest.html">00_장비비교_목차_latest.html</a></td><td>v1.1</td><td>5분류 안내 목차</td></tr>
+          <tr><td><span class="tag">카메라</span></td><td><a href="01_카메라_비교표_latest.html">01_카메라_비교표_latest.html</a></td><td>v1.2</td><td>카메라 바디 비교</td></tr>
+          <tr><td><span class="tag">렌즈</span></td><td><a href="02_렌즈_비교표_latest.html">02_렌즈_비교표_latest.html</a></td><td>v1.0</td><td>현행·레거시 렌즈와 A7M4 어댑터</td></tr>
+          <tr><td><span class="tag">필터</span></td><td><a href="03_필터_비교표_latest.html">03_필터_비교표_latest.html</a></td><td>v1.0</td><td>보유 필터와 구매 추천 필터</td></tr>
+          <tr><td><span class="tag">조명</span></td><td><a href="04_조명_비교표_latest.html">04_조명_비교표_latest.html</a></td><td>v1.5</td><td>순간광·지속광 본체 비교</td></tr>
+          <tr><td><span class="tag">악세사리</span></td><td><a href="05_악세사리_비교표_latest.html">05_악세사리_비교표_latest.html</a></td><td>v1.0</td><td>조명 악세사리 비교</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+</body>
+</html>

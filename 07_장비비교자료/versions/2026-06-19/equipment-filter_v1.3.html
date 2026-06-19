@@ -1,0 +1,1693 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <base href="../../">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>필터 비교 대시보드</title>
+  <style>
+    :root{--ink:#20242a;--muted:#66717d;--line:#d9e0e6;--paper:#f8f6f1;--panel:#fff;--accent:#176b87;--warm:#b96800;--good:#2d7558}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Arial,sans-serif;line-height:1.5}
+    header{padding:34px 26px 22px;background:#efe9dd;border-bottom:1px solid var(--line)}main{max-width:1540px;margin:0 auto;padding:24px}
+    h1{margin:0 0 8px;font-size:clamp(30px,4vw,48px);line-height:1.08}h2{margin:28px 0 10px;font-size:24px}h3{margin:0 0 8px;font-size:17px}p{margin:0 0 10px}
+    a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}.lead{max-width:1040px;color:#3f4a54}.small{font-size:13px;color:var(--muted)}
+    .top-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.top-nav a{display:inline-flex;border:1px solid #cdd7dd;border-radius:999px;background:#fff;padding:8px 12px;font-weight:900}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:18px 0}.card,.panel,.notice{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:15px;min-width:0}.card strong{display:block;font-size:19px;margin-bottom:5px}
+    .notice{border-left:5px solid var(--accent)}
+    .learning-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:10px}.learn-card{border:1px solid var(--line);border-radius:8px;background:#fbfcfc;padding:12px}.learn-card strong{display:block;font-size:15px;margin-bottom:6px;color:#1f3038}.learn-card p{font-size:13px;color:#53616d;margin:0}
+    .guide-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin-top:12px}.guide-block{border:1px solid var(--line);border-radius:8px;background:#fbfcfc;padding:12px;min-width:0}.guide-block h3{font-size:18px;margin:0 0 8px}
+    .guide-table-wrap,.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff;max-width:100%}.guide-table,.data-table{width:100%;border-collapse:collapse}.guide-table{min-width:620px}.data-table{min-width:1180px}.guide-table th,.guide-table td,.data-table th,.data-table td{padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;font-size:13px}.guide-table th,.data-table th{background:#f0f4f6;white-space:nowrap}.guide-table td:first-child{font-weight:900;color:#1f3038;white-space:nowrap}
+    .dashboard{margin:22px 0 28px;background:#fff;border:1px solid #cfd9df;border-radius:10px;overflow:hidden;box-shadow:0 10px 28px rgba(35,45,54,.06)}
+    .dash-head{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:end;padding:18px 20px;background:linear-gradient(135deg,#fff 0%,#f2f7f8 55%,#f7f1e7 100%);border-bottom:1px solid var(--line)}.dash-head h2{margin:0 0 5px}
+    .dash-controls{display:grid;grid-template-columns:1.5fr repeat(5,minmax(130px,1fr));gap:8px;padding:12px 14px;background:#fff;border-bottom:1px solid var(--line)}
+    button,select,input{font:inherit;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);padding:10px}button{cursor:pointer;font-weight:900}button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .dash-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:12px 14px;background:#fbfcfc;border-bottom:1px solid var(--line)}.stat{border:1px solid #dce4e9;border-radius:8px;padding:10px 12px;background:#fff}.stat strong{display:block;font-size:22px;line-height:1.1}.stat span{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+    .empty{padding:24px;text-align:center;color:#53616d;background:#fff}.pill{display:inline-flex;align-items:center;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:900;white-space:nowrap}.brand-pill{background:#e8f2f4;color:#176b87}.tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 7px;font-size:12px;background:#fff;color:#42505c}
+    .price{font-weight:950;white-space:nowrap}.thumb{width:92px;height:70px;object-fit:contain;background:#f7f8f9;border:1px solid #e5ebef;border-radius:6px;display:block}.photo-cell{width:110px}
+    @media(max-width:1100px){.cards,.learning-grid,.guide-grid{grid-template-columns:1fr 1fr}.dash-controls{grid-template-columns:1fr 1fr 1fr}.dash-stats{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:760px){main{padding:15px}.cards,.learning-grid,.guide-grid,.dash-head,.dash-controls,.dash-stats{grid-template-columns:1fr}}
+  
+    .split-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:18px 0}.split-link{display:block;background:#fff;border:1px solid var(--line);border-radius:8px;padding:18px;min-height:132px}.split-link strong{display:block;font-size:22px;margin-bottom:8px}.split-link span{display:block;color:var(--muted)}
+    .page-note{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.page-note span{border:1px solid #d5dee4;border-radius:999px;background:#fff;padding:6px 10px;font-size:13px;font-weight:800;color:#3c4952}
+    .tier-board{display:grid;gap:14px;padding:14px;background:#fbfcfc}.tier-block{border:1px solid var(--line);border-radius:8px;background:#fff;overflow:hidden}.tier-block-head{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;padding:13px 14px;background:#f3f7f8;border-bottom:1px solid var(--line)}.tier-block h3{margin:0;font-size:18px}.tier-count{font-weight:950;color:var(--accent);white-space:nowrap}.tier-table-wrap{overflow:auto}.tier-table{width:100%;min-width:980px;border-collapse:collapse}.tier-table th,.tier-table td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;font-size:13px}.tier-table th{background:#f8fafb;white-space:nowrap}.tier-table tr:last-child td{border-bottom:0}.tier-rank{display:inline-flex;justify-content:center;align-items:center;width:24px;height:24px;border-radius:999px;background:#e8f2f4;color:#176b87;font-weight:950}
+    .owned-filter-table{min-width:1380px}
+    #filterRecTable{min-width:1460px}
+
+  </style>
+  <link rel="stylesheet" href="assets/equipment-theme.css">
+</head>
+<body>
+<header>
+  <h1>필터 비교 대시보드</h1>
+  <p class="lead">필터만 따로 보는 페이지입니다. 현재 보유 필터와 82mm 우선 구매 추천 필터를 섞지 않고, 몽환·감성 표현에 실제로 다른 효과를 주는지 기준으로 봅니다.</p>
+  <p class="small">기준일 2026-06-19 · 가격은 원화 기준으로만 표시 · 해외 가격 확인 항목은 기준환율로 원화 단순 환산</p>
+  <nav class="top-nav" aria-label="장비 비교자료 분류">
+    <a href="00_장비비교_목차_latest.html">목차</a>
+    <a href="01_카메라_비교표_latest.html">카메라</a>
+    <a href="02_렌즈_비교표_latest.html">렌즈</a>
+    <a href="03_필터_비교표_latest.html">필터</a>
+    <a href="04_조명_비교표_latest.html">조명</a>
+    <a href="05_악세사리_비교표_latest.html">악세사리</a>
+  </nav>
+</header>
+<main>
+  <section class="cards">
+    <div class="card"><strong>보유 필터</strong><span class="small">82mm/77mm 보유 필터와 첨부 사진으로 식별한 효과 필터.</span></div>
+    <div class="card"><strong>82mm 우선</strong><span class="small">구매 추천은 82mm를 먼저 보고, 82mm가 없을 때만 77mm를 후보로 둠.</span></div>
+    <div class="card"><strong>중복 제외</strong><span class="small">보유 77mm 필터는 링 운용 가능 기준으로 보고 같은 효과 재구매를 낮춤.</span></div>
+    <div class="card"><strong>효과 분류</strong><span class="small">Glow, Smoke/Fog, Soft, Satin, Dream, Astro, IR, Flare를 목적별로 분리.</span></div>
+    <div class="card"><strong>몽환·감성</strong><span class="small">선예도보다 빛 번짐, 피부 질감, 색감, 야간 분위기, 특수 표현 중심.</span></div>
+  </section>
+
+  <section class="notice"><h2>정리 원칙</h2><p>이 페이지에는 필터만 남깁니다. 구매 추천은 82mm 우선이고, 현재 보유한 77mm 필터는 링 조합으로 활용 가능한 전제로 중복 구매 후보에서 제외합니다. 77mm 추천은 82mm가 없거나 매물이 현실적으로 불리할 때만 남깁니다.</p></section>
+
+  <section class="dashboard">
+    <div class="dash-head">
+      <div>
+        <h2>A7M4 변환 어댑터 비교</h2>
+        <p class="small">현재 보유 바디 Sony A7M4에 예전 필름 렌즈를 붙이는 기준입니다. 해외 공식가 확인 항목은 2026-06-18 기준환율 1,520.13원으로 원화 환산했습니다.</p>
+      </div>
+    </div>
+    <div class="dash-controls">
+      <input id="adapterSearch" type="search" placeholder="렌즈 마운트, 어댑터, 주의사항 검색">
+      <select id="adapterMount"><option value="">렌즈 마운트 전체</option></select>
+      <select id="adapterType"><option value="">어댑터 유형 전체</option></select>
+      <select id="adapterControl"><option value="">조작 방식 전체</option></select>
+      <select id="adapterPriority"><option value="">우선순위 전체</option></select>
+      <select id="adapterSort"><option value="priority">우선순위순</option><option value="price">낮은 가격순</option><option value="mount">마운트순</option></select>
+    </div>
+    <div class="dash-stats" id="adapterStats"></div>
+    <div class="table-wrap">
+      <table class="data-table" id="adapterTable">
+        <thead>
+          <tr><th>사진</th><th>렌즈 마운트</th><th>어댑터/유형</th><th>A7M4 연결</th><th>조작</th><th>주의</th><th>원화 가격</th><th>우선순위</th><th>확인</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="empty" id="adapterEmpty">A7M4 어댑터 데이터가 없습니다.</div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>현재 보유 스크류 필터·효과표</h2>
+    <p class="small">기준 장비는 Sony A7M4 + Samyang 35-150mm F2-2.8 FE입니다. 메인 렌즈 필터 구경은 82mm이며, 보유 77mm 필터는 사용 중인 링 조합으로 활용 가능한 자산으로 보고 같은 효과의 82mm 재구매는 추천 우선순위에서 낮춥니다. 단, 실제 링 방향과 렌즈 조합에 따라 주변부 비네팅은 테스트가 필요합니다.</p>
+    <div class="guide-table-wrap">
+      <table class="data-table owned-filter-table">
+        <thead>
+          <tr><th>사진</th><th>보유 필터</th><th>구경</th><th>종류</th><th>작동 방식</th><th>효과 성격</th><th>강도</th><th>운용 메모</th><th>확인</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="photo-cell"><span class="small">사진 추가 예정</span></td><td><strong>Haida PROII CPL-VND</strong></td><td>82mm</td><td>가변 ND + CPL</td><td>ND 감광 + 편광 회전</td><td>노출 조절과 반사 제거를 동시에 처리. 영상 셔터 유지와 야외 반사 정리에 사용</td><td>조절형</td><td>보유. 효과 필터라기보다 실전 노출/반사 제어용이라 구매 추천 중복에서 제외</td><td><span class="small">보유품</span></td></tr>
+          <tr><td class="photo-cell"><span class="small">사진 추가 예정</span></td><td><strong>Benro SHD L39+H UV</strong></td><td>82mm</td><td>UV 보호</td><td>UV 차단/보호 유리</td><td>표현 효과보다 렌즈 보호와 기본 클리어 필터 역할</td><td>약</td><td>보유. 창작 효과용 구매 추천과 별개로 상시 장착 후보</td><td><span class="small">보유품</span></td></tr>
+          <tr><td class="photo-cell"><span class="small">사진 추가 예정</span></td><td><strong>Benro SHD CPL-HD</strong></td><td>82mm</td><td>편광</td><td>CPL 회전 편광</td><td>유리, 물, 금속 반사 제어와 하늘/잎 채도 정리</td><td>조절형</td><td>보유. Haida CPL-VND와 목적이 겹치지만 단독 CPL이 필요할 때 사용</td><td><span class="small">보유품</span></td></tr>
+          <tr><td class="photo-cell"><img class="thumb" src="https://kenkoglobal.com/images/catalog/product/60631ab191f26.png?w=1200&amp;fit=max" alt="Kenko Black Mist No.05"></td><td><strong>Kenko Black Mist No.05</strong></td><td>82mm</td><td>블랙 미스트</td><td>검은 확산 입자 산란</td><td>하이라이트와 대비를 부드럽게 낮추는 절제형 디퓨전</td><td>약</td><td>보유. 야간·역광에서 과하지 않게 분위기 추가</td><td><a href="https://kenkoglobal.com/product/black_mist_no_05_n/" target="_blank" rel="noreferrer">제품 확인</a></td></tr>
+          <tr><td class="photo-cell"><img class="thumb" src="https://nisiopticsusa.com/wp-content/uploads/2023/01/white-mist-25.jpg" alt="NiSi White Mist 1/4"></td><td><strong>NiSi White Mist 1/4</strong></td><td>82mm</td><td>화이트 미스트</td><td>흰 확산 입자 산란</td><td>하이라이트 + 흰 글로우. 밝고 몽환적이지만 선명도 손실은 비교적 낮음</td><td>약~중</td><td>보유. 현재 거의 고정 사용 중</td><td><a href="https://nisiopticsusa.com/product/nisi-82mm-circular-white-mist-1-4/" target="_blank" rel="noreferrer">제품 확인</a></td></tr>
+          <tr><td class="photo-cell"><img class="thumb" src="https://www.kenkoglobal.com/images/catalog/product/62d9c1efedc96.png?w=1200&amp;fit=max" alt="Kenko Nostaltone Blue"></td><td><strong>Kenko NOSTALTONE BLUE</strong></td><td>82mm</td><td>색조 + 소프트</td><td>색보정 + 빛 확산</td><td>그림자를 밝히고 하이라이트를 낮추며 청보라 톤을 더함</td><td>중</td><td>보유. 애니메이션 같은 푸른 노스탤지어 톤</td><td><a href="https://www.kenkoglobal.com/product/nostaltone_blue/" target="_blank" rel="noreferrer">제품 확인</a></td></tr>
+          <tr><td class="photo-cell"><span class="small">사진 추가 예정</span></td><td><strong>Hoya STAR 6X</strong></td><td>82mm</td><td>6포인트 스타</td><td>크로스 스크린 격자 회절</td><td>점광원에서 6갈래 별빛 효과. 두 개 겹치면 교차 패턴 실험 가능</td><td>중</td><td>보유. 야경, 제품, 반짝이는 조명 컷에서 사용</td><td><span class="small">보유품</span></td></tr>
+          <tr><td class="photo-cell"><img class="thumb" src="https://m.media-amazon.com/images/I/819jdthDbIL._AC_SL1500_.jpg" alt="WalkingWay Colorful Starlight 77mm"></td><td><strong>77mm WalkingWay Colorful Starlight</strong></td><td>77mm</td><td>컬러 스타/프리즘</td><td>컬러 프리즘/스타버스트 표면 효과</td><td>광원 주변을 컬러풀하게 퍼뜨리고 불규칙한 별빛·브러시 느낌을 만듦</td><td>중~강</td><td>보유. 링 운용 가능한 효과군으로 보고 82mm 중복 구매는 제외</td><td><a href="https://www.amazon.com/WalkingWay-Starlight-Irregular-Lightweight-Photography/dp/B0DPPNKVSB" target="_blank" rel="noreferrer">제품 확인</a></td></tr>
+          <tr><td class="photo-cell"><img class="thumb" src="https://m.media-amazon.com/images/I/91WNWXTHZdL._AC_SL1500_.jpg" alt="WalkingWay Star +4 77mm"></td><td><strong>77mm WalkingWay Star +4</strong></td><td>77mm</td><td>4포인트 스타</td><td>4포인트 크로스 스크린</td><td>점광원에서 4갈래 스타 효과. 회전식이면 별빛 각도 조절 가능</td><td>중</td><td>보유. 조명, 반짝이는 금속/주얼리, 야경 광원 테스트용</td><td><a href="https://www.amazon.com/Walking-Way-Variable-Twinkle-Starburst/dp/B0CN6V6QLM" target="_blank" rel="noreferrer">제품 확인</a></td></tr>
+          <tr><td class="photo-cell"><img class="thumb" src="https://img.kfconcept.com/image/catalog/product/KF01.1484/713SAMXUf0L._AC_SL1500_.jpg" alt="K&F Nano-X Black Diffusion 1/4 77mm"></td><td><strong>77mm K&amp;F Nano-X Pro MRC Black Diffusion 1/4</strong></td><td>77mm</td><td>블랙 디퓨전</td><td>검은 확산 입자 산란</td><td>Black Mist 계열보다 조금 더 진한 1/4 강도. 대비를 낮추고 하이라이트를 부드럽게 번짐</td><td>중</td><td>보유. 링 운용 가능한 보유 효과라 82mm Black Diffusion 재구매는 낮은 우선순위</td><td><a href="https://www.kfconcept.com/KF01.1484-nano-xcel-series-1-4-filter-28-multi-layer" target="_blank" rel="noreferrer">제품 확인</a></td></tr>
+          <tr><td class="photo-cell"><img class="thumb" src="https://kenkoglobal.com/images/catalog/product/5b6040247bf2f.png?w=1200&amp;fit=max" alt="Kenko Softon Speck A 82mm"></td><td><strong>82mm Kenko Softon Speck [A]</strong></td><td>82mm</td><td>소프트 포커스</td><td>물방울 같은 미세 렌즈 패턴 확산</td><td>초점감은 유지하면서 점광원과 하이라이트를 부드럽게 키우는 Softon A 효과</td><td>중</td><td>보유. 별, 야경, 꿈결 같은 인물/배경광에 좋음</td><td><a href="https://kenkoglobal.com/product/realpro_softon_a/" target="_blank" rel="noreferrer">제품 확인</a></td></tr>
+          <tr><td class="photo-cell"><img class="thumb" src="https://prismlensfx.com/cdn/shop/files/LINEAR_PRISM_c3796342-86f7-4f9d-ad96-db7609f22f90_1200x1200.png?v=1726173714" alt="82mm Linear Prism filter"></td><td><strong>82mm Linear Prism / Multi-Strip Prism</strong></td><td>82mm</td><td>프리즘/반복상</td><td>다중 프리즘 스트립 굴절</td><td>피사체나 광원을 선형으로 반복 복제하고 화면 가장자리에 굴절·왜곡을 만듦</td><td>강</td><td>보유. 인물 뮤직비디오 느낌, 조명 많은 배경, 움직임 있는 영상에서 효과 큼</td><td><a href="https://prismlensfx.com/products/linear-prism-fx-filter" target="_blank" rel="noreferrer">제품 확인</a></td></tr>
+          <tr><td class="photo-cell"><img class="thumb" src="https://prismlensfx.com/cdn/shop/files/SPLIT_DIOPTER_1200x1200.png?v=1723438876" alt="82mm Split Diopter prism filter"></td><td><strong>82mm Split Diopter / Split Prism</strong></td><td>82mm</td><td>분할 초점/프리즘</td><td>반쪽 디옵터/분할 굴절</td><td>프레임 일부를 굴절·확대해 가까운 피사체와 먼 피사체를 동시에 강조하거나 흐림 경계를 만듦</td><td>중~강</td><td>보유. 사진 2 기준 임시명. 조리개를 열수록 경계와 굴절감이 더 드러남</td><td><a href="https://prismlensfx.com/products/split-diopter-fx-filter" target="_blank" rel="noreferrer">제품 확인</a></td></tr>
+          <tr><td class="photo-cell"><img class="thumb" src="https://m.media-amazon.com/images/I/41XW+sN3X6L.jpg" alt="82mm Split Glass prism filter"></td><td><strong>82mm Split Glass / Subtle Kaleidoscope</strong></td><td>82mm</td><td>분할 프리즘/칼레이도</td><td>분할 프리즘/칼레이도 굴절</td><td>화면 일부에 반사·반복상·프랙탈 느낌을 더함. 움직이면 효과가 계속 바뀜</td><td>중~강</td><td>보유. 사진 3 기준 임시명. 사진 2와 같은 계열로 보여 정확한 제품명 확인 필요</td><td><a href="https://www.amazon.com/FX-Kaleidoscope-Rotating-Accessories-Multiple/dp/B09F8PDNZQ" target="_blank" rel="noreferrer">제품 확인</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="dashboard">
+    <div class="dash-head">
+      <div>
+        <h2>몽환·감성 구매 추천 필터</h2>
+        <p class="small">보유 필터와 섞지 않은 구매 추천 목록입니다. Samyang 35-150mm F2-2.8의 82mm 운용을 기준으로, 없는 효과군을 우선 추천합니다. 77mm는 82mm가 없거나 매물이 불리한 경우에만 후보로 둡니다.</p>
+      </div>
+    </div>
+    <div class="dash-controls">
+      <input id="filterRecSearch" type="search" placeholder="필터명, 효과, 메모 검색">
+      <select id="filterRecCategory"><option value="">종류 전체</option></select>
+      <select id="filterRecPriority"><option value="">추천 우선순위 전체</option></select>
+      <select id="filterRecSort"><option value="priority">추천순</option><option value="price">낮은 가격순</option><option value="category">종류순</option></select>
+    </div>
+    <div class="dash-stats" id="filterRecStats"></div>
+    <div class="table-wrap">
+      <table class="data-table" id="filterRecTable">
+        <thead>
+          <tr><th>사진</th><th>종류</th><th>제품</th><th>추천 구경</th><th>효과</th><th>원화 가격</th><th>추천</th><th>중복 판단</th><th>메모</th><th>근거</th><th>확인</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="empty" id="filterRecEmpty">조건에 맞는 추천 필터가 없습니다.</div>
+    </div>
+  </section>
+  <section class="panel">
+    <h2>구매 후보·식별/관심 필터</h2>
+    <p class="small">여기는 보유품이 아니라 앞으로 구매 검토하거나 사진으로 식별한 필터만 따로 모았습니다.</p>
+    <div class="guide-table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>사진</th><th>필터</th><th>구분</th><th>작동 방식</th><th>효과 성격</th><th>강도</th><th>구매 판단 메모</th><th>확인</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="photo-cell"><img class="thumb" src="https://www.marumi-global.com/cdn/shop/products/SFI_II_1024x1024.jpg?v=1680508807" alt="Marumi DHG Soft Fantasy II"></td><td><strong>Marumi DHG Soft Fantasy II 82mm</strong></td><td>구매 후보</td><td>유리 확산/소프트 필터</td><td>전체 균일 확산. 꽃, 야경, 몽환·환상 컨셉에 강함</td><td>강</td><td>82mm 기준으로 재고와 국내 실구매가 확인 필요</td><td><a href="https://www.marumi-global.com/products/dhg-soft-filter-pair" target="_blank" rel="noreferrer">제품 확인</a></td></tr>
+          <tr><td class="photo-cell"><span class="small">사진 확인 필요</span></td><td><strong>Heliopan 82mm Zeiss Softar 1</strong></td><td>대체 후보</td><td>미니 디퓨저 패턴</td><td>Softar 특유의 인물용 부드러운 확산</td><td>중</td><td>WZ Duo 82mm 매물이 불안정할 때 대체로 볼 후보. 재고 변동 확인 필요</td><td><a href="https://www.bhphotovideo.com/c/product/159367-REG/Heliopan_25_82mm_Zeiss_Softar_1.html" target="_blank" rel="noreferrer">제품 확인</a></td></tr>
+          <tr><td class="photo-cell"><span class="small">사진 확인 필요</span></td><td><strong>Heliopan WZ Duo / Duto 계열</strong></td><td>식별/관심</td><td>동심원 에칭 패턴</td><td>중심 선예도 유지 + 주변 글로우. 고전 영화 인물 느낌</td><td>중</td><td>사진으로 식별한 계열. 82mm 확정 구매 후보가 아니라 매물 확인용 관심 항목</td><td><span class="small">중고/해외 매물 확인</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Lensbaby Velvet 56 메모</h2>
+    <div class="guide-grid">
+      <div class="guide-block">
+        <h3>구매 판단</h3>
+        <div class="guide-table-wrap">
+          <table class="guide-table">
+            <thead><tr><th>항목</th><th>내용</th><th>판단</th></tr></thead>
+            <tbody>
+              <tr><td>AF 가능 여부</td><td>불가능</td><td>렌즈 자체가 수동초점 구조라 자동초점 렌즈처럼 쓰는 목적이면 제외</td></tr>
+              <tr><td>활용 방식</td><td>MF 피킹, 초점 확대, 존 포커스</td><td>A7M4 커스텀 버튼에 Focus Magnifier를 넣고 운용</td></tr>
+              <tr><td>화각</td><td>56mm F1.6</td><td>Velvet 85가 너무 망원이었으면 56mm가 인물/소품에 더 다루기 쉬움</td></tr>
+              <tr><td>광학 캐릭터</td><td>개방에서 소프트+글로우, 조이면 샤프</td><td>조리개 자체가 표현 도구라 수동 조작이 오히려 핵심</td></tr>
+              <tr><td>원화 기준가</td><td>약 ₩684,000 환산</td><td>해외 공식가 기준 단순 환산. 국내 실구매가는 별도 확인</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="guide-block">
+        <h3>제품 이미지/확인</h3>
+        <div class="guide-table-wrap">
+          <table class="guide-table">
+            <tbody>
+              <tr><td><img class="thumb" src="https://lensbaby.com/cdn/shop/products/Velvet56_DSLR_Straight_Web.png?v=1637280348&amp;width=1200" alt="Lensbaby Velvet 56"></td><td>Lensbaby Velvet 56 Sony E 옵션 존재. 단, AF 모터/전자접점 렌즈가 아니라 수동초점 렌즈로 공부해야 함.</td><td><a href="https://lensbaby.com/products/velvet-56" target="_blank" rel="noreferrer">제품 확인</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dashboard">
+    <div class="dash-head">
+      <div>
+        <h2>현행 렌즈 같은급 비교</h2>
+        <p class="small">요청한 현행 렌즈 화각을 같은급끼리 바로 묶었습니다. 브랜드별 나열이 아니라 50mm, 85mm, 24-105, 24-70, 70-200, 16-35 안에서 가격·무게·필터구경·용도를 비교합니다.</p>
+      </div>
+    </div>
+    <div class="tier-board" id="lensTierBoard"></div>
+  </section>
+
+  <section class="dashboard">
+    <div class="dash-head">
+      <div>
+        <h2>렌즈 비교</h2>
+        <p class="small">현행 렌즈는 요청한 50mm, 85mm, 24-105, 24-70, 70-200, 16-35 대응 화각만 넣었습니다.</p>
+      </div>
+    </div>
+    <div class="dash-controls">
+      <input id="lensSearch" type="search" placeholder="브랜드, 모델, 화각, 마운트 검색">
+      <select id="lensBrand"><option value="">브랜드 전체</option></select>
+      <select id="lensMount"><option value="">마운트 전체</option></select>
+      <select id="lensType"><option value="">렌즈 유형 전체</option></select>
+      <select id="lensUse"><option value="">용도 전체</option></select>
+      <select id="lensSort"><option value="price">낮은 가격순</option><option value="focal">화각순</option><option value="brand">브랜드순</option></select>
+    </div>
+    <div class="dash-stats" id="lensStats"></div>
+    <div class="table-wrap">
+      <table class="data-table" id="lensTable">
+        <thead>
+          <tr><th>사진</th><th>브랜드</th><th>모델</th><th>마운트</th><th>화각/조리개</th><th>무게/필터</th><th>특징</th><th>원화 가격</th><th>메모</th><th>확인</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="empty" id="lensEmpty">조건에 맞는 현행 렌즈가 없습니다.</div>
+    </div>
+  </section>
+
+  <section class="dashboard">
+    <div class="dash-head">
+      <div>
+        <h2>레거시 렌즈 같은급 비교</h2>
+        <p class="small">A7M4에 어댑터로 물릴 옛날 렌즈 후보를 표준, 인물, 몽환, 광각, 매크로, LA-EA5 후보로 묶었습니다.</p>
+      </div>
+    </div>
+    <div class="tier-board" id="legacyLensTierBoard"></div>
+  </section>
+
+  <section class="dashboard">
+    <div class="dash-head">
+      <div>
+        <h2>필름/레거시 렌즈 비교</h2>
+        <p class="small">A7M4에 어댑터로 물릴 후보를 우선 정리했습니다. 수동렌즈, M42, Nikon F, Minolta MD, Canon FD, C/Y, Leica R, LA-EA5용 A마운트 AF 렌즈를 분리해서 봅니다.</p>
+      </div>
+    </div>
+    <div class="dash-controls">
+      <input id="filmLensSearch" type="search" placeholder="브랜드, 모델, 마운트, 화각 검색">
+      <select id="filmLensBrand"><option value="">브랜드 전체</option></select>
+      <select id="filmLensMount"><option value="">마운트 전체</option></select>
+      <select id="filmLensType"><option value="">렌즈 유형 전체</option></select>
+      <select id="filmLensUse"><option value="">용도 전체</option></select>
+      <select id="filmLensSort"><option value="price">낮은 가격순</option><option value="focal">화각순</option><option value="mount">마운트순</option></select>
+    </div>
+    <div class="dash-stats" id="filmLensStats"></div>
+    <div class="table-wrap">
+      <table class="data-table" id="filmLensTable">
+        <thead>
+          <tr><th>사진</th><th>브랜드</th><th>모델</th><th>마운트</th><th>화각/조리개</th><th>호환</th><th>상태 체크</th><th>원화 가격</th><th>메모</th><th>확인</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="empty" id="filmLensEmpty">조건에 맞는 필름/레거시 렌즈가 없습니다.</div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+const lensRows=[
+  {
+    img:"https://d1ncau8tqf99kp.cloudfront.net/converted/110209_original_local_1200x1050_v3_converted.webp",
+    brand:"Sony",
+    model:"FE 50mm F1.4 GM",
+    mount:"Sony E",
+    type:"50mm 단렌즈",
+    use:"현행 50mm",
+    focal:"50mm F1.4",
+    weight:"약 516g / 67mm",
+    feature:"A7M4/A7M5에 가장 균형 좋은 고급 50mm. 선예도, AF, 보케 모두 강함",
+    krw:"약 ₩1,976,000",
+    memo:"50mm를 자주 쓸 계획이면 FE 50mm F1.8보다 훨씬 만족도 높은 후보",
+    link:"https://electronics.sony.com/imaging/lenses/all-e-mount/p/sel50f14gm"
+  },
+  {
+    img:"https://m.media-amazon.com/images/I/81SQ4kH+FnL._AC_SL1500_.jpg",
+    brand:"Sony",
+    model:"FE 50mm F1.8",
+    mount:"Sony E",
+    type:"50mm 단렌즈",
+    use:"현행 50mm",
+    focal:"50mm F1.8",
+    weight:"약 186g / 49mm",
+    feature:"가볍고 저렴한 50mm. AF와 빌드는 GM보다 약하지만 입문 비용이 낮음",
+    krw:"약 ₩301,000",
+    memo:"예산 우선이면 가능. 작업용/만족도는 50mm F1.4 GM 쪽이 훨씬 안정적",
+    link:"https://www.amazon.com/Sony-50mm-F1-8-Standard-SEL50F18F/dp/B07XBX32GR"
+  },
+  {
+    img:"https://d1ncau8tqf99kp.cloudfront.net/converted/121777_original_local_1200x1050_v3_converted.webp",
+    brand:"Sony",
+    model:"FE 85mm F1.4 GM II",
+    mount:"Sony E",
+    type:"85mm 단렌즈",
+    use:"현행 85mm",
+    focal:"85mm F1.4",
+    weight:"약 642g / 77mm",
+    feature:"최신 Sony 인물용 GM. 1세대보다 가볍고 AF/해상도 개선",
+    krw:"약 ₩2,812,000",
+    memo:"인물 촬영 비중이 높고 오래 쓸 85mm를 원하면 핵심 후보",
+    link:"https://electronics.sony.com/imaging/lenses/all-e-mount/p/sel85f14gm2"
+  },
+  {
+    img:"https://m.media-amazon.com/images/I/810Ri-gB5xL._AC_SL1500_.jpg",
+    brand:"Sony",
+    model:"FE 85mm F1.8",
+    mount:"Sony E",
+    type:"85mm 단렌즈",
+    use:"현행 85mm",
+    focal:"85mm F1.8",
+    weight:"약 371g / 67mm",
+    feature:"가볍고 선명한 인물렌즈. 가격 대비 결과가 좋아 현실 추천도 높음",
+    krw:"약 ₩985,000",
+    memo:"GM II가 부담되면 먼저 볼 Sony 85mm 가성비 후보",
+    link:"https://www.amazon.com/Sony-85mm-1-8-Lens-SEL85F18/dp/B07XF2HBKK"
+  },
+  {
+    img:"https://m.media-amazon.com/images/I/81YpNvUtlLL._AC_SL1500_.jpg",
+    brand:"Sony",
+    model:"FE 24-105mm F4 G OSS",
+    mount:"Sony E",
+    type:"24-105 표준줌",
+    use:"현행 24-105",
+    focal:"24-105mm F4",
+    weight:"약 663g / 77mm",
+    feature:"A7M4/A7M5 여행·행사·일상 기본 줌. OSS와 근접 성능이 좋아 다용도",
+    krw:"약 ₩1,973,000",
+    memo:"현재 Samyang 35-150과 겹치지만, 더 가볍고 넓은 24mm가 필요하면 후보",
+    link:"https://www.amazon.com/Sony-24-105mm-Standard-Zoom-SEL24105G/dp/B07X7KL6JM"
+  },
+  {
+    img:"https://d1ncau8tqf99kp.cloudfront.net/converted/102462_original_local_1200x1050_v3_converted.webp",
+    brand:"Sony",
+    model:"FE 24-70mm F2.8 GM II",
+    mount:"Sony E",
+    type:"24-70 표준줌",
+    use:"현행 24-70",
+    focal:"24-70mm F2.8",
+    weight:"약 695g / 82mm",
+    feature:"Sony 표준줌 핵심. 가볍고 선명하며 영상 AF도 안정적",
+    krw:"약 ₩3,420,000",
+    memo:"82mm 필터 자산과 잘 맞음. Samyang 35-150보다 넓고 가벼운 작업 줌",
+    link:"https://electronics.sony.com/imaging/lenses/all-e-mount/p/sel2470gm2"
+  },
+  {
+    img:"https://d1ncau8tqf99kp.cloudfront.net/converted/92317_original_local_1200x1050_v3_converted.webp",
+    brand:"Sony",
+    model:"FE 70-200mm F2.8 GM OSS II",
+    mount:"Sony E",
+    type:"70-200 망원줌",
+    use:"현행 70-200",
+    focal:"70-200mm F2.8",
+    weight:"약 1045g / 77mm",
+    feature:"인물·행사·무대 망원 핵심. 1세대보다 훨씬 가볍고 AF가 빠름",
+    krw:"약 ₩4,785,000",
+    memo:"망원 인물 압축이 필요하면 최상위 후보. 77mm라 보유 77mm 필터와도 맞음",
+    link:"https://electronics.sony.com/imaging/lenses/all-e-mount/p/sel70200gm2"
+  },
+  {
+    img:"https://d1ncau8tqf99kp.cloudfront.net/converted/116338_original_local_1200x1050_v3_converted.webp",
+    brand:"Sony",
+    model:"FE 16-35mm F2.8 GM II",
+    mount:"Sony E",
+    type:"16-35 광각줌",
+    use:"현행 16-35",
+    focal:"16-35mm F2.8",
+    weight:"약 547g / 82mm",
+    feature:"실내, 공간, 영상, 넓은 인물용. GM II라 작고 가벼운 편",
+    krw:"약 ₩3,648,000",
+    memo:"82mm 필터 자산과 맞음. 공간/영상/광각 인물 작업이면 우선순위 높음",
+    link:"https://electronics.sony.com/imaging/lenses/all-e-mount/p/sel1635gm2"
+  },
+  {
+    img:"https://s7d1.scene7.com/is/image/canon/4515C002_rf50mm-f18-stm_primary-v2?fmt=webp-alpha&wid=800&hei=800",
+    brand:"Canon",
+    model:"RF 50mm F1.8 STM",
+    mount:"Canon RF",
+    type:"50mm 단렌즈",
+    use:"현행 50mm",
+    focal:"50mm F1.8",
+    weight:"약 160g / 43mm",
+    feature:"작고 저렴한 표준 단렌즈. RF 입문용으로 가장 부담이 낮음",
+    krw:"약 ₩303,000",
+    memo:"R6/R5 계열에서 가볍게 시작할 50mm",
+    link:"https://www.usa.canon.com/shop/p/rf50mm-f1-8-stm"
+  },
+  {
+    img:"https://s7d1.scene7.com/is/image/canon/4234C002_rf85mm-f2-macro-is-stm_primary?fmt=webp-alpha&wid=800&hei=800",
+    brand:"Canon",
+    model:"RF 85mm F2 Macro IS STM",
+    mount:"Canon RF",
+    type:"85mm 단렌즈",
+    use:"현행 85mm",
+    focal:"85mm F2",
+    weight:"약 500g / 67mm",
+    feature:"인물+간이 매크로. F1.2L보다 현실적인 가격과 손떨림 보정",
+    krw:"약 ₩911,000",
+    memo:"인물, 소품, 감성 컷을 한 렌즈로 겸할 때 좋음",
+    link:"https://www.usa.canon.com/shop/p/rf85mm-f2-macro-is-stm"
+  },
+  {
+    img:"https://s7d1.scene7.com/is/image/canon/2963C002_rf-24-105mm-f4-l-is-usm_primary2?fmt=webp-alpha&wid=800&hei=800",
+    brand:"Canon",
+    model:"RF 24-105mm F4L IS USM",
+    mount:"Canon RF",
+    type:"24-105 표준줌",
+    use:"현행 24-105",
+    focal:"24-105mm F4",
+    weight:"약 700g / 77mm",
+    feature:"여행·행사·스튜디오 기본 줌. F4지만 화각 활용도가 좋음",
+    krw:"약 ₩1,975,000",
+    memo:"R6/R5 시스템의 실사용 기본 줌",
+    link:"https://www.usa.canon.com/shop/p/rf24-105mm-f4-l-is-usm"
+  },
+  {
+    img:"https://static.bhphoto.com/images/images500x500/canon_3680c002_rf_24_70mm_f_2_8l_is_1567541224_1502500.jpg",
+    brand:"Canon",
+    model:"RF 24-70mm F2.8L IS USM",
+    mount:"Canon RF",
+    type:"24-70 표준줌",
+    use:"현행 24-70",
+    focal:"24-70mm F2.8",
+    weight:"약 900g / 82mm",
+    feature:"행사·인물·상업 기본 렌즈. RF 표준줌의 핵심",
+    krw:"약 ₩3,647,000",
+    memo:"비싸고 무겁지만 한 번에 가장 많은 일을 처리하는 렌즈",
+    link:"https://www.bhphotovideo.com/c/product/1502500-REG/canon_3680c002_rf_24_70mm_f_2_8l_is.html"
+  },
+  {
+    img:"https://s7d1.scene7.com/is/image/canon/3792C002_rf70-200mm-f2.8-l-is-usm_primary?fmt=webp-alpha&wid=800&hei=800",
+    brand:"Canon",
+    model:"RF 70-200mm F2.8L IS USM",
+    mount:"Canon RF",
+    type:"70-200 망원줌",
+    use:"현행 70-200",
+    focal:"70-200mm F2.8",
+    weight:"약 1070g / 77mm",
+    feature:"인물 압축, 행사, 무대, 야외 인물. 짧게 수납되는 RF 장점",
+    krw:"약 ₩4,255,000",
+    memo:"인물 주력이라면 결국 한 번은 보게 되는 렌즈",
+    link:"https://www.usa.canon.com/shop/p/rf70-200mm-f2-8-l-is-usm"
+  },
+  {
+    img:"https://s7d1.scene7.com/is/image/canon/3682C002_rf15-35mm-f2.8-l-is-usm_primary?fmt=webp-alpha&wid=800&hei=800",
+    brand:"Canon",
+    model:"RF 15-35mm F2.8L IS USM",
+    mount:"Canon RF",
+    type:"16-35 대응 광각줌",
+    use:"현행 16-35",
+    focal:"15-35mm F2.8",
+    weight:"약 840g / 82mm",
+    feature:"실내, 공간, 영상, 와이드 인물. Canon RF의 16-35 대응 렌즈",
+    krw:"약 ₩3,647,000",
+    memo:"정확히 16-35는 아니지만 요청한 광각줌 범위의 RF 핵심",
+    link:"https://www.usa.canon.com/shop/p/rf15-35mm-f2-8-l-is-usm"
+  },
+  {
+    img:"https://imaging.nikon.com/imaging/lineup/lens/z-mount/z_50mmf18s/img/product_01_01.jpg",
+    brand:"Nikon",
+    model:"NIKKOR Z 50mm f/1.8 S",
+    mount:"Nikon Z",
+    type:"50mm 단렌즈",
+    use:"현행 50mm",
+    focal:"50mm F1.8",
+    weight:"약 415g / 62mm",
+    feature:"Z마운트 대표 표준 단렌즈. F1.8이지만 광학 성능이 높음",
+    krw:"약 ₩956,000",
+    memo:"Z f/Z6III에서 사진 공부용 표준렌즈로 좋음",
+    link:"https://imaging.nikon.com/imaging/lineup/lens/z-mount/z_50mmf18s/"
+  },
+  {
+    img:"https://imaging.nikon.com/imaging/lineup/lens/z-mount/z_85mmf18s/img/product_01_01.jpg",
+    brand:"Nikon",
+    model:"NIKKOR Z 85mm f/1.8 S",
+    mount:"Nikon Z",
+    type:"85mm 단렌즈",
+    use:"현행 85mm",
+    focal:"85mm F1.8",
+    weight:"약 470g / 67mm",
+    feature:"선명하고 안정적인 인물 렌즈. 가격·무게 균형이 좋음",
+    krw:"약 ₩1,215,000",
+    memo:"Z 시스템 인물렌즈의 현실적인 1순위",
+    link:"https://imaging.nikon.com/imaging/lineup/lens/z-mount/z_85mmf18s/"
+  },
+  {
+    img:"https://imaging.nikon.com/imaging/lineup/lens/z-mount/z_24-120mmf4s/img/product_01_01.jpg",
+    brand:"Nikon",
+    model:"NIKKOR Z 24-120mm f/4 S",
+    mount:"Nikon Z",
+    type:"24-105 대응 표준줌",
+    use:"현행 24-105",
+    focal:"24-120mm F4",
+    weight:"약 630g / 77mm",
+    feature:"Nikon Z에는 24-105 대신 24-120이 핵심. 여행·행사용 범위가 더 김",
+    krw:"약 ₩1,671,000",
+    memo:"요청한 24-105 역할을 Nikon에서는 이 렌즈로 봄",
+    link:"https://imaging.nikon.com/imaging/lineup/lens/z-mount/z_24-120mmf4s/"
+  },
+  {
+    img:"https://imaging.nikon.com/imaging/lineup/lens/z-mount/z_24-70mmf28s/img/product_01_01.jpg",
+    brand:"Nikon",
+    model:"NIKKOR Z 24-70mm f/2.8 S",
+    mount:"Nikon Z",
+    type:"24-70 표준줌",
+    use:"현행 24-70",
+    focal:"24-70mm F2.8",
+    weight:"약 805g / 82mm",
+    feature:"Z 시스템의 프로 표준줌. 상업·행사·인물 기본 렌즈",
+    krw:"약 ₩3,647,000",
+    memo:"Z6III/Z8 구매 시 예산을 크게 잡아야 하는 렌즈",
+    link:"https://imaging.nikon.com/imaging/lineup/lens/z-mount/z_24-70mmf28s/"
+  },
+  {
+    img:"https://imaging.nikon.com/imaging/lineup/lens/z-mount/z_70-200mmf28_vr_s/img/product_01_01.jpg",
+    brand:"Nikon",
+    model:"NIKKOR Z 70-200mm f/2.8 VR S",
+    mount:"Nikon Z",
+    type:"70-200 망원줌",
+    use:"현행 70-200",
+    focal:"70-200mm F2.8",
+    weight:"약 1360g / 77mm",
+    feature:"Nikon Z 인물·행사 망원 핵심. VR 포함",
+    krw:"약 ₩4,103,000",
+    memo:"화질은 강하지만 Canon RF보다 체감 무게가 큼",
+    link:"https://imaging.nikon.com/imaging/lineup/lens/z-mount/z_70-200mmf28_vr_s/"
+  },
+  {
+    img:"https://imaging.nikon.com/imaging/lineup/lens/z-mount/z_14-30mmf4s/img/product_01_01.jpg",
+    brand:"Nikon",
+    model:"NIKKOR Z 14-30mm f/4 S",
+    mount:"Nikon Z",
+    type:"16-35 대응 광각줌",
+    use:"현행 16-35",
+    focal:"14-30mm F4",
+    weight:"약 485g / 82mm",
+    feature:"가볍고 필터 사용이 쉬운 광각줌. 16-35 F4 역할",
+    krw:"약 ₩1,975,000",
+    memo:"실내·공간·여행에서 현실적인 Nikon 광각줌",
+    link:"https://imaging.nikon.com/imaging/lineup/lens/z-mount/z_14-30mmf4s/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16536611_MAIN_XF50mmF2_R_WR_Black_Up_2.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"XF 50mm F2 R WR",
+    mount:"Fujifilm X",
+    type:"50mm 단렌즈",
+    use:"현행 50mm",
+    focal:"50mm F2 / 환산 76mm",
+    weight:"약 200g / 46mm",
+    feature:"후지 APS-C에서 작은 인물 단렌즈. 방진방적",
+    krw:"약 ₩607,000",
+    memo:"풀프레임 50mm보다는 짧은 인물 화각에 가까움",
+    link:"https://shopusa.fujifilm-x.com/xf50mmf2-xf50mmf2/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16780028_MAIN00_Image_XF56mmF1.2_R_WR_lens_Top_2.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"XF 56mm F1.2 R WR",
+    mount:"Fujifilm X",
+    type:"85mm 대응 단렌즈",
+    use:"현행 85mm",
+    focal:"56mm F1.2 / 환산 85mm",
+    weight:"약 445g / 67mm",
+    feature:"후지 X의 대표 인물렌즈. 풀프레임 85mm 역할",
+    krw:"약 ₩1,823,000",
+    memo:"후지에서 85mm 인물 느낌을 원하면 가장 먼저 볼 렌즈",
+    link:"https://shopusa.fujifilm-x.com/xf56mmf1-2-r-wr-xf56mmf1-2-r-wr/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16836580_MAIN00_Image_XF16-55mmF2_8_II_lensFrontFUKAN.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"XF 16-55mm F2.8 R LM WR II",
+    mount:"Fujifilm X",
+    type:"24-70 대응 표준줌",
+    use:"현행 24-70",
+    focal:"16-55mm F2.8 / 환산 24-84mm",
+    weight:"약 410g / 72mm",
+    feature:"후지 X의 24-70 대응. 최신 II형은 가볍고 고화소 대응",
+    krw:"약 ₩2,127,000",
+    memo:"X-H2/X-T5 고화소와 잘 맞는 표준줌",
+    link:"https://shopusa.fujifilm-x.com/xf16-55mmf2-8-r-lm-wr-ii-lens-16836580/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16443060_MAIN_XF50-140mm_2.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"XF 50-140mm F2.8 R LM OIS WR",
+    mount:"Fujifilm X",
+    type:"70-200 대응 망원줌",
+    use:"현행 70-200",
+    focal:"50-140mm F2.8 / 환산 76-213mm",
+    weight:"약 995g / 72mm",
+    feature:"후지 X의 70-200 대응. OIS 포함, 인물·행사 망원",
+    krw:"약 ₩2,887,000",
+    memo:"풀프레임 70-200보다 작지만 APS-C 세트에서는 큰 렌즈",
+    link:"https://shopusa.fujifilm-x.com/xf50-140mmf2-8-r-lm-ois-wr-lens-16443060/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16635613_MAIN_XF16-80mm_HighAngle_5.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"XF 16-80mm F4 R OIS WR",
+    mount:"Fujifilm X",
+    type:"24-105 대응 표준줌",
+    use:"현행 24-105",
+    focal:"16-80mm F4 / 환산 24-122mm",
+    weight:"약 440g / 72mm",
+    feature:"후지 X의 여행·일상용 24-105 대응. OIS 포함",
+    krw:"약 ₩1,140,000",
+    memo:"화질 최우선이면 16-55 II, 범위와 편의면 16-80",
+    link:"https://shopusa.fujifilm-x.com/xf16-80mmf4-xf16-80mmf4/"
+  },
+  {
+    img:"https://shopusa.fujifilm-x.com/media/catalog/product/1/6/16666753_MAIN_REVISED_XF10-24mmF4_R_OIS_WR_front_6.jpg?width=265&height=265&canvas=265,265&quality=90&bg-color=255,255,255&fit=bounds",
+    brand:"Fujifilm",
+    model:"XF 10-24mm F4 R OIS WR",
+    mount:"Fujifilm X",
+    type:"16-35 대응 광각줌",
+    use:"현행 16-35",
+    focal:"10-24mm F4 / 환산 15-36mm",
+    weight:"약 385g / 72mm",
+    feature:"후지 X의 16-35 대응 광각줌. 풍경·공간·여행용",
+    krw:"약 ₩1,520,000",
+    memo:"F2.8보다 가볍고 필터 운용 쉬운 광각 선택",
+    link:"https://shopusa.fujifilm-x.com/xf10-24mmf4-ii-xf10-24mmf4-ii/"
+  },
+  {
+    img:"https://panasonic.com/content/dam/panasonic/ca/en/pim/dam/S-/S-S50/S-S50/ast-1337311.jpg",
+    brand:"Panasonic Lumix",
+    model:"Lumix S 50mm F1.8",
+    mount:"L-Mount",
+    type:"50mm 단렌즈",
+    use:"현행 50mm",
+    focal:"50mm F1.8",
+    weight:"약 300g / 67mm",
+    feature:"S5II/S9에 잘 맞는 가벼운 표준 단렌즈. 영상 AF와 크기 균형",
+    krw:"약 ₩759,000",
+    memo:"Lumix L마운트에서 50mm 현실 1순위",
+    link:"https://www.panasonic.com/ca/consumer/cameras-camcorders/interchangeable-lenses/full-frame/s-s50.html"
+  },
+  {
+    img:"https://panasonic.com/content/dam/panasonic/ca/en/pim/dam/S-/S-S85/S-S85/ast-1142731.jpg",
+    brand:"Panasonic Lumix",
+    model:"Lumix S 85mm F1.8",
+    mount:"L-Mount",
+    type:"85mm 단렌즈",
+    use:"현행 85mm",
+    focal:"85mm F1.8",
+    weight:"약 355g / 67mm",
+    feature:"가볍고 영상 친화적인 인물렌즈. S5II/S5IIX와 균형 좋음",
+    krw:"약 ₩911,000",
+    memo:"Lumix 인물렌즈의 가성비 후보",
+    link:"https://www.panasonic.com/ca/consumer/cameras-camcorders/interchangeable-lenses/full-frame/s-s85.html"
+  },
+  {
+    img:"https://panasonic.com/content/dam/panasonic/ca/en/pim/dam/S-/S-R241/S-R24105PP/ast-1215660.jpg",
+    brand:"Panasonic Lumix",
+    model:"Lumix S 24-105mm F4 Macro O.I.S.",
+    mount:"L-Mount",
+    type:"24-105 표준줌",
+    use:"현행 24-105",
+    focal:"24-105mm F4",
+    weight:"약 680g / 77mm",
+    feature:"0.5배 매크로와 OIS가 장점. 여행·제품·영상 보조까지 가능",
+    krw:"약 ₩1,975,000",
+    memo:"S5II에서 가장 다용도인 L마운트 표준줌",
+    link:"https://www.panasonic.com/ca/consumer/cameras-camcorders/interchangeable-lenses/full-frame/s-r24105.html"
+  },
+  {
+    img:"https://panasonic.com/content/dam/panasonic/ca/en/pim/dam/S-/S-E247/S-E2470/ast-1210472.jpg",
+    brand:"Panasonic Lumix",
+    model:"Lumix S PRO 24-70mm F2.8",
+    mount:"L-Mount",
+    type:"24-70 표준줌",
+    use:"현행 24-70",
+    focal:"24-70mm F2.8",
+    weight:"약 935g / 82mm",
+    feature:"S PRO 표준줌. 화질은 강하지만 큰 렌즈",
+    krw:"약 ₩3,343,000",
+    memo:"영상/사진 모두 가능하지만 S5II 세트에서는 무게 확인",
+    link:"https://www.panasonic.com/ca/consumer/cameras-camcorders/interchangeable-lenses/full-frame/s-e2470.html"
+  },
+  {
+    img:"https://panasonic.com/content/dam/panasonic/ca/en/pim/dam/S-/S-E702/S-E70200/ast-1210509.jpg",
+    brand:"Panasonic Lumix",
+    model:"Lumix S PRO 70-200mm F2.8 O.I.S.",
+    mount:"L-Mount",
+    type:"70-200 망원줌",
+    use:"현행 70-200",
+    focal:"70-200mm F2.8",
+    weight:"약 1570g / 82mm",
+    feature:"인물·행사용 고급 망원. OIS 포함, 세트 무게 큼",
+    krw:"약 ₩3,951,000",
+    memo:"휴대성보다 결과물과 안정성을 우선할 때",
+    link:"https://www.panasonic.com/ca/consumer/cameras-camcorders/interchangeable-lenses/full-frame/s-e70200.html"
+  },
+  {
+    img:"https://panasonic.com/content/dam/panasonic/ca/en/pim/dam/S-/S-R163/S-R1635/ast-1210485.jpg",
+    brand:"Panasonic Lumix",
+    model:"Lumix S PRO 16-35mm F4",
+    mount:"L-Mount",
+    type:"16-35 광각줌",
+    use:"현행 16-35",
+    focal:"16-35mm F4",
+    weight:"약 500g / 77mm",
+    feature:"Lumix에서 요청한 16-35에 정확히 맞는 광각줌. 영상·공간용",
+    krw:"약 ₩2,279,000",
+    memo:"F2.8은 아니지만 S5II/S5IIX 운용 균형이 좋음",
+    link:"https://www.panasonic.com/ca/consumer/cameras-camcorders/interchangeable-lenses/full-frame/s-r1635.html"
+  }
+];
+
+const filmLensRows=[
+  {
+    img:"https://allphotolenses.com/public/files/img/__tmp/80_80_c7bb329f397b0de95966ce5e44478d08.jpg",
+    brand:"Nikon",
+    model:"Nikkor 105mm f/2.5 AI-S",
+    mount:"Nikon F",
+    type:"1순위 인물",
+    use:"레거시 인물",
+    focal:"105mm F2.5",
+    compatibility:"A7M4: Nikon F-NEX 수동 어댑터. Z/Canon/Fuji에는 각 전용 어댑터 필요",
+    condition:"곰팡이, 헤이즈, 조리개 오일, AI-S 여부 확인",
+    krw:"중고 기준 약 ₩380,000",
+    memo:"인물용 레거시 렌즈의 기준점. 색과 압축감이 좋아 1순위 추천",
+    link:"https://allphotolenses.com/lenses/item/c_30.html"
+  },
+  {
+    img:"",
+    brand:"Nikon",
+    model:"Nikkor 50mm f/1.4 AI-S",
+    mount:"Nikon F",
+    type:"1순위 표준",
+    use:"레거시 표준",
+    focal:"50mm F1.4",
+    compatibility:"A7M4: Nikon F-NEX 수동 어댑터",
+    condition:"개방 소프트함, 조리개링 클릭감, 헤이즈 확인",
+    krw:"중고 기준 약 ₩250,000",
+    memo:"표준 올드렌즈 입문용. 가격과 결과물 균형이 좋음",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Nikkor+50mm+f%2F1.4+AI-S"
+  },
+  {
+    img:"",
+    brand:"Nikon",
+    model:"Nikkor 50mm f/1.8 AI-S",
+    mount:"Nikon F",
+    type:"가성비 표준",
+    use:"레거시 표준",
+    focal:"50mm F1.8",
+    compatibility:"A7M4: Nikon F-NEX 수동 어댑터",
+    condition:"저렴한 만큼 상태 편차 확인",
+    krw:"중고 기준 약 ₩150,000",
+    memo:"가볍고 싸게 Nikon F 감성 확인하기 좋음",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Nikkor+50mm+f%2F1.8+AI-S"
+  },
+  {
+    img:"",
+    brand:"Nikon",
+    model:"Micro-Nikkor 55mm f/2.8 AI-S",
+    mount:"Nikon F",
+    type:"접사/제품",
+    use:"레거시 매크로",
+    focal:"55mm F2.8 Macro",
+    compatibility:"A7M4: Nikon F-NEX 수동 어댑터",
+    condition:"무한대/근접 초점, 헬리코이드 뻑뻑함 확인",
+    krw:"중고 기준 약 ₩180,000",
+    memo:"소품·필터 효과 테스트·제품 촬영 공부용으로 좋음",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Micro+Nikkor+55mm+f%2F2.8+AI-S"
+  },
+  {
+    img:"",
+    brand:"Nikon",
+    model:"Nikkor 85mm f/2 AI-S",
+    mount:"Nikon F",
+    type:"2순위 인물",
+    use:"레거시 인물",
+    focal:"85mm F2",
+    compatibility:"A7M4: Nikon F-NEX 수동 어댑터",
+    condition:"개방 대비, 코팅 스크래치 확인",
+    krw:"중고 기준 약 ₩380,000",
+    memo:"85mm 인물용. 105mm f/2.5보다 가까운 거리에서 다루기 쉬움",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Nikkor+85mm+f%2F2+AI-S"
+  },
+  {
+    img:"",
+    brand:"Nikon",
+    model:"Nikkor 28mm f/2.8 AI-S",
+    mount:"Nikon F",
+    type:"광각 추천",
+    use:"레거시 광각",
+    focal:"28mm F2.8",
+    compatibility:"A7M4: Nikon F-NEX 수동 어댑터",
+    condition:"근접 성능 좋은 AI-S 버전인지 확인",
+    krw:"중고 기준 약 ₩350,000",
+    memo:"스냅·공간·환경 인물용. Nikon 광각 중 추천도 높음",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Nikkor+28mm+f%2F2.8+AI-S"
+  },
+  {
+    img:"http://natural-camera.com/cdn/shop/products/s-DSC07717_1200x1200.jpg?v=1694742810",
+    brand:"Minolta",
+    model:"MC Rokkor-PG 58mm f/1.2",
+    mount:"Minolta SR/MC/MD",
+    type:"특수효과/몽환",
+    use:"레거시 몽환",
+    focal:"58mm F1.2",
+    compatibility:"A7M4: MD-NEX 수동 어댑터. Techart LM-EA9는 무게와 헬리코이드 부담 확인",
+    condition:"황변, 곰팡이, 조리개 오일, 개방 글로우 확인",
+    krw:"중고 기준 약 ₩850,000",
+    memo:"몽환·필름·인물 감성에 잘 맞는 고전 명물. 비싸지만 성격이 확실함",
+    link:"https://natural-camera.com/en/products/9843"
+  },
+  {
+    img:"",
+    brand:"Minolta",
+    model:"Minolta MD 45mm f/2",
+    mount:"Minolta SR/MC/MD",
+    type:"가성비 표준",
+    use:"레거시 표준",
+    focal:"45mm F2",
+    compatibility:"A7M4: MD-NEX 수동 어댑터",
+    condition:"초점링, 조리개링, 코팅 확인",
+    krw:"중고 기준 약 ₩100,000",
+    memo:"작고 싸고 예쁜 표준. 올드렌즈 시작용으로 부담 낮음",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Minolta+MD+45mm+f%2F2"
+  },
+  {
+    img:"",
+    brand:"Minolta",
+    model:"MC/MD Rokkor 50mm f/1.4",
+    mount:"Minolta SR/MC/MD",
+    type:"1순위 표준",
+    use:"레거시 표준",
+    focal:"50mm F1.4",
+    compatibility:"A7M4: MD-NEX 수동 어댑터",
+    condition:"개방 글로우, 황변, 조리개 오일 확인",
+    krw:"중고 기준 약 ₩180,000",
+    memo:"부드러운 색과 올드렌즈 맛이 좋아 표준 추천",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Minolta+Rokkor+50mm+f%2F1.4"
+  },
+  {
+    img:"",
+    brand:"Minolta",
+    model:"Minolta MD 85mm f/2",
+    mount:"Minolta SR/MC/MD",
+    type:"1순위 인물",
+    use:"레거시 인물",
+    focal:"85mm F2",
+    compatibility:"A7M4: MD-NEX 수동 어댑터",
+    condition:"매물 수 적음, 헤이즈와 조리개 확인",
+    krw:"중고 기준 약 ₩450,000",
+    memo:"가볍고 예쁜 85mm. Rokkor 감성 인물용으로 추천",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Minolta+MD+85mm+f%2F2"
+  },
+  {
+    img:"",
+    brand:"Minolta",
+    model:"MC Rokkor 85mm f/1.7",
+    mount:"Minolta SR/MC/MD",
+    type:"고가주의 인물",
+    use:"레거시 인물",
+    focal:"85mm F1.7",
+    compatibility:"A7M4: MD-NEX 수동 어댑터",
+    condition:"고가 매물. 유리 상태와 조리개 오일 필수 확인",
+    krw:"중고 기준 약 ₩800,000",
+    memo:"더 강한 배경흐림과 클래식 인물 느낌. 가격이 맞을 때만",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Minolta+MC+Rokkor+85mm+f%2F1.7"
+  },
+  {
+    img:"",
+    brand:"Minolta",
+    model:"Minolta AF 85mm f/1.4 G",
+    mount:"Sony A / Minolta A",
+    type:"AF 레거시",
+    use:"LA-EA5 후보",
+    focal:"85mm F1.4",
+    compatibility:"A7M4: LA-EA5로 AF 가능 후보. 수동 MD와 마운트 다름",
+    condition:"AF 구동, 조리개, 렌즈 내 곰팡이 확인",
+    krw:"중고 기준 약 ₩750,000",
+    memo:"미놀타 AF 감성을 자동초점으로 쓰고 싶을 때 후보",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Minolta+AF+85mm+f%2F1.4+G"
+  },
+  {
+    img:"",
+    brand:"Minolta",
+    model:"Minolta AF 100mm f/2",
+    mount:"Sony A / Minolta A",
+    type:"AF 레거시/희귀",
+    use:"LA-EA5 후보",
+    focal:"100mm F2",
+    compatibility:"A7M4: LA-EA5로 AF 가능 후보",
+    condition:"희귀 고가. 곰팡이, AF 소음, 조리개 확인",
+    krw:"중고 기준 약 ₩900,000",
+    memo:"인물 압축감과 밝기 모두 좋은 레어 렌즈. 매물주의",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Minolta+AF+100mm+f%2F2"
+  },
+  {
+    img:"",
+    brand:"Pentax",
+    model:"Super-Takumar 55mm f/1.8",
+    mount:"M42",
+    type:"가성비 표준",
+    use:"레거시 표준",
+    focal:"55mm F1.8",
+    compatibility:"A7M4: M42-NEX 수동 어댑터",
+    condition:"A/M 스위치, 조리개핀, 황변 확인",
+    krw:"중고 기준 약 ₩90,000",
+    memo:"싸고 예쁜 입문 렌즈. 수빈이 공부용으로도 좋음",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Super+Takumar+55mm+f%2F1.8"
+  },
+  {
+    img:"",
+    brand:"Pentax",
+    model:"Super-Takumar 50mm f/1.4",
+    mount:"M42",
+    type:"1순위 표준",
+    use:"레거시 표준",
+    focal:"50mm F1.4",
+    compatibility:"A7M4: M42-NEX 수동 어댑터",
+    condition:"방사선 황변 가능. UV 처리 여부보다 실제 색 확인",
+    krw:"중고 기준 약 ₩200,000",
+    memo:"따뜻한 코팅색과 클래식 표준 느낌. 인물·소품 모두 좋음",
+    link:"https://allphotolenses.com/lenses/item/c_2.html"
+  },
+  {
+    img:"https://www.mir.com.my/rb/photography/companies/canon/fdresources/fdlenses/earlyfdlenses/FD85mmf18SSC_side.jpg",
+    brand:"Pentax",
+    model:"SMC Takumar 35mm f/3.5",
+    mount:"M42",
+    type:"광각 추천",
+    use:"레거시 광각",
+    focal:"35mm F3.5",
+    compatibility:"A7M4: M42-NEX 수동 어댑터",
+    condition:"저속 조리개, 헤이즈 확인",
+    krw:"중고 기준 약 ₩140,000",
+    memo:"느리지만 작고 선명한 35mm. 스냅 공부용",
+    link:"https://www.ebay.com/sch/i.html?_nkw=SMC+Takumar+35mm+f%2F3.5"
+  },
+  {
+    img:"",
+    brand:"Pentax",
+    model:"Pentax-M 50mm f/1.7",
+    mount:"Pentax K",
+    type:"가성비 표준",
+    use:"레거시 표준",
+    focal:"50mm F1.7",
+    compatibility:"A7M4: PK-NEX 수동 어댑터",
+    condition:"K마운트 렌즈. 조리개링과 초점링 확인",
+    krw:"중고 기준 약 ₩90,000",
+    memo:"싸고 작고 결과가 안정적. Pentax K 입문 1순위",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Pentax-M+50mm+f%2F1.7"
+  },
+  {
+    img:"",
+    brand:"Pentax",
+    model:"Pentax-M 85mm f/2",
+    mount:"Pentax K",
+    type:"고가주의 인물",
+    use:"레거시 인물",
+    focal:"85mm F2",
+    compatibility:"A7M4: PK-NEX 수동 어댑터",
+    condition:"매물 적음. 헤이즈와 조리개 오일 확인",
+    krw:"중고 기준 약 ₩450,000",
+    memo:"작은 인물렌즈. 가격이 맞으면 좋은 후보",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Pentax-M+85mm+f%2F2"
+  },
+  {
+    img:"",
+    brand:"Canon",
+    model:"FD 50mm f/1.4 S.S.C. / New FD 50mm f/1.4",
+    mount:"Canon FD/FL",
+    type:"1순위 표준",
+    use:"레거시 표준",
+    focal:"50mm F1.4",
+    compatibility:"A7M4: FD-NEX 수동 어댑터",
+    condition:"FD 잠금링, 조리개 작동, 코팅 확인",
+    krw:"중고 기준 약 ₩180,000",
+    memo:"Canon FD 감성 입문 표준렌즈. 가격 대비 좋음",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Canon+FD+50mm+f%2F1.4"
+  },
+  {
+    img:"",
+    brand:"Canon",
+    model:"FD 85mm f/1.8 S.S.C.",
+    mount:"Canon FD/FL",
+    type:"1순위 인물",
+    use:"레거시 인물",
+    focal:"85mm F1.8",
+    compatibility:"A7M4: FD-NEX 수동 어댑터",
+    condition:"헤이즈, 조리개, 브리치락 상태 확인",
+    krw:"중고 기준 약 ₩450,000",
+    memo:"FD 인물렌즈 중 현실적인 추천. F1.2L보다 부담 낮음",
+    link:"https://www.mir.com.my/rb/photography/companies/canon/fdresources/fdlenses/earlyfdlenses/85mmfd.htm"
+  },
+  {
+    img:"https://www.mir.com.my/rb/photography/companies/canon/fdresources/fdlenses/earlyfdlenses/FD85mmf12ALSSC_A.jpg",
+    brand:"Canon",
+    model:"FD 85mm f/1.2L",
+    mount:"Canon FD/FL",
+    type:"고가주의 인물",
+    use:"레거시 인물",
+    focal:"85mm F1.2",
+    compatibility:"A7M4: FD-NEX 수동 어댑터. 무겁고 Techart에는 비추천",
+    condition:"고가. 유리 흠집, 코팅, 조리개 오일 필수 확인",
+    krw:"중고 기준 약 ₩1,400,000",
+    memo:"꿈렌즈 성격. 결과물은 강하지만 구매 리스크도 큼",
+    link:"https://www.mir.com.my/rb/photography/companies/canon/fdresources/fdlenses/earlyfdlenses/85mmfd.htm"
+  },
+  {
+    img:"https://allphotolenses.com/public/files/img/__tmp/80_80_3171ef120756034729f644c63fccfbbb.jpg",
+    brand:"Canon",
+    model:"FD 35mm f/2 S.S.C.",
+    mount:"Canon FD/FL",
+    type:"고가주의 광각",
+    use:"레거시 광각",
+    focal:"35mm F2",
+    compatibility:"A7M4: FD-NEX 수동 어댑터",
+    condition:"오래된 concave/SSC 버전 구분, 황변·헤이즈 확인",
+    krw:"중고 기준 약 ₩650,000",
+    memo:"FD 광각 중 인기 많음. 가격이 높아 신중히",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Canon+FD+35mm+f%2F2+SSC"
+  },
+  {
+    img:"",
+    brand:"Olympus",
+    model:"OM Zuiko 50mm f/1.8",
+    mount:"Olympus OM",
+    type:"가성비 표준",
+    use:"레거시 표준",
+    focal:"50mm F1.8",
+    compatibility:"A7M4: OM-NEX 수동 어댑터",
+    condition:"작은 렌즈라 충격 이력, 조리개 오일 확인",
+    krw:"중고 기준 약 ₩100,000",
+    memo:"작고 예쁜 표준. 휴대성 좋은 올드렌즈 시작점",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Olympus+OM+Zuiko+50mm+f%2F1.8"
+  },
+  {
+    img:"",
+    brand:"Olympus",
+    model:"OM Zuiko 85mm f/2",
+    mount:"Olympus OM",
+    type:"고가주의 인물",
+    use:"레거시 인물",
+    focal:"85mm F2",
+    compatibility:"A7M4: OM-NEX 수동 어댑터",
+    condition:"작고 인기 많아 가격 높음. 헤이즈 확인",
+    krw:"중고 기준 약 ₩600,000",
+    memo:"작은 85mm 인물렌즈. 휴대성 중시라면 매력적",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Olympus+OM+Zuiko+85mm+f%2F2"
+  },
+  {
+    img:"",
+    brand:"Olympus",
+    model:"OM Zuiko 100mm f/2.8",
+    mount:"Olympus OM",
+    type:"인물/휴대",
+    use:"레거시 인물",
+    focal:"100mm F2.8",
+    compatibility:"A7M4: OM-NEX 수동 어댑터",
+    condition:"헤이즈와 조리개 확인",
+    krw:"중고 기준 약 ₩250,000",
+    memo:"작은 망원 인물용. 85mm보다 저렴하면 좋은 선택",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Olympus+OM+Zuiko+100mm+f%2F2.8"
+  },
+  {
+    img:"http://bizweb.dktcdn.net/thumb/grande/100/107/650/products/s-l1600-1-d6a02d16-8a31-4bdb-b850-deb1361e7860.jpg?v=1652239753293",
+    brand:"Carl Zeiss Jena",
+    model:"Pancolar 50mm f/1.8",
+    mount:"M42",
+    type:"특수효과/표준",
+    use:"레거시 몽환",
+    focal:"50mm F1.8",
+    compatibility:"A7M4: M42-NEX 수동 어댑터",
+    condition:"방사선 황변 버전, 조리개날 수, 헤이즈 확인",
+    krw:"중고 기준 약 ₩450,000",
+    memo:"선예도와 올드 감성 균형. Takumar보다 개성 강한 표준",
+    link:"https://www.thegioimayanhso.vn/carl-zeiss-jena-pancolar-50mm-f1-8-mc-electric-m42"
+  },
+  {
+    img:"",
+    brand:"Carl Zeiss Jena",
+    model:"Flektogon 35mm f/2.4",
+    mount:"M42",
+    type:"광각/근접",
+    use:"레거시 광각",
+    focal:"35mm F2.4",
+    compatibility:"A7M4: M42-NEX 수동 어댑터",
+    condition:"근접 성능 좋지만 헤이즈·코팅 상태 확인",
+    krw:"중고 기준 약 ₩550,000",
+    memo:"35mm 스냅과 소품 근접 촬영에 매력적인 렌즈",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Carl+Zeiss+Jena+Flektogon+35mm+f%2F2.4"
+  },
+  {
+    img:"",
+    brand:"Helios",
+    model:"Helios 44-2 58mm f/2",
+    mount:"M42",
+    type:"특수효과/스월",
+    use:"레거시 몽환",
+    focal:"58mm F2",
+    compatibility:"A7M4: M42-NEX 수동 어댑터",
+    condition:"초점링 뻑뻑함, 조리개 프리셋, 곰팡이 확인",
+    krw:"중고 기준 약 ₩120,000",
+    memo:"스월 보케 입문. 몽환 컨셉 공부용으로 가성비 좋음",
+    link:"https://allphotolenses.com/lenses/item/c_455.html"
+  },
+  {
+    img:"",
+    brand:"Jupiter",
+    model:"Jupiter-9 85mm f/2",
+    mount:"M42 / M39",
+    type:"특수효과/인물",
+    use:"레거시 인물",
+    focal:"85mm F2",
+    compatibility:"A7M4: 마운트 버전 확인 후 M42-NEX 또는 M39 어댑터",
+    condition:"버전별 편차 큼. 헤이즈, 조리개, 무한대 초점 확인",
+    krw:"중고 기준 약 ₩350,000",
+    memo:"부드러운 인물용. 상태 좋은 매물만",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Jupiter-9+85mm+f%2F2"
+  },
+  {
+    img:"",
+    brand:"Meyer-Optik",
+    model:"Orestor 100mm f/2.8",
+    mount:"M42 / Exakta",
+    type:"보케/인물",
+    use:"레거시 인물",
+    focal:"100mm F2.8",
+    compatibility:"A7M4: 마운트 확인 후 어댑터 선택",
+    condition:"15매 조리개 버전 여부, 곰팡이 확인",
+    krw:"중고 기준 약 ₩300,000",
+    memo:"부드러운 배경과 클래식 인물용. 과하지 않은 감성",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Meyer+Orestor+100mm+f%2F2.8"
+  },
+  {
+    img:"",
+    brand:"Pentacon",
+    model:"Pentacon 135mm f/2.8 15 blades",
+    mount:"M42",
+    type:"보케/망원",
+    use:"레거시 인물",
+    focal:"135mm F2.8",
+    compatibility:"A7M4: M42-NEX 수동 어댑터",
+    condition:"15매 조리개 버전 확인. 조리개 오일 주의",
+    krw:"중고 기준 약 ₩180,000",
+    memo:"저렴하게 동그란 보케와 망원 압축을 맛보기 좋음",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Pentacon+135mm+f%2F2.8+15+blades"
+  },
+  {
+    img:"",
+    brand:"Contax Zeiss",
+    model:"Planar T* 50mm f/1.7",
+    mount:"Contax/Yashica",
+    type:"1순위 표준",
+    use:"레거시 표준",
+    focal:"50mm F1.7",
+    compatibility:"A7M4: C/Y-NEX 수동 어댑터",
+    condition:"코팅 흠집, 조리개 오일, MMJ/AEJ 구분 확인",
+    krw:"중고 기준 약 ₩350,000",
+    memo:"Zeiss 느낌을 비교적 합리적으로 시작하는 표준",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Contax+Zeiss+Planar+50mm+f%2F1.7"
+  },
+  {
+    img:"",
+    brand:"Contax Zeiss",
+    model:"Planar T* 50mm f/1.4",
+    mount:"Contax/Yashica",
+    type:"고급 표준",
+    use:"레거시 표준",
+    focal:"50mm F1.4",
+    compatibility:"A7M4: C/Y-NEX 수동 어댑터",
+    condition:"AE/MM 버전, 코팅, 조리개 확인",
+    krw:"중고 기준 약 ₩550,000",
+    memo:"50mm를 진하게 쓰고 싶을 때. 가격은 Takumar보다 높음",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Contax+Zeiss+Planar+50mm+f%2F1.4"
+  },
+  {
+    img:"",
+    brand:"Contax Zeiss",
+    model:"Planar T* 85mm f/1.4",
+    mount:"Contax/Yashica",
+    type:"고가주의 인물",
+    use:"레거시 인물",
+    focal:"85mm F1.4",
+    compatibility:"A7M4: C/Y-NEX 수동 어댑터. 무게 때문에 Techart 사용은 신중",
+    condition:"고가. 헤이즈, 코팅, 조리개 오일 필수 확인",
+    krw:"중고 기준 약 ₩1,200,000",
+    memo:"인물용 꿈렌즈 성격. 결과는 좋지만 가격 리스크 큼",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Contax+Zeiss+Planar+85mm+f%2F1.4"
+  },
+  {
+    img:"",
+    brand:"Contax Zeiss",
+    model:"Sonnar T* 85mm f/2.8",
+    mount:"Contax/Yashica",
+    type:"인물/휴대",
+    use:"레거시 인물",
+    focal:"85mm F2.8",
+    compatibility:"A7M4: C/Y-NEX 수동 어댑터",
+    condition:"작은 렌즈라 충격/헤이즈 확인",
+    krw:"중고 기준 약 ₩450,000",
+    memo:"Planar 85/1.4보다 훨씬 가볍고 차분한 선택",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Contax+Zeiss+Sonnar+85mm+f%2F2.8"
+  },
+  {
+    img:"",
+    brand:"Leica",
+    model:"Summicron-R 50mm f/2",
+    mount:"Leica R",
+    type:"고가주의 표준",
+    use:"레거시 표준",
+    focal:"50mm F2",
+    compatibility:"A7M4: Leica R-NEX 수동 어댑터",
+    condition:"캠 버전, 헤이즈, 코팅 스크래치 확인",
+    krw:"중고 기준 약 ₩900,000",
+    memo:"비싸지만 색과 콘트라스트가 깔끔한 표준. 예산 여유 있을 때",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Leica+Summicron-R+50mm+f%2F2"
+  },
+  {
+    img:"",
+    brand:"Leica",
+    model:"Elmarit-R 90mm f/2.8",
+    mount:"Leica R",
+    type:"고가주의 인물",
+    use:"레거시 인물",
+    focal:"90mm F2.8",
+    compatibility:"A7M4: Leica R-NEX 수동 어댑터",
+    condition:"헤이즈, 조리개, 캠 버전 확인",
+    krw:"중고 기준 약 ₩700,000",
+    memo:"차분한 인물/스냅 망원. Summicron 90보다 현실적",
+    link:"https://www.ebay.com/sch/i.html?_nkw=Leica+Elmarit-R+90mm+f%2F2.8"
+  }
+];
+
+const adapterRows=[
+  {
+    img:"https://techartpro.com/wp-content/uploads/2022/07/2-scaled.jpg",
+    mount:"Leica M / M어댑터 경유 수동렌즈",
+    adapter:"Techart PRO LM-EA9",
+    type:"AF 헬리코이드",
+    body:"Sony A7M4 / E-mount",
+    control:"어댑터 모터가 렌즈 전체를 전후 이동",
+    caution:"수동렌즈를 AF처럼 쓰는 핵심 후보. 렌즈를 무한대 쪽에 맞추고 사용. 무거운 렌즈, 추적 AF, 영상 AF는 제한",
+    krw:"약 ₩546,000 환산",
+    priority:"AF 수동렌즈 1순위",
+    link:"https://techartpro.com/?product=lmea9"
+  },
+  {
+    img:"https://techartpro.com/wp-content/uploads/2022/07/2-scaled.jpg",
+    mount:"M42 / OM / FD / MD / C/Y / PK",
+    adapter:"Techart LM-EA9 + Leica M 변환링",
+    type:"2단 어댑터 AF",
+    body:"Sony A7M4 / E-mount",
+    control:"수동렌즈 → Leica M 변환링 → LM-EA9",
+    caution:"가능은 하지만 렌즈 무게와 어댑터 두께, 무한대 초점, 코너 품질을 실제 테스트해야 함",
+    krw:"약 ₩546,000 + 변환링 비용",
+    priority:"조건부",
+    link:"https://techartpro.com/?product=lmea9"
+  },
+  {
+    img:"https://img.kfconcept.com/image/cache/catalog/product/KF06.309/610AJUkLmvL._AC_SL1200_-228x228.jpg",
+    mount:"Nikon F AI/AI-S/AF-D",
+    adapter:"K&F NIK-NEX II Copper / NIK-NEX IV",
+    type:"수동 기계식",
+    body:"Sony A7M4 / E-mount",
+    control:"렌즈 조리개링 + 수동초점",
+    caution:"G렌즈는 조리개링이 없어 별도 G 대응 어댑터 필요. E 전자조리개 렌즈는 피함",
+    krw:"₩48,600 환산",
+    priority:"1순위",
+    link:"https://www.kfconcept.com/sony-e-mount-body"
+  },
+  {
+    img:"https://img.kfconcept.com/image/cache/catalog/product/KF06.501/61VIN-pjtXL._AC_SL1000_-228x228.jpg",
+    mount:"Nikon F G/AI/AF-S",
+    adapter:"K&F NIK(G)-NEX IV",
+    type:"수동 조리개레버",
+    body:"Sony A7M4 / E-mount",
+    control:"어댑터 링으로 대략 조리개 제어 + 수동초점",
+    caution:"조리개 값이 정확히 표시되지 않음. AF/EXIF 없음. G렌즈를 꼭 써야 할 때만",
+    krw:"₩80,600 환산",
+    priority:"2순위",
+    link:"https://www.kfconcept.com/sony-e-mount-body"
+  },
+  {
+    img:"https://img.kfconcept.com/image/catalog/product/KF06.075/61NdV-7mpQL._AC_SL1000_.jpg",
+    mount:"Pentax K / PK",
+    adapter:"K&F PK-NEX",
+    type:"수동 기계식",
+    body:"Sony A7M4 / E-mount",
+    control:"렌즈 조리개링 + 수동초점",
+    caution:"DA 같은 APS-C 렌즈는 풀프레임 A7M4에서 비네팅 가능. K/M/A/FA 렌즈부터 확인",
+    krw:"₩23,800 국내 확인가",
+    priority:"1순위",
+    link:"https://m.kentfaith.co.kr/goods/goods_view.php?goodsNo=1000000045"
+  },
+  {
+    img:"https://img.kfconcept.com/image/cache/catalog/product/KF06.498/61zNGfcnT4L._AC_SL1000_-228x228.jpg",
+    mount:"M42 Screw",
+    adapter:"K&F M42-NEX IV",
+    type:"수동 스크류",
+    body:"Sony A7M4 / E-mount",
+    control:"렌즈 조리개링 + 수동초점",
+    caution:"A/M 스위치 없는 렌즈는 핀 눌림 구조 확인. 헬리오스류 입문에 좋음",
+    krw:"₩73,000 환산",
+    priority:"1순위",
+    link:"https://www.kfconcept.com/KF06.498-manual-lens-adapter-ring-iv-generation-m42-nex"
+  },
+  {
+    img:"https://img.kfconcept.com/image/catalog/product/KF06.503/61rnXiBhv5L._AC_SL1000_.jpg",
+    mount:"Minolta SR/MC/MD",
+    adapter:"K&F MD-NEX IV",
+    type:"수동 기계식",
+    body:"Sony A7M4 / E-mount",
+    control:"렌즈 조리개링 + 수동초점",
+    caution:"Minolta A마운트와 다름. 로커/Rokkor 수동 렌즈는 MD/MC 쪽으로 봄",
+    krw:"₩60,800 환산",
+    priority:"1순위",
+    link:"https://www.kfconcept.com/KF06.503-manual-lens-adapter-ring-iv-generation-md-nex"
+  },
+  {
+    img:"https://img.kfconcept.com/image/cache/catalog/product/KF06.502/61BgecfIBdL._AC_SL1000_-228x228.jpg",
+    mount:"Canon FD/FL",
+    adapter:"K&F FD-NEX IV",
+    type:"수동 기계식",
+    body:"Sony A7M4 / E-mount",
+    control:"렌즈 조리개링 + 수동초점",
+    caution:"FD 잠금링/브리치락 조작 확인. EF/RF와 전혀 다른 구형 시스템",
+    krw:"₩76,000 환산",
+    priority:"2순위",
+    link:"https://www.kfconcept.com/sony-e-mount-body"
+  },
+  {
+    img:"",
+    mount:"Minolta/Sony A-mount AF",
+    adapter:"Sony LA-EA5",
+    type:"전자식 AF/AE",
+    body:"Sony A7M4 / E-mount",
+    control:"지원 조합에서 AF/AE/EXIF 가능",
+    caution:"수동렌즈 AF 변환기가 아님. 미놀타 AF/소니 A마운트처럼 원래 AF 렌즈인 경우에 쓰는 어댑터",
+    krw:"₩299,000 국내 공식가",
+    priority:"A마운트 AF용",
+    link:"https://store.sony.co.kr/product-view/102263860"
+  },
+  {
+    img:"",
+    mount:"Leica M → Nikon Z",
+    adapter:"Megadap MTZ11",
+    type:"Nikon Z용 AF 헬리코이드",
+    body:"Sony A7M4 직접 사용 불가",
+    control:"Nikon Z 바디에서 수동렌즈를 AF처럼 쓰는 계열",
+    caution:"개념은 Techart와 비슷하지만 A7M4용 Sony E 어댑터가 아니라 구매 후보에서 제외",
+    krw:"A7M4용 아님",
+    priority:"A7M4 대상 아님",
+    link:"https://megadap.net/"
+  }
+];
+
+const filterRecommendationRows=[
+  {
+    "img": "https://cdn.shopify.com/s/files/1/2560/2536/files/Glimmerglass_Camera_Filter.png?v=1757700539",
+    "category": "글로우/뷰티",
+    "model": "Tiffen Glimmerglass 82mm Grade 1",
+    "size": "82mm",
+    "effect": "피부 디테일을 부드럽게 정리하고 하이라이트에 반짝이는 글로우를 더함. 미스트보다 패션/뷰티 쪽에 가까운 몽환감.",
+    "krw": "약 ₩196,000",
+    "priority": "1순위",
+    "overlap": "보유 미스트와 다름",
+    "memo": "Black Mist/White Mist보다 모델 피부와 하이라이트 질감 차이를 공부하기 좋음. 수빈이용 비교 자료로도 1순위.",
+    "certainty": "B&H 82mm 기준 원화 환산",
+    "link": "https://tiffen.com/products/glimmerglass-filter"
+  },
+  {
+    "img": "https://tiffen.com/cdn/shop/products/Smoque.png?v=1756488636",
+    "category": "스모크/헤이즈",
+    "model": "Tiffen Smoque 82mm 1",
+    "size": "82mm",
+    "effect": "촬영 현장에 연기나 안개가 없어도 프레임 전체에 스모키한 공기감을 만들어 줌.",
+    "krw": "약 ₩124,000",
+    "priority": "1순위",
+    "overlap": "보유 효과와 다름",
+    "memo": "몽환·감성 컨셉에서 조명만으로 부족한 공기층을 만들 때 좋음. 미스트와 겹치지 않고 분위기 자체가 달라짐.",
+    "certainty": "B&H 82mm 기준 원화 환산",
+    "link": "https://www.bhphotovideo.com/c/product/347227-REG/Tiffen_82SMQ1_82mm_Smoque_1_Filter.html"
+  },
+  {
+    "img": "https://cdn.shopify.com/s/files/1/2560/2536/products/SoftFX_1.png?v=1566537109",
+    "category": "소프트포커스",
+    "model": "Tiffen Soft/FX 82mm 1",
+    "size": "82mm",
+    "effect": "미스트처럼 빛을 크게 번지게 하기보다 피부 질감과 윤곽을 부드럽게 만드는 소프트 효과.",
+    "krw": "약 ₩146,000",
+    "priority": "1순위",
+    "overlap": "Softon과 다름",
+    "memo": "보유 Softon Speck은 점광원/스펙 확산 쪽이고, Soft/FX는 인물 피부와 윤곽을 배우기 좋아 다른 비교군.",
+    "certainty": "B&H 82mm 기준 원화 환산",
+    "link": "https://tiffen.com/products/soft-fx-screw-in-filter"
+  },
+  {
+    "img": "https://cdn.shopify.com/s/files/1/2560/2536/products/Pearlescent_1.png?v=1566537109",
+    "category": "펄/하이라이트",
+    "model": "Tiffen Pearlescent 82mm 1/4",
+    "size": "82mm",
+    "effect": "대비와 선예도를 부드럽게 줄이고 하이라이트 주변에 펄감 있는 밝은 헤일로를 만듦.",
+    "krw": "약 ₩231,000",
+    "priority": "1순위",
+    "overlap": "White Mist와 부분 유사",
+    "memo": "밝고 로맨틱한 인물, 웨딩, 창가 역광에 좋음. White Mist보다 펄/뷰티 계열로 비교할 가치가 있음.",
+    "certainty": "B&H 82mm 기준 원화 환산",
+    "link": "https://www.bhphotovideo.com/c/product/1159103-REG/tiffen_82pearl14_82mm_pearlescent_1_4_filter.html"
+  },
+  {
+    "img": "https://tiffen.com/cdn/shop/products/DoubleFog.png?v=1738619937",
+    "category": "안개/포그",
+    "model": "Tiffen Double Fog 82mm 3",
+    "size": "82mm",
+    "effect": "자연 안개처럼 하이라이트를 부드럽게 만들고 전체 대비를 낮춤. Smoque보다 더 포그/꿈결 느낌.",
+    "krw": "약 ₩139,000",
+    "priority": "2순위",
+    "overlap": "보유 효과와 다름",
+    "memo": "스튜디오 조명, 창가 역광, 야외 흐린 날에 몽환감을 크게 밀고 싶을 때. 강도가 있어 테스트용으로 좋음.",
+    "certainty": "B&H 82mm 기준 원화 환산",
+    "link": "https://www.bhphotovideo.com/c/product/56907-REG/Tiffen_82DF3_82mm_Double_Fog_3.html"
+  },
+  {
+    "img": "https://tiffen.com/cdn/shop/products/BronzeGlimmerglass.png?v=1570598081",
+    "category": "웜톤/브론즈",
+    "model": "Tiffen Bronze Glimmerglass 82mm 1",
+    "size": "82mm",
+    "effect": "Glimmerglass의 글로우에 따뜻한 브론즈 색을 더해 피부와 역광을 빈티지하게 만듦.",
+    "krw": "약 ₩226,000",
+    "priority": "2순위",
+    "overlap": "Nostaltone Blue와 반대 톤",
+    "memo": "이미 푸른 Nostaltone이 있으니 반대로 따뜻한 기억/노을/필름 느낌을 만들 때 좋음.",
+    "certainty": "B&H 82mm 기준 원화 환산",
+    "link": "https://www.bhphotovideo.com/c/product/457531-REG/Tiffen_82BRZGG1_82mm_Bronze_Glimmerglass.html"
+  },
+  {
+    "img": "https://tiffen.com/cdn/shop/products/BlackSatin.png?v=1559577405",
+    "category": "새틴/필름질감",
+    "model": "Tiffen Black Satin 82mm Grade 1",
+    "size": "82mm",
+    "effect": "대비를 낮추되 하이라이트에 약간 거친 입자감과 필름 같은 질감을 남김.",
+    "krw": "가격 확인 필요",
+    "priority": "2순위",
+    "overlap": "Black Mist와 다름",
+    "memo": "미스트처럼 크게 번지는 느낌보다 현대 렌즈의 디지털 선명함을 누그러뜨리는 학습용. 가격 확인 후 구매 판단.",
+    "certainty": "B&H 82mm 제품 확인",
+    "link": "https://www.bhphotovideo.com/c/product/1074828-REG/tiffen_82blacksatin1_82mm_black_satin_1.html"
+  },
+  {
+    "img": "https://cdn.shopify.com/s/files/1/0501/0545/0649/files/DREAM_FX.png?v=1723434774",
+    "category": "드림/환상",
+    "model": "Prism Lens FX Dream FX 82mm",
+    "size": "82mm",
+    "effect": "하이라이트를 꿈결처럼 부드럽게 퍼뜨리는 필름/뮤직비디오식 소프트 효과.",
+    "krw": "약 ₩131,000",
+    "priority": "2순위",
+    "overlap": "미스트와 일부 유사",
+    "memo": "몽환 컨셉 이름 그대로라 포트폴리오용 컷에 어울림. 보유 White Mist와 비교해 캐릭터가 확실할 때 구매.",
+    "certainty": "공식 82mm 선택 가능 기준 환산",
+    "link": "https://prismlensfx.com/products/dream-fx-filter"
+  },
+  {
+    "img": "https://cdn.shopify.com/s/files/1/0251/0939/7584/products/Starscape.jpg?v=1669845501",
+    "category": "야간/천체",
+    "model": "Hoya Starscape Light Pollution 82mm",
+    "size": "82mm",
+    "effect": "도시 조명의 노란/초록 광해를 줄여 밤하늘과 야경 색을 더 자연스럽게 정리.",
+    "krw": "약 ₩244,000",
+    "priority": "2순위",
+    "overlap": "보유 효과와 다름",
+    "memo": "보유 스타/미스트와 달리 빛 모양이 아니라 야간 색 오염을 정리하는 필터. 야외 밤 촬영용.",
+    "certainty": "HOYA 82mm 지원, 판매가 원화 환산",
+    "link": "https://hoyafilter.com/product/starscape/"
+  },
+  {
+    "img": "https://cdn.shopify.com/s/files/1/0251/0939/7584/products/Infrared_R72.jpg?v=1669850966",
+    "category": "IR/초현실",
+    "model": "Hoya R72 Infrared 82mm",
+    "size": "82mm",
+    "effect": "눈에 보이지 않는 적외선 영역을 이용해 잎, 피부, 하늘을 완전히 다른 초현실 톤으로 만듦.",
+    "krw": "약 ₩200,000",
+    "priority": "3순위",
+    "overlap": "보유 효과와 완전 다름",
+    "memo": "A7M4 비개조 바디는 노출이 길 수 있어 실험/공부용 성격. 결과 차이는 가장 확실함.",
+    "certainty": "HOYA 82mm 지원, 판매가 원화 환산",
+    "link": "https://hoyafilter.com/product/r72_infrared/"
+  },
+  {
+    "img": "https://cdn.sanity.io/images/soj3d0g3/production/e75b24122607a3e7a1b2086f922a6d7089c5d678-5878x3734.jpg",
+    "category": "필름/소프트",
+    "model": "Moment CineBloom 82mm 10%",
+    "size": "82mm",
+    "effect": "디지털 선명함을 누그러뜨리고 빛을 부드럽게 bloom 시켜 필름 같은 소프트 무드를 만듦.",
+    "krw": "약 ₩91,000",
+    "priority": "3순위",
+    "overlap": "White Mist와 일부 유사",
+    "memo": "이미 White Mist를 자주 쓰므로 강한 필수는 아님. 저렴하게 다른 브랜드의 소프트 감을 비교할 때만.",
+    "certainty": "B&H 82mm 기준 원화 환산",
+    "link": "https://www.bhphotovideo.com/c/product/1601738-REG/moment_600_073_82mm_10_cinebloom_diffusion.html"
+  },
+  {
+    "img": "https://cdn.shopify.com/s/files/1/1050/9944/files/Bluemorphic.98.jpg?v=1742424924",
+    "category": "아나모픽 플레어",
+    "model": "PolarPro BlueMorphic 82mm",
+    "size": "82mm",
+    "effect": "파란 수평 플레어를 만들어 아나모픽 렌즈처럼 보이게 하는 효과 필터.",
+    "krw": "약 ₩154,000",
+    "priority": "2순위",
+    "overlap": "Colorful Starlight와 다름",
+    "memo": "컬러 스타보다 더 영화식 플레어. 야간 네온, 역광, LED 배경에 좋음.",
+    "certainty": "공식 82mm 기준 원화 환산",
+    "link": "https://www.polarpro.com/products/bluemorphic-filter-quartzline"
+  },
+  {
+    "img": "https://cdn.shopify.com/s/files/1/1050/9944/files/Goldmorphic.97.jpg?v=1742425326",
+    "category": "아나모픽 플레어",
+    "model": "PolarPro GoldMorphic 82mm",
+    "size": "82mm",
+    "effect": "따뜻한 골드 플레어. 촛불, 텅스텐, 웜톤 조명과 잘 맞음.",
+    "krw": "약 ₩154,000",
+    "priority": "2순위",
+    "overlap": "Colorful Starlight와 다름",
+    "memo": "BlueMorphic과 색 캐릭터가 다름. 한 개만 산다면 주 촬영 조명 색에 맞춰 선택.",
+    "certainty": "공식 82mm 기준 원화 환산",
+    "link": "https://www.polarpro.com/products/goldmorphic-filter-quartzline"
+  },
+  {
+    "img": "https://schneiderkreuznach.com/application/files/3316/8847/8095/hollywood-black-magic-2-after.jpg",
+    "category": "시네/프리미엄",
+    "model": "Schneider Hollywood Black Magic 82mm 1/8",
+    "size": "82mm",
+    "effect": "고해상도 디지털 렌즈의 미세 질감을 부드럽게 하고 하이라이트에 절제된 글로우를 더함.",
+    "krw": "약 ₩285,000",
+    "priority": "조건부",
+    "overlap": "프리미엄 대체군",
+    "memo": "Tiffen 계열을 먼저 본 뒤, 결과물 톤을 더 고급스럽게 밀고 싶을 때 비교. 가격이 높아 바로 1순위는 아님.",
+    "certainty": "82mm 판매가 원화 환산",
+    "link": "https://schneiderkreuznach.com/en/cine-optics/filters/cine-filters/diffusion-and-mist"
+  }
+];
+function priceNumber(v){const raw=String(v||"").replace(/[^\d]/g,"");return raw?Number(raw):999999999}
+function fillSelect(select, values){[...new Set(values.filter(Boolean))].sort().forEach(v=>select.add(new Option(v,v)))}
+function renderStats(target, rows, labels){
+  document.querySelector(target).innerHTML=labels.map(([label,value])=>`<div class="stat"><strong>${value}</strong><span>${label}</span></div>`).join("");
+}
+function imgCell(x){const alt=x.model||x.adapter||x.mount||"제품 이미지";return x.img?`<a href="${x.img}" target="_blank" rel="noreferrer"><img class="thumb" src="${x.img}" alt="${alt}"></a>`:"<span class='small'>사진 추가 예정</span>"}
+function linkCell(x){return x.link?`<a href="${x.link}" target="_blank" rel="noreferrer">제품 확인</a>`:"<span class='small'>-</span>"}
+function setupAdapters(){
+  const tbody=document.querySelector("#adapterTable tbody");
+  fillSelect(adapterMount,adapterRows.map(x=>x.mount)); fillSelect(adapterType,adapterRows.map(x=>x.type)); fillSelect(adapterControl,adapterRows.map(x=>x.control)); fillSelect(adapterPriority,adapterRows.map(x=>x.priority));
+  const priorityRank={"AF 수동렌즈 1순위":0,"1순위":1,"2순위":2,"A마운트 AF용":3,"조건부":4,"A7M4 대상 아님":9};
+  function render(){
+    const q=adapterSearch.value.trim().toLowerCase();
+    let rows=adapterRows.filter(x=>(!q||JSON.stringify(x).toLowerCase().includes(q))&&(!adapterMount.value||x.mount===adapterMount.value)&&(!adapterType.value||x.type===adapterType.value)&&(!adapterControl.value||x.control===adapterControl.value)&&(!adapterPriority.value||x.priority===adapterPriority.value));
+    rows.sort((a,b)=>adapterSort.value==="mount"?a.mount.localeCompare(b.mount,"ko"):adapterSort.value==="price"?priceNumber(a.krw)-priceNumber(b.krw):(priorityRank[a.priority]||9)-(priorityRank[b.priority]||9)||priceNumber(a.krw)-priceNumber(b.krw));
+    tbody.innerHTML=rows.map(x=>`<tr><td class="photo-cell">${imgCell(x)}</td><td><strong>${x.mount}</strong></td><td>${x.adapter}<br><span class="tag">${x.type}</span></td><td>${x.body}</td><td>${x.control}</td><td>${x.caution}</td><td><span class="price">${x.krw}</span></td><td><span class="pill brand-pill">${x.priority}</span></td><td>${linkCell(x)}</td></tr>`).join("");
+    adapterEmpty.style.display=rows.length?"none":"block";
+    renderStats("#adapterStats",[...rows],[["표시 항목",rows.length],["렌즈 마운트",new Set(rows.map(x=>x.mount)).size],["어댑터 유형",new Set(rows.map(x=>x.type)).size],["조작 방식",new Set(rows.map(x=>x.control)).size],["우선순위",new Set(rows.map(x=>x.priority)).size]]);
+  }
+  [adapterSearch,adapterMount,adapterType,adapterControl,adapterPriority,adapterSort].forEach(el=>el.addEventListener("input",render));
+  render();
+}
+function setupCameras(){
+  const tbody=document.querySelector("#cameraTable tbody");
+  fillSelect(cameraBrand,cameraRows.map(x=>x.brand)); fillSelect(cameraMount,cameraRows.map(x=>x.mount)); fillSelect(cameraSensor,cameraRows.map(x=>x.sensor)); fillSelect(cameraUse,cameraRows.map(x=>x.use));
+  function render(){
+    const q=cameraSearch.value.trim().toLowerCase();
+    let rows=cameraRows.filter(x=>(!q||JSON.stringify(x).toLowerCase().includes(q))&&(!cameraBrand.value||x.brand===cameraBrand.value)&&(!cameraMount.value||x.mount===cameraMount.value)&&(!cameraSensor.value||x.sensor===cameraSensor.value)&&(!cameraUse.value||x.use===cameraUse.value));
+    rows.sort((a,b)=>cameraSort.value==="brand"?a.brand.localeCompare(b.brand,"ko"):cameraSort.value==="sensor"?a.sensor.localeCompare(b.sensor,"ko"):priceNumber(a.krw)-priceNumber(b.krw));
+    tbody.innerHTML=rows.map(x=>`<tr><td class="photo-cell">${imgCell(x)}</td><td><span class="pill brand-pill">${x.brand}</span></td><td><strong>${x.model}</strong></td><td><span class="tag">${x.use}</span></td><td>${x.sensor}<br><span class="small">${x.mount}</span></td><td>${x.photo}</td><td>${x.video}</td><td>${x.weight}</td><td><span class="price">${x.krw}</span></td><td>${x.memo}</td><td>${linkCell(x)}</td></tr>`).join("");
+    cameraEmpty.style.display=rows.length?"none":"block";
+    renderStats("#cameraStats",[...rows],[["표시 항목",rows.length],["브랜드",new Set(rows.map(x=>x.brand)).size],["마운트",new Set(rows.map(x=>x.mount)).size],["센서",new Set(rows.map(x=>x.sensor)).size],["용도",new Set(rows.map(x=>x.use)).size]]);
+  }
+  [cameraSearch,cameraBrand,cameraMount,cameraSensor,cameraUse,cameraSort].forEach(el=>el.addEventListener("input",render));
+  render();
+}
+function setupLensTierComparison(){
+  const modernTarget=document.querySelector("#lensTierBoard");
+  const legacyTarget=document.querySelector("#legacyLensTierBoard");
+  function modernRow(x,i){
+    return `<tr><td><span class="tier-rank">${i+1}</span></td><td class="photo-cell">${imgCell(x)}</td><td><span class="pill brand-pill">${x.brand}</span><br><strong>${x.model}</strong></td><td>${x.mount}</td><td>${x.focal}</td><td>${x.weight}</td><td>${x.feature}</td><td><span class="price">${x.krw}</span></td><td>${x.memo}</td><td>${linkCell(x)}</td></tr>`;
+  }
+  function legacyRow(x,i){
+    return `<tr><td><span class="tier-rank">${i+1}</span></td><td class="photo-cell">${imgCell(x)}</td><td><span class="pill brand-pill">${x.brand}</span><br><strong>${x.model}</strong></td><td>${x.mount}</td><td>${x.focal}</td><td>${x.compatibility}</td><td>${x.condition}</td><td><span class="price">${x.krw}</span></td><td>${x.memo}</td><td>${linkCell(x)}</td></tr>`;
+  }
+  function renderGroups(target, groups, rowFn, head){
+    if(!target) return;
+    target.innerHTML=groups.map(group=>{
+      const rows=[...group.rows].sort((a,b)=>priceNumber(a.krw)-priceNumber(b.krw));
+      const body=rows.map(rowFn).join("");
+      return `<article class="tier-block"><div class="tier-block-head"><div><h3>${group.title}</h3><p class="small">${group.note}</p></div><div class="tier-count">${rows.length}개</div></div><div class="tier-table-wrap"><table class="tier-table"><thead>${head}</thead><tbody>${body}</tbody></table></div></article>`;
+    }).join("");
+  }
+  const modernGroups=[
+    {title:"50mm 표준 단렌즈", note:"인물 반신, 일상, 제품 디테일, 가장 기본이 되는 단렌즈 급", rows:lensRows.filter(x=>x.use==="현행 50mm")},
+    {title:"85mm 인물 단렌즈", note:"인물 배경정리와 압축감. F1.2/F1.4/F1.8의 가격·무게 차이를 같이 봄", rows:lensRows.filter(x=>x.use==="현행 85mm")},
+    {title:"24-105mm F4 표준 줌", note:"여행, 행사, 기록, 영상에서 렌즈 교체를 줄이는 범용 줌 급", rows:lensRows.filter(x=>x.use==="현행 24-105")},
+    {title:"24-70mm F2.8 표준 줌", note:"상업/행사/인물/제품을 한 렌즈로 커버하는 프로 표준 줌 급", rows:lensRows.filter(x=>x.use==="현행 24-70")},
+    {title:"70-200mm F2.8 망원 줌", note:"인물, 행사, 압축감, 무대 촬영. 무게와 손떨림보정이 핵심", rows:lensRows.filter(x=>x.use==="현행 70-200")},
+    {title:"16-35mm 광각 줌", note:"공간, 실내, 브이로그, 풍경. 왜곡, 필터구경, 영상 운용을 같이 봄", rows:lensRows.filter(x=>x.use==="현행 16-35")}
+  ];
+  const legacyGroups=[
+    {title:"레거시 표준 50mm급", note:"A7M4에 어댑터로 먼저 테스트하기 좋은 기본 화각", rows:filmLensRows.filter(x=>x.use==="레거시 표준")},
+    {title:"레거시 인물 85-105mm급", note:"수동초점 감성, 배경흐림, 플레어와 코팅 차이를 보는 인물 후보", rows:filmLensRows.filter(x=>x.use==="레거시 인물")},
+    {title:"레거시 몽환/특수 캐릭터", note:"선예도보다 글로우, 회오리 보케, 소프트한 묘사를 의도적으로 쓰는 후보", rows:filmLensRows.filter(x=>x.use==="레거시 몽환")},
+    {title:"레거시 광각", note:"빈티지 광각은 주변부와 플레어가 크게 갈리므로 상태 확인이 특히 중요", rows:filmLensRows.filter(x=>x.use==="레거시 광각")},
+    {title:"레거시 매크로", note:"제품/소품/필터 효과 테스트에 좋은 근접 촬영 후보", rows:filmLensRows.filter(x=>x.use==="레거시 매크로")},
+    {title:"LA-EA5 후보", note:"수동렌즈가 아니라 원래 AF가 되는 A마운트 렌즈를 A7M4에서 쓰는 후보", rows:filmLensRows.filter(x=>x.use==="LA-EA5 후보")}
+  ];
+  renderGroups(modernTarget,modernGroups,modernRow,`<tr><th>순</th><th>사진</th><th>브랜드/모델</th><th>마운트</th><th>화각/조리개</th><th>무게/필터</th><th>특징</th><th>원화 가격</th><th>판단 메모</th><th>확인</th></tr>`);
+  renderGroups(legacyTarget,legacyGroups,legacyRow,`<tr><th>순</th><th>사진</th><th>브랜드/모델</th><th>마운트</th><th>화각/조리개</th><th>호환</th><th>상태 체크</th><th>원화 가격</th><th>판단 메모</th><th>확인</th></tr>`);
+}
+function setupLenses(){
+  const tbody=document.querySelector("#lensTable tbody");
+  fillSelect(lensBrand,lensRows.map(x=>x.brand)); fillSelect(lensMount,lensRows.map(x=>x.mount)); fillSelect(lensType,lensRows.map(x=>x.type)); fillSelect(lensUse,lensRows.map(x=>x.use));
+  function render(){
+    const q=lensSearch.value.trim().toLowerCase();
+    let rows=lensRows.filter(x=>(!q||JSON.stringify(x).toLowerCase().includes(q))&&(!lensBrand.value||x.brand===lensBrand.value)&&(!lensMount.value||x.mount===lensMount.value)&&(!lensType.value||x.type===lensType.value)&&(!lensUse.value||x.use===lensUse.value));
+    rows.sort((a,b)=>lensSort.value==="brand"?a.brand.localeCompare(b.brand,"ko"):lensSort.value==="focal"?a.focal.localeCompare(b.focal,"ko"):priceNumber(a.krw)-priceNumber(b.krw));
+    tbody.innerHTML=rows.map(x=>`<tr><td class="photo-cell">${imgCell(x)}</td><td><span class="pill brand-pill">${x.brand}</span></td><td><strong>${x.model}</strong><br><span class="tag">${x.type}</span></td><td>${x.mount}</td><td>${x.focal}</td><td>${x.weight}</td><td>${x.feature}</td><td><span class="price">${x.krw}</span></td><td>${x.memo}</td><td>${linkCell(x)}</td></tr>`).join("");
+    lensEmpty.style.display=rows.length?"none":"block";
+    renderStats("#lensStats",[...rows],[["표시 항목",rows.length],["브랜드",new Set(rows.map(x=>x.brand)).size],["마운트",new Set(rows.map(x=>x.mount)).size],["유형",new Set(rows.map(x=>x.type)).size],["용도",new Set(rows.map(x=>x.use)).size]]);
+  }
+  [lensSearch,lensBrand,lensMount,lensType,lensUse,lensSort].forEach(el=>el.addEventListener("input",render));
+  render();
+}
+function setupFilmCameras(){
+  const tbody=document.querySelector("#filmCameraTable tbody");
+  fillSelect(filmCameraBrand,filmCameraRows.map(x=>x.brand)); fillSelect(filmCameraMount,filmCameraRows.map(x=>x.mount)); fillSelect(filmCameraFormat,filmCameraRows.map(x=>x.format)); fillSelect(filmCameraType,filmCameraRows.map(x=>x.type));
+  function render(){
+    const q=filmCameraSearch.value.trim().toLowerCase();
+    let rows=filmCameraRows.filter(x=>(!q||JSON.stringify(x).toLowerCase().includes(q))&&(!filmCameraBrand.value||x.brand===filmCameraBrand.value)&&(!filmCameraMount.value||x.mount===filmCameraMount.value)&&(!filmCameraFormat.value||x.format===filmCameraFormat.value)&&(!filmCameraType.value||x.type===filmCameraType.value));
+    rows.sort((a,b)=>filmCameraSort.value==="brand"?a.brand.localeCompare(b.brand,"ko"):filmCameraSort.value==="mount"?a.mount.localeCompare(b.mount,"ko"):priceNumber(a.krw)-priceNumber(b.krw));
+    tbody.innerHTML=rows.map(x=>`<tr><td class="photo-cell">${imgCell(x)}</td><td><span class="pill brand-pill">${x.brand}</span></td><td><strong>${x.model}</strong></td><td>${x.format}<br><span class="small">${x.type}</span></td><td>${x.mount}</td><td>${x.check}</td><td><span class="price">${x.krw}</span></td><td>${x.memo}</td><td>${linkCell(x)}</td></tr>`).join("");
+    filmCameraEmpty.style.display=rows.length?"none":"block";
+    renderStats("#filmCameraStats",[...rows],[["표시 항목",rows.length],["브랜드",new Set(rows.map(x=>x.brand)).size],["마운트",new Set(rows.map(x=>x.mount)).size],["필름 포맷",new Set(rows.map(x=>x.format)).size],["유형",new Set(rows.map(x=>x.type)).size]]);
+  }
+  [filmCameraSearch,filmCameraBrand,filmCameraMount,filmCameraFormat,filmCameraType,filmCameraSort].forEach(el=>el.addEventListener("input",render));
+  render();
+}
+function setupFilmLenses(){
+  const tbody=document.querySelector("#filmLensTable tbody");
+  fillSelect(filmLensBrand,filmLensRows.map(x=>x.brand)); fillSelect(filmLensMount,filmLensRows.map(x=>x.mount)); fillSelect(filmLensType,filmLensRows.map(x=>x.type)); fillSelect(filmLensUse,filmLensRows.map(x=>x.use));
+  function render(){
+    const q=filmLensSearch.value.trim().toLowerCase();
+    let rows=filmLensRows.filter(x=>(!q||JSON.stringify(x).toLowerCase().includes(q))&&(!filmLensBrand.value||x.brand===filmLensBrand.value)&&(!filmLensMount.value||x.mount===filmLensMount.value)&&(!filmLensType.value||x.type===filmLensType.value)&&(!filmLensUse.value||x.use===filmLensUse.value));
+    rows.sort((a,b)=>filmLensSort.value==="mount"?a.mount.localeCompare(b.mount,"ko"):filmLensSort.value==="focal"?a.focal.localeCompare(b.focal,"ko"):priceNumber(a.krw)-priceNumber(b.krw));
+    tbody.innerHTML=rows.map(x=>`<tr><td class="photo-cell">${imgCell(x)}</td><td><span class="pill brand-pill">${x.brand}</span></td><td><strong>${x.model}</strong><br><span class="tag">${x.type}</span></td><td>${x.mount}</td><td>${x.focal}</td><td>${x.compatibility}</td><td>${x.condition}</td><td><span class="price">${x.krw}</span></td><td>${x.memo}</td><td>${linkCell(x)}</td></tr>`).join("");
+    filmLensEmpty.style.display=rows.length?"none":"block";
+    renderStats("#filmLensStats",[...rows],[["표시 항목",rows.length],["브랜드",new Set(rows.map(x=>x.brand)).size],["마운트",new Set(rows.map(x=>x.mount)).size],["유형",new Set(rows.map(x=>x.type)).size],["용도",new Set(rows.map(x=>x.use)).size]]);
+  }
+  [filmLensSearch,filmLensBrand,filmLensMount,filmLensType,filmLensUse,filmLensSort].forEach(el=>el.addEventListener("input",render));
+  render();
+}
+
+function setupFilterRecommendations(){
+  const tbody=document.querySelector("#filterRecTable tbody");
+  fillSelect(filterRecCategory,filterRecommendationRows.map(x=>x.category));
+  fillSelect(filterRecPriority,filterRecommendationRows.map(x=>x.priority));
+  const priorityRank={"1순위":0,"2순위":1,"3순위":2,"조건부":3,"77mm 예외":4,"보유 유사":5};
+  function render(){
+    const q=filterRecSearch.value.trim().toLowerCase();
+    let rows=filterRecommendationRows.filter(x=>(!q||JSON.stringify(x).toLowerCase().includes(q))&&(!filterRecCategory.value||x.category===filterRecCategory.value)&&(!filterRecPriority.value||x.priority===filterRecPriority.value));
+    rows.sort((a,b)=>filterRecSort.value==="category"?a.category.localeCompare(b.category,"ko"):filterRecSort.value==="price"?priceNumber(a.krw)-priceNumber(b.krw):(priorityRank[a.priority]??9)-(priorityRank[b.priority]??9)||priceNumber(a.krw)-priceNumber(b.krw));
+    tbody.innerHTML=rows.map(x=>`<tr><td class="photo-cell">${imgCell(x)}</td><td><span class="tag">${x.category}</span></td><td><strong>${x.model}</strong></td><td>${x.size}</td><td>${x.effect}</td><td><span class="price">${x.krw}</span></td><td><span class="pill brand-pill">${x.priority}</span></td><td>${x.overlap||"-"}</td><td>${x.memo}</td><td><span class="small">${x.certainty}</span></td><td>${linkCell(x)}</td></tr>`).join("");
+    filterRecEmpty.style.display=rows.length?"none":"block";
+    renderStats("#filterRecStats",rows,[["추천 항목",rows.length],["종류",new Set(rows.map(x=>x.category)).size],["1순위",rows.filter(x=>x.priority==="1순위").length],["82mm 우선",rows.filter(x=>x.size==="82mm").length],["77mm 예외",rows.filter(x=>x.size==="77mm").length]]);
+  }
+  [filterRecSearch,filterRecCategory,filterRecPriority,filterRecSort].forEach(el=>el.addEventListener("input",render));
+  render();
+}
+setupAdapters();
+setupLensTierComparison();
+setupLenses();
+setupFilmLenses();
+setupFilterRecommendations();
+</script>
+<script>
+(function(){
+  const hideHeadings=['A7M4 변환 어댑터 비교','Lensbaby Velvet 56 메모','현행 렌즈 같은급 비교','렌즈 비교','레거시 렌즈 같은급 비교','필름/레거시 렌즈 비교'];
+  document.querySelectorAll('main > section').forEach(sec=>{const h=sec.querySelector('h2')?.textContent||''; if(hideHeadings.some(k=>h.includes(k))) sec.hidden=true;});
+  document.querySelectorAll('.guide-block').forEach(block=>{const h=block.querySelector('h3')?.textContent||''; if(h.includes('보유 카메라')) block.hidden=true;});
+})();
+</script>
+<script src="assets/equipment-theme.js"></script>
+</body>
+</html>
