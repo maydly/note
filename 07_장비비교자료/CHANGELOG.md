@@ -2,6 +2,17 @@
 
 ## 2026-06-20
 
+- `05_악세사리_비교표_latest.html` v1.2 갱신.
+- Godox 포커싱 파라볼릭 P68/P88/P128/P158 Kit를 사이즈별로 분리하고, 각 제품 사진과 확인 링크를 보강.
+- 12x12 Full/Quarter/1/2 Grid, Solid Black, Magic Cloth, Ultra Bounce/Matthbounce, Single Net, Unbleached Muslin, Hi Lite, 대형 Black Out 대체 행을 추가.
+- SUN-SWATTER PRO Kit, V-FLAT WORLD Foldable V-Flat 2.0, LEE Zircon LED Correction/Warm Pack을 대형 확산·차광·필터 비교군으로 추가.
+- `06_촬영지원장비_비교표_latest.html` v1.2 갱신.
+- 플래그 킷, Matthellini Clamp, Magic Arm, Avenger D600 Mini Boom, Universal Tripod Dolly, Tripod Stone Bag을 추가.
+- Hollyland Mars M1 Enhanced, Solidcom C1 Pro-4S, Atomos Ninja, SmallHD Indie 7을 모니터·무선·통신 비교군으로 추가.
+- Selens 노트북 브래킷, Spider/Cotton 카메라 홀스터, RoboCup, Savage 배경지 53/86/107in을 추가.
+- 촬영지원장비 63개 행 전체 이미지 URL이 실제 이미지 응답 기준으로 통과하는지 확인.
+- `00_장비비교_목차_latest.html` v1.7 갱신.
+- 목차와 진입 페이지에 악세사리 v1.2, 촬영지원 v1.2 최신 버전을 반영.
 - `06_촬영지원장비_비교표_latest.html` v1.1 갱신.
 - 44개 촬영지원장비 행 전체에 개별 제품 이미지를 추가하고, Generic 검색 행을 실제 브랜드/모델 기준으로 교체.
 - 이미지 URL 44개 모두 실제 이미지 응답 기준으로 확인.
