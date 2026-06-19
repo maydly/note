@@ -3,124 +3,165 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maydly Study Archive</title>
+  <title>maydly — Study Archive</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&family=Space+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./landing.css">
 </head>
 <body>
-  <header class="site-hero">
-    <div class="site-hero__copy">
-      <p class="mono-label">Study Archive · maydly</p>
-      <h1>공부한 내용을<br><em>보기 좋게</em><br>쌓아두는 곳</h1>
-      <p class="site-hero__sub">디자인, 개발, 브랜딩, AI, 작업 기록까지. 나중에 다시 꺼내 봐도 흐름이 보이도록 정리하는 개인 학습 아카이브.</p>
-    </div>
-    <nav class="hero-index" aria-label="주제 목록">
-      <a href="#design">01 — Design</a>
-      <a href="#development">02 — Development</a>
-      <a href="#ai">03 — AI</a>
-      <a href="#workflow">04 — Workflow</a>
+
+  <!-- 상단 바 -->
+  <header class="topbar">
+    <a class="brand" href="#top">maydly</a>
+    <nav class="topnav" aria-label="주제 목록">
+      <a href="#design">Design</a>
+      <a href="#development">Development</a>
+      <a href="#ai">AI</a>
+      <a href="#workflow">Workflow</a>
     </nav>
   </header>
 
-  <main class="archive">
-    <section class="archive-section" id="design">
-      <div class="section-kicker">01 / Design</div>
-      <div class="section-heading">
-        <h2>디자인 감각</h2>
-        <p>시각 자료, 레퍼런스 분석, 색과 레이아웃 감각을 훈련하는 노트.</p>
+  <!-- 히어로 -->
+  <section class="hero" id="top">
+    <p class="eyebrow hero__eyebrow">Personal Study Archive</p>
+    <h1 class="hero__mark">maydly</h1>
+    <p class="hero__sub-en">Study Archive</p>
+    <p class="hero__tagline">공부한 내용을<br>보기 좋게 쌓아두는 곳</p>
+    <p class="hero__desc">디자인, 개발, 브랜딩, AI, 작업 기록까지. 나중에 다시 꺼내 봐도 흐름이 보이도록 정리하는 개인 학습 아카이브.</p>
+    <p class="hero__scroll">Scroll ↓</p>
+  </section>
+
+  <!-- 아카이브 -->
+  <main class="archive wrap">
+
+    <!-- 01 Design -->
+    <section class="topic" id="design">
+      <div class="topic__head">
+        <div class="topic__num">01</div>
+        <div>
+          <p class="topic__en">Visual Craft</p>
+          <h2 class="topic__title">디자인 감각</h2>
+          <p class="topic__desc">시각 자료, 레퍼런스 분석, 색과 레이아웃 감각을 훈련하는 노트.</p>
+        </div>
       </div>
-      <div class="note-grid">
-        <article class="note-card">
-          <div>
-            <p class="note-card__tag">Guide</p>
+      <div class="notes">
+        <article class="note">
+          <p class="note__tag">Guide</p>
+          <div class="note__body">
             <h3>콜라주 포스터 디자인 감각 키우기</h3>
             <p>구조, 색, 타이포그래피, 소재와 질감을 챕터별로 정리한 디자인 학습 가이드.</p>
           </div>
-          <a class="text-link" href="./studies/collage-design.html">열기</a>
+          <a class="note__open" href="./studies/collage-design.html">열기</a>
         </article>
-        <article class="note-card note-card--featured">
-          <div>
-            <p class="note-card__tag">Equipment</p>
+        <article class="note">
+          <p class="note__tag">Equipment</p>
+          <div class="note__body">
             <h3>촬영 장비 비교자료</h3>
             <p>카메라, 렌즈, 필터, 조명, 악세사리를 구매 계획과 공부용으로 나눠 정리한 장비 아카이브.</p>
           </div>
-          <a class="text-link" href="./07_장비비교자료/">열기</a>
+          <a class="note__open" href="./07_장비비교자료/">열기</a>
         </article>
-        <article class="note-card note-card--empty">
-          <div>
-            <p class="note-card__tag">Next</p>
+        <article class="note note--empty">
+          <p class="note__tag">Next</p>
+          <div class="note__body">
             <h3>새 디자인 노트</h3>
-            <p>새 주제를 정리할 때 `studies/template.html`을 복사해서 시작.</p>
+            <p>새 주제를 정리할 때 studies/template.html 을 복사해서 시작.</p>
           </div>
+          <span class="note__placeholder">준비 중</span>
         </article>
       </div>
     </section>
 
-    <section class="archive-section" id="development">
-      <div class="section-kicker">02 / Development</div>
-      <div class="section-heading">
-        <h2>개발 공부</h2>
-        <p>개념, 실습, 코드 패턴, 프로젝트 회고를 한 곳에 모으는 공간.</p>
+    <!-- 02 Development -->
+    <section class="topic" id="development">
+      <div class="topic__head">
+        <div class="topic__num">02</div>
+        <div>
+          <p class="topic__en">Building &amp; Code</p>
+          <h2 class="topic__title">개발 공부</h2>
+          <p class="topic__desc">개념, 실습, 코드 패턴, 프로젝트 회고를 한 곳에 모으는 공간.</p>
+        </div>
       </div>
-      <div class="note-grid">
-        <article class="note-card note-card--empty">
-          <div>
-            <p class="note-card__tag">Ready</p>
+      <div class="notes">
+        <article class="note note--empty">
+          <p class="note__tag">Ready</p>
+          <div class="note__body">
             <h3>첫 개발 노트</h3>
             <p>예: React 상태관리, GitHub Pages 배포, CSS 레이아웃.</p>
           </div>
+          <span class="note__placeholder">준비 중</span>
         </article>
       </div>
     </section>
 
-    <section class="archive-section" id="ai">
-      <div class="section-kicker">03 / AI</div>
-      <div class="section-heading">
-        <h2>AI 활용</h2>
-        <p>프롬프트, 자동화, 생성형 AI 도구 사용법을 정리하는 영역.</p>
+    <!-- 03 AI -->
+    <section class="topic" id="ai">
+      <div class="topic__head">
+        <div class="topic__num">03</div>
+        <div>
+          <p class="topic__en">Tools &amp; Automation</p>
+          <h2 class="topic__title">AI 활용</h2>
+          <p class="topic__desc">프롬프트, 자동화, 생성형 AI 도구 사용법을 정리하는 영역.</p>
+        </div>
       </div>
-      <div class="note-grid">
-        <article class="note-card note-card--featured">
-          <div>
-            <p class="note-card__tag">Agent System</p>
+      <div class="notes">
+        <article class="note">
+          <p class="note__tag">Agent System</p>
+          <div class="note__body">
             <h3>작업장 AI 에이전트 운영 체계</h3>
             <p>VS Code 작업장에서 AI 에이전트를 세팅하고, 규정과 역할을 나누어 프로젝트별 업무에 활용하는 방식을 정리한 교육용 페이지.</p>
           </div>
-          <a class="text-link" href="./03_AI에이전트운영체계/">열기</a>
+          <a class="note__open" href="./03_AI에이전트운영체계/">열기</a>
         </article>
-        <article class="note-card note-card--empty">
-          <div>
-            <p class="note-card__tag">Next</p>
+        <article class="note note--empty">
+          <p class="note__tag">Next</p>
+          <div class="note__body">
             <h3>새 AI 노트</h3>
             <p>예: 이미지 생성 워크플로우, 코딩 에이전트 사용법, 자료 요약.</p>
           </div>
+          <span class="note__placeholder">준비 중</span>
         </article>
       </div>
     </section>
 
-    <section class="archive-section" id="workflow">
-      <div class="section-kicker">04 / Workflow</div>
-      <div class="section-heading">
-        <h2>작업 방식</h2>
-        <p>공부 루틴, 기록 방식, 프로젝트 진행법을 개선하며 남기는 로그.</p>
+    <!-- 04 Workflow -->
+    <section class="topic" id="workflow">
+      <div class="topic__head">
+        <div class="topic__num">04</div>
+        <div>
+          <p class="topic__en">How I Work</p>
+          <h2 class="topic__title">작업 방식</h2>
+          <p class="topic__desc">공부 루틴, 기록 방식, 프로젝트 진행법을 개선하며 남기는 로그.</p>
+        </div>
       </div>
-      <div class="note-grid">
-        <article class="note-card note-card--empty">
-          <div>
-            <p class="note-card__tag">Ready</p>
+      <div class="notes">
+        <article class="note note--empty">
+          <p class="note__tag">Ready</p>
+          <div class="note__body">
             <h3>첫 워크플로우 노트</h3>
             <p>예: 매주 공부 정리법, 레퍼런스 수집법, 회고 템플릿.</p>
           </div>
+          <span class="note__placeholder">준비 중</span>
         </article>
       </div>
     </section>
+
   </main>
 
-  <footer class="site-footer">
-    <span>Maydly Study Archive</span>
-    <span>Built for GitHub Pages</span>
+  <!-- 닫는 문장 -->
+  <section class="closing">
+    <p class="eyebrow">A Quiet Place to Keep What I Learn</p>
+    <p>한 번 공부한 것을<br>다시 꺼내 보고 싶게.</p>
+  </section>
+
+  <!-- 푸터 -->
+  <footer class="foot">
+    <div class="wrap foot__inner">
+      <span>maydly study archive</span>
+      <span>Built for GitHub Pages</span>
+    </div>
   </footer>
+
 </body>
 </html>
