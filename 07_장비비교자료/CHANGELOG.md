@@ -2,6 +2,14 @@
 
 ## 2026-06-20
 
+- `06_촬영지원장비_비교표_latest.html` v1.4 갱신.
+- 촬영지원장비 비교군을 재정리해 99개 제품, 32개 비교군 기준으로 단일 항목 비교군 0개가 되도록 보강.
+- Manfrotto 5001B/1005BAC/087NW, Avenger A0040B/A5012, Kupo 169M/483BT, Manfrotto 420B, Manfrotto 244MICRO-AR, SmallRig 3726을 추가해 스탠드·붐·암 비교군을 보강.
+- Hollyland Pyro S, DJI SDR Transmission, Atomos Shinobi II/Shogun Classic, SmallHD Ultra 5를 추가해 무선 영상·온카메라 모니터 비교군을 보강.
+- Dell UltraSharp U2725QE/U3225QE/U3224KB 6K를 추가해 Apple Studio Display, EIZO ColorEdge와 함께 작업·색보정 모니터 비교가 가능하도록 정리.
+- Tether Tools Tether Table Aero, Inovativ DigiPlate Lite, Savage Port-A-Stand, Setwear Tool Pouch, Milwaukee PACKOUT Compact Organizer, ProTapes Pro Spike를 추가.
+- `00_장비비교_목차_latest.html` v1.9 갱신.
+- 목차와 진입 페이지에 촬영지원 v1.4, Apple/Dell/EIZO 모니터 비교 설명을 반영.
 - `05_악세사리_비교표_latest.html` v1.3 갱신.
 - MLP19K/26K/36K Projection, Aputure CF10/CF16 Fresnel, Nanlite Translucent/Silver Deep Umbrella 이미지와 제품별 확인 링크를 보강.
 - `06_촬영지원장비_비교표_latest.html` v1.3 갱신.

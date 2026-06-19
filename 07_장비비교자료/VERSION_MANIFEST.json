@@ -12,7 +12,7 @@
   "files": [
     {
       "name": "00_장비비교_목차_latest.html",
-      "version": "v1.8",
+      "version": "v1.9",
       "role": "6분류 장비 비교자료 목차"
     },
     {
@@ -42,8 +42,8 @@
     },
     {
       "name": "06_촬영지원장비_비교표_latest.html",
-      "version": "v1.3",
-      "role": "스탠드, A/C-스탠드, 콤보, 와인드업, 붐/메가붐, Motion9 카트, 파워뱅크, V마운트, Solidcom 인터컴, 색보정 모니터, Mac 워크스테이션, DIT, 홀스터, 배경지, 현장 필수품 비교 최신본. 모든 제품 행에 실제 제품 이미지 포함"
+      "version": "v1.4",
+      "role": "스탠드, A/C-스탠드, 콤보/와인드업, 붐/메가붐, Motion9 카트, 파워뱅크, V마운트, 무선 영상, Solidcom 인터컴, Apple/Dell/EIZO 색보정 모니터, Mac 워크스테이션, DIT, 홀스터, 배경지, 현장 필수품 비교 최신본. 모든 제품 행에 실제 제품 이미지 포함"
     },
     {
       "name": "assets/equipment-theme.css",
