@@ -2,6 +2,16 @@
 
 ## 2026-06-20
 
+- `05_악세사리_비교표_latest.html` v1.3 갱신.
+- MLP19K/26K/36K Projection, Aputure CF10/CF16 Fresnel, Nanlite Translucent/Silver Deep Umbrella 이미지와 제품별 확인 링크를 보강.
+- `06_촬영지원장비_비교표_latest.html` v1.3 갱신.
+- RockNRoller식 멀티카트 비교 행을 제거하고 Motion9 M2 촬영 카트를 프로덕션 카트 비교군으로 추가.
+- A2018F A/C-스탠드 소형, A1035CS 콤보 스탠드, B6039CS 와인드업 스탠드, D650 Junior Boom, Manfrotto 425B Mega Boom을 추가.
+- Spider Pro Plate v3를 카메라 홀스터 부품 비교군으로 추가.
+- Hollyland Solidcom SE/C1 Pro/M1 Pro를 인터컴 비교군으로 분리.
+- Apple Studio Display, EIZO CS2740/CG2700S/CG2700X, MacBook Air/Pro, Mac mini, Mac Studio를 DIT·후반 비교군으로 추가.
+- `00_장비비교_목차_latest.html` v1.8 갱신.
+- 목차와 진입 페이지에 악세사리 v1.3, 촬영지원 v1.3 최신 버전을 반영.
 - `05_악세사리_비교표_latest.html` v1.2 갱신.
 - Godox 포커싱 파라볼릭 P68/P88/P128/P158 Kit를 사이즈별로 분리하고, 각 제품 사진과 확인 링크를 보강.
 - 12x12 Full/Quarter/1/2 Grid, Solid Black, Magic Cloth, Ultra Bounce/Matthbounce, Single Net, Unbleached Muslin, Hi Lite, 대형 Black Out 대체 행을 추가.
