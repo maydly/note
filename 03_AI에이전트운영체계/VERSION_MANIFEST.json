@@ -1,0 +1,17 @@
+{
+  "module": "AI에이전트운영체계",
+  "latest": {
+    "version": "v3.0",
+    "date": "2026-06-19",
+    "file": "AI에이전트운영체계_작업장운영교육페이지.html",
+    "description": "작업장 AI 에이전트 운영 체계 교육용 공개 페이지"
+  },
+  "versions": [
+    {
+      "version": "v3.0",
+      "created": "260619_1730",
+      "file": "versions/2026-06-19/AI에이전트운영체계_작업장운영교육페이지_260619_1730_v3.0.html",
+      "notes": "note 공개용 최초 정리본"
+    }
+  ]
+}

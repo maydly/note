@@ -6,6 +6,7 @@
 
 - `index.html`: 전체 공부 노트 목록
 - `styles.css`: 공통 디자인 스타일
+- `03_AI에이전트운영체계/`: 작업장 AI 에이전트 운영 체계 교육용 페이지
 - `07_장비비교자료/`: 카메라, 렌즈, 필터, 조명, 악세사리 비교자료
 - `studies/collage-design.html`: 예시 공부 노트
 - `studies/template.html`: 새 노트를 만들 때 복사해서 쓰는 템플릿
@@ -28,4 +29,5 @@
 현재 공개 기준 주소는 아래와 같습니다.
 
 - 메인: `https://bucket0825.github.io/note/`
+- AI 에이전트 운영 체계: `https://bucket0825.github.io/note/03_AI에이전트운영체계/`
 - 장비 비교자료: `https://bucket0825.github.io/note/07_장비비교자료/`

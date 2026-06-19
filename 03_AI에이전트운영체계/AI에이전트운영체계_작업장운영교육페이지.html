@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>작업장 AI 에이전트 운영 체계 정리</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  :root {
+    --ink: #18212f;
+    --muted: #5d6878;
+    --line: #d9e0e8;
+    --paper: #fbfcfd;
+    --panel: #ffffff;
+    --panel-2: #f2f6f8;
+    --green: #18785f;
+    --teal: #0a8b94;
+    --coral: #c4553d;
+    --gold: #b06f12;
+    --violet: #6750a4;
+    --blue: #2868b7;
+    --shadow: 0 18px 50px rgba(27, 39, 56, 0.10);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background:
+      linear-gradient(180deg, rgba(10,139,148,0.08), transparent 320px),
+      var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    font-size: 15px;
+    line-height: 1.68;
+    letter-spacing: 0;
+  }
+
+  a { color: inherit; }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(251, 252, 253, 0.92);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(14px);
+  }
+
+  .nav {
+    width: min(1120px, calc(100% - 32px));
+    margin: 0 auto;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .brand-mark {
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 7px;
+    background: var(--ink);
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: 0;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+  }
+
+  .nav-links a {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 7px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .nav-links a:hover { background: var(--panel-2); color: var(--ink); }
+
+  header {
+    width: min(1120px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 58px 0 30px;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.14fr) minmax(300px, 0.86fr);
+    gap: 22px;
+    align-items: stretch;
+  }
+
+  .hero-copy {
+    min-height: 360px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 44px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+  }
+
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--teal);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0;
+    margin-bottom: 14px;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 28px;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--teal);
+  }
+
+  h1 {
+    margin: 0;
+    max-width: 760px;
+    color: var(--ink);
+    font-size: clamp(30px, 5vw, 56px);
+    line-height: 1.08;
+    letter-spacing: 0;
+  }
+
+  .lead {
+    max-width: 720px;
+    margin: 20px 0 0;
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1.75;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 5px 10px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--panel-2);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .hero-board {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #203044;
+    color: #f7fafc;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .window-bar {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 14px;
+    background: #111827;
+    border-bottom: 1px solid rgba(255,255,255,0.09);
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: #ef6b5f;
+  }
+
+  .dot:nth-child(2) { background: #f4be4f; }
+  .dot:nth-child(3) { background: #62c555; }
+
+  .terminal {
+    padding: 22px;
+    min-height: 320px;
+    display: grid;
+    align-content: center;
+    gap: 12px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .line {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .line b { color: #8de2cf; font-weight: 800; }
+  .line span { color: #dce8f7; }
+  .line strong { color: #ffd28a; font-weight: 800; }
+
+  main {
+    width: min(1120px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 16px 0 70px;
+  }
+
+  section {
+    margin-top: 22px;
+    padding: 30px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+  }
+
+  .section-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+  }
+
+  h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: clamp(21px, 3vw, 28px);
+    line-height: 1.22;
+    letter-spacing: 0;
+  }
+
+  .section-note {
+    max-width: 520px;
+    margin: 0;
+    color: var(--muted);
+  }
+
+  h3 {
+    margin: 0 0 8px;
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.35;
+  }
+
+  p { margin: 0 0 10px; }
+  p:last-child { margin-bottom: 0; }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .card {
+    min-height: 100%;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel-2);
+  }
+
+  .card p, li { color: var(--muted); }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    margin-bottom: 12px;
+    padding: 0 9px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
+  }
+
+  .tag.green { background: var(--green); }
+  .tag.teal { background: var(--teal); }
+  .tag.coral { background: var(--coral); }
+  .tag.gold { background: var(--gold); }
+  .tag.violet { background: var(--violet); }
+  .tag.blue { background: var(--blue); }
+
+  .timeline {
+    position: relative;
+    display: grid;
+    gap: 12px;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    gap: 14px;
+    align-items: start;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel-2);
+  }
+
+  .step-num {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: var(--ink);
+    color: #fff;
+    font-weight: 900;
+  }
+
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(120px, 1fr));
+    gap: 10px;
+  }
+
+  .flow-item {
+    position: relative;
+    min-height: 110px;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel-2);
+  }
+
+  .flow-item::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -10px;
+    width: 10px;
+    height: 2px;
+    background: var(--line);
+  }
+
+  .flow-item:last-child::after { display: none; }
+
+  .flow-item b {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--ink);
+    font-size: 14px;
+  }
+
+  .flow-item span {
+    display: block;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .compare {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  .compare th,
+  .compare td {
+    padding: 13px 14px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .compare th {
+    background: var(--ink);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .compare tr:last-child td { border-bottom: 0; }
+  .compare td:first-child { width: 22%; color: var(--ink); font-weight: 800; }
+  .compare td { color: var(--muted); }
+
+  .prompt-box {
+    padding: 18px;
+    border: 1px solid #bfd5d8;
+    border-radius: 8px;
+    background: #eef8f9;
+  }
+
+  pre {
+    margin: 0;
+    padding: 16px;
+    overflow-x: auto;
+    border-radius: 8px;
+    background: #172235;
+    color: #eef6ff;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+
+  code {
+    padding: 2px 5px;
+    border-radius: 5px;
+    background: rgba(24,33,47,0.08);
+    color: var(--ink);
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    font-size: 0.92em;
+  }
+
+  .checklist {
+    display: grid;
+    gap: 9px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .checklist li {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 10px;
+    align-items: start;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel-2);
+  }
+
+  .check {
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    border: 2px solid var(--teal);
+    border-radius: 6px;
+    color: var(--teal);
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .callout {
+    padding: 18px;
+    border-left: 5px solid var(--coral);
+    border-radius: 8px;
+    background: #fff4f1;
+    color: var(--ink);
+  }
+
+  .footer {
+    margin-top: 24px;
+    padding: 18px 0 0;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .print-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 18px;
+  }
+
+  button {
+    min-height: 38px;
+    padding: 0 14px;
+    border: 1px solid var(--ink);
+    border-radius: 7px;
+    background: var(--ink);
+    color: #fff;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  button:hover { background: #2d3a4d; }
+
+  @media (max-width: 920px) {
+    .hero-grid,
+    .grid-2,
+    .grid-3 {
+      grid-template-columns: 1fr;
+    }
+
+    .flow {
+      grid-template-columns: 1fr;
+    }
+
+    .flow-item::after {
+      top: auto;
+      right: 50%;
+      bottom: -10px;
+      width: 2px;
+      height: 10px;
+    }
+
+    .section-head {
+      display: block;
+    }
+
+    .section-note {
+      margin-top: 8px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .nav {
+      align-items: flex-start;
+      flex-direction: column;
+      padding: 10px 0;
+    }
+
+    header {
+      padding-top: 34px;
+    }
+
+    .hero-copy,
+    section {
+      padding: 22px;
+    }
+
+    .hero-copy {
+      min-height: auto;
+    }
+
+    .terminal {
+      min-height: auto;
+      padding: 18px;
+    }
+
+    .line {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
+
+    .step {
+      grid-template-columns: 1fr;
+    }
+
+    .compare {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+  }
+
+  @media print {
+    .topbar,
+    .print-actions {
+      display: none;
+    }
+
+    body {
+      background: #fff;
+      color: #111;
+    }
+
+    header,
+    main {
+      width: 100%;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    section,
+    .hero-copy,
+    .hero-board {
+      box-shadow: none;
+      break-inside: avoid;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <nav class="nav" aria-label="페이지 목차">
+      <div class="brand"><span class="brand-mark">AI</span> 작업장 운영</div>
+      <div class="nav-links">
+        <a href="#scope">범위</a>
+        <a href="#workspace">작업장</a>
+        <a href="#agents">에이전트</a>
+        <a href="#projects">프로젝트</a>
+        <a href="#process">프로세스</a>
+        <a href="#publish">게시 전 확인</a>
+      </div>
+    </nav>
+  </div>
+
+  <header>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <div class="eyebrow">WORKSPACE AI OPERATING SYSTEM</div>
+        <h1>작업장 AI 에이전트 운영 체계 정리</h1>
+        <p class="lead">
+          VS Code 작업장에서 AI 에이전트를 어떻게 세팅하고, 어떤 규정을 학습시키며,
+          프로젝트별로 어떤 역할과 프로세스로 활용하고 있는지 정리하는 기준 페이지입니다.
+          사용자가 아닌 사람이 보더라도 구조와 의도를 이해할 수 있도록 풀어쓴 버전입니다.
+        </p>
+        <div class="meta-row">
+          <span class="pill">범위: 작업장 전체</span>
+          <span class="pill">Claude 에이전트: 9개</span>
+          <span class="pill">Codex 설정: 5개</span>
+          <span class="pill">버전: 260619_1730_v3.0</span>
+          <span class="pill">게시 위치: bucket0825.github.io/note</span>
+        </div>
+      </div>
+
+      <aside class="hero-board" aria-label="VS Code 작업 흐름 요약">
+        <div class="window-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="terminal">
+          <div class="line"><b>root</b><span>작업장 루트에서 <strong>00_작업장_위치맵</strong> 확인</span></div>
+          <div class="line"><b>rules</b><span><strong>CLAUDE.md</strong>와 프로젝트별 규정 분리</span></div>
+          <div class="line"><b>agents</b><span><strong>9개 에이전트</strong>가 계획, 구현, 검수, 기록을 분담</span></div>
+          <div class="line"><b>gate</b><span>조사와 계획은 자동, 파일 수정은 승인 후 진행</span></div>
+          <div class="line"><b>record</b><span>결과물은 버전, 보고서, 기록으로 남김</span></div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <section id="scope">
+      <div class="section-head">
+        <h2>1. 이 문서가 정리하려는 것</h2>
+        <p class="section-note">목적은 특정 사람에게 간단히 사용법을 알려주는 것이 아니라, 현재 작업장이 AI를 어떻게 조직화해서 쓰고 있는지 설명하는 것입니다.</p>
+      </div>
+
+      <div class="callout">
+        <h3>핵심 목적</h3>
+        <p>
+          이 페이지는 VS Code에서 AI 에이전트를 불러 쓰는 방법만 설명하는 문서가 아닙니다.
+          더 큰 목적은 사용자가 작업장 전체를 어떤 기준으로 나누고, 각 프로젝트에 어떤 규정을 심어두었고,
+          여러 AI 에이전트를 어떤 역할로 배정해 업무 흐름을 만들었는지 정리하는 것입니다.
+        </p>
+        <p>
+          그래서 이 문서는 “AI를 쓰는 법”보다 “AI가 실수하지 않게 일하는 판을 어떻게 만들었는가”를 설명합니다.
+          제3자가 읽어도 이해할 수 있도록 풀어쓰지만, 주 목적은 외부 전달이 아니라 현재 운영 체계를 기록하고 교육 가능한 형태로 만드는 것입니다.
+        </p>
+      </div>
+
+      <div style="height: 16px;"></div>
+
+      <h3>현재 문서에 포함하는 범위</h3>
+      <p>
+        이 문서는 현재 운영 기준을 설명하는 문서입니다.
+        따라서 작업장 루트의 공통 규정, 현재 활성 에이전트, 현재 Codex 설정, 현재 명령어, 현재 project-rules,
+        그리고 주요 프로젝트별 CLAUDE.md를 중심으로 정리합니다.
+      </p>
+      <p>
+        반대로 <code>_archive</code> 안의 구버전 설정, 폐기보존 파일, 과거 백업 전체는 현재 운영 기준이 아니므로 본문에서는 역사적 참고로만 다룹니다.
+        정말 “작업장에 존재하는 모든 에이전트 관련 파일의 전수 목록”이 필요하다면 별도 부록이나 인벤토리 페이지로 분리하는 것이 맞습니다.
+      </p>
+
+      <div style="height: 16px;"></div>
+
+      <div class="grid-3">
+        <article class="card">
+          <span class="tag teal">정리 범위</span>
+          <h3>작업장 전체</h3>
+          <p>루트 작업장, 공통 규정, 프로젝트 지도, 에이전트 폴더, Codex 설정, 각 프로젝트의 CLAUDE.md까지 포함합니다.</p>
+        </article>
+        <article class="card">
+          <span class="tag green">설명 방식</span>
+          <h3>요약보다 풀이 우선</h3>
+          <p>각 에이전트가 무슨 일을 하는지뿐 아니라, 왜 그 역할이 필요해졌는지와 어떤 사고를 막는지까지 설명합니다.</p>
+        </article>
+        <article class="card">
+          <span class="tag coral">게시 전 기준</span>
+          <h3>공개 가능한 형태로 정리</h3>
+          <p>이 공개본은 <code>https://bucket0825.github.io/note/</code>에 올리기 위한 버전입니다. 내부 경로와 민감 정보는 설명형 문장으로 정리하고, 공개에 불필요한 환경 세부는 줄였습니다.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="workspace">
+      <div class="section-head">
+        <h2>2. 작업장 구조부터 이해하기</h2>
+        <p class="section-note">이 작업장의 핵심은 “모든 일을 한 폴더에 섞지 않고, 프로젝트별 판단 기준을 분리한다”는 데 있습니다.</p>
+      </div>
+
+      <p>
+        작업장 루트는 여러 프로젝트를 담는 상위 공간입니다. 여기에는 작업장 공통 규칙인 <code>CLAUDE.md</code>,
+        위치를 알려주는 <code>00_작업장_위치맵.md</code>, Claude 에이전트가 들어 있는 <code>.claude/agents</code>,
+        Codex용 에이전트 설정이 들어 있는 <code>.codex/agents</code>가 있습니다.
+      </p>
+      <p>
+        중요한 점은 AI가 파일을 열 때마다 “지금 어떤 프로젝트의 일을 하고 있는지”를 먼저 식별해야 한다는 것입니다.
+        같은 사용자가 요청하더라도 maydly, NYC Studio, PA, 수빈 프로젝트는 목적과 말투와 책임 범위가 다릅니다.
+        이 구분을 하지 않으면 AI는 한 프로젝트의 기준을 다른 프로젝트에 가져와서 그럴듯하지만 위험한 결과물을 만들 수 있습니다.
+      </p>
+
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>위치</th>
+            <th>역할</th>
+            <th>왜 중요한가</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>CLAUDE.md</code></td>
+            <td>작업장 공통 지침</td>
+            <td>요청을 받았을 때 에이전트가 어떤 순서로 움직이고, 언제 멈추고, 어떤 기준으로 프로젝트를 분리해야 하는지 정합니다.</td>
+          </tr>
+          <tr>
+            <td><code>00_작업장_위치맵.md</code></td>
+            <td>작업장 지도</td>
+            <td>새 업무를 시작할 때 어느 프로젝트와 업무ID에 속하는지 확인하는 첫 기준입니다. 파일이 많아질수록 이 지도가 중요해집니다.</td>
+          </tr>
+          <tr>
+            <td><code>.claude/agents</code></td>
+            <td>Claude 에이전트 9개</td>
+            <td>계획, 구현, 검수, 배포 점검, 기록처럼 업무 단계를 역할별로 나누어 AI가 한 번에 모든 권한을 갖지 않게 합니다.</td>
+          </tr>
+          <tr>
+            <td><code>.codex/agents</code></td>
+            <td>Codex용 설정 5개</td>
+            <td>Codex 환경에서도 비슷한 역할 기준으로 계획, 구현, 검수, 릴리즈, 문구 검토를 수행할 수 있게 해둔 설정입니다.</td>
+          </tr>
+          <tr>
+            <td><code>docs/</code></td>
+            <td>작업장 공통 업무 문서</td>
+            <td>프로젝트 하나에 속하지 않는 에이전트, 보안, 작업장 운영 같은 공통 업무를 업무ID 기준으로 보관합니다.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>3. 왜 에이전트를 여러 명으로 나눴나</h2>
+        <p class="section-note">한 AI가 모든 일을 바로 처리하면 빠르지만, 방향 착오와 파일 사고가 커질 수 있습니다.</p>
+      </div>
+
+      <div class="grid-2">
+        <article class="card">
+          <span class="tag coral">문제</span>
+          <h3>AI는 맥락을 섞기 쉽다</h3>
+          <p>
+            같은 사람이 여러 프로젝트를 맡고 있으면 AI는 “이 사람의 스타일”을 하나로 묶어버리기 쉽습니다.
+            하지만 이 작업장에서는 maydly의 브랜드 오너로서의 말투와 NYC Studio의 운영 정리자 역할이 완전히 다릅니다.
+            에이전트 규정은 이 경계를 계속 확인하게 만드는 안전장치입니다.
+          </p>
+        </article>
+        <article class="card">
+          <span class="tag gold">문제</span>
+          <h3>AI는 바로 만들려고 한다</h3>
+          <p>
+            사용자가 “만들어줘”라고 하면 AI는 곧장 파일을 생성하거나 수정하려고 합니다.
+            그런데 이 작업장은 기존 파일 보존, 버전 분리, 배포 영향 확인이 중요합니다.
+            그래서 계획과 구현 사이에 승인 게이트를 둬서, 실제 파일을 바꾸기 전에 한 번 멈추게 했습니다.
+          </p>
+        </article>
+        <article class="card">
+          <span class="tag teal">해결</span>
+          <h3>역할을 나누면 책임이 선명해진다</h3>
+          <p>
+            plan-agent는 계획만 하고, build-agent는 승인된 범위만 구현하고, qa-agent는 직접 고치지 않고 문제를 찾습니다.
+            이렇게 나누면 “누가 판단했고, 누가 만들었고, 누가 검수했는지”가 기록에 남습니다.
+          </p>
+        </article>
+        <article class="card">
+          <span class="tag green">해결</span>
+          <h3>기록이 남아 다음 작업을 이어갈 수 있다</h3>
+          <p>
+            여러 기기와 여러 세션에서 작업하면 대화 맥락이 사라질 수 있습니다.
+            scribe-agent와 report-agent는 작업이 어디까지 진행됐는지, 어떤 결정을 했는지, 어떤 파일을 만들었는지 남기기 위해 존재합니다.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>4. 에이전트 체계가 만들어진 흐름</h2>
+        <p class="section-note">현재 구조는 처음부터 완성형으로 생긴 것이 아니라, 작업 중 생긴 문제를 막기 위해 단계적으로 확장된 체계입니다.</p>
+      </div>
+
+      <p>
+        초기에는 plan, build, qa, release처럼 일반적인 개발 흐름에 가까운 역할 분리가 중심이었습니다.
+        하지만 실제 작업을 하다 보니 “계획은 잘 세웠지만 방향 자체를 먼저 의심해야 하는 상황”,
+        “결과물은 만들었지만 나중에 찾기 어려운 상황”, “Claude가 만든 결과를 다른 모델 관점에서 다시 봐야 하는 상황”이 생겼습니다.
+        그래서 에이전트 체계가 단순 실행 흐름에서 운영 체계로 확장되었습니다.
+      </p>
+      <p>
+        기존 보고서 기준으로 2026-06-02에는 Claude Code 에이전트 7개와 GPT Codex 교차감사 1개, 총 8개 체계가 확인되어 있었습니다.
+        이후 challenge-agent가 전면 흐름에 들어오면서 현재 운영 기준은 9개 에이전트 체계로 보는 것이 맞습니다.
+        이 변화의 핵심은 “더 많은 AI를 쓰자”가 아니라, AI가 바로 실행하지 않고 생각하고 멈추고 검수하고 기록하게 만드는 것입니다.
+      </p>
+
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>시기/단계</th>
+            <th>구성 변화</th>
+            <th>왜 필요했나</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>초기 기본 흐름</td>
+            <td><code>plan</code> → 승인 → <code>build</code> → <code>qa</code> → <code>release</code></td>
+            <td>요청을 바로 구현하지 않고, 계획과 검수를 거치게 하기 위한 기본 안전장치였습니다.</td>
+          </tr>
+          <tr>
+            <td>보고 체계 추가</td>
+            <td><code>report-agent</code> 추가</td>
+            <td>작업 결과가 채팅에만 흩어지면 나중에 추적이 어렵기 때문에, HTML 통합 보고서로 남기는 역할이 필요했습니다.</td>
+          </tr>
+          <tr>
+            <td>교차감사 추가</td>
+            <td><code>codex-audit-agent</code> 추가</td>
+            <td>Claude가 만든 결과를 같은 관점으로만 검수하지 않고, Codex를 통해 독립적으로 다시 보기 위한 장치입니다.</td>
+          </tr>
+          <tr>
+            <td>방향 검토 추가</td>
+            <td><code>challenge-agent</code> 추가</td>
+            <td>큰 구조 변경, 돈, 계약, 관계, 프로젝트 경계처럼 실행 전에 전제를 점검해야 하는 요청을 막기 위해 생겼습니다.</td>
+          </tr>
+          <tr>
+            <td>현재 운영 기준</td>
+            <td>Claude 에이전트 9개 + Codex 설정 5개 + 공통 명령어 6개</td>
+            <td>작업장 전체에서 같은 원칙으로 계획, 구현, 검수, 기록, 공개 전 확인을 반복하기 위한 체계입니다.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="height: 16px;"></div>
+
+      <div class="callout">
+        <h3>이력까지 적는 이유</h3>
+        <p>
+          교육용 문서에서 이력이 중요한 이유는, 현재 규칙이 임의로 복잡해진 것이 아니라 실제 문제를 해결하기 위해 생겼다는 것을 보여주기 때문입니다.
+          에이전트가 9개라는 숫자만 보면 과해 보일 수 있지만, 각각은 “방향을 검토한다”, “계획을 세운다”, “실제로 만든다”, “검수한다”,
+          “다른 모델로 감사한다”, “공개 전에 확인한다”, “보고서로 남긴다”, “기록으로 남긴다”처럼 서로 다른 사고 방지 역할을 갖고 있습니다.
+        </p>
+      </div>
+    </section>
+
+    <section id="agents">
+      <div class="section-head">
+        <h2>5. Claude 에이전트 9개 상세 설명</h2>
+        <p class="section-note">현재 작업장 루트의 <code>.claude/agents</code> 기준으로 9개 에이전트가 구성되어 있습니다.</p>
+      </div>
+
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>에이전트</th>
+            <th>하는 일</th>
+            <th>왜 만들었나</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>challenge-agent</code></td>
+            <td>큰 방향, 구조 변경, 장기 운영, 비용, 계약, 프로젝트 경계 침범 가능성을 먼저 검토합니다.</td>
+            <td>사용자의 지시를 바로 실행하면 빠르지만, 전제가 틀렸을 때 큰 손실이 납니다. 이 에이전트는 실행 전에 “이 방향이 맞는지”를 한번 반대편에서 검토하기 위해 만들어졌습니다.</td>
+          </tr>
+          <tr>
+            <td><code>plan-agent</code></td>
+            <td>요청을 항목별로 분해하고, 관련 파일과 구조를 조사한 뒤 작업 계획을 세웁니다.</td>
+            <td>AI가 바로 코드를 고치거나 파일을 만들지 않게 하기 위한 계획 담당입니다. 계획에는 수정 대상, 리스크, 테스트 방법, 에이전트 배정이 포함됩니다.</td>
+          </tr>
+          <tr>
+            <td><code>brand-text-agent</code></td>
+            <td>문구, 브랜드 톤, 안내 흐름, 고객에게 보이는 표현이 프로젝트 기준에 맞는지 검토합니다.</td>
+            <td>문구를 예쁘게 만드는 것보다 중요한 것은 역할과 기준을 흐리지 않는 것입니다. maydly, NYC, PA, 수빈은 톤이 다르기 때문에 문구 전용 검토자가 필요합니다.</td>
+          </tr>
+          <tr>
+            <td><code>build-agent</code></td>
+            <td>승인된 계획이나 명시된 범위 안에서 실제 파일 생성과 수정을 담당합니다.</td>
+            <td>구현 권한이 있는 에이전트를 따로 분리해, 승인되지 않은 변경을 막기 위해 만들었습니다. 기존 구조 재사용, 덮어쓰기 금지, 새 버전 생성이 핵심 규칙입니다.</td>
+          </tr>
+          <tr>
+            <td><code>qa-agent</code></td>
+            <td>구현 결과가 요청과 계획에 맞는지 검수하고, 누락이나 기존 기능 훼손을 찾습니다.</td>
+            <td>만든 사람이 바로 통과시키면 놓치는 부분이 생깁니다. qa-agent는 직접 수정하지 않고 문제를 찾아 보고하는 검수 전용 역할입니다.</td>
+          </tr>
+          <tr>
+            <td><code>codex-audit-agent</code></td>
+            <td>Claude가 만든 결과물을 Codex 관점에서 독립 교차감사합니다.</td>
+            <td>같은 모델 안에서만 검수하면 시야가 겹칠 수 있습니다. 다른 모델의 관점으로 한 번 더 읽게 하여 누락, 위험, 구조 문제를 찾기 위해 만들어졌습니다.</td>
+          </tr>
+          <tr>
+            <td><code>release-agent</code></td>
+            <td>배포나 공유 전에 링크, 이미지, 공개/비공개 데이터, 모바일 화면, 파일 경로를 점검합니다.</td>
+            <td>파일이 잘 만들어졌어도 공개하면 안 되는 정보가 들어 있거나 경로가 깨질 수 있습니다. 특히 Netlify, Cloudflare Pages, GitHub Pages 게시 전 안전 확인을 위해 필요합니다.</td>
+          </tr>
+          <tr>
+            <td><code>report-agent</code></td>
+            <td>작업 사이클의 원 요청, 계획, 구현, QA, 감사, 릴리즈 결과를 HTML 보고서로 종합합니다.</td>
+            <td>작업이 끝난 뒤 채팅에만 결과가 남으면 나중에 찾기 어렵습니다. 브라우저에서 열어볼 수 있는 보고서로 남겨, 검토와 전달을 쉽게 하기 위해 만들어졌습니다.</td>
+          </tr>
+          <tr>
+            <td><code>scribe-agent</code></td>
+            <td>대화, 결정사항, 작업 흐름, 중단 지점, 다음 작업을 마크다운 기록으로 남깁니다.</td>
+            <td>맥북, 데스크탑, 여러 세션을 오가면 맥락이 끊깁니다. scribe-agent는 작업 기억을 파일로 남겨 다음 사람이 바로 이어받을 수 있게 하는 기록 담당입니다.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="height: 16px;"></div>
+
+      <h3>권한 차이로 보는 에이전트 구조</h3>
+      <p>
+        에이전트 체계를 이해할 때는 이름보다 권한을 먼저 봐야 합니다.
+        모든 에이전트가 파일을 고칠 수 있는 것이 아니며, 오히려 대부분은 읽기와 검토에 집중합니다.
+        이 구조는 “생각하는 역할”과 “실제로 바꾸는 역할”을 분리해 파일 사고를 줄이기 위한 것입니다.
+      </p>
+
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>권한 범위</th>
+            <th>해당 에이전트</th>
+            <th>의미</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>읽기·검토 중심</td>
+            <td><code>challenge-agent</code>, <code>plan-agent</code>, <code>brand-text-agent</code>, <code>qa-agent</code>, <code>release-agent</code></td>
+            <td>파일을 직접 고치기보다 방향, 계획, 문구, 검수, 배포 가능성을 판단합니다. 잘못된 수정이 생기지 않도록 먼저 읽고 멈추는 역할입니다.</td>
+          </tr>
+          <tr>
+            <td>구현 가능</td>
+            <td><code>build-agent</code></td>
+            <td>승인된 계획 안에서 실제 파일을 생성하거나 수정할 수 있습니다. 그래서 가장 강한 권한을 갖지만, 동시에 가장 많은 금지 규칙을 가집니다.</td>
+          </tr>
+          <tr>
+            <td>보고서 생성 가능</td>
+            <td><code>report-agent</code></td>
+            <td>원본 코드를 수정하는 역할이 아니라, 작업 결과를 HTML 보고서로 만드는 역할입니다. Write 권한은 보고서 생성 용도입니다.</td>
+          </tr>
+          <tr>
+            <td>기록 생성 가능</td>
+            <td><code>scribe-agent</code></td>
+            <td>대화와 결정사항을 기록 파일로 남깁니다. 구현을 주도하지 않고, 다음 작업자가 이어받을 수 있게 맥락을 보존합니다.</td>
+          </tr>
+          <tr>
+            <td>독립 감사</td>
+            <td><code>codex-audit-agent</code></td>
+            <td>직접 수정하지 않고 Codex 관점으로 결과물을 다시 봅니다. 감사 대상 내용을 읽고 문제 가능성을 보고하는 역할입니다.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="height: 16px;"></div>
+
+      <h3>작업 성격별 자동 배정 기준</h3>
+      <p>
+        사용자는 매번 “어떤 에이전트를 써줘”라고 지정하지 않아도 됩니다.
+        작업장 공통 규정은 요청의 성격을 보고 자동으로 어떤 에이전트가 필요한지 판단하도록 설계되어 있습니다.
+        다만 자동 배정은 파일을 바로 수정한다는 뜻이 아니라, 조사와 계획을 자동화한다는 뜻입니다.
+      </p>
+
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>작업 성격</th>
+            <th>배정 흐름</th>
+            <th>풀이</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>방향·구조·큰 결정 검토</td>
+            <td><code>challenge-agent</code> → <code>plan-agent</code></td>
+            <td>구조를 바꾸거나 새 시스템을 만들 때는 바로 실행하지 않고, 먼저 방향과 리스크를 검토한 뒤 계획으로 넘어갑니다.</td>
+          </tr>
+          <tr>
+            <td>구조 조사·계획만 필요</td>
+            <td><code>plan-agent</code></td>
+            <td>현재 파일 구조를 보고 어떤 순서로 해야 하는지 정리합니다. 이 단계에서는 파일을 고치지 않습니다.</td>
+          </tr>
+          <tr>
+            <td>문구·브랜드 텍스트</td>
+            <td><code>brand-text-agent</code></td>
+            <td>말투, 고객 안내, 브랜드 표현, 운영 기준이 프로젝트에 맞는지 봅니다. 예쁜 문장보다 정확한 맥락을 우선합니다.</td>
+          </tr>
+          <tr>
+            <td>코드·파일 생성 또는 수정</td>
+            <td>승인 → <code>build-agent</code> → <code>qa-agent</code></td>
+            <td>실제 수정은 승인 후에만 진행합니다. 구현 뒤에는 QA가 요청사항 반영과 기존 기능 훼손 여부를 확인합니다.</td>
+          </tr>
+          <tr>
+            <td>독립 교차감사</td>
+            <td><code>codex-audit-agent</code></td>
+            <td>Claude가 놓친 문제를 다른 모델 관점에서 찾기 위한 단계입니다. 직접 수정하지 않고 감사 결과만 보고합니다.</td>
+          </tr>
+          <tr>
+            <td>최종 공유·배포 전</td>
+            <td><code>release-agent</code></td>
+            <td>공개 링크, 이미지 경로, 모바일 화면, 내부 정보 노출 가능성을 확인합니다. 특히 note 게시 전 중요합니다.</td>
+          </tr>
+          <tr>
+            <td>작업 결과 정리</td>
+            <td><code>report-agent</code>, <code>scribe-agent</code></td>
+            <td>보고서는 결과물 검토용이고, 기록은 다음 작업 인수인계용입니다. 둘 다 작업 맥락을 잃지 않기 위해 존재합니다.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="height: 16px;"></div>
+
+      <div class="callout">
+        <h3>에이전트 체계의 핵심</h3>
+        <p>
+          이 구조에서 중요한 것은 “에이전트가 많다”가 아닙니다. 중요한 것은 역할마다 권한을 다르게 둔 것입니다.
+          어떤 에이전트는 읽고 계획만 하며, 어떤 에이전트는 실제 파일을 만들 수 있고, 어떤 에이전트는 검수만 합니다.
+          이 분리는 AI가 한 번의 응답에서 계획, 구현, 판단, 검수를 모두 스스로 해버리는 위험을 줄입니다.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>6. Codex 설정 5개는 무엇인가</h2>
+        <p class="section-note">작업장에는 Claude 에이전트와 별도로 <code>.codex/agents</code> 아래 Codex용 설정도 있습니다.</p>
+      </div>
+
+      <p>
+        Codex 설정은 Claude 에이전트와 완전히 같은 구성은 아닙니다. 현재 확인된 Codex 설정은
+        <code>plan-agent</code>, <code>build-agent</code>, <code>qa-agent</code>, <code>release-agent</code>, <code>brand-text-agent</code> 5개입니다.
+        즉 Codex 쪽에서는 계획, 구현, 검수, 배포 점검, 문구 검토에 해당하는 핵심 역할을 재현해 둔 상태입니다.
+      </p>
+      <p>
+        이 설정의 의미는 “어떤 AI 도구를 쓰든 같은 운영 원칙을 유지하려는 것”입니다.
+        Claude를 쓰든 Codex를 쓰든, 기존 파일 덮어쓰기 금지, 프로젝트 경계 분리, 파일명 구체화, 조사 결과 HTML 출력 같은 기준을 반복해서 적용하기 위한 장치입니다.
+      </p>
+
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>Codex 설정</th>
+            <th>대응 역할</th>
+            <th>교육 포인트</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>plan-agent.toml</code></td><td>계획 담당</td><td>요청을 바로 구현하지 않고 구조 조사와 계획을 먼저 하게 만듭니다.</td></tr>
+          <tr><td><code>build-agent.toml</code></td><td>구현 담당</td><td>승인된 범위 안에서만 파일을 생성하거나 수정하게 합니다.</td></tr>
+          <tr><td><code>qa-agent.toml</code></td><td>검수 담당</td><td>직접 고치지 않고 누락, 오류, 요청 밖 변경을 찾아 보고하게 합니다.</td></tr>
+          <tr><td><code>release-agent.toml</code></td><td>공유 전 점검</td><td>링크, 이미지, 공개 데이터, 모바일 화면을 배포 전에 확인하게 합니다.</td></tr>
+          <tr><td><code>brand-text-agent.toml</code></td><td>문구 검토</td><td>프로젝트별 말투와 운영 기준을 섞지 않도록 문장을 검토하게 합니다.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>7. 공통 명령어 6개는 무엇인가</h2>
+        <p class="section-note">에이전트가 역할이라면, 명령어는 그 역할을 실제 작업 흐름에서 호출하는 입구입니다.</p>
+      </div>
+
+      <p>
+        작업장에는 <code>.claude/commands</code> 아래 6개의 명령어 문서가 있습니다.
+        이 명령어들은 사용자가 매번 긴 규칙을 다시 말하지 않아도, 정해진 흐름을 반복할 수 있게 만드는 단축 절차입니다.
+        예를 들어 <code>/plan</code>은 구현 전에 조사와 계획을 먼저 하게 만들고, <code>/execute</code>는 승인된 계획이 있을 때 build, qa, release-check를 순서대로 이어갑니다.
+      </p>
+
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>명령어</th>
+            <th>역할</th>
+            <th>쉽게 풀면</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>/plan</code></td>
+            <td>요청을 바로 구현하지 않고 계획합니다.</td>
+            <td>“일단 만들지 말고, 무엇을 어디서 어떻게 바꿀지 먼저 조사해서 계획서로 보여줘”라는 명령입니다.</td>
+          </tr>
+          <tr>
+            <td><code>/build</code></td>
+            <td>승인된 plan 또는 사용자가 승인한 작업 계획만 구현합니다.</td>
+            <td>“이제 승인했으니, 정해진 범위 안에서만 실제 파일을 만들어줘”라는 단계입니다.</td>
+          </tr>
+          <tr>
+            <td><code>/qa</code></td>
+            <td>구현 결과를 원 요청과 계획 기준으로 검수합니다.</td>
+            <td>“만든 사람이 말한 것만 믿지 말고, 실제 파일 기준으로 요청이 반영됐는지 확인해줘”라는 단계입니다.</td>
+          </tr>
+          <tr>
+            <td><code>/fix</code></td>
+            <td>QA Report에서 발견된 문제만 수정합니다.</td>
+            <td>“검수에서 나온 문제만 최소 수정하고, 다른 부분은 건드리지 마”라는 안전 수정 단계입니다.</td>
+          </tr>
+          <tr>
+            <td><code>/release-check</code></td>
+            <td>최종 배포 또는 공유 전에 파일, 경로, 화면, 데이터, 보안을 점검합니다.</td>
+            <td>“공개하거나 전달하기 전에 깨지는 것과 노출되면 안 되는 정보가 없는지 봐줘”라는 단계입니다.</td>
+          </tr>
+          <tr>
+            <td><code>/execute</code></td>
+            <td>승인된 계획 이후 build → qa → fix → release-check를 이어 실행합니다.</td>
+            <td>“플랜은 승인됐으니 정해진 자동 순서로 진행하되, 심각한 문제가 있으면 멈춰서 보고해줘”라는 복합 실행 명령입니다.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="height: 16px;"></div>
+
+      <div class="callout">
+        <h3>명령어를 만들었다는 것의 의미</h3>
+        <p>
+          명령어는 단순한 단축키가 아닙니다. 반복되는 업무 방식을 규칙으로 고정한 것입니다.
+          사용자가 매번 “기존 파일 덮어쓰지 말고, 계획 먼저 세우고, QA 하고, 공개 전 확인해줘”라고 말하지 않아도,
+          명령어 문서가 그 흐름을 기억하게 합니다. 이것이 작업장을 개인 대화가 아니라 운영 시스템처럼 쓰기 위한 핵심입니다.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>8. project-rules는 모든 에이전트의 공통 교과서</h2>
+        <p class="section-note"><code>.claude/skills/project-rules.md</code>는 에이전트와 명령어가 반복해서 참고하는 공통 규정 파일입니다.</p>
+      </div>
+
+      <p>
+        작업장 공통 <code>CLAUDE.md</code>가 전체 운영 헌장이라면, <code>project-rules.md</code>는 실제 작업할 때 보는 세부 교과서에 가깝습니다.
+        여기에는 작업 순서, 파일명 규칙, 날짜·시간 표기, 조사 결과 HTML 출력, 코드 작업 규칙, HTML 규칙, 예약 시스템 규칙,
+        피그마 작업 규칙, 문구 규칙, 보안 규칙, 보고 규칙, 설명 방식 규칙이 들어 있습니다.
+      </p>
+
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>규칙 묶음</th>
+            <th>내용</th>
+            <th>왜 필요한가</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>공통 작업 원칙</td>
+            <td>바로 구현하지 않고 조사 → 계획 → 승인 → 구현 → QA → Release Check → 커밋 확인 순서로 진행합니다.</td>
+            <td>AI가 빠르게 만들다가 기존 구조를 망치거나, 검수 없이 완료라고 말하는 일을 막습니다.</td>
+          </tr>
+          <tr>
+            <td>파일 작업 규칙</td>
+            <td>기존 파일 덮어쓰기 금지, 원본 이미지 직접 수정 금지, 폴더 구조 임의 변경 금지, 삭제 전 승인 원칙을 둡니다.</td>
+            <td>작업장은 버전과 이력이 중요하므로, 되돌릴 수 없는 변경을 막아야 합니다.</td>
+          </tr>
+          <tr>
+            <td>파일명 규칙</td>
+            <td>파일명은 대상 + 세부내용 + 유형이 드러나야 하며, <code>정리</code>, <code>자료</code>, <code>리스트</code>, <code>보고서</code>, <code>플랜</code> 단독 사용을 금지합니다.</td>
+            <td>파일이 많아질수록 열어보지 않고도 어떤 파일인지 알아야 다음 작업자가 길을 잃지 않습니다.</td>
+          </tr>
+          <tr>
+            <td>날짜·시간 표기</td>
+            <td>버전 파일, 보고서, 기록은 <code>YYMMDD_HHMM</code> 형식을 사용하고, 최종본에는 날짜와 버전을 붙이지 않습니다.</td>
+            <td>최신본과 이력 파일을 구분하고, 같은 파일의 발전 순서를 추적하기 위해 필요합니다.</td>
+          </tr>
+          <tr>
+            <td>조사 결과 출력</td>
+            <td>제품 리스트, 비교 자료, 추천 정보는 채팅으로 길게 쓰지 않고 HTML 파일로 만들고 브라우저로 엽니다.</td>
+            <td>긴 조사 결과를 나중에 다시 열어보고 전달할 수 있게 하기 위한 보관 방식입니다.</td>
+          </tr>
+          <tr>
+            <td>보안·공개 범위</td>
+            <td>비밀번호, API 키, 관리자 메모, 연락처, 금액, 내부 일정은 공개 페이지에 노출하지 않습니다.</td>
+            <td>Google Drive, GitHub, GitHub Pages, Netlify, Cloudflare Pages 같은 공개/동기화 환경에서 정보 유출을 막기 위해 필요합니다.</td>
+          </tr>
+          <tr>
+            <td>설명 방식</td>
+            <td>한 줄 요약으로 끝내지 않고 원인, 맥락, 선택지, 판단 포인트를 설명합니다.</td>
+            <td>사용자가 되묻지 않아도 이해하고 판단할 수 있도록 하기 위한 교육형 커뮤니케이션 규칙입니다.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>9. 설정 파일은 무엇을 허용하고 있나</h2>
+        <p class="section-note">에이전트와 규칙만큼 중요한 것이 실제 도구 권한을 어디까지 열어두었는지입니다.</p>
+      </div>
+
+      <p>
+        <code>.claude/settings.json</code>과 <code>.claude/settings.local.json</code>은 Claude Code 환경에서 허용된 작업을 기록하는 설정 파일입니다.
+        여기서 중요한 점은 권한이 무작정 넓게 열려 있는 것이 아니라, 특정 경로나 특정 도구 호출만 허용하도록 되어 있다는 점입니다.
+      </p>
+
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>파일</th>
+            <th>현재 확인된 허용 내용</th>
+            <th>교육용 풀이</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>.claude/settings.json</code></td>
+            <td><code>Edit(.claude/agents/**)</code>, <code>Write(.claude/agents/**)</code></td>
+            <td>에이전트 정의 파일을 수정하거나 새로 쓸 수 있도록 허용한 설정입니다. 에이전트 시스템 자체를 정비하기 위해 필요한 권한입니다.</td>
+          </tr>
+          <tr>
+            <td><code>.claude/settings.local.json</code></td>
+            <td>일부 로컬 도구 연동과 환경 설정을 위한 예외 권한</td>
+            <td>특정 로컬 환경에서 필요한 예외 권한입니다. 공개 문서에서는 세부 명령보다 “로컬 예외 권한이 별도 관리된다”는 구조만 이해하면 됩니다.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="height: 16px;"></div>
+
+      <div class="callout">
+        <h3>설정 파일은 공개 전 특히 주의</h3>
+        <p>
+          설정 파일에는 작업 환경의 권한 구조가 드러납니다.
+          이 페이지를 <code>note</code>에 올릴 때는 “어떤 종류의 권한이 있다”는 설명은 남길 수 있지만,
+          실제 로컬 명령어나 민감한 내부 경로는 공개 문서에 그대로 적지 않는 것이 안전합니다.
+        </p>
+      </div>
+    </section>
+
+    <section id="projects">
+      <div class="section-head">
+        <h2>10. 프로젝트별 규정은 왜 따로 있는가</h2>
+        <p class="section-note">같은 사용자가 관리해도 프로젝트마다 사용자의 역할과 판단 기준이 다릅니다.</p>
+      </div>
+
+      <p>
+        작업장 공통 규칙은 전체 흐름을 정하지만, 실제 문서나 파일을 만들 때는 각 프로젝트의 <code>CLAUDE.md</code>가 중요합니다.
+        프로젝트별 규정은 AI에게 “이 폴더 안에서 사용자를 어떤 역할로 대해야 하는지” 알려줍니다.
+        이 차이가 없으면 AI는 모든 프로젝트를 같은 톤, 같은 책임 범위, 같은 운영 방식으로 처리하게 됩니다.
+      </p>
+
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>프로젝트</th>
+            <th>사용자의 역할</th>
+            <th>AI가 지켜야 할 핵심 기준</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>작업장 공통</td>
+            <td>여러 프로젝트의 운영 체계를 설계하고 관리하는 사람</td>
+            <td>요청이 들어오면 프로젝트를 먼저 식별하고, 에이전트 배정과 승인 게이트를 거쳐 처리합니다.</td>
+          </tr>
+          <tr>
+            <td>NYC Studio</td>
+            <td>대표가 아니라 운영 정리자, 예약 프로세스 정리자, 대표 전달용 자료 제작자</td>
+            <td>대표가 이해하기 쉬운 운영 문서, 고객 안내, 예약 기준, 전달용 패키징을 우선합니다. maydly 기준은 가져오지 않습니다.</td>
+          </tr>
+          <tr>
+            <td>maydly</td>
+            <td>브랜드 오너, 메인 포토그래퍼, 기획자, 최종 의사결정자</td>
+            <td>브랜드 성장, 촬영 운영, 고객 경험, 협업 구조, 수익 구조를 기준으로 판단합니다. NYC Studio 운영 기준을 가져오지 않습니다.</td>
+          </tr>
+          <tr>
+            <td>PA</td>
+            <td>PA 독립 업무를 정리하고 운영하는 담당자</td>
+            <td>NYC와 같은 회사 안에 있어도 별도 구조로 보고, NYC 운영 문맥이나 비용 기준을 섞지 않습니다.</td>
+          </tr>
+          <tr>
+            <td>수빈</td>
+            <td>수빈이의 생활 루틴을 돕는 조력자</td>
+            <td>회사 프로젝트가 아니라 개인 생활 루틴 프로젝트로 봅니다. 부담, 감시, 평가처럼 느껴지지 않게 하고 외부 공개를 피합니다.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="height: 16px;"></div>
+
+      <h3>프로젝트별 풀이</h3>
+      <div class="grid-2">
+        <article class="card">
+          <span class="tag blue">NYC Studio</span>
+          <h3>운영 정리와 대표 전달이 중심</h3>
+          <p>
+            NYC Studio에서 사용자는 브랜드 오너나 최종 결정권자가 아니라, 대표가 검토하고 사용할 수 있도록 자료를 정리하는 사람으로 정의됩니다.
+            그래서 문서의 목적은 멋진 브랜드 문장보다 운영 기준을 명확히 하는 것입니다.
+            예약, 환불, 변경, 추가금, 공간 이용 규칙이 흐려지면 안 되고, 고객 안내는 친절하되 책임 기준을 보호해야 합니다.
+          </p>
+          <p>
+            이 프로젝트는 Cloudflare Pages 라이브 배포 상태라는 제약도 있으므로, 파일 이동, 삭제, 경로 변경은 특히 조심해야 합니다.
+          </p>
+        </article>
+
+        <article class="card">
+          <span class="tag green">maydly</span>
+          <h3>브랜드 오너의 판단 기준</h3>
+          <p>
+            maydly에서 사용자는 브랜드 오너이자 촬영자, 기획자, 최종 의사결정자입니다.
+            따라서 AI는 고객에게 무조건 맞춰주는 방향이 아니라, 브랜드 톤, 촬영자의 결정권, 수익 구조, 협업 기준을 보호하는 방향으로 판단해야 합니다.
+          </p>
+          <p>
+            maydly의 문체는 따뜻하지만 가볍지 않아야 하고, 협업과 무료 작업이 혼동되지 않게 해야 합니다.
+            Netlify 라이브 배포 상태이므로, 공개 중인 링크가 깨질 수 있는 파일 이동도 사전 확인이 필요합니다.
+          </p>
+        </article>
+
+        <article class="card">
+          <span class="tag gold">PA</span>
+          <h3>NYC와 같은 회사여도 별도 기준</h3>
+          <p>
+            PA는 NYC와 같은 회사 안에 있을 수 있지만, 작업장 규정에서는 독립 프로젝트로 다룹니다.
+            같은 회사라는 이유로 NYC의 고객 응대 방식, 비용 구조, 운영 문서 톤을 가져오면 안 됩니다.
+          </p>
+          <p>
+            이 기준은 AI가 “비슷해 보이는 프로젝트를 하나로 묶는 습관”을 막기 위한 것입니다.
+            PA 작업은 PA의 위치맵과 PA의 업무ID 구조 안에서 판단해야 합니다.
+          </p>
+        </article>
+
+        <article class="card">
+          <span class="tag violet">수빈</span>
+          <h3>개인 생활 루틴이므로 공개와 톤이 다르다</h3>
+          <p>
+            수빈 프로젝트는 회사 프로젝트가 아니라 개인 생활 루틴 프로젝트입니다.
+            여기서 사용자는 관리자가 아니라 조력자이며, AI는 평가, 감시, 성과 압박처럼 느껴지는 표현을 피해야 합니다.
+          </p>
+          <p>
+            수빈 영역의 기록은 개인 생활 기록이므로 외부 공개가 기본 목적이 아닙니다.
+            note에 올릴 문서에서 수빈 프로젝트를 설명할 때도 개인 기록의 세부 내용은 드러내지 않고, 프로젝트 분리 원칙과 공개 주의 정도만 설명하는 것이 안전합니다.
+          </p>
+        </article>
+      </div>
+
+      <div style="height: 16px;"></div>
+
+      <h3>수빈-maydly 예외 통합</h3>
+      <p>
+        작업장 위치맵에는 <code>수빈-maydly</code>라는 예외 통합 식별명도 있습니다.
+        이것은 사용자가 명시적으로 허용한 통합 업무에 한해서만 쓰는 예외 구조입니다.
+        예외 통합이 있다고 해서 평소에 수빈 프로젝트와 maydly 프로젝트를 자유롭게 섞어도 된다는 뜻은 아닙니다.
+        오히려 예외라는 이름을 붙여 별도로 관리하는 이유는, 기본 원칙이 “섞지 않는다”이기 때문입니다.
+      </p>
+
+      <div style="height: 16px;"></div>
+
+      <div class="callout">
+        <h3>프로젝트 분리의 실제 의미</h3>
+        <p>
+          “프로젝트를 분리한다”는 말은 폴더만 나눈다는 뜻이 아닙니다.
+          AI가 말투, 책임 범위, 최종 판단자, 공개 가능성, 파일 보관 방식까지 다르게 적용해야 한다는 뜻입니다.
+          예를 들어 maydly에서는 사용자가 브랜드 오너이지만, NYC Studio에서는 대표에게 전달할 자료를 정리하는 사람입니다.
+          이 차이를 놓치면 같은 문장도 완전히 다른 의미가 됩니다.
+        </p>
+      </div>
+    </section>
+
+    <section id="process">
+      <div class="section-head">
+        <h2>11. 실제 업무가 흘러가는 순서</h2>
+        <p class="section-note">현재 규정은 “AI가 알아서 다 해라”가 아니라 “조사와 계획은 자동, 실제 수정은 승인 후” 구조입니다.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div>
+            <h3>프로젝트 식별</h3>
+            <p>
+              요청이 들어오면 먼저 작업장 지도와 현재 경로를 보고 이것이 작업장 공통인지, NYC인지, maydly인지, PA인지, 수빈 영역인지 확인합니다.
+              이 단계가 빠지면 프로젝트 경계 침범이 생깁니다.
+            </p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div>
+            <h3>challenge-agent 개입 여부 판단</h3>
+            <p>
+              구조 변경, 새 시스템, 돈, 계약, 장기 운영, 팀 역할, 프로젝트 경계 문제가 있으면 바로 만들지 않고 먼저 방향을 검토합니다.
+              단순 문구 수정이나 이미 승인된 작은 수정이면 challenge-agent는 건너뜁니다.
+            </p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div>
+            <h3>plan-agent식 조사와 계획</h3>
+            <p>
+              관련 파일, 기존 구조, 데이터 흐름, 버전 규칙, 리스크를 확인합니다.
+              여기서 계획이 만들어지고, 어떤 에이전트가 필요한지도 정해집니다.
+            </p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div>
+            <h3>승인 게이트</h3>
+            <p>
+              조사와 계획까지는 자동으로 진행할 수 있지만, 실제 파일 생성이나 수정은 사용자 승인 후에 진행합니다.
+              이 규칙은 파일 사고를 막는 핵심 장치입니다.
+            </p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">05</div>
+          <div>
+            <h3>build-agent식 구현</h3>
+            <p>
+              승인된 범위 안에서만 파일을 만들거나 수정합니다.
+              기존 파일은 덮어쓰지 않고 새 버전으로 남기며, 파일명은 대상과 세부내용과 유형이 보이게 작성합니다.
+            </p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">06</div>
+          <div>
+            <h3>QA, Codex 감사, 릴리즈 점검</h3>
+            <p>
+              구현 후에는 qa-agent가 요청 반영 여부와 기능 훼손을 확인합니다.
+              필요하면 codex-audit-agent가 독립적으로 다시 보고, 공유나 게시 전에는 release-agent가 공개 범위와 경로를 확인합니다.
+            </p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">07</div>
+          <div>
+            <h3>보고와 기록</h3>
+            <p>
+              report-agent는 작업 결과를 HTML 보고서로 모으고, scribe-agent는 작업 맥락과 중단 지점을 기록합니다.
+              작업이 끝나면 git 커밋 여부도 사용자에게 확인합니다. 자동 커밋은 하지 않습니다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>12. 요청을 쓸 때 꼭 들어가야 하는 정보</h2>
+        <p class="section-note">AI에게 자세히 말해야 하는 이유는 일을 길게 만들기 위해서가 아니라, 잘못된 프로젝트 기준을 적용하지 않게 하기 위해서입니다.</p>
+      </div>
+
+      <div class="prompt-box">
+        <pre>작업장 전체 기준으로 정리할 일이야.
+
+이번 작업이 속한 위치:
+[작업장 공통 / NYC Studio / maydly / PA / 수빈 / 예외 통합]
+
+목표:
+[무엇을 만들거나 정리할지 작성]
+
+이 작업이 필요한 이유:
+[왜 지금 이 정리가 필요한지, 어떤 문제를 해결하려는지 작성]
+
+참고할 규정 또는 파일:
+[CLAUDE.md / 위치맵 / 특정 업무ID / 관련 HTML / 관련 보고서]
+
+산출물 형태:
+[HTML 교육 페이지 / 업무 보고서 / 작업 기록 / 사용 가이드 / 체크리스트]
+
+반드시 지킬 것:
+- 프로젝트 경계 혼합 금지
+- 기존 파일 덮어쓰기 금지
+- 새 버전 파일로 생성
+- 파일명은 대상 + 세부내용 + 유형이 드러나게 작성
+- 공개 예정이면 내부 경로, 계정 정보, 민감 정보 제거
+- 실제 파일 생성 또는 수정 전 필요한 경우 승인 게이트 통과
+
+완료 기준:
+[제3자가 읽고 무엇을 이해하거나 따라 할 수 있어야 하는지 작성]</pre>
+      </div>
+    </section>
+
+    <section id="publish">
+      <div class="section-head">
+        <h2>13. note에 올리기 전 확인할 것</h2>
+        <p class="section-note">이 문서는 <code>bucket0825.github.io/note/</code>에 게시되는 공개본이므로, 공개 범위 확인이 필요합니다.</p>
+      </div>
+
+      <ul class="checklist">
+        <li><span class="check">1</span><span>문서 목적이 “특정인 전달용”이 아니라 “작업장 AI 운영 체계 정리”로 보이는가?</span></li>
+        <li><span class="check">2</span><span>에이전트 수, 역할, 생성 이유가 누락 없이 설명되어 있는가?</span></li>
+        <li><span class="check">3</span><span>작업장 공통 규정과 프로젝트별 규정의 차이가 이해되게 설명되어 있는가?</span></li>
+        <li><span class="check">4</span><span>내부 절대경로, 계정명, 민감 백업 위치, 공개하면 안 되는 정보가 남아 있지 않은가?</span></li>
+        <li><span class="check">5</span><span>수빈 프로젝트처럼 개인 생활 기록 성격의 내용이 공개 범위를 넘어서지 않았는가?</span></li>
+        <li><span class="check">6</span><span>모바일과 데스크톱에서 글자와 표가 읽기 좋게 표시되는가?</span></li>
+        <li><span class="check">7</span><span>최종 게시 위치에서 상대 경로, 파일명, 링크가 깨지지 않는가?</span></li>
+        <li><span class="check">8</span><span>최종본과 버전 파일이 혼동되지 않게 보관되어 있는가?</span></li>
+      </ul>
+
+      <div style="height: 16px;"></div>
+
+      <div class="callout">
+        <h3>교육용 문서로서의 기준</h3>
+        <p>
+          좋은 교육용 페이지는 짧게 요약된 페이지가 아니라, 처음 보는 사람이 왜 이런 체계가 생겼는지 이해할 수 있는 페이지입니다.
+          따라서 이 문서는 앞으로 더 보완할 때도 표만 늘리는 방식보다, 실제 업무 예시와 실패를 막는 이유를 함께 설명하는 방향으로 확장하는 것이 좋습니다.
+        </p>
+      </div>
+
+      <div class="print-actions">
+        <button type="button" onclick="window.print()">인쇄 또는 PDF 저장</button>
+      </div>
+
+      <div class="footer">
+        작성 기준: 작업장 루트 CLAUDE.md, 00_작업장_위치맵.md, .claude/agents 9개, .codex/agents 5개, 프로젝트별 CLAUDE.md<br>
+        게시 위치: https://bucket0825.github.io/note/
+      </div>
+    </section>
+  </main>
+</body>
+</html>
