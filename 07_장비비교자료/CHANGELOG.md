@@ -2,6 +2,9 @@
 
 ## 2026-06-20
 
+- `07_포토프린터_비교표_latest.html` v1.7 갱신.
+- iOS 파일/미리보기에서 HTML만 단독으로 열 때 상대경로 이미지가 `?`로 보이는 문제를 해결하기 위해 제품 이미지 11개를 HTML 내부 `data:image/jpeg;base64`로 직접 내장.
+- `assets/photo-printers/`는 원본 이미지 보관용으로 유지.
 - `07_포토프린터_비교표_latest.html` v1.6 갱신.
 - 모바일에서 외부 이미지 URL이 `?` 깨진 이미지로 보이는 문제를 막기 위해 포토프린터 제품 이미지 11개를 `assets/photo-printers/` 로컬 JPG 파일로 저장하고 HTML의 `img src`를 모두 상대경로로 변경.
 - `VERSION_MANIFEST.json`과 파일 위치 규정에 포토프린터 로컬 이미지 assets 경로를 추가.
