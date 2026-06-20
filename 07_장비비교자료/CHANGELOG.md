@@ -2,6 +2,14 @@
 
 ## 2026-06-20
 
+- `07_포토프린터_비교표_latest.html` v1.1 갱신.
+- 제목과 도입부를 `포토프린터 비교` 중심으로 정리하고, 가정용/엄마용 포커싱 문구를 제거.
+- 메인 목차와 상단 고정 내비게이션에서 포토프린터를 제외하고 별도 공유용 파일로 분리.
+- 공통 테마 충돌로 제품 첫 행이 표 헤더에 가려지던 문제를 수정하고, 표 헤더 sticky 처리를 제거.
+- Xiaomi Mi Portable Photo Printer를 추가하고 Xiaomi Portable Photo Printer 1S와 분리 비교.
+- ZINK, 염료승화/4PASS, 인스탁스 필름, 잉크젯 포토프린터 방식의 차이와 장단점 설명을 추가.
+- 제품별 장점, 단점/주의, 추천 상황 컬럼을 추가해 설명을 보강.
+- `00_장비비교_목차_latest.html` 및 `index.html` v1.14 갱신.
 - `07_포토프린터_비교표_latest.html` v1.0 추가.
 - 아이를 키우는 엄마에게 보낼 1차 공유용 기준으로 Xiaomi Portable Photo Printer 1S, Canon Zoemini 2, Polaroid Hi-Print 2x3, Kodak Mini 2 Retro, instax mini Evo, instax mini Link 3, instax SQUARE Link, Canon SELPHY CP1500, Kodak Dock Plus, Polaroid Hi-Print 4x6을 비교.
 - 포토프린터 페이지는 집에서 아이 추억을 남기는 용도에 맞춰 출력 방식, 사진 크기, 본체 원화 예산, 소모품/필름 원화 예산, 장당 비용, 엄마의 실제 사용 방식 중심으로 정리.

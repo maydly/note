@@ -12,8 +12,8 @@
   "files": [
     {
       "name": "00_장비비교_목차_latest.html",
-      "version": "v1.13",
-      "role": "장비 비교자료 목차"
+      "version": "v1.14",
+      "role": "6분류 장비 비교자료 목차"
     },
     {
       "name": "01_카메라_비교표_latest.html",
@@ -47,8 +47,8 @@
     },
     {
       "name": "07_포토프린터_비교표_latest.html",
-      "version": "v1.0",
-      "role": "아이를 키우는 가정에서 추억을 바로 뽑는 용도의 1차 공유용 포토프린터 비교 최신본"
+      "version": "v1.1",
+      "role": "메인 목차와 상단 내비에 편입하지 않은 별도 공유용 포토프린터 비교 최신본"
     },
     {
       "name": "assets/equipment-theme.css",
