@@ -22,14 +22,14 @@ https://bucket0825.github.io/note/07_장비비교자료/
 
 | 구분 | 최신 원본 파일 | 현재 버전 |
 |---|---|---|
-| 목차 | `00_장비비교_목차_latest.html` | v1.15 |
+| 목차 | `00_장비비교_목차_latest.html` | v1.16 |
 | 카메라 | `01_카메라_비교표_latest.html` | v1.4 |
 | 렌즈 | `02_렌즈_비교표_latest.html` | v1.2 |
 | 필터 | `03_필터_비교표_latest.html` | v1.4 |
 | 조명 | `04_조명_비교표_latest.html` | v1.7 |
 | 악세사리 | `05_악세사리_비교표_latest.html` | v1.4 |
 | 촬영지원 | `06_촬영지원장비_비교표_latest.html` | v1.9 |
-| 포토프린터 | `07_포토프린터_비교표_latest.html` | v1.9 |
+| 포토프린터 | `07_포토프린터_비교표_latest.html` | v2.0 |
 
 이전 호환 파일명인 `01_조명_비교표_latest.html`, `02_카메라_바디_비교표_latest.html`, `03_렌즈_필터_비교표_latest.html`은 최신 분류 구조로 이동시키는 안내/리다이렉트 파일이다.
 
@@ -51,6 +51,7 @@ https://bucket0825.github.io/note/07_장비비교자료/
 - 조명 이미지 assets는 `07_장비비교자료/assets/lighting/`를 기준으로 한다.
 - 포토프린터 최신 HTML은 모바일 단독 공유 시에도 이미지가 깨지지 않도록 제품 이미지를 HTML 내부 data URI로 내장한다.
 - 포토프린터 원본 이미지 assets는 `07_장비비교자료/assets/photo-printers/`에 보관한다.
+- 포토프린터 A3+/17/24/44인치 원본 이미지 assets는 `07_장비비교자료/assets/photo-printers/pro/`에 보관한다.
 - 공통 디자인 파일은 `07_장비비교자료/assets/` 안에서 유지한다.
 - 현재 `note` 사이트가 Design, Development, AI, Workflow 섹션 구조이므로, 통합 시에는 Design 쪽의 촬영 장비/조명 공부 자료로 연결하는 것을 우선 후보로 둔다.
 
