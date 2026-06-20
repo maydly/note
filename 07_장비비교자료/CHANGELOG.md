@@ -2,6 +2,12 @@
 
 ## 2026-06-20
 
+- `07_포토프린터_비교표_latest.html` v1.0 추가.
+- 아이를 키우는 엄마에게 보낼 1차 공유용 기준으로 Xiaomi Portable Photo Printer 1S, Canon Zoemini 2, Polaroid Hi-Print 2x3, Kodak Mini 2 Retro, instax mini Evo, instax mini Link 3, instax SQUARE Link, Canon SELPHY CP1500, Kodak Dock Plus, Polaroid Hi-Print 4x6을 비교.
+- 포토프린터 페이지는 집에서 아이 추억을 남기는 용도에 맞춰 출력 방식, 사진 크기, 본체 원화 예산, 소모품/필름 원화 예산, 장당 비용, 엄마의 실제 사용 방식 중심으로 정리.
+- `06_촬영지원장비_비교표_latest.html` v1.8 갱신.
+- Mac 워크스테이션 비교군에서 MacBook Air를 제외하고 MacBook Pro 14/16형 1TB 이상 기준, Mac mini/Mac Studio도 1TB 이상 기준으로 재정리.
+- `00_장비비교_목차_latest.html` 및 `index.html` v1.13 갱신.
 - `06_촬영지원장비_비교표_latest.html` v1.7 갱신.
 - 테더 케이블 비교군을 `10G 테더 케이블·연장선`으로 재구성하고 10Gbps 이상이 명시된 Area51 Wilton 10G 5m, Wilton Turbo 10G 5m, Sandia 10G 5m 연장선, Wilton XL Turbo 10G 9.5m, Wilton XL 10G Combo II 세트를 개별 이미지·원화 예산가 기준으로 정리.
 - 모니터 비교군을 사용 목적에 맞게 `모델·클라이언트 확인 모니터`, `온카메라 레코더·보조 모니터`, `온카메라 보조 모니터`로 분리하고, Apple/Dell/EIZO 행의 메모를 촬영 중 맥북 왕복을 줄이는 DIT 확인용 흐름으로 수정.

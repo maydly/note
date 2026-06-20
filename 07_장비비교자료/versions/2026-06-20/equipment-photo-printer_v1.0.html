@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>가정용 포토프린터 1차 비교</title>
+  <style>
+    :root{--ink:#2a2620;--muted:#5f5a51;--line:#dcd6c9;--paper:#f6f5f1;--panel:#fcfbf8;--soft:#f0ede6}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Arial,sans-serif;line-height:1.65}
+    header,main{max-width:1280px;margin:0 auto;padding:54px 26px 32px}
+    h1{font-size:clamp(30px,5vw,58px);font-weight:500;line-height:1.08;margin:0 0 20px;letter-spacing:.01em}
+    h2{font-size:clamp(21px,2vw,28px);font-weight:600;margin:48px 0 16px}
+    h3{font-size:18px;margin:0 0 8px}
+    p{margin:0 0 12px}
+    a{color:var(--ink)}
+    .lead{max-width:930px;color:var(--muted);font-size:clamp(15px,1.4vw,18px)}
+    .small{font-size:12px;color:#7b7468;line-height:1.7}
+    .top-nav{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;max-width:1040px;margin:14px auto 0;padding:7px;background:rgba(246,245,241,.92);border:1px solid var(--line);backdrop-filter:blur(14px)}
+    .top-nav a{min-height:40px;display:flex;align-items:center;justify-content:center;padding:8px 10px;text-decoration:none;color:var(--muted);font-size:12px;white-space:nowrap}
+    .top-nav a.is-active{color:var(--ink);font-weight:700}
+    .hero-note,.panel,.decision,.use-card,.cost-card{background:var(--panel);border:1px solid var(--line)}
+    .hero-note{padding:18px 20px;margin-top:22px}
+    .decision-grid,.use-grid,.cost-grid{display:grid;gap:14px}
+    .decision-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px}
+    .decision{padding:18px}
+    .decision strong{display:block;font-size:17px;margin-bottom:8px}
+    .tag{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--soft);padding:4px 8px;margin:0 6px 8px 0;font-size:12px}
+    .use-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .use-card,.cost-card{padding:16px}
+    .cost-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+    .cost-card strong{display:block;font-size:16px;margin-bottom:6px}
+    .table-wrap{overflow:auto;border:1px solid var(--line);background:var(--panel)}
+    table{width:100%;border-collapse:separate;border-spacing:0;min-width:1180px}
+    th,td{padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+    th{position:sticky;top:0;background:#ece8de;z-index:2;font-size:12px;white-space:nowrap}
+    td{font-size:13px}
+    tbody tr.group-row td{background:#f0ede6;font-weight:700;font-size:14px}
+    .product{display:grid;grid-template-columns:92px 1fr;gap:12px;min-width:260px}
+    .product img{width:92px;height:92px;object-fit:contain;background:#fff;border:1px solid var(--line)}
+    .product strong{display:block;font-size:15px;line-height:1.35}
+    .price{font-weight:800;white-space:nowrap}
+    .per{font-weight:800;color:#4b443a}
+    .good{font-weight:700}
+    .warn{color:#8a4b30;font-weight:700}
+    .memo{min-width:260px}
+    .panel{padding:22px;margin-top:22px}
+    .source-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;margin:0;padding-left:20px}
+    @media(max-width:900px){
+      header,main{padding:34px 16px}
+      .top-nav{grid-template-columns:repeat(4,minmax(0,1fr));position:static}
+      .decision-grid,.use-grid,.cost-grid,.source-list{grid-template-columns:1fr}
+    }
+  </style>
+  <link rel="stylesheet" href="assets/equipment-theme.css">
+  <style>
+    .top-nav{grid-template-columns:repeat(8,minmax(0,1fr)) !important}
+    @media(max-width:900px){.top-nav{grid-template-columns:repeat(4,minmax(0,1fr)) !important}}
+  </style>
+</head>
+<body>
+<nav class="top-nav" aria-label="장비 비교자료 분류">
+  <a href="00_장비비교_목차_latest.html">목차</a>
+  <a href="01_카메라_비교표_latest.html">카메라</a>
+  <a href="02_렌즈_비교표_latest.html">렌즈</a>
+  <a href="03_필터_비교표_latest.html">필터</a>
+  <a href="04_조명_비교표_latest.html">조명</a>
+  <a href="05_악세사리_비교표_latest.html">악세사리</a>
+  <a href="06_촬영지원장비_비교표_latest.html">촬영지원</a>
+  <a class="is-active" href="07_포토프린터_비교표_latest.html">포토프린터</a>
+</nav>
+<header>
+  <h1>가정용 포토프린터 1차 비교</h1>
+  <p class="lead">아이를 키우는 엄마가 집에서 추억을 바로 뽑아 남기는 용도입니다. 전문 사진가용 출력 품질보다 <strong>휴대폰 사진을 쉽게 뽑는 흐름, 장당 비용, 아이와 함께 쓰기 쉬운지, 앨범·냉장고·다이어리 활용성</strong>을 우선으로 봅니다.</p>
+  <p class="small">기준일 2026-06-20 · 가격은 원화 예산가 · 해외 공식가 확인 제품은 1 USD ≈ ₩1,530 단순 환산 후 원화로만 표기 · 국내 실구매가는 구매 직전 재확인 필요</p>
+  <div class="hero-note">
+    <span class="tag">1차 공유용</span><span class="tag">아이 성장기록</span><span class="tag">집에서 바로 출력</span><span class="tag">소모품 비용 포함</span>
+    <p class="small">2차에서는 소형·중형·대형 포토프린터, A4/A3 사진 출력기, 엡손/캐논 잉크젯 계열까지 확장할 예정입니다.</p>
+  </div>
+</header>
+<main>
+  <section>
+    <h2>먼저 보는 결론</h2>
+    <div class="decision-grid">
+      <div class="decision">
+        <strong>가족 앨범·액자용 1순위</strong>
+        <p>Canon SELPHY CP1500. 4x6 엽서 크기라 아이 성장 사진, 가족 사진, 할머니에게 보내는 사진에 가장 자연스럽습니다.</p>
+        <p class="small">장점: 장당 비용 낮음, 결과 안정, 보관성 좋음. 단점: 포켓형은 아님.</p>
+      </div>
+      <div class="decision">
+        <strong>아이와 놀이·스티커용</strong>
+        <p>Xiaomi Portable Photo Printer 1S 또는 Polaroid Hi-Print 2x3. 냉장고, 다이어리, 육아수첩에 붙이는 용도로 좋습니다.</p>
+        <p class="small">장점: 작고 재미있음. 단점: 사진 크기가 작고 장당 비용이 CP1500보다 높음.</p>
+      </div>
+      <div class="decision">
+        <strong>감성 선물·즉석카메라 느낌</strong>
+        <p>instax mini Evo. 프린터라기보다 카메라와 인스탁스 프린터가 합쳐진 물건이라, 아이가 직접 찍는 경험까지 줄 수 있습니다.</p>
+        <p class="small">장점: 감성 최고. 단점: 필름비가 높고 출력 크기가 작음.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>엄마가 실제로 쓰는 방식 기준</h2>
+    <div class="use-grid">
+      <div class="use-card"><h3>매일 한 장</h3><p>오늘 귀여웠던 표정, 어린이집 등원 사진을 휴대폰에서 바로 출력해 냉장고나 육아노트에 붙입니다.</p></div>
+      <div class="use-card"><h3>가족 앨범</h3><p>주말 나들이, 생일, 기념일 사진은 4x6으로 뽑아 앨범에 넣는 쪽이 오래 보기 좋습니다.</p></div>
+      <div class="use-card"><h3>아이와 놀이</h3><p>스티커형은 아이가 직접 붙일 수 있어 재미가 큽니다. 다만 많이 뽑으면 소모품 비용이 빨리 올라갑니다.</p></div>
+      <div class="use-card"><h3>선물·편지</h3><p>인스탁스 필름형은 편지, 카드, 성장 기록 선물에 강합니다. 사진 품질보다 감성이 핵심입니다.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>장당 비용 빠른 비교</h2>
+    <div class="cost-grid">
+      <div class="cost-card"><strong>Canon CP1500</strong><p class="per">약 ₩304/장</p><p class="small">RP-108 108매 대표가 기준. 가족 앨범용으로 가장 경제적.</p></div>
+      <div class="cost-card"><strong>instax mini</strong><p class="per">약 ₩1,250/장</p><p class="small">필름 감성은 좋지만 많이 뽑으면 부담이 큼.</p></div>
+      <div class="cost-card"><strong>ZINK 2x3</strong><p class="per">약 ₩1,100/장</p><p class="small">잉크 없이 스티커처럼 쓰기 좋음.</p></div>
+      <div class="cost-card"><strong>Hi-Print 2x3</strong><p class="per">약 ₩1,300/장</p><p class="small">작지만 색감과 코팅감은 ZINK보다 안정적인 편.</p></div>
+      <div class="cost-card"><strong>4x6 염료승화</strong><p class="per">약 ₩650/장</p><p class="small">Kodak Dock, Polaroid 4x6 계열 대표 예산.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>제품별 상세 비교</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>비교군</th><th>제품</th><th>출력 방식</th><th>사진 크기</th><th>본체 예산</th><th>소모품 예산</th><th>장당 비용</th><th>사용 방식</th><th>가정용 메모</th><th>확인</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group-row"><td colspan="10">포켓 스티커형 2x3: 아이 사진을 작게 뽑아 냉장고, 다이어리, 육아수첩에 붙이는 용도</td></tr>
+          <tr>
+            <td>가성비</td>
+            <td><div class="product"><img src="https://i02.appmifile.com/mi-com-product/fly-birds/xiaomi-portable-photo-printer-1s/PC/e72314ffe70f5e85b9153a7577d6ba0b.jpg" alt="Xiaomi Portable Photo Printer 1S"><div><strong>Xiaomi Portable Photo Printer 1S</strong><span class="small">샤오미 포켓/휴대용 포토프린터 계열</span></div></div></td>
+            <td>ZINK 무잉크, 접착식 포토페이퍼</td>
+            <td>2x3in, 50x76mm</td>
+            <td class="price">약 ₩93,000</td>
+            <td>20매 약 ₩22,000</td>
+            <td class="per">약 ₩1,100/장</td>
+            <td>Xiaomi Home 앱, Bluetooth, 약 45초/장</td>
+            <td class="memo">아이 사진 스티커 놀이, 육아수첩, 냉장고용. 색 정확도보다 재미와 간편함이 장점.</td>
+            <td><a href="https://www.mi.com/global/product/xiaomi-portable-photo-printer-1s/specs/" target="_blank" rel="noreferrer">제품 확인</a></td>
+          </tr>
+          <tr>
+            <td>비교 후보</td>
+            <td><div class="product"><img src="https://cdn.media.amplience.net/i/canon/canon-zoemini-2_pink_lifestyle_led_60415_bad8c4ce1d8b4685bde4a19e87028136" alt="Canon Zoemini 2"><div><strong>Canon Zoemini 2</strong><span class="small">캐논 ZINK 포켓 프린터</span></div></div></td>
+            <td>ZINK 무잉크, 접착식 포토페이퍼</td>
+            <td>2x3in, 50x76mm</td>
+            <td class="price">약 ₩326,000</td>
+            <td>20매 약 ₩17,000</td>
+            <td class="per">약 ₩850/장</td>
+            <td>Canon Mini Print 앱, Bluetooth, 약 50초/장</td>
+            <td class="memo">스펙은 좋지만 국내 구매가가 높으면 샤오미/폴라로이드 대비 매력이 줄어듦.</td>
+            <td><a href="https://en.canon-cna.com/printers/zoemini-2/" target="_blank" rel="noreferrer">제품 확인</a></td>
+          </tr>
+          <tr>
+            <td>최선</td>
+            <td><div class="product"><img src="https://cdn.shopify.com/s/files/1/1135/7914/files/2x3_White_29Sep25_1200x.png.webp?v=1759847443" alt="Polaroid Hi-Print 2x3"><div><strong>Polaroid Hi-Print 2x3 Gen 2</strong><span class="small">작은 염료승화 스티커 프린터</span></div></div></td>
+            <td>Dye diffusion thermal transfer, 4PASS</td>
+            <td>2.1x3.4in, 54x86mm</td>
+            <td class="price">약 ₩168,000</td>
+            <td>20매 약 ₩26,000</td>
+            <td class="per">약 ₩1,300/장</td>
+            <td>Polaroid Hi-Print 앱, Bluetooth, 충전식</td>
+            <td class="memo">ZINK보다 인화물 느낌이 좋고 스티커 활용도 가능. 선물·다이어리용으로 예쁨.</td>
+            <td><a href="https://www.polaroid.com/en_us/products/hi-print-2x3-printer" target="_blank" rel="noreferrer">제품 확인</a></td>
+          </tr>
+          <tr>
+            <td>비교 후보</td>
+            <td><div class="product"><img src="https://kodakphotoprinter.com/cdn/shop/files/P210R_MAIN_05_bac23b6e-77b6-4f82-90da-628550abe506.jpg?v=1779808544&amp;width=2048" alt="Kodak Mini 2 Retro"><div><strong>Kodak Mini 2 Retro</strong><span class="small">2.1x3.4in 4PASS 포토프린터</span></div></div></td>
+            <td>4PASS 염료승화, 라미네이팅</td>
+            <td>2.1x3.4in</td>
+            <td class="price">약 ₩153,000</td>
+            <td>50매 카트리지 세트 약 ₩45,000</td>
+            <td class="per">약 ₩900/장</td>
+            <td>모바일 앱, Bluetooth</td>
+            <td class="memo">사진 보관성은 ZINK보다 좋지만 국내 소모품 수급을 구매 전 꼭 확인해야 함.</td>
+            <td><a href="https://kodakphotoprinter.com/products/best-photo-printer-kodak-mini-2-retro-1" target="_blank" rel="noreferrer">제품 확인</a></td>
+          </tr>
+
+          <tr class="group-row"><td colspan="10">인스탁스 필름형: 사진 품질보다 즉석 필름 감성, 아이와 함께 찍는 경험, 선물성이 중요한 용도</td></tr>
+          <tr>
+            <td>감성 최고</td>
+            <td><div class="product"><img src="https://instax.com/mini_evo/common/img/ogp.png" alt="Fujifilm instax mini Evo"><div><strong>Fujifilm instax mini Evo</strong><span class="small">카메라+스마트폰 프린터</span></div></div></td>
+            <td>instax mini 필름 노광 인화</td>
+            <td>필름 86x54mm, 이미지 62x46mm</td>
+            <td class="price">약 ₩330,000</td>
+            <td>미니필름 20매 약 ₩25,000</td>
+            <td class="per">약 ₩1,250/장</td>
+            <td>직접 촬영 또는 스마트폰 앱 전송 후 인화</td>
+            <td class="memo">아이와 같이 찍고 바로 뽑는 경험이 가장 좋음. 단, 필름비 때문에 막 뽑기엔 부담.</td>
+            <td><a href="https://instax.com/mini_evo/en/spec.html" target="_blank" rel="noreferrer">제품 확인</a></td>
+          </tr>
+          <tr>
+            <td>최선</td>
+            <td><div class="product"><img src="https://instax.com/mini_link_3/assets/images/ogp_en.png" alt="Fujifilm instax mini Link 3"><div><strong>Fujifilm instax mini Link 3</strong><span class="small">스마트폰 전용 인스탁스 프린터</span></div></div></td>
+            <td>instax mini 필름 노광 인화</td>
+            <td>필름 86x54mm, 이미지 62x46mm</td>
+            <td class="price">약 ₩170,000</td>
+            <td>미니필름 20매 약 ₩25,000</td>
+            <td class="per">약 ₩1,250/장</td>
+            <td>휴대폰 사진을 앱에서 꾸민 뒤 인화</td>
+            <td class="memo">카메라 기능이 필요 없고 휴대폰 사진만 예쁘게 뽑을 거면 mini Evo보다 합리적.</td>
+            <td><a href="https://instax.com/mini_link_3/en/spec/" target="_blank" rel="noreferrer">제품 확인</a></td>
+          </tr>
+          <tr>
+            <td>큰 필름</td>
+            <td><div class="product"><img src="https://instax.com/square_link/assets/images/ogp_en.png" alt="Fujifilm instax SQUARE Link"><div><strong>Fujifilm instax SQUARE Link</strong><span class="small">정사각 인스탁스 프린터</span></div></div></td>
+            <td>instax SQUARE 필름 노광 인화</td>
+            <td>필름 86x72mm, 이미지 62x62mm</td>
+            <td class="price">약 ₩200,000</td>
+            <td>스퀘어필름 20매 약 ₩34,000</td>
+            <td class="per">약 ₩1,700/장</td>
+            <td>휴대폰 사진을 정사각 필름으로 인화</td>
+            <td class="memo">미니보다 사진이 보기 좋지만 필름비가 더 높음. 성장기록 카드나 선물용에 적합.</td>
+            <td><a href="https://instax.com/square_link/en/" target="_blank" rel="noreferrer">제품 확인</a></td>
+          </tr>
+
+          <tr class="group-row"><td colspan="10">4x6 가정 앨범형: 집에서 오래 보관할 가족 사진, 성장 앨범, 액자용 출력</td></tr>
+          <tr>
+            <td class="good">1순위</td>
+            <td><div class="product"><img src="https://cdn.media.amplience.net/i/canon/selphy-cp1500-bk-wht-pk-600x600_cecfdb123991442b9972649cca79a647" alt="Canon SELPHY CP1500"><div><strong>Canon SELPHY CP1500</strong><span class="small">가정용 4x6 염료승화 표준</span></div></div></td>
+            <td>염료승화 300x300dpi, 보호 코팅</td>
+            <td>4x6in, 100x148mm</td>
+            <td class="price">약 ₩243,000</td>
+            <td>RP-108 108매 약 ₩32,850</td>
+            <td class="per">약 ₩304/장</td>
+            <td>Wi-Fi, USB-C, SD카드, 전용 앱</td>
+            <td class="memo">아이 사진을 앨범으로 남기는 목적이면 가장 추천. 장당 비용이 낮고 결과물이 익숙한 사진 크기.</td>
+            <td><a href="https://en.canon-cna.com/printers/selphy-cp1500/specifications/" target="_blank" rel="noreferrer">제품 확인</a></td>
+          </tr>
+          <tr>
+            <td>비교 후보</td>
+            <td><div class="product"><img src="https://www.kodak.com/content/images/_1200x630_crop_center-center_82_none/instant-dock-printer-full.jpg?mtime=1742609446" alt="Kodak Dock Plus"><div><strong>Kodak Dock Plus / Instant Dock</strong><span class="small">4PASS 4x6 도크형 프린터</span></div></div></td>
+            <td>4PASS 염료승화, 라미네이팅</td>
+            <td>4x6in</td>
+            <td class="price">약 ₩210,000</td>
+            <td>80매 카트리지 세트 약 ₩52,000</td>
+            <td class="per">약 ₩650/장</td>
+            <td>휴대폰 도크/앱/Bluetooth 계열</td>
+            <td class="memo">출력 품질은 괜찮지만 국내 소모품 수급과 앱 안정성을 CP1500과 비교해야 함.</td>
+            <td><a href="https://www.kodak.com/en/consumer/product/printing-scanning/photo-printers/instant-dock-printer/" target="_blank" rel="noreferrer">제품 확인</a></td>
+          </tr>
+          <tr>
+            <td>감성 대안</td>
+            <td><div class="product"><img src="https://cdn.shopify.com/s/files/1/1135/7914/files/4x6__Shadows_V4_1200x.png.webp?v=1727780708" alt="Polaroid Hi-Print 4x6"><div><strong>Polaroid Hi-Print 4x6</strong><span class="small">폴라로이드 4x6 데스크톱 프린터</span></div></div></td>
+            <td>Dye diffusion thermal transfer, 4PASS</td>
+            <td>4x6in</td>
+            <td class="price">약 ₩230,000</td>
+            <td>80매 약 ₩61,000</td>
+            <td class="per">약 ₩760/장</td>
+            <td>Polaroid Hi-Print 앱, 전원 연결형</td>
+            <td class="memo">폴라로이드 앱/디자인 감성이 장점. 국내 정식 수급이 불안하면 CP1500이 더 안전.</td>
+            <td><a href="https://www.polaroid.com/en_us/products/hi-print-4x6-printer" target="_blank" rel="noreferrer">제품 확인</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>구매 판단 메모</h2>
+    <p><strong>아이 사진을 오래 모을 목적이면 Canon CP1500이 1순위</strong>입니다. 사진 크기가 익숙하고, 앨범·액자·가족 선물에 바로 쓰기 좋고, 장당 비용도 가장 낮습니다.</p>
+    <p><strong>아이와 같이 꾸미고 붙이는 재미가 목적이면 포켓 스티커형</strong>이 더 좋습니다. 다만 2x3은 사진으로 보기엔 작아서 “기록 스티커”에 가깝습니다.</p>
+    <p><strong>instax mini Evo는 가장 감성적이지만 경제적이지는 않습니다.</strong> 필름값이 계속 들기 때문에 매일 많이 뽑는 용도보다는 특별한 날, 선물, 아이가 직접 찍는 경험용으로 봅니다.</p>
+  </section>
+
+  <section class="panel">
+    <h2>확인한 주요 출처</h2>
+    <ul class="source-list">
+      <li><a href="https://www.mi.com/global/product/xiaomi-portable-photo-printer-1s/specs/" target="_blank" rel="noreferrer">Xiaomi Portable Photo Printer 1S 공식 스펙</a></li>
+      <li><a href="https://instax.com/mini_evo/en/spec.html" target="_blank" rel="noreferrer">Fujifilm instax mini Evo 공식 스펙</a></li>
+      <li><a href="https://instax.com/mini_link_3/en/spec/" target="_blank" rel="noreferrer">Fujifilm instax mini Link 3 공식 스펙</a></li>
+      <li><a href="https://instax.com/square_link/en/" target="_blank" rel="noreferrer">Fujifilm instax SQUARE Link 공식 페이지</a></li>
+      <li><a href="https://en.canon-cna.com/printers/selphy-cp1500/specifications/" target="_blank" rel="noreferrer">Canon SELPHY CP1500 공식 스펙</a></li>
+      <li><a href="https://en.canon-cna.com/printers/zoemini-2/" target="_blank" rel="noreferrer">Canon Zoemini 2 공식 스펙</a></li>
+      <li><a href="https://www.polaroid.com/en_us/products/hi-print-2x3-printer" target="_blank" rel="noreferrer">Polaroid Hi-Print 2x3 공식 페이지</a></li>
+      <li><a href="https://www.polaroid.com/en_us/products/hi-print-4x6-printer" target="_blank" rel="noreferrer">Polaroid Hi-Print 4x6 공식 페이지</a></li>
+      <li><a href="https://www.kodak.com/en/consumer/product/printing-scanning/photo-printers/instant-dock-printer/" target="_blank" rel="noreferrer">Kodak Instant Dock Printer 공식 페이지</a></li>
+      <li><a href="https://search.danawa.com/dsearch.php?query=%EC%BA%90%EB%85%BC%20CP1500%20RP-108" target="_blank" rel="noreferrer">다나와 CP1500/RP-108 국내 가격 참고</a></li>
+    </ul>
+  </section>
+</main>
+<script src="assets/equipment-theme.js"></script>
+</body>
+</html>
