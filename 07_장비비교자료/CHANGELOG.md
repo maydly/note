@@ -2,6 +2,11 @@
 
 ## 2026-06-20
 
+- `00_장비비교_목차_latest.html` 및 `index.html` v1.19 갱신.
+- `06_촬영지원장비_비교표_latest.html` v2.1 갱신.
+- 배경천 선택 기준 섹션을 추가해 블랙 로우키, 이동형 스윕, 헤드샷/프로필, 빛 차단, 감성/텍스처, 소모품 배경의 선택 이유를 먼저 볼 수 있게 정리.
+- 배경천 비교군을 확장: Denny Black Velvet 4.5x5/6x10/8x10/10x10/10x16/10x20, Westcott X-Drop Pro 스윕형, Westcott/Savage 화이트·그레이 천배경, Manfrotto 접이식 헤드샷 배경, Rose/Dazian/Filmtools 듀베틴·커맨도, Westcott/Manfrotto/Gravity 캔버스·텍스처 배경을 개별 제품 행으로 추가.
+- 촬영지원장비 전체가 171개 제품, 45개 비교군이 되도록 확장하고 모든 비교군 3개 이상 규칙을 재검증.
 - `00_장비비교_목차_latest.html` 및 `index.html` v1.18 갱신.
 - `06_촬영지원장비_비교표_latest.html` v2.0 갱신.
 - 배경천 구매 후보를 별도 비교군으로 추가: Rose Brand 54in 16oz Commando Cloth, Westcott Rich Black 9x10, 다하임 시네마 벨벳 암막커튼 300x240, Denny Black Velvet Backdrop 10x16, Savage Black/White/Green Muslin Backdrop with Stand.
