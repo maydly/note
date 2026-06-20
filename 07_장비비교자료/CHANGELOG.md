@@ -2,6 +2,14 @@
 
 ## 2026-06-20
 
+- `06_촬영지원장비_비교표_latest.html` v1.5 갱신.
+- NP-F/L-Series 배터리 비교군을 추가하고 SmallRig NP-F550, NEEWER NW-F970U, SmallRig NP-F970 USB-C, HEDBOX RP-NPF970을 원화 예산가와 Wh 기준으로 정리.
+- NP-F 충전기·전원 어댑터 비교군을 추가하고 NEEWER 듀얼 충전기, SmallRig NP-F 플레이트, NEEWER NW-F4 4채널, SmallRig 4837 4채널 충전기를 비교.
+- 충전 스테이션 허브 비교군을 추가하고 Anker 525, Satechi 165W/200W, Anker Prime 200W/250W, UGREEN Nexode 300W를 가성비·최선·최고 흐름으로 정리.
+- 기존 2개짜리 비교군 12개를 보강해 촬영지원장비 125개 제품, 35개 비교군 전체가 3개 이상 후보를 갖도록 수정.
+- 전체 제품 이미지 125개 URL이 실제 이미지 응답 기준으로 통과하는지 확인.
+- `00_장비비교_목차_latest.html` 및 `index.html` v1.10 갱신.
+- 목차와 진입 페이지에 촬영지원 v1.5, NP-F/충전 허브, 3개 이상 비교군 기준을 반영.
 - `06_촬영지원장비_비교표_latest.html` v1.4 갱신.
 - 촬영지원장비 비교군을 재정리해 99개 제품, 32개 비교군 기준으로 단일 항목 비교군 0개가 되도록 보강.
 - Manfrotto 5001B/1005BAC/087NW, Avenger A0040B/A5012, Kupo 169M/483BT, Manfrotto 420B, Manfrotto 244MICRO-AR, SmallRig 3726을 추가해 스탠드·붐·암 비교군을 보강.
