@@ -32,7 +32,14 @@
   </nav>
 </header>
 <main>
-  <section class="category-grid" aria-label="장비 비교자료 분류">
+  <nav class="page-jump" aria-label="목차 페이지 바로가기">
+    <strong>바로가기</strong>
+    <a class="is-primary" href="#category-map">분류 지도</a>
+    <a href="#rules">관리 규칙</a>
+    <a href="#latest-files">최신 파일</a>
+  </nav>
+
+  <section class="category-grid" id="category-map" aria-label="장비 비교자료 분류">
     <a class="category-card" href="01_카메라_비교표_latest.html"><span class="num">01</span><strong>카메라</strong><span>Canon, Nikon, Fujifilm, Lumix, Ricoh, Sony A7M5 업그레이드와 필름 바디를 바디 기준으로 비교합니다.</span><span class="go">카메라 페이지 열기</span></a>
     <a class="category-card" href="02_렌즈_비교표_latest.html"><span class="num">02</span><strong>렌즈</strong><span>현행 50/85/24-105/24-70/70-200/16-35와 A7M4 레거시 렌즈·어댑터 후보를 분리해서 봅니다.</span><span class="go">렌즈 페이지 열기</span></a>
     <a class="category-card" href="03_필터_비교표_latest.html"><span class="num">03</span><strong>필터</strong><span>보유 필터와 82mm 우선 몽환·감성 구매 추천 필터를 효과별로 정리합니다.</span><span class="go">필터 페이지 열기</span></a>
@@ -42,7 +49,7 @@
     <a class="category-card" href="07_포토프린터_비교표_latest.html"><span class="num">07</span><strong>포토프린터</strong><span>소형 포켓, 4x6, A3+/17인치, 24/44인치 대형 프린터와 외주 출력 판단을 출력 방식·크기·원화 비용 기준으로 비교합니다.</span><span class="go">포토프린터 페이지 열기</span></a>
   </section>
 
-  <section class="panel">
+  <section class="panel" id="rules">
     <h2>관리 규칙</h2>
     <div class="rules">
       <div class="rule"><strong>1. 최신본</strong><span class="small">항상 이 폴더의 <code>*_latest.html</code>만 수정합니다.</span></div>
@@ -51,20 +58,20 @@
     </div>
   </section>
 
-  <section class="panel">
+  <section class="panel" id="latest-files">
     <h2>정확한 최신 파일</h2>
     <div class="file-table-wrap">
       <table class="file-table">
         <thead><tr><th>분류</th><th>최신 파일</th><th>현재 버전</th><th>역할</th></tr></thead>
         <tbody>
-          <tr><td><span class="tag">목차</span></td><td><a href="00_장비비교_목차_latest.html">00_장비비교_목차_latest.html</a></td><td>v1.20</td><td>7분류 장비 비교자료 목차</td></tr>
-          <tr><td><span class="tag">카메라</span></td><td><a href="01_카메라_비교표_latest.html">01_카메라_비교표_latest.html</a></td><td>v1.4</td><td>카메라 바디 비교</td></tr>
-          <tr><td><span class="tag">렌즈</span></td><td><a href="02_렌즈_비교표_latest.html">02_렌즈_비교표_latest.html</a></td><td>v1.2</td><td>현행·레거시 렌즈와 A7M4 어댑터</td></tr>
-          <tr><td><span class="tag">필터</span></td><td><a href="03_필터_비교표_latest.html">03_필터_비교표_latest.html</a></td><td>v1.4</td><td>보유 필터와 82mm 우선 몽환·감성 구매 추천 필터</td></tr>
-          <tr><td><span class="tag">조명</span></td><td><a href="04_조명_비교표_latest.html">04_조명_비교표_latest.html</a></td><td>v1.7</td><td>순간광·지속광 본체 비교</td></tr>
-          <tr><td><span class="tag">악세사리</span></td><td><a href="05_악세사리_비교표_latest.html">05_악세사리_비교표_latest.html</a></td><td>v1.5</td><td>표 헤더가 첫 품목을 가리는 문제 수정 포함</td></tr>
-          <tr><td><span class="tag">촬영지원</span></td><td><a href="06_촬영지원장비_비교표_latest.html">06_촬영지원장비_비교표_latest.html</a></td><td>v2.2</td><td>비교군별 사진 카드와 상세표를 같은 섹션으로 통합</td></tr>
-          <tr><td><span class="tag">포토프린터</span></td><td><a href="07_포토프린터_비교표_latest.html">07_포토프린터_비교표_latest.html</a></td><td>v2.0</td><td>소형·중형·대형 포토프린터와 외주 출력 비교</td></tr>
+          <tr><td><span class="tag">목차</span></td><td><a href="00_장비비교_목차_latest.html">00_장비비교_목차_latest.html</a></td><td>v1.22</td><td>좌측 페이지 바로가기 포함 7분류 장비 비교자료 목차</td></tr>
+          <tr><td><span class="tag">카메라</span></td><td><a href="01_카메라_비교표_latest.html">01_카메라_비교표_latest.html</a></td><td>v1.5</td><td>좌측 페이지 바로가기 포함 카메라 바디 비교</td></tr>
+          <tr><td><span class="tag">렌즈</span></td><td><a href="02_렌즈_비교표_latest.html">02_렌즈_비교표_latest.html</a></td><td>v1.3</td><td>좌측 페이지 바로가기 포함 현행·레거시 렌즈와 A7M4 어댑터</td></tr>
+          <tr><td><span class="tag">필터</span></td><td><a href="03_필터_비교표_latest.html">03_필터_비교표_latest.html</a></td><td>v1.5</td><td>좌측 페이지 바로가기 포함 보유 필터와 82mm 우선 몽환·감성 구매 추천 필터</td></tr>
+          <tr><td><span class="tag">조명</span></td><td><a href="04_조명_비교표_latest.html">04_조명_비교표_latest.html</a></td><td>v1.8</td><td>좌측 페이지 바로가기와 대시보드 분류 바로가기 포함</td></tr>
+          <tr><td><span class="tag">악세사리</span></td><td><a href="05_악세사리_비교표_latest.html">05_악세사리_비교표_latest.html</a></td><td>v1.6</td><td>좌측 페이지 바로가기와 대시보드 분류 바로가기 포함</td></tr>
+          <tr><td><span class="tag">촬영지원</span></td><td><a href="06_촬영지원장비_비교표_latest.html">06_촬영지원장비_비교표_latest.html</a></td><td>v2.4</td><td>좌측 페이지 바로가기와 비교군 내부 분류 바로가기 포함</td></tr>
+          <tr><td><span class="tag">포토프린터</span></td><td><a href="07_포토프린터_비교표_latest.html">07_포토프린터_비교표_latest.html</a></td><td>v2.1</td><td>좌측 페이지 바로가기 포함 소형·중형·대형 포토프린터와 외주 출력 비교</td></tr>
         </tbody>
       </table>
     </div>
