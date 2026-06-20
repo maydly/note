@@ -9,7 +9,7 @@
     *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Arial,sans-serif;line-height:1.5}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
     header{background:#efe9dd;border-bottom:1px solid var(--line);padding:34px 26px 24px}main{max-width:1280px;margin:0 auto;padding:24px}h1{margin:0 0 8px;font-size:clamp(32px,4vw,52px);line-height:1.06}h2{font-size:24px;margin:28px 0 12px}p{margin:0 0 10px}.lead{max-width:940px;color:#3f4a54}.small{font-size:13px;color:var(--muted)}
     .top-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.top-nav a{display:inline-flex;align-items:center;border:1px solid #cdd7dd;border-radius:999px;background:#fff;padding:8px 12px;font-weight:900;color:var(--accent);text-decoration:none}.top-nav a:hover{background:#eef6f7;text-decoration:none}
-    .category-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin:20px 0 18px}.category-card{display:grid;grid-template-rows:auto 1fr auto;gap:10px;min-height:238px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px;color:var(--ink);box-shadow:0 8px 22px rgba(35,45,54,.05)}.category-card:hover{border-color:#b9ccd4;text-decoration:none;box-shadow:0 12px 28px rgba(35,45,54,.08)}.category-card .num{font-size:13px;font-weight:950;color:var(--warm)}.category-card strong{display:block;font-size:26px;line-height:1.1}.category-card span{display:block;color:#53616d;font-size:14px}.category-card .go{align-self:end;color:var(--accent);font-weight:950}
+    .category-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:20px 0 18px}.category-card{display:grid;grid-template-rows:auto 1fr auto;gap:10px;min-height:238px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px;color:var(--ink);box-shadow:0 8px 22px rgba(35,45,54,.05)}.category-card:hover{border-color:#b9ccd4;text-decoration:none;box-shadow:0 12px 28px rgba(35,45,54,.08)}.category-card .num{font-size:13px;font-weight:950;color:var(--warm)}.category-card strong{display:block;font-size:26px;line-height:1.1}.category-card span{display:block;color:#53616d;font-size:14px}.category-card .go{align-self:end;color:var(--accent);font-weight:950}
     .panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;margin-top:16px}.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.rule{background:#fbfcfc;border:1px solid var(--line);border-radius:8px;padding:13px}.rule strong{display:block;margin-bottom:4px}.file-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff}.file-table{width:100%;min-width:820px;border-collapse:collapse}.file-table th,.file-table td{padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;font-size:14px}.file-table th{background:#f0f4f6}.file-table tr:last-child td{border-bottom:0}.tag{display:inline-block;border:1px solid #d5dee4;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:900;background:#fff;color:#3f4a54}code{background:#eef3f5;border:1px solid #d9e2e8;border-radius:4px;padding:1px 5px}
     @media(max-width:1100px){.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.rules{grid-template-columns:1fr 1fr}}@media(max-width:680px){main{padding:15px}.category-grid,.rules{grid-template-columns:1fr}.category-card{min-height:176px}}
   </style>
@@ -18,7 +18,7 @@
 <body>
 <header>
   <h1>장비 비교자료 목차</h1>
-  <p class="lead">앞으로 이 자료는 아래 6개 분류로 들어갑니다. 카메라, 렌즈, 필터, 조명, 악세사리, 촬영지원장비를 섞지 않고, 각 페이지 안에서는 같은급 비교와 상세표를 따로 봅니다.</p>
+  <p class="lead">앞으로 이 자료는 아래 7개 분류로 들어갑니다. 카메라, 렌즈, 필터, 조명, 악세사리, 촬영지원장비, 포토프린터를 섞지 않고, 각 페이지 안에서는 같은급 비교와 상세표를 따로 봅니다.</p>
   <p class="small">기준일 2026-06-20 · 최신 원본은 모두 <code>07_장비비교자료/*_latest.html</code> 파일입니다.</p>
   <nav class="top-nav" aria-label="장비 비교자료 분류">
     <a href="00_장비비교_목차_latest.html">목차</a>
@@ -28,6 +28,7 @@
     <a href="04_조명_비교표_latest.html">조명</a>
     <a href="05_악세사리_비교표_latest.html">악세사리</a>
     <a href="06_촬영지원장비_비교표_latest.html">촬영지원</a>
+    <a href="07_포토프린터_비교표_latest.html">포토프린터</a>
   </nav>
 </header>
 <main>
@@ -38,13 +39,14 @@
     <a class="category-card" href="04_조명_비교표_latest.html"><span class="num">04</span><strong>조명</strong><span>순간광과 지속광 본체를 Ws/W, 색온도, 가격, 크기, 마운트 기준으로 같은급끼리 비교합니다.</span><span class="go">조명 페이지 열기</span></a>
     <a class="category-card" href="05_악세사리_비교표_latest.html"><span class="num">05</span><strong>악세사리</strong><span>소프트박스, 랜턴, 엄브렐러, 프레넬, 프로젝션, 포커싱 파라볼릭, 대형 확산천을 사이즈·마운트 중심으로 봅니다.</span><span class="go">악세사리 페이지 열기</span></a>
     <a class="category-card" href="06_촬영지원장비_비교표_latest.html"><span class="num">06</span><strong>촬영지원</strong><span>스탠드, 붐, A클램프, Motion9 카트, 파워뱅크, V마운트, NP-F, 충전 허브, 10G 테더·연장선, 모델 확인 모니터, Mac 워크스테이션을 역할별로 비교합니다.</span><span class="go">촬영지원 페이지 열기</span></a>
+    <a class="category-card" href="07_포토프린터_비교표_latest.html"><span class="num">07</span><strong>포토프린터</strong><span>Xiaomi, Canon, Polaroid, Kodak, Fujifilm instax, SELPHY 계열을 출력 방식·사진 크기·소모품 비용·장당 비용·구매 기준으로 비교합니다.</span><span class="go">포토프린터 페이지 열기</span></a>
   </section>
 
   <section class="panel">
     <h2>관리 규칙</h2>
     <div class="rules">
       <div class="rule"><strong>1. 최신본</strong><span class="small">항상 이 폴더의 <code>*_latest.html</code>만 수정합니다.</span></div>
-      <div class="rule"><strong>2. 분류</strong><span class="small">카메라·렌즈·필터·조명·악세사리·촬영지원장비를 서로 다른 페이지로 유지합니다.</span></div>
+      <div class="rule"><strong>2. 분류</strong><span class="small">카메라·렌즈·필터·조명·악세사리·촬영지원장비·포토프린터를 서로 다른 페이지로 유지합니다.</span></div>
       <div class="rule"><strong>3. 보존본</strong><span class="small">변경 전/후 보존은 <code>versions/YYYY-MM-DD</code>에 남깁니다.</span></div>
     </div>
   </section>
@@ -55,13 +57,14 @@
       <table class="file-table">
         <thead><tr><th>분류</th><th>최신 파일</th><th>현재 버전</th><th>역할</th></tr></thead>
         <tbody>
-          <tr><td><span class="tag">목차</span></td><td><a href="00_장비비교_목차_latest.html">00_장비비교_목차_latest.html</a></td><td>v1.14</td><td>6분류 장비 비교자료 목차</td></tr>
-          <tr><td><span class="tag">카메라</span></td><td><a href="01_카메라_비교표_latest.html">01_카메라_비교표_latest.html</a></td><td>v1.3</td><td>카메라 바디 비교</td></tr>
-          <tr><td><span class="tag">렌즈</span></td><td><a href="02_렌즈_비교표_latest.html">02_렌즈_비교표_latest.html</a></td><td>v1.1</td><td>현행·레거시 렌즈와 A7M4 어댑터</td></tr>
-          <tr><td><span class="tag">필터</span></td><td><a href="03_필터_비교표_latest.html">03_필터_비교표_latest.html</a></td><td>v1.3</td><td>보유 필터와 82mm 우선 몽환·감성 구매 추천 필터</td></tr>
-          <tr><td><span class="tag">조명</span></td><td><a href="04_조명_비교표_latest.html">04_조명_비교표_latest.html</a></td><td>v1.6</td><td>순간광·지속광 본체 비교</td></tr>
-          <tr><td><span class="tag">악세사리</span></td><td><a href="05_악세사리_비교표_latest.html">05_악세사리_비교표_latest.html</a></td><td>v1.3</td><td>조명 악세사리·포커싱 파라볼릭·대형 확산/차광 비교</td></tr>
-          <tr><td><span class="tag">촬영지원</span></td><td><a href="06_촬영지원장비_비교표_latest.html">06_촬영지원장비_비교표_latest.html</a></td><td>v1.8</td><td>MacBook Pro 1TB 이상 기준 재정리 포함</td></tr>
+          <tr><td><span class="tag">목차</span></td><td><a href="00_장비비교_목차_latest.html">00_장비비교_목차_latest.html</a></td><td>v1.15</td><td>7분류 장비 비교자료 목차</td></tr>
+          <tr><td><span class="tag">카메라</span></td><td><a href="01_카메라_비교표_latest.html">01_카메라_비교표_latest.html</a></td><td>v1.4</td><td>카메라 바디 비교</td></tr>
+          <tr><td><span class="tag">렌즈</span></td><td><a href="02_렌즈_비교표_latest.html">02_렌즈_비교표_latest.html</a></td><td>v1.2</td><td>현행·레거시 렌즈와 A7M4 어댑터</td></tr>
+          <tr><td><span class="tag">필터</span></td><td><a href="03_필터_비교표_latest.html">03_필터_비교표_latest.html</a></td><td>v1.4</td><td>보유 필터와 82mm 우선 몽환·감성 구매 추천 필터</td></tr>
+          <tr><td><span class="tag">조명</span></td><td><a href="04_조명_비교표_latest.html">04_조명_비교표_latest.html</a></td><td>v1.7</td><td>순간광·지속광 본체 비교</td></tr>
+          <tr><td><span class="tag">악세사리</span></td><td><a href="05_악세사리_비교표_latest.html">05_악세사리_비교표_latest.html</a></td><td>v1.4</td><td>조명 악세사리·포커싱 파라볼릭·대형 확산/차광 비교</td></tr>
+          <tr><td><span class="tag">촬영지원</span></td><td><a href="06_촬영지원장비_비교표_latest.html">06_촬영지원장비_비교표_latest.html</a></td><td>v1.9</td><td>MacBook Pro 1TB 이상 기준 재정리 포함</td></tr>
+          <tr><td><span class="tag">포토프린터</span></td><td><a href="07_포토프린터_비교표_latest.html">07_포토프린터_비교표_latest.html</a></td><td>v1.9</td><td>포켓·인스탁스·4x6 포토프린터 비교</td></tr>
         </tbody>
       </table>
     </div>
