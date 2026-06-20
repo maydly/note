@@ -38,7 +38,7 @@ https://bucket0825.github.io/note/07_장비비교자료/
 
 | 구분 | 별도 파일 | 현재 버전 |
 |---|---|---|
-| 포토프린터 | `07_포토프린터_비교표_latest.html` | v1.5 |
+| 포토프린터 | `07_포토프린터_비교표_latest.html` | v1.6 |
 
 ## 2-1. 공통 디자인 파일
 
@@ -56,6 +56,7 @@ https://bucket0825.github.io/note/07_장비비교자료/
 - 내부 이동은 같은 폴더 기준 상대경로만 쓴다.
 - 이미지 등 로컬 assets는 `07_장비비교자료/assets/` 안에 둔다.
 - 조명 이미지 assets는 `07_장비비교자료/assets/lighting/`를 기준으로 한다.
+- 포토프린터 제품 이미지는 모바일 표시 안정성을 위해 `07_장비비교자료/assets/photo-printers/`의 로컬 JPG를 기준으로 한다.
 - 공통 디자인 파일은 `07_장비비교자료/assets/` 안에서 유지한다.
 - 현재 `note` 사이트가 Design, Development, AI, Workflow 섹션 구조이므로, 통합 시에는 Design 쪽의 촬영 장비/조명 공부 자료로 연결하는 것을 우선 후보로 둔다.
 
