@@ -2,6 +2,11 @@
 
 ## 2026-06-20
 
+- `00_장비비교_목차_latest.html` 및 `index.html` v1.18 갱신.
+- `06_촬영지원장비_비교표_latest.html` v2.0 갱신.
+- 배경천 구매 후보를 별도 비교군으로 추가: Rose Brand 54in 16oz Commando Cloth, Westcott Rich Black 9x10, 다하임 시네마 벨벳 암막커튼 300x240, Denny Black Velvet Backdrop 10x16, Savage Black/White/Green Muslin Backdrop with Stand.
+- 배경지 색상 기준 비교군을 추가해 Savage #1 Super White, #12 Studio Gray, #20 Black 107in x 36ft를 흰색·회색·검정 용도별로 비교 가능하게 정리.
+- 블랙 벨벳/벨루어는 로우키 인물·제품 배경, 듀베틴·커맨도는 빛 차단/마스킹, 배경지는 바닥 스윕과 소모품 관리 기준으로 메모를 보강.
 - `00_장비비교_목차_latest.html` 및 `index.html` v1.17 갱신.
 - `05_악세사리_비교표_latest.html` v1.5 갱신.
 - 악세사리 상세표의 sticky 표 헤더가 첫 번째 품목을 가리는 문제를 수정하고, 표 헤더를 일반 흐름으로 고정해제.
