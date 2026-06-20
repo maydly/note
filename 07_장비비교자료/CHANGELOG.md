@@ -2,6 +2,13 @@
 
 ## 2026-06-20
 
+- `06_촬영지원장비_비교표_latest.html` v1.6 갱신.
+- A클램프 사이즈별 비교군을 추가하고 Kupo 1.8in/4in/6in/9in 스프링 A클램프를 용도·원화 예산가·제품 이미지 기준으로 정리.
+- 기존 6in A클램프는 `세트 보조`에서 `A클램프 사이즈별` 비교군으로 이동하고, `세트 보조` 비교군은 Matthews Half Apple Box를 추가해 3개 이상 유지.
+- 테더 케이블 비교군을 추가하고 Tether Tools 15ft, Area51 Wilton Pro+ 15ft, Area51 Wilton Turbo 16ft, Area51 Wilton XL Turbo 31ft를 A7M4 USB-C 테더 촬영 기준으로 정리.
+- 촬영지원장비 134개 제품, 37개 비교군 전체가 3개 이상 후보를 갖도록 확인.
+- 전체 제품 이미지 134개 URL이 실제 이미지 응답 기준으로 통과하는지 확인.
+- `00_장비비교_목차_latest.html` 및 `index.html` v1.11 갱신.
 - `06_촬영지원장비_비교표_latest.html` v1.5 갱신.
 - NP-F/L-Series 배터리 비교군을 추가하고 SmallRig NP-F550, NEEWER NW-F970U, SmallRig NP-F970 USB-C, Sony NP-F970, HEDBOX RP-NPF970을 원화 예산가와 Wh 기준으로 정리.
 - NP-F 충전기·전원 어댑터 비교군을 추가하고 NEEWER 듀얼 충전기, SmallRig NP-F 플레이트, NEEWER NW-F4 4채널, SmallRig 4837 4채널 충전기를 비교.
