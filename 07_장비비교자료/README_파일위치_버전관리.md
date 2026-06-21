@@ -22,13 +22,13 @@ https://bucket0825.github.io/note/07_장비비교자료/
 
 | 구분 | 최신 원본 파일 | 현재 버전 |
 |---|---|---|
-| 목차 | `00_장비비교_목차_latest.html` | v1.32 |
+| 목차 | `00_장비비교_목차_latest.html` | v1.33 |
 | 카메라 | `01_카메라_비교표_latest.html` | v1.8 |
 | 렌즈 | `02_렌즈_비교표_latest.html` | v1.6 |
 | 필터 | `03_필터_비교표_latest.html` | v1.8 |
 | 조명 | `04_조명_비교표_latest.html` | v2.1 |
 | 악세사리 | `05_악세사리_비교표_latest.html` | v2.0 |
-| 촬영지원 | `06_촬영지원장비_비교표_latest.html` | v2.8 |
+| 촬영지원 | `06_촬영지원장비_비교표_latest.html` | v2.9 |
 | 포토프린터 | `07_포토프린터_비교표_latest.html` | v2.5 |
 
 이전 호환 파일명인 `01_조명_비교표_latest.html`, `02_카메라_바디_비교표_latest.html`, `03_렌즈_필터_비교표_latest.html`은 최신 분류 구조로 이동시키는 안내/리다이렉트 파일이다.
@@ -39,7 +39,7 @@ https://bucket0825.github.io/note/07_장비비교자료/
 
 | 구분 | 파일 | 현재 버전 |
 |---|---|---|
-| 공통 스타일 | `assets/equipment-theme.css` | v2.4 |
+| 공통 스타일 | `assets/equipment-theme.css` | v2.5 |
 | 현재 페이지 표시 | `assets/equipment-theme.js` | v1.0 |
 
 ## 3. GitHub Pages 통합 규정
