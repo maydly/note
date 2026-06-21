@@ -2,6 +2,9 @@
 
 ## 2026-06-21
 
+- `00_장비비교_목차_latest.html` 및 `index.html` v1.28 갱신.
+- `05_악세사리_비교표_latest.html` v1.9, 공통 테마 `assets/equipment-theme.css` v2.0 갱신.
+- 악세사리 좌측 고정 비교군 패널 표시 조건을 901px 이상으로 낮춰 일반 브라우저 창에서도 보이게 수정.
 - `00_장비비교_목차_latest.html` 및 `index.html` v1.27 갱신.
 - `05_악세사리_비교표_latest.html` v1.8, 공통 테마 `assets/equipment-theme.css` v1.9 갱신.
 - 악세사리 페이지에 좌측 고정 비교군 패널을 추가해 아래 상세표까지 내려가도 `분류 바로가기`와 `비교군 바로가기`를 계속 누를 수 있게 수정.

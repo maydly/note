@@ -22,12 +22,12 @@ https://bucket0825.github.io/note/07_장비비교자료/
 
 | 구분 | 최신 원본 파일 | 현재 버전 |
 |---|---|---|
-| 목차 | `00_장비비교_목차_latest.html` | v1.27 |
+| 목차 | `00_장비비교_목차_latest.html` | v1.28 |
 | 카메라 | `01_카메라_비교표_latest.html` | v1.7 |
 | 렌즈 | `02_렌즈_비교표_latest.html` | v1.5 |
 | 필터 | `03_필터_비교표_latest.html` | v1.7 |
 | 조명 | `04_조명_비교표_latest.html` | v1.9 |
-| 악세사리 | `05_악세사리_비교표_latest.html` | v1.8 |
+| 악세사리 | `05_악세사리_비교표_latest.html` | v1.9 |
 | 촬영지원 | `06_촬영지원장비_비교표_latest.html` | v2.6 |
 | 포토프린터 | `07_포토프린터_비교표_latest.html` | v2.3 |
 
@@ -39,7 +39,7 @@ https://bucket0825.github.io/note/07_장비비교자료/
 
 | 구분 | 파일 | 현재 버전 |
 |---|---|---|
-| 공통 스타일 | `assets/equipment-theme.css` | v1.9 |
+| 공통 스타일 | `assets/equipment-theme.css` | v2.0 |
 | 현재 페이지 표시 | `assets/equipment-theme.js` | v1.0 |
 
 ## 3. GitHub Pages 통합 규정
