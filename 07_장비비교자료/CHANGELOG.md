@@ -2,6 +2,9 @@
 
 ## 2026-06-21
 
+- `00_장비비교_목차_latest.html` 및 `index.html` v1.32 갱신.
+- `04_조명_비교표_latest.html` v2.1, `05_악세사리_비교표_latest.html` v2.0, `06_촬영지원장비_비교표_latest.html` v2.8, 공통 테마 `assets/equipment-theme.css` v2.4 갱신.
+- 조명·악세사리·촬영지원처럼 비교군 항목이 많은 페이지는 좌측 고정 패널을 넓히고, 비교군명을 한 줄 말줄임으로 정리해 본문과 겹치거나 줄바꿈이 난잡해지는 문제를 줄임.
 - `00_장비비교_목차_latest.html` 및 `index.html` v1.31 갱신.
 - `07_포토프린터_비교표_latest.html` v2.5, 공통 테마 `assets/equipment-theme.css` v2.3 갱신.
 - 좌측 `바로가기`와 `분류/비교군` 패널의 버튼형 테두리/배경을 줄이고, Maydly Study Archive와 맞는 얇은 세로선 인덱스 타입으로 정리.
