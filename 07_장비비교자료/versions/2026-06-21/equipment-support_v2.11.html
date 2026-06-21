@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>촬영지원장비 비교 대시보드</title>
+  <style>
+    :root{--ink:#20242a;--muted:#66717d;--line:#d9e0e6;--paper:#f8f6f1;--panel:#fff;--accent:#176b87;--good:#2d7558;--warn:#9f3a32;--warm:#8d5b12}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Arial,sans-serif;line-height:1.5}
+    header{padding:36px 26px 22px;background:#efe9dd;border-bottom:1px solid var(--line)}
+    main{max-width:1540px;margin:0 auto;padding:24px}
+    h1{margin:0 0 8px;font-size:clamp(30px,4vw,50px);line-height:1.08}
+    h2{margin:34px 0 12px;font-size:24px}
+    h3{margin:0 0 8px;font-size:17px}
+    p{margin:0 0 10px}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .lead{max-width:1080px;color:#3f4a54}
+    .small{font-size:13px;color:var(--muted)}
+    .top-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+    .top-nav a{display:inline-flex;align-items:center;border:1px solid #cdd7dd;border-radius:999px;background:#fff;padding:8px 12px;font-weight:900;color:var(--accent);text-decoration:none}
+    .top-nav a:hover{background:#eef6f7;text-decoration:none}
+    .notice,.card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:15px}
+    .notice{border-left:5px solid var(--accent)}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0}
+    .card strong{display:block;font-size:20px;margin-bottom:4px}
+    .dashboard{margin:22px 0 28px;background:#fff;border:1px solid #cfd9df;border-radius:10px;overflow:hidden;box-shadow:0 10px 28px rgba(35,45,54,.06)}
+    .dash-head{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end;padding:20px 22px;background:linear-gradient(135deg,#ffffff 0%,#f2f7f8 58%,#f7f1e7 100%);border-bottom:1px solid var(--line)}
+    .dash-head h2{margin:0 0 6px;font-size:26px}
+    .dash-head p{max-width:960px;color:#50606d}
+    .dash-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .dash-actions button{padding:9px 12px;border-radius:999px}
+    .controls{position:sticky;top:0;z-index:4;display:grid;grid-template-columns:1.5fr repeat(5,minmax(124px,1fr));gap:8px;padding:12px 14px;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+    button,select,input{font:inherit;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);padding:10px}
+    button{cursor:pointer;font-weight:800}
+    button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:12px 14px;background:#fbfcfc;border-bottom:1px solid var(--line)}
+    .stat{border:1px solid #dce4e9;border-radius:8px;padding:10px 12px;background:#fff}
+    .stat strong{display:block;font-size:22px;line-height:1.1}
+    .stat span{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+    .compare-body{display:grid;grid-template-columns:240px 1fr;gap:16px;padding:16px;background:#f8fafb}
+    .group-index{position:sticky;top:82px;align-self:start;max-height:calc(100vh - 100px);overflow:auto;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px}
+    .group-index h3{font-size:14px;margin:2px 0 8px}
+    .group-index a{display:flex;justify-content:space-between;gap:8px;border-radius:6px;padding:8px 9px;color:#2d3741;font-size:13px}
+    .group-index a:hover{background:#edf5f7;text-decoration:none}
+    .group-index .count{color:#6a7782}
+    .category-jump{display:grid;gap:6px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+    .category-jump a{border:1px solid #d6e2e8;background:#fbfcfc;font-weight:900;color:#176b87}
+    .category-jump a:hover{background:#eef6f7;border-color:#b9ccd4}
+    .group-jump{display:grid;gap:2px}
+    .groups{display:grid;gap:16px}
+    .group{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+    .group-title{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 15px;background:#25313a;color:#fff}
+    .group-title h3{font-size:18px}
+    .group-title span{font-size:13px;color:#d9e5ea}
+    .item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;padding:12px}
+    .group-detail{margin:0 12px 12px}
+    .group-detail h4{margin:0;padding:10px 11px;background:#f6f8f9;border:1px solid var(--line);border-bottom:0;border-radius:8px 8px 0 0;font-size:14px}
+    .group-detail .table-wrap{border-radius:0 0 8px 8px}
+    .group-detail table{min-width:1100px}
+    .group-detail th{position:static}
+    .item-card{display:grid;grid-template-rows:148px auto;min-width:0;background:#fff;border:1px solid #d7e0e6;border-radius:8px;overflow:hidden;box-shadow:0 2px 0 rgba(25,34,42,.03)}
+    .photo-box{position:relative;display:grid;place-items:center;background:#f3f6f7;border-bottom:1px solid #dce4e9;overflow:hidden}
+    .photo-box img{width:100%;height:100%;object-fit:contain;padding:10px}
+    .photo-fallback{display:none;width:100%;height:100%;place-items:center;padding:14px;text-align:center;color:#61717c;font-weight:900;background:linear-gradient(145deg,#f6f7f7,#edf4f6)}
+    .photo-box.no-image img{display:none}
+    .photo-box.no-image .photo-fallback{display:grid}
+    .item-body{display:grid;gap:8px;padding:11px}
+    .item-top{display:flex;gap:6px;align-items:center;justify-content:space-between}
+    .pill{display:inline-flex;align-items:center;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:900;white-space:nowrap}
+    .brand-pill{background:#e8f2f4;color:#176b87}
+    .type-pill{background:#f5eee2;color:#8a5a15}
+    .priority-pill{background:#edf7f1;color:#2d7558}
+    .item-body h3{font-size:16px;line-height:1.25;margin:0;min-height:40px}
+    .price{font-weight:950;font-size:18px;color:#151a1f}
+    .meta{display:grid;grid-template-columns:1fr;gap:5px;font-size:13px;color:#35414b}
+    .meta div{display:grid;grid-template-columns:72px 1fr;gap:7px}
+    .meta b{color:#6b7782}
+    .note{font-size:13px;color:#53616d;margin:0;min-height:42px}
+    .link{font-size:13px;font-weight:900}
+    .compact .item-grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+    .compact .item-card{grid-template-rows:112px auto}
+    .compact .item-body h3{font-size:14px;min-height:34px}
+    .compact .note{display:none}
+    .guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-top:12px}
+    .guide-card{border:1px solid #dce4e9;border-radius:8px;background:#fbfcfc;padding:13px}
+    .guide-card strong{display:block;margin-bottom:5px}
+    .calc-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+    .calc-output{grid-column:span 4;border:1px solid var(--line);background:#fbfcfc;border-radius:8px;padding:13px}
+    .calc-output strong{font-size:22px;color:var(--good)}
+    .table-wrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:8px}
+    table{width:100%;min-width:1320px;border-collapse:collapse}
+    th,td{padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;font-size:14px}
+    th{position:sticky;top:0;background:#f0f4f6;z-index:2;font-size:13px;white-space:nowrap}
+    tr:hover td{background:#fbfdfe}
+    .thumb{width:92px;height:70px;object-fit:contain;background:#f7f8f9;border:1px solid #e5ebef;border-radius:6px;display:block}
+    .tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 7px;font-size:12px;background:#fff;color:#42505c}
+    @media(max-width:1100px){.cards,.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{grid-template-columns:1fr 1fr}.compare-body{grid-template-columns:1fr}.group-index{position:static;max-height:none}.calc-grid{grid-template-columns:1fr 1fr}.calc-output{grid-column:span 2}}
+    @media(max-width:760px){main{padding:15px}.cards,.stats,.controls,.guide-grid,.calc-grid{grid-template-columns:1fr}.calc-output{grid-column:span 1}.dash-head{grid-template-columns:1fr}.dash-actions{justify-content:flex-start}.item-grid{grid-template-columns:1fr}th{top:0}}
+  </style>
+  <link rel="stylesheet" href="assets/equipment-theme.css">
+</head>
+<body class="support-page has-fixed-compare-jump dense-compare-rail">
+<header>
+  <nav class="top-nav" aria-label="장비 비교자료 분류">
+    <a href="00_장비비교_목차_latest.html">목차</a>
+    <a href="01_카메라_비교표_latest.html">카메라</a>
+    <a href="02_렌즈_비교표_latest.html">렌즈</a>
+    <a href="03_필터_비교표_latest.html">필터</a>
+    <a href="04_조명_비교표_latest.html">조명</a>
+    <a href="05_악세사리_비교표_latest.html">악세사리</a>
+    <a href="06_촬영지원장비_비교표_latest.html">촬영지원</a>
+    <a href="07_포토프린터_비교표_latest.html">포토프린터</a>
+  </nav>
+  <h1>촬영지원장비 비교 대시보드</h1>
+  <p class="lead">스탠드, 붐, 그립, A클램프, 프로덕션 카트, 파워뱅크, V마운트 배터리, NP-F/L-Series 배터리, 충전 스테이션 허브, 10G 테더 케이블, 블랙 벨벳/벨루어 배경천, 듀베틴·커맨도 차광천, 천배경·스윕·접이식 배경, 캔버스/텍스처 배경, 배경지, 모델·클라이언트 확인용 모니터, Mac 워크스테이션, 무선 영상, 인터컴, 홀스터, DIT 작업대, 돌리, 스톤백, 현장 소모품을 조명 악세사리와 분리해서 보는 페이지입니다. 구매 목적은 “촬영을 실제로 굴러가게 만드는 기반 장비”를 빠뜨리지 않는 것입니다.</p>
+  <p class="small">기준일 2026-06-20 · 가격은 원화 기준 예산가만 표시 · 해외 판매가 기준 항목은 환산 예산가이며 국내 실구매가는 구매 직전 재확인 필요</p>
+</header>
+<main>
+  <nav class="page-jump" aria-label="촬영지원장비 페이지 바로가기">
+    <strong>바로가기</strong>
+    <a class="is-primary" href="#support-overview">개요</a>
+    <a href="#support-separation">분리 기준</a>
+    <a href="#support-backdrop-guide">배경천 기준</a>
+    <a href="#supportDashboard">같은 역할</a>
+    <a href="#support-power-calc">전원 계산</a>
+  </nav>
+  <nav class="group-index fixed-compare-jump" aria-label="촬영지원 비교군 고정 바로가기">
+    <div class="category-index-sticky">
+      <h3>분류 바로가기</h3>
+      <div class="category-jump" id="fixedCategoryIndex"></div>
+    </div>
+    <h3>비교군 바로가기</h3>
+    <div class="group-jump" id="fixedGroupIndex"></div>
+  </nav>
+
+  <section class="cards" id="support-overview" aria-label="촬영지원장비 큰 분류">
+    <div class="card"><strong>스탠드</strong><span class="small">컴팩트, A/C-스탠드, 콤보, 와인드업, 백라이트 스탠드를 하중과 높이로 비교.</span></div>
+    <div class="card"><strong>붐·그립·안전</strong><span class="small">그립헤드, 암, 슈퍼클램프, A클램프, 샌드백, 애플박스처럼 현장 고정에 필요한 장비.</span></div>
+    <div class="card"><strong>카트·운반</strong><span class="small">멀티카트는 제외하고 Motion9 같은 촬영용 프로덕션 카트와 돌리만 확인.</span></div>
+    <div class="card"><strong>전원</strong><span class="small">파워뱅크, V마운트, NP-F 배터리와 충전 허브를 Wh, 연속출력W, 포트 수, 충전 방식으로 비교.</span></div>
+    <div class="card"><strong>모니터·통신</strong><span class="small">온카메라보다 모델·클라이언트 확인용 DIT 모니터와 Hollyland Solidcom 비교군을 우선.</span></div>
+    <div class="card"><strong>DIT·Mac</strong><span class="small">MacBook, Mac mini, Mac Studio를 테더·백업·편집 워크스테이션 기준으로 비교.</span></div>
+    <div class="card"><strong>카메라 운용·DIT</strong><span class="small">10G 테더 케이블, 연장선, 홀스터, 노트북 스테이션, 돌리, 컵홀더, 스톤백처럼 촬영 속도를 올리는 보조 장비.</span></div>
+    <div class="card"><strong>배경·세트</strong><span class="small">블랙 벨벳/벨루어 배경천, 머슬린, 듀베틴·커맨도, 접이식 배경, 캔버스 배경, 배경지, 배경 지지, 플래그 킷, 로드랙처럼 세트 구성과 빛 차단에 필요한 장비.</span></div>
+    <div class="card"><strong>현장 필수품</strong><span class="small">테이블, 케이스, 멀티탭, 케이블, 벨크로, 배경 지지처럼 촬영 당일 빠지기 쉬운 것.</span></div>
+  </section>
+
+  <section class="notice" id="support-separation">
+    <h2>분리 기준</h2>
+    <p>소프트박스, 엄브렐러, 랜턴, 프레넬처럼 <strong>빛 모양을 바꾸는 것</strong>은 악세사리 페이지에 두고, 이 페이지는 <strong>세우기, 고정하기, 옮기기, 전원 공급하기, 현장 정리하기</strong>에 필요한 장비만 모읍니다.</p>
+  </section>
+
+  <section class="panel" id="support-backdrop-guide">
+    <h2>배경천 선택 기준</h2>
+    <p class="small">천 배경은 색만 보면 실패하기 쉽습니다. 촬영에서는 빛을 얼마나 먹는지, 바닥까지 스윕이 되는지, 접고 펴는 속도, 주름 관리, 세탁 가능 여부가 실제 선택 기준입니다.</p>
+    <div class="guide-grid">
+      <div class="guide-card"><strong>블랙 로우키</strong><span class="small">검정이 정말 검게 죽어야 하면 벨벳/벨루어 우선. 바닥까지 깔끔해야 하면 블랙 배경지도 같이 봅니다.</span></div>
+      <div class="guide-card"><strong>이동형 스윕</strong><span class="small">로케이션에서 전신까지 빠르게 만들려면 X-Drop Pro 같은 8x13ft 스윕형이 편합니다.</span></div>
+      <div class="guide-card"><strong>헤드샷/프로필</strong><span class="small">1인 상반신은 접이식 5x6, 6x7ft가 설치 속도와 보관성이 좋고 흰색·회색 양면이 활용도가 높습니다.</span></div>
+      <div class="guide-card"><strong>빛 차단</strong><span class="small">배경으로 예쁘게 보이는 천과 빛을 막는 천은 다릅니다. 듀베틴/커맨도는 마스킹, 네거티브 필, 창문 차광용입니다.</span></div>
+      <div class="guide-card"><strong>감성/텍스처</strong><span class="small">인물 톤과 분위기 자체를 만들려면 머슬린, 캔버스, 빈티지 접이식 배경을 봅니다. 제품 사진과 실제 색 차이는 구매 전 확인이 필요합니다.</span></div>
+      <div class="guide-card"><strong>소모품 배경</strong><span class="small">발자국, 먼지, 오염까지 고려하면 전신 바닥 스윕은 천보다 배경지가 더 편할 때가 많습니다.</span></div>
+    </div>
+  </section>
+
+  <section class="dashboard" id="supportDashboard">
+    <div class="dash-head">
+      <div>
+        <h2>같은 역할끼리 보는 비교군</h2>
+        <p>같은 비교군 안에서 <strong>사진 카드 → 상세 비교표</strong> 순서로 봅니다. 카드는 빠른 인지용이고, 바로 아래 표는 규격·용량·메모·확인 링크를 한 줄씩 비교하는 용도입니다.</p>
+        <p class="small">브랜드별 나열보다 먼저 “A/C-스탠드”, “콤보·와인드업”, “붐·메가붐”, “A클램프 사이즈별”, “NP-F 배터리”, “충전 스테이션 허브”, “10G 테더 케이블·연장선”, “Solidcom 인터컴”, “모델·클라이언트 확인 모니터”, “Mac 워크스테이션”, “블랙 벨벳 사이즈별”, “천배경/스윕 이동형”, “접이식 헤드샷 배경”, “듀베틴·커맨도 차광천”, “캔버스·텍스처 배경”, “배경지 컬러 기준”처럼 실제 선택 단위로 묶었습니다.</p>
+      </div>
+      <div class="dash-actions" aria-label="표시 밀도">
+        <button class="active" id="comfortableView" type="button">사진 크게</button>
+        <button id="compactView" type="button">촘촘히</button>
+      </div>
+    </div>
+    <div class="controls">
+      <input id="search" type="search" placeholder="모델, 브랜드, 규격, 용도 검색">
+      <select id="category"><option value="">분류 전체</option></select>
+      <select id="group"><option value="">비교군 전체</option></select>
+      <select id="brand"><option value="">브랜드 전체</option></select>
+      <select id="priority"><option value="">추천도 전체</option></select>
+      <select id="sort">
+        <option value="group">같은 역할 우선</option>
+        <option value="price">낮은 가격순</option>
+        <option value="priority">우선순위순</option>
+        <option value="brand">브랜드순</option>
+      </select>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="compare-body">
+      <aside class="group-index">
+        <div class="category-index-sticky">
+          <h3>분류 바로가기</h3>
+          <div class="category-jump" id="categoryIndex"></div>
+        </div>
+        <h3>비교군 바로가기</h3>
+        <div class="group-jump" id="groupIndex"></div>
+      </aside>
+      <div class="groups" id="groups"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="support-power-calc">
+    <h2>파워뱅크·배터리 사용시간 계산기</h2>
+    <p class="small">촬영 현장에서는 정격 용량을 전부 쓰기 어렵기 때문에 85% 효율로 계산합니다. 예: 2048Wh 파워뱅크로 300W 지속광 1개를 돌리면 약 5.8시간, 76Wh NP-F 배터리로 10W 모니터를 돌리면 약 6.5시간입니다.</p>
+    <div class="calc-grid">
+      <label>전원 장비
+        <select id="powerSelect"></select>
+      </label>
+      <label>총 소비전력 W
+        <input id="wattInput" type="number" min="1" value="300">
+      </label>
+      <label>효율
+        <select id="effInput">
+          <option value="0.85">85% 일반 계산</option>
+          <option value="0.75">75% 추운 야외/손실 큼</option>
+          <option value="0.9">90% 보수적 손실 적음</option>
+        </select>
+      </label>
+      <label>여유율
+        <select id="reserveInput">
+          <option value="1">잔량까지 사용</option>
+          <option value="0.8">20% 남기기</option>
+          <option value="0.7">30% 남기기</option>
+        </select>
+      </label>
+      <div class="calc-output" id="calcOutput"></div>
+    </div>
+  </section>
+
+</main>
+<script>
+const rows=[
+  {category:"스탠드",group:"휴대용 라이트 스탠드",brand:"Manfrotto",model:"1052BAC Compact Stand",spec:"최대 237cm, 접이 86cm, 에어쿠션",capacity:"하중 5kg, 무게 1.23kg",price:150000,priority:"높음",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/1/0/1052bac-blk-alu-ac-compact.jpg",link:"https://www.manfrotto.com/global-en/compact-photo-stand-air-cushioned-and-portable-1052bac/",note:"가벼운 지속광, V1/AD100, 리플렉터용 기본 스탠드."},
+  {category:"스탠드",group:"휴대용 라이트 스탠드",brand:"Manfrotto",model:"5001B Nano Stand",spec:"최대 190cm, 접이 약 49cm, 초경량 휴대형",capacity:"하중 약 1.5kg, 무게 약 1kg급",price:110000,priority:"중간",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/n/a/nano-black-stand-manfrotto-5001b-1.jpg",link:"https://www.manfrotto.com/global-en/nano-lighting-stand-black-5001b-1/",note:"V1/IT30/소형 LED처럼 가벼운 장비를 빠르게 세울 때. 큰 소프트박스나 야외 바람에는 부적합."},
+  {category:"스탠드",group:"휴대용 라이트 스탠드",brand:"Kupo",model:"070AC Mini Click Stand",spec:"7ft급 미니 클릭 스탠드, 에어쿠션",capacity:"소형 플래시/LED/리플렉터",price:105000,priority:"가성비",wh:0,image:"https://www.kuposhop.com/comm/upimage/p_190815_05112.jpg",link:"https://www.kuposhop.com/en/product-672726/KUPO-Mini-Click-Stand-080AC.html",note:"5001B보다 조금 더 현장 스탠드에 가까운 가성비 후보. 작은 지속광과 V1/IT30 보조 조명에 적합."},
+  {category:"스탠드",group:"기본 마스터/랭커 스탠드",brand:"Manfrotto",model:"1004BAC Master Stand",spec:"최대 366cm, 접이 107cm, 에어쿠션",capacity:"하중 9kg, 무게 2.4kg",price:275000,priority:"높음",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/1/0/1004bac-blk-alu-ac-master-stand.jpg",link:"https://www.manfrotto.com/global-en/photo-master-stand-air-cushioned-1004bac/",note:"한 사람이 들고 다니기 좋은 표준급. 300W 이하 조명과 작은 소프트박스에 적합."},
+  {category:"스탠드",group:"기본 마스터/랭커 스탠드",brand:"Manfrotto",model:"1005BAC Ranker Stand",spec:"최대 273cm, 최소 118cm, 에어쿠션",capacity:"하중 10kg, 무게 약 2kg급",price:245000,priority:"높음",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/1/0/1005bac-blk-alu-ac-ranker-stand.jpg",link:"https://www.manfrotto.com/global-en/black-alu-ranker-stand-air-cushioned-9-3-sections-2-risers-1005bac/",note:"1004BAC보다 높이는 낮지만 하중 여유가 좋아 로케이션 키트 스탠드로 보기 좋음."},
+  {category:"스탠드",group:"기본 마스터/랭커 스탠드",brand:"Avenger",model:"A0035B Baby Stand 35",spec:"최대 350cm, 알루미늄 트리플 라이저",capacity:"하중 9kg, 16mm 베이비 탑",price:380000,priority:"최선",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/s/t/stand-avenger-baby-stand-35-alu-blk-a0035b.jpg",link:"https://www.manfrotto.com/global-en/baby-stand-35-aluminium-black-a0035b/",note:"Manfrotto 마스터/랭커보다 Avenger 쪽 내구성과 현장감을 보는 후보. 높이와 하중 균형이 좋음."},
+  {category:"스탠드",group:"A/C-스탠드",brand:"Avenger",model:"A2018F C-Stand 18",spec:"최대 175cm, 최소 84cm, 스틸 C-스탠드",capacity:"하중 8kg, 무게 4.2kg",price:330000,priority:"중간",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/c/e/century-stand-avenger-c-stand-18-a2018f.jpg",link:"https://www.manfrotto.com/global-en/c-stand-18-a2018f/",note:"낮은 위치의 키커, 제품 라이트, 플래그 고정용. 40인치 C-스탠드보다 작고 낮게 쓰기 좋음."},
+  {category:"스탠드",group:"A/C-스탠드",brand:"Avenger",model:"A2030DKIT Turtle Base C-Stand",spec:"최대 300cm, 40인치 암+그립헤드 포함",capacity:"하중 10kg급, 크롬 스틸",price:520000,priority:"높음",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/s/t/stand-avenger-c-stand-30-detachable-kit-a2030dkit.jpg",link:"https://www.manfrotto.com/global-en/c-stand-kit-30-with-detachable-base-a2030dkit/",note:"사진/영상 현장에서 가장 표준적인 C-스탠드 세트."},
+  {category:"스탠드",group:"A/C-스탠드",brand:"Kupo",model:"CL-40MK Master C-Stand Kit",spec:"최대 313cm, 슬라이딩 레그, 암+KCP-200 포함",capacity:"하중 10kg, 무게 9.05kg",price:460000,priority:"높음",wh:0,image:"https://www.kuposhop.com/comm/upimage/p_210518_03085.jpg",link:"https://www.kuposhop.com/en/product-672820/KUPO-40-inch-Master-C-Stand-W-Sliding-Leg-Quick-Release-Kit-CL-40MK.html",note:"가격 대비 구성이 좋아 첫 C-스탠드 후보로 보기 좋음."},
+  {category:"스탠드",group:"A/C-스탠드",brand:"Matthews",model:"Hollywood Pro 40 C-Stand Kit",spec:"40인치 C-스탠드, 슬라이딩 레그, 암+그립헤드",capacity:"하중 10kg급",price:542000,priority:"중간",wh:0,image:"https://www.msegrip.com/cdn/shop/files/339567_40HollywoodDoubleRiser_RGB002.jpg?crop=center&height=1200&v=1728244793&width=1200",link:"https://www.msegrip.com/products/hollywood-pro-40-c-stand-w-sliding-leg-low-profile-base-includes-grip-head-arm",note:"내구성과 현장 표준성이 강점. 가격은 올라감."},
+  {category:"스탠드",group:"콤보/와인드업 스탠드",brand:"Avenger",model:"A1020CS Combo Stand 20",spec:"최대 198~200cm, 28mm 리시버+16mm 스피곳",capacity:"하중 35kg, 무게 7.2kg",price:520000,priority:"중간",wh:0,image:"https://cdn.webshopapp.com/shops/267645/files/431357911/avenger-avenger-a1020cs-combo-steel-stand.jpg",link:"https://www.bhphotovideo.com/c/product/3532-REG/Avenger_A1020CS_A1020CS_Low_Boy.html",note:"큰 지속광, 대형 소프트박스, 붐 베이스용. 높이는 낮지만 하중 여유가 큼."},
+  {category:"스탠드",group:"콤보/와인드업 스탠드",brand:"Avenger",model:"A1035CS Combo Stand 35",spec:"최대 350cm, 28mm 리시버+16mm 스피곳",capacity:"하중 40kg, 무게 11.5kg",price:720000,priority:"중간",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/c/o/combo-stand-avenger-combo-steel-stand-35-a1035cs.jpg",link:"https://www.manfrotto.com/ca-en/combo-stand-35-steel-a1035cs/",note:"대형 COB, 포커싱 파라볼릭, 붐 베이스용. 20 콤보보다 높이와 하중 여유가 큼."},
+  {category:"스탠드",group:"콤보/와인드업 스탠드",brand:"Avenger",model:"B6039CS Wind-Up Stand 39",spec:"최대 370cm, 최소 181cm, 28mm 리시버",capacity:"하중 30kg, 무게 25kg",price:1670000,priority:"낮음",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/w/i/wind-up-stands-avenger-wind-up-stand-39-chrome-steel-b6039cs-detail-01.jpg",link:"https://www.manfrotto.com/global-en/wind-up-stand-39-b6039cs/",note:"큰 조명과 메가붐을 크랭크로 안전하게 올리는 현장급 스탠드. 혼자 운용보다 팀 촬영/스튜디오용."},
+  {category:"스탠드",group:"콤보/와인드업 스탠드",brand:"Manfrotto",model:"087NW Steel Wind-Up Stand",spec:"최대 370cm, 케이블식 안전 릴리즈",capacity:"하중 30kg급, 스틸 와인드업",price:1450000,priority:"낮음",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/m/a/manfrotto-geared-wind-up-stand-safety-release-chrome-087nw.jpg",link:"https://www.manfrotto.com/global-en/steel-wind-up-stand-w-safety-release-cable-087nw/",note:"대형 조명을 부드럽게 올리는 전통적인 와인드업 기준점. 구매 전 보관공간과 이동 동선 확인."},
+  {category:"스탠드",group:"콤보/와인드업 스탠드",brand:"Kupo",model:"483BT Wind-Up Stand",spec:"최대 380cm, 자동 셀프락, 레벨링 레그",capacity:"하중 30kg, 무게 22.8kg",price:1450000,priority:"낮음",wh:0,image:"https://www.kuposhop.com/comm/upimage/p_240816_09038.jpg",link:"https://www.kuposhop.com/en/product-672791/KUPO-3-Sct-Wind-Up-Stand-W-Auto-Self-Locking-Device-Black-483BT.html",note:"Avenger/Manfrotto 와인드업과 같은 대형 조명·오버헤드 운용 비교군. 안전장치와 캐스터 호환을 확인."},
+  {category:"스탠드",group:"중형 키트/베이비 스탠드",brand:"Avenger",model:"A0040B Baby Stand 40",spec:"최대 400cm, 4섹션/3라이저, 레벨링 레그",capacity:"하중 9kg, 16mm 베이비 탑",price:460000,priority:"중간",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/a/v/avenger-baby-stand-40-triple-riser-black-aluminium-a0040b.jpg",link:"https://www.manfrotto.com/global-en/baby-stand-40-aluminium-black-a0040b/",note:"C-스탠드보다 가볍게 높이를 확보하고 싶을 때. 야외/비탈에서는 레벨링 레그가 장점."},
+  {category:"스탠드",group:"중형 키트/베이비 스탠드",brand:"Kupo",model:"169M Master Classic Stand",spec:"3단 알루미늄 마스터 스탠드, 에어쿠션 계열",capacity:"하중 10kg급, 무게 2.2kg급",price:185000,priority:"중간",wh:0,image:"https://www.kuposhop.com/comm/upimage/p_191001_01228.jpg",link:"https://www.kuposhop.com/en/product-672737/KUPO-Master-Classic-Stand-169M.html",note:"Manfrotto 기본 스탠드와 같이 볼 수 있는 예산형/실전형 후보. 국내 수입가 확인 필요."},
+  {category:"스탠드",group:"중형 키트/베이비 스탠드",brand:"Matthews",model:"Medium Duty Maxi Kit Stand",spec:"알루미늄/블랙 키트 스탠드",capacity:"하중 약 25lb급",price:430000,priority:"중간",wh:0,image:"https://www.msegrip.com/cdn/shop/files/B387485KitMedDutyMaxiclosed.jpg?crop=center&height=1200&v=1754421677&width=1200",link:"https://www.msegrip.com/products/kit-medium-duty-maxi-black-aluminum",note:"C-스탠드보다 이동성이 필요하지만 일반 스탠드보다 튼튼해야 할 때."},
+  {category:"스탠드",group:"저각/배경 스탠드",brand:"Manfrotto",model:"003 Backlite Stand",spec:"바닥 가까운 저각 조명용",capacity:"소형 조명/배경광",price:78000,priority:"낮음",wh:0,image:"https://cdn.webshopapp.com/shops/267645/files/429408704/manfrotto-manfrotto-backlite-vloerkruis-003.jpg",link:"https://www.manfrotto.com/global-en/backlite-stand-black-003/",note:"배경 분리광, 바닥광, 작은 플래시 위치 잡기용."},
+  {category:"스탠드",group:"저각/배경 스탠드",brand:"Avenger",model:"A5012 Roller Low Boy 12",spec:"로우보이 롤러 스탠드, 접이식 베이스",capacity:"하중 25kg급, 모니터/테이블/저각 조명",price:650000,priority:"낮음",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/r/o/roller-stands-avenger-combo-roller-stand-12-with-folding-base-black-and-chrome-steel-and-silver-aluminium--a5012.jpg",link:"https://www.manfrotto.com/global-en/roller-stand-12-with-folding-base-a5012/",note:"바닥 가까운 대형 조명이나 DIT/모니터를 굴려 배치할 때. 단순 백라이트 스탠드보다 훨씬 현장용."},
+  {category:"스탠드",group:"저각/배경 스탠드",brand:"Kupo",model:"185M Low Mighty Baby Stand",spec:"저각 베이비 스탠드, 16mm 탑",capacity:"낮은 키커/배경광/제품 라이트",price:185000,priority:"가성비",wh:0,image:"https://www.kuposhop.com/comm/upimage/p_191001_01629.jpg",link:"https://www.kuposhop.com/en/product-672772/KUPO-16mm%E9%90%B5%E8%A3%BD%E5%B0%8F%E7%9F%AD%E8%85%B3-185M.html",note:"Manfrotto 003보다 튼튼한 저각 후보. 바닥 키커나 제품 라이트를 낮게 깔 때 비교."},
+
+  {category:"붐·그립·안전",group:"기본 그립",brand:"Manfrotto",model:"035 Super Clamp",spec:"13~55mm 파이프 클램프, 16mm 소켓",capacity:"하중 15kg, 무게 0.43kg",price:53000,priority:"높음",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/l/i/lighting-clamp-avenger-super-clamp-035.jpg",link:"https://www.manfrotto.com/global-en/super-photo-clamp-without-stud-aluminium-035/",note:"스탠드, 봉, 테이블에 소형 조명/암을 붙이는 현장 필수품."},
+  {category:"붐·그립·안전",group:"기본 그립",brand:"Kupo",model:"KCP-200 2.5 Grip Head",spec:"5/8, 1/2, 3/8, 1/4 V-jaw",capacity:"무게 780g",price:44000,priority:"높음",wh:0,image:"https://www.kuposhop.com/comm/upimage/p_240306_06758.jpg",link:"https://www.kuposhop.com/en/product-672849/KUPO-2-1-2-inch-Grip-Head-W-Big-Handle-KCP-200.html",note:"암, 플래그, 확산천, 반사판 고정의 기본 부품."},
+  {category:"붐·그립·안전",group:"기본 그립",brand:"Avenger",model:"D520 40 Grip Arm",spec:"40인치 암, 그립헤드용",capacity:"플래그/소형 악세사리",price:85000,priority:"높음",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/g/r/grip-arm-avenger-40-extension--d520.jpg",link:"https://www.manfrotto.com/global-en/40-grip-arm-silver-d520/",note:"C-스탠드에 물려 빛 가림, 반사판, 소형 악세사리 위치 잡기."},
+  {category:"붐·그립·안전",group:"안전 웨이트",brand:"Impact",model:"Filled Saddle Sandbag 15 lb",spec:"15lb 충전 샌드백, 방수 코듀라",capacity:"6.8kg",price:34000,priority:"높음",wh:0,image:"https://www.tanotis.com/cdn/shop/products/1453925259000_1161017_ac34d5af-e0d5-4c6d-aaa9-5127496cfe3f_1024x.jpg?v=1575997754",link:"https://www.bhphotovideo.com/c/product/1161029-REG/impact_sbf_b_15_saddle_sandbag_15lb.html",note:"스탠드 1개당 최소 1개 기준. 붐/야외/큰 소프트박스는 2개 이상."},
+  {category:"붐·그립·안전",group:"안전 웨이트",brand:"Impact",model:"Empty Pro Sandbag Kit 15 lb x6",spec:"빈 샌드백 6개 세트",capacity:"각 15lb 충전 가능",price:126000,priority:"중간",wh:0,image:"https://www.tanotis.com/cdn/shop/products/impact_6_saddlebag_sandbag_kit_1456336736000_1161017_c83924de-29d5-4172-b6aa-8d9736d8fa5a_1024x.jpg?v=1575997754",link:"https://www.bhphotovideo.com/c/product/983922-REG/impact_pro_15_lb_sandbag.html/specs",note:"국내에서 모래/쌀/샷백 충전해서 여러 스탠드에 분산하기 좋음."},
+  {category:"붐·그립·안전",group:"세트 보조",brand:"Matthews",model:"Full Apple Box",spec:"12x8x20인치, 9-ply 합판",capacity:"인물/장비 받침",price:121000,priority:"중간",wh:0,image:"https://www.msegrip.com/cdn/shop/products/259535_full-apple-box_01_1500.jpg?crop=center&height=1200&v=1762200801&width=1200",link:"https://www.msegrip.com/products/full-apple-box",note:"피사체 키 높이, 제품 높이, 낮은 조명 받침에 계속 쓰임."},
+  {category:"붐·그립·안전",group:"세트 보조",brand:"Matthews",model:"Half Apple Box",spec:"12x8x10인치, 9-ply 합판",capacity:"인물/제품 높이 미세 조절",price:110000,priority:"중간",wh:0,image:"https://www.msegrip.com/cdn/shop/products/259536_half-apple-box_01_1500.jpg?crop=center&height=1200&v=1728246762&width=1200",link:"https://www.msegrip.com/products/half-apple-box",note:"Full Apple Box보다 낮은 높이 조정용. 앉은 포즈, 제품 받침, 낮은 조명 받침에 자주 쓰임."},
+  {category:"붐·그립·안전",group:"세트 보조",brand:"Matthews",model:"Apple Box Set",spec:"Full, Half, Quarter, Pancake 4종",capacity:"세트 높이 조절",price:360000,priority:"낮음",wh:0,image:"https://www.filmtools.com/media/catalog/product/2/2/22792_1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=265&width=265&canvas=265:265",link:"https://www.filmtools.com/filmtools-apple-box-set-kit.html",note:"스튜디오 고정 운용이면 세트가 편함. 로케이션은 Full/Quarter부터."},
+  {category:"붐·그립·안전",group:"A클램프 사이즈별",brand:"Kupo",model:"Small Steel Spring Clamp 1.8 inch",spec:"1.8인치 소형 스틸 스프링 클램프",capacity:"작은 카드/천/소품 임시 고정",price:21000,priority:"가성비",wh:0,image:"https://cdn11.bigcommerce.com/s-it505z90ph/products/1006/images/412262/mahqmhmxfp7ep0ada6ab__66268.1712296518.386.513.jpg?c=1",link:"https://kupogrip.com/kupo-small-steel-spring-clamp-1-8in/",note:"작은 반사카드, 배경지 모서리, 소품 고정용. 힘은 약하지만 여러 개 들고 다니기 좋음."},
+  {category:"붐·그립·안전",group:"A클램프 사이즈별",brand:"Kupo",model:"Steel Spring A-Clamp 4 inch Set of 2",spec:"4인치 스틸 스프링 A-클램프 2개 세트",capacity:"작은 리플렉터/폼보드/천 고정",price:15000,priority:"가성비",wh:0,image:"https://cdn11.bigcommerce.com/s-it505z90ph/products/896/images/412021/cvfptbewqkgmu8xehdfo__21485.1713851638.386.513.jpg?c=1",link:"https://kupogrip.com/kupo-4in-steel-spring-a-clamp-black-set-of-2/",note:"가장 부담 없이 여러 개 사둘 수 있는 사이즈. 작은 세트 정리와 배경 천 고정에 좋음."},
+  {category:"붐·그립·안전",group:"A클램프 사이즈별",brand:"Kupo",model:"Steel Spring A-Clamp 6 inch Set of 2",spec:"6인치 스틸 스프링 A-클램프 2개 세트",capacity:"배경지/천/리플렉터 고정",price:30000,priority:"최선",wh:0,image:"https://cdn11.bigcommerce.com/s-it505z90ph/products/926/images/412073/hayu6vlklfzakxofe8he__63763.1713246909.386.513.jpg?c=1",link:"https://kupogrip.com/kupo-6in-steel-spring-a-clamp-black-set-of-2/",note:"현장에서 가장 범용적인 A클램프 사이즈. 배경지, 천, 리플렉터, 얇은 폼보드까지 두루 쓰기 좋음."},
+  {category:"붐·그립·안전",group:"A클램프 사이즈별",brand:"Kupo",model:"Steel Spring A-Clamp 9 inch Set of 2",spec:"9인치 스틸 스프링 A-클램프 2개 세트",capacity:"두꺼운 폼보드/대형 천/강한 고정",price:38000,priority:"최고",wh:0,image:"https://cdn11.bigcommerce.com/s-it505z90ph/products/867/images/411959/toeliberon7rlsdremsv__70908.1713938146.386.513.jpg?c=1",link:"https://kupogrip.com/kupo-9in-steel-spring-a-clamp-black-set-of-2/",note:"힘과 물림 폭이 필요할 때 쓰는 큰 사이즈. 휴대성은 떨어지지만 대형 천이나 두꺼운 보드에는 확실함."},
+
+  {category:"카트·운반",group:"프로덕션 카트",brand:"Motion9",model:"M2 Cart",spec:"모션나인 촬영 카트 M2 본품, 옵션형 타이어/핸들/홀더 구성",capacity:"스튜디오/로케이션 장비 운반, 옵션별 확장",price:993300,priority:"중간",wh:0,image:"https://hktools.co.kr/web/product/big/202401/fca4e19ebf55ff12437d3692cca06481.jpg",link:"https://hktools.co.kr/product/motion9-%EB%AA%A8%EC%85%98%EB%82%98%EC%9D%B8-%EC%B9%B4%ED%8A%B8-m2/18925/",note:"국내 구매 접근성이 좋은 촬영용 카트. 본품은 약 99만원, 광폭타이어/13인치/9바퀴 옵션은 100만원대 초중반까지 상승."},
+  {category:"카트·운반",group:"프로덕션 카트",brand:"Magliner",model:"Gemini Junior Convertible",spec:"2륜/4륜 전환, 플랫폼 길이 약 47.5인치",capacity:"핸드트럭 500lb, 플랫폼 1000lb",price:869000,priority:"중간",wh:0,image:"https://mappcaster.com/cdn/shop/products/Magliner_Junior_up_right_600x.jpg?v=1571715488",link:"https://mappcaster.com/products/6htgk1839-magline-gemini-junior-handtruck",note:"접이식 프로덕션 카트가 부담될 때 보는 변환형 핸드트럭. Motion9/Inovativ과 운반 방식 기준으로 비교."},
+  {category:"카트·운반",group:"프로덕션 카트",brand:"Inovativ",model:"Voyager 36 NXT",spec:"약 39.9x24.7x40.9인치, 공구 없이 조립",capacity:"카메라/모니터/DIT 카트",price:5350000,priority:"낮음",wh:0,image:"https://static1.squarespace.com/static/61061cb86d5350350a178b1a/610620cf268ac41c52230da4/639cd658f64ca928259a8724/1671223030925/1549311340000_IMG_1133714__40242.jpeg?format=1500w",link:"https://www.bhphotovideo.com/c/product/1451673-REG/inovativ_vn_0036_voyager_36_nxt_equipment.html",note:"상업 영상/대형 현장용. 사진 위주면 마지막 단계 업그레이드."},
+  {category:"카트·운반",group:"케이스·가방",brand:"Pelican",model:"1510 Protector Carry-On",spec:"기내용 하드케이스",capacity:"카메라/렌즈/소형 악세사리",price:350000,priority:"중간",wh:0,image:"https://pelicanweb-prod.s3.us-west-1.amazonaws.com/public/products/cases/1510/pelican-1510-case-carry-on-protective-foam.jpg",link:"https://www.pelican.com/us/en/product/cases/1510",note:"차량 이동과 비/충격이 잦으면 장비 보호용으로 가치가 큼."},
+  {category:"카트·운반",group:"케이스·가방",brand:"Think Tank",model:"Production Manager 40 V2.0",spec:"대형 롤링 기어 케이스",capacity:"스탠드 제외 조명/카메라 악세사리",price:964000,priority:"낮음",wh:0,image:"https://www.thinktankphoto.com/cdn/shop/products/Production_Manager_40_V2_Hero_Gear_Right_1200x1200.jpg?v=1614885497",link:"https://www.thinktankphoto.com/products/production-manager-40-v2",note:"조명 악세사리와 케이블을 한 번에 정리하는 고급 선택지."},
+  {category:"카트·운반",group:"케이스·가방",brand:"NANUK",model:"935 Wheeled Waterproof Case",spec:"기내용급 롤링 하드케이스, 방수/방진",capacity:"카메라/렌즈/소형 조명, 바퀴형",price:390000,priority:"최선",wh:0,image:"https://nanuk.com/cdn/shop/files/935_NanukCase_DesertTan_CubedFoam_35_Accessories.jpg?v=1776783083&width=2048",link:"https://nanuk.com/products/nanuk-935",note:"Pelican 1510과 직접 비교할 수 있는 롤링 하드케이스. 색상/내부폼 옵션이 다양함."},
+
+  {category:"파워뱅크·배터리",group:"휴대 전원 1kWh급",brand:"EcoFlow",model:"RIVER 2 Pro",spec:"768Wh, AC 800W",capacity:"LiFePO4, 소형 지속광/충전",price:763000,priority:"중간",wh:768,image:"https://us.ecoflow.com/cdn/shop/products/ecoflow-us-ecoflow-river-2-pro-portable-power-station-30042784006217.png?v=1742453520",link:"https://us.ecoflow.com/products/river-2-pro-portable-power-station",note:"1kWh급 입문 아래쪽 예산 기준. 가벼운 로케이션, 카메라/노트북/LED 60~120W 보조 전원."},
+  {category:"파워뱅크·배터리",group:"휴대 전원 1kWh급",brand:"EcoFlow",model:"DELTA 2",spec:"1024Wh, AC 1800W",capacity:"확장 배터리 지원",price:916000,priority:"높음",wh:1024,image:"https://us.ecoflow.com/cdn/shop/files/ecoflow-us-ecoflow-delta-2-portable-power-station-standalone-delta-2-220w-solar-panel-1192816367.png?v=1765262978",link:"https://us.ecoflow.com/products/delta-2-portable-power-station",note:"300W 지속광 1개와 카메라 충전까지 버티는 현실적인 시작점."},
+  {category:"파워뱅크·배터리",group:"휴대 전원 1kWh급",brand:"DJI",model:"Power 1000",spec:"1024Wh, AC 2200W, USB-C 140W x2",capacity:"약 13kg, LFP",price:1069000,priority:"높음",wh:1024,image:"https://images-na.ssl-images-amazon.com/images/I/71uAU84cSrL.jpg",link:"https://www.dji.com/power-1000/specs",note:"DJI 드론/카메라 충전까지 같이 굴릴 때 강점. 출력 여유가 좋음."},
+  {category:"파워뱅크·배터리",group:"휴대 전원 1kWh급",brand:"Anker",model:"SOLIX C1000",spec:"1056Wh, AC 1800W, 피크 2400W",capacity:"LiFePO4",price:1223000,priority:"중간",wh:1056,image:"https://cdn.shopify.com/s/files/1/0854/3820/2186/files/cq5dam.web.1280.1280_6_-Photoroom1.png?v=1733921194",link:"https://www.anker.com/products/a1761",note:"빠른 충전과 안정성이 장점. 국내 판매가 확인 후 비교."},
+  {category:"파워뱅크·배터리",group:"휴대 전원 1kWh급",brand:"BLUETTI",model:"AC180",spec:"1152Wh, AC 1800W, 1440W 입력",capacity:"LiFePO4",price:916000,priority:"중간",wh:1152,image:"https://cdn.shopify.com/s/files/1/0536/3390/8911/files/ac180_183f8842-83e6-418a-af85-48087032f778.jpg?v=1683355878",link:"https://www.bluettipower.com/pages/ac180",note:"가격 대비 용량이 좋고, 1시간대 급속충전 계열."},
+  {category:"파워뱅크·배터리",group:"휴대 전원 1kWh급",brand:"Jackery",model:"Explorer 1000 Plus",spec:"1264Wh, AC 2000W",capacity:"확장 배터리 지원",price:1529000,priority:"중간",wh:1264,image:"https://www.jackery.com/cdn/shop/files/638c5802526fcb1bcab5a4f96e82e640.png?v=1699941562",link:"https://www.jackery.com/products/explorer-1000-plus-portable-power-station",note:"용량이 1kWh급보다 조금 넉넉. 캠핑/야외 촬영 겸용."},
+  {category:"파워뱅크·배터리",group:"휴대 전원 2kWh급",brand:"EcoFlow",model:"DELTA 2 Max",spec:"2048Wh, AC 2400W, 서지 4800W",capacity:"확장 배터리 2개 지원",price:1376000,priority:"높음",wh:2048,image:"https://us.ecoflow.com/cdn/shop/files/ecoflow-us-ecoflow-delta-2-max-portable-power-station-d2m-delta-2-max-portable-power-station-1182569251.png?v=1754036926",link:"https://us.ecoflow.com/products/delta-2-max-portable-power-station",note:"300~600W 지속광을 오래 쓰려면 2kWh급부터 체감이 큼."},
+  {category:"파워뱅크·배터리",group:"휴대 전원 2kWh급",brand:"BLUETTI",model:"AC200L",spec:"2048Wh, AC 2400W",capacity:"LiFePO4, 대용량",price:2140000,priority:"중간",wh:2048,image:"https://cdn.shopify.com/s/files/1/0536/3390/8911/files/AC200L_9783dcdd-db2a-4939-8ce5-7134f35d43a4.png?v=1758766225",link:"https://www.bluettipower.com/products/ac200l",note:"고출력 지속광과 노트북/충전기를 한 번에 돌릴 때."},
+  {category:"파워뱅크·배터리",group:"휴대 전원 2kWh급",brand:"Anker",model:"SOLIX F2000",spec:"2048Wh, AC 2400W, 앱 모니터링",capacity:"LiFePO4, 대형 충전 스테이션",price:1835000,priority:"최선",wh:2048,image:"https://cdn.shopify.com/s/files/1/0854/3820/2186/files/image1161.png?v=1733921565",link:"https://www.ankersolix.com/products/f2000",note:"DELTA 2 Max/AC200L과 같은 2kWh급. 조명과 Mac/충전 허브를 같이 돌리는 현장 전원 후보."},
+  {category:"파워뱅크·배터리",group:"V마운트 배터리",brand:"SmallRig",model:"VB99 Pro",spec:"98.872Wh, USB-C 100W, D-Tap, 8V/12V",capacity:"항공 반입 친화 99Wh급",price:268000,priority:"높음",wh:99,image:"https://static.smallrig.com/mall/img/public/1730711646131_.JPG",link:"https://www.smallrig.com/smallrig-VB99-Pro-mini-V-Mount-Battery-4292.html",note:"카메라 리그, 모니터, 소형 LED, 노트북 보조 충전에 실용적."},
+  {category:"파워뱅크·배터리",group:"V마운트 배터리",brand:"SmallRig",model:"VB155",spec:"155Wh, V-Mount, USB-C/D-Tap",capacity:"중형 리그/조명",price:427000,priority:"중간",wh:155,image:"https://static.smallrig.com/mall/img/public/17556849297871755684929787.png",link:"https://www.smallrig.com/VB155-mini-V-Mount-Battery-3581B.html",note:"항공 반입 제약은 확인 필요. 스튜디오/차량 이동이면 유용."},
+  {category:"파워뱅크·배터리",group:"V마운트 배터리",brand:"FXLION",model:"NANO TWO",spec:"98Wh, USB-C, D-Tap",capacity:"소형 V마운트",price:381000,priority:"중간",wh:98,image:"https://fxlion.net/wp-content/uploads/2023/07/NANO-TWO_A1.jpg",link:"https://www.fxlion.net/nano-two",note:"작은 리그용 고급 대안. 국내 유통가 확인 필요."},
+  {category:"파워뱅크·배터리",group:"V마운트 배터리",brand:"IDX",model:"DUO-C98P",spec:"97Wh, D-Tap, USB-C PD",capacity:"방송/프로덕션 계열",price:427000,priority:"낮음",wh:97,image:"https://cdn11.bigcommerce.com/s-7u5wuxt2au/images/stencil/1280x1280/products/1052/1706/DUO-C98P_Sample03_trans_500x400_546d5ced-c478-4299-b123-c0799101cdd0__81117.1670623874.png?c=1",link:"https://idxtek.com/duo-c98p",note:"신뢰성이 중요하고 기존 충전기/플레이트 호환이 있을 때."},
+  {category:"파워뱅크·배터리",group:"NP-F/L-Series 배터리",brand:"SmallRig",model:"NP-F550 USB-C Rechargeable Battery",spec:"7.3V, 3500mAh, USB-C 충전",capacity:"약 25.55Wh, 소형 모니터/송신기/소형 LED",price:60000,priority:"가성비",wh:26,image:"https://static.smallrig.com/mall/img/public/1727348830231_.JPG",link:"https://www.smallrig.com/smallrig-NP-F550-USB-C-Rechargeable-Camera-Battery-4331.html",note:"가볍고 저렴한 소형 NP-F. 5인치 모니터나 송수신기 보조용으로 좋고, 긴 촬영은 F970급을 같이 봐야 함."},
+  {category:"파워뱅크·배터리",group:"NP-F/L-Series 배터리",brand:"NEEWER",model:"NW-F970U Touchscreen NP-F970",spec:"7.27V, 10500mAh, USB-C PD, OLED/터치 표시",capacity:"76.33Wh, 대용량 NP-F970급",price:92000,priority:"가성비",wh:76,image:"https://neewer.com/cdn/shop/files/1_4d8656a8-a893-4dc4-bdfe-83ce5e312309.jpg?crop=center&height=1200&v=1774347207&width=1200",link:"https://neewer.com/products/neewer-nw-f970u-10500mah-np-f970-replacement-battery-pd-fast-charging-66607772",note:"가격 대비 용량과 잔량 표시가 좋아 모니터/소형 LED용 후보. 정품 Sony NP-F970보다 용량은 크지만 호환성은 장비별 확인."},
+  {category:"파워뱅크·배터리",group:"NP-F/L-Series 배터리",brand:"SmallRig",model:"NP-F970 USB-C Rechargeable Battery",spec:"7.3V, 10500mAh, USB-C 36W 입력/출력",capacity:"76.65Wh, 대용량 NP-F970급",price:107000,priority:"최선",wh:77,image:"https://static.smallrig.com/mall/img/public/1721726051880_.jpg",link:"https://www.smallrig.com/NP-F970-USB-C-Rechargeable-Camera-Battery.html",note:"모니터, Hollyland, 소형 LED, 슬라이더까지 가장 현실적인 중심 후보. USB-C로 충전 테이블 구성이 쉬움."},
+  {category:"파워뱅크·배터리",group:"NP-F/L-Series 배터리",brand:"Sony",model:"NP-F970 InfoLITHIUM L-Series",spec:"7.2V, 47.5Wh급 정품 L-Series 배터리",capacity:"정품 호환성 기준, Sony 캠코더/모니터 계열",price:180000,priority:"최고",wh:48,image:"https://www.sony.jp/products/picture/large/NP-F970.jpg",link:"https://www.sony.jp/handycam/products/NP-F970/",note:"용량 대비 가격은 높지만 정품 호환성과 안정성의 기준점. 서드파티 NP-F970급과 비교할 때 기준 배터리로 봄."},
+  {category:"파워뱅크·배터리",group:"NP-F/L-Series 배터리",brand:"HEDBOX",model:"RP-NPF970",spec:"7.4V, 6600mAh, Sony L-Series 호환",capacity:"48.8Wh, 고신뢰 NP-F970급",price:115000,priority:"최고",wh:49,image:"https://www.hedbox.com/wp-content/uploads/2017/07/rp_npf970-main.png",link:"https://www.hedbox.com/products/dv-battery-packs/rp-npf970/",note:"Sony 정품 계열 감각으로 보는 안정성 후보. Wh만 보면 SmallRig/NEEWER가 크지만, 호환 안정성과 셀 품질 기준점으로 비교."},
+  {category:"파워뱅크·배터리",group:"NP-F 충전기·전원 어댑터",brand:"NEEWER",model:"NP-F Dual USB Battery Charger",spec:"NP-F550/750/970 2구 USB 충전기, LCD 표시",capacity:"NP-F 2개 동시 충전",price:30000,priority:"가성비",wh:0,image:"https://eu.neewer.com/cdn/shop/products/10100251_80ae9800-e20a-4789-848c-de671461bb8e.jpg?crop=center&height=1200&v=1697602786&width=1200",link:"https://eu.neewer.com/products/neewer-dual-usb-charger-fast-battery-charger-with-lcd-display-66600569",note:"NP-F 배터리 2~4개 정도 운용하는 시작 단계. 저렴하지만 충전 속도와 어댑터 출력은 기대치를 낮게 잡는 편이 안전."},
+  {category:"파워뱅크·배터리",group:"NP-F 충전기·전원 어댑터",brand:"SmallRig",model:"NP-F Battery Adapter Mount Plate 3168B",spec:"NP-F 플레이트, 7.4V/12V DC, USB-C 36W",capacity:"카메라 리그/모니터/송신기 보조 전원",price:65000,priority:"최선",wh:0,image:"https://static.smallrig.com/mall/img/public/1697611572579_.JPG",link:"https://www.smallrig.com/SmallRig-NP-F-Battery-Adapter-Mount-Plate-Advanced-Edition-3168B.html",note:"NP-F를 단순 배터리에서 리그 전원으로 바꾸는 부품. 전압이 맞지 않으면 장비 손상 위험이 있으니 7.4V/12V를 반드시 확인."},
+  {category:"파워뱅크·배터리",group:"NP-F 충전기·전원 어댑터",brand:"NEEWER",model:"NW-F4 100W PD 4-Channel Charger",spec:"NP-F550/750/970 4채널 독립 충전, USB-C PD 100W",capacity:"NP-F 4개 동시 충전",price:92000,priority:"최선",wh:0,image:"https://neewer.com/cdn/shop/files/1_4c997bcd-eedd-45f2-b663-84353c33fcd7.jpg?crop=center&height=1200&v=1736843939&width=1200",link:"https://neewer.com/products/neewer-nw-f4-4-channel-charger-for-np-f550-np-f750-np-f970-camera-battery-66606552",note:"모니터, 무선 송수신기, 소형 LED 때문에 NP-F가 늘어나면 4구 충전기가 체감이 큼. 100W PD 어댑터와 세트로 계산."},
+  {category:"파워뱅크·배터리",group:"NP-F 충전기·전원 어댑터",brand:"SmallRig",model:"NP-F 4-Channel PD 100W Charger 4837",spec:"NP-F 4채널, OLED 표시, PD 100W 입력 계열",capacity:"NP-F 4개 동시 충전, 상태 확인 편리",price:145000,priority:"최고",wh:0,image:"https://static.smallrig.com/mall/img/public/1732501976197_.JPG",link:"https://www.smallrig.com/NP-F-4-Channel-Camera-Battery-Charger-4837.html",note:"NP-F 충전 스테이션을 제대로 만들 때의 상위 후보. 배터리별 잔량/상태 확인과 케이블 정리가 쉬움."},
+  {category:"파워뱅크·배터리",group:"충전 스테이션 허브",brand:"Anker",model:"525 Charging Station",spec:"7-in-1, AC 3구, USB-C 2, USB-A 2, USB-C 최대 67W",capacity:"노트북 1대+소형 충전기 여러 개",price:92000,priority:"가성비",wh:0,image:"https://cdn.shopify.com/s/files/1/0493/9834/9974/products/A91C0121_TD01_V1_2048x_cc67b904-8d0a-4a2a-9d9d-d8373eaf590f.png?v=1775968186",link:"https://www.anker.com/products/a91c0",note:"촬영 테이블에서 AC 충전기와 USB-C 장비를 같이 꽂는 저예산 허브. 국내 220V/KC형 판매 여부 확인."},
+  {category:"파워뱅크·배터리",group:"충전 스테이션 허브",brand:"Satechi",model:"165W USB-C 4-Port PD GaN Charger",spec:"USB-C 4포트, 총 165W, 데스크톱형 GaN",capacity:"카메라 배터리 충전기+휴대폰+태블릿",price:184000,priority:"가성비",wh:0,image:"https://satechi.com/cdn/shop/products/165w-usb-c-4-port-pd-gan-charger-wall-chargers-satechi-us-414152.jpg?v=1762441064&width=800",link:"https://satechi.net/products/165w-usb-c-4-port-pd-gan-charger",note:"USB-C 충전 포트를 깔끔하게 늘리는 방식. NP-F USB-C 배터리와 카메라 충전기를 한 테이블에 모으기 좋음."},
+  {category:"파워뱅크·배터리",group:"충전 스테이션 허브",brand:"Anker",model:"Prime Charger 200W 6-Port GaN",spec:"총 200W, 6포트, USB-C 단일 포트 최대 100W",capacity:"MacBook+NP-F 충전기+카메라/폰 동시 충전",price:153000,priority:"최선",wh:0,image:"https://cdn.shopify.com/s/files/1/0493/9834/9974/files/A2683141_TD01_V1.png?v=1756793949",link:"https://www.anker.com/products/a2683-anker-prime-charger-200w-6-ports-gan",note:"가방에 넣어 다니기보다 현장 충전 테이블 중심에 두는 후보. 포트별 출력 분배를 확인하고 케이블도 100W 이상급으로 맞춤."},
+  {category:"파워뱅크·배터리",group:"충전 스테이션 허브",brand:"Satechi",model:"200W USB-C 6-Port GaN Charger",spec:"USB-C 6포트, 총 200W, PD 충전 허브",capacity:"여러 USB-C 장비를 한 곳에서 충전",price:230000,priority:"최선",wh:0,image:"https://satechi.com/cdn/shop/products/200w-usb-c-6-port-gan-charger-charging-stations-satechi-us-350495.jpg?v=1762441311&width=800",link:"https://satechi.net/products/6-port-gan-charger",note:"USB-C 장비 위주라면 깔끔한 충전 스테이션을 만들기 좋음. AC 콘센트가 필요한 충전기는 별도 멀티탭과 조합."},
+  {category:"파워뱅크·배터리",group:"충전 스테이션 허브",brand:"UGREEN",model:"Nexode 300W Desktop USB-C GaN Charger",spec:"총 300W, 5포트, USB-C 단일 최대 140W 계열",capacity:"MacBook Pro+배터리 충전기 여러 개",price:306000,priority:"최고",wh:0,image:"https://us.ugreen.com/cdn/shop/files/ugreen-nexode-300w-usb-c-gan-charger-5-ports-desktop-charger-641732.png?v=1745609514",link:"https://us.ugreen.com/products/ugreen-300w-desktop-usb-c-gan-charger",note:"노트북, NP-F, 카메라 배터리, 휴대폰을 동시에 돌리는 고출력 허브. 케이블 규격과 발열/환기를 같이 봐야 함."},
+  {category:"파워뱅크·배터리",group:"충전 스테이션 허브",brand:"Anker",model:"Prime Charger 250W 6-Port GaNPrime",spec:"총 250W, 6포트, USB-C 고출력 분배",capacity:"고출력 USB-C 중심 충전 스테이션",price:230000,priority:"최고",wh:0,image:"https://cdn.shopify.com/s/files/1/0493/9834/9974/files/A2345141_Rich_image_TD01_UK_2400x2400px_V1.png?v=1748245769",link:"https://www.anker.com/products/a2345-anker-prime-charger-250w-6-ports-ganprime",note:"Anker 생태계와 고출력 분배를 보고 고르는 상위 후보. USB-C 배터리와 MacBook을 같이 충전할 때 여유가 큼."},
+
+  {category:"현장 필수품",group:"전원 케이블",brand:"Anker",model:"351 Power Strip",spec:"12 AC, USB-C 1, USB-A 2, 2100J 서지 보호",capacity:"AC/USB 분배",price:44000,priority:"높음",wh:0,image:"https://cdn.shopify.com/s/files/1/0493/9834/9974/files/A9192111_TD01_V1_757721b0-ea2f-4cb2-8a53-c26af5804072.png?v=1749728190",link:"https://www.anker.com/products/a9192",note:"전원 분배 개념 참고용. 국내 사용은 KC/220V/접지 플러그 규격을 반드시 확인."},
+  {category:"현장 필수품",group:"전원 케이블",brand:"Brennenstuhl",model:"Garant IP44 Cable Reel 20m",spec:"20m, H05VV-F 3G1.5, IP44, 과열 보호",capacity:"로케이션 전원 연장",price:66000,priority:"높음",wh:0,image:"https://www.brennenstuhl.com/temp/explorer/files/shop_articles/en-SE/images/4007123667529_1098530001____product__________027083______xx.300dpi.jpg",link:"https://www.brennenstuhl.com/en-FI/products/cable-reels/garant-ip44-cable-reel-20m-h05vv-f-3g1.5",note:"전원 위치가 멀 때. 조명 출력 합산 후 허용전류와 국내 플러그형 여부 확인."},
+  {category:"현장 필수품",group:"전원 케이블",brand:"Brennenstuhl",model:"Premium-Line 6-Way Extension Lead 3m",spec:"6구 멀티탭, 3m H05VV-F 3G1.5",capacity:"충전 테이블/DIT 테이블 전원 분배",price:45000,priority:"가성비",wh:0,image:"https://www.brennenstuhl.com/temp/explorer/files/shop_articles/en-SE/images/4007123624140_1951160100____product__________028480______xx.300dpi.jpg",link:"https://www.brennenstuhl.com/en-FI/products/extension-leads/premium-line-extension-lead-6-way-black-3m-h05vv-f-3g1.5",note:"충전 허브와 NP-F 충전기를 한 테이블에 모을 때 기본 멀티탭 후보. 국내 220V/KC/접지형 최종 확인 필요."},
+  {category:"현장 필수품",group:"소모품",brand:"VELCRO",model:"ONE-WRAP Cable Ties 8 inch",spec:"재사용 케이블 타이, 라벨 병행 권장",capacity:"정리/분실 방지",price:20000,priority:"높음",wh:0,image:"https://s23775.pcdn.co/wp-content/uploads/sites/44/2017/03/Electronics_90927_113444_OWT_8in_black_PC012_FRONT-1024x1024.png",link:"https://www.velcro.com/products/ties-and-straps/900603__one-wrap-ties/",note:"수빈이가 공부할 때도 케이블별 역할을 구분하기 쉬움. 테이프류와 함께 현장 소모품으로 묶어 관리."},
+  {category:"현장 필수품",group:"배경 지지",brand:"NEEWER",model:"Background Support Stand Kit",spec:"2스탠드+크로스바+가방",capacity:"천/종이/무지 배경",price:120000,priority:"중간",wh:0,image:"https://neewer.com/cdn/shop/files/10100024.jpg?crop=center&height=1200&v=1729846807&width=1200",link:"https://neewer.com/products/neewer-background-support-system-10100024",note:"인물/제품 간이 배경용. 무거운 롤지는 더 튼튼한 스탠드 필요."},
+  {category:"현장 필수품",group:"배경 지지",brand:"Savage",model:"Port-A-Stand",spec:"휴대용 배경 스탠드, 최대 107in x 36ft 롤지 지원",capacity:"크로스바 10ft 7in, 높이 9ft 7in급",price:337000,priority:"중간",wh:0,image:"https://cdn.savageuniversal.com/media/catalog/product/cache/6b4e17b84fe994c59085730d284e5672/b/a/backgrounds-savage-backdrop-stands-62037-01.jpg",link:"https://savageuniversal.com/us-en/port-a-stand-sa-62037-config/",note:"간이 배경 지지에서 NEEWER보다 롤지 대응과 휴대성을 더 신경 쓴 후보. 무거운 배경은 스탠드 하중 확인."},
+  {category:"현장 필수품",group:"배경 지지",brand:"Manfrotto",model:"1314B Background Support Complete Set",spec:"스탠드 2개+크로스바+가방+스프링 클램프 세트",capacity:"종이/천 배경 지지, 프로 브랜드 세트",price:480000,priority:"최고",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/1/3/1314b-set-stands-support-bag-spring.jpg",link:"https://www.manfrotto.com/global-en/photo-stand-support-bag-and-spring-complete-set-1314b/",note:"NEEWER/Savage보다 브랜드 신뢰성과 구성 품질을 보는 후보. 배경지를 자주 쓸수록 의미가 커짐."},
+  {category:"현장 필수품",group:"툴 정리",brand:"Milwaukee",model:"PACKOUT Tool Box 48-22-8424",spec:"IP65 모듈형 공구함, 내부 트레이",capacity:"클램프/테이프/케이블/공구",price:250000,priority:"낮음",wh:0,image:"https://www.milwaukeetool.com/--/web-images/sc/cf8c581cfd5e49728159e96992c17a0b?hash=a06ab5b08799ea83a62c5513ccf4d9b7&lang=en&w=800&h=800",link:"https://www.milwaukeetool.com/Products/48-22-8424",note:"조명 그립이 많아지면 한 박스에 규칙적으로 담기 좋음."},
+  {category:"현장 필수품",group:"툴 정리",brand:"Milwaukee",model:"PACKOUT Compact Organizer 48-22-8435",spec:"IP65 투명 뚜껑 소형 부품 정리함",capacity:"핀/클램프/어댑터/배터리/나사류",price:65000,priority:"중간",wh:0,image:"https://www.milwaukeetool.com/--/web-images/sc/e61a1f8deb3a452388579d2f1bd2c837?hash=78eb5c432c79f0205ce2196075966568&lang=en&w=200&h=200",link:"https://www.milwaukeetool.com/Products/48-22-8435",note:"큰 공구함 안에서 작은 부품이 섞이는 문제를 줄이는 비교군. 케이블 타이/슈어댑터/콜드슈류 정리에 좋음."},
+  {category:"현장 필수품",group:"툴 정리",brand:"Milwaukee",model:"PACKOUT Crate 48-22-8440",spec:"오픈형 모듈 크레이트, PACKOUT 결합",capacity:"자주 꺼내는 테이프/클램프/충전기",price:85000,priority:"가성비",wh:0,image:"https://www.milwaukeetool.com/--/web-images/sc/1023288e3103497187b32ec8a67d6bf2?hash=7d1bcd894da24d0c55d654a1ba6af4f4&lang=en&w=200&h=200",link:"https://www.milwaukeetool.com/Products/48-22-8440",note:"뚜껑형 박스보다 현장에서 바로 꺼내 쓰기 좋은 정리함. 충전 스테이션 옆 케이블/충전기 보관용으로도 좋음."},
+  {category:"현장 필수품",group:"소모품",brand:"ProTapes",model:"Pro Gaff 2 inch Gaffer Tape",spec:"2인치 무광 천테이프",capacity:"케이블 고정/마킹/응급 보수",price:25000,priority:"높음",wh:0,image:"https://www.filmtools.com/media/catalog/product/e/r/ertdres.png?optimize=medium&bg-color=255,255,255&fit=bounds&height=265&width=265&canvas=265:265&format=jpeg",link:"https://www.protapes.com/products/pro-gaff",note:"덕테이프보다 잔사가 적어 촬영 현장에서는 가퍼테이프가 기본."},
+  {category:"현장 필수품",group:"소모품",brand:"ProTapes",model:"Pro Spike Tape",spec:"무광 컬러 스파이크/마킹 테이프",capacity:"바닥 마킹/동선/스탠드 위치 표시",price:18000,priority:"높음",wh:0,image:"https://www.protapes.com/wp-content/uploads/2022/12/pro-spike-matte-cloth-gaffers-tape.jpg",link:"https://www.protapes.com/products/pro-spike",note:"조명·피사체·삼각대 위치를 반복 세팅할 때 필수. 수빈이가 세팅을 복습하기에도 좋음."},
+
+  {category:"붐·그립·안전",group:"플래그 킷",brand:"Matthews",model:"RoadRags II Kit 24x36",spec:"접이식 24x36 프레임 2개 + 싱글/더블 스크림 + 실크 + 플래그 + 가방",capacity:"로케이션 플래그/확산/감광 세트",price:535000,priority:"높음",wh:0,image:"https://www.msegrip.com/cdn/shop/products/road-rags_350595-350596_1.0.jpg?crop=center&height=1200&v=1728243630&width=1200",link:"https://www.msegrip.com/products/roadragsii",note:"작은 현장에서는 4x4 플래그보다 훨씬 현실적인 스타트 킷. 빛 막기, 줄이기, 부드럽게 하기 공부용으로도 좋음."},
+  {category:"붐·그립·안전",group:"플래그 킷",brand:"Godox",model:"Scrim Flag Kit 24x36",spec:"24x36in 접이식 프레임+패브릭 세트",capacity:"플래그/실크/스크림 기본 세트",price:396000,priority:"중간",wh:0,image:"https://www.godox.com/static/upload/image/20220708/1657270782115212.jpg",link:"https://www.godox.com/product-d/1538.html",note:"Matthews보다 예산을 낮춘 플래그 킷 후보. 국내 재고와 구성품은 구매 전 확인."},
+  {category:"붐·그립·안전",group:"플래그 킷",brand:"Westcott",model:"Scrim Jim Cine Kit 4x4",spec:"4x4ft 프레임+스크림/확산 패브릭 키트",capacity:"중형 플래그/확산/반사 시스템",price:760000,priority:"최고",wh:0,image:"https://www.fjwestcott.com/cdn/shop/products/1891-n_4.jpg?v=1659712738",link:"https://www.fjwestcott.com/products/scrim-jim-cine-kit-4-x-4",note:"24x36보다 큰 면적을 다루는 확장 후보. 제품/인물에서 빛을 넓게 막거나 부드럽게 만들 때 비교 가치가 큼."},
+  {category:"붐·그립·안전",group:"기본 그립",brand:"Matthews",model:"6in End Jaw Matthellini Clamp",spec:"6인치 엔드 조, Baby pin, 1/4-20 탭 지원",capacity:"파이프/테이블/비정형 구조물에 조명·암 고정",price:96000,priority:"높음",wh:0,image:"https://www.msegrip.com/cdn/shop/files/matthellini_6in-end-jaw_420210_2048b.jpg?crop=center&height=1200&v=1773343681&width=1200",link:"https://www.msegrip.com/products/6-end-jaw-matthellini",note:"슈퍼클램프보다 물 수 있는 형태가 넓어 현장 고정 자유도가 큼. 작은 모니터/조명/암 고정에 유용."},
+  {category:"붐·그립·안전",group:"암·모니터 고정",brand:"Luminus",model:"Magic Arm L",spec:"관절식 매직암, 1/4-20 계열",capacity:"모니터/소형 조명/액세서리 위치 고정",price:70000,priority:"중간",wh:0,image:"https://www.albapv.gr/wp-content/uploads/2019/03/s-l1600-1.jpg",link:"https://www.albapv.gr/shop/accessories/photography-accessories/studio-accessories/magic-arms/luminus-magic-arm-l/",note:"카메라 리그와 스탠드 사이에서 모니터나 소형 악세사리를 빼내는 기본 부품."},
+  {category:"붐·그립·안전",group:"암·모니터 고정",brand:"Manfrotto",model:"244MICRO-AR Friction Arm",spec:"15cm 마이크로 프릭션 암, anti-rotation 어댑터",capacity:"하중 3kg, 무게 0.24kg",price:185000,priority:"중간",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/a/r/arm-micro-variable-friction-arm-wanti-rotation-244micro-ar.jpg",link:"https://www.manfrotto.com/global-en/photo-variable-friction-arm-with-anti-rotation-attachments-244micro-ar/",note:"카메라 위 모니터나 작은 송수신기를 흔들림 적게 고정하는 고급 암. 저가 매직암보다 잠금감이 좋음."},
+  {category:"붐·그립·안전",group:"암·모니터 고정",brand:"SmallRig",model:"3726 Crab Clamp & Magic Arm",spec:"11인치 매직암+크랩 클램프, 콜드슈 포함",capacity:"클램프 15~54mm, 모니터/송신기/소형 악세사리",price:55000,priority:"높음",wh:0,image:"https://static.smallrig.com/mall/img/public/1688094283668_.jpg",link:"https://www.smallrig.com/smallrig-crab-shaped-clamp-magic-arm-11-with-cold-shoe-3726.html",note:"가격 접근성이 좋아 첫 모니터 암 후보. 무거운 7인치 모니터에는 더 큰 암/클램프를 검토."},
+  {category:"붐·그립·안전",group:"붐/메가붐",brand:"Manfrotto",model:"420B Combi Boom Stand",spec:"최대 약 390cm, 붐 길이 약 191cm",capacity:"수직 하중 9kg, 붐 사용 약 0.9~2kg",price:467000,priority:"중간",wh:0,image:"https://shashinki.com/shop/getimage/256x256/products/man-420b.jpg",link:"https://www.bhphotovideo.com/c/product/546705-REG/Manfrotto_420B_420B_Combi_Boom_Stand.html",note:"스탠드와 소형 붐을 한 번에 해결하는 입문형. 헤어라이트/마이크/소형 소프트박스용으로 샌드백 필수."},
+  {category:"붐·그립·안전",group:"붐/메가붐",brand:"Avenger",model:"D600 Mini Boom",spec:"46~83in 텔레스코픽 미니 붐, 5/8in 리시버/핀",capacity:"최대 연장 시 약 7kg급 표기, 실제 운용은 샌드백 필수",price:283000,priority:"높음",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/b/o/booms-avenger-boom-arm-w-sliding-attachment-d600.jpg",link:"https://www.manfrotto.com/global-en/mini-boom-arm-with-sliding-attachment-d600/",note:"헤어라이트, 백라이트, 작은 소프트박스를 위에서 내릴 때 필요. 스탠드와 웨이트를 같이 계산해야 함."},
+  {category:"붐·그립·안전",group:"붐/메가붐",brand:"Avenger",model:"D650 Junior Boom Arm",spec:"163~300cm, 28mm 소켓+16mm 스피곳, 카운터웨이트 포함",capacity:"최소 연장 40kg / 최대 연장 10kg, 무게 14.8kg",price:545000,priority:"중간",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/b/o/booms-avenger-junior-boom-arm-w-counter-wt-d650.jpg",link:"https://www.manfrotto.com/global-en/junior-boom-arm-with-counterweight-d650/",note:"D600보다 훨씬 무거운 조명/소프트박스용. 콤보·와인드업 스탠드와 세트로 봐야 안전함."},
+  {category:"붐·그립·안전",group:"붐/메가붐",brand:"Manfrotto",model:"425B Mega Boom",spec:"약 7~12ft / 2.2~3.7m급 기어식 메가붐",capacity:"최대 연장 6kg / 최소 연장 30kg급",price:2230000,priority:"낮음",wh:0,image:"https://www.filmtools.com/media/catalog/product/m/a/manfrotto_mega_boom_12ft_boompole.jpg",link:"https://www.filmtools.com/manfrotto-mega-boom-black-7-12ft-boom.html",note:"대형 오버헤드, 제품/인물 세트에서 조명을 멀리 빼는 렌탈급 장비. 와인드업과 안전 인원이 전제."},
+
+  {category:"카트·운반",group:"트라이포드/스탠드 돌리",brand:"NEEWER",model:"Universal Tripod Dolly",spec:"3인치 휠, 브레이크, 다리 폭 조절",capacity:"삼각대/라이트스탠드 이동",price:92000,priority:"중간",wh:0,image:"https://eu.neewer.com/cdn/shop/files/10104255.jpg?crop=center&height=1200&v=1735208382&width=1200",link:"https://eu.neewer.com/products/tripods-dolly-66600209",note:"실내 스튜디오에서 삼각대/스탠드를 밀어 위치 잡을 때. 야외 요철에는 제한이 큼."},
+  {category:"카트·운반",group:"트라이포드/스탠드 돌리",brand:"Manfrotto",model:"114MV Video Dolly",spec:"헤비듀티 비디오 돌리, 개별 브레이크",capacity:"비디오 삼각대/헤비 스탠드",price:650000,priority:"낮음",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/1/1/114mv.jpg",link:"https://www.manfrotto.com/global-en/video-dolly-114mv/",note:"삼각대 이동 샷이나 무거운 세팅을 자주 옮길 때. 사진 위주면 우선순위는 낮음."},
+  {category:"카트·운반",group:"트라이포드/스탠드 돌리",brand:"Manfrotto",model:"127VS Variable Spread Basic Dolly",spec:"가변 다리 폭 돌리, 스파이크 풋, 접이식",capacity:"삼각대/스탠드 실내 이동",price:220000,priority:"최선",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/1/2/127vs.jpg",link:"https://www.manfrotto.com/global-en/variable-spread-basic-dolly-127vs/",note:"NEEWER보다 안정성과 마감, Manfrotto 시스템 호환을 보는 후보. 114MV보다 가볍게 쓸 수 있음."},
+  {category:"붐·그립·안전",group:"안전 웨이트",brand:"JJC",model:"TSB-M Tripod Stone Bag",spec:"삼각대 다리 장착형 스톤백/선반",capacity:"최대 20kg 스톤/샌드백 보강",price:46000,priority:"중간",wh:0,image:"https://assets.jjcfoto.com/wp-content/uploads/2024/08/JJC-TSB-MDLZ1-2024.09.19-600x600.jpg",link:"https://jjcfoto.com/product/jjc-tripod-weight-stone-bag-tsb-m/",note:"바람 있는 야외에서 삼각대 중심을 낮추고, 렌즈캡/필터를 잠깐 올려두는 선반 역할도 함."},
+
+  {category:"모니터·무선·통신",group:"무선 영상",brand:"Hollyland",model:"Mars M1 Enhanced",spec:"5.5in 송수신 모니터, 450ft/150m급, 약 0.08s 지연",capacity:"카메라 모니터+무선 송수신",price:760000,priority:"중간",wh:0,image:"https://www.hollyland.com/wp-content/uploads/2023/11/9842.301-11.png",link:"https://www.hollyland.com/product/mars-m1-enhanced",note:"카메라 위 모니터와 감독 모니터를 동시에 생각할 때. HDMI/SDI 조합과 배터리 체계 확인."},
+  {category:"모니터·무선·통신",group:"무선 영상",brand:"Hollyland",model:"Pyro S 4K HDMI/SDI",spec:"송신기+수신기, 4K30 HDMI/SDI, 1300ft/400m LOS",capacity:"50ms급 지연, 최대 4수신기 브로드캐스트",price:690000,priority:"중간",wh:0,image:"https://www.hollyland.com/wp-content/uploads/2024/05/Rectangle-2308-4.png",link:"https://www.hollyland.com/product/pyro-s",note:"Mars M1보다 영상 송수신 기능에 집중한 급. 감독 모니터를 별도로 둘 때 비교."},
+  {category:"모니터·무선·통신",group:"무선 영상",brand:"DJI",model:"SDR Transmission",spec:"SDR 무선 영상 송수신, 1080p60급 운용",capacity:"로케이션 모니터링/감독 모니터",price:700000,priority:"중간",wh:0,image:"https://www-cdn.djiits.com/cms/uploads/9ff41b1535fafeb56ca4eb7ec9b7cc60@374*374.png",link:"https://www.dji.com/sdr-transmission",note:"DJI 생태계와 휴대성을 볼 때의 대안. Hollyland Pyro와 가격·거리·지연·전원 체계를 같이 비교."},
+  {category:"모니터·무선·통신",group:"인터컴 · Solidcom",brand:"Hollyland",model:"Solidcom SE-4S",spec:"4인 무선 헤드셋, ENC, 2.4GHz 계열",capacity:"입문 팀 커뮤니케이션",price:612000,priority:"중간",wh:0,image:"https://www.hollyland.com/wp-content/uploads/2024/09/350x260-1.png",link:"https://www.hollyland.com/product/solidcom-se",note:"소규모 촬영팀에서 가장 접근하기 쉬운 Solidcom 급. C1 Pro보다 예산을 낮출 때."},
+  {category:"모니터·무선·통신",group:"인터컴 · Solidcom",brand:"Hollyland",model:"Solidcom C1 Pro-4S",spec:"4인 무선 헤드셋, ENC 노이즈 캔슬링, 1.9GHz DECT",capacity:"최대 1100ft/335m 라인오브사이트",price:1987000,priority:"낮음",wh:0,image:"https://www.hollyland.com/wp-content/uploads/2023/03/5802.162-拷贝.png",link:"https://www.hollyland.com/product/solidcom-c1-pro",note:"행사/팀 촬영에서 안정적인 무선 인터컴. SE보다 현장 소음 대응과 운용성이 좋음."},
+  {category:"모니터·무선·통신",group:"인터컴 · Solidcom",brand:"Hollyland",model:"Solidcom M1 Pro",spec:"베이스스테이션형 무선 인터컴, ENC, 대형 팀용",capacity:"중대형 라이브/프로덕션 팀",price:5200000,priority:"낮음",wh:0,image:"https://www.hollyland.com/wp-content/uploads/2026/01/350x260.png",link:"https://www.hollyland.com/product/solidcom-m1-pro",note:"헤드셋 몇 개 수준을 넘어 베이스스테이션으로 팀을 굴리는 급. 구매보다는 렌탈 기준점에 가까움."},
+  {category:"모니터·무선·통신",group:"온카메라 레코더·보조 모니터",brand:"Atomos",model:"Ninja",spec:"5.2in 1920x1080, 1000nit, HDMI 레코더/모니터",capacity:"ProRes/RAW 워크플로우 확인",price:550000,priority:"중간",wh:0,image:"https://static.bhphoto.com/images/images500x500/atomos_atomnj004_ninja_5_recording_monitor_1694088007_1779413.jpg",link:"https://www.atomos.com/product/ninja/",note:"카메라 위 녹화·확인용 보조 장비. 모델이 볼 큰 화면 문제 해결보다는 영상 외부녹화가 필요할 때만 검토."},
+  {category:"모니터·무선·통신",group:"온카메라 레코더·보조 모니터",brand:"Atomos",model:"Shogun Classic",spec:"7in HDR 모니터/레코더, HDMI/SDI 계열",capacity:"대형 온카메라 외부 녹화·감독 모니터",price:1100000,priority:"낮음",wh:0,image:"https://www.atomos.com/wp-content/uploads/2026/02/DTC-PRODUCT-GRID-SHOGUN-CLASSIC_2026-FEB.png",link:"https://www.atomos.com/product/shogun/",note:"7인치라 현장 확인은 편하지만 여전히 카메라 주변 장비. Mac 테더 화면 공유 목적이면 아래 DIT 모니터 비교군이 우선."},
+  {category:"모니터·무선·통신",group:"온카메라 레코더·보조 모니터",brand:"Blackmagic Design",model:"Video Assist 5 12G HDR",spec:"5in HDR 모니터/레코더, HDMI/12G-SDI, USB-C 저장",capacity:"ProRes/DNx/Blackmagic RAW 계열 워크플로우",price:1220000,priority:"최선",wh:0,image:"https://images.blackmagicdesign.com/images/products/blackmagicvideoassist/landing/hero/hero-xl@2x.jpg?_v=1568338405",link:"https://www.blackmagicdesign.com/products/blackmagicvideoassist",note:"SDI/HDMI 혼합 현장이나 Blackmagic 워크플로우용. 모델 확인용 큰 화면을 대신하기보다 녹화·신호 확인용으로 분리."},
+  {category:"모니터·무선·통신",group:"온카메라 보조 모니터",brand:"SmallHD",model:"Indie 7",spec:"7in 1920x1200 터치, SDI/HDMI, PageOS",capacity:"감독/포커스/카메라 모니터",price:2217000,priority:"낮음",wh:0,image:"https://smallhd.com/cdn/shop/files/MON-INDIE-7-Front_1200x1200.png?v=1769915468",link:"https://smallhd.com/products/indie-7",note:"카메라 주변에서 포커스·노출을 보는 전문 모니터. 사용 목적이 모델 확인이라면 우선순위는 낮고 DIT 모니터가 먼저."},
+  {category:"모니터·무선·통신",group:"온카메라 보조 모니터",brand:"Atomos",model:"Shinobi II",spec:"5in 1920x1080 터치, 1500nit",capacity:"가벼운 카메라 온보드 모니터",price:580000,priority:"중간",wh:0,image:"https://www.atomos.com/wp-content/uploads/2025/11/EXPLORE-GRID-2025-–-SHINOBI-II_2025-NOV-CC.png",link:"https://www.atomos.com/product/shinobi-ii/",note:"가볍게 카메라 화면을 크게 보는 용도. 촬영 중 모델이 직접 결과를 확인하는 화면으로는 작아서 보조 후보."},
+  {category:"모니터·무선·통신",group:"온카메라 보조 모니터",brand:"SmallHD",model:"Ultra 5",spec:"5in 1920x1080, 3000nit, PageOS",capacity:"야외 고휘도 포커스/노출 모니터",price:2600000,priority:"낮음",wh:0,image:"https://smallhd.com/cdn/shop/products/SmallHD_16-0527_Ultra-5_Front_Screen-On_1200x1200.png?v=1660753138",link:"https://smallhd.com/products/ultra-5",note:"야외 고휘도 포커스 확인용 고가 장비. 스튜디오 모델 확인/셀렉트 흐름 개선 목적과는 다른 축으로 분리해서 봄."},
+
+  {category:"DIT·후반",group:"모델·클라이언트 확인 모니터",brand:"Apple",model:"Studio Display",spec:"27in 5K Retina, P3, 600nit, Thunderbolt",capacity:"Mac 테더/모델 확인/사진 셀렉트",price:2090000,priority:"최선",wh:0,image:"https://www.apple.com/v/studio-display/specs/b/images/meta/studio-display_specs__d7kv1hkz4ioi_og.png?202605271224",link:"https://www.apple.com/studio-display/specs/",note:"맥북 화면으로 계속 왔다 갔다 하는 흐름을 줄이는 27형 확인용 기준점. Mac 연결 편의와 5K 선명도가 강점."},
+  {category:"DIT·후반",group:"모델·클라이언트 확인 모니터",brand:"Dell",model:"UltraSharp U2725QE",spec:"27in 4K 120Hz, IPS Black, Thunderbolt 4 허브",capacity:"99% DCI-P3, 140W PD, Mac/PC 테더 확인",price:1016000,priority:"가성비",wh:0,image:"https://static.bhphoto.com/images/images500x500/dell_u2725qe_ultrasharp_27_4k_uhd_1745255323_1889853.jpg",link:"https://www.bhphotovideo.com/c/product/1889853-REG/dell_u2725qe_ultrasharp_27_4k_uhd.html",note:"가격 대비 27형 현장 확인용으로 좋음. TB4 허브와 KVM이 있어 맥북, SSD, 테더 허브를 묶기 편한 후보."},
+  {category:"DIT·후반",group:"모델·클라이언트 확인 모니터",brand:"Dell",model:"UltraSharp U3225QE",spec:"31.5in 4K 120Hz, IPS Black, Thunderbolt 4 허브",capacity:"99% DCI-P3, 140W PD, 2.5GbE, KVM",price:1232000,priority:"최선",wh:0,image:"https://static.bhphoto.com/images/images500x500/dell_u3225qe_ultrasharp_32_4k_uhd_1749214259_1898926.jpg",link:"https://www.bhphotovideo.com/c/product/1898926-REG/dell_u3225qe_ultrasharp_32_4k_uhd.html",note:"모델과 클라이언트가 같이 보기 쉬운 32형급. 촬영대 옆에 두고 Capture One/Lightroom 테더 화면을 크게 보여주는 목적에 맞음."},
+  {category:"DIT·후반",group:"모델·클라이언트 확인 모니터",brand:"Dell",model:"UltraSharp U3224KB 6K",spec:"31.5in 6K 6144x3456, IPS Black, Thunderbolt 4",capacity:"99% DCI-P3, 100% sRGB/Rec.709, 140W PD",price:2310000,priority:"최고",wh:0,image:"https://static.bhphoto.com/images/images500x500/dell_u3224kb_32_6k_60hz_hdr600_1685632537_1768651.jpg",link:"https://www.bhphotovideo.com/c/product/1768651-REG/dell_u3224kb_32_6k_60hz_hdr600.html",note:"큰 화면과 높은 해상도를 동시에 보는 Dell 최고급 축. 모델 확인과 Mac 작업 공간 확장을 동시에 원할 때 비교."},
+  {category:"DIT·후반",group:"모델·클라이언트 확인 모니터",brand:"EIZO",model:"ColorEdge CS2740",spec:"27in 4K UHD, 10-bit, USB-C, ColorEdge 입문",capacity:"사진 편집·색관리 입문",price:2000000,priority:"중간",wh:0,image:"https://static.bhphoto.com/images/images500x500/eizo_cs2740_bk_27_wide_screen_wide_1576834218_1524312.jpg",link:"https://www.eizo.com/products/coloredge/cs2740/",note:"모델 확인보다는 색관리 공부와 후보정 신뢰도 쪽 가치가 큼. 촬영장 확인용만이면 Dell/Apple보다 우선순위가 낮을 수 있음."},
+  {category:"DIT·후반",group:"모델·클라이언트 확인 모니터",brand:"EIZO",model:"ColorEdge CG2700S",spec:"27in QHD, 내장 캘리브레이션 센서, USB-C",capacity:"사진/인쇄 색관리",price:3100000,priority:"낮음",wh:0,image:"https://static.bhphoto.com/images/images500x500/eizo_cg2700s_bk_27_wide_screen_wide_1654869371_1704906.jpg",link:"https://www.eizo.com/products/coloredge/cg2700s/",note:"내장 캘리브레이션이 강점이지만 QHD라 모델 확인용 큰 화면 선명도는 제한적. 인쇄/납품 색 기준이 생기면 검토."},
+  {category:"DIT·후반",group:"모델·클라이언트 확인 모니터",brand:"EIZO",model:"ColorEdge CG2700X",spec:"27in 4K UHD, 내장 캘리브레이션 센서, HDR 감마 지원",capacity:"고급 사진/영상 색관리",price:3900000,priority:"최고",wh:0,image:"https://static.bhphoto.com/images/images500x500/eizo_cg2700x_bk_27_wide_screen_wide_1654869370_1704907.jpg",link:"https://www.eizo.com/products/coloredge/cg2700x/",note:"색관리까지 끝까지 가져가는 고급 기준점. 촬영 중 확인용이라기보다 납품 색 기준과 후반 작업실까지 염두에 둘 때."},
+  {category:"DIT·후반",group:"Mac 워크스테이션",brand:"Apple",model:"MacBook Pro 14 M5 24GB/1TB 이상",spec:"M5, 14형, Liquid Retina XDR, Thunderbolt, SDXC, 1TB SSD 이상",capacity:"현장 테더+셀렉트 기본 노트북",price:2930000,priority:"가성비",wh:0,image:"https://www.apple.com/v/macbook-pro/specs/c/images/meta/macbook-pro__cbx23ubsuefm_og.png?202605271224",link:"https://www.apple.com/kr/macbook-pro/specs/",note:"MacBook Air는 제외. A7M4 RAW 테더, 외부 모니터, Capture One/Lightroom 동시 운용을 생각하면 Pro와 1TB 이상 저장공간을 기준으로 봄."},
+  {category:"DIT·후반",group:"Mac 워크스테이션",brand:"Apple",model:"MacBook Pro 14 M5 Pro 24GB/1TB 이상",spec:"M5 Pro, 14형, 24GB 이상, 1TB SSD 이상",capacity:"촬영장 메인 테더+보정 노트북",price:3790000,priority:"최선",wh:0,image:"https://www.apple.com/v/macbook-pro/specs/c/images/meta/macbook-pro__cbx23ubsuefm_og.png?202605271224",link:"https://www.apple.com/kr/macbook-pro/specs/",note:"현장에서 맥북 하나로 테더, 백업, 1차 셀렉트, 외부 모니터 출력까지 안정적으로 가져갈 현실적인 중심 후보."},
+  {category:"DIT·후반",group:"Mac 워크스테이션",brand:"Apple",model:"MacBook Pro 16 M5 Pro 48GB/1TB 이상",spec:"M5 Pro, 16형, 48GB급 구성, 1TB SSD 이상",capacity:"큰 화면 현장 확인+대량 RAW 작업",price:4990000,priority:"최고",wh:0,image:"https://www.apple.com/v/macbook-pro/specs/c/images/meta/macbook-pro__cbx23ubsuefm_og.png?202605271224",link:"https://www.apple.com/kr/macbook-pro/specs/",note:"이동성보다 화면, 발열 여유, 장시간 작업 안정성을 보는 상위 후보. 모델 확인 모니터 없이도 16형 자체 화면이 더 편함."},
+  {category:"DIT·후반",group:"Mac 워크스테이션",brand:"Apple",model:"Mac mini M4 Pro 24GB/1TB 이상",spec:"M4 Pro, 소형 데스크톱, Thunderbolt, 1TB SSD 이상",capacity:"스튜디오 고정 테더/편집 본체",price:2290000,priority:"최선",wh:0,image:"https://www.apple.com/v/mac-mini/specs/a/images/meta/mac-mini__dvce2jrm11w2_og.jpg?202605271224",link:"https://www.apple.com/mac-mini/specs/",note:"모니터와 책상이 이미 있으면 MacBook Pro보다 같은 예산 성능이 좋음. 이동 촬영보다 스튜디오 고정 운용에 맞음."},
+  {category:"DIT·후반",group:"Mac 워크스테이션",brand:"Apple",model:"Mac Studio M4 Max 36GB/1TB 이상",spec:"M4 Max, 고성능 데스크톱, 1TB SSD 이상",capacity:"대량 편집·영상·스튜디오 메인",price:3560000,priority:"최고",wh:0,image:"https://www.apple.com/v/mac-studio/specs/a/images/meta/mac-studio_specs__gj2gy6lb3rue_og.png?202605271224",link:"https://www.apple.com/mac-studio/specs/",note:"사진만으로는 과할 수 있지만 고해상도 영상, 대량 보정, 장기 스튜디오 운용이면 기준점. 노트북이 필요 없는 고정실에서 의미가 큼."},
+
+  {category:"카메라 운용·DIT",group:"DIT·작업 스테이션",brand:"Selens",model:"SAB13-LB450 Laptop Bracket",spec:"17.7x11.2in 알루미늄 노트북 브래킷, 1/4-20 홀",capacity:"노트북/테더 촬영 스테이션",price:260000,priority:"중간",wh:0,image:"https://static.bhphoto.com/images/images500x500/selens_sab13_lb450_laptop_bracket_1770988051_1932678.jpg",link:"https://www.bhphotovideo.com/c/product/1932678-REG/selens_sab13_lb450_laptop_bracket.html",note:"Capture One/Lightroom 테더 촬영을 할 때 테이블보다 컴팩트한 대안. 스탠드와 클램프 조합 필요."},
+  {category:"카메라 운용·DIT",group:"DIT·작업 스테이션",brand:"Tether Tools",model:"Tether Table Aero Master",spec:"약 22x15.25in 알루미늄 테더 테이블",capacity:"하중 30lb/13.5kg, 5/8·1/4·3/8 장착",price:337000,priority:"높음",wh:0,image:"https://tethertools.com/wp-content/uploads/2015/03/Tether-Table-Aero-1_50_gray-300x170.jpg",link:"https://tethertools.com/product/tether-table-aero/",note:"노트북을 안정적으로 올리는 테더 촬영 표준급. Selens보다 작업면이 넓고 Tether Tools 액세서리 확장이 좋음."},
+  {category:"카메라 운용·DIT",group:"DIT·작업 스테이션",brand:"Inovativ",model:"DigiPlate Lite",spec:"알루미늄 DIT 플레이트, 다수 1/4-20 탭",capacity:"노트북/허브/SSD/전원 고정형 작업판",price:389000,priority:"중간",wh:0,image:"https://www.filmtools.com/media/catalog/product/5/0/501-563_8.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=265&width=265&canvas=265",link:"https://www.filmtools.com/inovativ-501-563.html",note:"테이블보다 리그처럼 조립하는 DIT 방식. 영상/테더 촬영을 체계화할 때 비교 후보."},
+  {category:"카메라 운용·DIT",group:"DIT·작업 스테이션",brand:"Lifetime",model:"4-Foot Adjustable Folding Table",spec:"약 122x61cm급, 높이 조절형",capacity:"노트북/렌즈/필터/충전 스테이션",price:60000,priority:"중간",wh:0,image:"https://www.lifetime.com/imagecache/kodachrome/product/main/0ecd2420-689b-4830-a97e-3c8f988ffe23.jpg?ImageSize=Large&v=20210528224451",link:"https://www.lifetime.com/lifetime-80160-4-foot-commercial-adjustable-height-folding-table-white-granite",note:"장비를 바닥에 놓지 않는 저예산 작업면. 전문 테더 테이블 전 단계로 충분히 의미 있음."},
+  {category:"카메라 운용·DIT",group:"10G 테더 케이블·연장선",brand:"Area51 Tether Co.",model:"Wilton 10G Illumination USB-C to USB-C 16ft",spec:"USB-C to USB-C, 5m/16ft, 10G, 100W USB-PD",capacity:"A7M4↔Mac 5m급 고속 테더",price:99000,priority:"가성비",wh:0,image:"https://static.wixstatic.com/media/180939_a45d61ef3f7748d3b0ee23f9fe230851~mv2.jpg/v1/fit/w_500,h_500,q_90/file.jpg",link:"https://www.area51tetherco.com/product-page/wilton-10g-usb-c-to-usb-c-cable-4-5m-15",note:"10Gbps가 명시된 5m급 시작점. 공식 세일가 $65 기준 환산이며, 포트 보호용 케이블 가드와 같이 운용."},
+  {category:"카메라 운용·DIT",group:"10G 테더 케이블·연장선",brand:"Area51 Tether Co.",model:"Wilton Illumination Turbo 10G USB-C to USB-C 16ft",spec:"USB-C to USB-C, 5m/16ft, 10G, 100W USB-PD",capacity:"고속 테더, 강화 절연 Turbo 계열",price:151000,priority:"최선",wh:0,image:"https://static.wixstatic.com/media/180939_0df919c9e30f4733b8b377effa13e2d8~mv2.jpg/v1/fit/w_500,h_500,q_90/file.jpg",link:"https://www.area51tetherco.com/product-page/wilton-illumination-turbo-series-usb-c-to-usb-c-cable-5m-16ft",note:"RAW 테더, 장시간 촬영, USB-C PD 여유까지 보는 5m 최선 후보. 맥북 위치가 가까운 스튜디오 기본 세팅에 적합."},
+  {category:"카메라 운용·DIT",group:"10G 테더 케이블·연장선",brand:"Area51 Tether Co.",model:"Sandia 10G Illumination USB-C Female to USB-C Extension 16ft",spec:"USB-C Female to USB-C, 5m/16ft, 10G, 100W USB-PD",capacity:"10G 연장선, Power Bridge 최대 47ft 계열",price:130000,priority:"최선",wh:0,image:"https://static.wixstatic.com/media/180939_98efac896f0e419fa484bb079d60a64b~mv2.jpg/v1/fit/w_500,h_500,q_90/file.jpg",link:"https://www.area51tetherco.com/product-page/sandia-10g-usb-c-female-to-usb-c-extension-cable-18ft",note:"사용자가 말한 연장선 항목. 본선과 합쳐 10m 이상 동선을 만들 때 쓰되, 카메라 쪽이 당겨지지 않도록 클램프 고정 필수."},
+  {category:"카메라 운용·DIT",group:"10G 테더 케이블·연장선",brand:"Area51 Tether Co.",model:"Wilton XL Illumination Turbo 10G USB-C to USB-C 31ft",spec:"USB-C to USB-C, 9.5m/31ft, 10G, 100W USB-PD",capacity:"10m급 단일 장거리 테더",price:298000,priority:"최고",wh:0,image:"https://static.wixstatic.com/media/180939_d4b5c87a5af04531a9805dd38eedb428~mv2.jpg/v1/fit/w_500,h_500,q_90/file.jpg",link:"https://www.area51tetherco.com/product-page/wilton-xl-illumination-turbo-10g-series-usb-c-to-usb-c-cable-9-5m-31ft",note:"촬영 테이블과 카메라 거리가 멀 때의 10m급 단일 케이블 기준점. 케이블이 길수록 걸림 방지와 포트 보호가 더 중요함."},
+  {category:"카메라 운용·DIT",group:"10G 테더 케이블·연장선",brand:"Area51 Tether Co.",model:"Wilton XL 10G Combo II Illumination USB-C to USB-C 31ft",spec:"9.5m/31ft 본선 + Sandia 5m/16ft 10G 연장선 세트",capacity:"10G 장거리 콤보, Power Bridge 최대 47ft 계열",price:332000,priority:"최고",wh:0,image:"https://static.wixstatic.com/media/180939_6ed39296b57842a8a26185e8f773d3e7~mv2.jpg/v1/fit/w_500,h_500,q_90/file.jpg",link:"https://www.area51tetherco.com/product-page/wilton-xl-10g-combo-pack-usb-c-to-usb-c-cable-9-5m-31",note:"10m급 본선과 5m 연장선을 한 번에 보는 세트. 모델 확인용 모니터·DIT 테이블을 촬영 동선 밖에 빼고 싶을 때 가장 직접적인 후보."},
+  {category:"카메라 운용·DIT",group:"카메라 홀스터·체결",brand:"Spider",model:"SpiderPro Mirrorless Single Camera System v2",spec:"벨트형 미러리스 카메라 홀스터",capacity:"A7M4+표준줌 빠른 탈착",price:274000,priority:"중간",wh:0,image:"https://spiderholster.com/cdn/shop/files/250-1.jpg?crop=center&height=1200&v=1727199612&width=1200",link:"https://spiderholster.com/products/spiderpro-mirrorless-single-camera-system-v2",note:"스트랩 없이 몸에 카메라를 걸고 빠르게 꺼내는 방식. 웨딩/행사/로케이션에서 피로도 줄임."},
+  {category:"카메라 운용·DIT",group:"카메라 홀스터·체결",brand:"Spider",model:"Spider Pro Plate v3",spec:"카메라 플레이트 v3, QD 소켓, Arca-Swiss 호환, Spider Pin 선택",capacity:"홀스터 체결용 플레이트/핀",price:115000,priority:"중간",wh:0,image:"https://spiderholster.com/cdn/shop/files/Spiderv3-WhiteBackgroundPDP-ProPlate-Left_Right-1-Copy.jpg?v=1770054067&width=2048",link:"https://spiderholster.com/products/spider-pro-plate-v3",note:"사용자가 말한 홀스터링에 해당하는 체결 부품 쪽. 홀스터 본체와 카메라 바닥을 연결하는 핵심 부품으로 별도 구매 확인 필요."},
+  {category:"카메라 운용·DIT",group:"카메라 홀스터·체결",brand:"Cotton Carrier",model:"G3 Camera Harness-1",spec:"가슴 하네스형 카메라 캐리어",capacity:"장시간 이동 촬영, 카메라 1대 운용",price:229000,priority:"낮음",wh:0,image:"https://static.bhphoto.com/images/images500x500/cotton_carrier_686grey_ccs_g3_camera_harness_1506003082_1345430.jpg",link:"https://www.cottoncarrier.com/products/g3-camera-harness-1",note:"등산/야외 이동이 많은 촬영에서 안정적. 패션/실내 촬영보다는 이동형 촬영에 맞음."},
+  {category:"카메라 운용·DIT",group:"현장 정리",brand:"RoboCup",model:"Portable Clamp-On Caddy",spec:"듀얼 컵홀더/공구통, 최대 약 2in 클램프",capacity:"음료/공구/폰/렌즈캡 임시 보관",price:46000,priority:"중간",wh:0,image:"https://www.filmtools.com/media/catalog/product/0/7/07-103-g_5.png?optimize=medium&bg-color=255,255,255&fit=bounds&height=265&width=265&canvas=265:265&format=jpeg",link:"https://www.filmtools.com/robocup-patented-portable-clamp-on-caddy-dual-cup-holder-various-colors.html",note:"사소하지만 현장에서 컵, 렌즈캡, 육각렌치가 굴러다니는 문제를 줄여줌."},
+  {category:"카메라 운용·DIT",group:"현장 정리",brand:"Setwear",model:"Tool Pouch",spec:"벨트 장착형 현장 공구 파우치",capacity:"테이프/렌치/마커/렌즈캡/소형 툴 보관",price:50000,priority:"중간",wh:0,image:"https://www.filmtools.com/media/catalog/product/s/e/setwear-tool-pouch.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=265&width=265&canvas=265",link:"https://www.filmtools.com/setwear-tool-pouch.html",note:"RoboCup처럼 현장 소품을 흩어지지 않게 하는 계열. 몸에 차는 방식이라 이동 촬영에 더 맞음."},
+  {category:"카메라 운용·DIT",group:"현장 정리",brand:"Think Tank",model:"Cable Management 10",spec:"소형 케이블 파우치, 투명 전면, 손잡이",capacity:"USB-C/HDMI/전원 케이블 분류",price:32000,priority:"가성비",wh:0,image:"https://www.thinktankphoto.com/cdn/shop/files/Cable-Management-10-Hero-Gear-Straight.jpg?v=1691440357",link:"https://www.thinktankphoto.com/products/cable-management-10",note:"충전 스테이션을 만들수록 케이블이 늘어나기 때문에 작은 파우치가 필요함. 포트별 케이블을 분리해두면 현장에서 덜 헤맴."},
+
+  {category:"배경·세트",group:"배경지",brand:"Savage",model:"Seamless Paper 53in x 36ft",spec:"폭 53in, 길이 36ft, 무반사 파인투스 종이",capacity:"상반신/제품/작은 공간",price:115000,priority:"중간",wh:0,image:"https://cdn.savageuniversal.com/media/catalog/product/cache/6b4e17b84fe994c59085730d284e5672/1/0/107-wide-super-white-seamless-paper.jpg",link:"https://savageuniversal.com/us-en/super-white-seamless-background-paper-107-w-x-36-l-sa-1-config/",note:"좁은 공간과 제품 촬영용. 전신은 86/107인치가 더 현실적."},
+  {category:"배경·세트",group:"배경지",brand:"Savage",model:"Seamless Paper 86in x 36ft",spec:"폭 86in, 길이 36ft, 무반사 파인투스 종이",capacity:"1인 전신/2인 상반신",price:170000,priority:"중간",wh:0,image:"https://cdn.savageuniversal.com/media/catalog/product/cache/6b4e17b84fe994c59085730d284e5672/1/0/107-wide-super-white-seamless-paper.jpg",link:"https://savageuniversal.com/us-en/super-white-seamless-background-paper-107-w-x-36-l-sa-1-config/",note:"공간과 차량 적재가 애매할 때 107인치보다 다루기 쉬운 중간 크기."},
+  {category:"배경·세트",group:"배경지",brand:"Savage",model:"Seamless Paper 107in x 36ft",spec:"폭 107in, 길이 36ft, 163gsm, 약 5.9kg",capacity:"전신/그룹/상업 배경",price:220000,priority:"높음",wh:0,image:"https://cdn.savageuniversal.com/media/catalog/product/cache/6b4e17b84fe994c59085730d284e5672/1/0/107-wide-super-white-seamless-paper.jpg",link:"https://savageuniversal.com/us-en/super-white-seamless-background-paper-107-w-x-36-l-sa-1-config/",note:"스튜디오 배경지 표준 폭. 보관 길이와 차량 적재, 배경 지지 하중을 같이 확인."},
+
+  {category:"배경·세트",group:"블랙 배경천·차광천",brand:"Rose Brand",model:"54in 16oz Commando Cloth Black FR",spec:"54in 폭 / 16oz / 100% cotton / 난연 FR / 야드 단위",capacity:"차광, 플래그 보강, 배경 뒤 빛 샘 차단",price:16000,priority:"가성비",wh:0,image:"https://s7d9.scene7.com/is/image/RoseBrand/DVT80001_Black?$PLPlist$",link:"https://www.rosebrand.com/commando-cloth-54-in-fr-16-oz-black",note:"야드 단가 기준. 완성 배경천보다 세트 마스킹과 빛 차단용에 강함. 배경으로 쓰려면 폭 연결/마감이 필요."},
+  {category:"배경·세트",group:"블랙 배경천·차광천",brand:"Westcott",model:"Wrinkle-Resistant Backdrop Rich Black 9x10",spec:"9x10ft / 무반사 매트 폴리에스터 / 폴포켓+그로밋",capacity:"상반신~1인 전신, 접이식 이동 배경",price:138000,priority:"가성비",wh:0,image:"https://www.fjwestcott.com/cdn/shop/products/133-No-Stands.jpg?v=1673040260",link:"https://www.fjwestcott.com/products/wrinkle-resistant-backdrop-rich-black-9-x-10",note:"가볍게 접어서 이동하는 검정 천 배경. 벨벳만큼 빛을 먹지는 않지만 관리와 설치가 쉽고 가격이 좋음."},
+  {category:"배경·세트",group:"블랙 배경천·차광천",brand:"다하임",model:"시네마 벨벳 암막커튼 BR003 300x240",spec:"300x240cm / 벨벳 암막커튼 / 2배 나비주름",capacity:"국내 구매 가능한 블랙 벨루어·벨벳 배경 대체",price:199000,priority:"최선",wh:0,image:"https://image.hanssem.com/hsimg/gds/1050/1046/1046851_A1.jpg?v=20240229140512",link:"https://store.hanssem.com/goods/1046851",note:"국내에서 바로 찾기 쉬운 벨벳/벨루어 계열. 커튼형이라 주름과 폭, 봉/클램프 고정 방식을 촬영용으로 맞춰야 함."},
+  {category:"배경·세트",group:"블랙 배경천·차광천",brand:"Denny",model:"Black Velvet Backdrop 10x16",spec:"10x16ft / 블랙 벨벳 / 비반사·주름 저항",capacity:"로우키 인물, 제품, 완전한 블랙 배경",price:581000,priority:"최고",wh:0,image:"https://dennymfg.com/cdn/shop/products/PBB-photo-black-backdrop-u179_Edwards_d766697e-cc2d-4574-9f38-1c4d2d32fee4_600x.jpg?v=1681938583",link:"https://dennymfg.com/products/black-velvet-backdrop",note:"블랙을 '천'이 아니라 거의 빈 공간처럼 만들고 싶을 때. 바닥까지 늘어뜨리려면 10x16 이상이 현실적."},
+  {category:"배경·세트",group:"블랙 배경천·차광천",brand:"Savage",model:"Black, White & Green Muslin Backdrop 10x12 with Stand",spec:"10x12ft 머슬린 3색+Port-A-Stand / 100% cotton",capacity:"휴대용 배경 세트, 인물/제품/로케이션",price:623000,priority:"최선",wh:0,image:"https://cdn.savageuniversal.com/media/catalog/product/cache/6b4e17b84fe994c59085730d284e5672/b/a/backgrounds-savage-muslin-backgrounds-012046pas-12-01.jpg",link:"https://savageuniversal.com/us-en/black-white-green-muslin-backdrop-10-x-12-with-stand-sa-012046pas-config/",note:"블랙만 필요한 구매라면 과할 수 있지만 스탠드까지 없는 상황이면 한 번에 구성 가능. 머슬린은 벨벳보다 주름과 투과 확인이 필요."},
+
+  {category:"배경·세트",group:"배경지 컬러 기준",brand:"Savage",model:"#1 Super White Seamless Paper 107in x 36ft",spec:"107in x 36ft / Super White / 163gsm",capacity:"깨끗한 하이키, 제품, 인물, 합성용 기본 화이트",price:220000,priority:"가성비",wh:0,image:"https://cdn.savageuniversal.com/media/catalog/product/cache/6b4e17b84fe994c59085730d284e5672/1/0/107-wide-super-white-seamless-paper.jpg",link:"https://savageuniversal.com/us-en/super-white-seamless-background-paper-107-w-x-36-l-sa-1-config/",note:"가장 표준적인 흰 배경지. 오염되면 잘라내는 방식이라 전신과 바닥 사용은 소모품으로 봐야 함."},
+  {category:"배경·세트",group:"배경지 컬러 기준",brand:"Savage",model:"#12 Studio Gray Seamless Paper 107in x 36ft",spec:"107in x 36ft / Studio Gray / 145gsm",capacity:"인물 톤 정리, 흑백/컬러 모두 안정적인 중간 회색",price:220000,priority:"최선",wh:0,image:"https://cdn.savageuniversal.com/media/catalog/product/cache/6b4e17b84fe994c59085730d284e5672/b/a/backgrounds-savage-seamless-background-paper-sa-12-12-01.jpg",link:"https://savageuniversal.com/us-en/studio-gray-seamless-background-paper-107-w-x-36-l-sa-12-config/",note:"조명 세팅에 따라 밝은 회색부터 딥 그레이까지 만들기 쉬워 가장 활용 폭이 넓은 색. 포트폴리오용 인물 배경으로 좋음."},
+  {category:"배경·세트",group:"배경지 컬러 기준",brand:"Savage",model:"#20 Black Seamless Paper 107in x 36ft",spec:"107in x 36ft / Black / 145gsm",capacity:"블랙 바닥 스윕, 제품 반사 정리, 전신 로우키",price:220000,priority:"최고",wh:0,image:"https://cdn.savageuniversal.com/media/catalog/product/cache/6b4e17b84fe994c59085730d284e5672/b/a/backgrounds-savage-seamless-background-paper-sa-20-12-01.jpg",link:"https://savageuniversal.com/us-en/black-seamless-background-paper-107-w-x-36-l-sa-20-config/",note:"바닥까지 깔끔한 검정이 필요할 때는 천보다 종이가 더 관리가 쉬움. 대신 발자국과 먼지는 소모품처럼 잘라내야 함."},
+
+  {category:"배경·세트",group:"블랙 벨벳 사이즈별",brand:"Denny",model:"Black Velvet Backdrop 4.5x5",spec:"4.5x5ft / 벨벳 / 비반사 블랙",capacity:"제품, 상반신 일부, 작은 소품 로우키",price:97000,priority:"가성비",wh:0,image:"https://dennymfg.com/cdn/shop/products/PBB-photo-black-backdrop-u179_Edwards_d766697e-cc2d-4574-9f38-1c4d2d32fee4_600x.jpg?v=1681938583",link:"https://dennymfg.com/products/black-velvet-backdrop",note:"가장 작은 확인용 사이즈. 인물 전신에는 부족하고 제품/소품 로우키 테스트용으로 봄."},
+  {category:"배경·세트",group:"블랙 벨벳 사이즈별",brand:"Denny",model:"Black Velvet Backdrop 6x10",spec:"6x10ft / 벨벳 / 비반사 블랙",capacity:"1인 상반신~좁은 전신, 이동형 로우키",price:232000,priority:"가성비",wh:0,image:"https://dennymfg.com/cdn/shop/products/PBB-photo-black-backdrop-u179_Edwards_d766697e-cc2d-4574-9f38-1c4d2d32fee4_600x.jpg?v=1681938583",link:"https://dennymfg.com/products/black-velvet-backdrop",note:"가격과 크기 균형이 좋은 시작점. 바닥 스윕까지 욕심내면 길이가 아쉬움."},
+  {category:"배경·세트",group:"블랙 벨벳 사이즈별",brand:"Denny",model:"Black Velvet Backdrop 8x10",spec:"8x10ft / 벨벳 / 비반사 블랙",capacity:"1인 인물, 상반신 세로·가로 운용",price:310000,priority:"최선",wh:0,image:"https://dennymfg.com/cdn/shop/products/PBB-photo-black-backdrop-u179_Edwards_d766697e-cc2d-4574-9f38-1c4d2d32fee4_600x.jpg?v=1681938583",link:"https://dennymfg.com/products/black-velvet-backdrop",note:"스튜디오에서 가장 무난한 중간 사이즈. 배경으로는 좋지만 바닥까지 길게 깔기는 제한적."},
+  {category:"배경·세트",group:"블랙 벨벳 사이즈별",brand:"Denny",model:"Black Velvet Backdrop 10x10",spec:"10x10ft / 벨벳 / 비반사 블랙",capacity:"1~2인, 폭 여유 있는 로우키 배경",price:387000,priority:"최선",wh:0,image:"https://dennymfg.com/cdn/shop/products/PBB-photo-black-backdrop-u179_Edwards_d766697e-cc2d-4574-9f38-1c4d2d32fee4_600x.jpg?v=1681938583",link:"https://dennymfg.com/products/black-velvet-backdrop",note:"폭과 높이가 안정적이라 인물용으로 다루기 좋음. 전신 바닥 스윕은 별도 배경지가 더 편할 수 있음."},
+  {category:"배경·세트",group:"블랙 벨벳 사이즈별",brand:"Denny",model:"Black Velvet Backdrop 10x16",spec:"10x16ft / 벨벳 / 비반사 블랙",capacity:"전신 로우키, 바닥까지 자연스럽게 늘어뜨림",price:581000,priority:"최고",wh:0,image:"https://dennymfg.com/cdn/shop/products/PBB-photo-black-backdrop-u179_Edwards_d766697e-cc2d-4574-9f38-1c4d2d32fee4_600x.jpg?v=1681938583",link:"https://dennymfg.com/products/black-velvet-backdrop",note:"검정 천 배경을 제대로 쓰려면 현실적인 상위 후보. 전신과 바닥 연결감이 필요할 때 봄."},
+  {category:"배경·세트",group:"블랙 벨벳 사이즈별",brand:"Denny",model:"Black Velvet Backdrop 10x20",spec:"10x20ft / 벨벳 / 비반사 블랙",capacity:"전신, 움직임 있는 인물, 여유 있는 바닥 스윕",price:677000,priority:"최고",wh:0,image:"https://dennymfg.com/cdn/shop/products/PBB-photo-black-backdrop-u179_Edwards_d766697e-cc2d-4574-9f38-1c4d2d32fee4_600x.jpg?v=1681938583",link:"https://dennymfg.com/products/black-velvet-backdrop",note:"보관/설치 공간이 있다면 가장 여유 있음. 세탁·먼지·보풀 관리와 큰 스탠드 하중을 같이 봐야 함."},
+
+  {category:"배경·세트",group:"천배경/스윕 이동형",brand:"Westcott",model:"X-Drop Pro Rich Black Sweep Kit 8x13",spec:"8x13ft 스윕 배경+X-Drop Pro 스탠드 키트",capacity:"로케이션 전신, 작은 그룹, 빠른 설치",price:336000,priority:"최선",wh:0,image:"https://www.fjwestcott.com/cdn/shop/products/878sk-x-drop-pro-8x13-sweep-kit-angle-l-case_c7cf47e8-7917-4da4-9bb7-c2db574eafb6.jpg?v=1658333079",link:"https://www.fjwestcott.com/products/x-drop-pro-wrinkle-resistant-sweep-backdrop-kit-rich-black-8-x-13",note:"천과 스탠드를 한 번에 시작할 때 편함. 벨벳처럼 빛을 먹는 블랙은 아니지만 이동 촬영에서는 실용성이 큼."},
+  {category:"배경·세트",group:"천배경/스윕 이동형",brand:"Westcott",model:"X-Drop Pro High-Key White Sweep 8x13",spec:"8x13ft / 주름 저항 폴리에스터 / 배경천 단품",capacity:"하이키, 제품, 전신 스윕",price:153000,priority:"가성비",wh:0,image:"https://www.fjwestcott.com/cdn/shop/products/877S-X-Drop-8x13-Sweep.jpg?v=1669759832",link:"https://www.fjwestcott.com/products/x-drop-pro-wrinkle-resistant-sweep-backdrop-high-key-white-8-x-13",note:"스탠드가 있다면 단품으로 색을 늘리기 좋음. 흰색은 오염과 발자국 관리가 핵심."},
+  {category:"배경·세트",group:"천배경/스윕 이동형",brand:"Westcott",model:"X-Drop Pro Neutral Gray Sweep 8x13",spec:"8x13ft / 주름 저항 폴리에스터 / 배경천 단품",capacity:"인물, 프로필, 컬러 젤 배경",price:153000,priority:"최선",wh:0,image:"https://www.fjwestcott.com/cdn/shop/products/880S-X-Drop-8x13-Sweep.jpg?v=1669760254",link:"https://www.fjwestcott.com/products/x-drop-pro-wrinkle-resistant-sweep-backdrop-neutral-gray-8-x-13",note:"회색은 조명으로 흰색/검정/컬러감을 만들기 쉬워 활용 폭이 넓음. 첫 천배경 색으로 좋음."},
+  {category:"배경·세트",group:"천배경/스윕 이동형",brand:"Westcott",model:"X-Drop Pro Chroma-Key Green Sweep 8x13",spec:"8x13ft / 크로마키 그린 / 배경천 단품",capacity:"영상 합성, 제품 누끼, 교육 콘텐츠",price:153000,priority:"최선",wh:0,image:"https://www.fjwestcott.com/cdn/shop/products/879S-X-Drop-8x13-Sweep.jpg?v=1669760154",link:"https://www.fjwestcott.com/products/x-drop-pro-wrinkle-resistant-sweep-backdrop-chroma-key-green-screen-8-x-13",note:"크로마키는 주름과 색 반사가 품질을 크게 좌우함. 피사체와 배경 거리 확보가 중요."},
+  {category:"배경·세트",group:"천배경/스윕 이동형",brand:"Westcott",model:"X-Drop Pro Backdrop Stand",spec:"5x7, 5x12, 8x8, 8x13 X-Drop Pro 배경 대응",capacity:"X-Drop Pro 배경천 공용 프레임",price:245000,priority:"최선",wh:0,image:"https://www.fjwestcott.com/cdn/shop/products/870x_1.jpg?v=1656553292",link:"https://www.fjwestcott.com/products/x-drop-pro-backdrop-stand-for-5-and-8-wide-backdrops",note:"색상별 배경천을 계속 늘릴 계획이면 키트 1개보다 스탠드와 천 단품 조합이 관리하기 좋음."},
+
+  {category:"배경·세트",group:"기본 천배경/화이트·그레이",brand:"Westcott",model:"Wrinkle-Resistant High-Key White 9x10",spec:"9x10ft / 무반사 폴리에스터 / 폴포켓+그로밋",capacity:"하이키, 상반신~그룹, 접이식 보관",price:138000,priority:"가성비",wh:0,image:"https://www.fjwestcott.com/cdn/shop/products/134-No-Stands.jpg?v=1673040211",link:"https://www.fjwestcott.com/products/wrinkle-resistant-backdrop-high-key-white-9-x-10",note:"흰 천배경 기본 후보. 완전한 흰 배경은 조명 분리와 바닥 오염 관리가 필요."},
+  {category:"배경·세트",group:"기본 천배경/화이트·그레이",brand:"Westcott",model:"Wrinkle-Resistant Neutral Gray 9x10",spec:"9x10ft / 무반사 폴리에스터 / 폴포켓+그로밋",capacity:"프로필, 룩북, 색 젤 배경",price:138000,priority:"최선",wh:0,image:"https://www.fjwestcott.com/cdn/shop/products/140-No-Stands.jpg?v=1673040236",link:"https://www.fjwestcott.com/products/wrinkle-resistant-backdrop-neutral-gray-9-x-10",note:"회색은 노출과 조명으로 톤을 바꾸기 쉬워 구매 우선순위가 높음."},
+  {category:"배경·세트",group:"기본 천배경/화이트·그레이",brand:"Savage",model:"White Solid Colored Muslin 10x12",spec:"10x12ft / 100% cotton muslin / 3in rod pocket",capacity:"화이트 천배경, 인물, 제품, 그룹",price:127000,priority:"가성비",wh:0,image:"https://cdn.savageuniversal.com/media/catalog/product/cache/6b4e17b84fe994c59085730d284e5672/b/a/backgrounds-savage-muslin-backgrounds-sd0112-01.jpg.jpg",link:"https://savageuniversal.com/us-en/white-solid-colored-muslin-backdrop-10-x-12-sa-sd0112/",note:"세탁 가능한 면 머슬린. 주름이 질감으로 보일 수 있어 깔끔한 상업컷보다 자연스러운 인물용에 맞음."},
+  {category:"배경·세트",group:"기본 천배경/화이트·그레이",brand:"Savage",model:"Gray Skies Crushed Muslin 10x12",spec:"10x12ft / mottled gray / 100% cotton",capacity:"질감 있는 회색 인물 배경",price:242000,priority:"최고",wh:0,image:"https://cdn.savageuniversal.com/media/catalog/product/cache/6b4e17b84fe994c59085730d284e5672/b/a/backgrounds-savage-muslin-backgrounds-cm04-01.jpg",link:"https://savageuniversal.com/us-en/gray-skies-crushed-muslin-backdrop-10-x-12-sa-cm04-config/",note:"단색 회색보다 배경 질감이 살아남. 얼굴보다 배경이 튀지 않도록 거리와 조리개를 같이 조절."},
+
+  {category:"배경·세트",group:"접이식 헤드샷 배경",brand:"Manfrotto",model:"Collapsible Reversible Black/White 5x6",spec:"5x6ft / 양면 블랙·화이트 / 접이식",capacity:"헤드샷, 프로필, 좁은 공간",price:286000,priority:"가성비",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/l/l/ll-lc5621-collapsible-background-black-white-main.jpg",link:"https://www.manfrotto.com/global-en/5-x6-collapsible-reversible-background-black-white-ll-lc5621/",note:"흑/백을 빠르게 바꿀 수 있는 기본 접이식. 전신보다 상반신과 프로필에 맞음."},
+  {category:"배경·세트",group:"접이식 헤드샷 배경",brand:"Manfrotto",model:"Collapsible White/Mid Grey 5x6",spec:"5x6ft / 양면 화이트·미드그레이 / 접이식",capacity:"프로필, 증명, 인터뷰, 반사판 대체",price:317000,priority:"최선",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/l/l/ll-lb56gw-collapsible-background-grey-white-main.jpg",link:"https://www.manfrotto.com/global-en/5-x6-collapsible-white-mid-grey-ll-lb56gw/",note:"흰색과 회색 양면이라 가장 실용적인 조합. 회색은 조명으로 톤 조절하기 좋음."},
+  {category:"배경·세트",group:"접이식 헤드샷 배경",brand:"Manfrotto",model:"Collapsible Black/Mid Grey 6x7",spec:"6x7ft / 양면 블랙·미드그레이 / 접이식",capacity:"상반신, 1인 반신, 배경 여유 확보",price:454000,priority:"최고",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/l/l/ll-lb67gb-collapsible-background-black-grey-main.jpg",link:"https://www.manfrotto.com/global-en/6-x7-collapsible-black-mid-grey-ll-lb67gb/",note:"5x6보다 여유가 있어 헤드샷에서 어깨/팔 움직임이 편함. 접을 때 숙련이 필요."},
+  {category:"배경·세트",group:"접이식 헤드샷 배경",brand:"Manfrotto",model:"Vintage Collapsible Ink/Sage 1.5x2.1m",spec:"1.5x2.1m / 빈티지 양면 텍스처 / 접이식",capacity:"감성 프로필, 패션, 인터뷰 톤",price:436000,priority:"최고",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/v/i/vintage-collapsible-background-lastolite-ink-and-sage-ll-lb5720-v2.jpg",link:"https://www.manfrotto.com/global-uk/vintage-collapsible-1-5-x-2-1m-ink-sage-ll-lb5720/",note:"단색 배경보다 무드가 빠르게 생김. 의상 색과 충돌할 수 있어 콘셉트가 정해진 촬영에 더 적합."},
+
+  {category:"배경·세트",group:"듀베틴·커맨도 차광천",brand:"Rose Brand",model:"54in 8oz Duvetyn Black FR",spec:"54in 폭 / 8oz / 난연 / 야드 단위",capacity:"가벼운 네거티브 필, 간이 차광, 마스킹",price:12000,priority:"가성비",wh:0,image:"https://s7d9.scene7.com/is/image/RoseBrand/DVT80001_Black?$PLPlist$",link:"https://www.rosebrand.com/products/fabric/masking-blackout-fabrics/commando-cloth-duvetyne",note:"가볍고 저렴하지만 완전 차광용은 아님. 작은 플래그나 임시 마스킹용으로 봄."},
+  {category:"배경·세트",group:"듀베틴·커맨도 차광천",brand:"Rose Brand",model:"54in 12oz Light Weight Commando Black FR",spec:"54in 폭 / 12oz / 난연 / 야드 단위",capacity:"네거티브 필, 창문 일부 차광, 배경 뒤 빛 차단",price:14000,priority:"최선",wh:0,image:"https://s7d9.scene7.com/is/image/RoseBrand/DVT80001_Black?$PLPlist$",link:"https://www.rosebrand.com/products/fabric/masking-blackout-fabrics/commando-cloth-duvetyne",note:"8oz보다 빛 차단이 안정적이고 16oz보다 다루기 쉬운 중간 후보."},
+  {category:"배경·세트",group:"듀베틴·커맨도 차광천",brand:"Dazian",model:"16oz Duvetyne 54in Black",spec:"54in 폭 / 16oz / 100% cotton / FR",capacity:"헤비 차광, 플래그, 세트 마스킹",price:15000,priority:"최선",wh:0,image:"https://www.dazian.com/wp-content/uploads/2021/11/duvetyne16oz-1200x1200-1.png",link:"https://www.dazian.com/product/16-oz-duvetyne-54/",note:"차광 목적이면 벨벳보다 이런 듀베틴 계열이 더 맞을 때가 많음. 배경 미감보다 기능성 우선."},
+  {category:"배경·세트",group:"듀베틴·커맨도 차광천",brand:"Filmtools",model:"54in Black Duvetyne Various Lengths",spec:"54in 폭 / 16oz / 5·10·25·50yd 옵션",capacity:"현장용 듀베틴 절단 구매, 마스킹/차광",price:119000,priority:"최고",wh:0,image:"https://www.filmtools.com/media/catalog/product/1/2/1242-etc.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=265&width=265&canvas=265:265",link:"https://www.filmtools.com/filmtools-54-black-duvetyne-various-lengths.html",note:"야드 단위보다 일정 길이로 사서 접고 보관하기 좋음. 가격은 구성 길이에 따라 크게 달라짐."},
+
+  {category:"배경·세트",group:"캔버스·텍스처 배경",brand:"Westcott",model:"X-Drop Canvas Nutmeg Wood Planks 5x7",spec:"5x7ft / 캔버스 / 무반사 매트 / 롤 보관",capacity:"제품, 반신, 질감 있는 소형 세트",price:199000,priority:"가성비",wh:0,image:"https://www.fjwestcott.com/cdn/shop/products/628-d0066-60x84-br_1_4806cfb4-8d81-42d6-95fe-f3c30adf0207.jpg?v=1659450248",link:"https://www.fjwestcott.com/products/x-drop-canvas-backdrop-nutmeg-wood-planks-5-x-7",note:"큰 천보다 작은 콘셉트 세트에 적합. 바닥/벽 질감을 빠르게 만들 때 효율적."},
+  {category:"배경·세트",group:"캔버스·텍스처 배경",brand:"Manfrotto",model:"Urban Collapsible Smoke/Concrete 1.5x2.1m",spec:"1.5x2.1m / 양면 도시 질감 / 접이식",capacity:"프로필, 인터뷰, 패션 톤 배경",price:428000,priority:"최선",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/l/l/ll-lb5745-urban-background-smoke-concrete-main-v2.jpg",link:"https://www.manfrotto.com/global-de/urban-hintergrund-faltbar-1-5-x-2-1m-rauch-beton-ll-lb5745/",note:"공간 없이도 콘크리트/스모크 톤을 만들 수 있음. 너무 선명하면 얕은 심도나 거리 확보로 배경감을 줄임."},
+  {category:"배경·세트",group:"캔버스·텍스처 배경",brand:"Manfrotto",model:"Vintage Collapsible Ink/Sage 1.5x2.1m",spec:"1.5x2.1m / 양면 빈티지 텍스처 / 접이식",capacity:"몽환·감성 인물, 패션, 아티스트 프로필",price:436000,priority:"최선",wh:0,image:"https://cdn.manfrotto.com/media/catalog/product/cache/16a7253a27a4188a5cc006d92677ae2a/v/i/vintage-collapsible-background-lastolite-ink-and-sage-ll-lb5720-v2.jpg",link:"https://www.manfrotto.com/global-uk/vintage-collapsible-1-5-x-2-1m-ink-sage-ll-lb5720/",note:"감성 배경을 빠르게 만들기 좋음. 배경 색이 피부 톤에 영향을 줄 수 있어 조명 색을 같이 봄."},
+  {category:"배경·세트",group:"캔버스·텍스처 배경",brand:"Gravity Backdrops",model:"Classic Strong Texture Canvas 8.9x9.8 Olive Green",spec:"8.9x9.8ft / 핸드페인팅 캔버스 / 15oz cotton duck",capacity:"상업 인물, 화보, 개인전용 무드 배경",price:1100000,priority:"최고",wh:0,image:"https://www.adorama.com/images/300x300/gravity-backdrops-classic-olive-green_fbog8998st.webp",link:"https://www.adorama.com/gravity-backdrops-strong-texture-canvas-backdrop-8-9-x-9-8-ft/p/fbog8998st",note:"비싸지만 배경 자체가 룩을 만듦. 색과 텍스처가 강해 촬영 콘셉트가 분명할 때 후보."}
+];
+
+const priorityRank={"가성비":1,"높음":1,"최선":2,"중간":2,"최고":3,"낮음":3};
+const money=(value)=>"₩"+Number(value).toLocaleString("ko-KR");
+const unique=(key)=>[...new Set(rows.map((row)=>row[key]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"ko"));
+
+function fillSelect(id,key,label){
+  const select=document.getElementById(id);
+  unique(key).forEach((value)=>{
+    const option=document.createElement("option");
+    option.value=value;
+    option.textContent=value;
+    select.appendChild(option);
+  });
+}
+
+function filteredRows(){
+  const q=document.getElementById("search").value.trim().toLowerCase();
+  const category=document.getElementById("category").value;
+  const group=document.getElementById("group").value;
+  const brand=document.getElementById("brand").value;
+  const priority=document.getElementById("priority").value;
+  const sort=document.getElementById("sort").value;
+  let list=rows.filter((row)=>{
+    const hay=[row.category,row.group,row.brand,row.model,row.spec,row.capacity,row.note,row.priority].join(" ").toLowerCase();
+    return (!q || hay.includes(q)) && (!category || row.category===category) && (!group || row.group===group) && (!brand || row.brand===brand) && (!priority || row.priority===priority);
+  });
+  if(sort==="price") list=list.sort((a,b)=>a.price-b.price);
+  if(sort==="priority") list=list.sort((a,b)=>priorityRank[a.priority]-priorityRank[b.priority] || a.price-b.price);
+  if(sort==="brand") list=list.sort((a,b)=>a.brand.localeCompare(b.brand,"ko") || a.price-b.price);
+  if(sort==="group") list=list.sort((a,b)=>a.category.localeCompare(b.category,"ko") || a.group.localeCompare(b.group,"ko") || priorityRank[a.priority]-priorityRank[b.priority] || a.price-b.price);
+  return list;
+}
+
+function renderStats(list){
+  const total=list.length;
+  const high=list.filter((row)=>(priorityRank[row.priority] || 9)<=2).length;
+  const power=list.filter((row)=>row.wh>0).length;
+  const avg=total?Math.round(list.reduce((sum,row)=>sum+row.price,0)/total):0;
+  const max=total?Math.max(...list.map((row)=>row.price)):0;
+  document.getElementById("stats").innerHTML=[
+    `<div class="stat"><strong>${total}</strong><span>표시 제품</span></div>`,
+    `<div class="stat"><strong>${high}</strong><span>우선 후보</span></div>`,
+    `<div class="stat"><strong>${power}</strong><span>전원 계산 가능</span></div>`,
+    `<div class="stat"><strong>${money(avg)}</strong><span>평균 예산가</span></div>`,
+    `<div class="stat"><strong>${money(max)}</strong><span>최고가 항목</span></div>`
+  ].join("");
+}
+
+function card(row){
+  const noImage=row.image?"":" no-image";
+  return `<article class="item-card">
+    <div class="photo-box${noImage}">
+      <img src="${row.image}" alt="${row.brand} ${row.model}" loading="lazy" onerror="this.parentElement.classList.add('no-image')">
+      <div class="photo-fallback">${row.brand}<br>${row.model}</div>
+    </div>
+    <div class="item-body">
+      <div class="item-top"><span class="pill brand-pill">${row.brand}</span><span class="pill type-pill">${row.category}</span></div>
+      <h3>${row.model}</h3>
+      <div class="price">${money(row.price)}</div>
+      <div class="meta">
+        <div><b>비교군</b><span>${row.group}</span></div>
+        <div><b>규격</b><span>${row.spec}</span></div>
+        <div><b>하중</b><span>${row.capacity}</span></div>
+        <div><b>추천</b><span><span class="pill priority-pill">${row.priority}</span></span></div>
+      </div>
+      <p class="note">${row.note}</p>
+      <a class="link" href="${row.link}" target="_blank" rel="noreferrer">제품 확인</a>
+    </div>
+  </article>`;
+}
+
+function renderGroups(){
+  const list=filteredRows();
+  renderStats(list);
+  const grouped=new Map();
+  list.forEach((row)=>{
+    const key=row.category+" · "+row.group;
+    if(!grouped.has(key)) grouped.set(key,[]);
+    grouped.get(key).push(row);
+  });
+  const entries=[...grouped.entries()];
+  const categoryMap=new Map();
+  const categoryGroups=new Map();
+  entries.forEach(([key,items],index)=>{
+    const category=items[0].category;
+    const group=items[0].group;
+    if(!categoryMap.has(category)) categoryMap.set(category,{count:0,target:index});
+    if(!categoryGroups.has(category)) categoryGroups.set(category,[]);
+    categoryMap.get(category).count+=items.length;
+    categoryGroups.get(category).push({group,count:items.length,target:index});
+  });
+  const categoryHtml=[...categoryMap.entries()].map(([category,info])=>`<a href="#support-group-${info.target}"><span>${category}</span><span class="count">${info.count}</span></a>`).join("");
+  const groupHtml=[...categoryGroups.entries()].map(([category,groups])=>{
+    const total=groups.reduce((sum,item)=>sum+item.count,0);
+    return `<div class="support-index-section">
+      <a class="support-index-heading" href="#support-group-${groups[0].target}" title="${category}"><span>${category}</span><span class="count">${total}</span></a>
+      <div class="support-index-links">
+        ${groups.map((item)=>`<a href="#support-group-${item.target}" title="${category} · ${item.group}"><span>${item.group}</span><span class="count">${item.count}</span></a>`).join("")}
+      </div>
+    </div>`;
+  }).join("");
+  ["categoryIndex","fixedCategoryIndex"].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML=categoryHtml;
+  });
+  ["groupIndex","fixedGroupIndex"].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML=groupHtml;
+  });
+  document.getElementById("groups").innerHTML=entries.map(([key,items],index)=>`<section class="group" id="support-group-${index}">
+    <div class="group-title"><h3>${key}</h3><span>${items.length}개</span></div>
+    <div class="item-grid">${items.map(card).join("")}</div>
+    ${groupDetailTable(items)}
+  </section>`).join("");
+}
+
+function groupDetailTable(items){
+  return `<div class="group-detail">
+    <h4>같은 비교군 상세표</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>사진</th><th>브랜드</th><th>모델</th><th>핵심 규격</th><th>하중/용량</th><th>원화 예산가</th><th>추천도</th><th>활용 메모</th><th>확인</th>
+          </tr>
+        </thead>
+        <tbody>${items.map((row)=>`<tr>
+    <td>${row.image?`<img class="thumb" src="${row.image}" alt="${row.brand} ${row.model}" loading="lazy">`:`<span class="small">${row.brand}<br>${row.model}</span>`}</td>
+    <td>${row.brand}</td>
+    <td><strong>${row.model}</strong></td>
+    <td>${row.spec}</td>
+    <td>${row.capacity}</td>
+    <td><strong>${money(row.price)}</strong></td>
+    <td>${row.priority}</td>
+    <td>${row.note}</td>
+    <td><a href="${row.link}" target="_blank" rel="noreferrer">확인</a></td>
+  </tr>`).join("")}</tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function renderPowerOptions(){
+  const select=document.getElementById("powerSelect");
+  rows.filter((row)=>row.wh>0).sort((a,b)=>a.wh-b.wh).forEach((row)=>{
+    const option=document.createElement("option");
+    option.value=row.wh;
+    option.textContent=`${row.brand} ${row.model} · ${row.wh}Wh`;
+    select.appendChild(option);
+  });
+  const delta=rows.find((row)=>row.model==="DELTA 2 Max");
+  if(delta) select.value=delta.wh;
+}
+
+function renderCalc(){
+  const wh=Number(document.getElementById("powerSelect").value || 0);
+  const watt=Math.max(1,Number(document.getElementById("wattInput").value || 1));
+  const eff=Number(document.getElementById("effInput").value);
+  const reserve=Number(document.getElementById("reserveInput").value);
+  const hours=(wh*eff*reserve)/watt;
+  const output=document.getElementById("calcOutput");
+  output.innerHTML=`<strong>약 ${hours.toFixed(1)}시간</strong><br><span class="small">${wh}Wh × ${(eff*100).toFixed(0)}% × ${(reserve*100).toFixed(0)}% ÷ ${watt}W 기준입니다. 고출력 조명은 순간 피크와 인버터 정격도 같이 확인하세요.</span>`;
+}
+
+["category","group","brand","priority"].forEach((key)=>fillSelect(key,key,key));
+["search","category","group","brand","priority","sort"].forEach((id)=>document.getElementById(id).addEventListener("input",renderGroups));
+document.getElementById("comfortableView").addEventListener("click",()=>{
+  document.getElementById("supportDashboard").classList.remove("compact");
+  document.getElementById("comfortableView").classList.add("active");
+  document.getElementById("compactView").classList.remove("active");
+});
+document.getElementById("compactView").addEventListener("click",()=>{
+  document.getElementById("supportDashboard").classList.add("compact");
+  document.getElementById("compactView").classList.add("active");
+  document.getElementById("comfortableView").classList.remove("active");
+});
+renderPowerOptions();
+["powerSelect","wattInput","effInput","reserveInput"].forEach((id)=>document.getElementById(id).addEventListener("input",renderCalc));
+renderGroups();
+renderCalc();
+</script>
+<script src="assets/equipment-theme.js"></script>
+</body>
+</html>
