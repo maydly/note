@@ -2,6 +2,9 @@
 
 ## 2026-06-21
 
+- `00_장비비교_목차_latest.html` 및 `index.html` v1.29 갱신.
+- `01_카메라_비교표_latest.html` v1.8, `02_렌즈_비교표_latest.html` v1.6, `03_필터_비교표_latest.html` v1.8, `04_조명_비교표_latest.html` v2.0, `06_촬영지원장비_비교표_latest.html` v2.7, 공통 테마 `assets/equipment-theme.css` v2.1 갱신.
+- 카메라/렌즈/필터/조명/악세사리/촬영지원 페이지의 `분류 바로가기`와 `비교군 바로가기`를 좌측 고정 비교군 패널 구조로 통일.
 - `00_장비비교_목차_latest.html` 및 `index.html` v1.28 갱신.
 - `05_악세사리_비교표_latest.html` v1.9, 공통 테마 `assets/equipment-theme.css` v2.0 갱신.
 - 악세사리 좌측 고정 비교군 패널 표시 조건을 901px 이상으로 낮춰 일반 브라우저 창에서도 보이게 수정.
