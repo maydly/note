@@ -2,6 +2,9 @@
 
 ## 2026-06-21
 
+- `00_장비비교_목차_latest.html` 및 `index.html` v1.31 갱신.
+- `07_포토프린터_비교표_latest.html` v2.5, 공통 테마 `assets/equipment-theme.css` v2.3 갱신.
+- 좌측 `바로가기`와 `분류/비교군` 패널의 버튼형 테두리/배경을 줄이고, Maydly Study Archive와 맞는 얇은 세로선 인덱스 타입으로 정리.
 - `00_장비비교_목차_latest.html` 및 `index.html` v1.30 갱신.
 - `07_포토프린터_비교표_latest.html` v2.4, 공통 테마 `assets/equipment-theme.css` v2.2 갱신.
 - `https://bucket0825.github.io/note/`의 Maydly Study Archive 디자인과 맞춰 장비 페이지를 큰 히어로 여백, 얇은 선, 노트 행 스타일, 평평한 섹션 구조로 재정리.
