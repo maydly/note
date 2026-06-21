@@ -2,6 +2,10 @@
 
 ## 2026-06-21
 
+- `00_장비비교_목차_latest.html` 및 `index.html` v1.26 갱신.
+- `01_카메라_비교표_latest.html` v1.7, `02_렌즈_비교표_latest.html` v1.5, `03_필터_비교표_latest.html` v1.7, 공통 테마 `assets/equipment-theme.css` v1.7 갱신.
+- 카메라/렌즈/필터의 같은급 옆 칸을 조명 페이지처럼 `분류 바로가기`와 `비교군 바로가기` 2단 구조로 정리.
+- 큰 분류는 짧은 버튼으로, 긴 세부 비교군명은 아래 리스트로 내려서 옆 칸 시인성을 개선.
 - `00_장비비교_목차_latest.html` 및 `index.html` v1.25 갱신.
 - `01_카메라_비교표_latest.html` v1.6, `02_렌즈_비교표_latest.html` v1.4, `03_필터_비교표_latest.html` v1.6, `04_조명_비교표_latest.html` v1.9, `05_악세사리_비교표_latest.html` v1.7, `06_촬영지원장비_비교표_latest.html` v2.6, 공통 테마 `assets/equipment-theme.css` v1.6 갱신.
 - 조명/악세사리/촬영지원의 대시보드 안 `분류 바로가기`를 같은 칸 안에서 sticky로 고정해 비교군 목록을 스크롤해도 분류 버튼이 따라다니게 수정.
