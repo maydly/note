@@ -250,6 +250,26 @@ a {
   text-transform: uppercase;
 }
 
+.note-nav .back-link[href] {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  z-index: 30;
+  align-items: center;
+  background: rgba(26, 23, 19, 0.82);
+  border: 1px solid rgba(245, 242, 236, 0.22);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
+  color: var(--bg);
+  display: inline-flex;
+  min-height: 46px;
+  padding: 0 16px;
+}
+
+.note-nav .back-link[href]:hover {
+  background: var(--bg);
+  color: var(--ink);
+}
+
 .cover-title {
   font-size: clamp(38px, 6vw, 72px);
   line-height: 1.12;

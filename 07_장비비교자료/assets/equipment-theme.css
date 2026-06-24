@@ -156,6 +156,34 @@ body.support-page header .small{
 a{color:var(--ink) !important}
 
 /* ---- 상단 네비게이션 (조용하게) ---- */
+.note-home-link{
+  position:fixed !important;
+  left:16px !important;
+  bottom:16px !important;
+  z-index:2400 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-height:46px !important;
+  padding:0 16px !important;
+  border:1px solid rgba(188,199,204,.9) !important;
+  background:rgba(255,255,255,.92) !important;
+  color:#202124 !important;
+  font-size:14px !important;
+  font-weight:900 !important;
+  line-height:1 !important;
+  text-decoration:none !important;
+  box-shadow:0 16px 36px rgba(41,48,54,.12) !important;
+  backdrop-filter:blur(18px) saturate(140%) !important;
+}
+
+.note-home-link:hover{
+  background:#202124 !important;
+  border-color:#202124 !important;
+  color:#fff !important;
+  text-decoration:none !important;
+}
+
 .top-nav{
   position:fixed !important;
   z-index:2000 !important;
