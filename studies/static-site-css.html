@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>정적 사이트 구조와 CSS 레이아웃 — maydly Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&family=Space+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="note-cover">
+    <nav class="note-nav">
+      <a class="back-link" href="../index.html">← Archive</a>
+      <span class="back-link">Development</span>
+    </nav>
+    <p class="mono-label">Development · maydly</p>
+    <h1 class="cover-title">페이지를<br><em>구조</em>로<br>생각하기</h1>
+    <p class="cover-sub">여러 페이지를 만들며 익힌 정적 사이트 폴더 구조와, 흔들리지 않는 CSS 레이아웃의 기본기. 이 아카이브를 만들며 정리한 패턴.</p>
+  </header>
+
+  <main class="container">
+    <article class="chapter">
+      <p class="chapter-num">01 — Structure</p>
+      <h2 class="chapter-title">파일 <em>구조</em> 잡기</h2>
+      <p class="chapter-desc">한 페이지가 아니라 "사이트"가 되면, 폴더를 어떻게 나누느냐가 관건이 된다.</p>
+
+      <section class="section">
+        <div class="section-header">
+          <h3 class="section-title">공용과 개별을 나눈다</h3>
+          <span class="section-tag red">Pattern</span>
+        </div>
+        <p class="section-body">랜딩(첫 화면)과 하위 노트 페이지는 성격이 다르다. 그래서 CSS도 나눠 두면 안전하다. 랜딩만 손볼 때 공용 스타일을 건드려 하위 페이지가 통째로 깨지는 사고를 막을 수 있다.</p>
+        <div class="tool-grid">
+          <div class="tool-item">
+            <p class="tool-name">landing.css</p>
+            <p class="tool-desc">첫 화면(랜딩) 전용. 여기만 고치면 하위 페이지는 안전하다.</p>
+          </div>
+          <div class="tool-item">
+            <p class="tool-name">styles.css</p>
+            <p class="tool-desc">하위 노트 페이지 공용. 모든 노트가 함께 쓰는 디자인.</p>
+          </div>
+          <div class="tool-item">
+            <p class="tool-name">studies/</p>
+            <p class="tool-desc">개별 노트 HTML을 모으는 폴더. 템플릿을 복사해 시작.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <h3 class="section-title">템플릿을 둔다</h3>
+          <span class="section-tag green">Reuse</span>
+        </div>
+        <p class="section-body">새 노트를 만들 때마다 빈 화면에서 시작하지 않는다. <code>template.html</code> 하나를 만들어 두고 복사해서 제목·내용만 바꾼다. 디자인이 저절로 통일되고, 만드는 속도도 빨라진다.</p>
+      </section>
+    </article>
+
+    <article class="chapter">
+      <p class="chapter-num">02 — Layout</p>
+      <h2 class="chapter-title">흔들리지 않는 <em>레이아웃</em></h2>
+      <p class="chapter-desc">화면 크기가 달라져도 무너지지 않게 만드는 최소한의 도구.</p>
+
+      <section class="section">
+        <div class="section-header">
+          <h3 class="section-title">기억할 도구</h3>
+          <span class="section-tag blue">Tools</span>
+        </div>
+        <ul class="bullets">
+          <li><strong>max-width + margin:auto</strong> — 본문 폭을 적당히 잡고 가운데 정렬. 큰 화면에서 글이 너무 늘어나지 않게.</li>
+          <li><strong>CSS 변수(:root)</strong> — 색·여백을 한 곳에 모아 두면, 톤을 바꿀 때 한 줄만 고치면 된다.</li>
+          <li><strong>Grid / Flex</strong> — 카드 나열은 grid, 좌우 정렬은 flex. 둘이면 거의 다 된다.</li>
+          <li><strong>clamp()</strong> — 글자 크기를 화면에 따라 자동으로. 모바일·데스크톱 둘 다 자연스럽게.</li>
+          <li><strong>@media</strong> — 좁은 화면에서 2열을 1열로 바꾸는 식의 반응형 한 줄.</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <h3 class="section-title">밝은 톤을 기본으로</h3>
+          <span class="section-tag red">Tone</span>
+        </div>
+        <p class="section-body">이 아카이브는 종이 같은 밝은 배경(베이지·아이보리)을 기본으로 한다. 어두운 색은 커버 밴드 같은 강조에만 쓰고, 본문은 읽기 편한 라이트 톤을 유지한다. 색 한두 개(accent)로 포인트만 주면 차분하면서도 심심하지 않다.</p>
+      </section>
+    </article>
+
+    <article class="chapter">
+      <p class="chapter-num">03 — Keep light</p>
+      <h2 class="chapter-title">가볍게 유지하기</h2>
+      <p class="chapter-desc">정적 사이트의 강점은 빠름. 그걸 지키는 습관.</p>
+
+      <section class="section">
+        <div class="section-header">
+          <h3 class="section-title">무게 관리</h3>
+          <span class="section-tag green">Performance</span>
+        </div>
+        <ul class="bullets">
+          <li>이미지는 적정 크기로 줄여서 넣는다. 원본 그대로 넣으면 페이지가 무거워진다.</li>
+          <li>이미지를 HTML 안에 통째로 박아넣으면(base64) 파일이 수 MB로 부푼다 — 가능하면 파일로 분리.</li>
+          <li>폰트는 필요한 굵기만 불러온다.</li>
+          <li>외부 스크립트는 꼭 필요한 것만. 정적 사이트의 장점은 "가벼움"이다.</li>
+        </ul>
+      </section>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <span>Development · structure</span>
+    <span>maydly study archive</span>
+  </footer>
+</body>
+</html>

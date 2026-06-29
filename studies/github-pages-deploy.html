@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Pages 정적 사이트 배포 — maydly Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&family=Space+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="note-cover">
+    <nav class="note-nav">
+      <a class="back-link" href="../index.html">← Archive</a>
+      <span class="back-link">Development</span>
+    </nav>
+    <p class="mono-label">Development · maydly</p>
+    <h1 class="cover-title">HTML 한 폴더를<br><em>공개 주소</em>로<br>만드는 법</h1>
+    <p class="cover-sub">서버 없이, 비용 없이, GitHub Pages로 정적 사이트를 띄우는 흐름. 이 아카이브 자체가 그렇게 배포되어 있다.</p>
+  </header>
+
+  <main class="container">
+    <article class="chapter">
+      <p class="chapter-num">01 — What</p>
+      <h2 class="chapter-title">GitHub Pages가 <em>뭔가</em></h2>
+      <p class="chapter-desc">저장소에 올린 HTML/CSS를 그대로 웹 주소로 보여주는 무료 호스팅.</p>
+
+      <section class="section">
+        <div class="section-header">
+          <h3 class="section-title">한 줄 정의</h3>
+          <span class="section-tag red">Concept</span>
+        </div>
+        <p class="section-body">GitHub에 코드를 올려두면, GitHub이 그 폴더를 그대로 <strong>웹사이트로 공개</strong>해 준다. 데이터베이스나 서버 프로그램이 없는 "정적" 사이트 — HTML, CSS, 이미지, 자바스크립트만으로 된 사이트에 딱 맞는다. 학습 아카이브, 포트폴리오, 안내 페이지 같은 용도에 이상적이다.</p>
+        <div class="highlight">
+          공개 주소 형태: <code>https://사용자명.github.io/저장소명/</code><br>
+          이 아카이브는 <code>bucket0825.github.io/note/</code> 로 열린다.
+        </div>
+      </section>
+    </article>
+
+    <article class="chapter">
+      <p class="chapter-num">02 — How</p>
+      <h2 class="chapter-title">배포 <em>흐름</em></h2>
+      <p class="chapter-desc">처음 한 번만 설정하면, 그다음부터는 push만으로 갱신된다.</p>
+
+      <section class="section">
+        <div class="section-header">
+          <h3 class="section-title">최초 설정</h3>
+          <span class="section-tag blue">Setup</span>
+        </div>
+        <ol class="steps">
+          <li>GitHub에 저장소를 만든다.</li>
+          <li>HTML·CSS가 든 폴더를 커밋하고 push 한다.</li>
+          <li>저장소 <code>Settings → Pages</code>로 간다.</li>
+          <li>"Deploy from a branch" 선택, Branch는 <code>main</code>, 폴더는 <code>/ (root)</code>.</li>
+          <li>1~2분 뒤 공개 주소로 접속된다.</li>
+        </ol>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <h3 class="section-title">그 후의 갱신</h3>
+          <span class="section-tag green">Update</span>
+        </div>
+        <p class="section-body">한 번 설정해두면 그다음은 단순하다. 파일을 고치고 → 커밋하고 → push하면, 1~2분 뒤 라이브 사이트에 자동 반영된다. 별도 배포 버튼이 없다. <strong>push = 배포</strong>라고 생각하면 된다.</p>
+        <div class="highlight blue">
+          그래서 "아직 안 보여주고 싶은 것"은 push하지 않는다. push하는 순간 공개된다는 걸 기억할 것.
+        </div>
+      </section>
+    </article>
+
+    <article class="chapter">
+      <p class="chapter-num">03 — Watch out</p>
+      <h2 class="chapter-title">걸리기 쉬운 곳</h2>
+      <p class="chapter-desc">정적 사이트 특유의 함정 몇 가지.</p>
+
+      <section class="section">
+        <div class="section-header">
+          <h3 class="section-title">주의 목록</h3>
+          <span class="section-tag red">Caution</span>
+        </div>
+        <ul class="bullets">
+          <li>경로는 <strong>상대경로</strong>로. 폴더를 옮기면 링크가 깨지므로 구조를 함부로 안 바꾼다.</li>
+          <li>이미지·CSS 파일명 대소문자를 정확히. 내 PC에선 되는데 공개 주소에선 깨지는 단골 원인.</li>
+          <li>공개 사이트엔 <strong>내부 정보</strong>(메모·연락처·금액·키)를 절대 올리지 않는다.</li>
+          <li>반영이 느리면 브라우저 캐시 탓일 때가 많다. 새로고침(강력 새로고침)으로 확인.</li>
+          <li>커스텀 도메인을 붙이려면 Pages 설정에서 도메인 + DNS 설정이 추가로 필요하다.</li>
+        </ul>
+      </section>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <span>Development · deploy</span>
+    <span>maydly study archive</span>
+  </footer>
+</body>
+</html>
