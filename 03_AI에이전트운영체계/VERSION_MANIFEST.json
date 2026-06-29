@@ -1,12 +1,18 @@
 {
   "module": "AI에이전트운영체계",
   "latest": {
-    "version": "v3.0",
-    "date": "2026-06-19",
+    "version": "v4.0",
+    "date": "2026-06-30",
     "file": "AI에이전트운영체계_작업장운영교육페이지.html",
-    "description": "작업장 AI 에이전트 운영 체계 교육용 공개 페이지"
+    "description": "작업장 AI 에이전트 운영 체계 교육용 공개 페이지 (260624 A안 구조 개편 + 에이전트 12개·Codex 12개·주간 감사팀 반영)"
   },
   "versions": [
+    {
+      "version": "v4.0",
+      "created": "260630_0040",
+      "file": "versions/2026-06-30/AI에이전트운영체계_작업장운영교육페이지_260630_0040_v4.0.html",
+      "notes": "에이전트 9→12개, Codex 5→12개, docs→작업장공통, 독립 live repo(A안), 주간 감사팀 신설 반영"
+    },
     {
       "version": "v3.0",
       "created": "260619_1730",
