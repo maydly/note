@@ -6,94 +6,184 @@
   <title>GitHub Pages 정적 사이트 배포 — maydly Study</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&family=Space+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../note.css">
 </head>
 <body>
-  <header class="note-cover">
-    <nav class="note-nav">
-      <a class="back-link" href="../index.html">← Archive</a>
-      <span class="back-link">Development</span>
+  <div class="topbar">
+    <nav class="nav" aria-label="페이지 목차">
+      <div class="brand"><span class="brand-mark">←</span> <a href="../index.html" style="text-decoration:none">Study Archive</a></div>
+      <div class="nav-links">
+        <a href="#intro">개요</a>
+        <a href="#static">정적 사이트</a>
+        <a href="#what">Pages란</a>
+        <a href="#setup">최초 설정</a>
+        <a href="#update">갱신</a>
+        <a href="#trap">함정</a>
+        <a href="#check">점검</a>
+        <a href="#glossary">용어</a>
+      </div>
     </nav>
-    <p class="mono-label">Development · maydly</p>
-    <h1 class="cover-title">HTML 한 폴더를<br><em>공개 주소</em>로<br>만드는 법</h1>
-    <p class="cover-sub">서버 없이, 비용 없이, GitHub Pages로 정적 사이트를 띄우는 흐름. 이 아카이브 자체가 그렇게 배포되어 있다.</p>
+  </div>
+
+  <header>
+    <div class="hero-copy">
+      <p class="eyebrow">Development · maydly</p>
+      <h1>HTML 한 폴더를<br>공개 주소로 만드는 법</h1>
+      <p class="lead">서버도, 비용도 없이 GitHub Pages로 정적 사이트를 띄우는 전체 흐름. 정적 사이트가 뭔지부터 최초 설정·갱신·자주 걸리는 함정까지, 이 노트만 보고 다시 배포할 수 있게 정리했다. 이 아카이브 자체가 이렇게 떠 있다.</p>
+      <div class="meta-row">
+        <span class="pill">GitHub Pages</span>
+        <span class="pill">정적 사이트</span>
+        <span class="pill">무료 호스팅</span>
+        <span class="pill">배포</span>
+      </div>
+    </div>
   </header>
 
-  <main class="container">
-    <article class="chapter">
-      <p class="chapter-num">01 — What</p>
-      <h2 class="chapter-title">GitHub Pages가 <em>뭔가</em></h2>
-      <p class="chapter-desc">저장소에 올린 HTML/CSS를 그대로 웹 주소로 보여주는 무료 호스팅.</p>
+  <main>
+    <!-- 00 -->
+    <section id="intro">
+      <div class="section-head">
+        <h2>이 노트를 읽고 나면</h2>
+        <p class="section-note">한 번 설정하면, 그다음부터는 push 한 번이 곧 배포다.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>"정적 사이트"가 뭐고 왜 무료·빠른지 안다.</span></li>
+        <li><span class="check">✓</span><span>GitHub 저장소를 공개 웹주소로 바꾸는 설정을 직접 할 수 있다.</span></li>
+        <li><span class="check">✓</span><span>수정한 내용을 라이브에 반영하는 법(=push)을 안다.</span></li>
+        <li><span class="check">✓</span><span>"내 PC에선 되는데 공개 주소에선 깨지는" 단골 함정을 피한다.</span></li>
+      </ul>
+      <div class="callout teal" style="margin-top:14px;">
+        <strong>한 줄 요약</strong> — GitHub에 올린 HTML/CSS 폴더를, GitHub이 그대로 웹사이트로 공개해 주는 무료 기능이다. 공개 주소는 <code>https://사용자명.github.io/저장소명/</code> 꼴. 이 아카이브는 <code>bucket0825.github.io/note/</code>.
+      </div>
+    </section>
 
-      <section class="section">
-        <div class="section-header">
-          <h3 class="section-title">한 줄 정의</h3>
-          <span class="section-tag red">Concept</span>
-        </div>
-        <p class="section-body">GitHub에 코드를 올려두면, GitHub이 그 폴더를 그대로 <strong>웹사이트로 공개</strong>해 준다. 데이터베이스나 서버 프로그램이 없는 "정적" 사이트 — HTML, CSS, 이미지, 자바스크립트만으로 된 사이트에 딱 맞는다. 학습 아카이브, 포트폴리오, 안내 페이지 같은 용도에 이상적이다.</p>
-        <div class="highlight">
-          공개 주소 형태: <code>https://사용자명.github.io/저장소명/</code><br>
-          이 아카이브는 <code>bucket0825.github.io/note/</code> 로 열린다.
-        </div>
-      </section>
-    </article>
+    <!-- 01 정적 -->
+    <section id="static">
+      <div class="section-head">
+        <h2>01 — 정적 사이트 vs 동적 사이트</h2>
+        <p class="section-note">GitHub Pages는 "정적"에만 맞는다. 그 차이를 먼저.</p>
+      </div>
+      <table class="compare">
+        <tr><th></th><th>정적 사이트 (Static)</th><th>동적 사이트 (Dynamic)</th></tr>
+        <tr><td>구성</td><td>HTML·CSS·이미지·JS 파일 그대로</td><td>서버 프로그램 + 데이터베이스</td></tr>
+        <tr><td>예시</td><td>학습 아카이브, 포트폴리오, 안내 페이지</td><td>로그인·결제·실시간 게시판</td></tr>
+        <tr><td>비용</td><td>무료로 가능 (GitHub Pages)</td><td>서버 운영비 발생</td></tr>
+        <tr><td>속도</td><td>매우 빠름 (그냥 파일 전송)</td><td>요청마다 서버가 계산</td></tr>
+      </table>
+      <div class="callout" style="margin-top:14px;">
+        학습 노트·안내 페이지처럼 "내용을 보여주기만" 하는 사이트는 정적이면 충분하다. 빠르고, 무료고, 관리가 단순하다.
+      </div>
+    </section>
 
-    <article class="chapter">
-      <p class="chapter-num">02 — How</p>
-      <h2 class="chapter-title">배포 <em>흐름</em></h2>
-      <p class="chapter-desc">처음 한 번만 설정하면, 그다음부터는 push만으로 갱신된다.</p>
-
-      <section class="section">
-        <div class="section-header">
-          <h3 class="section-title">최초 설정</h3>
-          <span class="section-tag blue">Setup</span>
+    <!-- 02 Pages란 -->
+    <section id="what">
+      <div class="section-head">
+        <h2>02 — GitHub Pages가 하는 일</h2>
+        <p class="section-note">저장소(코드 보관함)를 웹주소로 연결해 준다.</p>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <span class="tag blue">개념</span>
+          <h3>저장소(repository)</h3>
+          <p>GitHub에서 파일을 버전관리하며 보관하는 공간. 평소엔 "코드 창고"다.</p>
         </div>
-        <ol class="steps">
-          <li>GitHub에 저장소를 만든다.</li>
-          <li>HTML·CSS가 든 폴더를 커밋하고 push 한다.</li>
-          <li>저장소 <code>Settings → Pages</code>로 간다.</li>
-          <li>"Deploy from a branch" 선택, Branch는 <code>main</code>, 폴더는 <code>/ (root)</code>.</li>
-          <li>1~2분 뒤 공개 주소로 접속된다.</li>
-        </ol>
-      </section>
-
-      <section class="section">
-        <div class="section-header">
-          <h3 class="section-title">그 후의 갱신</h3>
-          <span class="section-tag green">Update</span>
+        <div class="card">
+          <span class="tag teal">기능</span>
+          <h3>Pages</h3>
+          <p>그 창고의 한 폴더를 <strong>웹사이트로 공개</strong>해 주는 GitHub의 무료 기능. 켜기만 하면 주소가 생긴다.</p>
         </div>
-        <p class="section-body">한 번 설정해두면 그다음은 단순하다. 파일을 고치고 → 커밋하고 → push하면, 1~2분 뒤 라이브 사이트에 자동 반영된다. 별도 배포 버튼이 없다. <strong>push = 배포</strong>라고 생각하면 된다.</p>
-        <div class="highlight blue">
-          그래서 "아직 안 보여주고 싶은 것"은 push하지 않는다. push하는 순간 공개된다는 걸 기억할 것.
-        </div>
-      </section>
-    </article>
+      </div>
+    </section>
 
-    <article class="chapter">
-      <p class="chapter-num">03 — Watch out</p>
-      <h2 class="chapter-title">걸리기 쉬운 곳</h2>
-      <p class="chapter-desc">정적 사이트 특유의 함정 몇 가지.</p>
+    <!-- 03 최초 설정 -->
+    <section id="setup">
+      <div class="section-head">
+        <h2>03 — 최초 설정 (한 번만)</h2>
+        <p class="section-note">처음 한 번이 끝나면 다신 안 만진다.</p>
+      </div>
+      <div class="timeline">
+        <div class="step"><div class="step-num">1</div><div><h3>저장소 만들기</h3><p>GitHub에서 새 저장소(repository)를 생성한다.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div><h3>파일 올리기</h3><p>HTML·CSS가 든 폴더를 커밋하고 push 한다.</p><pre>git add .
+git commit -m "first site"
+git push origin main</pre></div></div>
+        <div class="step"><div class="step-num">3</div><div><h3>Pages 설정 열기</h3><p>저장소 상단 <code>Settings → Pages</code>로 이동.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div><h3>소스 지정</h3><p>"Deploy from a branch" 선택 → Branch는 <code>main</code>, 폴더는 <code>/ (root)</code>.</p></div></div>
+        <div class="step"><div class="step-num">5</div><div><h3>주소 확인</h3><p>1~2분 뒤 <code>https://사용자명.github.io/저장소명/</code>으로 열린다.</p></div></div>
+      </div>
+    </section>
 
-      <section class="section">
-        <div class="section-header">
-          <h3 class="section-title">주의 목록</h3>
-          <span class="section-tag red">Caution</span>
-        </div>
-        <ul class="bullets">
-          <li>경로는 <strong>상대경로</strong>로. 폴더를 옮기면 링크가 깨지므로 구조를 함부로 안 바꾼다.</li>
-          <li>이미지·CSS 파일명 대소문자를 정확히. 내 PC에선 되는데 공개 주소에선 깨지는 단골 원인.</li>
-          <li>공개 사이트엔 <strong>내부 정보</strong>(메모·연락처·금액·키)를 절대 올리지 않는다.</li>
-          <li>반영이 느리면 브라우저 캐시 탓일 때가 많다. 새로고침(강력 새로고침)으로 확인.</li>
-          <li>커스텀 도메인을 붙이려면 Pages 설정에서 도메인 + DNS 설정이 추가로 필요하다.</li>
-        </ul>
-      </section>
-    </article>
+    <!-- 04 갱신 -->
+    <section id="update">
+      <div class="section-head">
+        <h2>04 — 그 후의 갱신: push = 배포</h2>
+        <p class="section-note">별도 배포 버튼이 없다. 올리면 바뀐다.</p>
+      </div>
+      <p style="color:var(--muted)">설정이 끝나면 흐름은 아주 단순하다.</p>
+      <div class="flow" style="margin-top:12px;">
+        <div class="flow-item"><b>1. 수정</b><span>파일을 고친다</span></div>
+        <div class="flow-item"><b>2. commit</b><span>변경을 저장</span></div>
+        <div class="flow-item"><b>3. push</b><span>GitHub로 올림</span></div>
+        <div class="flow-item"><b>4. 빌드</b><span>GitHub이 자동 처리</span></div>
+        <div class="flow-item"><b>5. 반영</b><span>1~2분 뒤 라이브</span></div>
+      </div>
+      <div class="callout gold" style="margin-top:14px;">
+        <strong>그래서 주의</strong> — "아직 안 보여주고 싶은 것"은 push하지 않는다. <strong>push하는 순간 공개</strong>된다. 작업 중인 초안은 로컬에만 두거나 별도 브랜치에서.
+      </div>
+    </section>
+
+    <!-- 05 함정 -->
+    <section id="trap">
+      <div class="section-head">
+        <h2>05 — 자주 걸리는 함정</h2>
+        <p class="section-note">"내 PC에선 됐는데" 사고의 단골 원인들.</p>
+      </div>
+      <div class="grid-2">
+        <div class="card"><span class="tag coral">경로</span><h3>상대경로 쓰기</h3><p>폴더를 옮기면 링크가 깨진다. 절대경로 대신 <code>./폴더/파일</code> 같은 상대경로로 쓰고, 구조를 함부로 안 바꾼다.</p></div>
+        <div class="card"><span class="tag coral">대소문자</span><h3>파일명 대소문자</h3><p>윈도우는 <code>Image.PNG</code>와 <code>image.png</code>를 같게 보지만, 서버는 다르게 본다. 링크와 실제 파일명을 정확히 맞춘다.</p></div>
+        <div class="card"><span class="tag coral">캐시</span><h3>반영이 느릴 때</h3><p>대개 브라우저 캐시 탓. 강력 새로고침(Ctrl+F5)으로 확인. 그래도 안 되면 1~2분 더 기다린다.</p></div>
+        <div class="card"><span class="tag coral">보안</span><h3>내부 정보 금지</h3><p>공개 사이트엔 메모·연락처·금액·비밀키를 절대 올리지 않는다. 한 번 push하면 기록에 남는다.</p></div>
+      </div>
+      <div class="callout" style="margin-top:14px;">
+        커스텀 도메인(내 주소)을 붙이려면 Pages 설정에서 도메인 입력 + 도메인 업체의 DNS 설정이 추가로 필요하다. 기본 <code>github.io</code> 주소만으로도 충분히 쓸 수 있다.
+      </div>
+    </section>
+
+    <!-- 06 점검 -->
+    <section id="check">
+      <div class="section-head">
+        <h2>06 — 배포 전 점검</h2>
+        <p class="section-note">push 전에 한 번 훑기.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>모든 링크가 상대경로이고, 실제 파일이 그 자리에 있는가</span></li>
+        <li><span class="check">✓</span><span>이미지·CSS 파일명 대소문자가 링크와 정확히 같은가</span></li>
+        <li><span class="check">✓</span><span>공개하면 안 되는 내부 정보가 섞여있지 않은가</span></li>
+        <li><span class="check">✓</span><span>모바일 화면에서도 깨지지 않는가</span></li>
+      </ul>
+    </section>
+
+    <!-- 07 용어 -->
+    <section id="glossary">
+      <div class="section-head">
+        <h2>07 — 용어 한눈에</h2>
+        <p class="section-note">이 노트에 나온 단어들.</p>
+      </div>
+      <table class="compare">
+        <tr><th>용어</th><th>뜻</th></tr>
+        <tr><td>정적 사이트</td><td>HTML·CSS·이미지로만 된, 서버 계산이 없는 사이트.</td></tr>
+        <tr><td>저장소 repository</td><td>GitHub에서 파일을 버전관리하며 보관하는 공간.</td></tr>
+        <tr><td>GitHub Pages</td><td>저장소 폴더를 무료 웹사이트로 공개해 주는 기능.</td></tr>
+        <tr><td>push</td><td>로컬 커밋을 GitHub로 올리기. Pages에선 곧 배포.</td></tr>
+        <tr><td>상대경로</td><td>현재 파일 기준으로 다른 파일 위치를 적는 방식(<code>./</code>, <code>../</code>).</td></tr>
+        <tr><td>커스텀 도메인</td><td>github.io 대신 내 주소를 붙이는 것. DNS 설정 필요.</td></tr>
+      </table>
+    </section>
+
+    <div class="footer">
+      <span>Development · deploy</span>
+      <span>maydly study archive</span>
+    </div>
   </main>
-
-  <footer class="footer">
-    <span>Development · deploy</span>
-    <span>maydly study archive</span>
-  </footer>
 </body>
 </html>

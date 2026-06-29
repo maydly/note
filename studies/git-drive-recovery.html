@@ -6,102 +6,277 @@
   <title>git × Google Drive 충돌과 복구 — maydly Study</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&family=Space+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../note.css">
 </head>
 <body>
-  <header class="note-cover">
-    <nav class="note-nav">
-      <a class="back-link" href="../index.html">← Archive</a>
-      <span class="back-link">Development</span>
+  <div class="topbar">
+    <nav class="nav" aria-label="페이지 목차">
+      <div class="brand"><span class="brand-mark">←</span> <a href="../index.html" style="text-decoration:none">Study Archive</a></div>
+      <div class="nav-links">
+        <a href="#intro">개요</a>
+        <a href="#basic">git 기초</a>
+        <a href="#symptom">증상</a>
+        <a href="#cause">원인</a>
+        <a href="#recover">복구</a>
+        <a href="#diverge">분기 합치기</a>
+        <a href="#conflict">충돌 해결</a>
+        <a href="#prevent">예방</a>
+        <a href="#glossary">용어</a>
+      </div>
     </nav>
-    <p class="mono-label">Development · maydly</p>
-    <h1 class="cover-title">git가 갑자기<br><em>“커밋이 없다”</em>고<br>말할 때</h1>
-    <p class="cover-sub">Google Drive 위에 둔 git 저장소가 동기화 충돌로 깨졌을 때, 작업을 잃지 않고 되살리는 순서. 실제로 한 번 겪고 복구한 기록을 정리한 노트.</p>
+  </div>
+
+  <header>
+    <div class="hero-copy">
+      <p class="eyebrow">Development · maydly</p>
+      <h1>git가 갑자기<br>“커밋이 없다”고 말할 때</h1>
+      <p class="lead">Google Drive 위에 둔 git 저장소가 동기화 충돌로 깨졌을 때, 작업을 단 하나도 잃지 않고 되살리는 전체 과정. 개념 → 증상 → 원인 → 복구 → 분기 합치기 → 예방 순서로, 나중에 다시 겪어도 이 노트만 보고 처리할 수 있게 정리했다.</p>
+      <div class="meta-row">
+        <span class="pill">Git</span>
+        <span class="pill">Google Drive</span>
+        <span class="pill">트러블슈팅</span>
+        <span class="pill">실제 복구 기록</span>
+      </div>
+    </div>
   </header>
 
-  <main class="container">
-    <article class="chapter">
-      <p class="chapter-num">01 — Why</p>
-      <h2 class="chapter-title">왜 이런 일이 <em>생기나</em></h2>
-      <p class="chapter-desc">git의 .git 폴더와 클라우드 동기화가 같은 파일을 동시에 만지면서 생기는 충돌.</p>
+  <main>
+    <!-- 00 개요 -->
+    <section id="intro">
+      <div class="section-head">
+        <h2>이 노트를 읽고 나면</h2>
+        <p class="section-note">실제로 한 번 터졌고, 아래 순서대로 전부 복구한 기록이다.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>git이 작업을 "어떻게" 저장하는지 감을 잡는다 — 그래야 뭐가 깨졌는지 이해된다.</span></li>
+        <li><span class="check">✓</span><span><code>git status</code>가 "커밋 없음"이라고 거짓말하는 상황의 정체를 안다.</span></li>
+        <li><span class="check">✓</span><span>작업물을 잃지 않고 되살리는 명령을 순서대로 따라 칠 수 있다.</span></li>
+        <li><span class="check">✓</span><span>로컬과 GitHub이 따로 흘러갔을 때(분기) 둘 다 살려서 합칠 수 있다.</span></li>
+        <li><span class="check">✓</span><span>다시는 안 겪도록 근본 예방책을 안다.</span></li>
+      </ul>
+      <div class="callout teal" style="margin-top:14px;">
+        <strong>한 줄 요약</strong> — Drive가 git의 내부 폴더(<code>.git</code>)를 건드려 "마지막 커밋이 어디"라는 표식이 사라진 상태다. 표식만 되살리면 작업은 그대로 돌아온다. <strong>당황해서 다시 커밋하지 않는 것</strong>이 제일 중요하다.
+      </div>
+    </section>
 
-      <section class="section">
-        <div class="section-header">
-          <h3 class="section-title">원인 한 줄</h3>
-          <span class="section-tag red">Cause</span>
-        </div>
-        <p class="section-body">git은 커밋을 마칠 때 <strong>.git 폴더 안의 작은 파일들</strong>(refs, index, HEAD)을 아주 빠르게 만들고 이름을 바꾼다. 이 폴더가 Google Drive 동기화 대상이면, Drive가 그 찰나에 끼어들어 파일을 덮거나 잠가버린다. 그 결과 git이 "어디까지 커밋했는지"를 기록한 표식이 사라진다.</p>
-        <div class="highlight">
-          핵심 증상: <code>git status</code>가 <strong>“커밋 없음(No commits yet)”</strong>이라고 한다. 분명 한참 작업했는데도. 그리고 <code>.git/refs/heads/</code> 안에 <code>main</code> 대신 <code>main.lock</code>만 남아 있다.
-        </div>
-      </section>
+    <!-- 01 git 기초 -->
+    <section id="basic">
+      <div class="section-head">
+        <h2>01 — 먼저, git은 작업을 어떻게 저장하나</h2>
+        <p class="section-note">이 구조를 알면 "뭐가 깨졌는지"가 한눈에 보인다.</p>
+      </div>
 
-      <section class="section">
-        <div class="section-header">
-          <h3 class="section-title">왜 위험한가</h3>
-          <span class="section-tag red">Risk</span>
-        </div>
-        <p class="section-body">이 상태에서 그냥 다시 커밋하면, git은 처음부터 새로 만드는 것으로 착각한다. 잘못하면 <strong>빈 내용이나 옛 내용이 원격(GitHub)으로 올라가</strong> 그동안의 작업이 통째로 덮일 수 있다. 그래서 "복구가 먼저, 커밋은 나중"이 철칙이다.</p>
-      </section>
-    </article>
+      <p style="color:var(--muted)">git은 저장할 때마다 그 순간의 전체 상태를 <strong>커밋(commit)</strong>이라는 덩어리로 만든다. 각 커밋에는 <code>9b7b488…</code> 같은 고유 번호(해시)가 붙고, "내 직전 커밋은 누구"라는 연결고리를 갖는다. 그래서 커밋들은 사슬처럼 이어진다.</p>
 
-    <article class="chapter">
-      <p class="chapter-num">02 — Recover</p>
-      <h2 class="chapter-title">잃지 않고 <em>되살리는</em> 순서</h2>
-      <p class="chapter-desc">원격(GitHub)을 항상 진실 기준으로 두고, 로컬 작업물을 보존하며 표식만 복원한다.</p>
-
-      <section class="section">
-        <div class="section-header">
-          <h3 class="section-title">복구 7단계</h3>
-          <span class="section-tag blue">Steps</span>
+      <div class="grid-3" style="margin-top:14px;">
+        <div class="card">
+          <span class="tag blue">개념</span>
+          <h3>커밋 (commit)</h3>
+          <p>저장 시점의 스냅샷. 고유 해시로 식별되고, 직전 커밋을 가리켜 사슬을 이룬다. 되돌아갈 수 있는 "기준점".</p>
         </div>
-        <ol class="steps">
-          <li>멈춘다. 이 상태에서는 절대 커밋하지 않는다.</li>
-          <li>작업 파일 내용이 살아있는지부터 확인한다 (파일 크기·내용 눈으로 확인).</li>
-          <li>스테일 락을 지운다 — <code>.git</code> 안의 <code>*.lock</code> 파일 삭제.</li>
-          <li>사라진 표식을 복원한다 — 마지막 커밋 값으로 <code>refs/heads/main</code> 되살리기.</li>
-          <li>GitHub 원격의 진짜 현재 상태를 직접 확인한다 (<code>git ls-remote</code>).</li>
-          <li>로컬과 원격이 갈라졌으면, 먼저 <strong>백업 브랜치</strong>를 만든 뒤 합친다(rebase).</li>
-          <li>의도한 파일만 바뀐 게 맞는지 확인하고, 그제서야 커밋·push.</li>
-        </ol>
-        <div class="highlight blue">
-          무엇을 하든 <strong>백업 브랜치를 먼저</strong> 만들어 두면 마음이 편하다. <code>git branch backup-날짜 main</code> 한 줄이면, 이후 무슨 일이 나도 원래 자리로 돌아올 수 있다.
+        <div class="card">
+          <span class="tag blue">개념</span>
+          <h3>브랜치 / ref</h3>
+          <p><code>main</code> 같은 브랜치는 사실 "최신 커밋 해시 하나를 적어둔 작은 종이쪽지"다. 이 쪽지를 <strong>ref</strong>라 하고 <code>.git/refs/heads/main</code> 파일에 들어있다.</p>
         </div>
-      </section>
-
-      <section class="section">
-        <div class="section-header">
-          <h3 class="section-title">갈라진 역사 합치기</h3>
-          <span class="section-tag green">Merge</span>
+        <div class="card">
+          <span class="tag blue">개념</span>
+          <h3>HEAD</h3>
+          <p>"지금 내가 보고 있는 위치". 보통 <code>main</code>을 가리킨다. <code>.git/HEAD</code> 파일에 들어있다.</p>
         </div>
-        <p class="section-body">로컬에서 작업한 사이 다른 곳(클라우드 작업·다른 기기)에서도 커밋이 쌓여 두 갈래로 나뉘는 일이 있다. 이때는 한쪽을 버리지 말고, 로컬의 새 커밋을 원격 위에 다시 얹는다(rebase). 같은 파일을 양쪽이 고쳤으면 충돌이 나는데, 보통 <strong>둘 다 살리는</strong> 게 답일 때가 많다 — 서로 다른 기능을 더한 것뿐이라.</p>
-      </section>
-    </article>
+      </div>
 
-    <article class="chapter">
-      <p class="chapter-num">03 — Prevent</p>
-      <h2 class="chapter-title">다시 안 겪으려면</h2>
-      <p class="chapter-desc">근본 해결과, 당장 지킬 습관.</p>
+      <div class="callout" style="margin-top:14px;">
+        포인트 — 실제 작업 내용(커밋 덩어리)과, "최신이 누구인지 적은 쪽지(ref)"는 <strong>별개의 파일</strong>이다. 이번 사고는 <strong>작업 내용은 멀쩡한데 쪽지만 사라진</strong> 경우였다. 그래서 쪽지만 다시 써주면 복구된다.
+      </div>
+    </section>
 
-      <section class="section">
-        <div class="section-header">
-          <h3 class="section-title">남길 교훈</h3>
-          <span class="section-tag red">Lesson</span>
+    <!-- 02 증상 -->
+    <section id="symptom">
+      <div class="section-head">
+        <h2>02 — 증상: git이 “커밋이 없다”고 한다</h2>
+        <p class="section-note">한참 작업했는데도 처음 상태처럼 보인다.</p>
+      </div>
+
+      <p style="color:var(--muted)"><code>git status</code>를 쳤더니 이렇게 나왔다 —</p>
+      <pre>$ git status
+On branch main
+
+No commits yet            &lt;-- ?! 분명 수십 번 커밋했는데
+
+Changes to be committed:
+  new file:   index.html
+  new file:   styles.css
+  ... (모든 파일이 "새 파일"로 보임)</pre>
+
+      <p style="color:var(--muted);margin-top:12px;">그리고 <code>git log</code>는 이렇게 거부했다 —</p>
+      <pre>$ git log
+fatal: your current branch 'main' does not have any commits yet</pre>
+
+      <p style="color:var(--muted);margin-top:12px;">결정적 단서는 <code>.git</code> 안에 있었다. 원래 <code>main</code> 파일이 있어야 할 자리에 <code>main.lock</code>만 남아 있었다 —</p>
+      <pre>$ ls .git/refs/heads/
+main.lock      &lt;-- main은 사라지고 .lock만 남음</pre>
+
+      <div class="callout gold" style="margin-top:14px;">
+        <strong>해석</strong> — "최신 커밋이 누구"라고 적은 쪽지(<code>refs/heads/main</code>)가 사라졌다. 그래서 git은 "이 브랜치엔 커밋이 하나도 없네"라고 착각한다. <strong>커밋 덩어리 자체는 <code>.git</code> 안에 그대로 살아있다.</strong>
+      </div>
+    </section>
+
+    <!-- 03 원인 -->
+    <section id="cause">
+      <div class="section-head">
+        <h2>03 — 원인: Drive가 .git을 건드렸다</h2>
+        <p class="section-note">클라우드 동기화와 git이 같은 파일을 동시에 만질 때 생긴다.</p>
+      </div>
+      <p style="color:var(--muted)">git은 커밋을 마칠 때 <code>.git/refs/heads/main</code>을 안전하게 바꾸려고, 먼저 <code>main.lock</code>에 새 값을 쓰고 → 그 파일을 <code>main</code>으로 <strong>이름만 바꾸는</strong> 방식을 쓴다(원자적 교체). 그런데 이 폴더가 Google Drive 동기화 대상이면, Drive가 그 짧은 순간에 끼어들어 파일을 잠그거나 동기화해버린다. 그러면 "이름 바꾸기"가 중간에 끊겨 <code>main</code>은 사라지고 <code>main.lock</code>만 덩그러니 남는다.</p>
+      <div class="callout" style="margin-top:14px;">
+        <strong>왜 위험한가</strong> — 이 상태에서 당황해서 그냥 <code>git add</code> → <code>git commit</code>을 하면, git은 "처음 만드는 저장소"로 알고 빈 역사를 새로 쓴다. 그걸 <code>push</code>하면 <strong>GitHub의 멀쩡한 작업이 빈 내용으로 덮일 수</strong> 있다. 그래서 무조건 "복구 먼저, 커밋 나중".
+      </div>
+    </section>
+
+    <!-- 04 복구 -->
+    <section id="recover">
+      <div class="section-head">
+        <h2>04 — 복구 순서 (실제로 친 명령)</h2>
+        <p class="section-note">원격(GitHub)을 진실 기준으로, 로컬 작업물을 보존하며 표식만 되살린다.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="step"><div class="step-num">1</div><div>
+          <h3>멈춘다 — 커밋 금지</h3>
+          <p>이 상태에서 커밋하면 역사가 꼬인다. 손을 떼고 상태부터 파악한다.</p>
+        </div></div>
+        <div class="step"><div class="step-num">2</div><div>
+          <h3>작업물이 살아있는지 확인</h3>
+          <p>파일 크기·내용을 직접 본다. 비어있지 않고 내용이 그대로면 안심. (이번엔 전부 멀쩡했다.)</p>
+        </div></div>
+        <div class="step"><div class="step-num">3</div><div>
+          <h3>스테일 락 삭제</h3>
+          <p>중간에 끊겨 남은 잠금 파일을 지운다.</p>
+          <pre>find .git -name "*.lock" -delete</pre>
+        </div></div>
+        <div class="step"><div class="step-num">4</div><div>
+          <h3>사라진 쪽지(ref) 복원</h3>
+          <p>다행히 <code>main.lock</code> 안에 마지막 커밋 해시가 들어있었다. 그 값으로 <code>main</code>을 되살린다.</p>
+          <pre>git update-ref refs/heads/main &lt;마지막커밋해시&gt;</pre>
+          <p>이 순간 <code>git log</code>가 정상으로 돌아온다.</p>
+        </div></div>
+        <div class="step"><div class="step-num">5</div><div>
+          <h3>GitHub의 진짜 현재 상태 확인</h3>
+          <p>로컬에 캐시된 원격 정보는 오래됐을 수 있다. 실제 GitHub에 물어본다.</p>
+          <pre>git ls-remote origin main</pre>
+        </div></div>
+        <div class="step"><div class="step-num">6</div><div>
+          <h3>로컬 ↔ 원격 관계 파악</h3>
+          <p>둘이 얼마나 벌어졌는지 본다.</p>
+          <pre>git fetch origin
+git rev-list --count origin/main..main   # 로컬만 가진 커밋 수
+git rev-list --count main..origin/main   # 원격만 가진 커밋 수</pre>
+        </div></div>
+        <div class="step"><div class="step-num">7</div><div>
+          <h3>백업 → 합치기 → 확인 후 push</h3>
+          <p>분기됐다면 다음 섹션으로. 아니면 백업 후 push.</p>
+          <pre>git branch backup-260630 main   # 안전망
+git push origin main</pre>
+        </div></div>
+      </div>
+
+      <div class="callout teal" style="margin-top:14px;">
+        <strong>가장 중요한 한 줄</strong> — 무엇을 하기 전이든 <code>git branch backup-날짜 main</code>으로 <strong>백업 브랜치</strong>를 먼저 만든다. 이후 어떤 실수를 해도 이 백업으로 원래 자리에 돌아올 수 있다. 마음의 안전벨트.
+      </div>
+    </section>
+
+    <!-- 05 분기 합치기 -->
+    <section id="diverge">
+      <div class="section-head">
+        <h2>05 — 갈라진 역사 합치기 (실제 사례)</h2>
+        <p class="section-note">로컬과 GitHub이 같은 지점에서 각자 다른 길로 간 경우.</p>
+      </div>
+
+      <p style="color:var(--muted)">이번 실제 상황이 딱 이랬다. 6월 19일 한 지점(공통 조상)에서 갈라져서 —</p>
+      <div class="grid-2" style="margin-top:12px;">
+        <div class="card">
+          <span class="tag coral">GitHub 쪽</span>
+          <h3>41개 커밋</h3>
+          <p>다른 환경에서 작업한 장비 페이지 정비. 로컬은 이걸 한 번도 못 받았다.</p>
         </div>
-        <ul class="bullets">
-          <li>git 저장소는 가능하면 클라우드 동기화 폴더 <strong>밖</strong>에 두는 게 근본 해결.</li>
-          <li>GitHub(원격)이 항상 진실 기준이다. 로컬이 이상하면 원격과 대조부터.</li>
-          <li>이상 징후(커밋 없음 표시, .lock 파일)가 보이면 커밋을 멈추고 점검.</li>
-          <li>중요한 작업 전후로 push 해두면, 그 자체가 복구 기준점이 된다.</li>
-        </ul>
-      </section>
-    </article>
+        <div class="card">
+          <span class="tag violet">로컬 쪽</span>
+          <h3>2개 커밋</h3>
+          <p>이 PC에서만 한 작업(홈 네비 + 교육페이지 v4.0). GitHub엔 없다.</p>
+        </div>
+      </div>
+
+      <p style="color:var(--muted);margin-top:14px;"><strong>한쪽을 버리면 안 된다.</strong> 양쪽 다 진짜 작업이니까. 해법은 <strong>rebase</strong> — 로컬의 2개 커밋을 GitHub의 41개 커밋 "위에 다시 얹는" 것. 그러면 41 + 2 = 전부 보존된다.</p>
+
+      <pre>git branch backup-260630 main      # 1) 먼저 백업
+git rebase origin/main             # 2) 로컬 커밋을 원격 위로 재배치</pre>
+
+      <div class="callout gold" style="margin-top:14px;">
+        <strong>rebase가 뭔가</strong> — "내 커밋들을 떼어내서, 최신 기준점 위에 하나씩 다시 쌓기". 합치는 또 다른 방법인 <code>merge</code>와 달리 역사가 한 줄로 깔끔하게 남는다. 대신 다시 쌓는 과정에서 충돌이 날 수 있다(다음 섹션).
+      </div>
+    </section>
+
+    <!-- 06 충돌 해결 -->
+    <section id="conflict">
+      <div class="section-head">
+        <h2>06 — 충돌이 나면</h2>
+        <p class="section-note">양쪽이 같은 파일의 같은 부분을 고쳤을 때.</p>
+      </div>
+      <p style="color:var(--muted)">rebase 중 같은 파일을 양쪽이 건드렸으면 git이 멈추고 충돌을 표시한다. 파일을 열면 이런 표식이 들어있다 —</p>
+      <pre>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+(GitHub 쪽이 넣은 내용)
+=======
+(내가 넣은 내용)
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; 내 커밋</pre>
+      <p style="color:var(--muted);margin-top:12px;">이번엔 양쪽이 <strong>서로 다른 CSS 규칙</strong>을 더한 것뿐이라, 답은 간단했다 — <strong>둘 다 남기고</strong> 표식 세 줄만 지웠다. 그리고 —</p>
+      <pre>git add &lt;충돌해결한파일&gt;
+git rebase --continue</pre>
+      <div class="callout teal" style="margin-top:14px;">
+        충돌은 "둘 중 하나 고르기"가 아닐 때가 많다. 대개 <strong>둘 다 필요한</strong> 변경이다. 당황하지 말고 내용을 읽어보면 보통 합칠 수 있다. 정 모르겠으면 <code>git rebase --abort</code>로 시작 전으로 안전하게 되돌린다.
+      </div>
+    </section>
+
+    <!-- 07 예방 -->
+    <section id="prevent">
+      <div class="section-head">
+        <h2>07 — 다시 안 겪으려면</h2>
+        <p class="section-note">근본 해결과, 당장 지킬 습관.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span><strong>근본 해결:</strong> git 저장소는 가능하면 클라우드 동기화 폴더 <strong>밖</strong>(로컬 디스크)에 둔다. <code>.git</code>이 Drive와 안 부딪히게.</span></li>
+        <li><span class="check">✓</span><span><strong>진실 기준은 GitHub.</strong> 로컬이 이상하면 항상 원격과 대조부터 한다.</span></li>
+        <li><span class="check">✓</span><span><strong>징후 감지:</strong> "커밋 없음" 표시나 <code>.lock</code> 파일이 보이면 즉시 커밋을 멈추고 점검한다.</span></li>
+        <li><span class="check">✓</span><span><strong>자주 push:</strong> 중요한 작업 전후로 push 해두면, 그 자체가 복구 기준점이 된다.</span></li>
+        <li><span class="check">✓</span><span><strong>백업 습관:</strong> 위험한 작업 전엔 <code>git branch backup-날짜</code> 한 줄.</span></li>
+      </ul>
+    </section>
+
+    <!-- 08 용어 -->
+    <section id="glossary">
+      <div class="section-head">
+        <h2>08 — 용어 한눈에</h2>
+        <p class="section-note">이 노트에 나온 단어들 정리.</p>
+      </div>
+      <table class="compare">
+        <tr><th>용어</th><th>뜻</th></tr>
+        <tr><td>커밋 commit</td><td>저장 시점의 스냅샷. 고유 해시로 식별.</td></tr>
+        <tr><td>ref</td><td>"최신 커밋이 누구"인지 적어둔 쪽지 파일. <code>refs/heads/main</code>.</td></tr>
+        <tr><td>HEAD</td><td>지금 보고 있는 위치. 보통 현재 브랜치를 가리킴.</td></tr>
+        <tr><td>origin</td><td>원격 저장소(GitHub)의 기본 별칭.</td></tr>
+        <tr><td>.lock 파일</td><td>git이 파일을 안전하게 바꾸는 동안 거는 임시 잠금. 끊기면 "스테일 락"으로 남음.</td></tr>
+        <tr><td>fetch</td><td>원격의 최신 정보를 가져오기(작업트리는 안 바꿈).</td></tr>
+        <tr><td>rebase</td><td>내 커밋들을 다른 기준점 위에 다시 쌓기. 역사를 한 줄로.</td></tr>
+        <tr><td>충돌 conflict</td><td>양쪽이 같은 부분을 다르게 고쳐 git이 자동 합치기를 못 하는 상태.</td></tr>
+        <tr><td>분기 diverge</td><td>공통 조상에서 로컬과 원격이 각자 다른 커밋을 쌓아 갈라진 상태.</td></tr>
+      </table>
+    </section>
+
+    <div class="footer">
+      <span>Development · git</span>
+      <span>maydly study archive</span>
+    </div>
   </main>
-
-  <footer class="footer">
-    <span>Development · git</span>
-    <span>maydly study archive</span>
-  </footer>
 </body>
 </html>

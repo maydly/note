@@ -6,121 +6,182 @@
   <title>AI 에이전트 작업 워크플로우 — maydly Study</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&family=Space+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../note.css">
 </head>
 <body>
-  <header class="note-cover">
-    <nav class="note-nav">
-      <a class="back-link" href="../index.html">← Archive</a>
-      <span class="back-link">Workflow</span>
+  <div class="topbar">
+    <nav class="nav" aria-label="페이지 목차">
+      <div class="brand"><span class="brand-mark">←</span> <a href="../index.html" style="text-decoration:none">Study Archive</a></div>
+      <div class="nav-links">
+        <a href="#intro">개요</a>
+        <a href="#why">발상</a>
+        <a href="#flow">사이클</a>
+        <a href="#gate">승인 게이트</a>
+        <a href="#roles">역할 지도</a>
+        <a href="#scale">일 크기</a>
+        <a href="#check">점검</a>
+        <a href="#glossary">용어</a>
+      </div>
     </nav>
-    <p class="mono-label">Workflow · maydly</p>
-    <h1 class="cover-title">혼자 일해도<br><em>혼자가 아닌</em><br>작업 방식</h1>
-    <p class="cover-sub">하나의 요청을 받으면 검토 → 계획 → 구현 → 검수 → 교차감사 → 정리로 이어지는, 역할을 나눈 AI 에이전트 작업 흐름. 1인 운영을 팀처럼 굴리는 방법.</p>
+  </div>
+
+  <header>
+    <div class="hero-copy">
+      <p class="eyebrow">Workflow · maydly</p>
+      <h1>혼자 일해도<br>혼자가 아닌 작업 방식</h1>
+      <p class="lead">하나의 요청을 받으면 검토 → 계획 → 구현 → 검수 → 교차감사 → 정리로 이어지는, 역할을 나눈 AI 에이전트 작업 흐름. 왜 역할을 나누는지, 각 단계가 무엇을 하는지, 작은 일엔 어떻게 줄이는지까지 정리했다. 1인 운영을 팀처럼 굴리는 법.</p>
+      <div class="meta-row">
+        <span class="pill">AI 에이전트</span>
+        <span class="pill">워크플로우</span>
+        <span class="pill">1인 운영</span>
+        <span class="pill">품질 관리</span>
+      </div>
+    </div>
   </header>
 
-  <main class="container">
-    <article class="chapter">
-      <p class="chapter-num">01 — Idea</p>
-      <h2 class="chapter-title">왜 <em>역할</em>을 나누나</h2>
-      <p class="chapter-desc">하나의 AI에게 다 시키는 대신, 단계마다 다른 역할을 맡긴다.</p>
+  <main>
+    <!-- 00 -->
+    <section id="intro">
+      <div class="section-head">
+        <h2>이 노트를 읽고 나면</h2>
+        <p class="section-note">"왜 이렇게까지 단계를 나누지?"의 답.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>만드는 일과 검수하는 일을 왜 분리하는지 안다.</span></li>
+        <li><span class="check">✓</span><span>요청 하나가 결과물이 되기까지의 전체 사이클을 그릴 수 있다.</span></li>
+        <li><span class="check">✓</span><span>"구현 직전 승인 게이트"가 왜 중요한지 안다.</span></li>
+        <li><span class="check">✓</span><span>일의 크기에 맞춰 단계를 줄이는 판단 기준을 안다.</span></li>
+      </ul>
+      <div class="callout teal" style="margin-top:14px;">
+        <strong>한 줄 요약</strong> — 같은 AI라도 단계마다 다른 "역할"을 맡겨 시선을 분리한다. 그리고 구현 직전에 한 번 멈춰 사람의 승인을 받는다. 그래서 결과가 신뢰할 만해진다.
+      </div>
+    </section>
 
-      <section class="section">
-        <div class="section-header">
-          <h3 class="section-title">발상</h3>
-          <span class="section-tag red">Why</span>
-        </div>
-        <p class="section-body">만드는 사람과 검수하는 사람이 같으면, 자기 실수를 잘 못 본다. 그래서 같은 AI라도 <strong>역할을 나눠</strong> 단계별로 다른 시선을 갖게 한다. 만드는 단계, 검수하는 단계, 의심하고 반론하는 단계, 정리하는 단계를 분리하면 결과의 신뢰도가 올라간다. 혼자 운영하는 작업을 팀처럼 굴리는 셈이다.</p>
-        <div class="highlight">
-          핵심: <strong>구현 직전에 한 번 멈춰</strong> 사람의 승인을 받는다. AI가 끝까지 알아서 가지 않고, 방향이 정해진 뒤에만 손을 댄다.
-        </div>
-      </section>
-    </article>
+    <!-- 01 발상 -->
+    <section id="why">
+      <div class="section-head">
+        <h2>01 — 왜 역할을 나누나</h2>
+        <p class="section-note">하나에게 다 시키면 자기 실수를 못 본다.</p>
+      </div>
+      <p style="color:var(--muted)">만드는 사람과 검수하는 사람이 같으면, 자기가 놓친 것을 똑같이 놓친다. 그래서 같은 AI라도 단계별로 <strong>역할을 분리</strong>해 서로 다른 시선을 갖게 한다. 만드는 단계, 검수하는 단계, 의심하고 반론하는 단계, 정리하는 단계를 떼어 놓으면 한 시선이 놓친 걸 다른 시선이 잡는다. 혼자 하는 작업을 작은 팀처럼 운영하는 셈이다.</p>
+      <div class="grid-3" style="margin-top:14px;">
+        <div class="card"><span class="tag coral">문제</span><h3>자기 검수의 맹점</h3><p>만든 사람은 자기 결과를 잘 의심하지 못한다.</p></div>
+        <div class="card"><span class="tag teal">해법</span><h3>시선 분리</h3><p>검수·감사를 별도 역할로 떼어 객관성을 만든다.</p></div>
+        <div class="card"><span class="tag blue">효과</span><h3>신뢰도 상승</h3><p>여러 시선을 거친 결과만 사람에게 올라온다.</p></div>
+      </div>
+    </section>
 
-    <article class="chapter">
-      <p class="chapter-num">02 — Flow</p>
-      <h2 class="chapter-title">한 사이클의 <em>흐름</em></h2>
-      <p class="chapter-desc">요청 하나가 결과물이 되기까지 거치는 단계.</p>
+    <!-- 02 사이클 -->
+    <section id="flow">
+      <div class="section-head">
+        <h2>02 — 한 사이클의 흐름</h2>
+        <p class="section-note">요청 하나가 결과물이 되기까지.</p>
+      </div>
 
-      <section class="section">
-        <div class="section-header">
-          <h3 class="section-title">승인 전 — 준비</h3>
-          <span class="section-tag blue">Before</span>
-        </div>
-        <ol class="steps">
-          <li>방향이 맞는지 먼저 의심해 본다 (반론·확인 질문).</li>
-          <li>요청을 항목별로 쪼갠다.</li>
-          <li>관련 파일·구조를 조사한다.</li>
-          <li>업무 기록 카드를 만든다.</li>
-          <li>멈추고, 사람의 승인을 기다린다.</li>
-        </ol>
-      </section>
+      <h3 style="margin-bottom:10px;">승인 전 — 준비 (사람이 멈춰서 확인)</h3>
+      <div class="flow">
+        <div class="flow-item"><b>1. 검토</b><span>방향이 맞는지 먼저 의심</span></div>
+        <div class="flow-item"><b>2. 분해</b><span>요청을 항목별로</span></div>
+        <div class="flow-item"><b>3. 조사</b><span>관련 파일·구조 파악</span></div>
+        <div class="flow-item"><b>4. 기록</b><span>업무 카드 작성</span></div>
+        <div class="flow-item"><b>5. 멈춤</b><span>사람의 승인 대기</span></div>
+      </div>
 
-      <section class="section">
-        <div class="section-header">
-          <h3 class="section-title">승인 후 — 실행</h3>
-          <span class="section-tag green">After</span>
-        </div>
-        <ol class="steps">
-          <li>구현한다.</li>
-          <li>검수한다 (요청·계획과 맞는지).</li>
-          <li>독립적으로 교차감사한다 (다른 도구의 시선으로).</li>
-          <li>문제가 있으면 고친다.</li>
-          <li>공유·배포 전 마지막 점검을 한다.</li>
-          <li>결과를 보기 좋게 정리한다.</li>
-          <li>기록을 남기고, 확인 후 커밋한다.</li>
-        </ol>
-        <div class="highlight blue">
-          단순한 오타·문구 수정까지 이 전체를 강제하지 않는다. 일의 크기에 맞춰 단계를 건너뛴다. 도구가 일을 위한 것이지, 일이 도구를 위한 게 아니다.
-        </div>
-      </section>
-    </article>
+      <h3 style="margin:22px 0 10px;">승인 후 — 실행</h3>
+      <div class="timeline">
+        <div class="step"><div class="step-num">6</div><div><h3>구현</h3><p>승인된 계획대로만 만든다. 시키지 않은 변경은 하지 않는다.</p></div></div>
+        <div class="step"><div class="step-num">7</div><div><h3>검수</h3><p>원래 요청·계획과 맞는지, 빠진 게 없는지 확인.</p></div></div>
+        <div class="step"><div class="step-num">8</div><div><h3>교차감사</h3><p>다른 도구의 독립된 시선으로 한 번 더 검증.</p></div></div>
+        <div class="step"><div class="step-num">9</div><div><h3>수정</h3><p>문제가 나오면 고친다.</p></div></div>
+        <div class="step"><div class="step-num">10</div><div><h3>배포 전 점검</h3><p>링크·경로·공개 정보 노출 등 마지막 확인.</p></div></div>
+        <div class="step"><div class="step-num">11</div><div><h3>정리 + 기록 + 커밋</h3><p>결과를 보기 좋게 정리하고, 기록을 남기고, 확인 후 커밋.</p></div></div>
+      </div>
+    </section>
 
-    <article class="chapter">
-      <p class="chapter-num">03 — Roles</p>
-      <h2 class="chapter-title">역할 <em>지도</em></h2>
-      <p class="chapter-desc">단계마다 어떤 역할을 부르는지.</p>
+    <!-- 03 게이트 -->
+    <section id="gate">
+      <div class="section-head">
+        <h2>03 — 핵심: 구현 직전 승인 게이트</h2>
+        <p class="section-note">AI가 끝까지 알아서 가지 않는다.</p>
+      </div>
+      <p style="color:var(--muted)">이 흐름의 심장은 <strong>구현 직전에 한 번 멈추는 것</strong>이다. AI가 조사·계획까지 해서 가져오면, 사람이 방향을 확인하고 승인한 뒤에만 실제 파일에 손을 댄다. 잘못된 방향으로 한참 만들어 놓고 되돌리는 낭비를 막고, 결정권을 사람이 쥔다.</p>
+      <div class="callout" style="margin-top:14px;">
+        승인 게이트가 없으면 AI는 그럴듯하지만 어긋난 결과를 끝까지 완성해 버린다. "멈춤"이 품질의 핵심 장치다.
+      </div>
+    </section>
 
-      <section class="section">
-        <div class="section-header">
-          <h3 class="section-title">주요 역할</h3>
-          <span class="section-tag red">Roles</span>
-        </div>
-        <div class="tool-grid">
-          <div class="tool-item">
-            <p class="tool-name">Challenge</p>
-            <p class="tool-desc">바로 실행하지 않고 전제·방향·리스크를 먼저 따진다.</p>
-          </div>
-          <div class="tool-item">
-            <p class="tool-name">Plan</p>
-            <p class="tool-desc">구현 전에 요구사항을 정리하고 계획을 세운다.</p>
-          </div>
-          <div class="tool-item">
-            <p class="tool-name">Build</p>
-            <p class="tool-desc">승인된 계획대로만 구현한다. 시키지 않은 변경 금지.</p>
-          </div>
-          <div class="tool-item">
-            <p class="tool-name">QA</p>
-            <p class="tool-desc">요청·계획과 맞는지, 빠진 건 없는지 검수만 한다.</p>
-          </div>
-          <div class="tool-item">
-            <p class="tool-name">Audit</p>
-            <p class="tool-desc">다른 도구로 독립 교차감사. 직접 고치지 않고 보고만.</p>
-          </div>
-          <div class="tool-item">
-            <p class="tool-name">Scribe</p>
-            <p class="tool-desc">결정·작업 흐름·다음 시작점을 기록으로 남긴다.</p>
-          </div>
-        </div>
-        <p class="section-body" style="margin-top:18px;">각 역할은 자기 일만 한다. 검수·감사 역할은 <strong>직접 고치지 않고 보고만</strong> 한다. 그래야 시선이 섞이지 않는다.</p>
-      </section>
-    </article>
+    <!-- 04 역할 -->
+    <section id="roles">
+      <div class="section-head">
+        <h2>04 — 역할 지도</h2>
+        <p class="section-note">단계마다 어떤 역할을 부르는지.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card"><span class="tag violet">검토</span><h3>Challenge</h3><p>바로 실행하지 않고 전제·방향·리스크·비용을 먼저 따진다.</p></div>
+        <div class="card"><span class="tag blue">계획</span><h3>Plan</h3><p>요구사항을 정리하고 조사해 작업 계획을 세운다. 승인 전엔 안 고친다.</p></div>
+        <div class="card"><span class="tag teal">구현</span><h3>Build</h3><p>승인된 계획대로만 만든다. 기존 것을 우선 재사용한다.</p></div>
+        <div class="card"><span class="tag gold">검수</span><h3>QA</h3><p>요청·계획과 맞는지, 빠진 건 없는지 검수만 한다.</p></div>
+        <div class="card"><span class="tag coral">감사</span><h3>Audit</h3><p>다른 도구로 독립 교차감사. 직접 고치지 않고 보고만.</p></div>
+        <div class="card"><span class="tag green">기록</span><h3>Scribe</h3><p>결정·작업 흐름·다음 시작점을 기록으로 남긴다.</p></div>
+      </div>
+      <div class="callout teal" style="margin-top:14px;">
+        규칙 하나 — 검수·감사 역할은 <strong>직접 고치지 않고 보고만</strong> 한다. 그래야 "만드는 시선"과 "검사하는 시선"이 섞이지 않는다.
+      </div>
+    </section>
+
+    <!-- 05 일 크기 -->
+    <section id="scale">
+      <div class="section-head">
+        <h2>05 — 일 크기에 맞춰 줄인다</h2>
+        <p class="section-note">모든 일에 풀 사이클을 강제하지 않는다.</p>
+      </div>
+      <table class="compare">
+        <tr><th>상황</th><th>적용</th></tr>
+        <tr><td>오타·문구 수정</td><td>전체 사이클 생략, 바로 수정</td></tr>
+        <tr><td>이미 승인된 단순 구현</td><td>구현 + 가벼운 확인</td></tr>
+        <tr><td>구조 변경·새 시스템</td><td>검토(Challenge)부터 풀 사이클</td></tr>
+        <tr><td>돈·관계·장기 운영 관련</td><td>반드시 검토 먼저</td></tr>
+      </table>
+      <div class="callout gold" style="margin-top:14px;">
+        도구가 일을 위한 것이지, 일이 도구를 위한 게 아니다. <strong>작은 일은 가볍게, 큰 일은 신중하게</strong> — 그 판단이 워크플로우의 일부다.
+      </div>
+    </section>
+
+    <!-- 06 점검 -->
+    <section id="check">
+      <div class="section-head">
+        <h2>06 — 사이클 점검</h2>
+        <p class="section-note">제대로 돌고 있는지 빠르게.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>구현 전에 멈춰서 승인을 받았는가</span></li>
+        <li><span class="check">✓</span><span>검수·감사를 만든 시선과 분리했는가</span></li>
+        <li><span class="check">✓</span><span>요청하지 않은 변경을 끼워넣지 않았는가</span></li>
+        <li><span class="check">✓</span><span>결정·흐름을 기록으로 남겼는가</span></li>
+      </ul>
+    </section>
+
+    <!-- 07 용어 -->
+    <section id="glossary">
+      <div class="section-head">
+        <h2>07 — 용어 한눈에</h2>
+        <p class="section-note">이 노트에 나온 단어들.</p>
+      </div>
+      <table class="compare">
+        <tr><th>용어</th><th>뜻</th></tr>
+        <tr><td>에이전트</td><td>특정 역할을 맡아 일하는 AI. 역할별로 나눠 운용.</td></tr>
+        <tr><td>승인 게이트</td><td>구현 직전에 멈춰 사람의 확인을 받는 지점.</td></tr>
+        <tr><td>교차감사</td><td>만든 곳과 다른 독립 도구로 결과를 재검증.</td></tr>
+        <tr><td>풀 사이클</td><td>검토~정리까지 전체 단계를 다 거치는 진행.</td></tr>
+        <tr><td>업무 카드</td><td>업무의 개요·결정·상태를 적어두는 기록.</td></tr>
+      </table>
+    </section>
+
+    <div class="footer">
+      <span>Workflow · agents</span>
+      <span>maydly study archive</span>
+    </div>
   </main>
-
-  <footer class="footer">
-    <span>Workflow · agents</span>
-    <span>maydly study archive</span>
-  </footer>
 </body>
 </html>
