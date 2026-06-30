@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>작업장 문서구조 설계 — maydly Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../note.css">
+</head>
+<body>
+  <div class="topbar">
+    <nav class="nav" aria-label="페이지 목차">
+      <div class="brand"><span class="brand-mark">←</span> <a href="../index.html" style="text-decoration:none">Study Archive</a></div>
+      <div class="nav-links">
+        <a href="#intro">개요</a>
+        <a href="#projects">프로젝트 분리</a>
+        <a href="#map">위치맵</a>
+        <a href="#track">추적 단위</a>
+        <a href="#folder">폴더 구조</a>
+        <a href="#ambiguous">애매할 때</a>
+        <a href="#link">세부 규칙</a>
+        <a href="#glossary">용어</a>
+      </div>
+    </nav>
+  </div>
+
+  <header>
+    <div class="hero-copy">
+      <p class="eyebrow">Workflow · maydly</p>
+      <h1>작업이 쌓여도<br>안 무너지는 작업장 구조</h1>
+      <p class="lead">여러 프로젝트와 수많은 파일이 한 공간에 쌓일 때, "어디에 뒀더라"가 안 생기게 만드는 큰 틀. 프로젝트를 어떻게 나누고, 업무를 어떤 단위로 추적하고, 위치가 애매할 땐 어떻게 판단하는지를 정리했다. 파일명·버전 같은 세부 규칙은 별도 노트로.</p>
+      <div class="meta-row">
+        <span class="pill">문서구조</span>
+        <span class="pill">프로젝트 분리</span>
+        <span class="pill">업무ID</span>
+        <span class="pill">추적 체계</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 00 -->
+    <section id="intro">
+      <div class="section-head">
+        <h2>이 노트를 읽고 나면</h2>
+        <p class="section-note">파일 하나가 아니라 "공간 전체"를 설계하는 관점.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>여러 프로젝트를 한 작업장에 둘 때 왜·어떻게 분리하는지 안다.</span></li>
+        <li><span class="check">✓</span><span>업무를 "프로젝트 → 업무ID → … → 상태"로 추적하는 단위를 안다.</span></li>
+        <li><span class="check">✓</span><span>위치가 애매할 때 추측하지 않고 판단하는 기준을 안다.</span></li>
+        <li><span class="check">✓</span><span>세부 파일·버전 규칙이 어디 정리돼 있는지 안다.</span></li>
+      </ul>
+      <div class="callout teal" style="margin-top:14px;">
+        <strong>큰 원칙 하나</strong> — 구조의 목적은 "나중의 내가 헤매지 않는 것". 멋이 아니라 <strong>다시 찾아지는가</strong>가 기준이다.
+      </div>
+    </section>
+
+    <!-- 01 프로젝트 분리 -->
+    <section id="projects">
+      <div class="section-head">
+        <h2>01 — 여러 프로젝트, 완전히 분리</h2>
+        <p class="section-note">한 공간에 있어도 섞지 않는다.</p>
+      </div>
+      <p style="color:var(--muted)">작업장(워크스페이스)은 여러 프로젝트를 담는 상위 공간이다. 핵심은 <strong>각 프로젝트를 "전혀 관련 없는 타인의 프로젝트"처럼 분리</strong>해 다루는 것. 같은 사람이 모두에 관여해도, 프로젝트마다 문맥·운영 기준·비용·말투를 섞지 않는다.</p>
+      <div class="grid-2" style="margin-top:14px;">
+        <div class="card"><span class="tag coral">왜</span><h3>섞이면 오염된다</h3><p>A 프로젝트의 기준·비용·고객 응대 방식이 B로 새어들면, 둘 다 판단이 흐려진다. 분리해야 각자의 기준이 선명하다.</p></div>
+        <div class="card"><span class="tag teal">어떻게</span><h3>경계를 명시</h3><p>각 프로젝트는 자기 폴더·자기 규칙 문서를 갖는다. 작업을 시작할 때 "이건 어느 프로젝트인가"부터 정한다.</p></div>
+      </div>
+    </section>
+
+    <!-- 02 위치맵 -->
+    <section id="map">
+      <div class="section-head">
+        <h2>02 — 위치맵을 가장 먼저</h2>
+        <p class="section-note">길 잃지 않게, 지도 파일 하나.</p>
+      </div>
+      <p style="color:var(--muted)">작업장 맨 위에 <strong>위치맵</strong>(예: <code>00_작업장_위치맵.md</code>) 하나를 둔다. "어떤 프로젝트가 어디 있는지"를 가리키는 지도다. 새 작업을 시작할 때 이걸 먼저 열어 어느 프로젝트·어느 업무에 속하는지 확인하고 들어간다.</p>
+      <div class="callout" style="margin-top:14px;">
+        파일명 앞의 <code>00_</code>는 "맨 위로 정렬"시키는 흔한 트릭. 가장 먼저 봐야 할 파일을 목록 맨 위에 고정한다.
+      </div>
+    </section>
+
+    <!-- 03 추적 단위 -->
+    <section id="track">
+      <div class="section-head">
+        <h2>03 — 업무 추적 단위</h2>
+        <p class="section-note">파일이 아니라 "업무"로 따라간다.</p>
+      </div>
+      <p style="color:var(--muted)">모든 산출물은 이 사슬 위에 놓인다. 파일 하나만 봐도 어느 단계의 무엇인지 알 수 있게.</p>
+      <div class="flow" style="margin-top:12px;">
+        <div class="flow-item"><b>프로젝트</b><span>어느 영역</span></div>
+        <div class="flow-item"><b>업무ID</b><span>대상-분야-번호</span></div>
+        <div class="flow-item"><b>업무카드</b><span>개요·결정</span></div>
+        <div class="flow-item"><b>플랜·산출물</b><span>실제 결과</span></div>
+        <div class="flow-item"><b>상태</b><span>진행/완료/보류</span></div>
+      </div>
+      <div class="callout teal" style="margin-top:14px;">
+        업무ID 형식 — <code>대상-분야-번호_업무명</code> (예: <code>maydly-운영-006_학습아카이브콘텐츠정비</code>). <code>플랜</code>·<code>자료</code>·<code>정리</code> 같은 일반 명사 단독 폴더명은 금지 — 뭐가 뭔지 모르니까.
+      </div>
+    </section>
+
+    <!-- 04 폴더 구조 -->
+    <section id="folder">
+      <div class="section-head">
+        <h2>04 — 업무ID 폴더 안</h2>
+        <p class="section-note">한 업무 폴더를 열면 같은 자리에 같은 것이 있다.</p>
+      </div>
+      <pre>업무ID_업무명/
+├─ 업무ID_업무명_업무카드_상태.md   (개요·결정·상태)
+├─ 0_원요청/                      (처음 받은 요청 보관)
+├─ 1_대플랜/
+│  └─ 1-1_소플랜/
+│     ├─ 최종본                    (날짜·버전 없음)
+│     ├─ 1-1-1_생성버전/           (버전 파일들)
+│     └─ 1-1-2_관련보고서/         (보고서·작업기록)
+└─ 9_중단및폐기/                   (버린 것도 보존)</pre>
+      <ul class="bullets" style="margin-top:12px;">
+        <li>파생 단계는 같은 업무ID 안에서 관리하고, 너무 커지면 새 업무ID로 승격하며 원래 카드에 연결을 남긴다.</li>
+        <li>중단 후 재시작은 같은 업무ID 안에 "재시작" 상태로 기록한다.</li>
+        <li><strong>폐기는 삭제가 아니라 보존</strong> — <code>9_중단및폐기/</code>에 남긴다.</li>
+      </ul>
+    </section>
+
+    <!-- 05 애매할 때 -->
+    <section id="ambiguous">
+      <div class="section-head">
+        <h2>05 — 위치가 애매하면 묻는다</h2>
+        <p class="section-note">추측해서 아무 데나 만들지 않는다.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">!</span><span>어느 프로젝트·업무인지 확신이 없으면, <strong>추측해서 폴더를 만들거나 저장하지 않는다.</strong> 먼저 확인한다.</span></li>
+        <li><span class="check">!</span><span>"프로젝트 무관 공통"이라고 섣불리 단정해 최상위에 두는 것도 임의 판단 — 실제론 특정 프로젝트 업무인 경우가 많다.</span></li>
+        <li><span class="check">!</span><span>잘못 만든 폴더는 올바른 위치로 옮기고, 빈 폴더는 남기지 않는다.</span></li>
+      </ul>
+      <div class="callout gold" style="margin-top:14px;">
+        "일단 어딘가 저장하고 나중에 정리"가 가장 위험하다. 잘못된 위치는 시간이 지날수록 찾기 어려워진다. <strong>모르면 묻고, 정해진 뒤 저장.</strong>
+      </div>
+    </section>
+
+    <!-- 06 세부 규칙 링크 -->
+    <section id="link">
+      <div class="section-head">
+        <h2>06 — 세부 규칙은 별도 노트로</h2>
+        <p class="section-note">이 노트는 큰 틀, 세부는 따로.</p>
+      </div>
+      <p style="color:var(--muted)">파일명 짓는 법, 날짜·버전 표기, 덮어쓰지 않는 버전관리 같은 <strong>파일 단위 규칙</strong>은 별도 노트에 자세히 정리해 두었다. 이 노트(큰 틀)와 그 노트(세부)를 함께 보면 전체가 맞춰진다.</p>
+      <div class="callout teal" style="margin-top:14px;">
+        → <a href="./folder-naming-version.html" style="color:var(--blue);font-weight:700;">폴더·파일명·버전관리 체계</a> 노트에서 파일명·날짜·버전·발전버전 규칙을 본다.
+      </div>
+    </section>
+
+    <!-- 07 용어 -->
+    <section id="glossary">
+      <div class="section-head">
+        <h2>07 — 용어 한눈에</h2>
+        <p class="section-note">이 노트에 나온 단어들.</p>
+      </div>
+      <table class="compare">
+        <tr><th>용어</th><th>뜻</th></tr>
+        <tr><td>작업장(워크스페이스)</td><td>여러 프로젝트를 담는 상위 공간.</td></tr>
+        <tr><td>위치맵</td><td>어떤 프로젝트가 어디 있는지 가리키는 지도 파일.</td></tr>
+        <tr><td>프로젝트 경계</td><td>프로젝트끼리 문맥·기준·비용을 섞지 않는 분리 원칙.</td></tr>
+        <tr><td>업무ID</td><td><code>대상-분야-번호_업무명</code> 형식의 업무 식별자.</td></tr>
+        <tr><td>업무카드</td><td>업무 개요·결정·상태를 적은 대표 문서.</td></tr>
+        <tr><td>폐기보존</td><td>버린 작업도 지우지 않고 <code>9_중단및폐기/</code>에 남기는 것.</td></tr>
+      </table>
+    </section>
+
+    <div class="footer">
+      <span>Workflow · structure</span>
+      <span>maydly study archive</span>
+    </div>
+  </main>
+</body>
+</html>
