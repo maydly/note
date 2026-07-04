@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Code 사용량·요금제 이해 — maydly Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../note.css">
+</head>
+<body>
+  <div class="topbar">
+    <nav class="nav" aria-label="페이지 목차">
+      <div class="brand"><span class="brand-mark">←</span> <a href="../index.html" style="text-decoration:none">Study Archive</a></div>
+      <div class="nav-links">
+        <a href="#intro">개요</a>
+        <a href="#tiers">요금제 등급</a>
+        <a href="#window">5시간 창</a>
+        <a href="#fit">등급 적정성</a>
+        <a href="#track">사용량 추적</a>
+        <a href="#check">점검</a>
+        <a href="#glossary">용어</a>
+      </div>
+    </nav>
+  </div>
+
+  <header>
+    <div class="hero-copy">
+      <p class="eyebrow">AI · maydly</p>
+      <h1>Claude Code,<br>내 등급이 맞나</h1>
+      <p class="lead">사용량이 어떻게 계산되는지 모르면 "왜 막혔지"가 반복된다. 요금제 등급, 핵심 단위인 "5시간 창", 내 등급이 적정한지 판단하는 법, 실제 사용량을 추적하는 법을 정리했다. (2026년 기준, 한 달 실사용 기록에서.)</p>
+      <div class="meta-row">
+        <span class="pill">Claude Code</span>
+        <span class="pill">요금제</span>
+        <span class="pill">사용량</span>
+        <span class="pill">2026 기준</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 00 -->
+    <section id="intro">
+      <div class="section-head">
+        <h2>이 노트를 읽고 나면</h2>
+        <p class="section-note">"막힘"이 예측 가능해진다.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>요금제 등급(PRO / MAX 5배 / MAX 20배)의 차이를 안다.</span></li>
+        <li><span class="check">✓</span><span>사용량의 핵심 단위가 "일·월 총량"이 아니라 <strong>5시간 창</strong>임을 안다.</span></li>
+        <li><span class="check">✓</span><span>내 등급이 과한지 부족한지 판단하는 기준을 안다.</span></li>
+        <li><span class="check">✓</span><span>실제 사용량을 기록으로 확인하는 법을 안다.</span></li>
+      </ul>
+      <div class="callout gold" style="margin-top:14px;">
+        <strong>기준 시점 — 2026년.</strong> 요금제 이름·배수·정책은 바뀔 수 있다. 개념(창 단위·등급 적정성 판단법)은 오래가지만, 숫자는 그때그때 확인.
+      </div>
+    </section>
+
+    <!-- 01 등급 -->
+    <section id="tiers">
+      <div class="section-head">
+        <h2>01 — 요금제 등급</h2>
+        <p class="section-note">위로 갈수록 "한 창에서 더 많이".</p>
+      </div>
+      <table class="compare">
+        <tr><th>등급</th><th>성격</th></tr>
+        <tr><td>PRO</td><td>가장 가벼운 등급. 조금만 몰아 쓰면 금방 제한.</td></tr>
+        <tr><td>MAX (5배)</td><td>PRO의 약 5배 여유. 2시간쯤 집중 작업.</td></tr>
+        <tr><td>MAX (20배)</td><td>가장 넉넉. 장시간 집중 작업에.</td></tr>
+      </table>
+      <div class="callout" style="margin-top:14px;">
+        등급은 "총량이 몇 배"라기보다, <strong>한 창(아래) 안에서 얼마나 몰아 쓸 수 있느냐</strong>의 차이로 이해하면 실감이 맞다.
+      </div>
+    </section>
+
+    <!-- 02 5시간 창 -->
+    <section id="window">
+      <div class="section-head">
+        <h2>02 — 핵심 단위: 5시간 창</h2>
+        <p class="section-note">하루 총량도, 한 달 총량도 아니다.</p>
+      </div>
+      <p style="color:var(--muted)">가장 자주 오해하는 지점이다. 사용량은 "하루에 얼마"가 아니라 <strong>약 5시간 단위의 창(window)</strong>으로 관리된다. 한 창 안에서 많이 몰아 쓰면 그 창에서 막히고, 다음 창이 열리면 다시 쓸 수 있다.</p>
+      <div class="flow" style="margin-top:12px;">
+        <div class="flow-item"><b>창 시작</b><span>사용 시작 시점</span></div>
+        <div class="flow-item"><b>~5시간</b><span>이 안에서 소진</span></div>
+        <div class="flow-item"><b>한도 도달</b><span>그 창에서 제한</span></div>
+        <div class="flow-item"><b>창 리셋</b><span>다음 창 열림</span></div>
+        <div class="flow-item"><b>재사용</b><span>다시 가능</span></div>
+      </div>
+      <div class="callout teal" style="margin-top:14px;">
+        그래서 "막혔다 = 등급이 낮다"가 아닐 수 있다. <strong>짧은 시간에 몰아 썼다</strong>는 뜻일 때가 많다. 작업을 창에 나눠 분산하면 같은 등급으로도 더 오래 쓴다.
+      </div>
+    </section>
+
+    <!-- 03 적정성 -->
+    <section id="fit">
+      <div class="section-head">
+        <h2>03 — 내 등급이 적정한가</h2>
+        <p class="section-note">막히면 올리고, 남으면 내린다.</p>
+      </div>
+      <p style="color:var(--muted)">등급 판단은 두 방향으로 본다. 지금 자주 막히면 여유가 부족한 것이고, 최상위인데도 거의 안 막히면 과할 수 있다.</p>
+      <div class="grid-2" style="margin-top:14px;">
+        <div class="card"><span class="tag coral">부족 신호</span><h3>자주 막힘</h3><p>한 창을 다 못 쓰고 자주 제한에 걸린다 → 한 단계 위 등급을 고려.</p></div>
+        <div class="card"><span class="tag teal">과함 신호</span><h3>거의 안 막힘</h3><p>최상위인데 한도를 거의 못 채운다 → 한 단계 아래로도 충분할 수 있다.</p></div>
+      </div>
+      <div class="callout gold" style="margin-top:14px;">
+        판단은 느낌이 아니라 <strong>기록</strong>으로. 한 달쯤 실제 사용을 남겨 "5시간 창을 얼마나 채우는지"를 보고 정한다. (다음 섹션)
+      </div>
+    </section>
+
+    <!-- 04 추적 -->
+    <section id="track">
+      <div class="section-head">
+        <h2>04 — 사용량 추적하는 법</h2>
+        <p class="section-note">기록이 있어야 판단이 선다.</p>
+      </div>
+      <p style="color:var(--muted)">Claude Code는 로컬에 사용 로그를 남긴다(사용자 폴더의 <code>.claude</code> 안 기록 파일). 이걸 읽어 창 단위로 집계하면 "내가 실제로 얼마나 쓰는지"가 보인다. 매일 자동으로 로그를 모아두면, 한 달 뒤 등급 판단의 근거가 된다.</p>
+      <ul class="checklist" style="margin-top:12px;">
+        <li><span class="check">1</span><span>로컬 사용 로그를 주기적으로(예: 매일) 모아 저장한다.</span></li>
+        <li><span class="check">2</span><span>5시간 창 단위로 사용 강도를 집계한다.</span></li>
+        <li><span class="check">3</span><span>한 달치를 모아 "막힌 창 / 남긴 창" 비율을 본다.</span></li>
+        <li><span class="check">4</span><span>그 비율로 등급 상향·유지·하향을 정한다.</span></li>
+      </ul>
+      <div class="callout teal" style="margin-top:14px;">
+        자동화 팁 — 스케줄러(윈도우 작업 스케줄러 / macOS launchd)로 매일 로그를 자동 수집하면, 손 안 대고 한 달치가 쌓인다.
+      </div>
+    </section>
+
+    <!-- 05 점검 -->
+    <section id="check">
+      <div class="section-head">
+        <h2>05 — 등급 판단 점검</h2>
+        <p class="section-note">바꾸기 전에.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>막힘이 "등급 부족" 때문인가, "몰아 쓰기" 때문인가 구분했는가</span></li>
+        <li><span class="check">✓</span><span>작업을 창에 분산해봤는가</span></li>
+        <li><span class="check">✓</span><span>느낌이 아니라 기록으로 판단했는가</span></li>
+      </ul>
+    </section>
+
+    <!-- 06 용어 -->
+    <section id="glossary">
+      <div class="section-head">
+        <h2>06 — 용어 한눈에</h2>
+        <p class="section-note">이 노트에 나온 단어들.</p>
+      </div>
+      <table class="compare">
+        <tr><th>용어</th><th>뜻</th></tr>
+        <tr><td>PRO / MAX</td><td>Claude 구독 등급. 위로 갈수록 한 창에서 더 많이.</td></tr>
+        <tr><td>5시간 창(window)</td><td>사용량이 관리되는 시간 단위. 창마다 리셋.</td></tr>
+        <tr><td>한도 도달</td><td>그 창에서 쓸 수 있는 양을 다 쓴 상태.</td></tr>
+        <tr><td>사용 로그</td><td>로컬 <code>.claude</code>에 쌓이는 사용 기록.</td></tr>
+        <tr><td>스케줄러</td><td>정해진 시각에 작업을 자동 실행하는 OS 기능.</td></tr>
+      </table>
+    </section>
+
+    <div class="footer">
+      <span>AI · usage</span>
+      <span>maydly study archive</span>
+    </div>
+  </main>
+</body>
+</html>

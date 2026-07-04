@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>자동 구조·파일명 감사 — maydly Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../note.css">
+</head>
+<body>
+  <div class="topbar">
+    <nav class="nav" aria-label="페이지 목차">
+      <div class="brand"><span class="brand-mark">←</span> <a href="../index.html" style="text-decoration:none">Study Archive</a></div>
+      <div class="nav-links">
+        <a href="#intro">개요</a>
+        <a href="#why">발상</a>
+        <a href="#what">무엇을</a>
+        <a href="#how">어떻게</a>
+        <a href="#script">왜 스크립트</a>
+        <a href="#report">보고만</a>
+        <a href="#check">점검</a>
+        <a href="#glossary">용어</a>
+      </div>
+    </nav>
+  </div>
+
+  <header>
+    <div class="hero-copy">
+      <p class="eyebrow">Workflow · maydly</p>
+      <h1>규칙을 사람이<br>매번 못 지킬 때</h1>
+      <p class="lead">파일명·폴더·버전 규칙은 만들어도 시간이 지나면 새어나간다. 사람이 매번 검사할 순 없으니, 규칙 기반 스크립트가 주 1회 무인으로 훑어 위반을 찾아 보고하게 만든 이야기. 비용 없이, 자동으로.</p>
+      <div class="meta-row">
+        <span class="pill">자동 감사</span>
+        <span class="pill">규칙 기반</span>
+        <span class="pill">스케줄러</span>
+        <span class="pill">무인 실행</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 00 -->
+    <section id="intro">
+      <div class="section-head">
+        <h2>이 노트를 읽고 나면</h2>
+        <p class="section-note">규칙을 "만드는 것"과 "지켜지게 하는 것"은 다르다.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>왜 사람의 주의력만으로는 규칙이 안 지켜지는지 안다.</span></li>
+        <li><span class="check">✓</span><span>무엇을(업무ID·파일명·버전) 자동으로 검사할 수 있는지 안다.</span></li>
+        <li><span class="check">✓</span><span>왜 AI가 아니라 규칙 스크립트로 하는지(비용·확실성) 안다.</span></li>
+        <li><span class="check">✓</span><span>감사가 "보고만 하고 고치지 않는" 이유를 안다.</span></li>
+      </ul>
+      <div class="callout teal" style="margin-top:14px;">
+        <strong>한 줄 요약</strong> — 규칙 기반 스크립트가 매주 한 번, 최근 바뀐 파일만 훑어 규칙 위반을 찾아 보고한다. 사람은 그 보고서를 다음 작업 때 확인해 처리한다. 자동이지만 <strong>판단은 사람이</strong>.
+      </div>
+    </section>
+
+    <!-- 01 발상 -->
+    <section id="why">
+      <div class="section-head">
+        <h2>01 — 왜 자동 감사인가</h2>
+        <p class="section-note">규칙은 만든 순간부터 새기 시작한다.</p>
+      </div>
+      <p style="color:var(--muted)">파일명·폴더·버전 규칙을 아무리 잘 정해도, 바쁘면 지나친다. 그리고 어긴 걸 아무도 눈치채지 못한 채 쌓인다. 나중에 몰아서 정리하려면 훨씬 큰 일이 된다. 그래서 <strong>"어긴 것을 일찍, 자동으로 발견"</strong>하는 장치가 필요하다.</p>
+      <div class="callout" style="margin-top:14px;">
+        개별 작업 사이클(계획→구현→검수)과 <strong>별개로 도는 2층 점검</strong>이다. 작업 중엔 놓쳐도, 주간 감사가 한 번 더 훑는다.
+      </div>
+    </section>
+
+    <!-- 02 무엇을 -->
+    <section id="what">
+      <div class="section-head">
+        <h2>02 — 무엇을 검사하나</h2>
+        <p class="section-note">규칙으로 명확히 판정 가능한 것들.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card"><span class="tag violet">업무ID</span><h3>업무ID 규칙</h3><p>산출물이 업무ID 폴더 안에 있는지, ID 형식(<code>대상-분야-번호_업무명</code>)을 지켰는지.</p></div>
+        <div class="card"><span class="tag blue">파일명</span><h3>파일명 규칙</h3><p><code>정리</code>·<code>자료</code> 같은 금지 단독 명사, 대상·유형 누락 여부.</p></div>
+        <div class="card"><span class="tag teal">버전</span><h3>버전 표기</h3><p>버전 파일의 <code>_YYMMDD_HHMM_v버전</code> 형식 준수, 최종본 위치.</p></div>
+      </div>
+    </section>
+
+    <!-- 03 어떻게 -->
+    <section id="how">
+      <div class="section-head">
+        <h2>03 — 어떻게 도나</h2>
+        <p class="section-note">주 1회, 최근 바뀐 것만, 무인으로.</p>
+      </div>
+      <div class="timeline">
+        <div class="step"><div class="step-num">1</div><div><h3>스케줄러가 깨움</h3><p>매주 정해진 시각(예: 월요일 새벽)에 OS 스케줄러가 스크립트를 자동 실행한다.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div><h3>최근 변경분만 수집</h3><p>git 기록으로 최근 7일간 바뀐 파일만 추린다. 전체를 매번 훑지 않아 빠르다.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div><h3>규칙 대조</h3><p>각 파일을 업무ID·파일명·버전 규칙과 대조해 위반을 찾는다.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div><h3>보고서 누적</h3><p>결과를 정해진 위치에 HTML 보고서로 쌓는다. 사람이 나중에 확인.</p></div></div>
+      </div>
+    </section>
+
+    <!-- 04 왜 스크립트 -->
+    <section id="script">
+      <div class="section-head">
+        <h2>04 — 왜 AI가 아니라 스크립트인가</h2>
+        <p class="section-note">이 일엔 규칙 기반이 더 맞다.</p>
+      </div>
+      <table class="compare">
+        <tr><th></th><th>규칙 스크립트</th><th>AI 에이전트</th></tr>
+        <tr><td>비용</td><td>0 (무료로 무한 반복)</td><td>호출마다 비용</td></tr>
+        <tr><td>결과</td><td>항상 같음(결정적)</td><td>매번 조금씩 다를 수 있음</td></tr>
+        <tr><td>적합한 일</td><td>명확한 규칙 판정</td><td>맥락·판단이 필요한 일</td></tr>
+      </table>
+      <div class="callout gold" style="margin-top:14px;">
+        "형식이 맞나"처럼 <strong>규칙으로 딱 떨어지는 검사</strong>는 스크립트가 낫다. 비용 없이, 무인으로, 언제나 같은 기준으로 돈다. AI는 판단이 필요한 곳에 아낀다.
+      </div>
+    </section>
+
+    <!-- 05 보고만 -->
+    <section id="report">
+      <div class="section-head">
+        <h2>05 — 보고만, 고치지 않는다</h2>
+        <p class="section-note">자동이 사람을 대신하지 않는다.</p>
+      </div>
+      <p style="color:var(--muted)">감사 스크립트는 <strong>직접 파일을 옮기거나 이름을 바꾸지 않는다.</strong> 위반을 찾아 보고만 하고, 실제 처리는 사람이 다음 작업 사이클에서 확인 후 한다. 자동이 잘못 판단해 멀쩡한 걸 건드리는 사고를 막고, 최종 판단을 사람이 쥔다.</p>
+      <div class="callout teal" style="margin-top:14px;">
+        "발견은 자동, 처리는 사람" — 이 분리가 자동화를 안전하게 만든다. 감사는 눈이지 손이 아니다.
+      </div>
+    </section>
+
+    <!-- 06 점검 -->
+    <section id="check">
+      <div class="section-head">
+        <h2>06 — 감사 설계 점검</h2>
+        <p class="section-note">자동 감사를 만들 때.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>규칙으로 명확히 판정 가능한 것만 검사 대상인가</span></li>
+        <li><span class="check">✓</span><span>전체가 아니라 "최근 변경분"만 훑어 가벼운가</span></li>
+        <li><span class="check">✓</span><span>스크립트가 직접 고치지 않고 보고만 하는가</span></li>
+        <li><span class="check">✓</span><span>사람이 확인할 위치에 보고서가 쌓이는가</span></li>
+      </ul>
+    </section>
+
+    <!-- 07 용어 -->
+    <section id="glossary">
+      <div class="section-head">
+        <h2>07 — 용어 한눈에</h2>
+        <p class="section-note">이 노트에 나온 단어들.</p>
+      </div>
+      <table class="compare">
+        <tr><th>용어</th><th>뜻</th></tr>
+        <tr><td>규칙 기반 스크립트</td><td>정해진 규칙대로만 판정하는 프로그램. 결과가 늘 같음.</td></tr>
+        <tr><td>스케줄러</td><td>정해진 시각에 작업을 자동 실행하는 OS 기능(작업 스케줄러/launchd).</td></tr>
+        <tr><td>무인 실행</td><td>사람이 켜지 않아도 자동으로 도는 것.</td></tr>
+        <tr><td>결정적(deterministic)</td><td>같은 입력이면 항상 같은 결과.</td></tr>
+        <tr><td>2층 점검</td><td>개별 작업과 별개로 도는 상위 정기 점검.</td></tr>
+      </table>
+    </section>
+
+    <div class="footer">
+      <span>Workflow · audit</span>
+      <span>maydly study archive</span>
+    </div>
+  </main>
+</body>
+</html>
