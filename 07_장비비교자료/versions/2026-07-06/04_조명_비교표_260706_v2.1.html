@@ -45,8 +45,7 @@
     .equip-card{display:grid;grid-template-rows:148px auto;min-width:0;background:#fff;border:1px solid #d7e0e6;border-radius:8px;overflow:hidden;box-shadow:0 2px 0 rgba(25,34,42,.03)}
     .equip-card.owned-card{border-color:#d79b45;box-shadow:0 0 0 2px rgba(217,155,69,.14)}
     .equip-card .photo-box{display:grid;place-items:center;background:#f3f6f7;border-bottom:1px solid #dce4e9;overflow:hidden}.equip-card img{width:100%;height:100%;object-fit:contain;padding:10px}
-    .equip-body{display:grid;gap:8px;padding:11px}.equip-top{display:flex;gap:6px;align-items:center;justify-content:space-between}.pill{display:inline-flex;align-items:center;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:900;white-space:nowrap}.pill.brand-pill{background:#e8f2f4;color:#176b87}.pill.domain-pill{background:#f5eee2;color:#8a5a15}.pill.owned-pill{background:#fff0d5;color:#9b5b00}.pill.color-bi{background:#e4f0f2;color:#176b87}.pill.color-full{background:#f3e8fa;color:#7a3ea0}
-    .group-pick{margin:0 0 11px;padding:8px 12px;background:#f7f4fb;border:1px solid #e7dcf1;border-left:3px solid #a06fc4;border-radius:8px;font-size:12.5px;color:#4a3a5a;line-height:1.55}
+    .equip-body{display:grid;gap:8px;padding:11px}.equip-top{display:flex;gap:6px;align-items:center;justify-content:space-between}.pill{display:inline-flex;align-items:center;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:900;white-space:nowrap}.pill.brand-pill{background:#e8f2f4;color:#176b87}.pill.domain-pill{background:#f5eee2;color:#8a5a15}.pill.owned-pill{background:#fff0d5;color:#9b5b00}
     .equip-body h3{font-size:16px;line-height:1.25;margin:0;min-height:40px}.equip-price{font-weight:950;font-size:18px;color:#151a1f}.equip-meta{display:grid;grid-template-columns:1fr;gap:5px;font-size:13px;color:#35414b}.equip-meta div{display:grid;grid-template-columns:62px 1fr;gap:7px}.equip-meta b{color:#6b7782}.equip-note{font-size:13px;color:#53616d;margin:0;min-height:40px}.equip-link{font-size:13px;font-weight:900}
     .compact .item-grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}.compact .equip-card{grid-template-rows:112px auto}.compact .equip-body h3{font-size:14px;min-height:34px}.compact .equip-note{display:none}
     .hidden{display:none!important}
@@ -119,40 +118,6 @@
       <div class="learn-card"><strong>5. 소프트박스 세트</strong><p>크기만 보지 말고 내부 디퓨저, 외부 디퓨저, 그리드, 스피드링/마운트 포함 여부를 한 세트로 확인합니다.</p></div>
       <div class="learn-card"><strong>6. 엄브렐러 표면</strong><p>투과는 넓게 퍼지고, 화이트 반사는 부드럽고, 실버 반사는 선명합니다. 딥형은 빛 방향을 더 잡기 쉽습니다.</p></div>
     </div>
-  </section>
-
-  <section class="panel" id="lighting-colorcode">
-    <h2>지속광 색상 방식 · 브랜드별 표기</h2>
-    <p class="small">지속광 LED는 모델명 끝 글자로 색상 방식을 표시합니다. 브랜드마다 글자가 달라, 이 표에서 <strong>풀컬러 / 바이컬러</strong>를 나눌 때 기준이 됩니다. (2026 기준, 공식·리뷰 확인분)</p>
-    <style>
-      #lighting-colorcode .cc-concept{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
-      #lighting-colorcode .cc-concept div{border:1px solid var(--line,#e3e9ec);border-radius:8px;padding:9px 11px;background:#fbfcfc;font-size:13px}
-      #lighting-colorcode .cc-concept b{display:block;margin-bottom:2px;color:#25313a}
-      #lighting-colorcode table{border-collapse:collapse;width:100%;font-size:13px;margin-top:8px;min-width:520px}
-      #lighting-colorcode th,#lighting-colorcode td{border:1px solid var(--line,#e3e9ec);padding:7px 9px;text-align:left;vertical-align:top}
-      #lighting-colorcode th{background:#eef4f5}
-      #lighting-colorcode code{background:#eef2f3;border-radius:4px;padding:1px 5px;color:#b5480f;font-weight:700}
-      @media(max-width:680px){#lighting-colorcode .cc-concept{grid-template-columns:1fr}}
-    </style>
-    <div class="cc-concept">
-      <div style="opacity:.5"><b>데이라이트 <span style="font-size:11px;color:#b5480f">✕ 비교표 제외</span></b>5600K 고정 · 구매 대상 아님</div>
-      <div><b>바이컬러 <span style="font-size:11px;color:#176b87">최소 기준</span></b>2700~6500K 조절 · RGB 없음</div>
-      <div><b>풀컬러(RGBWW) <span style="font-size:11px;color:#7a3ea0">베스트</span></b>색온도+색 연출 · RGB 있음</div>
-    </div>
-    <div style="overflow-x:auto">
-    <table>
-      <thead><tr><th>브랜드</th><th>데이라이트</th><th>바이컬러</th><th>풀컬러(RGB)</th><th>예시</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Aputure LS / amaran</strong></td><td><code>d</code></td><td><code>x</code></td><td><code>c</code></td><td>LS 300d II / LS 300x / amaran 300c</td></tr>
-        <tr><td><strong>Godox</strong></td><td><code>D</code></td><td><code>Bi</code></td><td><code>R</code></td><td>SL60IID / ML60II Bi / SL300R</td></tr>
-        <tr><td><strong>Nanlite</strong></td><td>무접미</td><td><code>B</code></td><td><code>C</code></td><td>Forza 300 II / FC-300B / FC-500C</td></tr>
-        <tr><td><strong>SmallRig RC</strong></td><td><code>D</code></td><td><code>B</code></td><td><code>C</code></td><td>RC 220D / RC 60B / RC 220C</td></tr>
-        <tr><td><strong>Zhiyun MOLUS</strong></td><td>—</td><td>무접미</td><td><code>RGB</code> 명기</td><td>MOLUS X100 / X60RGB</td></tr>
-        <tr><td><strong>Neewer · COLBOR</strong></td><td colspan="3" class="small">색상 접미 표기가 덜 일관적 — 모델별 확인 권장 (Neewer는 C=RGBWW)</td><td>HB80C(RGB)</td></tr>
-      </tbody>
-    </table>
-    </div>
-    <p class="small" style="margin-top:8px"><strong>이 비교표의 색 기준:</strong> <b>데이라이트는 제외</b>(구매 대상 아님, 데이라이트 표기만 참고용). 남는 건 <b>바이컬러(최소 기준)</b>와 <b>풀컬러(베스트)</b> 둘. 자동 판정: 모델명에 <code>RGB</code>·숫자+<code>c</code>(300c)·숫자+<code>R</code>(SL300R) → 풀컬러, 그 외(Bi·B·x) → 바이컬러. ※<code>FC-</code>처럼 앞에 붙은 C는 시리즈명이라 색상으로 세지 않습니다.</p>
   </section>
 
 
@@ -762,33 +727,17 @@ addLineupRows([
 
 
 const groupOrder=[
-"순간광 · 100Ws 미만/미니",
-"순간광 · 100Ws대",
-"순간광 · 200Ws대",
-"순간광 · 300Ws대",
-"순간광 · 400Ws대",
-"순간광 · 500Ws대",
-"순간광 · 600Ws대",
-"순간광 · 700Ws대",
-"순간광 · 800Ws대",
-"순간광 · 900Ws대",
-"순간광 · 1000Ws대",
-"순간광 · 1200Ws대",
-"순간광 · 1600Ws대",
-"순간광 · 2400Ws대",
-"순간광 · 3200Ws대",
-"순간광 · 헤드/부속",
-"지속광 · 100W 미만 COB",
-"지속광 · 100W대 COB",
-"지속광 · 200W대 COB",
-"지속광 · 300W대 COB",
-"지속광 · 400W대 COB",
-"지속광 · 500W대 COB",
-"지속광 · 600W대 COB",
-"지속광 · 700W대 COB",
-"지속광 · 800W대 COB",
-"지속광 · 900W대 COB",
-"지속광 · 1000W↑ 시네마",
+"순간광 · 미니/레트로/온카메라",
+"순간광 · 100Ws 초소형",
+"순간광 · 200~300Ws 휴대형",
+"순간광 · 300~500Ws 주광",
+"순간광 · 600~1250Ws 고출력",
+"순간광 · AC 모노라이트",
+"순간광 · 팩헤드/프로헤드",
+"지속광 · 100W 이하 COB",
+"지속광 · 100~300W COB",
+"지속광 · 300~800W COB",
+"지속광 · 1000W 이상/시네마",
 "지속광 · 패널/매트",
 "지속광 · 튜브/바",
 "액세서리 · 소프트박스",
@@ -808,7 +757,6 @@ function wattNumber(x){
   const m=s.match(/(\d+(?:\.\d+)?)\s*(?:Ws|W|급)/i);
   return m?Number(m[1]):0;
 }
-function lightColor(n){return /RGB|\dc\b|\dR\b/i.test(n||"")?"풀컬러":"바이컬러";}
 function compareGroup(x){
   const name=x.name||"", spec=x.spec||"", p=x.p||"";
   if(x.d==="액세서리"){
@@ -821,17 +769,22 @@ function compareGroup(x){
     return "액세서리 · 기타";
   }
   if(x.d==="순간광"){
-    const m=spec.match(/(\d+)\s*Ws/i);
-    if(m){ const ws=Number(m[1]); return ws>=100?`순간광 · ${Math.floor(ws/100)*100}Ws대`:"순간광 · 100Ws 미만/미니"; }
-    if(/헤드|Head|Pulso|Picolite/i.test(`${name} ${spec}`)) return "순간광 · 헤드/부속";
-    return "순간광 · 100Ws 미만/미니";
+    if(/Lux|iM|iT|Z1|TT|V1|V100|V480|V850|V860|A10|FJ80/i.test(name)) return "순간광 · 미니/레트로/온카메라";
+    if(/AD100|A2|ONE\b/i.test(name)) return "순간광 · 100Ws 초소형";
+    if(/AD200|FJ200|THREE|Q3|R200|H200|EC200/i.test(name)) return "순간광 · 200~300Ws 휴대형";
+    if(/AD300|AD400|B10X$|D2 500|Siros 400|FJ400|Q4|DP400|QT400|QS400|SK400|SK300/i.test(name)) return "순간광 · 300~500Ws 주광";
+    if(/AD600|AD800|B10X Plus|Pro-B3|D2 1000|Pro-D3|Siros 800|FIVE|FJ800|Q6|DP800|DP1000|QT600|QT1200|QS600/i.test(name)) return "순간광 · 600~1250Ws 고출력";
+    if(/Pack|ProHead|Pulso|Picolite|Scoro|Satos|Move|P2400|AD1200|R1200|R2400/i.test(name)) return "순간광 · 팩헤드/프로헤드";
+    if(/MS|SK|DP|QT|QS|GS|D30/i.test(name)) return "순간광 · AC 모노라이트";
+    return "순간광 · 기타";
   }
   if(/PavoTube|INFINIBAR|Tube|TL\d|PB\d/i.test(name)) return "지속광 · 튜브/바";
   if(/PavoSlim|Nova|NOVA|Panel|패널|F21|F22|INFINIMAT|Mat|매트/i.test(name)) return "지속광 · 패널/매트";
   const watts=wattNumber(x);
-  if(watts>=1000||/STORM XT|Electro Storm|1200|1500|2600|5200|CS15|XT26/i.test(name)) return "지속광 · 1000W↑ 시네마";
-  if(watts>=100) return `지속광 · ${Math.floor(watts/100)*100}W대 COB`;
-  return "지속광 · 100W 미만 COB";
+  if(watts>=1000||/STORM XT|Electro Storm|1200|1500|2600|5200|CS15|XT26/i.test(name)) return "지속광 · 1000W 이상/시네마";
+  if(watts>=300) return "지속광 · 300~800W COB";
+  if(watts>=100) return "지속광 · 100~300W COB";
+  return "지속광 · 100W 이하 COB";
 }
 function linePriority(x){
   const order={"보유":0,"핵심":1,"가성비":2,"입문":3,"보조":4,"연출":5,"프로":6,"프리미엄":7,"상업":8,"스튜디오":9,"렌탈":10,"헤드":11,"트리거":12};
@@ -942,19 +895,17 @@ function renderDashboard(){
       if(sort==="price") return a.priceValue-b.priceValue||a.b.localeCompare(b.b,"ko");
       if(sort==="brand") return a.b.localeCompare(b.b,"ko")||a.name.localeCompare(b.name,"ko");
       if(sort==="priority") return linePriority(a)-linePriority(b)||a.priceValue-b.priceValue;
-      const cc=v=>v.d==="지속광"?(lightColor(v.name)==="풀컬러"?1:0):0;
-      return (cc(a)-cc(b))||linePriority(a)-linePriority(b)||wattNumber(a)-wattNumber(b)||a.priceValue-b.priceValue;
+      return linePriority(a)-linePriority(b)||wattNumber(a)-wattNumber(b)||a.priceValue-b.priceValue;
     });
     return `<section class="compare-group" id="dash-${slug(g)}">
       <div class="compare-group-title"><h3>${g}</h3><span>${items.length}개 모델/사이즈</span></div>
-      ${g.startsWith("지속광")?'<p class="group-pick">🌗 <b>바이컬러</b> = 최소 기준(색온도 2700~6500K 조절) · 🎨 <b>풀컬러</b> = 베스트(RGB 색 연출, 밝기↓·가격↑). 가성비 amaran · 프로 신뢰성 Aputure·Nanlite.</p>':""}
       <div class="item-grid">${items.map(x=>{
         const photo=x.img?`<a class="photo-box" href="${x.img}" target="_blank" rel="noreferrer"><img src="${x.img}" alt="${x.name}"></a>`:`<div class="photo-box"><div class="no-photo">정확한<br>사진 확인중</div></div>`;
         const owned=x.p==="보유";
         return `<article class="equip-card ${owned?"owned-card":""}">
           ${photo}
           <div class="equip-body">
-            <div class="equip-top"><span class="pill brand-pill">${x.b}</span><span class="pill domain-pill">${x.d}</span>${x.d==="지속광"?(lightColor(x.name)==="풀컬러"?'<span class="pill color-full">🎨풀컬러</span>':'<span class="pill color-bi">🌗바이컬러</span>'):""}</div>
+            <div class="equip-top"><span class="pill brand-pill">${x.b}</span><span class="pill domain-pill">${x.d}</span></div>
             <h3>${x.name}</h3>
             <div class="equip-price">${x.krw}</div>
             <div class="equip-meta">
@@ -1027,17 +978,13 @@ const gear=[
 {b:"SmallRig",m:"RC 220B Pro",type:"지속광",power:"220W",watts:220,usd:314,weight:"약 1.8kg",size:"소형",mount:"전용 앱",adapter:"Bowens",use:"저예산 영상 COB",img:"assets/lighting/smallrig_rc220b.png",link:"https://www.smallrig.com/RC-220B-Pro-COB-LED-Video-Light.html"},
 {b:"COLBOR",m:"CL220",type:"지속광",power:"220W",watts:220,usd:329,weight:"약 1.6kg",size:"소형",mount:"전용",adapter:"Bowens",use:"저가 220W 영상 COB",img:"assets/lighting/colbor_cl220.jpg",link:"https://www.colborlight.com/products/co-cl220"},
 {b:"Nanlite",m:"FC-300B",type:"지속광",power:"350W",watts:350,usd:499,weight:"약 2.3kg",size:"중형",mount:"Nanlink",adapter:"Bowens",use:"가성비 300W급 영상 주광",img:"assets/lighting/nanlite_fc300b.png",link:"https://www.focusnordic.com/products/video/led-lighting/fresnel-monolights/nanlite-fc-300b-led-bi-color-spot-light"},
-{b:"Aputure",m:"amaran 300c",type:"지속광",power:"300W",watts:300,usd:569,weight:"약 1.9kg",size:"소형",mount:"Sidus Link",adapter:"Bowens",use:"컬러 연출 300W RGBWW 풀컬러 COB, CRI 95+",img:"assets/lighting/aputure_amaran.jpg",link:"https://amarancreators.com/products/amaran-300c"},
 {b:"Nanlite",m:"FC-500B",type:"지속광",power:"520W",watts:520,usd:699,weight:"약 3.2kg",size:"중형",mount:"Nanlink",adapter:"Bowens",use:"영상 주광 가성비 1순위권",img:"assets/lighting/nanlite_fc500b.jpg",link:"https://nanliteus.com/products/fc-500b-bi-color-led-spotlight"},
 {b:"Aputure",m:"LS 600x Pro",type:"지속광",power:"720W급",watts:720,usd:2190,weight:"헤드 약 4.6kg",size:"대형",mount:"Sidus Link / DMX",adapter:"Bowens",use:"영상 주광 표준급, 혼합광 대응",img:"assets/lighting/aputure_600x.png",link:"https://www.aputure.com/products/ls-600x-pro/"},
 {b:"Aputure",m:"LS 1200d Pro",type:"지속광",power:"1200W",watts:1200,usd:2990,weight:"대형 세트",size:"초대형",mount:"Sidus Link / DMX",adapter:"Bowens",use:"대형 현장, 강한 daylight",img:"assets/lighting/aputure_1200d.png",link:"https://www.aputure.com/products/ls-1200d-pro/"},
 {b:"Nanlite",m:"PavoTube II 30C",type:"튜브/패널",power:"튜브 RGB",watts:0,usd:329,weight:"약 1.4kg",size:"튜브",mount:"Nanlink/DMX",adapter:"전용 클램프",use:"배경, 헤어라이트, 무드 조명",img:"assets/lighting/nanlite_tube.jpg",link:"https://nanliteus.com/"}
 ];
-const isDaylightLED=n=>/\dd\b|II ?D\b/i.test(n||"");
-for(let i=lineup.length-1;i>=0;i--){if(lineup[i].d==="지속광"&&isDaylightLED(lineup[i].name))lineup.splice(i,1);}
-for(let i=gear.length-1;i>=0;i--){if(gear[i].type==="지속광"&&isDaylightLED(gear[i].m))gear.splice(i,1);}
 const views={
-power:{label:"출력 기준 그룹",group:x=>x.type==="온카메라 플래시"?(strobeWsNumber(x)<10?"미니 플래시 10Ws 이하":strobeWsNumber(x)<40?"미니 플래시 10~40Ws":strobeWsNumber(x)<90?"온카메라 60~80Ws급":"온카메라 100Ws급"):x.type==="파워팩/헤드"?"1200Ws 이상 팩·헤드":x.type==="지속광"?("지속광 "+((x.watts||0)<100?"~90W":(x.watts||0)<250?"100~220W":(x.watts||0)<450?"300~400W":(x.watts||0)<900?"500~800W":"1000W↑")+" · "+(/RGB|\dc\b|\dR\b/i.test(x.m)?"풀컬러":(/\dd\b|II ?D\b/i.test(x.m)?"데이라이트":"바이컬러"))):strobeWsNumber(x)===0?"무드/특수":strobeWsNumber(x)<250?"100~220급":strobeWsNumber(x)<450?"300~400급":strobeWsNumber(x)<900?"500~800급":"1000급 이상"},
+power:{label:"출력 기준 그룹",group:x=>x.type==="온카메라 플래시"?(strobeWsNumber(x)<10?"미니 플래시 10Ws 이하":strobeWsNumber(x)<40?"미니 플래시 10~40Ws":strobeWsNumber(x)<90?"온카메라 60~80Ws급":"온카메라 100Ws급"):x.type==="파워팩/헤드"?"1200Ws 이상 팩·헤드":strobeWsNumber(x)===0?"무드/특수":strobeWsNumber(x)<250?"100~220급":strobeWsNumber(x)<450?"300~400급":strobeWsNumber(x)<900?"500~800급":"1000급 이상"},
 price:{label:"금액 기준 그룹",group:x=>gearKrwValue(x)<200000?"20만원 이하":gearKrwValue(x)<700000?"20~70만원":gearKrwValue(x)<1500000?"70~150만원":gearKrwValue(x)<4000000?"150~400만원":"400만원 이상"},
 size:{label:"크기·무게 기준 그룹",group:x=>x.size},
 mount:{label:"마운트/어댑터 기준 그룹",group:x=>x.adapter},
