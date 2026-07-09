@@ -191,12 +191,13 @@ a{color:var(--ink) !important}
   left:50% !important;
   right:auto !important;
   transform:translateX(-50%) !important;
-  width:min(calc(100vw - 28px),1140px) !important;
+  width:min(calc(100vw - 28px),1240px) !important;
   height:auto !important;
   margin:0 !important;
   padding:7px !important;
-  display:grid !important;
-  grid-template-columns:repeat(8,minmax(0,1fr)) !important;
+  display:flex !important;
+  flex-wrap:wrap !important;
+  justify-content:center !important;
   gap:4px !important;
   background:rgba(246,245,241,.9) !important;
   border:1px solid var(--line) !important;
@@ -207,6 +208,7 @@ a{color:var(--ink) !important}
 
 .top-nav a{
   display:flex !important;
+  flex:0 0 auto !important;
   align-items:center !important;
   justify-content:center !important;
   min-height:40px !important;
@@ -1169,7 +1171,7 @@ body.support-page .support-index-links a{
     right:9px !important;
     transform:none !important;
     width:auto !important;
-    grid-template-columns:repeat(8,max-content) !important;
+    flex-wrap:nowrap !important;
     justify-content:start !important;
     overflow-x:auto !important;
     scrollbar-width:none;
