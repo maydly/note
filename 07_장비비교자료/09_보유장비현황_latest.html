@@ -10,15 +10,15 @@
     body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Arial,sans-serif;line-height:1.55}
     a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
     header{background:#efe9dd;border-bottom:1px solid var(--line);padding:30px 26px 22px}
-    main{max-width:1120px;margin:0 auto;padding:24px}
+    main{max-width:1180px;margin:0 auto;padding:24px}
     h1{margin:0 0 8px;font-size:clamp(28px,4vw,42px);line-height:1.08}
     h2{font-size:22px;margin:30px 0 10px}
-    p{margin:0 0 10px}.lead{max-width:940px;color:#3f4a54}.small{font-size:13px;color:var(--muted)}
+    p{margin:0 0 10px}.lead{max-width:960px;color:#3f4a54}.small{font-size:13px;color:var(--muted)}
     .top-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
     .top-nav a{display:inline-flex;align-items:center;border:1px solid #cdd7dd;border-radius:999px;background:#fff;padding:8px 12px;font-weight:900;color:var(--accent)}
     .top-nav a:hover{background:#eef6f7;text-decoration:none}
     .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:#fff;margin-top:10px}
-    table{width:100%;border-collapse:collapse;min-width:640px}
+    table{width:100%;border-collapse:collapse;min-width:720px}
     th,td{padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;font-size:13.5px}
     th{background:#f0f4f6;white-space:nowrap}
     td:first-child{font-weight:800;color:#1f3038}
@@ -30,7 +30,9 @@
     .fix{background:#f4e6e1;color:var(--bad);border-color:#e6cdc4}
     .dead{background:#efe9f2;color:#6a4a86;border-color:#ddd0e6}
     .sale{background:#eef3f5;color:#3f4a54}
-    .imglink{display:inline-flex;align-items:center;gap:3px;border:1px solid #cdd7dd;border-radius:6px;background:#fff;padding:2px 7px;font-size:11px;font-weight:800;color:var(--accent);margin-left:6px}
+    .price{white-space:nowrap;font-weight:700}
+    .used{color:var(--muted);font-weight:600;white-space:nowrap}
+    .imglink{display:inline-flex;align-items:center;border:1px solid #cdd7dd;border-radius:6px;background:#fff;padding:1px 6px;font-size:11px;font-weight:800;color:var(--accent);margin-left:6px}
     .imglink:hover{background:#eef6f7;text-decoration:none}
     .note{background:#fbf6ea;border:1px solid #e7d9b8;border-left:5px solid var(--warm);border-radius:8px;padding:13px 15px;margin:14px 0}
     .cnt{display:inline-block;background:#eef3f5;border-radius:999px;padding:1px 7px;font-size:11px;font-weight:800;color:#3f4a54;margin-left:6px}
@@ -40,8 +42,8 @@
 <body>
 <header>
   <h1>보유 장비 현황</h1>
-  <p class="lead">현재 가지고 있는 촬영·조명·컴퓨터·저장 장비 전체 목록. 상태는 <span class="badge own">보유</span> · <span class="badge chk">확인필요</span> · <span class="badge fix">고장수리필요</span> · <span class="badge dead">작동불가·수리확인</span> · <span class="badge sale">판매/보류</span> 로 구분.</p>
-  <p class="small">기준일 2026-07-09 · 새 장비가 생기면 계속 추가하는 살아있는 목록</p>
+  <p class="lead">현재 가지고 있는 촬영·조명·컴퓨터·저장 장비 전체 목록. 상태 <span class="badge own">보유</span> <span class="badge chk">확인필요</span> <span class="badge fix">고장수리필요</span> <span class="badge dead">작동불가·수리확인</span> <span class="badge sale">판매/보류</span> · 품목명 옆 <span class="imglink">🔍</span> = 이미지 검색.</p>
+  <p class="small">기준일 2026-07-10 · <b>시세는 대략치(변동 큼)</b> — 현행품은 신품 대략가, 중고·단종품은 <span class="used">중고 확인</span>으로 표시. 정확한 현재가는 Perplexity/중고장터 확인 권장.</p>
   <nav class="top-nav" aria-label="장비 비교자료 분류">
     <a href="00_장비비교_목차_latest.html">목차</a>
     <a href="01_카메라_비교표_latest.html">카메라</a>
@@ -68,25 +70,25 @@
     <a href="#repair">수리·보류</a>
   </nav>
 
-  <div class="note">카메라·조명·컴퓨터·저장·테더까지 한 곳에 정리했어요. 수리·판매 검토 대상은 맨 아래에 상태 배지로 따로 모았습니다.</div>
+  <div class="note">품목명 옆 🔍를 누르면 이미지가 떠서 뭐가 뭔지 바로 확인돼요. 시세는 참고용 대략치라, 정확한 값은 아래 방식으로 확정하세요 — 이 페이지 시세 갱신은 언제든 도와드립니다.</div>
 
   <h2 id="cam">카메라 바디</h2>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>장비</th><th>종류</th><th>상태</th><th>메모</th></tr></thead>
+      <thead><tr><th>장비</th><th>종류</th><th>상태</th><th>대략 시세</th><th>메모</th></tr></thead>
       <tbody>
-        <tr class="section-row"><td colspan="4">디지털 메인</td></tr>
-        <tr><td>Sony A7M4</td><td>풀프레임 미러리스 (E마운트)</td><td><span class="badge own">보유</span></td><td>현재 기준 바디. 올드렌즈·필터 테스트 기준</td></tr>
-        <tr class="section-row"><td colspan="4">필름·구형·캠코더 (서브/컬렉션)</td></tr>
-        <tr><td>니콘 FM10</td><td>필름 SLR (니콘 F, AI-S)</td><td><span class="badge own">보유</span></td><td>완전 수동 SLR. ISO 다이얼 25까지 → 만료필름 노출업 가능. 35-70 키트렌즈와 세트</td></tr>
-        <tr><td>펜탁스 에스피오 SW120II</td><td>필름 컴팩트</td><td><span class="badge own">보유</span></td><td>광각 줌 컴팩트 필름카메라</td></tr>
-        <tr><td>코니카 C35 EF</td><td>필름 컴팩트</td><td><span class="badge own">보유</span></td><td>내장 플래시 레인지파인더 컴팩트</td></tr>
-        <tr><td>후지필름 인스탁스 미니 에보</td><td>인스턴트 (하이브리드)</td><td><span class="badge own">보유</span></td><td>즉석 인화 + 디지털</td></tr>
-        <tr><td>SONY HDR-CX370V</td><td>캠코더</td><td><span class="badge own">보유</span></td><td>HD 핸디캠</td></tr>
-        <tr><td>SONY HDR-CX590V</td><td>캠코더</td><td><span class="badge own">보유</span></td><td>HD 핸디캠</td></tr>
-        <tr><td>JVC GZ-HD30</td><td>캠코더</td><td><span class="badge own">보유</span></td><td>HDD HD 캠코더</td></tr>
-        <tr><td>CASIO EXILIM EX-H15</td><td>디지털 컴팩트</td><td><span class="badge own">보유</span></td><td>콤팩트 디카</td></tr>
-        <tr><td>SONY 워크맨 NW-S754 8GB</td><td>미디어 플레이어</td><td><span class="badge own">보유</span></td><td>MP3/영상 플레이어</td></tr>
+        <tr class="section-row"><td colspan="5">디지털 메인</td></tr>
+        <tr><td>Sony A7M4<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Sony+A7+IV">🔍</a></td><td>풀프레임 미러리스 (E마운트)</td><td><span class="badge own">보유</span></td><td class="price">₩270~290만 <span class="small">신품 바디</span></td><td>현재 기준 바디</td></tr>
+        <tr class="section-row"><td colspan="5">필름·구형·캠코더 (서브/컬렉션)</td></tr>
+        <tr><td>니콘 FM10<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Nikon+FM10">🔍</a></td><td>필름 SLR (니콘 F, AI-S)</td><td><span class="badge own">보유</span></td><td class="used">중고 ₩12~25만</td><td>완전 수동. 만료필름 노출업 가능</td></tr>
+        <tr><td>펜탁스 에스피오 SW120II<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Pentax+Espio+120SW">🔍</a></td><td>필름 컴팩트</td><td><span class="badge own">보유</span></td><td class="used">중고 확인</td><td>광각 줌 컴팩트</td></tr>
+        <tr><td>코니카 C35 EF<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Konica+C35+EF">🔍</a></td><td>필름 컴팩트</td><td><span class="badge own">보유</span></td><td class="used">중고 ₩5~12만</td><td>내장 플래시 레인지파인더</td></tr>
+        <tr><td>후지필름 인스탁스 미니 에보<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=instax+mini+Evo">🔍</a></td><td>인스턴트 (하이브리드)</td><td><span class="badge own">보유</span></td><td class="price">₩20~24만 <span class="small">신품</span></td><td>즉석 인화 + 디지털</td></tr>
+        <tr><td>SONY HDR-CX370V<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Sony+HDR-CX370">🔍</a></td><td>캠코더</td><td><span class="badge own">보유</span></td><td class="used">중고 확인</td><td>HD 핸디캠</td></tr>
+        <tr><td>SONY HDR-CX590V<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Sony+HDR-CX590">🔍</a></td><td>캠코더</td><td><span class="badge own">보유</span></td><td class="used">중고 확인</td><td>HD 핸디캠</td></tr>
+        <tr><td>JVC GZ-HD30<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=JVC+GZ-HD30">🔍</a></td><td>캠코더</td><td><span class="badge own">보유</span></td><td class="used">중고 확인</td><td>HDD HD 캠코더</td></tr>
+        <tr><td>CASIO EXILIM EX-H15<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Casio+Exilim+EX-H15">🔍</a></td><td>디지털 컴팩트</td><td><span class="badge own">보유</span></td><td class="used">중고 확인</td><td>콤팩트 디카</td></tr>
+        <tr><td>SONY 워크맨 NW-S754 8GB<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Sony+Walkman+NW-S754">🔍</a></td><td>미디어 플레이어</td><td><span class="badge own">보유</span></td><td class="used">중고 확인</td><td>MP3/영상 플레이어</td></tr>
       </tbody>
     </table>
   </div>
@@ -94,10 +96,10 @@
   <h2 id="lens">렌즈</h2>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>렌즈</th><th>마운트</th><th>화각/밝기</th><th>상태</th><th>메모</th></tr></thead>
+      <thead><tr><th>렌즈</th><th>마운트</th><th>화각/밝기</th><th>상태</th><th>대략 시세</th></tr></thead>
       <tbody>
-        <tr><td>Samyang 35-150mm F2-2.8 FE</td><td>소니 E</td><td>35-150mm F2-2.8</td><td><span class="badge own">보유</span></td><td>메인 줌. 필터구경 82mm. AF 네이티브</td></tr>
-        <tr><td>Nikon 35-70mm F3.5-4.8</td><td>니콘 F (AI-S)</td><td>35-70mm F3.5-4.8</td><td><span class="badge own">보유</span></td><td>수동초점 필름 키트렌즈(약 250~300g). A7M4엔 Techart+F→M링으로 사용 예정</td></tr>
+        <tr><td>Samyang 35-150mm F2-2.8 FE<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Samyang+AF+35-150mm+F2-2.8+FE">🔍</a></td><td>소니 E</td><td>35-150mm F2-2.8</td><td><span class="badge own">보유</span></td><td class="price">₩130~150만 <span class="small">신품</span></td></tr>
+        <tr><td>Nikon 35-70mm F3.5-4.8<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Nikon+35-70mm+f3.5-4.8+AIS">🔍</a></td><td>니콘 F (AI-S)</td><td>35-70mm F3.5-4.8</td><td><span class="badge own">보유</span></td><td class="used">중고 ₩3~8만</td></tr>
       </tbody>
     </table>
   </div>
@@ -105,26 +107,26 @@
   <h2 id="filter">필터 <span class="cnt">보유</span></h2>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>필터</th><th>구경</th><th>종류</th><th>주 용도</th></tr></thead>
+      <thead><tr><th>필터</th><th>구경</th><th>종류</th><th>대략 시세</th><th>주 용도</th></tr></thead>
       <tbody>
-        <tr class="section-row"><td colspan="4">노출·보호·편광</td></tr>
-        <tr><td>Haida PROII CPL-VND</td><td>—</td><td>가변 ND + CPL</td><td>노출 조절, 반사 제거, 영상 셔터 유지</td></tr>
-        <tr><td>Benro SHD L39+H UV</td><td>—</td><td>UV 보호</td><td>렌즈 보호, 상시 장착 후보</td></tr>
-        <tr><td>Benro SHD CPL-HD</td><td>—</td><td>편광</td><td>유리/물/금속 반사 제어, 채도 정리</td></tr>
-        <tr class="section-row"><td colspan="4">디퓨전·소프트 (감성)</td></tr>
-        <tr><td>Kenko BLACK MIST No.05</td><td>—</td><td>디퓨전(약)</td><td>하이라이트 선택적 번짐, 절제된 시네마 무드</td></tr>
-        <tr><td>NiSi White Mist 1/4</td><td>—</td><td>디퓨전+흰 글로우</td><td>거의 고정 사용. 피부/하이라이트 밝고 부드럽게</td></tr>
-        <tr><td>77mm K&amp;F Nano-X Pro MRC Black Diffusion 1/4</td><td>77mm</td><td>블랙 디퓨전</td><td>할레이션, 대비 완화, 피부 질감 완화</td></tr>
-        <tr><td>Kenko SOFTON SPECK [A]</td><td>82mm</td><td>소프트/스펙 확산</td><td>점광원·별빛 부드럽게 확대</td></tr>
-        <tr><td>Kenko FOGGY [A]</td><td>82mm</td><td>포그(안개) 확산</td><td>전체 안개 느낌, 대비↓·몽환. 신규 추가</td></tr>
-        <tr><td>Kenko NOSTALTONE BLUE</td><td>—</td><td>색조+소프트</td><td>청보라 필름 느낌, 그림자 푸른 톤</td></tr>
-        <tr class="section-row"><td colspan="4">스타·프리즘·특수효과</td></tr>
-        <tr><td>Hoya STAR 6X</td><td>—</td><td>별빛(6갈래)</td><td>광원 6갈래 스타. 두 개 겹쳐 교차 실험</td></tr>
-        <tr><td>77mm WalkingWay Colorful Starlight</td><td>77mm</td><td>컬러 스타/프리즘</td><td>점광원 컬러풀 별빛·번짐</td></tr>
-        <tr><td>77mm WalkingWay Star +4</td><td>77mm</td><td>4포인트 스타</td><td>조명·주얼리·야경 4갈래 별빛</td></tr>
-        <tr><td>82mm Linear Prism / Multi-Strip</td><td>82mm</td><td>프리즘/반복상</td><td>선형 복제·가장자리 굴절(임시명)</td></tr>
-        <tr><td>82mm Split Diopter / Split Prism</td><td>82mm</td><td>분할 초점/프리즘</td><td>이중초점·흐림 경계(임시명)</td></tr>
-        <tr><td>82mm Split Glass / Kaleidoscope</td><td>82mm</td><td>분할 프리즘/칼레이도</td><td>반복상·프랙탈(임시명, 제품명 확인)</td></tr>
+        <tr class="section-row"><td colspan="5">노출·보호·편광</td></tr>
+        <tr><td>Haida PROII CPL-VND<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Haida+PROII+CPL-VND">🔍</a></td><td>—</td><td>가변 ND + CPL</td><td class="price">₩15~25만</td><td>노출·반사·영상 셔터</td></tr>
+        <tr><td>Benro SHD L39+H UV<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Benro+SHD+UV+filter">🔍</a></td><td>—</td><td>UV 보호</td><td class="price">₩3~6만</td><td>렌즈 보호</td></tr>
+        <tr><td>Benro SHD CPL-HD<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Benro+SHD+CPL-HD">🔍</a></td><td>—</td><td>편광</td><td class="price">₩8~15만</td><td>반사 제어·채도</td></tr>
+        <tr class="section-row"><td colspan="5">디퓨전·소프트 (감성)</td></tr>
+        <tr><td>Kenko BLACK MIST No.05<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Kenko+Black+Mist+No.05">🔍</a></td><td>—</td><td>디퓨전(약)</td><td class="price">₩8~13만</td><td>절제된 시네마 무드</td></tr>
+        <tr><td>NiSi White Mist 1/4<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=NiSi+White+Mist+1/4">🔍</a></td><td>—</td><td>디퓨전+흰 글로우</td><td class="price">₩10~16만</td><td>거의 고정 사용</td></tr>
+        <tr><td>77mm K&amp;F Nano-X Black Diffusion 1/4<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=K%26F+Nano-X+Black+Diffusion+1/4">🔍</a></td><td>77mm</td><td>블랙 디퓨전</td><td class="price">₩4~7만</td><td>할레이션·대비 완화</td></tr>
+        <tr><td>Kenko SOFTON SPECK [A]<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Kenko+Softon+Speck+A">🔍</a></td><td>82mm</td><td>소프트/스펙 확산</td><td class="price">₩7~12만</td><td>점광원 부드럽게</td></tr>
+        <tr><td>Kenko FOGGY [A]<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Kenko+Foggy+A+filter">🔍</a></td><td>82mm</td><td>포그(안개) 확산</td><td class="price">₩7~12만</td><td>전체 안개·몽환</td></tr>
+        <tr><td>Kenko NOSTALTONE BLUE<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Kenko+Nostaltone+Blue">🔍</a></td><td>—</td><td>색조+소프트</td><td class="price">₩8~13만</td><td>청보라 필름 느낌</td></tr>
+        <tr class="section-row"><td colspan="5">스타·프리즘·특수효과</td></tr>
+        <tr><td>Hoya STAR 6X<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Hoya+Star+6X+filter">🔍</a></td><td>—</td><td>별빛(6갈래)</td><td class="price">₩3~6만</td><td>6갈래 스타</td></tr>
+        <tr><td>77mm WalkingWay Colorful Starlight<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=WalkingWay+Colorful+Starlight+filter">🔍</a></td><td>77mm</td><td>컬러 스타/프리즘</td><td class="price">₩3~6만</td><td>컬러풀 별빛·번짐</td></tr>
+        <tr><td>77mm WalkingWay Star +4<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=WalkingWay+Star+4+filter">🔍</a></td><td>77mm</td><td>4포인트 스타</td><td class="price">₩2~5만</td><td>4갈래 별빛</td></tr>
+        <tr><td>82mm Linear Prism / Multi-Strip<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=linear+prism+lens+filter+fx">🔍</a></td><td>82mm</td><td>프리즘/반복상</td><td class="used">확인 (변동)</td><td>선형 복제·굴절(임시명)</td></tr>
+        <tr><td>82mm Split Diopter / Split Prism<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=split+diopter+filter">🔍</a></td><td>82mm</td><td>분할 초점/프리즘</td><td class="used">확인 (변동)</td><td>이중초점·경계(임시명)</td></tr>
+        <tr><td>82mm Split Glass / Kaleidoscope<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=kaleidoscope+lens+filter+fx">🔍</a></td><td>82mm</td><td>분할 프리즘/칼레이도</td><td class="used">확인 (변동)</td><td>반복상·프랙탈(임시명)</td></tr>
       </tbody>
     </table>
   </div>
@@ -133,14 +135,14 @@
   <h2 id="light">조명 · 조명효과</h2>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>장비</th><th>종류</th><th>상태</th><th>메모</th></tr></thead>
+      <thead><tr><th>장비</th><th>종류</th><th>상태</th><th>대략 시세</th><th>메모</th></tr></thead>
       <tbody>
-        <tr><td>SUN-ART 썬빔 아트샷 세트</td><td>광학 빔/썬빔 효과 조명<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=SUN-ART%20%EC%8D%AC%EB%B9%94%20%EC%95%84%ED%8A%B8%EC%83%B7">🔍</a></td><td><span class="badge own">보유</span></td><td>창문 햇살·빔 패턴 만드는 지속광 광학 스포트라이트(이미지 확인). 제품·소품 촬영 분위기용</td></tr>
-        <tr><td>고독스 LUX JUNIOR</td><td>레트로 스피드라이트</td><td><span class="badge own">보유</span></td><td>클래식 감성 소형 플래시</td></tr>
-        <tr><td>어퓨처 아마란 AL-M9</td><td>미니 LED 라이트</td><td><span class="badge own">보유</span></td><td>포켓형 보조광</td></tr>
-        <tr><td>500W 포그머신</td><td>연무기</td><td><span class="badge own">보유</span></td><td>빔·역광 분위기 연출</td></tr>
-        <tr><td>고독스 신형 스피드라이트 브라켓</td><td>플래시 브라켓</td><td><span class="badge own">보유</span></td><td>스피드라이트 거치</td></tr>
-        <tr><td>고독스 단일접점 핫슈 라이저</td><td>핫슈 라이저</td><td><span class="badge own">보유</span></td><td>단일접점 핫슈 연장</td></tr>
+        <tr><td>SUN-ART 썬빔 아트샷 세트<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=SUN-ART+%EC%8D%AC%EB%B9%94+%EC%95%84%ED%8A%B8%EC%83%B7">🔍</a></td><td>광학 빔/썬빔 효과 조명</td><td><span class="badge own">보유</span></td><td class="price">₩14~15만</td><td>창문 햇살·빔 패턴 지속광 스포트라이트</td></tr>
+        <tr><td>고독스 LUX JUNIOR<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Godox+Lux+Junior">🔍</a></td><td>레트로 스피드라이트</td><td><span class="badge own">보유</span></td><td class="price">₩10~13만</td><td>클래식 감성 소형 플래시</td></tr>
+        <tr><td>어퓨처 아마란 AL-M9<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Aputure+Amaran+AL-M9">🔍</a></td><td>미니 LED 라이트</td><td><span class="badge own">보유</span></td><td class="price">₩3~5만</td><td>포켓형 보조광</td></tr>
+        <tr><td>500W 포그머신<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=fog+machine+500W">🔍</a></td><td>연무기</td><td><span class="badge own">보유</span></td><td class="price">₩5~10만</td><td>빔·역광 분위기</td></tr>
+        <tr><td>고독스 신형 스피드라이트 브라켓<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Godox+speedlite+bracket">🔍</a></td><td>플래시 브라켓</td><td><span class="badge own">보유</span></td><td class="price">₩1~3만</td><td>스피드라이트 거치</td></tr>
+        <tr><td>고독스 단일접점 핫슈 라이저<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Godox+hot+shoe+riser">🔍</a></td><td>핫슈 라이저</td><td><span class="badge own">보유</span></td><td class="price">₩1~2만</td><td>단일접점 핫슈 연장</td></tr>
       </tbody>
     </table>
   </div>
@@ -148,14 +150,14 @@
   <h2 id="grip">엄브렐러 · 반사판</h2>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>장비</th><th>종류</th><th>상태</th><th>메모</th></tr></thead>
+      <thead><tr><th>장비</th><th>종류</th><th>상태</th><th>대략 시세</th><th>메모</th></tr></thead>
       <tbody>
-        <tr><td>PERI 엄브렐러 실버 XL</td><td>실버 엄브렐러 182cm</td><td><span class="badge own">보유</span></td><td>강한 반사광, 대형</td></tr>
-        <tr><td>PERI 엄브렐러 화이트 XL</td><td>화이트 엄브렐러 182cm</td><td><span class="badge own">보유</span></td><td>부드러운 반사광, 대형</td></tr>
-        <tr><td>PERI 엄브렐러 트랜스루센트 M</td><td>투과형 엄브렐러 M</td><td><span class="badge own">보유</span></td><td>슛스루 확산</td></tr>
-        <tr><td>PERI 엄브렐러 화이트 M</td><td>화이트 엄브렐러 M</td><td><span class="badge own">보유</span></td><td>반사 확산 중형</td></tr>
-        <tr><td>유쾌한 생각 반사판 직사각 24×36 M</td><td>반사판 (화이트/실버)</td><td><span class="badge own">보유</span></td><td>직사각 반사판</td></tr>
-        <tr><td>Round Reflector 5in1</td><td>원형 반사판 5in1</td><td><span class="badge own">보유</span></td><td>화이트/실버/골드/블랙/디퓨전</td></tr>
+        <tr><td>PERI 엄브렐러 실버 XL<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=PERI+umbrella+silver+182cm">🔍</a></td><td>실버 엄브렐러 182cm</td><td><span class="badge own">보유</span></td><td class="price">₩1~3만</td><td>강한 반사광, 대형</td></tr>
+        <tr><td>PERI 엄브렐러 화이트 XL<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=PERI+umbrella+white+182cm">🔍</a></td><td>화이트 엄브렐러 182cm</td><td><span class="badge own">보유</span></td><td class="price">₩1~3만</td><td>부드러운 반사광, 대형</td></tr>
+        <tr><td>PERI 엄브렐러 트랜스루센트 M<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=PERI+umbrella+translucent">🔍</a></td><td>투과형 엄브렐러 M</td><td><span class="badge own">보유</span></td><td class="price">₩1~2만</td><td>슛스루 확산</td></tr>
+        <tr><td>PERI 엄브렐러 화이트 M<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=PERI+umbrella+white">🔍</a></td><td>화이트 엄브렐러 M</td><td><span class="badge own">보유</span></td><td class="price">₩1~2만</td><td>반사 확산 중형</td></tr>
+        <tr><td>유쾌한 생각 반사판 24×36 M<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=photography+reflector+24x36+white+silver">🔍</a></td><td>반사판 (화이트/실버)</td><td><span class="badge own">보유</span></td><td class="price">₩2~4만</td><td>직사각 반사판</td></tr>
+        <tr><td>Round Reflector 5in1<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=5+in+1+round+reflector">🔍</a></td><td>원형 반사판 5in1</td><td><span class="badge own">보유</span></td><td class="price">₩1~3만</td><td>화이트/실버/골드/블랙/디퓨전</td></tr>
       </tbody>
     </table>
   </div>
@@ -163,11 +165,11 @@
   <h2 id="stand">스탠드 · 그립 · 서포트</h2>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>장비</th><th>종류</th><th>상태</th><th>메모</th></tr></thead>
+      <thead><tr><th>장비</th><th>종류</th><th>상태</th><th>대략 시세</th><th>메모</th></tr></thead>
       <tbody>
-        <tr><td>호루스벤누 붐스탠드</td><td>붐 스탠드</td><td><span class="badge own">보유</span></td><td>조명 붐 암 스탠드</td></tr>
-        <tr><td>Aurora ALS 932</td><td>라이트 스탠드</td><td><span class="badge own">보유</span></td><td>조명 스탠드</td></tr>
-        <tr><td>액순 Accsoon PowerCage Pro II</td><td>아이패드 파워 케이지/리그</td><td><span class="badge own">보유</span></td><td>아이패드(11인치)를 모니터로 쓰는 파워 케이지. NP-F 전원 · 아이패드 Air5 거치</td></tr>
+        <tr><td>호루스벤누 붐스탠드<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Horusbennu+boom+stand">🔍</a></td><td>붐 스탠드</td><td><span class="badge own">보유</span></td><td class="price">₩3~6만</td><td>조명 붐 암 스탠드</td></tr>
+        <tr><td>Aurora ALS 932<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Aurora+ALS+932+light+stand">🔍</a></td><td>라이트 스탠드</td><td><span class="badge own">보유</span></td><td class="price">₩3~6만</td><td>조명 스탠드</td></tr>
+        <tr><td>액순 Accsoon PowerCage Pro II<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Accsoon+PowerCage+Pro+II">🔍</a></td><td>아이패드 파워 케이지/리그</td><td><span class="badge own">보유</span></td><td class="price">₩15.9만 <span class="small">신품</span></td><td>아이패드(11인치)를 모니터로 쓰는 파워 케이지. NP-F 전원 · 아이패드 Air5 거치</td></tr>
       </tbody>
     </table>
   </div>
@@ -175,10 +177,10 @@
   <h2 id="power">전원 · 배터리</h2>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>장비</th><th>종류</th><th>수량</th><th>메모</th></tr></thead>
+      <thead><tr><th>장비</th><th>종류</th><th>수량</th><th>대략 시세</th><th>메모</th></tr></thead>
       <tbody>
-        <tr><td>NP-F930 배터리</td><td>L형 배터리</td><td>2개</td><td>LED·모니터·핸디캠 계열 전원</td></tr>
-        <tr><td>보바 VA-121</td><td>보조배터리 (파워뱅크)</td><td>1개</td><td>약 2만원대 휴대용 보조배터리</td></tr>
+        <tr><td>NP-F930 배터리<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=NP-F930+battery">🔍</a></td><td>L형 배터리</td><td>2개</td><td class="price">개당 ₩2~4만</td><td>LED·모니터·핸디캠 전원</td></tr>
+        <tr><td>보바 VA-121<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=VA-121+power+bank">🔍</a></td><td>보조배터리 (파워뱅크)</td><td>1개</td><td class="price">약 ₩2만</td><td>휴대용 보조배터리</td></tr>
       </tbody>
     </table>
   </div>
@@ -186,13 +188,13 @@
   <h2 id="tether">테더 케이블</h2>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>케이블</th><th>규격</th><th>상태</th><th>메모</th></tr></thead>
+      <thead><tr><th>케이블</th><th>규격</th><th>상태</th><th>대략 시세</th><th>메모</th></tr></thead>
       <tbody>
-        <tr><td>코브라 테더 (CobraTether) C-to-C</td><td>10G</td><td><span class="badge own">보유</span></td><td>10Gbps 액티브 테더</td></tr>
-        <tr><td>벨루가 (Beluga) C-to-C 8K</td><td>8K</td><td><span class="badge own">보유</span></td><td>고대역 C-to-C</td></tr>
-        <tr><td>벨루가 C-to-C 4K</td><td>4K</td><td><span class="badge own">보유</span></td><td>C-to-C</td></tr>
-        <tr><td>벨루가 C-to 익스텐션</td><td>연장선</td><td><span class="badge own">보유</span></td><td>테더 연장</td></tr>
-        <tr><td>테더툴스 (Tether Tools) C-to-C</td><td>C-to-C</td><td><span class="badge own">보유</span></td><td>정품 테더 케이블</td></tr>
+        <tr><td>코브라 테더 (CobraTether) C-to-C<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=CobraTether+10G+cable">🔍</a></td><td>10G</td><td><span class="badge own">보유</span></td><td class="price">₩20~23만</td><td>10Gbps 액티브 테더</td></tr>
+        <tr><td>벨루가 (Beluga) C-to-C 8K<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Beluga+8K+usb-c+cable">🔍</a></td><td>8K</td><td><span class="badge own">보유</span></td><td class="used">확인</td><td>고대역 C-to-C</td></tr>
+        <tr><td>벨루가 C-to-C 4K<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Beluga+4K+usb-c+cable">🔍</a></td><td>4K</td><td><span class="badge own">보유</span></td><td class="used">확인</td><td>C-to-C</td></tr>
+        <tr><td>벨루가 C-to 익스텐션<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Beluga+usb-c+extension">🔍</a></td><td>연장선</td><td><span class="badge own">보유</span></td><td class="used">확인</td><td>테더 연장</td></tr>
+        <tr><td>테더툴스 (Tether Tools) C-to-C<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Tether+Tools+usb-c+cable">🔍</a></td><td>C-to-C</td><td><span class="badge own">보유</span></td><td class="price">₩10~27만 <span class="small">모델별</span></td><td>정품 테더 케이블</td></tr>
       </tbody>
     </table>
   </div>
@@ -200,14 +202,14 @@
   <h2 id="pc">컴퓨터 · 태블릿 · 저장 · 주변기기</h2>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>장비</th><th>사양</th><th>상태</th><th>메모</th></tr></thead>
+      <thead><tr><th>장비</th><th>사양</th><th>상태</th><th>대략 시세</th><th>메모</th></tr></thead>
       <tbody>
-        <tr><td>MacBook Pro M4</td><td>RAM 16GB / SSD 512GB</td><td><span class="badge own">보유</span></td><td>메인 편집 워크스테이션</td></tr>
-        <tr><td>iPad Air 5세대</td><td>—</td><td><span class="badge own">보유</span></td><td>서브/현장 확인</td></tr>
-        <tr><td>iPhone 7 Plus</td><td>32GB 실버</td><td><span class="badge own">보유</span></td><td>서브 단말</td></tr>
-        <tr><td>삼성 포터블 SSD T7</td><td>1TB</td><td><span class="badge own">보유</span></td><td>외장 저장</td></tr>
-        <tr><td>샌디스크 포터블 SSD E30</td><td>1TB ×2</td><td><span class="badge own">보유</span></td><td>외장 저장 2개</td></tr>
-        <tr><td>벨킨 7in1 멀티포트</td><td>USB-C 허브</td><td><span class="badge own">보유</span></td><td>포트 확장</td></tr>
+        <tr><td>MacBook Pro M4<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=MacBook+Pro+M4">🔍</a></td><td>RAM 16GB / SSD 512GB</td><td><span class="badge own">보유</span></td><td class="price">₩230~250만 <span class="small">신품</span></td><td>메인 편집 워크스테이션</td></tr>
+        <tr><td>iPad Air 5세대<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=iPad+Air+5th+generation">🔍</a></td><td>—</td><td><span class="badge own">보유</span></td><td class="price">중고 ₩50~70만</td><td>서브/현장 확인</td></tr>
+        <tr><td>iPhone 7 Plus<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=iPhone+7+Plus+silver">🔍</a></td><td>32GB 실버</td><td><span class="badge own">보유</span></td><td class="used">중고 ₩5~10만</td><td>서브 단말</td></tr>
+        <tr><td>삼성 포터블 SSD T7<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Samsung+T7+SSD+1TB">🔍</a></td><td>1TB</td><td><span class="badge own">보유</span></td><td class="price">₩13~16만</td><td>외장 저장</td></tr>
+        <tr><td>샌디스크 포터블 SSD E30<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=SanDisk+E30+SSD+1TB">🔍</a></td><td>1TB ×2</td><td><span class="badge own">보유</span></td><td class="price">개당 ₩12~15만</td><td>외장 저장 2개</td></tr>
+        <tr><td>벨킨 7in1 멀티포트<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Belkin+7+in+1+usb-c+hub">🔍</a></td><td>USB-C 허브</td><td><span class="badge own">보유</span></td><td class="price">₩5~8만</td><td>포트 확장</td></tr>
       </tbody>
     </table>
   </div>
@@ -215,24 +217,24 @@
   <h2 id="repair">수리 · 판매 검토 대상</h2>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>장비</th><th>종류</th><th>상태</th><th>메모</th></tr></thead>
+      <thead><tr><th>장비</th><th>종류</th><th>상태</th><th>대략 시세</th><th>메모</th></tr></thead>
       <tbody>
-        <tr class="section-row"><td colspan="4">고장 — 수리 필요</td></tr>
-        <tr><td>CASIO EXILIM EX-H20G</td><td>디지털 컴팩트</td><td><span class="badge fix">고장수리필요</span></td><td>수리 필요</td></tr>
-        <tr class="section-row"><td colspan="4">작동 불가 — 수리 가능 여부 확인</td></tr>
-        <tr><td>SANYO VPC-C40</td><td>디지털 컴팩트</td><td><span class="badge dead">수리확인</span></td><td>작동 불가, 수리 가능 확인 필요</td></tr>
-        <tr><td>삼성 KENOX ME5</td><td>디지털 컴팩트</td><td><span class="badge dead">수리확인</span></td><td>작동 불가, 수리 가능 확인 필요</td></tr>
-        <tr><td>SONY DSC-H1</td><td>디지털 컴팩트</td><td><span class="badge dead">수리확인</span></td><td>작동 불가, 수리 가능 확인 필요</td></tr>
-        <tr><td>SONY DCR-TRV9</td><td>미니DV 캠코더</td><td><span class="badge dead">수리확인</span></td><td>작동 불가, 수리 가능 확인 필요</td></tr>
-        <tr><td>파나소닉 PV-DV100D</td><td>미니DV 캠코더</td><td><span class="badge dead">수리확인</span></td><td>작동 불가, 수리 가능 확인 필요</td></tr>
-        <tr class="section-row"><td colspan="4">판매 검토 — 보류</td></tr>
-        <tr><td>폴라로이드 CLOSEUP 636</td><td>인스턴트 카메라</td><td><span class="badge sale">판매/보류</span></td><td>판매 여부 보류</td></tr>
-        <tr><td>캐논 오토보이 S2</td><td>필름 컴팩트</td><td><span class="badge sale">판매/보류</span></td><td>판매 여부 보류</td></tr>
+        <tr class="section-row"><td colspan="5">고장 — 수리 필요</td></tr>
+        <tr><td>CASIO EXILIM EX-H20G<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Casio+Exilim+EX-H20G">🔍</a></td><td>디지털 컴팩트</td><td><span class="badge fix">고장수리필요</span></td><td class="used">—</td><td>수리 필요</td></tr>
+        <tr class="section-row"><td colspan="5">작동 불가 — 수리 가능 여부 확인</td></tr>
+        <tr><td>SANYO VPC-C40<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Sanyo+VPC-C40">🔍</a></td><td>디지털 컴팩트</td><td><span class="badge dead">수리확인</span></td><td class="used">—</td><td>작동 불가</td></tr>
+        <tr><td>삼성 KENOX ME5<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Samsung+Kenox+ME5">🔍</a></td><td>디지털 컴팩트</td><td><span class="badge dead">수리확인</span></td><td class="used">—</td><td>작동 불가</td></tr>
+        <tr><td>SONY DSC-H1<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Sony+DSC-H1">🔍</a></td><td>디지털 컴팩트</td><td><span class="badge dead">수리확인</span></td><td class="used">—</td><td>작동 불가</td></tr>
+        <tr><td>SONY DCR-TRV9<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Sony+DCR-TRV9">🔍</a></td><td>미니DV 캠코더</td><td><span class="badge dead">수리확인</span></td><td class="used">—</td><td>작동 불가</td></tr>
+        <tr><td>파나소닉 PV-DV100D<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Panasonic+PV-DV100D">🔍</a></td><td>미니DV 캠코더</td><td><span class="badge dead">수리확인</span></td><td class="used">—</td><td>작동 불가</td></tr>
+        <tr class="section-row"><td colspan="5">판매 검토 — 보류</td></tr>
+        <tr><td>폴라로이드 CLOSEUP 636<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Polaroid+CloseUp+636">🔍</a></td><td>인스턴트 카메라</td><td><span class="badge sale">판매/보류</span></td><td class="used">중고 확인</td><td>판매 여부 보류</td></tr>
+        <tr><td>캐논 오토보이 S2<a class="imglink" target="_blank" rel="noreferrer" href="https://www.google.com/search?tbm=isch&q=Canon+Autoboy+S2">🔍</a></td><td>필름 컴팩트</td><td><span class="badge sale">판매/보류</span></td><td class="used">중고 확인</td><td>판매 여부 보류</td></tr>
       </tbody>
     </table>
   </div>
 
-  <div class="note">추가할 항목이 더 있으면 계속 넣으면 됩니다(삼각대·가방·마이크·조명 소모품 등). 상태가 바뀌면(수리 완료/판매 완료) 배지만 바꿔 관리하세요.</div>
+  <div class="note"><b>시세 정확도</b> — 위 금액은 참고용 대략치입니다. 특히 중고·단종품은 매물마다 크게 달라요. 정확한 현재 시세가 필요하면 Perplexity 의뢰서로 한 번에 뽑아 갱신할 수 있어요(말씀만 주세요). 각 품목 🔍로 실제 매물·이미지도 바로 확인 가능.</div>
 </main>
 <script src="assets/equipment-theme.js"></script>
 </body>
