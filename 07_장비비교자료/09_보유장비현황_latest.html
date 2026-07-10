@@ -40,8 +40,34 @@
     .total-box table{min-width:0}
     .total-box td:last-child,.total-box th:last-child{text-align:right;white-space:nowrap}
     .grand td{background:#efe9dd;font-weight:950;font-size:15px}
+
+    /* ===== 클로버(세이지) 부드러운 톤 · 모바일 우선 ===== */
+    body{background:#f4f7f3;font-size:15px;color:#2c3a30}
+    header{background:linear-gradient(125deg,#d8ecdc 0%,#aed7bd 100%);border-bottom:0;color:#2f5d43;padding:26px 20px 20px;border-radius:0 0 24px 24px;box-shadow:0 6px 18px rgba(90,140,110,.13)}
+    header h1{color:#274a37}header .lead{color:#3f6b52}header .small{color:#5f7f6b}header b{color:#274a37}
+    .top-nav{gap:6px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .top-nav::-webkit-scrollbar{display:none}
+    .top-nav a{flex:0 0 auto;background:#fff;border-color:transparent;color:#3f7a58;box-shadow:0 1px 4px rgba(60,100,75,.12)}
+    .top-nav a:hover{background:#fff;text-decoration:none}
+    .page-jump{position:sticky;top:8px;z-index:20;display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;background:#fff;border:1px solid #dbe9df;border-radius:999px;padding:7px 10px;margin:16px 0;box-shadow:0 3px 12px rgba(90,140,110,.10);-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .page-jump::-webkit-scrollbar{display:none}
+    .page-jump strong{flex:0 0 auto;color:#5e9c76;font-size:12px;align-self:center;padding:0 4px 0 2px}
+    .page-jump a{flex:0 0 auto;background:#f1f6f2;border:1px solid #dbe9df;border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:800;color:#4a7d60;white-space:nowrap}
+    .page-jump a.is-primary,.page-jump a:hover{background:#5e9c76;color:#fff;border-color:#5e9c76;text-decoration:none}
+    h2{color:#3f7a58}
+    .section-row td{background:#eef4ef;color:#3f6b52}
+    .subtotal-row td{background:#f3f8f3;color:#4a7d60}
+    .table-wrap,.total-box{border-radius:14px;box-shadow:0 3px 12px rgba(90,140,110,.08);border-color:#e4ede5}
+    .note{background:#eff5ef;border-color:#d8e8db;border-left-color:#84b598;border-radius:14px}
+    th{background:#eef4ef;color:#4a7d60}
+    tr:hover td{background:#f6faf6}
+    .grand td{background:linear-gradient(120deg,#e4f0e7,#d5ebda);color:#3f6b52}
+    @media(max-width:760px){
+      header{padding:22px 15px 16px;border-radius:0 0 20px 20px}
+      h1{font-size:26px}h2{font-size:20px}
+      th,td{padding:11px 9px;font-size:13.5px}
+    }
   </style>
-  <link rel="stylesheet" href="assets/equipment-theme.css">
 </head>
 <body>
 <header>
@@ -57,6 +83,9 @@
     <a href="05_악세사리_비교표_latest.html">악세사리</a>
     <a href="06_촬영지원장비_비교표_latest.html">촬영지원</a>
     <a href="07_포토프린터_비교표_latest.html">포토프린터</a>
+    <a href="08_일본빈티지렌즈_쇼핑가이드_latest.html">빈티지쇼핑</a>
+    <a href="09_보유장비현황_latest.html">보유현황</a>
+    <a href="10_구매계획리스트_latest.html">구매계획</a>
   </nav>
 </header>
 <main>
@@ -306,6 +335,5 @@
 
   <div class="note"><b>시세 정확도</b> — 위 금액은 웹 검색 + 시장 감으로 잡은 <b>추정 단가</b>입니다(현행품 신품가, 구형은 중고 대략가). 매물마다 달라지니 정밀한 실거래가가 필요하면 각 품목 🔍로 확인하거나, 원하는 품목만 콕 집어 다시 잡아드릴게요.</div>
 </main>
-<script src="assets/equipment-theme.js"></script>
 </body>
 </html>

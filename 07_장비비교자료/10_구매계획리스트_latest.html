@@ -19,7 +19,7 @@
     .top-nav a:hover{background:#eef6f7;text-decoration:none}
     .note{background:#fbf6ea;border:1px solid #e7d9b8;border-left:5px solid var(--warm);border-radius:8px;padding:13px 15px;margin:14px 0}
     .form-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;margin-top:12px}
-    .form-grid{display:grid;grid-template-columns:2fr 1fr 0.8fr 1fr 1fr;gap:8px}
+    .form-grid{display:grid;grid-template-columns:1.6fr 1fr 0.8fr 1fr 1fr 1fr;gap:8px}
     .fld{display:flex;flex-direction:column;gap:3px;min-width:0}
     .fld.full{grid-column:1/-1}
     .fld label{font-size:11.5px;font-weight:800;color:var(--muted)}
@@ -46,13 +46,46 @@
     .sync textarea{width:100%;min-height:90px;font-family:ui-monospace,Consolas,monospace;font-size:12px;border:1px solid var(--line);border-radius:7px;padding:9px;margin-top:8px;background:#fbfcfd}
     .empty{padding:22px;text-align:center;color:#8a939c}
     @media(max-width:760px){main{padding:15px}.form-grid{grid-template-columns:1fr 1fr}.fld.name{grid-column:1/-1}}
+
+    /* ===== 클로버(세이지) 부드러운 톤 · 모바일 우선 ===== */
+    body{background:#f4f7f3;font-size:15px;color:#2c3a30}
+    header{background:linear-gradient(125deg,#d8ecdc 0%,#aed7bd 100%);border-bottom:0;color:#2f5d43;padding:26px 20px 20px;border-radius:0 0 24px 24px;box-shadow:0 6px 18px rgba(90,140,110,.13)}
+    header h1{color:#274a37}header .lead{color:#3f6b52}header .small{color:#5f7f6b}header b{color:#274a37}
+    .top-nav{gap:6px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .top-nav::-webkit-scrollbar{display:none}
+    .top-nav a{flex:0 0 auto;background:#fff;border-color:transparent;color:#3f7a58;box-shadow:0 1px 4px rgba(60,100,75,.12)}
+    .top-nav a:hover{background:#fff;text-decoration:none}
+    .page-jump{position:sticky;top:8px;z-index:20;display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;background:#fff;border:1px solid #dbe9df;border-radius:999px;padding:7px 10px;margin:16px 0;box-shadow:0 3px 12px rgba(90,140,110,.10);-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .page-jump::-webkit-scrollbar{display:none}
+    .page-jump strong{flex:0 0 auto;color:#5e9c76;font-size:12px;align-self:center;padding:0 4px 0 2px}
+    .page-jump a{flex:0 0 auto;background:#f1f6f2;border:1px solid #dbe9df;border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:800;color:#4a7d60;white-space:nowrap}
+    .page-jump a.is-primary,.page-jump a:hover{background:#5e9c76;color:#fff;border-color:#5e9c76;text-decoration:none}
+    h2{color:#3f7a58}
+    .section-row td{background:#eef4ef;color:#3f6b52}
+    .subtotal-row td{background:#f3f8f3;color:#4a7d60}
+    .table-wrap,.form-card,.total-box,.sync{border-radius:14px;box-shadow:0 3px 12px rgba(90,140,110,.08);border-color:#e4ede5}
+    .note{background:#eff5ef;border-color:#d8e8db;border-left-color:#84b598;border-radius:14px}
+    th{background:#eef4ef;color:#4a7d60}
+    tr:hover td{background:#f6faf6}
+    .rank{background:#6aa583}.rank.top{background:#d8a24e}
+    .tag{background:#eef4ef;color:#4a7d60;border-color:#dbe9df}
+    .pbest{color:#3f7a58;font-weight:800}.pavg{color:#4a5a50;font-weight:600}.pmax{color:#b3502f;font-weight:700}
+    button.primary{background:#5e9c76;border-color:#5e9c76}
+    button.primary:hover{background:#4f8a66}
+    .grand td{background:linear-gradient(120deg,#e4f0e7,#d5ebda);color:#3f6b52}
+    @media(max-width:760px){
+      header{padding:22px 15px 16px;border-radius:0 0 20px 20px}
+      h1{font-size:26px}h2{font-size:20px}
+      th,td{padding:11px 9px;font-size:13.5px}
+      button{padding:12px 15px}
+      button.mini{padding:6px 10px;font-size:12.5px}
+    }
   </style>
-  <link rel="stylesheet" href="assets/equipment-theme.css">
 </head>
 <body>
 <header>
   <h1>구매 계획 · 우선순위 플래너</h1>
-  <p class="lead">사고 싶은 장비를 <b>순위</b>로 관리하는 공간. 새로 넣는 항목을 1순위로 지정하면 기존 1순위가 자동으로 2순위로 밀려요. <b>장비명·순위는 직접</b>, <b>새제품가·중고가·판단메모는 클로드가 조사해 채워</b> 실제 구매 결정에 쓰는 곳입니다.</p>
+  <p class="lead">사고 싶은 장비를 <b>순위</b>로 관리하는 공간. 1순위로 넣으면 기존 1순위가 자동으로 밀려요. <b>장비명·순위는 직접</b>, <b>베스트(득템)·평균·상한(이 이상 사면 X)·판단메모는 클로드가 조사해 채워</b> 실제 구매 결정에 쓰는 곳입니다.</p>
   <p class="small">기준일 2026-07-11 · 가격 단위 <b>만원</b> · 입력은 <b>이 브라우저에 저장</b>(localStorage)</p>
   <nav class="top-nav" aria-label="장비 비교자료 분류">
     <a href="00_장비비교_목차_latest.html">목차</a>
@@ -63,6 +96,9 @@
     <a href="05_악세사리_비교표_latest.html">악세사리</a>
     <a href="06_촬영지원장비_비교표_latest.html">촬영지원</a>
     <a href="07_포토프린터_비교표_latest.html">포토프린터</a>
+    <a href="08_일본빈티지렌즈_쇼핑가이드_latest.html">빈티지쇼핑</a>
+    <a href="09_보유장비현황_latest.html">보유현황</a>
+    <a href="10_구매계획리스트_latest.html">구매계획</a>
   </nav>
 </header>
 <main>
@@ -74,7 +110,7 @@
     <a href="#ref">참고</a>
   </nav>
 
-  <div class="note">💡 <b>순위 자동 조정</b> — 항목을 순위 N으로 넣으면 그 자리부터 아래로 한 칸씩 밀립니다. 순위 비우면 맨 뒤. · <b>가격·메모는 클로드가 자동으로</b> — 웹페이지는 스스로 가격을 못 찾으니, <u>장비명(+순위)만 클로드에게 주면</u> 새제품가·중고가·판단메모를 조사해 넣고 <b>모든 기기에 동기화</b>합니다. 직접 넣은 로컬 항목은 이 브라우저에만 저장되고, 클로드가 갱신하면 최신본으로 맞춰져요.</div>
+  <div class="note">💡 <b>가격 밴드 보는 법</b> — <b style="color:#3f7a58">베스트</b>=이 값 이하면 사라(득템) · <b>평균</b>=보통 시세 · <b style="color:#b3502f">상한❌</b>=이 이상이면 사지 마. (단위: 만원) · <b>순위</b>는 1순위로 넣으면 기존이 자동으로 밀림. · <b>가격·밴드·메모는 클로드가 조사해 채움</b> — <u>장비명(+순위)만 주면</u> 넣고 모든 기기에 동기화합니다.</div>
 
   <!-- 입력/수정 -->
   <h2 id="add">➕ 추가 / 수정</h2>
@@ -83,8 +119,9 @@
       <div class="fld name"><label>장비명 *</label><input id="f-name" placeholder="예: Techart LM-EA9 / Helios 44-2"></div>
       <div class="fld"><label>분류</label><select id="f-cat"></select></div>
       <div class="fld"><label>순위(비우면 맨뒤)</label><input id="f-rank" type="number" inputmode="numeric" min="1" placeholder="예: 1"></div>
-      <div class="fld"><label>새제품가(만)</label><input id="f-pn" type="number" inputmode="numeric" min="0" placeholder="예: 40"></div>
-      <div class="fld"><label>중고가(만)</label><input id="f-pu" type="number" inputmode="numeric" min="0" placeholder="예: 5"></div>
+      <div class="fld"><label>베스트(만)</label><input id="f-best" type="number" inputmode="numeric" min="0" placeholder="득템가"></div>
+      <div class="fld"><label>평균(만)</label><input id="f-avg" type="number" inputmode="numeric" min="0" placeholder="시세"></div>
+      <div class="fld"><label>상한❌(만)</label><input id="f-max" type="number" inputmode="numeric" min="0" placeholder="이 이상X"></div>
       <div class="fld full"><label>메모 (판단·득템 기준 등)</label><input id="f-memo" placeholder="예: 중고 5만 이하면 득템 / 지지무게 확인"></div>
     </div>
     <div class="btnrow">
@@ -97,7 +134,7 @@
   <h2 id="list">🏆 구매 우선순위</h2>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>순위</th><th>장비명</th><th>분류</th><th>새제품</th><th>중고</th><th>메모</th><th>관리</th></tr></thead>
+      <thead><tr><th>순위</th><th>장비명</th><th>분류</th><th>베스트</th><th>평균</th><th>상한❌</th><th>메모</th><th>관리</th></tr></thead>
       <tbody id="tbody"></tbody>
     </table>
     <div class="empty" id="empty" style="display:none">아직 항목이 없어요. 위에서 추가해보세요.</div>
@@ -123,24 +160,24 @@
 <script>
 (function(){
   var KEY='maydly-purchase-plan-v1';
-  var VER='2026-07-11d';  // 클로드가 데이터 갱신 시 올림 → 이전 로컬본을 최신으로 교체
+  var VER='2026-07-11e';  // 클로드가 데이터 갱신 시 올림 → 이전 로컬본을 최신으로 교체
   var CATS=['어댑터','렌즈','조명','바디','컴퓨터','액세서리','기타'];
   var items=[], editId=null;
 
   function seed(){
     return [
-      {id:1,name:'Techart 수동→AF 어댑터 (라이카M→소니E)',cat:'어댑터',pn:40,pu:0,memo:'허브·필수. 현재 판매모델·지지무게 확인'},
-      {id:2,name:'니콘 F → 라이카M 변환링',cat:'어댑터',pn:4,pu:0,memo:'보유 니콘 35-70 연결용'},
-      {id:3,name:'M42 → 라이카M 변환링',cat:'어댑터',pn:2,pu:0,memo:'M42 올드렌즈 공용 · 1순위 마운트'},
-      {id:4,name:'Helios 44-2 58mm F2',cat:'렌즈',pn:0,pu:6,memo:'소용돌이 보케 · 가벼워 AF 잘됨'},
-      {id:5,name:'SMC/Super Takumar 55mm F1.8',cat:'렌즈',pn:0,pu:7,memo:'따뜻한 클래식 · 입문 실패없음'},
-      {id:6,name:'Pentacon 50mm F1.8',cat:'렌즈',pn:0,pu:6,memo:'비눗방울 보케'},
-      {id:7,name:'필름 바디 업그레이드 (검토)',cat:'바디',pn:0,pu:0,memo:'보류 — 현재 FM10로 만료필름 가능, 취향 판단'},
-      {id:8,name:'랜턴90 (90cm 랜턴 소프트박스)',cat:'조명',pn:15,pu:10,memo:'전방위 부드러운 확산. Aputure Lantern90 신품 ~15만(US $98~139), 제너릭은 ~7만'},
-      {id:9,name:'300W급 컬러 영상조명 (아마란 300c/360c 검토)',cat:'조명',pn:55,pu:45,memo:'풀컬러(RGBWW) COB, 둘 중 택1 → 아마란 300c(300W, 신품 ~55만/US$399) vs 아마란 Ray 360c(360W 신형, 신품 ~85만). 가성비 대안=Godox SL300IIBi 바이컬러(~49만)/Nanlite FS-300B. 04 조명비교표 참고'},
-      {id:10,name:'맥북프로 M1 Max 32GB 1TB',cat:'컴퓨터',pn:0,pu:180,memo:'단종=중고만. 16" 기준 득템 170↓ / 적정 175~190 / 불가 200↑(만). 배터리90%+·풀박·수리이력 확인(맥북 매물판단). 14"면 시세 약간↓'},
-      {id:11,name:'캐논 PowerShot V1',cat:'바디',pn:109,pu:85,memo:'APS-C 컴팩트 브이로그캠·내장광각·4K. 신품 ~109만(US $899~979), 리퍼/중고 ~85만'},
-      {id:12,name:'DJI 오즈모 포켓 4',cat:'바디',pn:68,pu:58,memo:'1인치 짐벌 포켓캠, 2026.4 출시. 기본 콤보 ~68만, 크리에이터 콤보 ~85만'}
+      {id:1,name:'Techart 수동→AF 어댑터 (라이카M→소니E)',cat:'어댑터',best:35,avg:42,max:50,memo:'허브·필수. 신품 할인가~정가 기준. 현재 판매모델·지지무게 확인'},
+      {id:2,name:'니콘 F → 라이카M 변환링',cat:'어댑터',best:2,avg:3,max:5,memo:'보유 니콘 35-70 연결용. 제너릭이면 충분'},
+      {id:3,name:'M42 → 라이카M 변환링',cat:'어댑터',best:1,avg:2,max:4,memo:'M42 올드렌즈 공용 · 1순위 마운트'},
+      {id:4,name:'Helios 44-2 58mm F2',cat:'렌즈',best:4,avg:6,max:9,memo:'중고. 소용돌이 보케. 상태 좋고 4만↓면 득템'},
+      {id:5,name:'SMC/Super Takumar 55mm F1.8',cat:'렌즈',best:5,avg:7,max:10,memo:'중고. 따뜻한 클래식·입문 실패없음'},
+      {id:6,name:'Pentacon 50mm F1.8',cat:'렌즈',best:3,avg:6,max:8,memo:'중고. 비눗방울 보케. 곰팡이·조리개 기름 확인'},
+      {id:7,name:'필름 바디 업그레이드 (검토)',cat:'바디',best:0,avg:0,max:0,memo:'보류 — 현 FM10로 만료필름 가능. 살 거면 노출보정·감성 이유. 후보 확정 시 밴드 조사'},
+      {id:8,name:'랜턴90 (90cm 랜턴 소프트박스)',cat:'조명',best:8,avg:13,max:18,memo:'Aputure Lantern90 신품 ~15만(US$98~139), 제너릭 ~7만. 상태좋은 중고 8만↓ 득템'},
+      {id:9,name:'300W급 컬러 영상조명 (아마란 300c/360c 검토)',cat:'조명',best:45,avg:60,max:90,memo:'풀컬러 COB 택1 → 아마란 300c(신품~55만/US$399) vs Ray 360c(신품~85만). 300c 45만↓ 득템, 90만↑ 사지말것. 가성비 Godox SL300IIBi 바이컬러 ~49만'},
+      {id:10,name:'맥북프로 M1 Max 32GB 1TB',cat:'컴퓨터',best:170,avg:182,max:200,memo:'단종=중고만. 16"·배터리90%+·풀박 기준(맥북 매물판단). 배터리80%↓·저장512·수리이력이면 더 깎거나 패스'},
+      {id:11,name:'캐논 PowerShot V1',cat:'바디',best:85,avg:100,max:120,memo:'APS-C 브이로그캠·내장광각·4K. 리퍼 85만↓ 득템(US$649), 신품 정가 ~109만, 120만↑ 사지말것'},
+      {id:12,name:'DJI 오즈모 포켓 4',cat:'바디',best:60,avg:68,max:78,memo:'1인치 짐벌 포켓캠(2026.4). 기본콤보 ~68만, 크리에이터콤보 ~85만'}
     ].map(function(it,i){it.rank=i+1;return it;});
   }
 
@@ -188,8 +225,9 @@
           '<button class="mini" data-down="'+it.id+'" title="아래로">▼</button></div></td>'+
         '<td><span class="nm">'+esc(it.name)+'</span><a class="imglink" target="_blank" rel="noreferrer" href="'+imgQ(it.name)+'">🔍</a></td>'+
         '<td><span class="tag">'+esc(it.cat||'기타')+'</span></td>'+
-        '<td class="pn">'+money(it.pn)+'</td>'+
-        '<td class="pu">'+money(it.pu)+'</td>'+
+        '<td class="pbest">'+money(it.best)+'</td>'+
+        '<td class="pavg">'+money(it.avg)+'</td>'+
+        '<td class="pmax">'+money(it.max)+'</td>'+
         '<td>'+esc(it.memo||'')+'</td>'+
         '<td><button class="mini" data-edit="'+it.id+'">수정</button> <button class="mini" data-del="'+it.id+'">삭제</button></td>';
       tb.appendChild(tr);
@@ -200,8 +238,9 @@
     editId=null;
     document.getElementById('f-name').value='';
     document.getElementById('f-rank').value='';
-    document.getElementById('f-pn').value='';
-    document.getElementById('f-pu').value='';
+    document.getElementById('f-best').value='';
+    document.getElementById('f-avg').value='';
+    document.getElementById('f-max').value='';
     document.getElementById('f-memo').value='';
     document.getElementById('btn-save').textContent='항목 추가';
     document.getElementById('btn-cancel').style.display='none';
@@ -212,14 +251,14 @@
     var name=document.getElementById('f-name').value.trim();
     if(!name){ alert('장비명을 입력하세요.'); return; }
     var cat=document.getElementById('f-cat').value;
-    var pn=num('f-pn'), pu=num('f-pu');
+    var best=num('f-best'), avg=num('f-avg'), max=num('f-max');
     var memo=document.getElementById('f-memo').value.trim();
     var rankRaw=document.getElementById('f-rank').value;
     var rank = rankRaw===''? null : Math.max(1, parseInt(rankRaw,10)||1);
     if(editId){
-      var it=find(editId); if(it){ it.name=name; it.cat=cat; it.pn=pn; it.pu=pu; it.memo=memo; if(rank!=null) reRank(editId, rank); }
+      var it=find(editId); if(it){ it.name=name; it.cat=cat; it.best=best; it.avg=avg; it.max=max; it.memo=memo; if(rank!=null) reRank(editId, rank); }
     } else {
-      insertAt({id:nextId(),name:name,cat:cat,pn:pn,pu:pu,memo:memo}, rank);
+      insertAt({id:nextId(),name:name,cat:cat,best:best,avg:avg,max:max,memo:memo}, rank);
     }
     normalize(); save(); render(); clearForm();
   }
@@ -229,8 +268,9 @@
     document.getElementById('f-name').value=it.name;
     document.getElementById('f-cat').value=it.cat||'기타';
     document.getElementById('f-rank').value=it.rank;
-    document.getElementById('f-pn').value=it.pn||'';
-    document.getElementById('f-pu').value=it.pu||'';
+    document.getElementById('f-best').value=it.best||'';
+    document.getElementById('f-avg').value=it.avg||'';
+    document.getElementById('f-max').value=it.max||'';
     document.getElementById('f-memo').value=it.memo||'';
     document.getElementById('btn-save').textContent='수정 저장';
     document.getElementById('btn-cancel').style.display='inline-block';
@@ -255,7 +295,7 @@
   document.getElementById('btn-import').addEventListener('click', function(){
     var io=document.getElementById('io');
     try{ var arr=JSON.parse(io.value); if(!Array.isArray(arr)) throw 0;
-      items=arr.map(function(it,i){return {id:it.id||i+1,name:it.name||'',cat:it.cat||'기타',rank:it.rank||i+1,pn:it.pn||0,pu:it.pu||0,memo:it.memo||''};});
+      items=arr.map(function(it,i){return {id:it.id||i+1,name:it.name||'',cat:it.cat||'기타',rank:it.rank||i+1,best:it.best||0,avg:it.avg||0,max:it.max||0,memo:it.memo||''};});
       normalize(); save(); render(); document.getElementById('sync-msg').textContent='불러오기 완료.';
     }catch(e){ document.getElementById('sync-msg').textContent='JSON 형식이 올바르지 않아요.'; }
   });
@@ -267,6 +307,5 @@
   fillCats(); load(); render();
 })();
 </script>
-<script src="assets/equipment-theme.js"></script>
 </body>
 </html>
