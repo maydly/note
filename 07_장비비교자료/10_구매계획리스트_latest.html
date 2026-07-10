@@ -76,6 +76,17 @@
     .mv .mvbtn:active{background:#d9ede0}
     .tag{background:#eef4ef;color:#4a7d60;border-color:#dbe9df}
     .pbest{color:#3f7a58;font-weight:800}.pavg{color:#4a5a50;font-weight:600}.pmax{color:#b3502f;font-weight:700}
+    .acts{display:flex;gap:5px;flex-wrap:wrap}
+    button.mini.buy{background:#e7f4ec;color:#2e7d52;border-color:#bfe0cc}
+    button.mini.buy:hover{background:#d6ecdf}
+    button.mini.del{color:#a8432f;border-color:#e6cdc4}
+    button.mini.del:hover{background:#faeee9}
+    .costrow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px dashed #e4ede5;font-size:14px}
+    .costrow:last-of-type{border-bottom:0}
+    .costrow .cl{color:#4a5a50;font-weight:700}
+    .costrow b{font-size:16px}
+    .catline{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;font-size:12px;color:#5f7f6b;align-items:center}
+    .cchip{background:#eef4ef;border:1px solid #dbe9df;border-radius:999px;padding:2px 9px;font-weight:700;color:#4a7d60}
     button.primary{background:#5e9c76;border-color:#5e9c76}
     button.primary:hover{background:#4f8a66}
     .grand td{background:linear-gradient(120deg,#e4f0e7,#d5ebda);color:#3f6b52}
@@ -117,6 +128,9 @@
   </nav>
 
   <div class="note">💡 <b>가격 밴드 보는 법</b> — <b style="color:#3f7a58">베스트</b>=이 값 이하면 사라(득템) · <b>평균</b>=보통 시세 · <b style="color:#b3502f">상한❌</b>=이 이상이면 사지 마. (단위: 만원) · <b>순위</b>는 1순위로 넣으면 기존이 자동으로 밀림. · <b>가격·밴드·메모는 클로드가 조사해 채움</b> — <u>장비명(+순위)만 주면</u> 넣고 모든 기기에 동기화합니다.</div>
+
+  <!-- 총 비용 -->
+  <div id="cost-box" class="total-box" style="padding:14px 16px"></div>
 
   <!-- 입력/수정 -->
   <h2 id="add">➕ 추가 / 수정</h2>
@@ -250,6 +264,18 @@
   function move(id, dir){ var it=find(id); if(!it) return; reRank(id, it.rank+dir); save(); render(); }
   function find(id){ for(var i=0;i<items.length;i++){if(items[i].id===id)return items[i];} return null; }
   function del(id){ if(!confirm('삭제할까요?')) return; var it=find(id); if(it&&it._k!=null&&deleted.indexOf(it._k)<0) deleted.push(it._k); items=items.filter(function(x){return x.id!==id;}); normalize(); save(); render(); }
+  function buy(id){
+    var it=find(id); if(!it) return;
+    if(!confirm('"'+it.name+'" 구매완료 처리할까요?\n계획에서 빠지고 보유 장비 현황으로 넘어가요.')) return;
+    var owned=[]; try{owned=JSON.parse(localStorage.getItem('maydly-owned-fromplan')||'[]');}catch(e){owned=[];}
+    var d=new Date(), ds=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);
+    owned.push({name:it.name,cat:it.cat||'기타',memo:it.memo||'',price:(it.avg||it.best||0),ts:ds});
+    try{localStorage.setItem('maydly-owned-fromplan',JSON.stringify(owned));}catch(e){}
+    if(it._k!=null && deleted.indexOf(it._k)<0) deleted.push(it._k);
+    items=items.filter(function(x){return x.id!==id;});
+    normalize(); save(); render();
+    alert('구매완료! 보유 장비 현황 페이지에서 확인돼요.');
+  }
 
   function fillCats(){
     var sel=document.getElementById('f-cat'); sel.innerHTML='';
@@ -274,9 +300,23 @@
         '<td class="pavg">'+money(it.avg)+'</td>'+
         '<td class="pmax">'+money(it.max)+'</td>'+
         '<td>'+esc(it.memo||'')+'</td>'+
-        '<td><button class="mini" data-edit="'+it.id+'">수정</button> <button class="mini" data-del="'+it.id+'">삭제</button></td>';
+        '<td><div class="acts"><button class="mini buy" data-buy="'+it.id+'">구매완료</button><button class="mini" data-edit="'+it.id+'">수정</button><button class="mini del" data-del="'+it.id+'">삭제</button></div></td>';
       tb.appendChild(tr);
     });
+    renderCost();
+  }
+  function fmt(n){ n=Math.round(n*10)/10; return (''+n).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+  function renderCost(){
+    var sB=0,sA=0,sM=0,byCat={};
+    items.forEach(function(it){ sB+=(+it.best||0); sA+=(+it.avg||0); sM+=(+it.max||0); var c=it.cat||'기타'; byCat[c]=(byCat[c]||0)+(+it.avg||0); });
+    var cats=Object.keys(byCat).filter(function(c){return byCat[c]>0;}).sort(function(a,b){return byCat[b]-byCat[a];});
+    var chips=cats.map(function(c){return '<span class="cchip">'+c+' <b>'+fmt(byCat[c])+'</b></span>';}).join('');
+    document.getElementById('cost-box').innerHTML=
+      '<div style="font-weight:900;color:#3f7a58;margin-bottom:8px">💰 총 비용 <span style="font-weight:600;color:#66717d;font-size:13px">('+items.length+'개 · 단위 만원)</span></div>'+
+      '<div class="costrow"><span class="cl">🟢 다 베스트가로 사면</span><b class="pbest">'+fmt(sB)+'만</b></div>'+
+      '<div class="costrow"><span class="cl">평균가 합계</span><b>'+fmt(sA)+'만</b></div>'+
+      '<div class="costrow"><span class="cl">🔴 다 상한가면</span><b class="pmax">'+fmt(sM)+'만</b></div>'+
+      (chips?'<div class="catline">분류별(평균): '+chips+'</div>':'');
   }
 
   function clearForm(){
@@ -329,6 +369,7 @@
     var t=e.target; var id;
     if((id=t.getAttribute('data-up'))!=null) move(+id,-1);
     else if((id=t.getAttribute('data-down'))!=null) move(+id,+1);
+    else if((id=t.getAttribute('data-buy'))!=null) buy(+id);
     else if((id=t.getAttribute('data-edit'))!=null) onEdit(+id);
     else if((id=t.getAttribute('data-del'))!=null) del(+id);
   });

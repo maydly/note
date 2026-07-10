@@ -62,6 +62,9 @@
     th{background:#eef4ef;color:#4a7d60}
     tr:hover td{background:#f6faf6}
     .grand td{background:linear-gradient(120deg,#e4f0e7,#d5ebda);color:#3f6b52}
+    #owned-fromplan h2{color:#2e7d52}
+    .mini-undo{border:1px solid #dbe9df;background:#fff;border-radius:6px;padding:3px 8px;font-size:12px;font-weight:800;color:#4a7d60;cursor:pointer}
+    .mini-undo:hover{background:#eef5ef}
     @media(max-width:760px){
       header{padding:22px 15px 16px;border-radius:0 0 20px 20px}
       h1{font-size:26px}h2{font-size:20px}
@@ -130,6 +133,8 @@
     </div>
   </div>
   <p class="small">※ <b>고장·작동불가 6종</b>(EX-H20G / VPC-C40 / KENOX ME5 / DSC-H1 / DCR-TRV9 / PV-DV100D)은 자산가치 0으로 보아 총합에서 제외(수리비 별도). 시세는 추정치라 정밀 값이 필요하면 각 품목 🔍로 실매물 확인하거나 요청주세요.</p>
+
+  <section id="owned-fromplan"></section>
 
   <h2 id="cam">카메라 바디</h2>
   <div class="table-wrap">
@@ -335,5 +340,28 @@
 
   <div class="note"><b>시세 정확도</b> — 위 금액은 웹 검색 + 시장 감으로 잡은 <b>추정 단가</b>입니다(현행품 신품가, 구형은 중고 대략가). 매물마다 달라지니 정밀한 실거래가가 필요하면 각 품목 🔍로 확인하거나, 원하는 품목만 콕 집어 다시 잡아드릴게요.</div>
 </main>
+<script>
+(function(){
+  var el=document.getElementById('owned-fromplan'); if(!el) return;
+  var KEY='maydly-owned-fromplan';
+  function esc(s){return (''+(s||'')).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function get(){ try{return JSON.parse(localStorage.getItem(KEY)||'[]');}catch(e){return [];} }
+  function render(){
+    var owned=get();
+    if(!owned.length){ el.innerHTML=''; return; }
+    var rows=owned.map(function(o,i){
+      return '<tr><td>'+esc(o.name)+'</td><td><span class="badge own">'+esc(o.cat||'')+'</span></td><td class="price">'+(o.price? o.price+'만':'—')+'</td><td class="small">'+esc(o.ts||'')+'</td><td>'+esc(o.memo||'')+'</td><td><button class="mini-undo" data-i="'+i+'">되돌리기</button></td></tr>';
+    }).join('');
+    el.innerHTML='<h2 id="bought">🛒 구매완료 (플래너에서 이동) <span class="cnt">'+owned.length+'</span></h2>'+
+      '<div class="table-wrap"><table><thead><tr><th>장비</th><th>분류</th><th>구매가</th><th>날짜</th><th>메모</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+      '<p class="small">이 브라우저에서 플래너 "구매완료"로 넘어온 항목이에요. 영구 보유 목록에 넣으려면 클로드에게 알려주세요.</p>';
+  }
+  el.addEventListener('click',function(e){
+    var i=e.target.getAttribute('data-i'); if(i==null) return;
+    var owned=get(); owned.splice(+i,1); localStorage.setItem(KEY,JSON.stringify(owned)); render();
+  });
+  render();
+})();
+</script>
 </body>
 </html>
