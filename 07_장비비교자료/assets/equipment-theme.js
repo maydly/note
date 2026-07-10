@@ -50,3 +50,16 @@
     if(file===active) link.classList.add("is-active");
   });
 })();
+
+/* maydly 허브 복귀 버튼 (자동 주입) */
+(function(){
+  function add(){
+    if(document.getElementById('maydlyHubBtn'))return;
+    var a=document.createElement('a');
+    a.id='maydlyHubBtn';a.href='https://maydly-hub.netlify.app/';a.textContent='← 허브';
+    a.setAttribute('aria-label','maydly 허브로');
+    a.style.cssText="position:fixed;left:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:2147483647;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.93);color:#2e2a26;text-decoration:none;font-family:-apple-system,'Pretendard','Apple SD Gothic Neo',sans-serif;font-size:13px;font-weight:700;line-height:1;padding:10px 15px;border-radius:22px;box-shadow:0 3px 14px rgba(0,0,0,.2);border:1px solid rgba(0,0,0,.06)";
+    (document.body||document.documentElement).appendChild(a);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',add);else add();
+})();
