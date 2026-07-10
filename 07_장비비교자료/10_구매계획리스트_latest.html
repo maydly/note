@@ -3,41 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>구매 계획 리스트</title>
+  <title>구매 계획 (우선순위 플래너)</title>
   <style>
     :root{--ink:#20242a;--muted:#66717d;--line:#d9e0e6;--paper:#f8f6f1;--panel:#fff;--accent:#176b87;--warm:#8d5b12;--good:#2d7558;--bad:#a8432f}
     *{box-sizing:border-box}
     body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Arial,sans-serif;line-height:1.55}
     a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
     header{background:#efe9dd;border-bottom:1px solid var(--line);padding:30px 26px 22px}
-    main{max-width:1080px;margin:0 auto;padding:24px}
+    main{max-width:1120px;margin:0 auto;padding:24px}
     h1{margin:0 0 8px;font-size:clamp(28px,4vw,42px);line-height:1.08}
     h2{font-size:22px;margin:30px 0 10px}
-    p{margin:0 0 10px}.lead{max-width:900px;color:#3f4a54}.small{font-size:13px;color:var(--muted)}
+    p{margin:0 0 10px}.lead{max-width:960px;color:#3f4a54}.small{font-size:13px;color:var(--muted)}
     .top-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
     .top-nav a{display:inline-flex;align-items:center;border:1px solid #cdd7dd;border-radius:999px;background:#fff;padding:8px 12px;font-weight:900;color:var(--accent)}
     .top-nav a:hover{background:#eef6f7;text-decoration:none}
-    .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:#fff;margin-top:10px}
-    table{width:100%;border-collapse:collapse;min-width:720px}
-    th,td{padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;font-size:13.5px}
-    th{background:#f0f4f6;white-space:nowrap}
-    td:first-child{font-weight:800;color:#1f3038}
-    tr:last-child td{border-bottom:0}
-    .section-row td{background:#eef6f7;font-weight:950}
-    .badge{display:inline-block;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:900;white-space:nowrap;border:1px solid var(--line);background:#fff}
-    .must{background:#f4e6e1;color:var(--bad);border-color:#e6cdc4}
-    .plan{background:#eef3f5;color:#3f4a54}
-    .hold{background:#f5efe3;color:var(--warm);border-color:#e5d8bf}
-    .chk{background:#efe9f2;color:#6a4a86;border-color:#ddd0e6}
     .note{background:#fbf6ea;border:1px solid #e7d9b8;border-left:5px solid var(--warm);border-radius:8px;padding:13px 15px;margin:14px 0}
+    .form-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;margin-top:12px}
+    .form-grid{display:grid;grid-template-columns:2fr 1fr 0.8fr 1fr 1fr;gap:8px}
+    .fld{display:flex;flex-direction:column;gap:3px;min-width:0}
+    .fld.full{grid-column:1/-1}
+    .fld label{font-size:11.5px;font-weight:800;color:var(--muted)}
+    .fld input,.fld select{font-size:14px;padding:9px 10px;border:1px solid var(--line);border-radius:7px;background:#fbfcfd;color:var(--ink);width:100%}
+    .btnrow{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+    button{font:inherit;cursor:pointer;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink);padding:9px 14px;font-weight:800}
+    button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+    button.ghost{background:#fff}
+    button.mini{padding:3px 8px;font-size:12px;border-radius:6px}
+    .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:#fff;margin-top:12px}
+    table{width:100%;border-collapse:collapse;min-width:760px}
+    th,td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle;text-align:left;font-size:13.5px}
+    th{background:#f0f4f6;white-space:nowrap}
+    tr:last-child td{border-bottom:0}
+    .rank{display:inline-flex;justify-content:center;align-items:center;width:26px;height:26px;border-radius:999px;background:#176b87;color:#fff;font-weight:900;font-size:13px}
+    .rank.top{background:#b5480f}
+    .nm{font-weight:800;color:#1f3038}
+    .tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:1px 8px;font-size:11px;font-weight:800;background:#eef3f5;color:#3f4a54}
+    .pn{font-weight:700}.pu{font-weight:700;color:var(--good)}
+    .rk-ctrl{display:flex;gap:3px;align-items:center}
+    .imglink{display:inline-flex;align-items:center;border:1px solid #cdd7dd;border-radius:6px;background:#fff;padding:1px 6px;font-size:11px;font-weight:800;color:var(--accent);margin-left:6px}
+    .imglink:hover{background:#eef6f7;text-decoration:none}
+    .sync{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:12px}
+    .sync textarea{width:100%;min-height:90px;font-family:ui-monospace,Consolas,monospace;font-size:12px;border:1px solid var(--line);border-radius:7px;padding:9px;margin-top:8px;background:#fbfcfd}
+    .empty{padding:22px;text-align:center;color:#8a939c}
+    @media(max-width:760px){main{padding:15px}.form-grid{grid-template-columns:1fr 1fr}.fld.name{grid-column:1/-1}}
   </style>
   <link rel="stylesheet" href="assets/equipment-theme.css">
 </head>
 <body>
 <header>
-  <h1>구매 계획 리스트</h1>
-  <p class="lead">앞으로 살 계획이 있는 것들. 우선순위: <span class="badge must">필수</span> · <span class="badge plan">계획</span> · <span class="badge hold">보류</span>, 가격 확인 필요는 <span class="badge chk">확인필요</span>.</p>
-  <p class="small">기준일 2026-07-09 · 방향: 현행 렌즈 대신 브랜드 무관 수동 올드렌즈 수집(일본 구매) + Techart 허브</p>
+  <h1>구매 계획 · 우선순위 플래너</h1>
+  <p class="lead">사고 싶은 장비를 <b>순위</b>로 관리하는 공간. 새로 넣는 항목을 1순위로 지정하면 기존 1순위가 자동으로 2순위로 밀려요. 새제품·중고 가격과 판단 메모까지 넣어 실제 구매 결정에 쓰세요.</p>
+  <p class="small">기준일 2026-07-11 · 가격 단위 <b>만원</b> · 입력은 <b>이 브라우저에 저장</b>(localStorage)</p>
   <nav class="top-nav" aria-label="장비 비교자료 분류">
     <a href="00_장비비교_목차_latest.html">목차</a>
     <a href="01_카메라_비교표_latest.html">카메라</a>
@@ -52,56 +68,199 @@
 <main>
   <nav class="page-jump" aria-label="구매 계획 바로가기">
     <strong>바로가기</strong>
-    <a class="is-primary" href="#adapter">어댑터·변환링</a>
-    <a href="#lens">맛도리 렌즈</a>
-    <a href="#hold">보류·검토</a>
+    <a class="is-primary" href="#add">추가/수정</a>
+    <a href="#list">우선순위</a>
+    <a href="#sync">백업·동기화</a>
+    <a href="#ref">참고</a>
   </nav>
 
-  <div class="note">이 계획의 뼈대는 <b>Techart(수동→AF) 허브</b>입니다. 어댑터 하나면 앞으로 모을 모든 수동 올드렌즈에 재활용됩니다. 렌즈 후보 상세는 <a href="08_일본빈티지렌즈_쇼핑가이드_latest.html">일본 빈티지 렌즈 쇼핑 가이드</a>와 연동. 세부 스펙·시세는 확인 후 갱신하세요.</div>
+  <div class="note">💡 <b>순위 자동 조정</b> — 항목을 순위 N으로 넣으면 그 자리부터 아래로 한 칸씩 밀립니다. 순위를 비우고 추가하면 맨 뒤에 붙어요. · <b>동기화</b> — 이 입력은 이 기기 브라우저에만 저장돼요. 폰·다른 PC에서도 보려면 아래 <a href="#sync">백업·동기화</a>에서 JSON을 복사해 클로드에게 주면 사이트에 고정 저장해 드려요.</div>
 
-  <h2 id="adapter">1. 어댑터·변환링 (시스템 뼈대)</h2>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>품목</th><th>용도</th><th>우선순위</th><th>대략 가격</th><th>메모</th></tr></thead>
-      <tbody>
-        <tr><td>Techart 수동→AF 어댑터 (라이카M→소니E)</td><td>모든 수동렌즈를 A7M4에서 AF화하는 허브</td><td><span class="badge must">필수</span></td><td><span class="badge chk">확인필요</span></td><td>현재 판매 모델·지지무게 한계·실구매가 확인. 무게 한계 넘는 대형 렌즈는 수동만</td></tr>
-        <tr><td>니콘 F → 라이카M 변환링</td><td>보유 니콘 35-70을 Techart에 연결</td><td><span class="badge must">필수</span></td><td>₩2~4만</td><td>제너릭으로 충분. AI/AI-S 조리개링 렌즈용</td></tr>
-        <tr><td>M42 → 라이카M 변환링</td><td>향후 M42 올드렌즈용(공용 규격)</td><td><span class="badge plan">계획</span></td><td>₩1.5~3만</td><td>M42 렌즈 1순위라 미리 확보 유용. 링 1개로 M42 렌즈 전부 공용</td></tr>
-        <tr><td>기타 마운트 변환링(FD/MD/PK/OM 등)</td><td>사오는 렌즈 마운트에 맞춰 추가</td><td><span class="badge plan">계획</span></td><td>각 ₩2~4만</td><td>마운트 확정되는 대로 하나씩</td></tr>
-      </tbody>
-    </table>
+  <!-- 입력/수정 -->
+  <h2 id="add">➕ 추가 / 수정</h2>
+  <div class="form-card">
+    <div class="form-grid">
+      <div class="fld name"><label>장비명 *</label><input id="f-name" placeholder="예: Techart LM-EA9 / Helios 44-2"></div>
+      <div class="fld"><label>분류</label><select id="f-cat"></select></div>
+      <div class="fld"><label>순위(비우면 맨뒤)</label><input id="f-rank" type="number" inputmode="numeric" min="1" placeholder="예: 1"></div>
+      <div class="fld"><label>새제품가(만)</label><input id="f-pn" type="number" inputmode="numeric" min="0" placeholder="예: 40"></div>
+      <div class="fld"><label>중고가(만)</label><input id="f-pu" type="number" inputmode="numeric" min="0" placeholder="예: 5"></div>
+      <div class="fld full"><label>메모 (판단·득템 기준 등)</label><input id="f-memo" placeholder="예: 중고 5만 이하면 득템 / 지지무게 확인"></div>
+    </div>
+    <div class="btnrow">
+      <button id="btn-save" class="primary">항목 추가</button>
+      <button id="btn-cancel" class="ghost" style="display:none">수정 취소</button>
+    </div>
   </div>
 
-  <h2 id="lens">2. 맛도리 올드렌즈 (일본 구매 후보)</h2>
-  <p class="small">상세·실물/작례는 <a href="08_일본빈티지렌즈_쇼핑가이드_latest.html">쇼핑 가이드</a> 참고. 여기엔 우선순위만 관리.</p>
+  <!-- 리스트 -->
+  <h2 id="list">🏆 구매 우선순위</h2>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>렌즈</th><th>마운트</th><th>맛/용도</th><th>우선순위</th><th>대략가</th></tr></thead>
-      <tbody>
-        <tr class="section-row"><td colspan="5">1순위 (가볍고 개성 확실 · AF 잘됨)</td></tr>
-        <tr><td>Helios 44-2 58mm F2</td><td>M42</td><td>소용돌이 보케</td><td><span class="badge plan">계획</span></td><td>₩3~8만</td></tr>
-        <tr><td>SMC/Super Takumar 55mm F1.8</td><td>M42</td><td>따뜻한 클래식·입문</td><td><span class="badge plan">계획</span></td><td>₩4~9만</td></tr>
-        <tr><td>Pentacon 50mm F1.8</td><td>M42</td><td>비눗방울 보케</td><td><span class="badge plan">계획</span></td><td>₩3~8만</td></tr>
-        <tr class="section-row"><td colspan="5">관심 (여유되면)</td></tr>
-        <tr><td>Super Takumar 50mm F1.4</td><td>M42</td><td>몽환 글로우·노란 온기</td><td><span class="badge hold">보류</span></td><td>₩8~15만</td></tr>
-        <tr><td>Jupiter-9 85mm F2</td><td>M42/M39</td><td>크리미 인물</td><td><span class="badge hold">보류</span></td><td>₩8~18만</td></tr>
-        <tr><td>— 현장에서 추가 —</td><td></td><td>일본 매장에서 상태 좋은 것 발견 시</td><td><span class="badge hold">보류</span></td><td></td></tr>
-      </tbody>
+      <thead><tr><th>순위</th><th>장비명</th><th>분류</th><th>새제품</th><th>중고</th><th>메모</th><th>관리</th></tr></thead>
+      <tbody id="tbody"></tbody>
     </table>
+    <div class="empty" id="empty" style="display:none">아직 항목이 없어요. 위에서 추가해보세요.</div>
   </div>
 
-  <h2 id="hold">3. 보류·검토 항목</h2>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>품목</th><th>상태</th><th>판단</th></tr></thead>
-      <tbody>
-        <tr><td>필름 바디 업그레이드</td><td><span class="badge hold">보류</span></td><td>만료필름 노출업은 <b>현재 바디 수동 모드로 이미 가능</b> → "필수" 아님. 노출보정 다이얼·감성 등 취향 이유로만 검토</td></tr>
-      </tbody>
-    </table>
+  <!-- 백업/동기화 -->
+  <h2 id="sync">💾 백업 · 동기화</h2>
+  <div class="sync">
+    <div class="btnrow" style="margin-top:0">
+      <button id="btn-export" class="ghost">고정저장용 JSON 복사</button>
+      <button id="btn-import" class="ghost">JSON 불러오기(붙여넣기)</button>
+      <button id="btn-reset" class="ghost">기본값으로 초기화</button>
+    </div>
+    <textarea id="io" placeholder="여기에 JSON이 표시돼요. 이 내용을 복사해 클로드에게 주면 사이트에 고정 저장(모든 기기 동기화)해 드립니다. / 반대로 JSON을 붙여넣고 '불러오기'를 누르면 복원돼요."></textarea>
+    <p class="small" id="sync-msg"></p>
   </div>
 
-  <div class="note"><b>확인 필요</b> — ① Techart 현재 모델·지지무게·실구매가 ② 니콘F→M / M42→M 링 실시세·무한대 초점 ③ 개별 올드렌즈 일본 중고 실시세. 확인 후 가격 칸 갱신.</div>
+  <!-- 참고 -->
+  <h2 id="ref">📎 참고</h2>
+  <div class="note">이 계획의 뼈대는 <b>Techart(수동→AF) 허브</b> — 어댑터 하나면 모을 모든 수동 올드렌즈에 재활용. 렌즈 후보 상세·시세는 <a href="08_일본빈티지렌즈_쇼핑가이드_latest.html">일본 빈티지 렌즈 쇼핑 가이드</a>, 보유 장비는 <a href="09_보유장비현황_latest.html">보유 장비 현황</a> 참고. 가격은 대략치이니 실구매 전 실매물 확인 권장.</div>
 </main>
+
+<script>
+(function(){
+  var KEY='maydly-purchase-plan-v1';
+  var CATS=['어댑터','렌즈','조명','바디','액세서리','기타'];
+  var items=[], editId=null;
+
+  function seed(){
+    return [
+      {id:1,name:'Techart 수동→AF 어댑터 (라이카M→소니E)',cat:'어댑터',pn:40,pu:0,memo:'허브·필수. 현재 판매모델·지지무게 확인'},
+      {id:2,name:'니콘 F → 라이카M 변환링',cat:'어댑터',pn:4,pu:0,memo:'보유 니콘 35-70 연결용'},
+      {id:3,name:'M42 → 라이카M 변환링',cat:'어댑터',pn:2,pu:0,memo:'M42 올드렌즈 공용 · 1순위 마운트'},
+      {id:4,name:'Helios 44-2 58mm F2',cat:'렌즈',pn:0,pu:6,memo:'소용돌이 보케 · 가벼워 AF 잘됨'},
+      {id:5,name:'SMC/Super Takumar 55mm F1.8',cat:'렌즈',pn:0,pu:7,memo:'따뜻한 클래식 · 입문 실패없음'},
+      {id:6,name:'Pentacon 50mm F1.8',cat:'렌즈',pn:0,pu:6,memo:'비눗방울 보케'},
+      {id:7,name:'필름 바디 업그레이드 (검토)',cat:'바디',pn:0,pu:0,memo:'보류 — 현재 FM10로 만료필름 가능, 취향 판단'}
+    ].map(function(it,i){it.rank=i+1;return it;});
+  }
+
+  function load(){
+    try{var s=localStorage.getItem(KEY); items = s?JSON.parse(s):seed();}catch(e){items=seed();}
+    normalize();
+  }
+  function save(){ try{localStorage.setItem(KEY, JSON.stringify(items));}catch(e){} }
+  function renumber(){ items.forEach(function(it,i){it.rank=i+1;}); }
+  function normalize(){ items.sort(function(a,b){return a.rank-b.rank;}); renumber(); }
+  function nextId(){ return items.reduce(function(m,it){return Math.max(m,it.id);},0)+1; }
+
+  function insertAt(item, rank){
+    items.sort(function(a,b){return a.rank-b.rank;});
+    var idx = (rank==null) ? items.length : Math.max(0, Math.min(items.length, rank-1));
+    items.splice(idx,0,item);
+    renumber();
+  }
+  function reRank(id, rank){
+    var it=null; for(var i=0;i<items.length;i++){if(items[i].id===id){it=items[i];break;}}
+    if(!it) return;
+    items = items.filter(function(x){return x.id!==id;});
+    insertAt(it, rank);
+  }
+  function move(id, dir){ var it=find(id); if(!it) return; reRank(id, it.rank+dir); save(); render(); }
+  function find(id){ for(var i=0;i<items.length;i++){if(items[i].id===id)return items[i];} return null; }
+  function del(id){ if(!confirm('삭제할까요?')) return; items=items.filter(function(x){return x.id!==id;}); normalize(); save(); render(); }
+
+  function fillCats(){
+    var sel=document.getElementById('f-cat'); sel.innerHTML='';
+    CATS.forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
+  }
+  function money(v){ return (v&&v>0) ? (v+'만') : '—'; }
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function imgQ(name){ return 'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(name); }
+
+  function render(){
+    var tb=document.getElementById('tbody'); tb.innerHTML='';
+    document.getElementById('empty').style.display = items.length? 'none':'block';
+    items.slice().sort(function(a,b){return a.rank-b.rank;}).forEach(function(it){
+      var tr=document.createElement('tr');
+      tr.innerHTML =
+        '<td><div class="rk-ctrl"><span class="rank'+(it.rank===1?' top':'')+'">'+it.rank+'</span>'+
+          '<button class="mini" data-up="'+it.id+'" title="위로">▲</button>'+
+          '<button class="mini" data-down="'+it.id+'" title="아래로">▼</button></div></td>'+
+        '<td><span class="nm">'+esc(it.name)+'</span><a class="imglink" target="_blank" rel="noreferrer" href="'+imgQ(it.name)+'">🔍</a></td>'+
+        '<td><span class="tag">'+esc(it.cat||'기타')+'</span></td>'+
+        '<td class="pn">'+money(it.pn)+'</td>'+
+        '<td class="pu">'+money(it.pu)+'</td>'+
+        '<td>'+esc(it.memo||'')+'</td>'+
+        '<td><button class="mini" data-edit="'+it.id+'">수정</button> <button class="mini" data-del="'+it.id+'">삭제</button></td>';
+      tb.appendChild(tr);
+    });
+  }
+
+  function clearForm(){
+    editId=null;
+    document.getElementById('f-name').value='';
+    document.getElementById('f-rank').value='';
+    document.getElementById('f-pn').value='';
+    document.getElementById('f-pu').value='';
+    document.getElementById('f-memo').value='';
+    document.getElementById('btn-save').textContent='항목 추가';
+    document.getElementById('btn-cancel').style.display='none';
+  }
+  function num(id){ var v=parseInt(document.getElementById(id).value,10); return isNaN(v)?0:v; }
+
+  function onSave(){
+    var name=document.getElementById('f-name').value.trim();
+    if(!name){ alert('장비명을 입력하세요.'); return; }
+    var cat=document.getElementById('f-cat').value;
+    var pn=num('f-pn'), pu=num('f-pu');
+    var memo=document.getElementById('f-memo').value.trim();
+    var rankRaw=document.getElementById('f-rank').value;
+    var rank = rankRaw===''? null : Math.max(1, parseInt(rankRaw,10)||1);
+    if(editId){
+      var it=find(editId); if(it){ it.name=name; it.cat=cat; it.pn=pn; it.pu=pu; it.memo=memo; if(rank!=null) reRank(editId, rank); }
+    } else {
+      insertAt({id:nextId(),name:name,cat:cat,pn:pn,pu:pu,memo:memo}, rank);
+    }
+    normalize(); save(); render(); clearForm();
+  }
+  function onEdit(id){
+    var it=find(id); if(!it) return;
+    editId=id;
+    document.getElementById('f-name').value=it.name;
+    document.getElementById('f-cat').value=it.cat||'기타';
+    document.getElementById('f-rank').value=it.rank;
+    document.getElementById('f-pn').value=it.pn||'';
+    document.getElementById('f-pu').value=it.pu||'';
+    document.getElementById('f-memo').value=it.memo||'';
+    document.getElementById('btn-save').textContent='수정 저장';
+    document.getElementById('btn-cancel').style.display='inline-block';
+    document.getElementById('f-name').focus();
+    window.scrollTo({top:document.getElementById('add').offsetTop-20,behavior:'smooth'});
+  }
+
+  document.getElementById('btn-save').addEventListener('click', onSave);
+  document.getElementById('btn-cancel').addEventListener('click', clearForm);
+  document.getElementById('tbody').addEventListener('click', function(e){
+    var t=e.target; var id;
+    if((id=t.getAttribute('data-up'))!=null) move(+id,-1);
+    else if((id=t.getAttribute('data-down'))!=null) move(+id,+1);
+    else if((id=t.getAttribute('data-edit'))!=null) onEdit(+id);
+    else if((id=t.getAttribute('data-del'))!=null) del(+id);
+  });
+  document.getElementById('btn-export').addEventListener('click', function(){
+    var io=document.getElementById('io'); io.value=JSON.stringify(items,null,2); io.select();
+    try{document.execCommand('copy');}catch(e){}
+    document.getElementById('sync-msg').textContent='JSON을 복사했어요. 이 내용을 클로드에게 주면 사이트에 고정 저장(동기화)해 드립니다.';
+  });
+  document.getElementById('btn-import').addEventListener('click', function(){
+    var io=document.getElementById('io');
+    try{ var arr=JSON.parse(io.value); if(!Array.isArray(arr)) throw 0;
+      items=arr.map(function(it,i){return {id:it.id||i+1,name:it.name||'',cat:it.cat||'기타',rank:it.rank||i+1,pn:it.pn||0,pu:it.pu||0,memo:it.memo||''};});
+      normalize(); save(); render(); document.getElementById('sync-msg').textContent='불러오기 완료.';
+    }catch(e){ document.getElementById('sync-msg').textContent='JSON 형식이 올바르지 않아요.'; }
+  });
+  document.getElementById('btn-reset').addEventListener('click', function(){
+    if(!confirm('기본값으로 초기화할까요? (지금 입력분은 사라져요)')) return;
+    items=seed(); save(); render(); document.getElementById('sync-msg').textContent='기본값으로 초기화했어요.';
+  });
+
+  fillCats(); load(); render();
+})();
+</script>
 <script src="assets/equipment-theme.js"></script>
 </body>
 </html>
