@@ -68,6 +68,12 @@
     th{background:#eef4ef;color:#4a7d60}
     tr:hover td{background:#f6faf6}
     .rank{background:#6aa583}.rank.top{background:#d8a24e}
+    .rk-ctrl{gap:6px}
+    .mv{display:inline-flex;flex-direction:column;border:1px solid #cfe0d4;border-radius:9px;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(90,140,110,.12)}
+    .mv .mvbtn{border:0;border-radius:0;background:#fff;color:#5e9c76;padding:3px 9px;font-size:9px;line-height:1.25;font-weight:900;cursor:pointer;box-shadow:none;transition:background .12s,color .12s}
+    .mv .mvbtn.up{border-bottom:1px solid #e4ede5}
+    .mv .mvbtn:hover{background:#eef5ef;color:#3f7a58}
+    .mv .mvbtn:active{background:#d9ede0}
     .tag{background:#eef4ef;color:#4a7d60;border-color:#dbe9df}
     .pbest{color:#3f7a58;font-weight:800}.pavg{color:#4a5a50;font-weight:600}.pmax{color:#b3502f;font-weight:700}
     button.primary{background:#5e9c76;border-color:#5e9c76}
@@ -260,8 +266,8 @@
       var tr=document.createElement('tr');
       tr.innerHTML =
         '<td><div class="rk-ctrl"><span class="rank'+(it.rank===1?' top':'')+'">'+it.rank+'</span>'+
-          '<button class="mini" data-up="'+it.id+'" title="위로">▲</button>'+
-          '<button class="mini" data-down="'+it.id+'" title="아래로">▼</button></div></td>'+
+          '<span class="mv"><button class="mvbtn up" data-up="'+it.id+'" aria-label="위로">▲</button>'+
+          '<button class="mvbtn dn" data-down="'+it.id+'" aria-label="아래로">▼</button></span></div></td>'+
         '<td><span class="nm">'+esc(it.name)+'</span><a class="imglink" target="_blank" rel="noreferrer" href="'+imgQ(it.name)+'">🔍</a></td>'+
         '<td><span class="tag">'+esc(it.cat||'기타')+'</span></td>'+
         '<td class="pbest">'+money(it.best)+'</td>'+
