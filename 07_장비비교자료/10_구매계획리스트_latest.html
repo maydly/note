@@ -162,7 +162,7 @@
   var KEY='maydly-purchase-plan-v1';
   var VER='2026-07-11f';  // 클로드가 데이터 갱신 시 올림 → 이전 로컬본을 최신으로 교체
   var CATS=['어댑터','렌즈','조명','바디','컴퓨터','액세서리','기타'];
-  var items=[], editId=null;
+  var items=[], editId=null, deleted=[];
 
   function seed(){
     return [
@@ -182,11 +182,30 @@
     ].map(function(it,i){it.rank=i+1;return it;});
   }
 
+  // 병합 로드: 사용자의 순위(order)는 유지, 클로드가 추가한 새 항목만 뒤에 붙이고, 가격/메모는 최신으로 갱신
   function load(){
-    try{var o=JSON.parse(localStorage.getItem(KEY)||'null'); items=(o&&o.v===VER&&Array.isArray(o.items))?o.items:seed();}catch(e){items=seed();}
-    normalize();
+    var stored=[], del=[];
+    try{var o=JSON.parse(localStorage.getItem(KEY)||'null'); if(o){ if(Array.isArray(o.items)) stored=o.items; if(Array.isArray(o.del)) del=o.del; }}catch(e){}
+    deleted=del;
+    var seedItems=seed(), seedByKey={};
+    seedItems.forEach(function(s){ seedByKey[s.id]=s; });
+    if(!stored.length){
+      items=seedItems.map(function(s){ return {_k:s.id,id:s.id,name:s.name,cat:s.cat,best:s.best,avg:s.avg,max:s.max,memo:s.memo,rank:s.rank}; });
+      normalize(); save(); return;
+    }
+    var maxId=0; stored.forEach(function(it){ maxId=Math.max(maxId,it.id||0); });
+    var used={};
+    items = stored.map(function(it){
+      var k=(it._k!=null)?it._k:it.id, s=seedByKey[k];
+      if(s){ used[k]=1; return {_k:k,id:it.id,name:s.name,cat:s.cat,best:s.best,avg:s.avg,max:s.max,memo:s.memo,rank:it.rank}; }
+      return {_k:(it._k!=null?it._k:null),id:it.id,name:it.name||'',cat:it.cat||'기타',best:it.best||0,avg:it.avg||0,max:it.max||0,memo:it.memo||'',rank:it.rank};
+    });
+    seedItems.forEach(function(s){
+      if(!used[s.id] && deleted.indexOf(s.id)<0){ maxId++; items.push({_k:s.id,id:maxId,name:s.name,cat:s.cat,best:s.best,avg:s.avg,max:s.max,memo:s.memo,rank:9999}); }
+    });
+    normalize(); save();
   }
-  function save(){ try{localStorage.setItem(KEY, JSON.stringify({v:VER,items:items}));}catch(e){} }
+  function save(){ try{localStorage.setItem(KEY, JSON.stringify({v:VER,items:items,del:deleted}));}catch(e){} }
   function renumber(){ items.forEach(function(it,i){it.rank=i+1;}); }
   function normalize(){ items.sort(function(a,b){return a.rank-b.rank;}); renumber(); }
   function nextId(){ return items.reduce(function(m,it){return Math.max(m,it.id);},0)+1; }
@@ -205,7 +224,7 @@
   }
   function move(id, dir){ var it=find(id); if(!it) return; reRank(id, it.rank+dir); save(); render(); }
   function find(id){ for(var i=0;i<items.length;i++){if(items[i].id===id)return items[i];} return null; }
-  function del(id){ if(!confirm('삭제할까요?')) return; items=items.filter(function(x){return x.id!==id;}); normalize(); save(); render(); }
+  function del(id){ if(!confirm('삭제할까요?')) return; var it=find(id); if(it&&it._k!=null&&deleted.indexOf(it._k)<0) deleted.push(it._k); items=items.filter(function(x){return x.id!==id;}); normalize(); save(); render(); }
 
   function fillCats(){
     var sel=document.getElementById('f-cat'); sel.innerHTML='';
