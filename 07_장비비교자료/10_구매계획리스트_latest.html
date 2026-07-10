@@ -52,7 +52,7 @@
 <body>
 <header>
   <h1>구매 계획 · 우선순위 플래너</h1>
-  <p class="lead">사고 싶은 장비를 <b>순위</b>로 관리하는 공간. 새로 넣는 항목을 1순위로 지정하면 기존 1순위가 자동으로 2순위로 밀려요. 새제품·중고 가격과 판단 메모까지 넣어 실제 구매 결정에 쓰세요.</p>
+  <p class="lead">사고 싶은 장비를 <b>순위</b>로 관리하는 공간. 새로 넣는 항목을 1순위로 지정하면 기존 1순위가 자동으로 2순위로 밀려요. <b>장비명·순위는 직접</b>, <b>새제품가·중고가·판단메모는 클로드가 조사해 채워</b> 실제 구매 결정에 쓰는 곳입니다.</p>
   <p class="small">기준일 2026-07-11 · 가격 단위 <b>만원</b> · 입력은 <b>이 브라우저에 저장</b>(localStorage)</p>
   <nav class="top-nav" aria-label="장비 비교자료 분류">
     <a href="00_장비비교_목차_latest.html">목차</a>
@@ -74,7 +74,7 @@
     <a href="#ref">참고</a>
   </nav>
 
-  <div class="note">💡 <b>순위 자동 조정</b> — 항목을 순위 N으로 넣으면 그 자리부터 아래로 한 칸씩 밀립니다. 순위를 비우고 추가하면 맨 뒤에 붙어요. · <b>동기화</b> — 이 입력은 이 기기 브라우저에만 저장돼요. 폰·다른 PC에서도 보려면 아래 <a href="#sync">백업·동기화</a>에서 JSON을 복사해 클로드에게 주면 사이트에 고정 저장해 드려요.</div>
+  <div class="note">💡 <b>순위 자동 조정</b> — 항목을 순위 N으로 넣으면 그 자리부터 아래로 한 칸씩 밀립니다. 순위 비우면 맨 뒤. · <b>가격·메모는 클로드가 자동으로</b> — 웹페이지는 스스로 가격을 못 찾으니, <u>장비명(+순위)만 클로드에게 주면</u> 새제품가·중고가·판단메모를 조사해 넣고 <b>모든 기기에 동기화</b>합니다. 직접 넣은 로컬 항목은 이 브라우저에만 저장되고, 클로드가 갱신하면 최신본으로 맞춰져요.</div>
 
   <!-- 입력/수정 -->
   <h2 id="add">➕ 추가 / 수정</h2>
@@ -123,6 +123,7 @@
 <script>
 (function(){
   var KEY='maydly-purchase-plan-v1';
+  var VER='2026-07-11b';  // 클로드가 데이터 갱신 시 올림 → 이전 로컬본을 최신으로 교체
   var CATS=['어댑터','렌즈','조명','바디','액세서리','기타'];
   var items=[], editId=null;
 
@@ -139,10 +140,10 @@
   }
 
   function load(){
-    try{var s=localStorage.getItem(KEY); items = s?JSON.parse(s):seed();}catch(e){items=seed();}
+    try{var o=JSON.parse(localStorage.getItem(KEY)||'null'); items=(o&&o.v===VER&&Array.isArray(o.items))?o.items:seed();}catch(e){items=seed();}
     normalize();
   }
-  function save(){ try{localStorage.setItem(KEY, JSON.stringify(items));}catch(e){} }
+  function save(){ try{localStorage.setItem(KEY, JSON.stringify({v:VER,items:items}));}catch(e){} }
   function renumber(){ items.forEach(function(it,i){it.rank=i+1;}); }
   function normalize(){ items.sort(function(a,b){return a.rank-b.rank;}); renumber(); }
   function nextId(){ return items.reduce(function(m,it){return Math.max(m,it.id);},0)+1; }
