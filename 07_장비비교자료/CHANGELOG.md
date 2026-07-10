@@ -1,5 +1,9 @@
 # 장비 비교자료 변경기록
 
+## 2026-07-10 (2차)
+
+- `09_보유장비현황_latest.html` 빠진 장비 7종 추가 — YUS AUTO TELE CONVERTER 2X(Contax/Yashica 마운트, 렌즈·컨버터), Godox XPro V2 S 트리거(조명), SmallRig 3667C A7M4 케이지(스탠드·그립·케이지 ₩96,800), NP2 Air 듀얼 충전기·아이무비 60W PD 충전기(전원·충전기), 모락 시뮬러S 노트북 거치대(컴퓨터 ₩21,900), Turbo Fan X3-A(신규 '기타 액세서리' 섹션). 군별 소계·총합 재계산 → 총 64종 약 ₩11,336,700. (YUS 2X는 대화 첫 질문의 그 컨버터 = C/Y 마운트로 확인됨)
+
 ## 2026-07-10
 
 - 상단 내비게이션에 **가이드(빈티지쇼핑)·보유현황·구매계획(08/09/10)** 노출. `assets/equipment-theme.js`가 모든 페이지 `.top-nav`에 세 링크를 자동 주입(중복 방지), `assets/equipment-theme.css` `.top-nav`를 8칸 고정 그리드 → `flex-wrap` 유연 배치로 변경(폭 1240px, 모바일은 nowrap 가로스크롤 유지, `.top-nav a` flex:0 0 auto). 페이지별 HTML 수정 없이 공통 파일 2개로 전체 반영.
