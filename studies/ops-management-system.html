@@ -15,11 +15,13 @@
       <div class="brand"><span class="brand-mark">←</span> <a href="../index.html" style="text-decoration:none">Study Archive</a></div>
       <div class="nav-links">
         <a href="#intro">개요</a>
+        <a href="#story">이런 상황</a>
         <a href="#truth">데이터 원본</a>
-        <a href="#import">초기 임포트</a>
+        <a href="#import">초기 옮기기</a>
         <a href="#model">데이터 모델</a>
         <a href="#rule">고정 규칙</a>
         <a href="#grow">범위 확장</a>
+        <a href="#deep">📚 심화</a>
         <a href="#check">점검</a>
         <a href="#glossary">용어</a>
       </div>
@@ -29,13 +31,12 @@
   <header>
     <div class="hero-copy">
       <p class="eyebrow">Development · maydly</p>
-      <h1>스프레드시트를<br>넘어 "시스템"으로</h1>
-      <p class="lead">장비·프로젝트·정산을 엑셀로 관리하다 한계가 오면, 앱(웹 시스템)으로 옮기게 된다. 이때 가장 중요한 결정 — "무엇이 진짜 원본인가". 관리 시스템을 만들며 배운 데이터 원본·초기 임포트·데이터 모델·고정 규칙을 정리했다.</p>
+      <h1>엑셀로 관리하다<br>"앱"으로 옮길 때</h1>
+      <p class="lead">장비·재고·프로젝트를 엑셀(스프레드시트)로 관리하다 한계가 오면, 웹 앱(시스템)으로 옮기게 된다. 이 노트는 코딩 기술이 아니라, 그때 <strong>가장 먼저 정해야 하는 것들</strong>에 대한 이야기다. 개념을 하나씩 예시로 풀었으니 시스템을 안 만들어 본 사람도 읽힌다.</p>
       <div class="meta-row">
         <span class="pill">관리 시스템</span>
-        <span class="pill">데이터 모델</span>
-        <span class="pill">source of truth</span>
-        <span class="pill">설계 결정</span>
+        <span class="pill">데이터 설계</span>
+        <span class="pill">입문 친화</span>
       </div>
     </div>
   </header>
@@ -44,101 +45,180 @@
     <section id="intro">
       <div class="section-head">
         <h2>이 노트를 읽고 나면</h2>
-        <p class="section-note">"어디를 고치면 되는가"가 늘 한 곳이게.</p>
+        <p class="section-note">"기능부터 만들면 안 되는" 이유를 안다.</p>
       </div>
       <ul class="checklist">
-        <li><span class="check">✓</span><span>앱과 스프레드시트 중 "무엇이 원본인지" 정하는 게 왜 먼저인지 안다.</span></li>
-        <li><span class="check">✓</span><span>초기 데이터를 옮길 때 지켜야 할 원칙을 안다.</span></li>
-        <li><span class="check">✓</span><span>표(마스터) 구조와 정렬을 고정하는 이유를 안다.</span></li>
-        <li><span class="check">✓</span><span>작은 도구가 운영 시스템으로 커질 때의 방향을 안다.</span></li>
+        <li><span class="check">✓</span><span>엑셀로 관리하던 걸 앱으로 옮길 때, 왜 "기능"보다 "데이터"를 먼저 정하는지 안다.</span></li>
+        <li><span class="check">✓</span><span>"진짜 원본이 무엇인가"를 정하는 게 왜 첫 단추인지 안다.</span></li>
+        <li><span class="check">✓</span><span>데이터를 처음 옮길 때 흔히 나는 사고와 막는 법을 안다.</span></li>
+        <li><span class="check">✓</span><span>표의 항목·정렬을 고정해야 하는 이유를 안다.</span></li>
       </ul>
-      <div class="callout teal" style="margin-top:14px;">
-        <strong>한 줄 요약</strong> — 시스템 설계의 첫 결정은 기능이 아니라 <strong>"진짜 본체(source of truth)가 무엇인가"</strong>다. 여기가 흔들리면 데이터가 두 곳에서 어긋난다.
+    </section>
+
+    <section id="story">
+      <div class="section-head">
+        <h2>먼저, 이런 상황을 떠올려 보자</h2>
+        <p class="section-note">추상적인 말보다 장면 하나가 빠르다.</p>
       </div>
+      <div class="callout teal">
+        <strong>예시</strong> — 촬영 장비 수백 개를 <strong>엑셀 한 장</strong>으로 관리한다고 하자. 렌즈가 어디 있는지, 지금 어느 프로젝트에 나가 있는지, 언제 돌아오는지… 개수가 늘수록 엑셀에서 찾고 고치는 게 점점 버겁다. 그래서 "<strong>웹 앱</strong>(브라우저로 여는 나만의 관리 프로그램)으로 옮기자"가 된다.
+      </div>
+      <p style="color:var(--muted);margin-top:12px;">바로 이때 부딪히는 첫 질문들이 이 노트의 내용이다. 화면을 예쁘게 만드는 것보다 <strong>이 결정들이 먼저</strong>다. 여기가 어긋나면 나중에 데이터가 꼬여 앱을 다시 만들어야 한다.</p>
     </section>
 
     <section id="truth">
       <div class="section-head">
-        <h2>01 — 앱이 데이터 원본</h2>
-        <p class="section-note">스프레드시트는 시작점일 뿐.</p>
+        <h2>01 — "진짜 원본"을 하나로 정한다</h2>
+        <p class="section-note">전문 용어로는 source of truth(진실의 근원).</p>
       </div>
-      <p style="color:var(--muted)">엑셀로 관리하던 것을 앱으로 옮길 때, "앱과 시트 둘 다 고친다"가 되면 반드시 어긋난다. 그래서 <strong>앱을 원본(진짜 본체)으로 정하고, 스프레드시트는 "초기 데이터"로만</strong> 쓴다. 옮긴 뒤의 실사·편집은 전부 앱에서 한다.</p>
+      <p style="color:var(--muted)"><strong>source of truth</strong> = "진짜 본체가 되는 원본 하나"라는 뜻이다. 여기저기 복사본 말고, <strong>이게 진짜다</strong> 하는 딱 하나.</p>
+      <p style="color:var(--muted);margin-top:10px;">위 예시로 보자. 앱으로 옮긴 뒤에도 습관대로 <strong>엑셀에서도 고치고 앱에서도 고치면</strong>, 금방 둘이 달라진다. 엑셀엔 렌즈가 3개인데 앱엔 2개인 식으로. 그러면 어느 게 맞는지 아무도 모른다. 그래서 규칙을 정한다 — <strong>"이제부터 앱이 원본이다. 엑셀은 안 건드린다."</strong></p>
       <table class="compare" style="margin-top:14px;">
-        <tr><th></th><th>앱(시스템)</th><th>스프레드시트</th></tr>
-        <tr><td>역할</td><td>원본 · 이후 모든 수정</td><td>초기 데이터 공급만</td></tr>
-        <tr><td>수정</td><td>여기서만</td><td>이관 후엔 안 건드림</td></tr>
+        <tr><th></th><th>앱(시스템)</th><th>엑셀(스프레드시트)</th></tr>
+        <tr><td>역할</td><td>진짜 원본 · 이제부터 모든 수정</td><td>맨 처음 데이터만 넘겨주고 은퇴</td></tr>
+        <tr><td>옮긴 뒤</td><td>여기서만 고친다</td><td>다시는 안 건드린다</td></tr>
       </table>
+      <div class="callout" style="margin-top:14px;">
+        핵심 — 시스템을 만들 때 <strong>맨 처음 정할 건 기능이 아니라 "어디가 진짜냐"</strong>다. 이게 흔들리면 나머지가 다 흔들린다.
+      </div>
     </section>
 
     <section id="import">
       <div class="section-head">
-        <h2>02 — 초기 임포트</h2>
-        <p class="section-note">시작이 어긋나면 전부 어긋난다.</p>
+        <h2>02 — 처음 옮길 때가 제일 중요하다</h2>
+        <p class="section-note">"임포트" = 기존 데이터를 새 앱에 처음 넣는 것.</p>
       </div>
-      <p style="color:var(--muted)">앱으로 처음 데이터를 넣을 때(임포트), 그 결과가 <strong>원본 마스터와 완전히 일치</strong>해야 한다. 개수·항목이 조금이라도 다르면, 그 위에 쌓는 모든 게 틀어진다. "대충 옮기고 나중에 맞추자"가 가장 위험하다.</p>
+      <p style="color:var(--muted)">엑셀에 있던 장비 목록을 앱으로 처음 <strong>옮겨 넣는 작업을 임포트(import)</strong>라 한다. 이 결과가 <strong>원래 엑셀과 개수·내용이 정확히 똑같아야</strong> 한다. 예를 들어 엑셀엔 320개인데 앱엔 317개가 들어갔다면, 빠진 3개 위에 앞으로 쌓는 모든 게 틀어진다.</p>
       <div class="callout gold" style="margin-top:14px;">
-        임포트 직후 반드시 <strong>대조 검증</strong> — 원본 마스터와 앱의 데이터가 항목·개수까지 같은지 확인하고 나서야 다음으로 간다.
+        <strong>"대충 옮기고 나중에 맞추자"가 가장 위험하다.</strong> 옮긴 직후 반드시 원본과 하나씩 대조해서 "개수·항목 다 같다"를 확인하고 나서야 다음으로 넘어간다.
       </div>
     </section>
 
     <section id="model">
       <div class="section-head">
-        <h2>03 — 데이터 모델</h2>
-        <p class="section-note">무엇을 어떻게 담을지 먼저 정한다.</p>
+        <h2>03 — 무엇을 담을지 먼저 (데이터 모델)</h2>
+        <p class="section-note">"데이터 모델" = 각 항목을 어떤 칸으로 담을지 정한 뼈대.</p>
       </div>
-      <p style="color:var(--muted)">기능보다 먼저 "무엇을 담나"를 정한다. 예를 들어 장비 관리라면 <strong>분류·브랜드·품목·실보유·위치</strong> 같은 핵심 항목(컬럼)을 정하고, 프로젝트라면 일정(출고~반납)·이름 규칙을 정한다. 이 뼈대가 정해져야 화면·기능이 흔들리지 않는다.</p>
+      <p style="color:var(--muted)"><strong>데이터 모델</strong>이란 어렵게 들리지만, 쉽게는 <strong>"엑셀 표의 열(칸)을 무엇으로 할지 정하는 것"</strong>이다. 장비 하나를 담으려면 어떤 정보가 필요할까? 이걸 먼저 정해야 화면도 기능도 설 수 있다.</p>
       <div class="grid-2" style="margin-top:14px;">
-        <div class="card"><span class="tag blue">장비(예)</span><h3>마스터 항목</h3><p>분류 · 브랜드 · 품목 · 실보유 · 위치 — 핵심 컬럼을 정해 모든 화면에서 같은 순서로.</p></div>
-        <div class="card"><span class="tag teal">프로젝트(예)</span><h3>일정 규칙</h3><p>출고~반납을 일정으로. 이름 앞 6자리(YYMMDD)를 날짜 폴백으로 삼는 식의 규칙을 정한다.</p></div>
+        <div class="card"><span class="tag blue">장비 예시</span><h3>담을 칸(항목)</h3><p>분류 · 브랜드 · 품목 · 실제 보유수 · 위치 — 장비 하나를 이 다섯 칸으로 표현한다. 이게 "장비 데이터 모델".</p></div>
+        <div class="card"><span class="tag teal">프로젝트 예시</span><h3>규칙도 데이터의 일부</h3><p>"프로젝트 기간 = 장비 나간 날~돌아온 날", "이름 앞 6자리(예: 260711)를 날짜로 읽는다" 같은 규칙도 미리 정한다.</p></div>
+      </div>
+      <div class="callout" style="margin-top:14px;">
+        순서가 중요하다 — <strong>화면(버튼·색)보다 "무엇을 담나"가 먼저.</strong> 뼈대가 정해져야 그 위에 화면을 얹어도 안 흔들린다.
       </div>
     </section>
 
     <section id="rule">
       <div class="section-head">
-        <h2>04 — 고정 규칙</h2>
-        <p class="section-note">한번 정하면 모든 탭에서 같게.</p>
+        <h2>04 — 한번 정하면 모든 화면에서 똑같이</h2>
+        <p class="section-note">칸 순서·정렬 같은 건 고정한다.</p>
       </div>
-      <p style="color:var(--muted)">표의 <strong>컬럼 순서</strong>, 목록의 <strong>정렬 기준</strong> 같은 건 한번 정하면 모든 화면에서 동일하게 고정한다. 예: "프로젝트 목록은 항상 최신순(날짜 내림차순)", "마스터 표 컬럼 순서는 모든 탭 동일". 화면마다 다르면 사용자가 매번 헷갈린다.</p>
+      <p style="color:var(--muted)">표의 <strong>칸 순서</strong>(분류→브랜드→품목…)나 목록의 <strong>정렬 기준</strong>(예: 프로젝트는 항상 최신순)은 한번 정하면 <strong>모든 화면에서 똑같이</strong> 둔다. 어떤 탭에선 이 순서, 다른 탭에선 저 순서면 쓰는 사람이 매번 헷갈린다. 일관성이 곧 편함이다.</p>
       <div class="callout teal" style="margin-top:14px;">
-        이런 <strong>설계 결정은 기록해 둔다</strong> — "왜 이렇게 정했는지"를 남겨야, 나중에 바꿀 때 근거를 알고 바꾼다. (설계 결정 = 변경 시 사용자 확인 대상)
+        이런 <strong>결정은 메모로 남긴다</strong> — "프로젝트를 왜 최신순으로 했는지"를 적어두면, 나중에 바꿀 때 근거를 알고 바꾼다. (파급이 큰 결정은 바꾸기 전에 확인)
       </div>
     </section>
 
     <section id="grow">
       <div class="section-head">
-        <h2>05 — 작은 도구가 시스템으로</h2>
-        <p class="section-note">확장은 자연스럽게, 원본 원칙은 그대로.</p>
+        <h2>05 — 작은 도구가 시스템으로 커진다</h2>
+        <p class="section-note">뿌리는 그대로, 가지만 늘린다.</p>
       </div>
-      <p style="color:var(--muted)">"장비 관리 웹앱" 하나로 시작해도, 쓰다 보면 정산·생애주기·비용 흐름까지 붙어 <strong>운영 시스템 전체</strong>로 커진다. 이때도 첫 원칙(앱이 원본, 데이터 모델 고정)을 지키면 커져도 무너지지 않는다. 모듈을 더할 뿐, 뿌리는 같다.</p>
+      <p style="color:var(--muted)">"장비 목록 앱" 하나로 시작해도, 쓰다 보면 "이 장비 지금 얼마짜리지(정산)", "언제 샀고 언제 바꿀까(생애주기)"까지 붙어 어느새 <strong>운영 전체를 굴리는 시스템</strong>이 된다. 이때도 앞의 원칙(앱이 원본 · 데이터 모델 고정)만 지키면, 커져도 안 무너진다. <strong>기능(가지)은 더해도, 뿌리는 안 바꾼다.</strong></p>
+    </section>
+
+    <!-- 교육 모듈 (탭) -->
+    <section id="deep">
+      <div class="section-head">
+        <h2>📚 더 깊이 — 강의용 상세</h2>
+        <p class="section-note">위가 요약이라면, 여기는 자세히 배우는 곳. 탭을 눌러 펼쳐 보세요.</p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab-labels">
+          <button class="tab-label is-active" type="button">개념 깊이</button>
+          <button class="tab-label" type="button">예시로 따라가기</button>
+          <button class="tab-label" type="button">흔한 실수 5</button>
+          <button class="tab-label" type="button">직접 해보기</button>
+        </div>
+        <div class="tab-panels">
+          <!-- 탭1: 개념 깊이 -->
+          <div class="tab-panel is-active">
+            <h4>왜 "원본 하나"와 "데이터 모델"이 시스템의 뿌리인가</h4>
+            <p>집을 지을 때 인테리어(화면·버튼)보다 <strong>기초와 골조</strong>가 먼저인 것과 같다. 시스템에서 기초·골조에 해당하는 게 두 가지다 — ①진짜 원본이 어디냐(source of truth), ②데이터를 어떤 뼈대로 담느냐(데이터 모델).</p>
+            <p>이 둘을 대충 정하고 화면부터 만들면, 나중에 "여기 숫자가 왜 안 맞지?"가 반복된다. 원인은 늘 뿌리에 있다 — 원본이 두 곳이라 어긋났거나, 담는 칸이 부실해 정보가 새거나. <strong>화면은 언제든 고칠 수 있지만, 뿌리는 갈아엎어야 하므로</strong> 처음에 시간을 들여 정한다.</p>
+            <p>좋은 소식은, 이 두 결정은 <strong>코딩 실력과 무관</strong>하다는 것이다. "어디가 진짜인가", "무엇을 담아야 충분한가"는 그 일을 아는 사람(=현장을 아는 명진)이 가장 잘 정한다. 기술은 그다음이다.</p>
+          </div>
+
+          <!-- 탭2: 예시로 따라가기 -->
+          <div class="tab-panel">
+            <h4>장비 관리 앱을 만든다면 — 결정의 순서</h4>
+            <ul class="bullets">
+              <li><strong>1) 원본 정하기.</strong> "오늘부터 앱이 진짜다. 엑셀은 오늘 데이터만 넘겨주고 은퇴." → 규칙을 문서에 한 줄 적는다.</li>
+              <li><strong>2) 담을 칸 정하기.</strong> 장비 하나에 꼭 필요한 정보를 적어본다: 분류(카메라/렌즈/조명…) · 브랜드 · 품목명 · 실제 보유 수 · 지금 위치. → 이 다섯 칸이 "장비 데이터 모델".</li>
+              <li><strong>3) 규칙 정하기.</strong> "프로젝트는 최신순으로 보인다", "장비가 나간 기간 = 출고~반납". → 정렬·기간 규칙을 미리 못 박는다.</li>
+              <li><strong>4) 옮기고 대조.</strong> 엑셀 320개 → 앱 임포트 → 앱도 320개 맞는지 센다. 안 맞으면 여기서 멈춘다.</li>
+              <li><strong>5) 이제 화면.</strong> 뼈대가 섰으니, 그 위에 목록·검색·수정 화면을 얹는다.</li>
+            </ul>
+            <p>보다시피 화면(5번)은 맨 마지막이다. 앞의 네 결정이 없으면 5번이 모래 위에 선다.</p>
+          </div>
+
+          <!-- 탭3: 흔한 실수 -->
+          <div class="tab-panel">
+            <h4>이런 데서 자주 무너진다</h4>
+            <ul class="bullets">
+              <li><strong>① 앱·엑셀 동시 수정.</strong> "급하니까 엑셀에서 잠깐 고칠게"가 시작이다. 둘이 달라지는 순간 신뢰가 깨진다. → 원본은 앱 하나로.</li>
+              <li><strong>② 임포트 대충.</strong> "일단 다 넣고 나중에 확인"하면, 빠진 데이터를 영영 못 찾는다. → 옮긴 직후 개수·항목 대조.</li>
+              <li><strong>③ 칸을 나중에 늘리려다 꼬임.</strong> 처음에 "위치"를 안 넣었다가 나중에 넣으면, 기존 수백 개를 다시 채워야 한다. → 핵심 칸은 처음에.</li>
+              <li><strong>④ 화면마다 다른 순서.</strong> 이 탭은 최신순, 저 탭은 가나다순 → 쓰는 사람이 헷갈린다. → 정렬 고정.</li>
+              <li><strong>⑤ 결정을 기록 안 함.</strong> "왜 최신순이더라?"를 잊고 누가 바꿔버린다. → 결정은 메모로 남긴다.</li>
+            </ul>
+          </div>
+
+          <!-- 탭4: 직접 해보기 -->
+          <div class="tab-panel">
+            <h4>당신의 데이터로 해보기 (5분 연습)</h4>
+            <p>지금 엑셀로 관리하는 것 하나를 떠올려, 아래 네 칸을 채워 보세요. 이게 곧 당신 시스템의 설계도입니다.</p>
+            <ul class="bullets">
+              <li><strong>진짜 원본은?</strong> — 앞으로 어디만 고칠지 한 문장으로. (예: "○○ 앱이 원본, 엑셀은 은퇴")</li>
+              <li><strong>담을 칸은?</strong> — 대상 하나를 표현할 항목 3~6개를 적어보기. (예: 분류·브랜드·품목·수량·위치)</li>
+              <li><strong>고정 규칙은?</strong> — 정렬 기준·기간 규칙 등 "항상 이렇게"를 1~2개.</li>
+              <li><strong>대조 방법은?</strong> — 옮긴 뒤 맞는지 어떻게 확인할지. (예: "개수 세기 + 무작위 5개 항목 비교")</li>
+            </ul>
+            <p>이 네 칸이 채워지면, 화면·기능은 그 위에 얹기만 하면 됩니다.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="check">
       <div class="section-head">
-        <h2>06 — 시스템 설계 점검</h2>
-        <p class="section-note">만들기 전에.</p>
+        <h2>06 — 시스템 만들기 전 점검</h2>
+        <p class="section-note">코딩 시작 전에.</p>
       </div>
       <ul class="checklist">
-        <li><span class="check">✓</span><span>무엇이 원본(source of truth)인지 정했는가</span></li>
-        <li><span class="check">✓</span><span>초기 임포트를 원본과 대조 검증했는가</span></li>
-        <li><span class="check">✓</span><span>핵심 데이터 항목(모델)을 먼저 정했는가</span></li>
-        <li><span class="check">✓</span><span>컬럼 순서·정렬을 모든 화면에서 고정했는가</span></li>
-        <li><span class="check">✓</span><span>설계 결정을 기록해 뒀는가</span></li>
+        <li><span class="check">✓</span><span>"진짜 원본"이 앱인지 엑셀인지 하나로 정했는가</span></li>
+        <li><span class="check">✓</span><span>처음 옮긴 데이터를 원본과 하나씩 대조했는가</span></li>
+        <li><span class="check">✓</span><span>담을 항목(칸)을 화면보다 먼저 정했는가</span></li>
+        <li><span class="check">✓</span><span>칸 순서·정렬을 모든 화면에서 통일했는가</span></li>
+        <li><span class="check">✓</span><span>중요한 결정을 메모로 남겼는가</span></li>
       </ul>
     </section>
 
     <section id="glossary">
       <div class="section-head">
         <h2>07 — 용어 한눈에</h2>
-        <p class="section-note">이 노트에 나온 단어들.</p>
+        <p class="section-note">본문에서도 풀었지만, 다시 모아둠.</p>
       </div>
       <table class="compare">
-        <tr><th>용어</th><th>뜻</th></tr>
-        <tr><td>source of truth</td><td>진짜 본체가 되는 원본 하나. 여기만 고치면 됨.</td></tr>
-        <tr><td>초기 임포트</td><td>기존 데이터를 시스템에 처음 옮겨 넣는 것.</td></tr>
-        <tr><td>데이터 모델</td><td>무엇을 어떤 항목으로 담을지 정한 데이터의 뼈대.</td></tr>
-        <tr><td>마스터(표)</td><td>기준이 되는 대표 데이터 표.</td></tr>
-        <tr><td>폴백(fallback)</td><td>값이 없을 때 대신 쓰는 기준(예: 이름 앞 날짜).</td></tr>
-        <tr><td>설계 결정</td><td>바꾸면 파급이 큰, 기록해 둬야 할 구조적 선택.</td></tr>
+        <tr><th>용어</th><th>쉽게</th></tr>
+        <tr><td>웹 앱(시스템)</td><td>브라우저로 여는 나만의 관리 프로그램.</td></tr>
+        <tr><td>source of truth</td><td>"이게 진짜다" 하는 원본 하나. 여기만 고침.</td></tr>
+        <tr><td>임포트(import)</td><td>기존 데이터를 새 앱에 처음 옮겨 넣기.</td></tr>
+        <tr><td>데이터 모델</td><td>각 항목을 어떤 칸으로 담을지 정한 표의 뼈대.</td></tr>
+        <tr><td>마스터</td><td>기준이 되는 대표 데이터 표.</td></tr>
+        <tr><td>정렬 고정</td><td>목록 순서를 모든 화면에서 똑같이 두는 것.</td></tr>
       </table>
     </section>
 
@@ -147,5 +227,6 @@
       <span>maydly study archive</span>
     </div>
   </main>
+  <script src="../note.js"></script>
 </body>
 </html>

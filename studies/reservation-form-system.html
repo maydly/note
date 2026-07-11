@@ -20,6 +20,7 @@
         <a href="#backend">백엔드 연결</a>
         <a href="#security">토큰·분리</a>
         <a href="#done">완료 경험</a>
+        <a href="#deep">📚 심화</a>
         <a href="#check">점검</a>
         <a href="#glossary">용어</a>
       </div>
@@ -129,6 +130,70 @@
       <p style="color:var(--muted)">제출 후 아무 반응이 없으면 사용자는 "된 건가?" 불안해한다. <strong>완료 화면</strong>으로 접수됐음을 확실히 알리고, 다음에 무엇이 일어나는지(연락 시점 등)를 한 줄 안내한다. 작은 마무리가 신뢰를 만든다.</p>
     </section>
 
+    <!-- 교육 모듈 (탭) -->
+    <section id="deep">
+      <div class="section-head">
+        <h2>📚 더 깊이 — 강의용 상세</h2>
+        <p class="section-note">위가 요약이라면, 여기는 자세히 배우는 곳. 탭을 눌러 펼쳐 보세요.</p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab-labels">
+          <button class="tab-label is-active" type="button">개념 깊이</button>
+          <button class="tab-label" type="button">예시로 따라가기</button>
+          <button class="tab-label" type="button">흔한 실수</button>
+          <button class="tab-label" type="button">직접 해보기</button>
+        </div>
+        <div class="tab-panels">
+          <!-- 탭1: 개념 깊이 -->
+          <div class="tab-panel is-active">
+            <h4>왜 "폼 하나"가 아니라 "받는 시스템"으로 봐야 하나</h4>
+            <p>폼은 겉으론 입력칸 몇 개지만, 실제로는 <strong>앞·뒤 두 부분</strong>으로 이뤄진다. 앞은 사용자가 채우는 화면(폼 UX), 뒤는 그 답이 쌓이고 관리되는 곳(백엔드)이다. 앞만 예쁘게 만들고 뒤를 안 정하면, 답은 들어오는데 어디에 어떻게 쌓이는지 몰라 관리가 무너진다. 그래서 폼은 "한 화면"이 아니라 <strong>"받아서 쌓고 지키는 시스템"</strong>으로 그려야 한다.</p>
+            <p>앞쪽의 핵심은 <strong>갈래(branch)</strong>다. 문의 종류가 여럿이면 폼을 여러 개 만드는 대신, 하나의 입구에서 먼저 종류를 고르게 하고 고른 것에 맞는 항목만 보여준다. 사용자는 자기에게 필요한 것만 보고, 관리자는 한 곳에서 받는다. "한 입구, 여러 길"이다.</p>
+            <p>뒤쪽의 핵심은 <strong>데이터를 어디에 쌓고 어떻게 지키나</strong>다. 별도 서버·DB 없이도 작은 스크립트를 백엔드로 써서 스프레드시트에 한 줄씩 쌓을 수 있다. 다만 거기엔 예약·개인정보가 모이므로, <strong>토큰으로 잠그고 공개용/관리용을 분리</strong>해야 한다. 앞의 편함과 뒤의 안전을 동시에 잡는 게 폼 시스템의 목표다.</p>
+          </div>
+
+          <!-- 탭2: 예시로 따라가기 -->
+          <div class="tab-panel">
+            <h4>갈래 폼 한 흐름을 따라가 보기</h4>
+            <ul class="bullets">
+              <li><strong>1) 입구에서 종류 선택.</strong> "무엇을 도와드릴까요?"로 문의 종류를 먼저 고르게 한다.</li>
+              <li><strong>2) 맞는 폼만 표시.</strong> 고른 종류에 필요한 항목만 펼친다. 나머지는 감춰 사용자가 헤매지 않게.</li>
+              <li><strong>3) 입력 타입을 맞춘다.</strong> 이메일·전화·날짜 등 형식이 정해진 건 그 입력 타입으로 받아 실수를 줄인다. 필수는 <code>*</code>로 표시.</li>
+              <li><strong>4) 제출 → 뒤쪽에 기록.</strong> 답을 백엔드로 보내면 스프레드시트에 한 줄 <code>append</code>. 요청의 <code>type</code>으로 어느 시트에 넣을지 나눈다.</li>
+              <li><strong>5) 완료 화면.</strong> "접수됐고, 다음에 무엇이 일어나는지"를 한 줄로 안내해 불안을 없앤다.</li>
+            </ul>
+            <p>사용자는 1~2번의 "한 입구, 여러 길"만 체감하고, 관리자는 4번에서 한 곳에 모인 데이터를 받는다.</p>
+          </div>
+
+          <!-- 탭3: 흔한 실수 -->
+          <div class="tab-panel">
+            <h4>이런 데서 폼 시스템이 무너진다</h4>
+            <ul class="bullets">
+              <li><strong>① 종류마다 폼을 따로.</strong> 관리 창구가 흩어져 응답을 놓친다. → 한 입구에서 갈래로 나눈다.</li>
+              <li><strong>② 되돌아갈 길이 없음.</strong> 잘못 고른 사람이 막힌다. → "← 다시 선택"을 항상 둔다.</li>
+              <li><strong>③ 관리 데이터를 안 잠금.</strong> 예약·개인정보를 아무나 읽는다. → 토큰 검증 + 공개용/관리용 분리.</li>
+              <li><strong>④ 토큰을 클라이언트에 노출.</strong> 화면 파일에 실제 토큰을 박으면 그대로 새어나간다. → 비밀은 뒤쪽(스크립트 속성·env)에만, 실값은 공개 파일에 적지 않는다.</li>
+              <li><strong>⑤ 완료 안내 없음.</strong> 제출 후 반응이 없어 "된 건가?" 불안. → 완료 화면으로 접수를 확실히 알린다.</li>
+            </ul>
+          </div>
+
+          <!-- 탭4: 직접 해보기 -->
+          <div class="tab-panel">
+            <h4>내 문의 폼으로 설계해보기 (5분 연습)</h4>
+            <p>받고 싶은 문의를 떠올려, 아래를 채워 보세요. 실제 토큰·비밀값은 어디에도 적지 않습니다.</p>
+            <ul class="bullets">
+              <li><strong>갈래는 몇 개?</strong> — 문의 종류를 적고, 입구에서 고르게 할 목록으로 정리.</li>
+              <li><strong>종류별 필수 항목은?</strong> — 각 갈래에 꼭 필요한 항목 3~5개와 입력 타입을 적어보기.</li>
+              <li><strong>어디에 쌓나?</strong> — 답이 모일 곳(예: 스프레드시트)과, 요청 <code>type</code>으로 어떻게 나눌지.</li>
+              <li><strong>어떻게 지키나?</strong> — "토큰으로 잠금 + 공개용/관리용 분리"를 내 경우에 맞게 한 문장으로. (실값 없이 방식만)</li>
+            </ul>
+            <p>이 네 칸이 채워지면, 앞은 편하고 뒤는 안전한 폼 시스템의 설계도가 완성됩니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="check">
       <div class="section-head">
         <h2>06 — 폼 시스템 점검</h2>
@@ -164,5 +229,6 @@
       <span>maydly study archive</span>
     </div>
   </main>
+  <script src="../note.js"></script>
 </body>
 </html>

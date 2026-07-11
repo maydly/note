@@ -20,6 +20,7 @@
         <a href="#how">어떻게</a>
         <a href="#script">왜 스크립트</a>
         <a href="#report">보고만</a>
+        <a href="#deep">📚 심화</a>
         <a href="#check">점검</a>
         <a href="#glossary">용어</a>
       </div>
@@ -126,6 +127,70 @@
       </div>
     </section>
 
+    <!-- 교육 모듈 (탭) -->
+    <section id="deep">
+      <div class="section-head">
+        <h2>📚 더 깊이 — 강의용 상세</h2>
+        <p class="section-note">위가 요약이라면, 여기는 자세히 배우는 곳. 탭을 눌러 펼쳐 보세요.</p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab-labels">
+          <button class="tab-label is-active" type="button">개념 깊이</button>
+          <button class="tab-label" type="button">예시로 따라가기</button>
+          <button class="tab-label" type="button">흔한 실수</button>
+          <button class="tab-label" type="button">직접 해보기</button>
+        </div>
+        <div class="tab-panels">
+          <!-- 탭1: 개념 깊이 -->
+          <div class="tab-panel is-active">
+            <h4>왜 "규칙을 만드는 것"과 "지켜지게 하는 것"은 다른가</h4>
+            <p>규칙은 만든 날이 제일 잘 지켜진다. 시간이 지나면 바쁨·피로·깜빡함이 쌓여 조금씩 새어나간다. 사람의 주의력은 <strong>한정된 자원</strong>이라, 매 파일마다 "이름 규칙 맞나, 버전 표기 맞나"를 검사하는 데 계속 쓸 수 없다. 그래서 규칙은 "의지"로 지키게 두면 반드시 무너진다.</p>
+            <p>자동 감사는 이걸 <strong>정기 건강검진</strong>에 비유할 수 있다. 평소엔 몸에 신경 안 써도, 정해진 날 검진이 이상 신호를 잡아준다. 마찬가지로 작업할 땐 규칙을 잊어도, 주 1회 도는 감사가 어긋난 곳을 대신 찾아준다. 사람의 기억력이 아니라 <strong>일정(스케줄)</strong>에 점검을 맡기는 것이다.</p>
+            <p>핵심은 "발견"과 "판단"을 나눈 데 있다. 어긋난 것을 <strong>찾는 일</strong>은 기계가 지치지 않고 잘한다. 반면 "이건 규칙 위반처럼 보여도 사실 예외로 둬야 한다" 같은 <strong>판단</strong>은 맥락을 아는 사람 몫이다. 자동 감사는 앞의 일만 맡고, 뒤의 일은 그대로 사람에게 남긴다.</p>
+          </div>
+
+          <!-- 탭2: 예시로 따라가기 -->
+          <div class="tab-panel">
+            <h4>주간 감사 하나를 설계한다면 — 순서대로</h4>
+            <ul class="bullets">
+              <li><strong>1) 판정 가능한 규칙만 고른다.</strong> "파일명에 <code>정리</code>·<code>자료</code> 단독 사용 금지", "버전 파일은 <code>_YYMMDD_HHMM_v버전</code> 형식" 처럼 <strong>기계가 O/X로 딱 나눌 수 있는 것</strong>만 대상에 넣는다. "이름이 예쁜가" 같은 건 제외.</li>
+              <li><strong>2) 검사 범위를 좁힌다.</strong> 매번 전체를 훑으면 느리고 무겁다. 변경 이력(git)으로 <strong>최근 7일에 바뀐 파일</strong>만 추려 그것만 본다.</li>
+              <li><strong>3) 실행 시각을 못 박는다.</strong> "매주 월요일 새벽"처럼 정해두고, OS 스케줄러에 등록해 사람이 켜지 않아도 돌게 한다.</li>
+              <li><strong>4) 결과를 한곳에 쌓는다.</strong> 위반 목록을 정해진 폴더에 보고서로 누적한다. 사람이 다음 작업 때 열어보면 된다.</li>
+              <li><strong>5) 고치는 권한은 주지 않는다.</strong> 스크립트는 "찾아서 적기"까지만. 이름 바꾸기·이동은 사람이 확인 후 직접 한다.</li>
+            </ul>
+            <p>보다시피 감사의 힘은 화려한 기능이 아니라, <strong>범위를 좁히고(2) 권한을 제한한(5)</strong> 절제에서 나온다.</p>
+          </div>
+
+          <!-- 탭3: 흔한 실수 -->
+          <div class="tab-panel">
+            <h4>자동 감사를 만들 때 이런 데서 자주 어긋난다</h4>
+            <ul class="bullets">
+              <li><strong>① 애매한 것까지 검사하려 함.</strong> "제목이 적절한가" 같은 주관적 판단을 규칙에 넣으면, 오탐(멀쩡한 걸 위반이라 함)이 쏟아져 아무도 안 본다. → 딱 떨어지는 것만.</li>
+              <li><strong>② 매번 전체를 훑음.</strong> 파일이 늘수록 점점 느려져, 결국 감사를 꺼버린다. → 최근 변경분만.</li>
+              <li><strong>③ 스크립트에 수정 권한을 줌.</strong> 자동이 잘못 판단해 멀쩡한 파일 이름을 바꾸면 되돌리기 어렵다. → 보고만.</li>
+              <li><strong>④ 보고서를 아무도 안 보는 곳에 쌓음.</strong> 결과가 사람 동선 밖에 있으면 없는 것과 같다. → 작업 중 자연히 보는 위치에.</li>
+              <li><strong>⑤ 규칙이 바뀌었는데 감사만 옛 규칙.</strong> 규칙을 고치면 감사 기준도 함께 갱신해야 한다. → 규칙과 감사를 한 쌍으로 관리.</li>
+            </ul>
+          </div>
+
+          <!-- 탭4: 직접 해보기 -->
+          <div class="tab-panel">
+            <h4>내 작업에 감사 하나 얹어보기 (5분 연습)</h4>
+            <p>지금 반복해서 어기게 되는 규칙 하나를 떠올려, 아래 네 칸을 채워 보세요. 이게 곧 당신만의 감사 설계도입니다.</p>
+            <ul class="bullets">
+              <li><strong>어떤 규칙?</strong> — 자꾸 새어나가는 규칙 하나를 O/X로 판정 가능하게 다시 적기. (예: "버전 파일에 날짜·버전 표기가 있는가")</li>
+              <li><strong>검사 범위는?</strong> — 전체 말고 "최근 며칠 바뀐 것"으로 좁히기. (예: 최근 7일)</li>
+              <li><strong>언제 돌리나?</strong> — 사람 손 안 가게 정해진 시각 하나. (예: 매주 월요일 아침)</li>
+              <li><strong>결과를 어디서 보나?</strong> — 다음 작업 때 자연히 눈에 띄는 위치 한 곳.</li>
+            </ul>
+            <p>네 칸이 채워지면, 나머지는 "찾기만 하고 고치진 않는" 작은 점검 하나를 얹는 일입니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- 06 점검 -->
     <section id="check">
       <div class="section-head">
@@ -161,5 +226,6 @@
       <span>maydly study archive</span>
     </div>
   </main>
+  <script src="../note.js"></script>
 </body>
 </html>

@@ -20,6 +20,7 @@
         <a href="#why">왜 안 합치나</a>
         <a href="#pwa">PWA</a>
         <a href="#gate">게이트</a>
+        <a href="#deep">📚 심화</a>
         <a href="#check">점검</a>
         <a href="#glossary">용어</a>
       </div>
@@ -119,6 +120,69 @@
       </div>
     </section>
 
+    <section id="deep">
+      <div class="section-head">
+        <h2>📚 더 깊이 — 강의용 상세</h2>
+        <p class="section-note">위가 요약이라면, 여기는 자세히 배우는 곳. 탭을 눌러 펼쳐 보세요.</p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab-labels">
+          <button class="tab-label is-active" type="button">개념 깊이</button>
+          <button class="tab-label" type="button">예시로 따라가기</button>
+          <button class="tab-label" type="button">흔한 실수</button>
+          <button class="tab-label" type="button">직접 해보기</button>
+        </div>
+        <div class="tab-panels">
+          <!-- 탭1: 개념 깊이 -->
+          <div class="tab-panel is-active">
+            <h4>왜 "합치기"보다 "링크로 모으기"가 튼튼한가</h4>
+            <p>흩어진 도구를 보면 "하나로 합치면 깔끔하겠다"는 충동이 든다. 하지만 합친다는 건 여러 도구를 <strong>한 몸으로 엮는 것</strong>이라, 한 곳이 고장 나면 전체가 함께 흔들린다. 반면 링크로 모으는 허브는 도구들을 각자 자리에 그대로 두고, 한 화면에서 <strong>문만 열어주는 지도</strong>다. 몸을 섞지 않았으니 하나가 아파도 나머지는 멀쩡하다.</p>
+            <p>이걸 <strong>공항 안내판</strong>에 비유할 수 있다. 안내판은 게이트들을 자기 안으로 빨아들이지 않는다. 그저 "3번 게이트는 저쪽"이라고 가리킬 뿐이고, 각 게이트는 독립적으로 운영된다. 허브도 똑같이 "캘린더는 여기, 노트는 저기"를 가리키기만 한다. 안내판을 새 걸로 바꿔도 게이트는 그대로이고, 게이트 하나를 옮겨도 안내판 글자만 고치면 된다.</p>
+            <p>이 사고의 뿌리는 <strong>느슨한 연결</strong>이다. 필요한 만큼만 잇고, 서로의 내부에는 관여하지 않는다. 그래서 도구 하나를 통째로 교체해도 허브의 링크 한 줄만 고치면 끝난다 — 전체를 다시 짜지 않아도 된다.</p>
+          </div>
+
+          <!-- 탭2: 예시로 따라가기 -->
+          <div class="tab-panel">
+            <h4>개인 도구 허브 하나 만든다면 — 순서대로</h4>
+            <ul class="bullets">
+              <li><strong>1) 흩어진 도구를 적는다.</strong> 자주 여는 것들을 그냥 나열한다. (예: 예약 캘린더 · 개인 앱 · 학습 노트)</li>
+              <li><strong>2) 합치지 않기로 정한다.</strong> "각자 자리에 그대로 두고, 허브는 링크만" 이 원칙을 먼저 못 박는다.</li>
+              <li><strong>3) 한 화면에 카드로 배치한다.</strong> 도구마다 이름·짧은 설명·바로가기 링크를 카드 하나로. 이게 지도가 된다.</li>
+              <li><strong>4) 홈 화면 앱처럼 만든다.</strong> 허브에 간단한 설정(매니페스트)을 더해 폰 홈에 아이콘으로 추가 — 주소 안 치고 한 번에 연다.</li>
+              <li><strong>5) 최소 문턱을 둔다.</strong> 공개 주소라도 앞에 간단한 게이트 하나를 둬, 지나가다 열리지 않게 한다.</li>
+            </ul>
+            <p>도구를 하나 바꾸고 싶으면? 3번의 카드 링크 한 줄만 고치면 됩니다. 그게 느슨한 연결의 이득입니다.</p>
+          </div>
+
+          <!-- 탭3: 흔한 실수 -->
+          <div class="tab-panel">
+            <h4>허브를 만들 때 이런 데서 자주 헛발질한다</h4>
+            <ul class="bullets">
+              <li><strong>① "이왕이면 다 합치자".</strong> 지도로 충분한데 한 몸으로 엮으면, 한 곳 오류가 전체를 무너뜨린다. → 허브는 가리키기만.</li>
+              <li><strong>② 허브에 기능을 자꾸 얹음.</strong> 지도가 앱이 되기 시작하면 무거워지고 깨지기 쉽다. → 허브는 얇게, 링크 지도로.</li>
+              <li><strong>③ 링크를 여기저기 하드코딩.</strong> 주소가 바뀌면 여러 곳을 다 고쳐야 한다. → 허브 한 곳에서만 관리.</li>
+              <li><strong>④ 개인 도구를 완전 무방비로 공개.</strong> 공개 주소인데 문턱이 없으면 아무나 들어온다. → 최소 게이트.</li>
+              <li><strong>⑤ 비밀값을 공개 파일에 적음.</strong> PIN·열쇠의 실제 값을 공개 노트에 쓰면 게이트가 의미 없다. → 실제 값은 공개에 절대 노출 금지.</li>
+            </ul>
+          </div>
+
+          <!-- 탭4: 직접 해보기 -->
+          <div class="tab-panel">
+            <h4>내 도구들로 허브 스케치하기 (5분 연습)</h4>
+            <p>지금 매번 따로 찾아 들어가는 도구들을 떠올려, 아래 네 칸을 채워 보세요. 이게 곧 당신 허브의 밑그림입니다.</p>
+            <ul class="bullets">
+              <li><strong>모을 도구는?</strong> — 자주 여는 것 3~5개를 적기. (예: 캘린더 · 개인 앱 · 노트)</li>
+              <li><strong>합칠까 링크할까?</strong> — 각각 "합치지 않고 링크로"가 맞는지 한 문장으로 확인.</li>
+              <li><strong>홈 화면에 둘까?</strong> — 폰에서 아이콘으로 열면 편할지 판단.</li>
+              <li><strong>문턱은?</strong> — 공개 주소면 최소 게이트가 필요한지, 실제 값은 어디에 숨길지.</li>
+            </ul>
+            <p>네 칸이 채워지면, 허브는 카드 몇 개를 한 화면에 얹는 얇은 지도로 완성됩니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="check">
       <div class="section-head">
         <h2>06 — 허브 설계 점검</h2>
@@ -152,5 +216,6 @@
       <span>maydly study archive</span>
     </div>
   </main>
+  <script src="../note.js"></script>
 </body>
 </html>

@@ -21,6 +21,7 @@
         <a href="#start">시작하기</a>
         <a href="#caution">주의</a>
         <a href="#tiers">확장 단계</a>
+        <a href="#deep">📚 심화</a>
         <a href="#glossary">용어</a>
       </div>
     </nav>
@@ -147,6 +148,70 @@
       </div>
     </section>
 
+    <!-- 교육 모듈 (탭) -->
+    <section id="deep">
+      <div class="section-head">
+        <h2>📚 더 깊이 — 강의용 상세</h2>
+        <p class="section-note">위가 요약이라면, 여기는 자세히 배우는 곳. 탭을 눌러 펼쳐 보세요.</p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab-labels">
+          <button class="tab-label is-active" type="button">개념 깊이</button>
+          <button class="tab-label" type="button">예시로 따라가기</button>
+          <button class="tab-label" type="button">흔한 실수</button>
+          <button class="tab-label" type="button">직접 해보기</button>
+        </div>
+        <div class="tab-panels">
+          <!-- 탭1: 개념 깊이 -->
+          <div class="tab-panel is-active">
+            <h4>왜 "파일이 원본"이라는 성질이 옵시디언의 전부인가</h4>
+            <p>옵시디언을 이해하는 열쇠는 기능이 아니라 태도에 있다 — <strong>노트가 특정 앱 안에 갇히지 않는다</strong>는 것. 대부분의 메모 앱은 글을 자기네 데이터베이스에 넣어두어서, 그 앱을 떠나면 글도 함께 사라지거나 내보내기가 번거롭다. 옵시디언은 반대다. 글은 그냥 내 폴더 안의 <code>.md</code> 파일이고, 옵시디언은 그 위에 링크·백링크·그래프를 얹어주는 "한 겹의 도구"일 뿐이다.</p>
+            <p>비유하자면, 사진 원본(RAW)은 그대로 두고 보정 프로그램만 바꿔 끼우는 것과 같다. 프로그램을 지워도 원본은 남는다. 옵시디언을 지워도 <code>.md</code> 글은 메모장·VS Code 어디서든 똑같이 열린다. 그래서 "안 맞으면 안 쓰면 그만"인, <strong>거의 공짜에 가까운 시도</strong>가 된다. 잃을 게 없기 때문이다.</p>
+            <p>연결(위키링크·백링크)이 강력한 이유도 여기서 나온다. 흩어진 기록이 서로를 가리키기 시작하면, 한 노트에서 관련 노트로 계속 따라갈 수 있는 <strong>지식의 그물</strong>이 된다. 폴더로 칸칸이 나눠 가두는 대신, 실로 엮어 언제든 다시 찾아지게 만드는 방식이다.</p>
+          </div>
+
+          <!-- 탭2: 예시로 따라가기 -->
+          <div class="tab-panel">
+            <h4>연습 Vault로 감을 잡는 순서</h4>
+            <ul class="bullets">
+              <li><strong>1) 빈 연습 폴더 열기.</strong> 실제 작업 폴더 말고 새 빈 폴더를 하나 만들어 Vault로 연다. 망가뜨릴 걱정 없이 마음껏 눌러본다.</li>
+              <li><strong>2) 노트 두세 개 쓰기.</strong> <code>촬영기록</code>, <code>장비메모</code>, <code>아이디어</code> 같은 글을 짧게 만든다. 마크다운 기호(<code>#</code>, <code>*</code>)도 써본다.</li>
+              <li><strong>3) 위키링크로 잇기.</strong> <code>촬영기록</code> 안에 <code>[[장비메모]]</code>를 넣어본다. 클릭하면 그 노트로 넘어간다.</li>
+              <li><strong>4) 백링크 확인.</strong> <code>장비메모</code>를 열면 "이 글을 가리키는 글"에 <code>촬영기록</code>이 저절로 잡혀 있다. 내가 따로 안 이어도 역방향으로 보인다.</li>
+              <li><strong>5) 그래프 열어보기.</strong> 관계 지도를 켜서 점과 선으로 어떻게 이어지는지 본다. 노트가 늘수록 그물이 커지는 게 보인다.</li>
+            </ul>
+            <p>여기까지 30분이면 충분하다. 손에 맞으면 실제 폴더를 연결하고, 안 맞으면 연습 폴더만 지우면 흔적도 없다.</p>
+          </div>
+
+          <!-- 탭3: 흔한 실수 -->
+          <div class="tab-panel">
+            <h4>처음 쓸 때 자주 걸려 넘어지는 것</h4>
+            <ul class="bullets">
+              <li><strong>① 플러그인 과욕.</strong> 시작부터 확장 기능을 잔뜩 깔아 복잡하게 만든다 → 손에 익기도 전에 지친다. → 1~2단계(글쓰기+링크)만으로 충분하다.</li>
+              <li><strong>② 실제 폴더에 바로 붙이기.</strong> 체험 없이 중요한 작업 폴더를 Vault로 열었다가 설정이 꼬인다 → 연습 Vault로 먼저 감을 잡는다.</li>
+              <li><strong>③ 클라우드 충돌 방치.</strong> Drive 같은 동기화 폴더 안에서 여러 기기로 동시에 열어 "(1)" 붙은 충돌 사본이 생긴다. → 한 기기에서 닫고 동기화된 뒤 다른 기기에서 연다.</li>
+              <li><strong>④ .obsidian 설정 폴더 무시.</strong> Vault 안에 숨어 들어간 설정 폴더가 동기화로 꼬인다. → 꼬이면 설정만 따로 관리하거나 동기화에서 제외한다.</li>
+              <li><strong>⑤ 완벽한 구조 먼저 짜기.</strong> 쓰기도 전에 폴더·태그 체계를 완벽히 설계하려다 시작을 못 한다. → 일단 쓰고, 링크로 엮으며 구조는 천천히 자란다.</li>
+            </ul>
+          </div>
+
+          <!-- 탭4: 직접 해보기 -->
+          <div class="tab-panel">
+            <h4>내 기록으로 1주일 체험하기</h4>
+            <p>이미 마크다운으로 남기던 기록이 있다면, 아래를 순서대로 해보세요. 옮기는 비용은 사실상 0입니다.</p>
+            <ul class="bullets">
+              <li><strong>기록 3개 옮기기</strong> — 최근 작업기록·메모 세 개를 연습 Vault에 넣고, 서로 관련 있는 것끼리 <code>[[ ]]</code>로 이어보기.</li>
+              <li><strong>백링크 관찰</strong> — 자주 언급되는 노트 하나를 열어, 어떤 글들이 그것을 가리키는지 확인하기.</li>
+              <li><strong>동기화 점검</strong> — 내 작업 폴더가 클라우드 안이라면, 05번 주의사항 세 가지에 해당하는지 스스로 체크하기.</li>
+              <li><strong>계속 여부 결정</strong> — 1주일 뒤 "손에 맞는가"만 판단하기. 맞으면 실제 폴더 연결, 아니면 연습 폴더 삭제.</li>
+            </ul>
+            <p>안 맞아도 잃을 게 없습니다. 글은 어차피 내 폴더에 그대로 남아 있으니까요.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- 07 용어 -->
     <section id="glossary">
       <div class="section-head">
@@ -171,5 +236,6 @@
       <span>maydly study archive</span>
     </div>
   </main>
+  <script src="../note.js"></script>
 </body>
 </html>

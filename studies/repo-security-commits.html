@@ -20,6 +20,7 @@
         <a href="#gitignore">.gitignore</a>
         <a href="#leaked">노출됐다면</a>
         <a href="#structure">근본 구조</a>
+        <a href="#deep">📚 심화</a>
         <a href="#check">점검</a>
         <a href="#glossary">용어</a>
       </div>
@@ -77,7 +78,7 @@
         <p class="section-note">이런 게 섞였는지 커밋 전에 훑는다.</p>
       </div>
       <div class="grid-2">
-        <div class="card"><span class="tag coral">인증</span><h3>비밀번호 · PIN · 해시</h3><p>관리자 PIN(<code>0825</code> 같은 실값), 비밀번호, 해시값. 클라이언트 파일이면 특히.</p></div>
+        <div class="card"><span class="tag coral">인증</span><h3>비밀번호 · PIN · 해시</h3><p>관리자 PIN(<code>0000</code> 같은 실값), 비밀번호, 해시값. 클라이언트 파일이면 특히.</p></div>
         <div class="card"><span class="tag coral">키</span><h3>토큰 · API 키</h3><p>GitHub 토큰(<code>ghp_…</code>), 서비스 API 키, 시크릿. <code>.env</code> 파일 전체.</p></div>
         <div class="card"><span class="tag coral">개인정보</span><h3>PII · 예약 데이터</h3><p>전화번호·이름·예약 내역 같은 실제 개인정보. 플레이스홀더(<code>010-xxxx</code>)만 안전.</p></div>
         <div class="card"><span class="tag coral">시스템</span><h3>계정 · 접속 정보</h3><p>원격접속 계정, 레지스트리 백업, 시스템 로그·해시 백업.</p></div>
@@ -134,6 +135,70 @@ rdp*.txt           # 원격접속 계정</pre>
       </table>
     </section>
 
+    <!-- 교육 모듈 (탭) -->
+    <section id="deep">
+      <div class="section-head">
+        <h2>📚 더 깊이 — 강의용 상세</h2>
+        <p class="section-note">위가 요약이라면, 여기는 자세히 배우는 곳. 탭을 눌러 펼쳐 보세요.</p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab-labels">
+          <button class="tab-label is-active" type="button">개념 깊이</button>
+          <button class="tab-label" type="button">예시로 따라가기</button>
+          <button class="tab-label" type="button">흔한 실수</button>
+          <button class="tab-label" type="button">직접 해보기</button>
+        </div>
+        <div class="tab-panels">
+          <!-- 탭1: 개념 깊이 -->
+          <div class="tab-panel is-active">
+            <h4>왜 "지운 것도 남고", "클라이언트는 다 공개"인가</h4>
+            <p>git은 파일의 <strong>변경 이력을 통째로 쌓아두는 도구</strong>다. 지금 파일에서 비밀을 지워도, 그 비밀이 들어 있던 <strong>과거 커밋은 그대로 남아 있다.</strong> 마치 일기장에서 한 줄을 지우개로 지워도 앞장에 그대로 적혀 있는 것과 같다. 그래서 "올렸다가 지우면 되겠지"가 통하지 않는다. 한 번 올라간 비밀은 <strong>이미 새어나간 것</strong>으로 봐야 한다.</p>
+            <p>또 하나 착각하기 쉬운 게 "내 화면에만 보이겠지"다. 웹페이지를 이루는 HTML·JS는 <strong>브라우저가 받아서 실행하는 파일</strong>이라, 누구나 그 원본을 열어볼 수 있다. 화면에 안 보이게 숨겨도 파일 안에 값이 있으면 그대로 노출이다. 그래서 비밀(PIN·토큰·키)은 <strong>클라이언트(브라우저) 쪽에 두는 순간 공개</strong>라고 가정해야 한다.</p>
+            <p>이 두 성질을 합치면 결론은 하나다 — 비밀은 <strong>애초에 올리지 않는 것</strong>이 유일한 안전책이고, 그걸 사람 기억이 아니라 규칙(<code>.gitignore</code>)으로 막는 것이다. 기술이 아니라 <strong>습관과 구조</strong>의 문제라, 코딩을 잘 몰라도 지킬 수 있다.</p>
+          </div>
+
+          <!-- 탭2: 예시로 따라가기 -->
+          <div class="tab-panel">
+            <h4>커밋 전 30초 점검 흐름</h4>
+            <ul class="bullets">
+              <li><strong>1) 무엇을 올리는지 먼저 본다.</strong> <code>git add .</code>로 몰아 올리기 전에, 바뀐 파일 목록을 훑는다. 낯선 파일(설정·백업·로그)이 섞였는지 확인.</li>
+              <li><strong>2) 위험 단어를 훑는다.</strong> 바뀐 내용에서 <code>password</code>, <code>token</code>, <code>key</code>, <code>secret</code>, 전화번호·이름 같은 패턴이 있는지 눈으로 스캔.</li>
+              <li><strong>3) 비밀 파일은 추적에서 뺀다.</strong> 설정·환경 파일(<code>.env</code>류), 관리자용 실값 페이지, 기록 폴더는 <code>.gitignore</code>에 패턴으로 넣어 아예 안 올라가게 한다.</li>
+              <li><strong>4) 실값을 플레이스홀더로 바꾼다.</strong> 안내 문서에 예시값이 필요하면 실제 값 대신 <code>xxxx</code> 같은 가짜값으로.</li>
+              <li><strong>5) 그다음에 커밋.</strong> "안전한 파일만 남았다"가 확인되면 그때 올린다.</li>
+            </ul>
+            <p>여기 어떤 단계에도 실제 비밀값을 적을 일은 없다. 흐름 자체가 "값을 빼는 방향"으로 흐른다.</p>
+          </div>
+
+          <!-- 탭3: 흔한 실수 -->
+          <div class="tab-panel">
+            <h4>이런 데서 자주 새어나간다</h4>
+            <ul class="bullets">
+              <li><strong>① 관리자 페이지에 PIN 직접 박기.</strong> 클라이언트 파일이라 그대로 공개된다. → 인증은 뒤쪽(서버)에서 하고, 개발용은 플레이스홀더 버전을 따로 둔다.</li>
+              <li><strong>② <code>git add .</code>로 다 몰아 올리기.</strong> 옆에 있던 설정·백업 파일까지 딸려 올라간다. → 무엇이 올라가는지 목록을 먼저 본다.</li>
+              <li><strong>③ 지웠으니 안전하다는 착각.</strong> 과거 커밋에 남아 있다. → 노출된 비밀은 "지우기"가 아니라 "폐기(재발급)"가 먼저.</li>
+              <li><strong>④ 안내문에 실제 값 예시.</strong> README에 실 PIN·토큰을 예시로 적는 실수. → 예시는 항상 가짜값(<code>****</code>)으로.</li>
+              <li><strong>⑤ .gitignore를 나중으로 미룸.</strong> 규칙이 없으면 결국 사람 기억에 기댄다. → 프로젝트 시작할 때 비밀 패턴부터 넣는다.</li>
+            </ul>
+          </div>
+
+          <!-- 탭4: 직접 해보기 -->
+          <div class="tab-panel">
+            <h4>내 저장소로 점검해보기 (5분 연습)</h4>
+            <p>지금 올리려는(또는 이미 올린) 저장소 하나를 떠올려, 아래를 하나씩 확인해 보세요. 실제 값은 어디에도 적지 말고, "있다/없다"만 체크하면 됩니다.</p>
+            <ul class="bullets">
+              <li><strong>비밀이 클라이언트에 있나?</strong> — HTML·JS 안에 PIN·토큰·키가 박혀 있는지. 있으면 뒤쪽으로 옮길 대상.</li>
+              <li><strong>.gitignore가 막고 있나?</strong> — 환경·설정·기록 파일 패턴이 들어 있는지 한 줄씩 확인.</li>
+              <li><strong>안내문에 실값이 있나?</strong> — README·문서의 예시값을 플레이스홀더로 바꿀 곳 찾기.</li>
+              <li><strong>노출됐다면 폐기 순서를 아는가?</strong> — "발급처에서 폐기 → 새로 발급 → 안전한 곳에 보관"을 한 문장으로 적어보기.</li>
+            </ul>
+            <p>이 네 가지가 "괜찮다"로 채워지면, 커밋 전 보안의 큰 구멍은 대부분 막힌 셈입니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- 06 점검 -->
     <section id="check">
       <div class="section-head">
@@ -171,5 +236,6 @@ rdp*.txt           # 원격접속 계정</pre>
       <span>maydly study archive</span>
     </div>
   </main>
+  <script src="../note.js"></script>
 </body>
 </html>

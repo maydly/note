@@ -177,6 +177,52 @@ pre code { padding: 0; background: none; color: inherit; }
 /* ---- 푸터 ---- */
 .footer { margin-top: 24px; padding: 18px 4px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
 
+/* ---- 탭 (더 깊이 보기) ---- */
+.tabs {
+  margin: 18px 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--panel);
+}
+.tab-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 8px 8px 0;
+  background: var(--panel-2);
+  border-bottom: 1px solid var(--line);
+}
+.tab-label {
+  appearance: none;
+  border: 1px solid transparent;
+  border-bottom: none;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 9px 14px;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tab-label:hover { color: var(--ink); }
+.tab-label.is-active {
+  background: var(--panel);
+  border-color: var(--line);
+  color: var(--ink);
+  margin-bottom: -1px;
+}
+.tab-panels { padding: 22px; }
+.tab-panel { display: none; }
+.tab-panel.is-active { display: block; }
+.tab-panel h4 { margin: 0 0 8px; color: var(--ink); font-size: 15px; }
+.tab-panel p { color: var(--muted); }
+.tab-panel .bullets li { margin-bottom: 8px; }
+/* JS 미동작 시 폴백: 첫 패널이라도 보이게 */
+.no-js .tab-panel:first-child { display: block; }
+
 /* ---- 반응형 ---- */
 @media (max-width: 920px) {
   .grid-2, .grid-3 { grid-template-columns: 1fr; }

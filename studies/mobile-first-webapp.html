@@ -20,6 +20,7 @@
         <a href="#tools">실전 도구</a>
         <a href="#habit">점검 습관</a>
         <a href="#desktop">데스크톱</a>
+        <a href="#deep">📚 심화</a>
         <a href="#check">점검</a>
         <a href="#glossary">용어</a>
       </div>
@@ -136,6 +137,70 @@
       <p style="color:var(--muted)">폰에서 성립한 화면에, 큰 화면에선 여백을 늘리고 열을 나누고 정보를 조금 더 보여준다. 데스크톱을 위해 폰을 희생하지 않는다. 폰이 본진, 데스크톱은 확장판이다.</p>
     </section>
 
+    <!-- 교육 모듈 (탭) -->
+    <section id="deep">
+      <div class="section-head">
+        <h2>📚 더 깊이 — 강의용 상세</h2>
+        <p class="section-note">위가 요약이라면, 여기는 자세히 배우는 곳. 탭을 눌러 펼쳐 보세요.</p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab-labels">
+          <button class="tab-label is-active" type="button">개념 깊이</button>
+          <button class="tab-label" type="button">예시로 따라가기</button>
+          <button class="tab-label" type="button">흔한 실수</button>
+          <button class="tab-label" type="button">직접 해보기</button>
+        </div>
+        <div class="tab-panels">
+          <!-- 탭1: 개념 깊이 -->
+          <div class="tab-panel is-active">
+            <h4>왜 "좁은 데서 넓히기"가 "넓은 걸 줄이기"보다 쉬운가</h4>
+            <p>물을 좁은 컵에서 넓은 그릇으로 옮기는 건 쉽다. 반대로 넓은 그릇의 물을 좁은 컵에 다 담으려면 넘친다. 화면 설계도 비슷하다. <strong>좁은 폰에서 먼저 성립시킨 화면</strong>은, 큰 화면에서 여백을 늘리고 열을 나누면 자연스럽게 넓어진다. 하지만 큰 화면에서 빽빽하게 채운 걸 폰에 우겨넣으면, 요소가 겹치고 글자가 잘리고 버튼이 서로 붙는다.</p>
+            <p>더 근본적인 이유는 <strong>"제약이 설계를 또렷하게 만든다"</strong>는 점이다. 폰은 세로로 좁아서 한 화면에 많이 못 넣는다. 그래서 "지금 이 순간 꼭 필요한 것"만 고르게 되고, 그 과정에서 군더더기가 빠진다. 넓은 화면에서 시작하면 공간이 남아 이것저것 다 넣게 되고, 정작 중요한 게 묻힌다.</p>
+            <p>여기에 "누가 어디서 쓰는가"라는 맥락이 더해진다. 매일 <strong>폰으로 여는 도구</strong>라면, 폰에서 편한 게 성공의 기준이다. 데스크톱은 가끔 쓰는 확장판일 뿐이다. 그래서 설계의 출발점을 폰에 두는 것이 자연스럽다.</p>
+          </div>
+
+          <!-- 탭2: 예시로 따라가기 -->
+          <div class="tab-panel">
+            <h4>폰 우선으로 한 화면을 짜는 순서</h4>
+            <ul class="bullets">
+              <li><strong>1) viewport 메타부터.</strong> <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code>가 없으면 폰이 데스크톱처럼 축소해 보여준다. 이게 첫 단추.</li>
+              <li><strong>2) 기본을 세로 한 줄로.</strong> 요소들을 위에서 아래로 쌓는 걸 기본 스타일로 둔다. 폰은 세로로 길기 때문.</li>
+              <li><strong>3) 버튼·탭을 크게.</strong> 손가락으로 누를 걸 전제로 약 44px 이상, 서로 붙지 않게 간격을 준다.</li>
+              <li><strong>4) 큰 화면만 <code>@media (min-width)</code>로 넓힌다.</strong> 일정 폭 이상일 때 열을 나누거나 여백을 늘리는 규칙을 추가.</li>
+              <li><strong>5) 폰 폭으로 확인하고 마무리.</strong> 개발자도구 모바일 미리보기나 실제 폰으로 최종 점검.</li>
+            </ul>
+            <p>보다시피 "폰에서 성립 → 큰 화면으로 확장" 순서다. 큰 화면은 마지막에 얹는 단계일 뿐이다.</p>
+          </div>
+
+          <!-- 탭3: 흔한 실수 -->
+          <div class="tab-panel">
+            <h4>이런 데서 폰이 무너진다</h4>
+            <ul class="bullets">
+              <li><strong>① viewport 메타 누락.</strong> 폰이 페이지를 축소해 글자가 개미만 하게 보인다. → 가장 먼저 넣을 한 줄.</li>
+              <li><strong>② 데스크톱에서 시작.</strong> 넓은 레이아웃을 폰에 구겨넣다 겹치고 잘린다. → 기본은 폰용, 확장을 <code>min-width</code>로.</li>
+              <li><strong>③ 버튼이 너무 작고 붙음.</strong> 마우스 기준으로 만들면 손가락으로 오터치. → 44px 안팎 + 넉넉한 간격.</li>
+              <li><strong>④ 수정을 데스크톱에서만 확인.</strong> 처음엔 폰 우선이어도 이후 변경에서 조용히 깨진다. → 모든 변경마다 폰 화면을 함께 본다.</li>
+              <li><strong>⑤ 폰에 정보 다 욱여넣기.</strong> 좁은데 다 넣으려다 스크롤 지옥. → "지금 꼭 필요한 것"만 남긴다.</li>
+            </ul>
+          </div>
+
+          <!-- 탭4: 직접 해보기 -->
+          <div class="tab-panel">
+            <h4>지금 만드는 화면으로 해보기 (5분 연습)</h4>
+            <p>만들고 있는(또는 만들 예정인) 화면 하나를 떠올려, 아래를 확인해 보세요.</p>
+            <ul class="bullets">
+              <li><strong>viewport가 있나?</strong> — <code>&lt;head&gt;</code>에 viewport 메타가 들어 있는지 확인.</li>
+              <li><strong>폰에서 먼저 성립하나?</strong> — 브라우저를 폰 폭(약 375px)으로 줄여 겹침·잘림이 없는지.</li>
+              <li><strong>엄지로 누를 만한가?</strong> — 주요 버튼·탭이 충분히 크고 서로 떨어져 있는지.</li>
+              <li><strong>핵심만 남았나?</strong> — 폰 화면에서 지금 안 써도 되는 요소를 하나 빼본다. 더 또렷해지는지 확인.</li>
+            </ul>
+            <p>이 네 가지가 통과되면, 큰 화면으로 넓히는 일은 여백과 열을 더하는 정도로 끝납니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="check">
       <div class="section-head">
         <h2>06 — 폰 우선 점검</h2>
@@ -169,5 +234,6 @@
       <span>maydly study archive</span>
     </div>
   </main>
+  <script src="../note.js"></script>
 </body>
 </html>

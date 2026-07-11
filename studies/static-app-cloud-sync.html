@@ -20,6 +20,7 @@
         <a href="#secret">토큰 보호</a>
         <a href="#flow">동기화 흐름</a>
         <a href="#localhost">localhost 테스트</a>
+        <a href="#deep">📚 심화</a>
         <a href="#check">점검</a>
         <a href="#glossary">용어</a>
       </div>
@@ -121,6 +122,70 @@ npx serve .        # 또는 python -m http.server
       </div>
     </section>
 
+    <!-- 교육 모듈 (탭) -->
+    <section id="deep">
+      <div class="section-head">
+        <h2>📚 더 깊이 — 강의용 상세</h2>
+        <p class="section-note">위가 요약이라면, 여기는 자세히 배우는 곳. 탭을 눌러 펼쳐 보세요.</p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab-labels">
+          <button class="tab-label is-active" type="button">개념 깊이</button>
+          <button class="tab-label" type="button">예시로 따라가기</button>
+          <button class="tab-label" type="button">흔한 실수</button>
+          <button class="tab-label" type="button">직접 해보기</button>
+        </div>
+        <div class="tab-panels">
+          <!-- 탭1: 개념 깊이 -->
+          <div class="tab-panel is-active">
+            <h4>서버가 없는데 어떻게 여러 기기가 같은 데이터를 보나</h4>
+            <p>정적 앱은 화면(HTML·JS)만 있고 데이터를 담는 서버가 없다. 그래서 기본값은 데이터를 <strong>브라우저 안(<code>localStorage</code>)</strong>에 저장하는데, 이건 그 기기·그 브라우저에만 남는다. 폰에서 넣은 걸 데스크톱이 못 본다. 여러 기기가 같은 데이터를 보려면, 데이터를 <strong>기기 밖 공용 장소</strong>에 두고 서로 읽고 써야 한다.</p>
+            <p>여기서 핵심은 <strong>"보여주는 것"과 "지켜야 하는 것"을 분리</strong>하는 발상이다. 화면은 누가 봐도 되니 공개 호스팅에 둔다. 하지만 예약·개인 데이터는 공개되면 안 되니 <strong>비공개 저장소</strong>에 데이터 파일로 둔다. 이렇게 나누면 무료 정적 호스팅만으로도 "서버 있는 앱"처럼 동작하게 만들 수 있다.</p>
+            <p>남는 문제는 "비공개 저장소에 쓰려면 열쇠(토큰)가 필요한데, 그 열쇠를 어디 두나"다. 화면 파일에 두면 브라우저로 누구나 훔쳐본다. 그래서 열쇠는 <strong>호스팅의 환경변수(env)</strong>에 숨기고, 실제로 쓰는 처리는 화면이 아니라 <strong>호스팅 뒤쪽(서버리스 함수)</strong>에서 하게 한다. 클라이언트엔 비밀을 절대 두지 않는 것이 원칙이다.</p>
+          </div>
+
+          <!-- 탭2: 예시로 따라가기 -->
+          <div class="tab-panel">
+            <h4>동기화 한 바퀴를 따라가 보기</h4>
+            <ul class="bullets">
+              <li><strong>1) 화면 로드.</strong> 공개 호스팅에서 앱(화면)이 열린다. 여기엔 비밀이 없다.</li>
+              <li><strong>2) 데이터 읽기.</strong> 비공개 저장소의 데이터 파일에서 현재 내용을 받아 화면에 뿌린다.</li>
+              <li><strong>3) 수정.</strong> 사용자가 예약을 추가·변경한다. 아직은 화면 안의 변화.</li>
+              <li><strong>4) 저장(쓰기).</strong> 저장 요청을 호스팅 뒤쪽으로 보내면, 그쪽이 <strong>env에 숨겨둔 토큰</strong>으로 비공개 저장소에 기록한다. 토큰은 화면을 거치지 않는다.</li>
+              <li><strong>5) 다른 기기.</strong> 다른 기기가 앱을 다시 열면 2번에서 최신 데이터를 받아, 방금 바뀐 게 반영돼 보인다.</li>
+            </ul>
+            <p>이 흐름 어디에도 실제 토큰·PIN 값을 화면에 노출하는 단계는 없다. 비밀은 늘 뒤쪽에만 머문다.</p>
+          </div>
+
+          <!-- 탭3: 흔한 실수 -->
+          <div class="tab-panel">
+            <h4>이런 데서 자주 막히거나 샌다</h4>
+            <ul class="bullets">
+              <li><strong>① 토큰을 화면 파일에 박기.</strong> 브라우저로 누구나 열어본다. → 토큰은 env에, 쓰기는 서버리스 함수에서.</li>
+              <li><strong>② 데이터를 공개 저장소에 두기.</strong> 예약·개인정보가 그대로 노출. → 데이터는 반드시 비공개 저장소.</li>
+              <li><strong>③ localStorage만 믿기.</strong> 그 기기에만 남아 기기 간 공유가 안 된다. → 기기 밖 공용 저장소를 둔다.</li>
+              <li><strong>④ 파일 더블클릭으로 테스트.</strong> <code>file://</code>에서는 불러오기·저장이 조용히 실패한다. → localhost로 확인.</li>
+              <li><strong>⑤ 공개 노트·문서에 실값 적기.</strong> 설명하다 실제 토큰·PIN을 적는 실수. → 언제나 "패턴"으로만 설명.</li>
+            </ul>
+          </div>
+
+          <!-- 탭4: 직접 해보기 -->
+          <div class="tab-panel">
+            <h4>내 앱 구조로 점검해보기 (5분 연습)</h4>
+            <p>만들(었)던 정적 앱 하나를 떠올려, 아래를 확인해 보세요. 실제 값은 어디에도 적지 말고 "어디에 있나"만 확인합니다.</p>
+            <ul class="bullets">
+              <li><strong>화면과 데이터가 분리됐나?</strong> — 화면은 공개, 데이터는 비공개 저장소에 있는지.</li>
+              <li><strong>토큰이 화면에 없나?</strong> — HTML·JS 안이 아니라 호스팅 env에 있는지.</li>
+              <li><strong>쓰기가 뒤쪽에서 되나?</strong> — 저장 처리가 화면이 아니라 서버리스 함수에서 일어나는지.</li>
+              <li><strong>localhost로 확인했나?</strong> — 더블클릭이 아니라 로컬 서버로 불러오기·저장이 실제 되는지.</li>
+            </ul>
+            <p>이 네 가지가 채워지면, 서버 없이도 안전한 기기 간 동기화의 뼈대는 완성입니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="check">
       <div class="section-head">
         <h2>06 — 점검</h2>
@@ -155,5 +220,6 @@ npx serve .        # 또는 python -m http.server
       <span>maydly study archive</span>
     </div>
   </main>
+  <script src="../note.js"></script>
 </body>
 </html>

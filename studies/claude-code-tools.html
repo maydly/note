@@ -20,6 +20,7 @@
         <a href="#connect">연결 확장</a>
         <a href="#skip">거를 것</a>
         <a href="#principle">원칙</a>
+        <a href="#deep">📚 심화</a>
         <a href="#glossary">용어</a>
       </div>
     </nav>
@@ -127,6 +128,70 @@
       </div>
     </section>
 
+    <!-- 교육 모듈 (탭) -->
+    <section id="deep">
+      <div class="section-head">
+        <h2>📚 더 깊이 — 강의용 상세</h2>
+        <p class="section-note">위가 요약이라면, 여기는 자세히 배우는 곳. 탭을 눌러 펼쳐 보세요.</p>
+      </div>
+      <div class="tabs">
+        <div class="tab-labels">
+          <button class="tab-label is-active" type="button">개념 깊이</button>
+          <button class="tab-label" type="button">예시로 따라가기</button>
+          <button class="tab-label" type="button">흔한 실수</button>
+          <button class="tab-label" type="button">직접 해보기</button>
+        </div>
+        <div class="tab-panels">
+          <!-- 탭1: 개념 깊이 -->
+          <div class="tab-panel is-active">
+            <h4>왜 "메인은 고정, 주변만 보강"이 답인가</h4>
+            <p>도구를 고를 때 우리는 자꾸 "더 좋은 걸 새로 깔면 나아지지 않을까" 쪽으로 기운다. 하지만 매일 쓰는 <strong>메인 도구를 바꾸는 건 손이 익은 부엌을 통째로 새 걸로 바꾸는 것</strong>과 같다. 칼이 어디 있는지, 불이 어느 세기인지 몸이 기억하던 게 전부 초기화된다. 그 익숙함을 다시 쌓는 데 드는 시간이 곧 <strong>스위칭 비용</strong>이다. 새 도구가 조금 더 낫더라도, 이 비용을 넘지 못하면 오히려 손해다.</p>
+            <p>그래서 이 노트의 전제는 "메인(Claude Code)은 고정하고, 빈 곳만 보조 도구로 메운다"이다. 여기서 중요한 건 순서다. <strong>먼저 "내 작업의 어디가 비었나"를 보고, 그 빈 곳에 맞는 도구를 그다음에 찾는다.</strong> 반대로 하면 — 도구 목록을 먼저 훑고 "이거 좋대"부터 깔면 — 필요하지도 않은 걸 늘리게 된다. 도구를 모으는 일 자체가 취미가 되면, 정작 작업은 산만해진다.</p>
+            <p>보조 도구를 고르는 기준도 단순하게 잡는다 — <strong>비용 부담이 적고(무료·오픈소스), 메인을 대체하지 않으며, 한 가지 빈 곳을 확실히 메우는 것.</strong> 1인 · 비용에 민감한 운영에서는 "많이"보다 "꼭 맞게"가 언제나 낫다.</p>
+          </div>
+
+          <!-- 탭2: 예시로 따라가기 -->
+          <div class="tab-panel">
+            <h4>보조 코딩 도구 하나를 실제로 붙인다면 — 순서</h4>
+            <p>새 도구를 고를 때, 목록부터 보지 말고 내 빈 곳부터 본다. 아래 순서로 따라가면 충동구매를 피한다.</p>
+            <ul class="bullets">
+              <li><strong>1) 빈 곳 확인.</strong> 메인으로 하다 답답한 지점을 한 문장으로 적는다. (예: "코드 한 줄씩 자동완성이 아쉽다")</li>
+              <li><strong>2) 후보 좁히기.</strong> 그 빈 곳에 맞는 것만 본다. 인라인 자동완성이 필요하면 <code>Copilot Free</code> 같은 무료 등급부터, 보조 코딩이면 오픈소스인 <code>Cline</code>부터.</li>
+              <li><strong>3) 비용·연결 확인.</strong> 무료인지, 내 API 키(BYOK)를 꽂는 방식인지 확인한다. 연동이 필요하면 실제 연결(OAuth)을 한 번 테스트해 본다.</li>
+              <li><strong>4) 작게 써보기.</strong> 바로 전면 도입하지 않고, 작은 작업 하나에만 붙여 본다. 손에 맞는지 며칠 겪어 본다.</li>
+              <li><strong>5) 남길지 결정.</strong> 그 빈 곳이 실제로 메워졌으면 남기고, 아니면 미련 없이 뺀다. 메인은 이 과정 내내 그대로 둔다.</li>
+            </ul>
+            <p>핵심은 5번까지 가도 <strong>메인은 건드리지 않는다</strong>는 것. 보조는 어디까지나 곁다리다.</p>
+          </div>
+
+          <!-- 탭3: 흔한 실수 -->
+          <div class="tab-panel">
+            <h4>도구를 고를 때 이런 데서 자주 헛돈다</h4>
+            <ul class="bullets">
+              <li><strong>① 메인을 자꾸 갈아탐.</strong> "이게 더 좋대"에 흔들려 중심 도구를 바꾸면, 익숙함이 매번 초기화된다. → 메인은 웬만하면 고정.</li>
+              <li><strong>② 빈 곳 없이 도구부터 깖.</strong> 필요를 못 느끼는데 "유명하니까" 설치한다. → 내 작업의 빈 곳을 먼저 적고, 거기 맞는 것만.</li>
+              <li><strong>③ 비용을 안 따짐.</strong> 무료인 줄 알았는데 일정 사용량 넘으면 과금되는 경우가 있다. → 도입 전 요금 조건을 그때그때 확인(이 노트의 가격·정책은 2026.6 기준이라 바뀔 수 있다).</li>
+              <li><strong>④ 연결을 테스트 안 함.</strong> 연동(OAuth)이 실패하는 사례가 있는데, 급할 때 처음 붙이다 막힌다. → 도입 전 실제 연결을 미리 한 번 확인.</li>
+              <li><strong>⑤ 도구 수집이 목적이 됨.</strong> 개수를 늘리는 재미에 빠져 작업이 오히려 산만해진다. → "빈 곳이 있을 때만 더한다"를 규칙으로.</li>
+            </ul>
+          </div>
+
+          <!-- 탭4: 직접 해보기 -->
+          <div class="tab-panel">
+            <h4>내 도구 구성으로 점검하기 (5분 연습)</h4>
+            <p>지금 쓰는 도구들을 떠올리며 아래 네 칸을 채워 보세요. 이게 곧 "무엇을 남기고 무엇을 뺄지"의 기준이 됩니다.</p>
+            <ul class="bullets">
+              <li><strong>내 메인은?</strong> — 매일 중심으로 쓰는 도구 하나와, 그걸 고정하는 이유를 한 문장으로.</li>
+              <li><strong>진짜 빈 곳은?</strong> — 메인으로 하다 답답한 지점 1~2개를 구체적으로 적어보기.</li>
+              <li><strong>그 빈 곳에 맞는 후보는?</strong> — 각 빈 곳에 무료·오픈소스 후보를 하나씩만. (없으면 "없음"도 답)</li>
+              <li><strong>지금 뺄 것은?</strong> — 깔아만 두고 안 쓰는 도구가 있다면 하나 골라 정리 후보로.</li>
+            </ul>
+            <p>이 네 칸이 채워지면, 도구 목록을 더 뒤질 필요 없이 "내게 필요한 구성"이 이미 보입니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- 06 용어 -->
     <section id="glossary">
       <div class="section-head">
@@ -149,5 +214,6 @@
       <span>maydly study archive</span>
     </div>
   </main>
+  <script src="../note.js"></script>
 </body>
 </html>

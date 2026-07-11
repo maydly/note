@@ -20,6 +20,7 @@
         <a href="#version">버전관리</a>
         <a href="#evolve">발전 버전</a>
         <a href="#workid">업무ID</a>
+        <a href="#deep">📚 심화</a>
         <a href="#check">점검</a>
         <a href="#glossary">용어</a>
       </div>
@@ -147,6 +148,70 @@
       </div>
     </section>
 
+    <!-- 교육 모듈 (탭) -->
+    <section id="deep">
+      <div class="section-head">
+        <h2>📚 더 깊이 — 강의용 상세</h2>
+        <p class="section-note">위가 요약이라면, 여기는 자세히 배우는 곳. 탭을 눌러 펼쳐 보세요.</p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab-labels">
+          <button class="tab-label is-active" type="button">개념 깊이</button>
+          <button class="tab-label" type="button">예시로 따라가기</button>
+          <button class="tab-label" type="button">흔한 실수</button>
+          <button class="tab-label" type="button">직접 해보기</button>
+        </div>
+        <div class="tab-panels">
+          <!-- 탭1: 개념 깊이 -->
+          <div class="tab-panel is-active">
+            <h4>이름·버전은 "정리"가 아니라 "미래의 나를 위한 안내판"이다</h4>
+            <p>파일명을 짓는 일은 예뻐 보이려는 게 아니다. <strong>반년 뒤의 내가 아무 기억 없이 폴더를 열었을 때, 헤매지 않게 미리 남겨두는 안내판</strong>이다. 촬영본 수백 장, 시안 여러 벌이 쌓이는 작업일수록 "그 파일 어디 갔지"가 곧 시간 손실이 된다. 이름만으로 내용·상태를 알 수 있으면 검색조차 필요 없다.</p>
+            <p>버전관리도 같은 마음에서 나온다. 사진을 보정할 때 원본을 지우지 않고 사본에서 작업하듯, 파일도 <strong>이전 것을 덮어쓰지 않고 새 버전을 쌓는다.</strong> 그러면 방향을 잘못 잡았을 때 언제든 이전 지점으로 돌아갈 수 있다. 덮어쓴 순간, 돌아갈 길은 사라진다. 버전 폴더는 그 "돌아갈 길"을 통째로 보관하는 서랍이다.</p>
+            <p>핵심은 규칙이 복잡해서가 아니라, <strong>기준이 딱 하나라서</strong> 지켜진다는 점이다 — "목록을 보는 사람이 이름만으로 이게 뭔지 즉시 아는가." 이 한 문장이 통과되면 정리된 것이고, 안 되면 아무리 폴더를 나눠도 정리가 아니다.</p>
+          </div>
+
+          <!-- 탭2: 예시로 따라가기 -->
+          <div class="tab-panel">
+            <h4>시안 파일 하나를 이름 짓고 버전 올려보기</h4>
+            <ul class="bullets">
+              <li><strong>1) 대상+세부+유형으로 짓기.</strong> <code>시안.html</code> 대신 <code>가을화보_예약안내페이지_시안.html</code>처럼. 열지 않아도 무엇인지 보인다.</li>
+              <li><strong>2) 첫 버전 저장.</strong> 버전 폴더를 만들고 그 안에 <code>가을화보_예약안내페이지_시안_260711_1430_v1.0.html</code>. 이름 → 날짜시간 → 버전 순서를 지킨다.</li>
+              <li><strong>3) 오타 하나 고칠 때.</strong> 원본을 덮지 않고 <code>…_260711_1615_v1.1.html</code>로 새로 저장. 작은 수정이니 소수점만 올린다.</li>
+              <li><strong>4) 구성을 크게 바꿀 때.</strong> 방향 전환이면 <code>…_v2.0.html</code>. 이전 v1 계열은 그대로 서랍에 남는다.</li>
+              <li><strong>5) 최종본 꺼내두기.</strong> 지금의 최신 한 벌만 버전 폴더 <strong>밖</strong>에 <code>가을화보_예약안내페이지_시안.html</code>(날짜·버전 없이). "이게 지금 것"이 한눈에 보인다.</li>
+            </ul>
+            <p>보다시피 파일은 늘어나도 헷갈리지 않는다. 밖에 있는 것이 최신, 안에 쌓인 것이 지나온 길이다.</p>
+          </div>
+
+          <!-- 탭3: 흔한 실수 -->
+          <div class="tab-panel">
+            <h4>이런 데서 정리가 무너진다</h4>
+            <ul class="bullets">
+              <li><strong>① 덮어쓰기.</strong> "조금만 고치는 건데" 하고 원본 위에 저장 → 돌아갈 지점이 사라진다. 잘못 고친 걸 깨달아도 복구 불가. → 항상 새 버전으로.</li>
+              <li><strong>② 두루뭉술한 이름.</strong> <code>최종.html</code>, <code>진짜최종.html</code>, <code>찐최종.html</code> → 뭐가 진짜인지 아무도 모른다. → 대상+세부+유형과 버전번호로.</li>
+              <li><strong>③ 날짜를 앞에 두기.</strong> <code>260711_시안.html</code>처럼 날짜부터 쓰면 목록이 날짜순으로만 정렬돼 무슨 파일인지 안 보인다. → 이름을 앞, 날짜·버전은 뒤에.</li>
+              <li><strong>④ 버전마다 폴더 따로.</strong> <code>시안1/</code>, <code>시안수정/</code>, <code>시안진짜/</code>로 흩어두면 흐름을 잃는다. → 한 버전 폴더에 순차 번호로 모은다.</li>
+              <li><strong>⑤ 최종본이 없음.</strong> 버전 파일만 잔뜩 있고 밖에 최종본이 없으면, 매번 날짜를 비교해 "지금 것"을 찾아야 한다. → 최신 한 벌은 늘 폴더 밖에.</li>
+            </ul>
+          </div>
+
+          <!-- 탭4: 직접 해보기 -->
+          <div class="tab-panel">
+            <h4>지금 내 파일로 해보기 (5분 연습)</h4>
+            <p>바탕화면이나 작업 폴더에서 이름이 애매한 파일 하나를 골라, 아래 네 가지를 적용해 보세요.</p>
+            <ul class="bullets">
+              <li><strong>이름 다시 짓기</strong> — 그 파일을 <code>대상 + 세부내용 + 유형</code>으로 바꿔 적어보기. (예: <code>겨울프로필_촬영준비물_안내.md</code>)</li>
+              <li><strong>버전 번호 붙이기</strong> — 지금 버전을 <code>_YYMMDD_HHMM_v1.0</code> 형식으로 만들어보기.</li>
+              <li><strong>다음 수정 상상하기</strong> — 오타 수정이면 몇으로, 구조 변경이면 몇으로 올릴지 정해보기. (v1.1 / v2.0)</li>
+              <li><strong>최종본 자리 정하기</strong> — 버전 폴더를 만들고, 최신 한 벌을 폴더 밖에 날짜·버전 없이 꺼내두기.</li>
+            </ul>
+            <p>이 네 가지가 손에 붙으면, 파일이 아무리 쌓여도 "어디 뒀더라"가 사라집니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- 06 점검 -->
     <section id="check">
       <div class="section-head">
@@ -182,5 +247,6 @@
       <span>maydly study archive</span>
     </div>
   </main>
+  <script src="../note.js"></script>
 </body>
 </html>

@@ -20,6 +20,7 @@
         <a href="#gate">승인 게이트</a>
         <a href="#roles">역할 지도</a>
         <a href="#scale">일 크기</a>
+        <a href="#deep">📚 심화</a>
         <a href="#check">점검</a>
         <a href="#glossary">용어</a>
       </div>
@@ -148,6 +149,71 @@
       </div>
     </section>
 
+    <!-- 교육 모듈 (탭) -->
+    <section id="deep">
+      <div class="section-head">
+        <h2>📚 더 깊이 — 강의용 상세</h2>
+        <p class="section-note">위가 요약이라면, 여기는 자세히 배우는 곳. 탭을 눌러 펼쳐 보세요.</p>
+      </div>
+      <div class="tabs">
+        <div class="tab-labels">
+          <button class="tab-label is-active" type="button">개념 깊이</button>
+          <button class="tab-label" type="button">예시로 따라가기</button>
+          <button class="tab-label" type="button">흔한 실수</button>
+          <button class="tab-label" type="button">직접 해보기</button>
+        </div>
+        <div class="tab-panels">
+          <!-- 탭1: 개념 깊이 -->
+          <div class="tab-panel is-active">
+            <h4>왜 "역할을 나누고, 구현 직전에 멈추나"</h4>
+            <p>혼자 일할 때 가장 놓치기 쉬운 게 <strong>자기 검수의 맹점</strong>이다. 내가 만든 결과를 내가 검사하면, 만들 때 놓친 지점을 검사할 때도 똑같이 놓친다. 눈이 이미 그 방향에 익숙해졌기 때문이다. 그래서 같은 AI라도 단계마다 <strong>다른 역할</strong>을 씌운다. 만드는 역할, 검수하는 역할, 의심하고 반론하는 역할을 떼어 놓으면, 한 시선이 지나친 걸 다른 시선이 잡는다. 원고를 쓴 사람과 교정 보는 사람을 나누는 것과 같은 이치다.</p>
+            <p>또 하나의 심장은 <strong>구현 직전의 승인 게이트</strong>다. AI는 방향이 조금 어긋나 있어도 끝까지 그럴듯하게 완성해 버리는 성질이 있다. 잘못된 방향으로 한참 만들어 놓으면 되돌리는 비용이 크다. 그래서 조사·계획까지만 해서 사람 앞에 세우고, <strong>사람이 방향을 확인해 승인한 뒤에만 실제 파일에 손을 댄다.</strong> 이 "멈춤" 하나가 결정권을 사람에게 붙들어 둔다.</p>
+            <p>정리하면 품질은 두 장치에서 나온다 — <strong>시선을 나눠 객관성을 만들고, 구현 직전에 멈춰 사람이 방향을 쥔다.</strong> 이 둘이 있으면 혼자 하는 작업도 작은 팀처럼 굴러간다.</p>
+          </div>
+
+          <!-- 탭2: 예시로 따라가기 -->
+          <div class="tab-panel">
+            <h4>요청 하나가 결과물이 되기까지 — 따라가 보기</h4>
+            <p>"안내 페이지 문구를 좀 바꿔줘" 같은 요청이 들어왔다고 하자. 사이클은 이렇게 흐른다.</p>
+            <ul class="bullets">
+              <li><strong>1) 검토(Challenge).</strong> 바로 고치지 않고 "방향이 맞나, 브랜드 톤을 해치진 않나"부터 의심한다.</li>
+              <li><strong>2) 분해·조사·계획(Plan).</strong> 요청을 항목으로 쪼개고, 관련 파일·구조를 파악해 작업 계획을 세운다.</li>
+              <li><strong>3) 멈춤 — 승인 대기.</strong> 계획을 사람 앞에 세운다. 여기서 승인 전엔 파일을 건드리지 않는다.</li>
+              <li><strong>4) 구현(Build).</strong> 승인된 계획대로만 만든다. 시키지 않은 변경은 끼워넣지 않는다.</li>
+              <li><strong>5) 검수·교차감사(QA·Audit).</strong> 요청·계획과 맞는지 검수하고, 다른 도구의 독립된 시선으로 한 번 더 본다. 이 역할들은 직접 고치지 않고 보고만 한다.</li>
+              <li><strong>6) 정리·기록.</strong> 결과를 정리하고, 결정·흐름·다음 시작점을 기록으로 남긴다.</li>
+            </ul>
+            <p>보다시피 "멈춤(3번)"이 한복판에 있다. 그 앞은 준비, 그 뒤는 실행이다.</p>
+          </div>
+
+          <!-- 탭3: 흔한 실수 -->
+          <div class="tab-panel">
+            <h4>이 방식을 쓸 때 이런 데서 자주 어긋난다</h4>
+            <ul class="bullets">
+              <li><strong>① 승인 게이트를 건너뜀.</strong> 급해서 계획 없이 바로 구현에 들어간다. → 어긋난 결과를 끝까지 완성하는 낭비. 구현 전 한 번 멈춘다.</li>
+              <li><strong>② 만든 시선이 검수까지 함.</strong> 만든 역할이 곧바로 "잘 됐네" 한다. → 검수·감사는 별도 시선으로 분리.</li>
+              <li><strong>③ 시키지 않은 변경 끼워넣기.</strong> "겸사겸사" 다른 것도 고친다. → 승인된 범위만 손댄다.</li>
+              <li><strong>④ 작은 일에도 풀 사이클 강제.</strong> 오타 하나에 전 단계를 돌려 지친다. → 일 크기에 맞춰 단계를 줄인다.</li>
+              <li><strong>⑤ 기록을 안 남김.</strong> 무엇을 왜 정했는지 잊어 같은 고민을 반복한다. → 결정·흐름·다음 시작점을 남긴다.</li>
+            </ul>
+          </div>
+
+          <!-- 탭4: 직접 해보기 -->
+          <div class="tab-panel">
+            <h4>내 작업 하나에 적용해보기 (5분 연습)</h4>
+            <p>지금 앞둔 작업 하나를 떠올려, 아래 네 칸을 채워 보세요. 사이클을 어디까지 돌릴지 스스로 정하는 연습입니다.</p>
+            <ul class="bullets">
+              <li><strong>일 크기는?</strong> — 오타급 소규모인지, 구조를 바꾸는 큰일인지 한 단어로.</li>
+              <li><strong>어디까지 돌릴까?</strong> — 작은 일이면 "구현+가벼운 확인", 큰일이면 "검토부터 풀 사이클".</li>
+              <li><strong>멈춤 지점은?</strong> — 사람 승인이 필요한 순간이 어디인지 한 곳 지정.</li>
+              <li><strong>누가 검수하나?</strong> — 만든 시선과 다른 시선(교차감사·다른 도구)을 어디서 넣을지.</li>
+            </ul>
+            <p>네 칸이 채워지면, 이 작업에 맞는 "가벼운 사이클 / 신중한 사이클"이 이미 그려집니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- 06 점검 -->
     <section id="check">
       <div class="section-head">
@@ -183,5 +249,6 @@
       <span>maydly study archive</span>
     </div>
   </main>
+  <script src="../note.js"></script>
 </body>
 </html>

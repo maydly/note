@@ -20,6 +20,7 @@
         <a href="#layout">레이아웃 도구</a>
         <a href="#tone">톤</a>
         <a href="#light">가볍게</a>
+        <a href="#deep">📚 심화</a>
         <a href="#check">점검</a>
         <a href="#glossary">용어</a>
       </div>
@@ -166,6 +167,69 @@ h1{ color:var(--ink); }</pre>
       </div>
     </section>
 
+    <!-- 교육 모듈 (탭) -->
+    <section id="deep">
+      <div class="section-head">
+        <h2>📚 더 깊이 — 강의용 상세</h2>
+        <p class="section-note">위가 요약이라면, 여기는 자세히 배우는 곳. 탭을 눌러 펼쳐 보세요.</p>
+      </div>
+      <div class="tabs">
+        <div class="tab-labels">
+          <button class="tab-label is-active" type="button">개념 깊이</button>
+          <button class="tab-label" type="button">예시로 따라가기</button>
+          <button class="tab-label" type="button">흔한 실수</button>
+          <button class="tab-label" type="button">직접 해보기</button>
+        </div>
+        <div class="tab-panels">
+          <!-- 탭1: 개념 깊이 -->
+          <div class="tab-panel is-active">
+            <h4>왜 CSS를 "나누는 것"이 실력인가 — 영향 범위라는 개념</h4>
+            <p>페이지가 하나일 땐 CSS를 어떻게 쓰든 티가 안 난다. 문제는 페이지가 늘 때다. 모든 페이지가 <strong>하나의 CSS 파일</strong>을 함께 쓰면, 편해 보이지만 함정이 있다 — 랜딩(첫 화면)을 예쁘게 바꾸려고 한 줄 고쳤을 뿐인데, 그 스타일을 공유하던 <strong>하위 노트 수십 개가 동시에 깨진다</strong>. 이걸 "영향 범위가 넓다"고 한다.</p>
+            <p>그래서 성격이 다른 것끼리 파일을 가른다. 이 아카이브는 <strong>랜딩 전용(landing.css)</strong>과 <strong>노트 공용(note.css)</strong>을 나눠 뒀다. 랜딩을 만질 땐 <code>landing.css</code>만 건드리니 하위 노트는 안전하고, 반대로 노트 디자인을 한 번 고치면 <code>note.css</code> 하나로 전 노트에 일괄 반영된다. 핵심은 "고쳤을 때 <strong>어디까지 흔들리는가</strong>를 미리 좁혀 두는 것" — 이게 구조 설계의 본질이다. <strong>집에서 방마다 두꺼비집(차단기)을 나눠 두는 것</strong>과 같다. 한 방을 손봐도 집 전체가 정전되지 않게.</p>
+            <p>같은 원리로 색·여백 값은 <code>:root</code>의 CSS 변수 한 곳에 모은다. 톤을 바꿀 때 수십 군데를 찾아다니지 않고 변수 한 줄만 고치면 전체가 따라온다. "고칠 곳을 한 곳으로 모으고, 영향 범위를 좁힌다" — 파일 분리도 변수도 결국 같은 생각이다.</p>
+          </div>
+
+          <!-- 탭2: 예시로 따라가기 -->
+          <div class="tab-panel">
+            <h4>새 노트 하나를 만든다면 — 구조를 지키며</h4>
+            <ul class="bullets">
+              <li><strong>1) 템플릿 복사.</strong> 빈 화면에서 시작하지 않는다. <code>template.html</code>을 복사해 <code>studies/새이름.html</code>로 저장. 뼈대와 디자인이 저절로 따라온다.</li>
+              <li><strong>2) 내용만 교체.</strong> 제목·커버 문구·본문만 바꾼다. 구조(섹션 뼈대)와 클래스는 그대로 둬야 디자인이 통일된다.</li>
+              <li><strong>3) 공용 CSS 연결 확인.</strong> <code>&lt;link rel="stylesheet" href="../note.css"&gt;</code>가 걸려 있는지 본다. 개별 페이지에서 새 CSS 파일을 함부로 만들지 않는다.</li>
+              <li><strong>4) 색이 필요하면 변수로.</strong> 새 색을 직접 박지 말고 <code>:root</code>의 변수(<code>var(--ink)</code> 등)를 쓴다. 톤 일관성이 유지된다.</li>
+              <li><strong>5) 좁은 화면 점검.</strong> 브라우저 폭을 줄여 2열이 1열로 잘 접히는지 본다. <code>@media (max-width:720px)</code> 규칙이 이걸 담당한다.</li>
+            </ul>
+            <p>순서를 지키면 노트가 30개로 늘어도 디자인이 흐트러지지 않고, 한 번의 수정으로 전체를 손볼 수 있다.</p>
+          </div>
+
+          <!-- 탭3: 흔한 실수 -->
+          <div class="tab-panel">
+            <h4>구조가 무너지는 지점</h4>
+            <ul class="bullets">
+              <li><strong>① 페이지마다 CSS 복붙.</strong> 급하다고 각 HTML에 스타일을 직접 넣으면, 나중에 톤을 바꿀 때 파일마다 다 고쳐야 한다. → 공용은 <code>note.css</code> 한 곳에.</li>
+              <li><strong>② 색·여백을 값으로 직접 박기.</strong> <code>#18212f</code>를 여기저기 하드코딩하면 톤 변경이 지옥이 된다. → <code>:root</code> 변수로 모으고 <code>var()</code>로 참조.</li>
+              <li><strong>③ 랜딩과 노트 CSS를 한 파일에.</strong> 영향 범위가 넓어져 한쪽을 고치면 다른 쪽이 깨진다. → 성격이 다르면 파일을 가른다.</li>
+              <li><strong>④ 반응형 빠뜨림.</strong> PC 화면만 보고 넘기면 폰에서 2열이 터진다. → <code>@media</code>로 좁은 화면 분기를 반드시 넣는다.</li>
+              <li><strong>⑤ 무거운 이미지·base64.</strong> 원본 이미지를 그대로, 혹은 HTML 안에 통째로 박으면 파일이 수 MB로 부푼다. → 적정 크기로 줄이고 별도 파일로 분리한다.</li>
+            </ul>
+          </div>
+
+          <!-- 탭4: 직접 해보기 -->
+          <div class="tab-panel">
+            <h4>내 사이트로 점검하기 (5분)</h4>
+            <p>지금 만드는(또는 만들려는) 사이트를 떠올리며 아래 네 가지를 답해 보세요.</p>
+            <ul class="bullets">
+              <li><strong>영향 범위는?</strong> — 지금 CSS를 한 줄 고치면 어디까지 바뀌는가? 랜딩과 하위 페이지가 같은 파일을 쓰고 있진 않은가?</li>
+              <li><strong>고칠 곳은 한 곳인가?</strong> — 자주 바꾸는 색·여백이 <code>:root</code> 변수로 모여 있는가, 여기저기 흩어져 있는가?</li>
+              <li><strong>새 페이지 시작점은?</strong> — 복사해서 시작할 <code>template.html</code>이 있는가? 없다면 하나 만들 만한가?</li>
+              <li><strong>폰과 무게는?</strong> — 좁은 화면에서 안 깨지는가, 이미지가 페이지를 무겁게 만들지 않는가?</li>
+            </ul>
+            <p>네 답이 분명하면, 페이지가 늘어도 사이트가 흔들리지 않고 가볍게 유지됩니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- 06 점검 -->
     <section id="check">
       <div class="section-head">
@@ -203,5 +267,6 @@ h1{ color:var(--ink); }</pre>
       <span>maydly study archive</span>
     </div>
   </main>
+  <script src="../note.js"></script>
 </body>
 </html>
