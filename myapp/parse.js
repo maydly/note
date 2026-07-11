@@ -36,8 +36,8 @@
     { re: /윰\(Yum\)|^윰/i, cat: "장비·카메라" }
   ];
   var INTERNAL = [
-    ["이체·본인계좌", function (t) { return /김명진|김성규/.test(t.desc); }],
-    ["이체·고수빈(가족확인要)", function (t) { return /고수빈/.test(t.desc); }],
+    ["이체·본인계좌", function (t) { return /김명진|김성규/.test(t.desc) && !/SKT|\bKT\b|LGU|유플|한전|삼천리|도시가스|전기|가스|오일뱅크|칼텍스|주유|보험|통신|한국전력/.test(t.desc); }],
+    ["지인·가족송금", function (t) { return /고수빈/.test(t.desc); }],  // 명진 확정: 지출
     ["간편결제충전·계좌이동", function (t) { return /부족분충전|카카오페이|카카오뱅크|내계좌로|전체금액\s*전달|ATM출금|수협ATM|VAN출금|내보내기|내계좌/.test(t.desc + t.sub); }]
   ];
   var INCOME = [
@@ -69,7 +69,7 @@
     var list = t.isIn ? INCOME : EXPENSE;
     for (var k = 0; k < list.length; k++) if (list[k][1](t)) return list[k][0];
     var isName = /^[가-힣]{2,4}(\(|$| )/.test(t.desc.trim()) || /^[a-z]{3,}$/i.test(t.desc.trim());
-    if (isName) return t.isIn ? "수입·촬영/사업" : "이체·송금(인명·확인)";
+    if (isName) return t.isIn ? "수입·촬영/사업" : "지인·가족송금";  // 명진 확정: 사람송금(환불·당근 등)=지출
     return t.isIn ? "미분류·입금" : "미분류·지출";
   }
 
