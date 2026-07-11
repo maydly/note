@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>장비 구매관리 · 담기 흐름 (목업)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,sans-serif;color:#2b2621;min-height:100vh;
+  background:#f5f2ec;max-width:460px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 34px) 20px 120px}
+.eyebrow{font-size:11px;letter-spacing:3px;color:#a99e8f;text-transform:uppercase;margin-bottom:6px}
+.h1{font-size:26px;font-weight:800;letter-spacing:-.6px}
+.sub{font-size:12.5px;color:#a99e8f;margin:6px 0 22px}
+.demo-badge{position:fixed;right:14px;top:calc(env(safe-area-inset-top) + 12px);z-index:60;font-size:10px;font-weight:700;color:#b5745c;background:#f3e2da;padding:5px 10px;border-radius:20px}
+.seg{font-size:12px;font-weight:700;color:#a99e8f;margin:18px 2px 10px;letter-spacing:.3px}
+/* 장비 카드 */
+.gear{display:flex;align-items:center;gap:13px;background:#fff;border:1px solid #ece7df;border-radius:16px;padding:15px;margin-bottom:10px;box-shadow:0 3px 10px rgba(90,70,50,.05)}
+.gi{flex:1;min-width:0}
+.gn{font-size:15.5px;font-weight:700;letter-spacing:-.2px}
+.gs{font-size:12px;color:#9a9086;margin-top:3px}
+.addb{flex:0 0 auto;border:1.5px solid #c98e7f;background:#fff;color:#c98e7f;font-size:12.5px;font-weight:700;
+  padding:8px 13px;border-radius:20px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.addb.on{background:#a3bd90;border-color:#a3bd90;color:#fff}
+/* 구매계획 시트 */
+.peek{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:min(420px,92vw);
+  background:#2e2a26;color:#fff;border-radius:22px;padding:15px 18px;box-shadow:0 10px 30px rgba(0,0,0,.25);cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;z-index:50}
+.peek b{font-size:15px}
+.peek .cnt{background:#c98e7f;color:#fff;font-size:12px;font-weight:800;border-radius:20px;padding:2px 10px;margin-left:8px}
+.peek .go{font-size:13px;opacity:.85}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-width:460px;margin:0 auto;background:#f5f2ec;border-radius:22px 22px 0 0;
+  box-shadow:0 -10px 40px rgba(0,0,0,.2);z-index:70;transform:translateY(110%);transition:transform .28s ease;padding:22px 20px calc(env(safe-area-inset-bottom) + 26px);max-height:82vh;overflow-y:auto}
+.sheet.open{transform:translateY(0)}
+.sheeth{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.sheeth .t{font-size:19px;font-weight:800}
+.sheeth .cl{font-size:22px;color:#a99e8f;cursor:pointer;padding:4px}
+.sheetsub{font-size:12px;color:#a99e8f;margin-bottom:16px}
+.plan{display:flex;gap:12px;background:#fff;border:1px solid #ece7df;border-radius:14px;padding:14px;margin-bottom:9px}
+.rank{flex:0 0 26px;font-weight:800;font-size:15px;color:#c98e7f;text-align:center}
+.pi{flex:1;min-width:0}
+.pn{font-size:14.5px;font-weight:700}
+.band{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.bchip{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px}
+.b-best{background:#e7eee2;color:#5f7d53}.b-avg{background:#eee9e0;color:#8a7d68}.b-cap{background:#f6e3df;color:#b5564b}
+.b-wait{background:#efeae1;color:#aaa093}
+.ov{position:fixed;inset:0;background:rgba(30,25,20,.35);z-index:65;opacity:0;pointer-events:none;transition:opacity .28s}
+.ov.open{opacity:1;pointer-events:auto}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:rgba(46,42,38,.92);color:#fff;font-size:13px;font-weight:600;padding:10px 17px;border-radius:22px;z-index:80;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+</style></head><body>
+<span class="demo-badge">목업</span>
+<div class="eyebrow">MAYDLY EQUIPMENT · 비교표</div>
+<div class="h1">카메라 · 디지털 바디</div>
+<div class="sub">마음에 드는 장비를 <b>담기</b> → 구매계획으로 자동으로 넘어가요</div>
+
+<div class="seg">풀프레임 하이브리드</div>
+<div class="gear"><div class="gi"><div class="gn">Sony A7M5</div><div class="gs">보유 A7M4 업그레이드 후보 · 하이브리드</div></div><button class="addb" onclick="pick(this,'Sony A7M5')">담기</button></div>
+<div class="gear"><div class="gi"><div class="gn">Canon R6 II</div><div class="gs">AF·연사 강점 · 하이브리드</div></div><button class="addb" onclick="pick(this,'Canon R6 II')">담기</button></div>
+<div class="gear"><div class="gi"><div class="gn">Panasonic Lumix S5II</div><div class="gs">영상 특화 · 가성비</div></div><button class="addb" onclick="pick(this,'Lumix S5II')">담기</button></div>
+
+<div class="seg">레트로 · 필름</div>
+<div class="gear"><div class="gi"><div class="gn">Nikon Zf</div><div class="gs">레트로 조작계 · 풀프레임</div></div><button class="addb" onclick="pick(this,'Nikon Zf')">담기</button></div>
+<div class="gear"><div class="gi"><div class="gn">Ricoh GR IIIx</div><div class="gs">고정렌즈 컴팩트 · 스냅</div></div><button class="addb" onclick="pick(this,'Ricoh GR IIIx')">담기</button></div>
+
+<!-- 구매계획 미리보기 pill -->
+<div class="peek" id="peek" onclick="openSheet()"><span><b>구매계획</b><span class="cnt" id="cnt">0</span></span><span class="go">열기 ↑</span></div>
+
+<!-- 구매계획 시트 -->
+<div class="ov" id="ov" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sheeth"><div class="t">🏆 구매계획</div><div class="cl" onclick="closeSheet()">×</div></div>
+  <div class="sheetsub">담은 장비 · 순위대로 · 가격밴드/메모는 클로드가 채워줌</div>
+  <div id="planlist"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+var plan=[]; // 담긴 장비
+function pick(btn,name){
+  if(btn.classList.contains('on')){ // 빼기
+    btn.classList.remove('on');btn.textContent='담기';
+    plan=plan.filter(function(x){return x!==name});
+  }else{
+    btn.classList.add('on');btn.textContent='담김 ✓';
+    plan.push(name);toast('구매계획에 담김 · '+name);
+  }
+  document.getElementById('cnt').textContent=plan.length;
+  renderPlan();
+}
+function renderPlan(){
+  if(!plan.length){document.getElementById('planlist').innerHTML='<div style="color:#b3a89b;text-align:center;padding:24px 0;font-size:13px">아직 담은 장비가 없어요.<br>비교표에서 [담기] 눌러보세요.</div>';return;}
+  document.getElementById('planlist').innerHTML=plan.map(function(n,i){
+    return '<div class="plan"><div class="rank">'+(i+1)+'</div><div class="pi"><div class="pn">'+n+'</div>'
+      +'<div class="band"><span class="bchip b-wait">가격밴드 · 클로드가 채우는 중…</span></div></div></div>';
+  }).join('');
+}
+var _t;function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(_t);_t=setTimeout(function(){t.classList.remove('on')},1800);}
+function openSheet(){document.getElementById('sheet').classList.add('open');document.getElementById('ov').classList.add('open');}
+function closeSheet(){document.getElementById('sheet').classList.remove('open');document.getElementById('ov').classList.remove('open');}
+renderPlan();
+</script>
+</body></html>
