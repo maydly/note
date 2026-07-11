@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>업무 진행 공유 공간 만들기 — maydly Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../note.css">
+</head>
+<body>
+  <div class="topbar">
+    <nav class="nav" aria-label="페이지 목차">
+      <div class="brand"><span class="brand-mark">←</span> <a href="../index.html" style="text-decoration:none">Study Archive</a></div>
+      <div class="nav-links">
+        <a href="#intro">개요</a>
+        <a href="#idea">발상</a>
+        <a href="#what">무엇을</a>
+        <a href="#where">어디에</a>
+        <a href="#when">언제 갱신</a>
+        <a href="#why">원본 분리</a>
+        <a href="#check">점검</a>
+        <a href="#glossary">용어</a>
+      </div>
+    </nav>
+  </div>
+
+  <header>
+    <div class="hero-copy">
+      <p class="eyebrow">Workflow · maydly</p>
+      <h1>"파일 보관"이 아니라<br>"진행"을 공유하기</h1>
+      <p class="lead">협업 상대(대표·동료)가 내 일이 어디까지 왔는지 보게 하려면, 파일을 던져주는 게 아니라 "진행 상태"를 보여줘야 한다. 진행 공유 공간을 만들며 배운 것 — 무엇을, 어디에, 언제 갱신하고, 왜 원본과 분리하는지 정리했다.</p>
+      <div class="meta-row">
+        <span class="pill">진행 공유</span>
+        <span class="pill">협업</span>
+        <span class="pill">대시보드</span>
+        <span class="pill">원본 분리</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="intro">
+      <div class="section-head">
+        <h2>이 노트를 읽고 나면</h2>
+        <p class="section-note">"공유 = 파일 던지기"라는 습관을 바꾼다.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>"파일 보관"과 "진행 공유"가 왜 다른지 안다.</span></li>
+        <li><span class="check">✓</span><span>공유 공간에 무엇을 담아야(상태·다음 할일) 하는지 안다.</span></li>
+        <li><span class="check">✓</span><span>공유 공간을 원본 작업 공간과 왜 분리하는지 안다.</span></li>
+        <li><span class="check">✓</span><span>시작·완료 시점에 자동으로 갱신하는 흐름을 안다.</span></li>
+      </ul>
+      <div class="callout teal" style="margin-top:14px;">
+        <strong>한 줄 요약</strong> — 상대가 궁금한 건 "파일"이 아니라 <strong>"지금 어디까지 왔고, 다음은 뭔가"</strong>다. 그걸 보여주는 별도 공간을 원본과 분리해 둔다.
+      </div>
+    </section>
+
+    <section id="idea">
+      <div class="section-head">
+        <h2>01 — 파일 보관 ≠ 진행 공유</h2>
+        <p class="section-note">폴더를 열어준다고 진행이 보이진 않는다.</p>
+      </div>
+      <p style="color:var(--muted)">작업 파일 폴더를 통째로 공유하면, 상대는 수십 개 파일 속에서 "무슨 일이 어디까지 됐는지" 알 수 없다. 필요한 건 <strong>진행 상태</strong>다 — 어떤 업무가 진행 중이고, 완료됐고, 다음에 무엇을 하는지. 공유의 목적은 "파일 접근"이 아니라 "상황 파악"이다.</p>
+    </section>
+
+    <section id="what">
+      <div class="section-head">
+        <h2>02 — 무엇을 담나</h2>
+        <p class="section-note">상태와 다음 행동.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card"><span class="tag teal">상태</span><h3>업무별 진행</h3><p>어떤 업무가 진행 중/완료/보류인지 한눈에. 목록 + 상태 라벨.</p></div>
+        <div class="card"><span class="tag blue">다음</span><h3>다음 할 일</h3><p>지금 막힌 지점, 상대의 확인이 필요한 것, 다음 단계.</p></div>
+        <div class="card"><span class="tag violet">링크</span><h3>필요할 때만 원본</h3><p>세부가 궁금하면 볼 수 있게 링크만. 기본은 요약, 원본은 선택.</p></div>
+      </div>
+      <div class="callout" style="margin-top:14px;">
+        핵심은 <strong>요약</strong>이다. 상대가 5초 안에 "아, 이렇게 돌아가는구나"를 알 수 있어야 한다. 원본 파일은 링크로 뒤에 둔다.
+      </div>
+    </section>
+
+    <section id="where">
+      <div class="section-head">
+        <h2>03 — 어디에 두나</h2>
+        <p class="section-note">원본 작업 공간 "밖"에.</p>
+      </div>
+      <p style="color:var(--muted)">진행 공유 공간은 내 원본 작업 폴더 <strong>안이 아니라 밖</strong>에 따로 둔다. 상대에게 공유하는 건 이 "요약 공간"이고, 내 원본 작업 폴더는 그대로 내 것으로 남는다. 그래야 상대가 원본을 헤집지 않고, 나도 공유 때문에 작업 구조를 바꾸지 않는다.</p>
+    </section>
+
+    <section id="when">
+      <div class="section-head">
+        <h2>04 — 언제 갱신하나</h2>
+        <p class="section-note">시작할 때, 끝낼 때 — 자동으로.</p>
+      </div>
+      <p style="color:var(--muted)">공유 공간이 낡으면 안 보게 된다. 그래서 <strong>업무 시작·완료 시점을 트리거</strong>로 삼아 갱신한다. 일을 시작하면 "예정"에, 끝내면 "완료"에 기록되는 루틴을 만들면, 손이 많이 안 가도 최신이 유지된다.</p>
+      <div class="flow" style="margin-top:12px;">
+        <div class="flow-item"><b>업무 시작</b><span>예정에 추가</span></div>
+        <div class="flow-item"><b>진행</b><span>상태 진행중</span></div>
+        <div class="flow-item"><b>업무 완료</b><span>완료로 이동</span></div>
+        <div class="flow-item"><b>공유 공간</b><span>자동 최신</span></div>
+      </div>
+    </section>
+
+    <section id="why">
+      <div class="section-head">
+        <h2>05 — 왜 원본과 분리하나</h2>
+        <p class="section-note">공유가 작업을 흔들지 않게.</p>
+      </div>
+      <p style="color:var(--muted)">공유 공간과 원본을 섞으면, 상대에게 안 보여줄 것(초안·민감정보)까지 노출되거나, 공유 형식에 맞추느라 작업 구조가 왜곡된다. 분리하면 <strong>보여줄 것만 요약해 내보내고</strong>, 원본은 내 방식대로 유지된다. 공유용에는 내부 수치·민감정보를 넣지 않는다.</p>
+      <div class="callout gold" style="margin-top:14px;">
+        이 "보여줄 것만 분리"는 <a href="./repo-security-commits.html" style="color:var(--blue)">저장소 보안</a>·<a href="./workspace-structure.html" style="color:var(--blue)">작업장 문서구조</a> 노트의 정신과 같다 — 공개/내부를 나눈다.
+      </div>
+    </section>
+
+    <section id="check">
+      <div class="section-head">
+        <h2>06 — 공유 공간 점검</h2>
+        <p class="section-note">만들 때.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>파일이 아니라 "진행 상태"를 보여주는가</span></li>
+        <li><span class="check">✓</span><span>5초 안에 상황이 파악되는 요약인가</span></li>
+        <li><span class="check">✓</span><span>원본 작업 공간과 분리돼 있는가</span></li>
+        <li><span class="check">✓</span><span>시작·완료 트리거로 최신이 유지되는가</span></li>
+        <li><span class="check">✓</span><span>내부 수치·민감정보를 빼고 공유하는가</span></li>
+      </ul>
+    </section>
+
+    <section id="glossary">
+      <div class="section-head">
+        <h2>07 — 용어 한눈에</h2>
+        <p class="section-note">이 노트에 나온 단어들.</p>
+      </div>
+      <table class="compare">
+        <tr><th>용어</th><th>뜻</th></tr>
+        <tr><td>진행 공유</td><td>파일이 아니라 업무의 상태·다음 행동을 공유하는 것.</td></tr>
+        <tr><td>공유 공간</td><td>상대가 진행을 보는, 원본과 분리된 요약 공간.</td></tr>
+        <tr><td>상태 라벨</td><td>진행중·완료·보류 등 한눈에 보이는 표시.</td></tr>
+        <tr><td>트리거</td><td>시작·완료처럼 갱신을 일으키는 시점.</td></tr>
+        <tr><td>공개/내부 분리</td><td>보여줄 것과 안 보여줄 것을 나누는 원칙.</td></tr>
+      </table>
+    </section>
+
+    <div class="footer">
+      <span>Workflow · sharing</span>
+      <span>maydly study archive</span>
+    </div>
+  </main>
+</body>
+</html>

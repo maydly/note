@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>문의·예약 폼 시스템 만들기 — maydly Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../note.css">
+</head>
+<body>
+  <div class="topbar">
+    <nav class="nav" aria-label="페이지 목차">
+      <div class="brand"><span class="brand-mark">←</span> <a href="../index.html" style="text-decoration:none">Study Archive</a></div>
+      <div class="nav-links">
+        <a href="#intro">개요</a>
+        <a href="#branch">갈래 폼</a>
+        <a href="#fields">필드 설계</a>
+        <a href="#backend">백엔드 연결</a>
+        <a href="#security">토큰·분리</a>
+        <a href="#done">완료 경험</a>
+        <a href="#check">점검</a>
+        <a href="#glossary">용어</a>
+      </div>
+    </nav>
+  </div>
+
+  <header>
+    <div class="hero-copy">
+      <p class="eyebrow">Development · maydly</p>
+      <h1>문의·예약 폼을<br>시스템으로 만들기</h1>
+      <p class="lead">여러 종류의 문의를 한 폼으로 받으면서 뒤로는 데이터가 쌓이게 하는 법. 갈래지는 폼 설계, 필드 종류, Google Apps Script로 스프레드시트에 연결하는 백엔드, 토큰 인증·공개/관리 분리까지 — 예약 시스템을 만들며 배운 것을 정리했다.</p>
+      <div class="meta-row">
+        <span class="pill">폼 설계</span>
+        <span class="pill">Apps Script</span>
+        <span class="pill">스프레드시트 연결</span>
+        <span class="pill">토큰 인증</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="intro">
+      <div class="section-head">
+        <h2>이 노트를 읽고 나면</h2>
+        <p class="section-note">"폼 하나"가 아니라 "받는 시스템"을 그린다.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>여러 종류의 문의를 한 폼에서 갈래로 나누는 설계를 안다.</span></li>
+        <li><span class="check">✓</span><span>필드 종류와 폼 UX(선택 pill·파일 업로드·동의)를 안다.</span></li>
+        <li><span class="check">✓</span><span>제출 데이터를 서버 없이 스프레드시트에 쌓는 법을 안다.</span></li>
+        <li><span class="check">✓</span><span>토큰 인증과 공개/관리 분리로 데이터를 지키는 법을 안다.</span></li>
+      </ul>
+      <div class="callout teal" style="margin-top:14px;">
+        <strong>한 줄 요약</strong> — 앞(폼)은 "묻는 흐름"을 잘 갈래 짓고, 뒤(백엔드)는 스프레드시트를 데이터함으로 쓰되 <strong>토큰으로 잠그고 공개용/관리용을 분리</strong>한다.
+      </div>
+    </section>
+
+    <section id="branch">
+      <div class="section-head">
+        <h2>01 — 갈래지는 폼</h2>
+        <p class="section-note">한 입구, 여러 길.</p>
+      </div>
+      <p style="color:var(--muted)">문의 종류가 여럿이면(예: 답사·플랫폼 예약·직접 예약·리뷰·상업 문의), 폼을 다섯 개 만드는 대신 <strong>하나의 입구에서 먼저 종류를 고르게</strong> 하고, 고른 것에 맞는 폼만 보여준다. 사용자는 자기에게 필요한 항목만 보게 되고, 관리자는 한 곳에서 받는다.</p>
+      <div class="flow" style="margin-top:12px;">
+        <div class="flow-item"><b>1. 선택 화면</b><span>무엇을 도와줄까</span></div>
+        <div class="flow-item"><b>2. 갈래 선택</b><span>종류 고르기</span></div>
+        <div class="flow-item"><b>3. 맞는 폼</b><span>필요한 항목만</span></div>
+        <div class="flow-item"><b>4. 제출</b><span>데이터 전송</span></div>
+        <div class="flow-item"><b>5. 완료 화면</b><span>안내</span></div>
+      </div>
+      <div class="callout" style="margin-top:14px;">
+        "← 다시 선택"으로 언제든 갈래를 바꿀 수 있게 두면, 잘못 고른 사람도 막히지 않는다.
+      </div>
+    </section>
+
+    <section id="fields">
+      <div class="section-head">
+        <h2>02 — 필드 설계</h2>
+        <p class="section-note">묻는 방식이 응답의 질을 정한다.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card"><span class="tag blue">기본</span><h3>입력 종류</h3><p>텍스트·이메일·전화·숫자·날짜·URL을 용도에 맞게. 형식이 정해진 건 그 입력 타입으로 받아 실수를 줄인다.</p></div>
+        <div class="card"><span class="tag teal">고르기</span><h3>pill 선택</h3><p>체크·라디오를 알약(pill) 버튼으로 크게. 손가락으로 누르기 쉽고 보기도 또렷하다.</p></div>
+        <div class="card"><span class="tag violet">첨부</span><h3>파일 업로드</h3><p>참고 이미지·서류가 필요하면 업로드 필드. 필수/선택을 명확히.</p></div>
+      </div>
+      <ul class="bullets" style="margin-top:14px;">
+        <li>필수 항목은 <code>*</code>로 표시하고, 안내 문구로 "왜 묻는지"를 짧게 붙인다.</li>
+        <li>세금계산서·동의 같은 조건부 항목은 해당할 때만 펼친다.</li>
+        <li>제출 버튼은 하나, 눈에 띄게. 누른 뒤엔 완료 화면으로 확실히 넘긴다.</li>
+      </ul>
+    </section>
+
+    <section id="backend">
+      <div class="section-head">
+        <h2>03 — 백엔드: 스프레드시트에 쌓기</h2>
+        <p class="section-note">서버를 세우지 않고도.</p>
+      </div>
+      <p style="color:var(--muted)">제출된 데이터는 어딘가 쌓여야 한다. 별도 서버·DB 없이 <strong>Google Apps Script</strong>를 작은 백엔드로 쓰면, 폼 응답을 <strong>구글 스프레드시트</strong>에 한 줄씩 append 할 수 있다. 시트가 곧 데이터함이자 관리 화면이 된다.</p>
+      <div class="grid-2" style="margin-top:14px;">
+        <div class="card"><span class="tag teal">받기</span><h3>doPost / doGet</h3><p>Apps Script 웹앱이 요청을 받아 시트에 기록하거나 시트 데이터를 돌려준다.</p></div>
+        <div class="card"><span class="tag blue">라우팅</span><h3>type로 나누기</h3><p>요청의 <code>type</code>(예: reservations·calendar·config·templates)에 따라 다른 시트를 처리. 한 백엔드가 여러 데이터를 담당.</p></div>
+      </div>
+    </section>
+
+    <section id="security">
+      <div class="section-head">
+        <h2>04 — 토큰 인증 · 공개/관리 분리</h2>
+        <p class="section-note">데이터를 아무나 못 읽게.</p>
+      </div>
+      <p style="color:var(--muted)">시트에 예약·개인정보가 쌓이므로, 관리용 데이터는 아무나 못 읽어야 한다. 세 가지 장치를 뒀다.</p>
+      <ul class="checklist" style="margin-top:12px;">
+        <li><span class="check">✓</span><span><strong>토큰 검증</strong> — 스크립트 속성에 비밀 토큰을 두고, 요청의 <code>?token=</code>이 일치할 때만 데이터를 반환. 없거나 틀리면 거부.</span></li>
+        <li><span class="check">✓</span><span><strong>공개 앱 / 관리 앱 분리</strong> — 누구나 봐도 되는 공개 데이터(예: 공개 캘린더)와 관리 전용 데이터를 <strong>다른 웹앱</strong>으로 나눈다.</span></li>
+        <li><span class="check">✓</span><span><strong>에러 원문 숨김</strong> — 오류가 나도 내부 메시지를 응답에 노출하지 않는다(정보 유출 방지).</span></li>
+        <li><span class="check">✓</span><span>배포 접근 권한을 "본인만"으로 두면 한 겹 더 안전.</span></li>
+      </ul>
+      <div class="callout gold" style="margin-top:14px;">
+        이 원칙은 <a href="./repo-security-commits.html" style="color:var(--blue);font-weight:700;">저장소 보안</a> 노트와 같다 — 비밀(토큰)은 클라이언트에 두지 말고, 실제 토큰 값은 공개 파일·공개 노트에 절대 적지 않는다.
+      </div>
+    </section>
+
+    <section id="done">
+      <div class="section-head">
+        <h2>05 — 완료 경험</h2>
+        <p class="section-note">보낸 뒤가 불안하지 않게.</p>
+      </div>
+      <p style="color:var(--muted)">제출 후 아무 반응이 없으면 사용자는 "된 건가?" 불안해한다. <strong>완료 화면</strong>으로 접수됐음을 확실히 알리고, 다음에 무엇이 일어나는지(연락 시점 등)를 한 줄 안내한다. 작은 마무리가 신뢰를 만든다.</p>
+    </section>
+
+    <section id="check">
+      <div class="section-head">
+        <h2>06 — 폼 시스템 점검</h2>
+        <p class="section-note">공개 전에.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>종류별 갈래가 명확하고, 되돌아갈 수 있는가</span></li>
+        <li><span class="check">✓</span><span>필수 항목·입력 타입이 알맞은가</span></li>
+        <li><span class="check">✓</span><span>제출 데이터가 시트에 제대로 쌓이는가</span></li>
+        <li><span class="check">✓</span><span>관리 데이터가 토큰·분리로 보호되는가</span></li>
+        <li><span class="check">✓</span><span>완료 화면으로 접수를 알리는가</span></li>
+      </ul>
+    </section>
+
+    <section id="glossary">
+      <div class="section-head">
+        <h2>07 — 용어 한눈에</h2>
+        <p class="section-note">이 노트에 나온 단어들.</p>
+      </div>
+      <table class="compare">
+        <tr><th>용어</th><th>뜻</th></tr>
+        <tr><td>갈래 폼</td><td>입구에서 종류를 고르면 맞는 폼만 보여주는 방식.</td></tr>
+        <tr><td>pill 선택</td><td>체크·라디오를 알약형 버튼으로 만든 것. 누르기 쉬움.</td></tr>
+        <tr><td>Google Apps Script</td><td>구글 문서·시트를 다루는 작은 서버(웹앱)를 무료로 만드는 도구.</td></tr>
+        <tr><td>append</td><td>시트 맨 아래에 한 줄 추가하는 것.</td></tr>
+        <tr><td>doGet / doPost</td><td>웹앱이 요청을 받는 진입 함수.</td></tr>
+        <tr><td>토큰 검증</td><td>맞는 비밀 토큰이 있을 때만 응답하는 접근 잠금.</td></tr>
+      </table>
+    </section>
+
+    <div class="footer">
+      <span>Development · forms</span>
+      <span>maydly study archive</span>
+    </div>
+  </main>
+</body>
+</html>
