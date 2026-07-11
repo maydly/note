@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>개인 런처 허브 설계 — maydly Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../note.css">
+</head>
+<body>
+  <div class="topbar">
+    <nav class="nav" aria-label="페이지 목차">
+      <div class="brand"><span class="brand-mark">←</span> <a href="../index.html" style="text-decoration:none">Study Archive</a></div>
+      <div class="nav-links">
+        <a href="#intro">개요</a>
+        <a href="#problem">문제</a>
+        <a href="#link">합치지 말고</a>
+        <a href="#why">왜 안 합치나</a>
+        <a href="#pwa">PWA</a>
+        <a href="#gate">게이트</a>
+        <a href="#check">점검</a>
+        <a href="#glossary">용어</a>
+      </div>
+    </nav>
+  </div>
+
+  <header>
+    <div class="hero-copy">
+      <p class="eyebrow">Workflow · maydly</p>
+      <h1>도구를 합치지 말고<br>한 곳에서 열기</h1>
+      <p class="lead">캘린더·개인 앱·노트가 따로 흩어져 있을 때, 하나로 합치는 대신 "허브(지도)"에서 링크로 여는 설계. 왜 합치지 않는 게 나은지, PWA로 홈 화면 앱처럼 만드는 법, 개인용 최소 보호까지 정리했다.</p>
+      <div class="meta-row">
+        <span class="pill">런처 허브</span>
+        <span class="pill">설계 사고</span>
+        <span class="pill">PWA</span>
+        <span class="pill">개인 도구</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="intro">
+      <div class="section-head">
+        <h2>이 노트를 읽고 나면</h2>
+        <p class="section-note">"다 합쳐야 정리된 것"이라는 착각을 버린다.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>흩어진 도구를 "합치기" vs "링크로 모으기"의 차이를 안다.</span></li>
+        <li><span class="check">✓</span><span>합치지 않는 편이 왜 더 튼튼한지 안다.</span></li>
+        <li><span class="check">✓</span><span>PWA로 웹앱을 홈 화면 앱처럼 만드는 법을 안다.</span></li>
+        <li><span class="check">✓</span><span>개인용 도구에 최소 보호(게이트)를 두는 이유를 안다.</span></li>
+      </ul>
+      <div class="callout teal" style="margin-top:14px;">
+        <strong>한 줄 요약</strong> — 허브는 도구들을 <strong>한 몸으로 합치는 게 아니라</strong>, 각자 자리에 두고 한 화면에서 링크로 여는 "지도"다. 합치지 않아 각자 독립적이고 안 깨진다.
+      </div>
+    </section>
+
+    <section id="problem">
+      <div class="section-head">
+        <h2>01 — 문제: 도구가 흩어진다</h2>
+        <p class="section-note">캘린더 여기, 앱 저기, 노트 또 저기.</p>
+      </div>
+      <p style="color:var(--muted)">개인 작업이 늘면 도구가 늘어난다 — 예약 캘린더, 개인 앱, 학습 노트… 각각 주소가 다르니 매번 찾아 들어가야 한다. "한 곳에서 다 열고 싶다"는 욕구가 생긴다. 이때 흔한 실수가 <strong>"그럼 다 하나로 합치자"</strong>다.</p>
+    </section>
+
+    <section id="link">
+      <div class="section-head">
+        <h2>02 — 합치지 말고 링크로 모은다</h2>
+        <p class="section-note">허브 = 도구들의 지도.</p>
+      </div>
+      <p style="color:var(--muted)">해법은 도구들을 하나로 뭉치는 게 아니라, <strong>각자 자리에 그대로 두고</strong> 허브 화면에서 링크(카드)로 여는 것이다. 허브는 "무엇이 어디 있는지" 보여주는 지도이자 출입구다.</p>
+      <div class="flow" style="margin-top:12px;">
+        <div class="flow-item"><b>허브</b><span>한 화면·지도</span></div>
+        <div class="flow-item"><b>→ 캘린더</b><span>링크로 열기</span></div>
+        <div class="flow-item"><b>→ 개인 앱</b><span>링크로 열기</span></div>
+        <div class="flow-item"><b>→ 노트</b><span>링크로 열기</span></div>
+        <div class="flow-item"><b>각자 독립</b><span>따로 살아있음</span></div>
+      </div>
+    </section>
+
+    <section id="why">
+      <div class="section-head">
+        <h2>03 — 왜 안 합치나</h2>
+        <p class="section-note">합치면 잃는 것이 더 크다.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card"><span class="tag teal">독립성</span><h3>따로 살아있다</h3><p>하나가 고장 나도 나머지는 멀쩡. 합치면 한 곳 오류가 전체를 흔든다.</p></div>
+        <div class="card"><span class="tag blue">각자 최적</span><h3>제 방식대로</h3><p>캘린더는 캘린더답게, 노트는 노트답게. 억지로 한 틀에 안 맞춰도 된다.</p></div>
+        <div class="card"><span class="tag violet">교체 쉬움</span><h3>갈아끼우기</h3><p>도구 하나를 바꿔도 허브의 링크만 고치면 된다. 전체를 다시 안 짜도 됨.</p></div>
+      </div>
+      <div class="callout" style="margin-top:14px;">
+        이건 <a href="./workspace-structure.html" style="color:var(--blue)">작업장 문서구조</a> 노트의 "프로젝트 분리"와 같은 정신 — <strong>느슨하게 연결하되, 섞지 않는다.</strong>
+      </div>
+    </section>
+
+    <section id="pwa">
+      <div class="section-head">
+        <h2>04 — PWA로 홈 화면 앱처럼</h2>
+        <p class="section-note">브라우저 주소 대신, 아이콘으로 연다.</p>
+      </div>
+      <p style="color:var(--muted)">허브를 <strong>PWA</strong>로 만들면, 폰 홈 화면에 아이콘으로 추가해 앱처럼 열 수 있다. 매번 주소를 치지 않고 아이콘 한 번. 별도 앱스토어 없이, 웹 하나로 "홈 화면 앱" 경험을 준다.</p>
+      <ul class="bullets" style="margin-top:12px;">
+        <li>웹앱에 간단한 설정(매니페스트)을 더하면 "홈 화면에 추가"가 가능해진다.</li>
+        <li>허브는 별도 사이트(주소)로 두고, 거기서 다른 도구로 링크한다.</li>
+        <li>설치·업데이트가 웹이라 가볍다 — 새로고침이 곧 업데이트.</li>
+      </ul>
+    </section>
+
+    <section id="gate">
+      <div class="section-head">
+        <h2>05 — 개인용 최소 보호(게이트)</h2>
+        <p class="section-note">공개 주소지만 나만 쓰게.</p>
+      </div>
+      <p style="color:var(--muted)">허브가 공개 주소에 있어도 내 개인 도구 모음이니, 앞에 간단한 <strong>PIN 게이트</strong> 하나를 둬 아무나 들어오지 못하게 한다. 완벽한 보안이라기보다 "지나가다 열리지 않게" 하는 최소 문턱이다.</p>
+      <div class="callout gold" style="margin-top:14px;">
+        주의 — 이런 PIN이나 열쇠의 <strong>실제 값</strong>은 공개 파일·공개 노트에 절대 적지 않는다. (→ <a href="./repo-security-commits.html" style="color:var(--blue)">저장소 보안</a> 노트)
+      </div>
+    </section>
+
+    <section id="check">
+      <div class="section-head">
+        <h2>06 — 허브 설계 점검</h2>
+        <p class="section-note">만들 때.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>도구를 합치지 않고 링크로 모았는가</span></li>
+        <li><span class="check">✓</span><span>도구 하나를 교체해도 허브만 고치면 되는가</span></li>
+        <li><span class="check">✓</span><span>폰 홈 화면에 추가해 쓸 수 있는가(PWA)</span></li>
+        <li><span class="check">✓</span><span>PIN 등 실제 비밀값을 공개에 적지 않았는가</span></li>
+      </ul>
+    </section>
+
+    <section id="glossary">
+      <div class="section-head">
+        <h2>07 — 용어 한눈에</h2>
+        <p class="section-note">이 노트에 나온 단어들.</p>
+      </div>
+      <table class="compare">
+        <tr><th>용어</th><th>뜻</th></tr>
+        <tr><td>런처 허브</td><td>여러 도구를 링크로 여는 한 화면(지도·출입구).</td></tr>
+        <tr><td>느슨한 연결</td><td>합치지 않고 링크로만 잇는 것. 각자 독립.</td></tr>
+        <tr><td>PWA</td><td>웹앱을 홈 화면 앱처럼 설치·사용하게 하는 기술.</td></tr>
+        <tr><td>매니페스트</td><td>PWA에 아이콘·이름 등을 정의하는 설정 파일.</td></tr>
+        <tr><td>PIN 게이트</td><td>개인용 화면 앞의 최소 접근 문턱.</td></tr>
+      </table>
+    </section>
+
+    <div class="footer">
+      <span>Workflow · hub</span>
+      <span>maydly study archive</span>
+    </div>
+  </main>
+</body>
+</html>

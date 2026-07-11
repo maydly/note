@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>정적 앱 클라우드 동기화 — maydly Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../note.css">
+</head>
+<body>
+  <div class="topbar">
+    <nav class="nav" aria-label="페이지 목차">
+      <div class="brand"><span class="brand-mark">←</span> <a href="../index.html" style="text-decoration:none">Study Archive</a></div>
+      <div class="nav-links">
+        <a href="#intro">개요</a>
+        <a href="#problem">문제</a>
+        <a href="#where">데이터 위치</a>
+        <a href="#secret">토큰 보호</a>
+        <a href="#flow">동기화 흐름</a>
+        <a href="#localhost">localhost 테스트</a>
+        <a href="#check">점검</a>
+        <a href="#glossary">용어</a>
+      </div>
+    </nav>
+  </div>
+
+  <header>
+    <div class="hero-copy">
+      <p class="eyebrow">Development · maydly</p>
+      <h1>서버 없이도<br>여러 기기에서<br>같은 데이터</h1>
+      <p class="lead">정적 앱(HTML·JS)인데 폰·데스크톱에서 같은 데이터를 보고 싶을 때. 예약 캘린더를 만들며 익힌 "서버 없는 클라우드 동기화" 패턴 — 데이터를 어디 두고, 비밀은 어떻게 보호하고, 왜 localhost로 테스트해야 하는지 정리했다.</p>
+      <div class="meta-row">
+        <span class="pill">정적 앱</span>
+        <span class="pill">클라우드 동기화</span>
+        <span class="pill">토큰 보호</span>
+        <span class="pill">localhost</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="intro">
+      <div class="section-head">
+        <h2>이 노트를 읽고 나면</h2>
+        <p class="section-note">"서버 없이 어떻게 데이터를 맞추지?"의 답.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>정적 앱이 데이터를 여러 기기에서 맞추는 기본 구조를 안다.</span></li>
+        <li><span class="check">✓</span><span>데이터 파일을 어디에 두는 게 안전한지 안다.</span></li>
+        <li><span class="check">✓</span><span>접근 토큰을 클라이언트에 두지 않는 이유를 안다.</span></li>
+        <li><span class="check">✓</span><span>왜 파일을 더블클릭하면 안 되고 localhost가 필요한지 안다.</span></li>
+      </ul>
+      <div class="callout teal" style="margin-top:14px;">
+        <strong>한 줄 요약</strong> — 화면(정적 파일)은 무료 호스팅에, 데이터는 <strong>비공개 저장소</strong>에, 그 저장소에 쓰는 열쇠(토큰)는 <strong>호스팅의 환경변수</strong>에 둔다. 클라이언트엔 비밀을 두지 않는다.
+      </div>
+    </section>
+
+    <section id="problem">
+      <div class="section-head">
+        <h2>01 — 문제: 정적인데 기기 간 공유</h2>
+        <p class="section-note">브라우저 저장만으론 부족하다.</p>
+      </div>
+      <p style="color:var(--muted)">정적 앱은 보통 데이터를 브라우저 안(<code>localStorage</code>)에 저장한다. 그런데 이건 <strong>그 기기·그 브라우저에만</strong> 남는다. 폰에서 넣은 예약이 데스크톱엔 안 보인다. "여러 기기에서 같은 데이터"를 하려면, 데이터를 기기 밖 공용 장소에 두고 서로 읽고 써야 한다.</p>
+    </section>
+
+    <section id="where">
+      <div class="section-head">
+        <h2>02 — 데이터를 어디 두나</h2>
+        <p class="section-note">화면과 데이터를 분리한다.</p>
+      </div>
+      <div class="grid-2">
+        <div class="card"><span class="tag teal">화면</span><h3>공개 호스팅</h3><p>HTML·JS(화면)는 무료 정적 호스팅에 올린다. 누가 봐도 되는 부분.</p></div>
+        <div class="card"><span class="tag coral">데이터</span><h3>비공개 저장소</h3><p>예약·개인 데이터는 <strong>공개되면 안 되므로</strong>, 별도의 <strong>비공개 저장소</strong>에 데이터 파일로 둔다.</p></div>
+      </div>
+      <div class="callout" style="margin-top:14px;">
+        핵심 분리 — "보여주는 것(화면)"과 "지켜야 하는 것(데이터)"을 다른 곳에 둔다. 화면은 공개, 데이터는 비공개.
+      </div>
+    </section>
+
+    <section id="secret">
+      <div class="section-head">
+        <h2>03 — 토큰은 클라이언트에 두지 않는다</h2>
+        <p class="section-note">비공개 저장소에 쓰려면 열쇠가 필요한데…</p>
+      </div>
+      <p style="color:var(--muted)">비공개 저장소에 데이터를 쓰려면 접근 토큰(열쇠)이 필요하다. 그런데 이 토큰을 화면 파일(HTML·JS)에 박으면, 브라우저로 누구나 훔쳐볼 수 있다. 그래서 토큰은 <strong>호스팅의 환경변수(env)</strong>에 두고, 데이터를 쓰는 처리는 화면이 아니라 호스팅 쪽(서버리스 함수)에서 하게 한다.</p>
+      <div class="callout gold" style="margin-top:14px;">
+        이건 <a href="./repo-security-commits.html" style="color:var(--blue);font-weight:700;">저장소 보안</a> 노트의 핵심과 같다 — <strong>비밀은 클라이언트에 두지 않는다.</strong> 실제 PIN·토큰 값은 이런 공개 노트에도 절대 적지 않는다(패턴만).
+      </div>
+    </section>
+
+    <section id="flow">
+      <div class="section-head">
+        <h2>04 — 동기화 흐름</h2>
+        <p class="section-note">읽고 → 쓰고 → 다른 기기가 다시 읽는다.</p>
+      </div>
+      <div class="flow">
+        <div class="flow-item"><b>1. 화면 로드</b><span>호스팅에서 앱 열림</span></div>
+        <div class="flow-item"><b>2. 데이터 읽기</b><span>비공개 저장소에서</span></div>
+        <div class="flow-item"><b>3. 수정</b><span>예약 추가·변경</span></div>
+        <div class="flow-item"><b>4. 저장(쓰기)</b><span>env 토큰으로 안전하게</span></div>
+        <div class="flow-item"><b>5. 다른 기기</b><span>다시 읽으면 반영</span></div>
+      </div>
+      <div class="callout teal" style="margin-top:14px;">
+        항상 켜져 있어야(always-on) 다른 기기가 언제 열어도 최신을 받는다. 관리자용·고객용 화면을 나눠 두면, 공개 화면엔 민감한 조작을 노출하지 않을 수 있다.
+      </div>
+    </section>
+
+    <section id="localhost">
+      <div class="section-head">
+        <h2>05 — 왜 localhost로 테스트하나</h2>
+        <p class="section-note">파일을 더블클릭하면 동작이 막힌다.</p>
+      </div>
+      <p style="color:var(--muted)">이런 앱을 <code>파일 더블클릭</code>(<code>file://</code>)으로 열면, 데이터 불러오기·저장 같은 동작이 브라우저 보안 정책에 막혀 <strong>제대로 안 된다.</strong> 그래서 로컬에서 테스트할 땐 작은 로컬 서버를 띄워 <code>localhost</code> 주소로 연다. 그래야 실제 배포 환경과 비슷하게 동작한다.</p>
+      <pre># 예: 프로젝트 폴더에서 로컬 서버 띄우기
+npx serve .        # 또는 python -m http.server
+# → http://localhost:3000 으로 열기</pre>
+      <div class="callout gold" style="margin-top:14px;">
+        "내 PC에선 더블클릭해도 열리던데?" — 화면은 떠도 <strong>불러오기·저장이 조용히 실패</strong>한다. 반드시 localhost로 확인.
+      </div>
+    </section>
+
+    <section id="check">
+      <div class="section-head">
+        <h2>06 — 점검</h2>
+        <p class="section-note">배포 전에.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>화면(공개)과 데이터(비공개)를 분리했는가</span></li>
+        <li><span class="check">✓</span><span>토큰이 화면 파일에 없고 env에 있는가</span></li>
+        <li><span class="check">✓</span><span>실제 PIN·토큰 값을 공개 파일에 적지 않았는가</span></li>
+        <li><span class="check">✓</span><span>localhost로 불러오기·저장을 확인했는가</span></li>
+      </ul>
+    </section>
+
+    <section id="glossary">
+      <div class="section-head">
+        <h2>07 — 용어 한눈에</h2>
+        <p class="section-note">이 노트에 나온 단어들.</p>
+      </div>
+      <table class="compare">
+        <tr><th>용어</th><th>뜻</th></tr>
+        <tr><td>localStorage</td><td>브라우저 안에 데이터를 저장. 그 기기에만 남음.</td></tr>
+        <tr><td>비공개 저장소</td><td>공개되지 않는 저장소. 개인 데이터 파일을 둠.</td></tr>
+        <tr><td>환경변수(env)</td><td>호스팅에 숨겨 두는 설정값. 토큰 등 비밀을 여기에.</td></tr>
+        <tr><td>서버리스 함수</td><td>서버를 직접 안 두고 호스팅이 대신 돌려주는 짧은 처리.</td></tr>
+        <tr><td>always-on</td><td>항상 켜져 있어 언제 접속해도 응답하는 상태.</td></tr>
+        <tr><td>file:// vs localhost</td><td>더블클릭(file) vs 로컬 서버(localhost). 후자라야 정상 동작.</td></tr>
+      </table>
+    </section>
+
+    <div class="footer">
+      <span>Development · cloud sync</span>
+      <span>maydly study archive</span>
+    </div>
+  </main>
+</body>
+</html>

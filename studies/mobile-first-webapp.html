@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>폰 우선 웹앱 만들기 — maydly Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../note.css">
+</head>
+<body>
+  <div class="topbar">
+    <nav class="nav" aria-label="페이지 목차">
+      <div class="brand"><span class="brand-mark">←</span> <a href="../index.html" style="text-decoration:none">Study Archive</a></div>
+      <div class="nav-links">
+        <a href="#intro">개요</a>
+        <a href="#why">왜 폰부터</a>
+        <a href="#change">달라지는 것</a>
+        <a href="#tools">실전 도구</a>
+        <a href="#habit">점검 습관</a>
+        <a href="#desktop">데스크톱</a>
+        <a href="#check">점검</a>
+        <a href="#glossary">용어</a>
+      </div>
+    </nav>
+  </div>
+
+  <header>
+    <div class="hero-copy">
+      <p class="eyebrow">Development · maydly</p>
+      <h1>폰부터 만들면<br>안 무너진다</h1>
+      <p class="lead">쓸 사람이 대부분 폰으로 쓴다면, 화면 설계도 폰부터 시작해야 한다. 예약 캘린더·개인 앱을 만들며 배운 "모바일 우선(mobile-first)" 설계 — 왜 폰부터인지, 무엇이 달라지는지, 실전 도구와 점검 습관까지 정리했다.</p>
+      <div class="meta-row">
+        <span class="pill">모바일 우선</span>
+        <span class="pill">반응형</span>
+        <span class="pill">웹앱</span>
+        <span class="pill">UX</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="intro">
+      <div class="section-head">
+        <h2>이 노트를 읽고 나면</h2>
+        <p class="section-note">"큰 화면에서 만들고 폰에서 줄이기"의 함정을 안다.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>왜 데스크톱이 아니라 폰부터 설계하는지 안다.</span></li>
+        <li><span class="check">✓</span><span>폰 우선으로 하면 레이아웃·터치·정보량이 어떻게 달라지는지 안다.</span></li>
+        <li><span class="check">✓</span><span>모바일 우선을 위한 핵심 CSS·설정을 쓸 수 있다.</span></li>
+        <li><span class="check">✓</span><span>모든 변경마다 폰으로 확인하는 습관을 안다.</span></li>
+      </ul>
+      <div class="callout teal" style="margin-top:14px;">
+        <strong>한 줄 요약</strong> — 큰 화면에서 예쁘게 만든 걸 폰에서 우겨넣으면 대개 깨진다. 반대로 <strong>좁은 폰에서 먼저 성립</strong>시키고 큰 화면으로 넓히면, 둘 다 자연스럽다.
+      </div>
+    </section>
+
+    <section id="why">
+      <div class="section-head">
+        <h2>01 — 왜 폰부터인가</h2>
+        <p class="section-note">"어디서 쓰나"가 설계의 출발점.</p>
+      </div>
+      <p style="color:var(--muted)">예약 캘린더를 만든 1차 목적은 "외부 앱(타임트리)을 폰에서 대체"하는 것이었다. 실제 사용 맥락이 <strong>폰</strong>이라면, 폰에서 잘 되는 게 먼저고 데스크톱은 그다음이다. 사용 맥락을 무시하고 큰 화면에서만 확인하면, 정작 매일 쓰는 폰에서 불편한 앱이 나온다.</p>
+      <div class="callout" style="margin-top:14px;">
+        기술적으로도 "좁은 화면 → 넓히기"가 쉽다. 좁은 데서 성립한 레이아웃에 여백·열을 더하는 건 자연스럽지만, 넓은 레이아웃을 좁게 구겨넣는 건 늘 무리가 따른다.
+      </div>
+    </section>
+
+    <section id="change">
+      <div class="section-head">
+        <h2>02 — 폰부터 하면 달라지는 것</h2>
+        <p class="section-note">제약이 오히려 설계를 또렷하게 만든다.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card"><span class="tag violet">배치</span><h3>세로 한 줄</h3><p>폰은 세로로 길다. 여러 열 대신 한 줄로 쌓는 걸 기본으로 두고, 큰 화면에서만 열을 나눈다.</p></div>
+        <div class="card"><span class="tag blue">터치</span><h3>손가락 크기</h3><p>마우스가 아니라 손가락. 버튼·탭은 충분히 크게(약 44px 이상), 서로 붙지 않게.</p></div>
+        <div class="card"><span class="tag teal">정보량</span><h3>핵심만</h3><p>좁으니 다 못 넣는다. "지금 꼭 필요한 것"만 남기게 되고, 그게 오히려 깔끔해진다.</p></div>
+      </div>
+    </section>
+
+    <section id="tools">
+      <div class="section-head">
+        <h2>03 — 실전 도구</h2>
+        <p class="section-note">이 몇 가지면 폰에서 안 깨진다.</p>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <span class="tag blue">필수 설정</span>
+          <h3>viewport 메타</h3>
+          <p>이게 없으면 폰이 데스크톱처럼 축소해 보여준다. 반드시 넣는다.</p>
+          <pre>&lt;meta name="viewport"
+  content="width=device-width,
+  initial-scale=1.0"&gt;</pre>
+        </div>
+        <div class="card">
+          <span class="tag blue">기본은 좁게</span>
+          <h3>min-width로 넓히기</h3>
+          <p>기본 스타일을 폰용으로 두고, 넓어질 때만 <code>@media (min-width)</code>로 열을 추가.</p>
+          <pre>.grid{ display:block; }
+@media(min-width:720px){
+  .grid{ display:grid;
+    grid-template-columns:1fr 1fr; }
+}</pre>
+        </div>
+        <div class="card">
+          <span class="tag teal">터치 영역</span>
+          <h3>충분한 크기</h3>
+          <p>탭 대상은 최소 44px 안팎. 좁은 간격에 작은 버튼을 몰지 않는다.</p>
+        </div>
+        <div class="card">
+          <span class="tag teal">하단 탭바</span>
+          <h3>엄지가 닿는 곳</h3>
+          <p>주요 이동은 화면 아래(엄지 영역)에 두면 한 손으로 쓰기 편하다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="habit">
+      <div class="section-head">
+        <h2>04 — 모든 변경마다 폰으로 확인</h2>
+        <p class="section-note">이게 빠지면 폰 우선이 무너진다.</p>
+      </div>
+      <p style="color:var(--muted)">한 번 폰 우선으로 짜도, 이후 수정을 데스크톱에서만 확인하면 어느새 폰이 깨진다. 그래서 <strong>어떤 변경이든 폰 화면을 함께 본다.</strong> 브라우저 개발자도구의 모바일 미리보기나 실제 폰으로. 1차 목적이 "폰 대체"였으니, 폰에서의 모습이 늘 기준이다.</p>
+      <div class="callout gold" style="margin-top:14px;">
+        습관 하나 — 작업을 "다 됐다" 하기 전에 폰 폭으로 한 번 줄여본다. 이 3초가 나중의 큰 수정을 막는다.
+      </div>
+    </section>
+
+    <section id="desktop">
+      <div class="section-head">
+        <h2>05 — 데스크톱은 넓히는 방향으로</h2>
+        <p class="section-note">폰을 버리지 않고 확장.</p>
+      </div>
+      <p style="color:var(--muted)">폰에서 성립한 화면에, 큰 화면에선 여백을 늘리고 열을 나누고 정보를 조금 더 보여준다. 데스크톱을 위해 폰을 희생하지 않는다. 폰이 본진, 데스크톱은 확장판이다.</p>
+    </section>
+
+    <section id="check">
+      <div class="section-head">
+        <h2>06 — 폰 우선 점검</h2>
+        <p class="section-note">완성 전에.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>viewport 메타를 넣었는가</span></li>
+        <li><span class="check">✓</span><span>기본 스타일이 폰용이고, 큰 화면은 <code>min-width</code>로 넓혔는가</span></li>
+        <li><span class="check">✓</span><span>버튼·탭이 손가락으로 누를 만큼 큰가</span></li>
+        <li><span class="check">✓</span><span>이번 변경을 폰 화면으로 확인했는가</span></li>
+      </ul>
+    </section>
+
+    <section id="glossary">
+      <div class="section-head">
+        <h2>07 — 용어 한눈에</h2>
+        <p class="section-note">이 노트에 나온 단어들.</p>
+      </div>
+      <table class="compare">
+        <tr><th>용어</th><th>뜻</th></tr>
+        <tr><td>모바일 우선</td><td>폰 화면을 기본으로 먼저 설계하고 큰 화면으로 넓히는 방식.</td></tr>
+        <tr><td>viewport 메타</td><td>폰이 페이지를 실제 폭으로 보게 하는 필수 설정.</td></tr>
+        <tr><td>@media (min-width)</td><td>화면이 특정 폭 이상일 때만 적용하는 스타일.</td></tr>
+        <tr><td>터치 영역</td><td>손가락으로 누르는 최소 크기(약 44px).</td></tr>
+        <tr><td>하단 탭바</td><td>엄지가 닿는 화면 아래 이동 메뉴.</td></tr>
+      </table>
+    </section>
+
+    <div class="footer">
+      <span>Development · mobile-first</span>
+      <span>maydly study archive</span>
+    </div>
+  </main>
+</body>
+</html>
