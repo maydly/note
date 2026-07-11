@@ -159,8 +159,8 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   </div>
   <div class="mnote" id="mNote"></div>
   <div id="moneyBody"></div>
-  <button class="impbtn" onclick="document.getElementById('impFile').click()">＋ 거래내역 가져오기 (매달 그 달만 넣어도 누적됨)</button>
-  <input type="file" id="impFile" accept="application/json,.json" style="display:none" onchange="importLedger(this)">
+  <button class="impbtn" onclick="document.getElementById('impFile').click()">＋ 은행 엑셀 가져오기 (하나·카카오뱅크·카카오페이 · 매달 누적)</button>
+  <input type="file" id="impFile" accept=".xlsx,.xls,.csv,.json,application/json" style="display:none" onchange="importLedger(this)">
   <div style="text-align:center;margin-top:8px"><span onclick="clearLedger()" style="font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline">가계부 전체 비우기</span></div>
 </div>
 
@@ -177,6 +177,8 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 <div class="mask" id="mask"><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="toast"></div>
 
+<script src="xlsx.full.min.js"></script>
+<script src="parse.js"></script>
 <script>
 /* ===== 저장소 ===== */
 var K={todo:'mj_todos',buy:'mj_buy',own:'mj_own',led:'mj_ledger'};
@@ -374,17 +376,25 @@ function pickDay(ds){selDay=(selDay===ds?null:ds);renderMoney();}
 /* 원장 가져오기 (파일 → 이 기기 localStorage) */
 function importLedger(inp){
   var f=inp.files&&inp.files[0];if(!f)return;
+  var isJson=/\.json$/i.test(f.name);
   var r=new FileReader();
   r.onload=function(){
     try{
-      var j=JSON.parse(r.result);
-      var rows=Array.isArray(j)?j:(j.tx||j.ledger||[]);
-      if(!rows.length){toast('불러올 내역이 없어요');return;}
-      var mapped=rows.map(function(t){
-        var type=t.type||(t.in>0?'in':'out');
-        var amt=t.amt!=null?t.amt:(type==='in'?(t.in||0):(t.out||0));
-        return {id:uid(),date:(t.date||'').slice(0,10),desc:t.desc||t.name||'',cat:t.cat||'기타',type:type,amt:amt,memo:t.memo||''};
-      }).filter(function(t){return t.date&&t.amt;});
+      var mapped;
+      if(isJson){
+        var j=JSON.parse(r.result);
+        var rows=Array.isArray(j)?j:(j.tx||j.ledger||[]);
+        mapped=rows.map(function(t){
+          var type=t.type||(t.in>0?'in':'out');
+          var amt=t.amt!=null?t.amt:(type==='in'?(t.in||0):(t.out||0));
+          return {id:uid(),date:(t.date||'').slice(0,10),desc:t.desc||t.name||'',cat:t.cat||'기타',type:type,amt:amt,memo:t.memo||''};
+        }).filter(function(t){return t.date&&t.amt;});
+      } else {
+        if(typeof XLSX==='undefined'||typeof MJParse==='undefined'){toast('엑셀 모듈 로딩 중 — 새로고침 후 다시 시도');return;}
+        var wb=XLSX.read(new Uint8Array(r.result),{type:'array'});
+        mapped=MJParse.parseWorkbook(wb).map(function(t){return {id:uid(),date:t.date,desc:t.desc,cat:t.cat,type:t.type,amt:t.amt,memo:''};});
+      }
+      if(!mapped.length){toast('불러올 내역이 없어요 (은행 엑셀·JSON 형식 확인)');return;}
       // 병합(누적): 이미 있는 거래는 건너뛰고 새 것만 추가 — 매달 그 달만 넣어도 쌓임
       var key=function(t){return t.date+'|'+t.type+'|'+t.amt+'|'+(t.desc||'').slice(0,20);};
       var seen={};ledger.forEach(function(t){seen[key(t)]=1;});
@@ -396,9 +406,10 @@ function importLedger(inp){
       viewYM=d.length?{y:+d[d.length-1].slice(0,4),m:+d[d.length-1].slice(5,7)-1}:null;
       selDay=null;renderMoney();
       toast(added+'건 추가'+(mapped.length-added>0?' (중복 '+(mapped.length-added)+'건 제외)':'')+' · 총 '+ledger.length+'건');
-    }catch(e){toast('파일을 읽지 못했어요');}
+    }catch(e){toast('파일을 읽지 못했어요: '+e.message);}
   };
-  r.readAsText(f);inp.value='';
+  if(isJson)r.readAsText(f);else r.readAsArrayBuffer(f);
+  inp.value='';
 }
 function clearLedger(){
   if(!ledger.length){toast('이미 비어 있어요');return;}
