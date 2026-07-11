@@ -172,8 +172,9 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <div class="ptabs" id="ptabs"></div>
   <div class="vtabs" id="vtabs"></div>
   <div class="money">
-    <div class="mbox"><div class="l">수입</div><div class="v in" id="mIn">₩0</div></div>
-    <div class="mbox"><div class="l">지출</div><div class="v out" id="mOut">₩0</div></div>
+    <div class="mbox"><div class="l">수입(분류)</div><div class="v in" id="mIn">₩0</div></div>
+    <div class="mbox"><div class="l">지출(분류)</div><div class="v out" id="mOut">₩0</div></div>
+    <div class="mbox"><div class="l">통장 증감</div><div class="v" id="mNet">₩0</div></div>
   </div>
   <div class="mnote" id="mNote"></div>
   <div id="moneyBody"></div>
@@ -346,13 +347,15 @@ function sumReal(list){
   var i=0,o=0;list.forEach(function(t){if(MOVE.test(t.cat))return;if(t.type==='in')i+=t.amt;else o+=t.amt;});
   return {i:i,o:o};
 }
+// 통장 실제 증감 = 모든 입출금 합 (이체·충전 다 포함 → 계좌간 이동은 자연히 상쇄)
+function netChange(list){return list.reduce(function(s,t){return s+(t.type==='in'?t.amt:-t.amt);},0);}
 function renderMoney(){
   renderPtabs();renderVtabs();
-  var list=txInPeriod();var s=sumReal(list);
+  var list=txInPeriod();var s=sumReal(list);var net=netChange(list);
   document.getElementById('mIn').textContent=won(s.i);
   document.getElementById('mOut').textContent=won(s.o);
-  var mv=list.filter(function(t){return MOVE.test(t.cat);}).length;
-  document.getElementById('mNote').textContent='내역 '+list.length+'건'+(mv?' · 이체/충전 '+mv+'건은 합계에서 제외':'')+(ledger.length?'':' · 은행 엑셀을 가져오거나 ＋로 기록하세요');
+  var mn=document.getElementById('mNet');mn.textContent=won(net);mn.style.color=net>=0?'#5f8b6a':'#b5564b';
+  document.getElementById('mNote').textContent='통장 증감 = 실제 늘고 준 돈(모든 입출금) · 수입/지출(분류)은 이체·충전 제외라 합계가 다를 수 있어요'+(ledger.length?'':' · 은행 엑셀을 가져오세요');
   var nav='<div class="mnav"><button onclick="navPeriod(-1)">‹</button><div class="ml">'+periodLabel()+'</div><button onclick="navPeriod(1)">›</button></div>';
   var body;
   if(moneyView==='summary')body=summaryView(list);
@@ -418,10 +421,11 @@ function summaryView(list){
   list.forEach(function(t){if(MOVE.test(t.cat))return;(byCat[t.cat]=byCat[t.cat]||{in:0,out:0});byCat[t.cat][t.type]+=t.amt;});
   var exp=Object.keys(byCat).filter(function(c){return byCat[c].out>0;}).sort(function(a,b){return byCat[b].out-byCat[a].out;});
   var inc=Object.keys(byCat).filter(function(c){return byCat[c].in>0;}).sort(function(a,b){return byCat[b].in-byCat[a].in;});
-  var s=sumReal(list);
-  var h='<div class="sumkpi"><div class="skpi"><div class="l">수입</div><div class="v" style="color:#5f8b6a">'+won(s.i)+'</div></div>'
-    +'<div class="skpi"><div class="l">지출</div><div class="v" style="color:#b5564b">'+won(s.o)+'</div></div>'
-    +'<div class="skpi"><div class="l">수지</div><div class="v" style="color:'+(s.i-s.o>=0?'#5f8b6a':'#b5564b')+'">'+won(s.i-s.o)+'</div></div></div>';
+  var s=sumReal(list);var nc=netChange(list);
+  var h='<div class="sumkpi"><div class="skpi"><div class="l">수입(분류)</div><div class="v" style="color:#5f8b6a">'+won(s.i)+'</div></div>'
+    +'<div class="skpi"><div class="l">지출(분류)</div><div class="v" style="color:#b5564b">'+won(s.o)+'</div></div>'
+    +'<div class="skpi"><div class="l">통장 증감</div><div class="v" style="color:'+(nc>=0?'#5f8b6a':'#b5564b')+'">'+won(nc)+'</div></div></div>'
+    +'<div class="mnote" style="margin-bottom:10px">「통장 증감」이 실제 늘고 준 돈이에요. 수입·지출(분류)은 이체·충전 뺀 값이라 딱 안 맞아요.</div>';
   if(!list.length)return h+'<div class="empty">이 기간 내역이 없어요<br>아래에서 은행 엑셀을 가져오세요</div>';
   var maxO=Math.max.apply(null,exp.map(function(c){return byCat[c].out;}).concat([1]));
   h+='<div class="seg">지출 분류 (많은 순)</div>';
