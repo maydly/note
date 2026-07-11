@@ -79,6 +79,23 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .bi,.bo{position:absolute;height:8px;border-radius:5px}
 .bi{top:0;background:#7fae8c}.bo{top:11px;background:#cf7f6f}
 .bval{font-size:9.5px;color:#b3ab9f;margin-top:1px}
+/* 달력↔요약 전환 */
+.vtabs{display:flex;background:#ece5da;border-radius:12px;padding:3px;margin:6px 0 12px}
+.vt{flex:1;text-align:center;font-size:13px;font-weight:700;color:#9a9086;padding:8px 0;border-radius:9px;cursor:pointer}
+.vt.on{background:#fff;color:#c98e7f;box-shadow:0 1px 3px rgba(90,70,50,.1)}
+/* 요약 카테고리 막대 */
+.catrow{display:flex;align-items:center;gap:10px;margin:9px 0}
+.catic{width:30px;height:30px;border-radius:9px;background:#f0ebe2;display:grid;place-items:center;font-size:15px;flex:0 0 auto}
+.catbd{flex:1;min-width:0}
+.catname{font-size:13px;font-weight:600;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.catamt{font-weight:800;font-variant-numeric:tabular-nums;color:#b5564b;white-space:nowrap}
+.catbar{height:7px;background:#efe9df;border-radius:4px;margin-top:4px;overflow:hidden}
+.catbarf{height:100%;background:#cf7f6f;border-radius:4px}
+.catbarf.in{background:#7fae8c}
+.sumkpi{display:flex;gap:9px;margin-bottom:6px}
+.skpi{flex:1;background:#fff;border:1px solid #ece7df;border-radius:14px;padding:11px;text-align:center}
+.skpi .l{font-size:10.5px;color:#a99e8f;font-weight:600}
+.skpi .v{font-size:15px;font-weight:800;margin-top:3px;font-variant-numeric:tabular-nums}
 /* 가계부 상세 */
 .led{display:flex;align-items:center;gap:11px}
 .lic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:16px;flex:0 0 auto;background:#eee9e0}
@@ -153,6 +170,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync">☁ 이 기기 저장</div></div>
   <div class="h1">가계부</div><div class="sub">수입·지출 기록 (이체·충전 제외한 실거래 기준)</div>
   <div class="ptabs" id="ptabs"></div>
+  <div class="vtabs" id="vtabs"></div>
   <div class="money">
     <div class="mbox"><div class="l">수입</div><div class="v in" id="mIn">₩0</div></div>
     <div class="mbox"><div class="l">지출</div><div class="v out" id="mOut">₩0</div></div>
@@ -283,12 +301,14 @@ var MOVE=/이체|충전|ATM|현금·ATM/;
 var CATS_OUT=['식비·편의점·마트','차량·주유','교통','쇼핑·생활','의료·약국','구독·디지털','통신','여가·문화·여행','미용','기호품','공과금','세금·공과','장비·카메라','사업지출','오락·게임','경조·지인','생활지출','대출상환','간편결제충전','이체·송금','기타'];
 var CATS_IN=['수입·촬영/사업','수입·급여/사업','수입·중고판매','수입·이자/환급','수입·기타','이체·입금','기타'];
 var CATICON={'식비·편의점·마트':'🍽','차량·주유':'⛽','교통':'🚕','쇼핑·생활':'🛍','의료·약국':'💊','구독·디지털':'💳','통신':'📱','여가·문화·여행':'🎬','미용':'💇','기호품':'🚬','공과금':'🧾','세금·공과':'🏛','장비·카메라':'📷','사업지출':'💼','오락·게임':'🎮','경조·지인':'🎁','생활지출':'🏠','대출상환':'🏦','간편결제충전':'🔄','이체·송금':'↔','이체·본인계좌':'↔','수입·촬영/사업':'📸','수입·급여/사업':'💼','수입·중고판매':'🏷','수입·이자/환급':'💰','수입·기타':'💵','이체·입금':'↔'};
-var period='월';           // 월/3개월/6개월/12개월
-var viewYM=null;           // {y,m} for 월 mode
+var period='월';           // 월/3개월/6개월/12개월 (달력정렬: 분기/반기/연간)
+var viewYM=null;           // {y,m} 기준점
 var selDay=null;           // 'YYYY-MM-DD'
+var moneyView='cal';       // cal(달력/막대) | summary(요약)
 function curYM(){if(viewYM)return viewYM;var d=new Date();return {y:d.getFullYear(),m:d.getMonth()};}
 function pad(n){return (n<10?'0':'')+n;}
 function keyOf(d){return d.slice(0,7);}
+function pcnt(){return period==='월'?1:period==='3개월'?3:period==='6개월'?6:12;}
 
 function renderPtabs(){
   var ps=['월','3개월','6개월','12개월'];
@@ -296,14 +316,27 @@ function renderPtabs(){
     return '<button class="pt '+(p===period?'on':'')+'" onclick="setPeriod(\''+p+'\')">'+p+'</button>';
   }).join('');
 }
+function renderVtabs(){
+  document.getElementById('vtabs').innerHTML=
+    '<div class="vt '+(moneyView==='cal'?'on':'')+'" onclick="setMoneyView(\'cal\')">'+(period==='월'?'📅 달력':'📊 월별')+'</div>'+
+    '<div class="vt '+(moneyView==='summary'?'on':'')+'" onclick="setMoneyView(\'summary\')">📋 요약</div>';
+}
 function setPeriod(p){period=p;selDay=null;renderMoney();}
+function setMoneyView(v){moneyView=v;renderMoney();}
 
 function periodRange(){
-  // 반환: {from:'YYYY-MM', to:'YYYY-MM', months:[..]}  (월 모드는 단일 달)
-  var ym=curYM();var end=new Date(ym.y,ym.m,1);
-  var cnt=period==='월'?1:period==='3개월'?3:period==='6개월'?6:12;
-  var months=[];for(var i=cnt-1;i>=0;i--){var d=new Date(ym.y,ym.m-i,1);months.push(d.getFullYear()+'-'+pad(d.getMonth()+1));}
-  return {months:months};
+  // 달력 정렬: 월=그 달 / 3개월=분기 / 6개월=반기 / 12개월=그 해 1~12월
+  var ym=curYM();var cnt=pcnt();
+  var startM = cnt===1 ? ym.m : cnt===12 ? 0 : Math.floor(ym.m/cnt)*cnt;
+  var months=[];for(var i=0;i<cnt;i++){var d=new Date(ym.y,startM+i,1);months.push(d.getFullYear()+'-'+pad(d.getMonth()+1));}
+  return {months:months,startY:ym.y,startM:startM,cnt:cnt};
+}
+function periodLabel(){
+  var pr=periodRange();var y=pr.startY;
+  if(period==='월')return y+'년 '+(pr.startM+1)+'월';
+  if(period==='12개월')return y+'년 (연간)';
+  if(period==='6개월')return y+'년 '+(pr.startM===0?'상반기':'하반기');
+  return y+'년 '+(Math.floor(pr.startM/3)+1)+'분기';
 }
 function txInPeriod(){
   var months=periodRange().months;var set={};months.forEach(function(m){set[m]=1;});
@@ -314,20 +347,23 @@ function sumReal(list){
   return {i:i,o:o};
 }
 function renderMoney(){
-  renderPtabs();
+  renderPtabs();renderVtabs();
   var list=txInPeriod();var s=sumReal(list);
   document.getElementById('mIn').textContent=won(s.i);
   document.getElementById('mOut').textContent=won(s.o);
   var mv=list.filter(function(t){return MOVE.test(t.cat);}).length;
-  document.getElementById('mNote').textContent='내역 '+list.length+'건'+(mv?' · 이체/충전 '+mv+'건은 합계에서 제외':'')+(ledger.length?'':' · 원장을 가져오거나 ＋로 기록하세요');
-  document.getElementById('moneyBody').innerHTML = period==='월' ? monthView(list) : barsView();
+  document.getElementById('mNote').textContent='내역 '+list.length+'건'+(mv?' · 이체/충전 '+mv+'건은 합계에서 제외':'')+(ledger.length?'':' · 은행 엑셀을 가져오거나 ＋로 기록하세요');
+  var nav='<div class="mnav"><button onclick="navPeriod(-1)">‹</button><div class="ml">'+periodLabel()+'</div><button onclick="navPeriod(1)">›</button></div>';
+  var body;
+  if(moneyView==='summary')body=summaryView(list);
+  else body=(period==='월')?monthView(list):barsView();
+  document.getElementById('moneyBody').innerHTML=nav+body;
 }
 function monthView(list){
   var ym=curYM();var first=new Date(ym.y,ym.m,1);var dow=first.getDay();var days=new Date(ym.y,ym.m+1,0).getDate();
   var byDay={};list.forEach(function(t){var d=+t.date.slice(8,10);(byDay[d]=byDay[d]||{i:0,o:0});if(t.type==='in')byDay[d].i+=t.amt;else byDay[d].o+=t.amt;});
   var todayS=new Date();var isThis=todayS.getFullYear()===ym.y&&todayS.getMonth()===ym.m;var td=todayS.getDate();
-  var h='<div class="mnav"><button onclick="navMonth(-1)">‹</button><div class="ml">'+ym.y+'년 '+(ym.m+1)+'월</div><button onclick="navMonth(1)">›</button></div>';
-  h+='<div class="cal">'+['일','월','화','수','목','금','토'].map(function(d){return '<div class="cdow">'+d+'</div>';}).join('');
+  var h='<div class="cal">'+['일','월','화','수','목','금','토'].map(function(d){return '<div class="cdow">'+d+'</div>';}).join('');
   for(var i=0;i<dow;i++)h+='<div class="cell empty"></div>';
   for(var d=1;d<=days;d++){
     var ds=ym.y+'-'+pad(ym.m+1)+'-'+pad(d);var b=byDay[d];
@@ -370,8 +406,42 @@ function ledCard(t){
     +'<button class="del" onclick="delItem(\'led\',\''+t.id+'\')">×</button>'
     +'</div></div>';
 }
-function navMonth(dir){var ym=curYM();viewYM={y:ym.y,m:ym.m+dir};selDay=null;renderMoney();}
+function navPeriod(dir){
+  var ym=curYM();var cnt=pcnt();
+  var base = cnt===1 ? ym.m : cnt===12 ? 0 : Math.floor(ym.m/cnt)*cnt;
+  var d=new Date(ym.y,base+dir*cnt,1);
+  viewYM={y:d.getFullYear(),m:d.getMonth()};selDay=null;renderMoney();
+}
 function pickDay(ds){selDay=(selDay===ds?null:ds);renderMoney();}
+function summaryView(list){
+  var byCat={};
+  list.forEach(function(t){if(MOVE.test(t.cat))return;(byCat[t.cat]=byCat[t.cat]||{in:0,out:0});byCat[t.cat][t.type]+=t.amt;});
+  var exp=Object.keys(byCat).filter(function(c){return byCat[c].out>0;}).sort(function(a,b){return byCat[b].out-byCat[a].out;});
+  var inc=Object.keys(byCat).filter(function(c){return byCat[c].in>0;}).sort(function(a,b){return byCat[b].in-byCat[a].in;});
+  var s=sumReal(list);
+  var h='<div class="sumkpi"><div class="skpi"><div class="l">수입</div><div class="v" style="color:#5f8b6a">'+won(s.i)+'</div></div>'
+    +'<div class="skpi"><div class="l">지출</div><div class="v" style="color:#b5564b">'+won(s.o)+'</div></div>'
+    +'<div class="skpi"><div class="l">수지</div><div class="v" style="color:'+(s.i-s.o>=0?'#5f8b6a':'#b5564b')+'">'+won(s.i-s.o)+'</div></div></div>';
+  if(!list.length)return h+'<div class="empty">이 기간 내역이 없어요<br>아래에서 은행 엑셀을 가져오세요</div>';
+  var maxO=Math.max.apply(null,exp.map(function(c){return byCat[c].out;}).concat([1]));
+  h+='<div class="seg">지출 분류 (많은 순)</div>';
+  exp.forEach(function(c){var v=byCat[c].out;
+    h+='<div class="catrow"><div class="catic">'+(CATICON[c]||'💸')+'</div><div class="catbd">'
+      +'<div class="catname"><span>'+esc(c)+'</span><span class="catamt">'+won(v)+'</span></div>'
+      +'<div class="catbar"><div class="catbarf" style="width:'+(v/maxO*100).toFixed(1)+'%"></div></div></div></div>';
+  });
+  if(inc.length){
+    var maxI=Math.max.apply(null,inc.map(function(c){return byCat[c].in;}).concat([1]));
+    h+='<div class="seg">수입 구성</div>';
+    inc.forEach(function(c){var v=byCat[c].in;
+      h+='<div class="catrow"><div class="catic">'+(CATICON[c]||'📥')+'</div><div class="catbd">'
+        +'<div class="catname"><span>'+esc(c)+'</span><span class="catamt" style="color:#5f8b6a">'+won(v)+'</span></div>'
+        +'<div class="catbar"><div class="catbarf in" style="width:'+(v/maxI*100).toFixed(1)+'%"></div></div></div></div>';
+    });
+  }
+  if(periodRange().months.length>1)h+=barsView();
+  return h;
+}
 
 /* 원장 가져오기 (파일 → 이 기기 localStorage) */
 function importLedger(inp){
