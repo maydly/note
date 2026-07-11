@@ -159,8 +159,9 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   </div>
   <div class="mnote" id="mNote"></div>
   <div id="moneyBody"></div>
-  <button class="impbtn" onclick="document.getElementById('impFile').click()">＋ 은행 원장 가져오기 (이 기기에만 저장)</button>
+  <button class="impbtn" onclick="document.getElementById('impFile').click()">＋ 거래내역 가져오기 (매달 그 달만 넣어도 누적됨)</button>
   <input type="file" id="impFile" accept="application/json,.json" style="display:none" onchange="importLedger(this)">
+  <div style="text-align:center;margin-top:8px"><span onclick="clearLedger()" style="font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline">가계부 전체 비우기</span></div>
 </div>
 
 <button class="add" id="fab" onclick="openAdd()">+</button>
@@ -384,13 +385,26 @@ function importLedger(inp){
         var amt=t.amt!=null?t.amt:(type==='in'?(t.in||0):(t.out||0));
         return {id:uid(),date:(t.date||'').slice(0,10),desc:t.desc||t.name||'',cat:t.cat||'기타',type:type,amt:amt,memo:t.memo||''};
       }).filter(function(t){return t.date&&t.amt;});
-      ledger=mapped;save(K.led,ledger);
+      // 병합(누적): 이미 있는 거래는 건너뛰고 새 것만 추가 — 매달 그 달만 넣어도 쌓임
+      var key=function(t){return t.date+'|'+t.type+'|'+t.amt+'|'+(t.desc||'').slice(0,20);};
+      var seen={};ledger.forEach(function(t){seen[key(t)]=1;});
+      var added=0;
+      mapped.forEach(function(t){var k=key(t);if(!seen[k]){seen[k]=1;ledger.push(t);added++;}});
+      ledger.sort(function(a,b){return a.date<b.date?-1:1;});
+      save(K.led,ledger);
       var d=mapped.map(function(t){return t.date;}).sort();
       viewYM=d.length?{y:+d[d.length-1].slice(0,4),m:+d[d.length-1].slice(5,7)-1}:null;
-      selDay=null;renderMoney();toast(mapped.length+'건 불러왔어요 (이 기기에만 저장)');
+      selDay=null;renderMoney();
+      toast(added+'건 추가'+(mapped.length-added>0?' (중복 '+(mapped.length-added)+'건 제외)':'')+' · 총 '+ledger.length+'건');
     }catch(e){toast('파일을 읽지 못했어요');}
   };
   r.readAsText(f);inp.value='';
+}
+function clearLedger(){
+  if(!ledger.length){toast('이미 비어 있어요');return;}
+  if(confirm('가계부 내역 '+ledger.length+'건을 모두 지울까요?\n(할일·구매·보유는 그대로예요)')){
+    ledger=[];save(K.led,ledger);selDay=null;renderMoney();toast('가계부를 비웠어요');
+  }
 }
 
 /* ===== 추가 모달 ===== */
