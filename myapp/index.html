@@ -461,16 +461,16 @@ function importLedger(inp){
         mapped=rows.map(function(t){
           var type=t.type||(t.in>0?'in':'out');
           var amt=t.amt!=null?t.amt:(type==='in'?(t.in||0):(t.out||0));
-          return {id:uid(),date:(t.date||'').slice(0,10),desc:t.desc||t.name||'',cat:t.cat||'기타',type:type,amt:amt,memo:t.memo||''};
+          return {id:uid(),date:(t.date||'').slice(0,10),time:t.time||'',desc:t.desc||t.name||'',cat:t.cat||'기타',type:type,amt:amt,acct:t.acct||'',memo:t.memo||''};
         }).filter(function(t){return t.date&&t.amt;});
       } else {
         if(typeof XLSX==='undefined'||typeof MJParse==='undefined'){toast('엑셀 모듈 로딩 중 — 새로고침 후 다시 시도');return;}
         var wb=XLSX.read(new Uint8Array(r.result),{type:'array'});
-        mapped=MJParse.parseWorkbook(wb).map(function(t){return {id:uid(),date:t.date,desc:t.desc,cat:t.cat,type:t.type,amt:t.amt,memo:''};});
+        mapped=MJParse.parseWorkbook(wb).map(function(t){return {id:uid(),date:t.date,time:t.time||'',desc:t.desc,cat:t.cat,type:t.type,amt:t.amt,acct:t.acct||'',memo:''};});
       }
       if(!mapped.length){toast('불러올 내역이 없어요 (은행 엑셀·JSON 형식 확인)');return;}
-      // 병합(누적): 이미 있는 거래는 건너뛰고 새 것만 추가 — 매달 그 달만 넣어도 쌓임
-      var key=function(t){return t.date+'|'+t.type+'|'+t.amt+'|'+(t.desc||'').slice(0,20);};
+      // 병합(누적): 날짜+시간+계좌+구분+금액+내용으로 진짜 중복만 제거(같은날 반복거래는 시간으로 구분해 살림)
+      var key=function(t){return t.date+'|'+(t.time||'')+'|'+(t.acct||'')+'|'+t.type+'|'+t.amt+'|'+(t.desc||'').slice(0,20);};
       var seen={};ledger.forEach(function(t){seen[key(t)]=1;});
       var added=0;
       mapped.forEach(function(t){var k=key(t);if(!seen[k]){seen[k]=1;ledger.push(t);added++;}});

@@ -8,7 +8,7 @@
 
   // ---- 분류 규칙 (엔진 v2와 동기화) ----
   var OVERRIDES = [
-    { re: /^2605|^2603|^25\.06|^26\.0|^\d{1,2}[.\/]\d{1,2}\s*-\s*\d{1,2}/, cat: "수입·급여/사업", type: "in" },
+    { re: /^2605(?![가-힣])|^25\.06|^\d{1,2}[.\/]\d{1,2}\s*-\s*\d{1,2}/, cat: "수입·급여/사업", type: "in" },
     { re: /박성준|일급/, cat: "수입·급여/사업", type: "in" },
     { re: /김하람/, cat: "이체·입금(인명·확인)", type: "in" },
     { re: /아정당/, cat: "수입·기타", type: "in" },
@@ -76,8 +76,8 @@
   function detectFormat(header) {
     var has = function (re) { return colIdx(header, re) >= 0; };
     if (has(/입금액/) && has(/출금액/)) return "hana";
+    if (has(/내용/) && has(/거래금액/)) return "kbank";                                  // 카뱅: '내용' 열 존재(카페이엔 없음)
     if (has(/거래구분/) && (has(/은행/) || has(/계좌\s*정보|결제\s*정보/))) return "kpay";
-    if (has(/내용/) && has(/거래금액/)) return "kbank";
     return null;
   }
   function parseSheet(rows) {
@@ -96,18 +96,18 @@
         var d = clean(row[colIdx(header, /거래일시/)]);
         if (!/^\d{4}-\d{2}-\d{2}/.test(d)) continue;
         var inV = num(row[colIdx(header, /입금액/)]), outV = num(row[colIdx(header, /출금액/)]);
-        t = { acct: "하나은행", date: d.slice(0, 10), desc: clean(row[colIdx(header, /적요/)]) || clean(row[colIdx(header, /의뢰인|수취인/)]), sub: clean(row[colIdx(header, /^구분$/)]), isIn: inV > 0, amt: inV || outV };
+        t = { acct: "하나은행", date: d.slice(0, 10), time: d.slice(11, 19), desc: clean(row[colIdx(header, /적요/)]) || clean(row[colIdx(header, /의뢰인|수취인/)]), sub: clean(row[colIdx(header, /^구분$/)]), isIn: inV > 0, amt: inV || outV };
       } else if (fmt === "kbank") {
         var d2 = clean(row[colIdx(header, /거래일시/)]);
         if (!/^\d{4}\.\d{2}\.\d{2}/.test(d2)) continue;
         var gubun = clean(row[colIdx(header, /^구분$/)]);
-        t = { acct: "카카오뱅크", date: d2.slice(0, 10).replace(/\./g, "-"), desc: clean(row[colIdx(header, /내용/)]) || clean(row[colIdx(header, /거래구분/)]), sub: clean(row[colIdx(header, /거래구분/)]), isIn: /입금/.test(gubun), amt: Math.abs(num(row[colIdx(header, /거래금액/)])) };
+        t = { acct: "카카오뱅크", date: d2.slice(0, 10).replace(/\./g, "-"), time: d2.slice(11, 19), desc: clean(row[colIdx(header, /내용/)]) || clean(row[colIdx(header, /거래구분/)]), sub: clean(row[colIdx(header, /거래구분/)]), isIn: /입금/.test(gubun), amt: Math.abs(num(row[colIdx(header, /거래금액/)])) };
       } else if (fmt === "kpay") {
         var d3 = clean(row[colIdx(header, /거래일시/)]);
         if (!/^\d{4}-\d{2}-\d{2}/.test(d3)) continue;
         var g = clean(row[colIdx(header, /거래구분/)]);
         var info = clean(row[colIdx(header, /계좌\s*정보|결제\s*정보/)]);
-        t = { acct: "카카오페이", date: d3.slice(0, 10), desc: info || g.replace(/\[.\]/, "").trim(), sub: g.replace(/\[.\]/, "").trim(), isIn: /\[\+\]/.test(g), amt: num(row[colIdx(header, /거래금액/)]) };
+        t = { acct: "카카오페이", date: d3.slice(0, 10), time: d3.slice(11, 19), desc: info || g.replace(/\[.\]/, "").trim(), sub: g.replace(/\[.\]/, "").trim(), isIn: /\[\+\]/.test(g), amt: Math.abs(num(row[colIdx(header, /거래금액/)])) };
       }
       if (t && t.date && t.amt) out.push(t);
     }
@@ -120,7 +120,7 @@
       raw = raw.concat(parseSheet(rows));
     });
     return raw.map(function (t) {
-      return { date: t.date, desc: t.desc, cat: classify(t), type: t.isIn ? "in" : "out", amt: t.amt, memo: "" };
+      return { date: t.date, time: t.time || "", desc: t.desc, cat: classify(t), type: t.isIn ? "in" : "out", amt: t.amt, acct: t.acct, memo: "" };
     });
   }
 
