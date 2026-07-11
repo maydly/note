@@ -380,11 +380,11 @@ function monthView(list){
   // 선택일 상세
   if(selDay){
     var items=list.filter(function(t){return t.date===selDay;});
-    h+='<div class="seg">'+(+selDay.slice(8,10))+'일 내역'+(items.length?'':' — 없음')+'</div>';
+    h+='<div class="seg">'+(+selDay.slice(8,10))+'일 내역 · 탭해서 수정'+(items.length?'':' — 없음')+'</div>';
     h+=items.map(ledCard).join('');
   }else{
-    h+='<div class="seg">최근 내역</div>';
-    h+=list.slice().sort(function(a,b){return a.date<b.date?1:-1;}).slice(0,12).map(ledCard).join('')||'<div class="empty">이 달 내역이 없어요</div>';
+    h+='<div class="seg">이 달 전체 내역 ('+list.length+'건) · 탭해서 수정</div>';
+    h+=list.slice().sort(function(a,b){return (a.date+(a.time||''))<(b.date+(b.time||''))?1:-1;}).map(ledCard).join('')||'<div class="empty">이 달 내역이 없어요</div>';
   }
   return h;
 }
@@ -402,11 +402,11 @@ function barsView(){
 }
 function ledCard(t){
   var ic=CATICON[t.cat]||(t.type==='in'?'📥':'💸');
-  return '<div class="card"><div class="led"><div class="lic">'+ic+'</div>'
+  return '<div class="card" onclick="editLedger(\''+t.id+'\')" style="cursor:pointer"><div class="led"><div class="lic">'+ic+'</div>'
     +'<div class="lt"><div class="ln">'+esc(t.desc||t.cat)+'</div>'
     +'<div class="ld">'+t.date.slice(5).replace('-','/')+' · '+esc(t.cat)+(t.memo?' · '+esc(t.memo):'')+'</div></div>'
     +'<div class="la '+(t.type==='in'?'in':'out')+'">'+(t.type==='in'?'+':'-')+won(t.amt).slice(1)+'</div>'
-    +'<button class="del" onclick="delItem(\'led\',\''+t.id+'\')">×</button>'
+    +'<button class="del" onclick="event.stopPropagation();delItem(\'led\',\''+t.id+'\')">×</button>'
     +'</div></div>';
 }
 function navPeriod(dir){
@@ -558,6 +558,29 @@ function saveMoney(){
   var date=document.getElementById('m_date').value;if(!date){toast('날짜를 선택하세요');return;}
   ledger.push({id:uid(),date:date,desc:document.getElementById('m_desc').value.trim(),cat:document.getElementById('m_cat').value,type:window._mtype,amt:amt,memo:''});
   save(K.led,ledger);viewYM={y:+date.slice(0,4),m:+date.slice(5,7)-1};renderMoney();closeSheet();toast('기록했어요');
+}
+/* 내역 수정 (수입/지출·분류·금액·날짜·내용 변경 + 삭제) */
+function editLedger(id){
+  var t=ledger.find(function(x){return x.id===id;});if(!t)return;
+  window._mtype=t.type;window._editId=id;
+  document.getElementById('sheet').innerHTML='<h3>내역 수정</h3>'
+    +'<div class="fld"><label>구분 (수입/지출)</label><div class="io" id="m_io"><button class="'+(t.type==='out'?'on-out':'')+'" onclick="pickIO(\'out\')">지출</button><button class="'+(t.type==='in'?'on-in':'')+'" onclick="pickIO(\'in\')">수입</button></div></div>'
+    +'<div class="fld"><label>금액</label><input id="m_amt" type="number" inputmode="numeric" value="'+t.amt+'"></div>'
+    +'<div class="fld"><label>분류</label><select id="m_cat"></select></div>'
+    +'<div class="fld"><label>날짜</label><input id="m_date" type="date" value="'+t.date+'"></div>'
+    +'<div class="fld"><label>내용</label><input id="m_desc" value="'+esc(t.desc||'')+'"></div>'
+    +'<div class="mact"><button class="mcancel" style="background:#f6e3df;color:#b5564b" onclick="if(confirm(\'이 내역을 삭제할까요?\')){delItem(\'led\',\''+id+'\');closeSheet();}">삭제</button><button class="msave" onclick="saveEdit()">저장</button></div>';
+  fillCats();
+  var s=document.getElementById('m_cat');var found=false;
+  for(var i=0;i<s.options.length;i++){if(s.options[i].value===t.cat){s.selectedIndex=i;found=true;break;}}
+  if(!found){var o=document.createElement('option');o.text=t.cat;o.value=t.cat;s.insertBefore(o,s.firstChild);s.selectedIndex=0;}
+  document.getElementById('mask').classList.add('on');
+}
+function saveEdit(){
+  var t=ledger.find(function(x){return x.id===window._editId;});if(!t)return;
+  var amt=parseInt(document.getElementById('m_amt').value,10);if(!amt||amt<0){toast('금액을 확인하세요');return;}
+  t.type=window._mtype;t.amt=amt;t.cat=document.getElementById('m_cat').value;t.date=document.getElementById('m_date').value;t.desc=document.getElementById('m_desc').value.trim();
+  save(K.led,ledger);renderMoney();closeSheet();toast('수정됐어요');
 }
 
 /* ===== 탭 전환 ===== */
