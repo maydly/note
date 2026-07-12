@@ -1,0 +1,757 @@
+{
+ "version": "260713-1",
+ "note": "명진 장비 공유데이터(구매계획+보유현황). 장비명·가격만(비민감). PC 장비비교에서 편집→이 파일 갱신→폰앱 자동동기화.",
+ "plan": [
+  {
+   "_k": 1,
+   "id": 1,
+   "name": "Techart 수동→AF 어댑터 (라이카M→소니E)",
+   "cat": "어댑터",
+   "best": 35,
+   "avg": 42,
+   "max": 50,
+   "memo": "허브·필수. 현재 판매모델·지지무게 확인",
+   "rank": 1
+  },
+  {
+   "_k": 2,
+   "id": 2,
+   "name": "니콘 F → 라이카M 변환링",
+   "cat": "어댑터",
+   "best": 2,
+   "avg": 3,
+   "max": 5,
+   "memo": "보유 니콘 35-70 연결용",
+   "rank": 2
+  },
+  {
+   "_k": 3,
+   "id": 3,
+   "name": "M42 → 라이카M 변환링",
+   "cat": "어댑터",
+   "best": 1,
+   "avg": 2,
+   "max": 4,
+   "memo": "M42 올드렌즈 공용",
+   "rank": 3
+  },
+  {
+   "_k": 4,
+   "id": 4,
+   "name": "Helios 44-2 58mm F2",
+   "cat": "렌즈",
+   "best": 4,
+   "avg": 6,
+   "max": 9,
+   "memo": "중고. 소용돌이 보케. 4만↓면 득템",
+   "rank": 4
+  },
+  {
+   "_k": 5,
+   "id": 5,
+   "name": "SMC/Super Takumar 55mm F1.8",
+   "cat": "렌즈",
+   "best": 5,
+   "avg": 7,
+   "max": 10,
+   "memo": "중고. 따뜻한 클래식",
+   "rank": 5
+  },
+  {
+   "_k": 6,
+   "id": 6,
+   "name": "Pentacon 50mm F1.8",
+   "cat": "렌즈",
+   "best": 3,
+   "avg": 6,
+   "max": 8,
+   "memo": "중고. 비눗방울 보케. 곰팡이 확인",
+   "rank": 6
+  },
+  {
+   "_k": 7,
+   "id": 7,
+   "name": "필름 바디 업그레이드 (검토)",
+   "cat": "바디",
+   "best": 0,
+   "avg": 0,
+   "max": 0,
+   "memo": "보류 — 현 FM10로 가능. 감성 이유면",
+   "rank": 7
+  },
+  {
+   "_k": 8,
+   "id": 8,
+   "name": "랜턴90 (90cm 랜턴 소프트박스)",
+   "cat": "조명",
+   "best": 8,
+   "avg": 13,
+   "max": 18,
+   "memo": "신품~15만, 제너릭~7만. 중고 8만↓ 득템",
+   "rank": 8
+  },
+  {
+   "_k": 9,
+   "id": 9,
+   "name": "300W급 컬러 영상조명 (아마란 300c/360c)",
+   "cat": "조명",
+   "best": 45,
+   "avg": 60,
+   "max": 90,
+   "memo": "300c 45만↓ 득템, 90만↑ 금지",
+   "rank": 9
+  },
+  {
+   "_k": 10,
+   "id": 10,
+   "name": "맥북프로 M1 Max 32GB 1TB",
+   "cat": "컴퓨터",
+   "best": 170,
+   "avg": 182,
+   "max": 200,
+   "memo": "단종=중고. 16·배터리90%+·풀박",
+   "rank": 10
+  },
+  {
+   "_k": 11,
+   "id": 11,
+   "name": "캐논 PowerShot V1",
+   "cat": "바디",
+   "best": 85,
+   "avg": 100,
+   "max": 120,
+   "memo": "APS-C 브이로그캠·4K. 리퍼 85만↓ 득템",
+   "rank": 11
+  },
+  {
+   "_k": 12,
+   "id": 12,
+   "name": "DJI 오즈모 포켓 4",
+   "cat": "바디",
+   "best": 60,
+   "avg": 68,
+   "max": 78,
+   "memo": "1인치 짐벌 포켓캠. 기본~68만",
+   "rank": 12
+  },
+  {
+   "_k": 13,
+   "id": 13,
+   "name": "QOOP Loop 카메라 홀스터",
+   "cat": "액세서리",
+   "best": 1.5,
+   "avg": 2.5,
+   "max": 4,
+   "memo": "퀵릴리즈 홀스터. 실판매가 확인",
+   "rank": 13
+  },
+  {
+   "_k": 14,
+   "id": 14,
+   "name": "Meking X-30 롤러스탠드",
+   "cat": "액세서리",
+   "best": 6,
+   "avg": 9,
+   "max": 14,
+   "memo": "조명·붐 지지 롤러스탠드",
+   "rank": 14
+  },
+  {
+   "_k": 15,
+   "id": 15,
+   "name": "QOOP 스택백 L",
+   "cat": "액세서리",
+   "best": 3,
+   "avg": 5,
+   "max": 7,
+   "memo": "카메라 숄더/백팩 L",
+   "rank": 15
+  }
+ ],
+ "own": [
+  {
+   "id": 1,
+   "name": "Sony A7M4",
+   "cat": "카메라",
+   "desc": "풀프레임 미러리스 (E마운트)",
+   "price": 2700000,
+   "status": ""
+  },
+  {
+   "id": 2,
+   "name": "니콘 FM10",
+   "cat": "카메라",
+   "desc": "필름 SLR (니콘 F, AI-S)",
+   "price": 150000,
+   "status": ""
+  },
+  {
+   "id": 3,
+   "name": "펜탁스 에스피오 SW120II",
+   "cat": "카메라",
+   "desc": "필름 컴팩트",
+   "price": 60000,
+   "status": ""
+  },
+  {
+   "id": 4,
+   "name": "코니카 C35 EF",
+   "cat": "카메라",
+   "desc": "필름 컴팩트",
+   "price": 80000,
+   "status": ""
+  },
+  {
+   "id": 5,
+   "name": "후지필름 인스탁스 미니 에보",
+   "cat": "카메라",
+   "desc": "인스턴트 (하이브리드)",
+   "price": 250000,
+   "status": ""
+  },
+  {
+   "id": 6,
+   "name": "SONY HDR-CX370V",
+   "cat": "카메라",
+   "desc": "캠코더",
+   "price": 80000,
+   "status": ""
+  },
+  {
+   "id": 7,
+   "name": "SONY HDR-CX590V",
+   "cat": "카메라",
+   "desc": "캠코더",
+   "price": 100000,
+   "status": ""
+  },
+  {
+   "id": 8,
+   "name": "JVC GZ-HD30",
+   "cat": "카메라",
+   "desc": "캠코더",
+   "price": 70000,
+   "status": ""
+  },
+  {
+   "id": 9,
+   "name": "CASIO EXILIM EX-H15",
+   "cat": "카메라",
+   "desc": "디지털 컴팩트",
+   "price": 30000,
+   "status": ""
+  },
+  {
+   "id": 10,
+   "name": "SONY 워크맨 NW-S754 8GB",
+   "cat": "카메라",
+   "desc": "미디어 플레이어",
+   "price": 40000,
+   "status": ""
+  },
+  {
+   "id": 11,
+   "name": "Samyang 35-150mm F2-2.8 FE",
+   "cat": "렌즈",
+   "desc": "소니 E · 35-150mm F2-2.8",
+   "price": 1350000,
+   "status": ""
+  },
+  {
+   "id": 12,
+   "name": "Nikon 35-70mm F3.5-4.8",
+   "cat": "렌즈",
+   "desc": "니콘 F (AI-S) · 35-70mm F3.5-4.8",
+   "price": 50000,
+   "status": ""
+  },
+  {
+   "id": 13,
+   "name": "YUS AUTO TELE CONVERTER 2X",
+   "cat": "렌즈",
+   "desc": "Contax/Yashica (C/Y) · 2배 텔레컨버터",
+   "price": 30000,
+   "status": ""
+  },
+  {
+   "id": 14,
+   "name": "Haida PROII CPL-VND",
+   "cat": "필터",
+   "desc": "—",
+   "price": 200000,
+   "status": "가변 ND + CPL"
+  },
+  {
+   "id": 15,
+   "name": "Benro SHD L39+H UV",
+   "cat": "필터",
+   "desc": "—",
+   "price": 45000,
+   "status": "UV 보호"
+  },
+  {
+   "id": 16,
+   "name": "Benro SHD CPL-HD",
+   "cat": "필터",
+   "desc": "—",
+   "price": 110000,
+   "status": "편광"
+  },
+  {
+   "id": 17,
+   "name": "Kenko BLACK MIST No.05",
+   "cat": "필터",
+   "desc": "—",
+   "price": 100000,
+   "status": "디퓨전(약)"
+  },
+  {
+   "id": 18,
+   "name": "NiSi White Mist 1/4",
+   "cat": "필터",
+   "desc": "—",
+   "price": 130000,
+   "status": "디퓨전+흰 글로우"
+  },
+  {
+   "id": 19,
+   "name": "77mm K&amp;F Nano-X Black Diffusion 1/4",
+   "cat": "필터",
+   "desc": "77mm",
+   "price": 55000,
+   "status": "블랙 디퓨전"
+  },
+  {
+   "id": 20,
+   "name": "Kenko SOFTON SPECK [A]",
+   "cat": "필터",
+   "desc": "82mm",
+   "price": 90000,
+   "status": "소프트/스펙 확산"
+  },
+  {
+   "id": 21,
+   "name": "Kenko FOGGY [A]",
+   "cat": "필터",
+   "desc": "82mm",
+   "price": 90000,
+   "status": "포그(안개) 확산"
+  },
+  {
+   "id": 22,
+   "name": "Kenko NOSTALTONE BLUE",
+   "cat": "필터",
+   "desc": "—",
+   "price": 100000,
+   "status": "색조+소프트"
+  },
+  {
+   "id": 23,
+   "name": "Hoya STAR 6X",
+   "cat": "필터",
+   "desc": "—",
+   "price": 45000,
+   "status": "별빛(6갈래)"
+  },
+  {
+   "id": 24,
+   "name": "77mm WalkingWay Colorful Starlight",
+   "cat": "필터",
+   "desc": "77mm",
+   "price": 45000,
+   "status": "컬러 스타/프리즘"
+  },
+  {
+   "id": 25,
+   "name": "77mm WalkingWay Star +4",
+   "cat": "필터",
+   "desc": "77mm",
+   "price": 35000,
+   "status": "4포인트 스타"
+  },
+  {
+   "id": 26,
+   "name": "82mm Linear Prism / Multi-Strip",
+   "cat": "필터",
+   "desc": "82mm",
+   "price": 60000,
+   "status": "프리즘/반복상"
+  },
+  {
+   "id": 27,
+   "name": "82mm Split Diopter / Split Prism",
+   "cat": "필터",
+   "desc": "82mm",
+   "price": 50000,
+   "status": "분할 초점/프리즘"
+  },
+  {
+   "id": 28,
+   "name": "82mm Split Glass / Kaleidoscope",
+   "cat": "필터",
+   "desc": "82mm",
+   "price": 50000,
+   "status": "분할 프리즘/칼레이도"
+  },
+  {
+   "id": 29,
+   "name": "SUN-ART 썬빔 아트샷 세트",
+   "cat": "조명",
+   "desc": "광학 빔/썬빔 효과 조명",
+   "price": 144000,
+   "status": ""
+  },
+  {
+   "id": 30,
+   "name": "고독스 LUX JUNIOR",
+   "cat": "조명",
+   "desc": "레트로 스피드라이트",
+   "price": 100000,
+   "status": ""
+  },
+  {
+   "id": 31,
+   "name": "어퓨처 아마란 AL-M9",
+   "cat": "조명",
+   "desc": "미니 LED 라이트",
+   "price": 40000,
+   "status": ""
+  },
+  {
+   "id": 32,
+   "name": "500W 포그머신",
+   "cat": "조명",
+   "desc": "연무기",
+   "price": 70000,
+   "status": ""
+  },
+  {
+   "id": 33,
+   "name": "고독스 신형 스피드라이트 브라켓",
+   "cat": "조명",
+   "desc": "플래시 브라켓",
+   "price": 20000,
+   "status": ""
+  },
+  {
+   "id": 34,
+   "name": "고독스 단일접점 핫슈 라이저",
+   "cat": "조명",
+   "desc": "핫슈 라이저",
+   "price": 15000,
+   "status": ""
+  },
+  {
+   "id": 35,
+   "name": "Godox XPro V2 S 트리거",
+   "cat": "조명",
+   "desc": "무선 플래시 트리거 (소니)",
+   "price": 90000,
+   "status": ""
+  },
+  {
+   "id": 36,
+   "name": "PERI 엄브렐러 실버 XL",
+   "cat": "조명효과",
+   "desc": "실버 엄브렐러 182cm",
+   "price": 20000,
+   "status": ""
+  },
+  {
+   "id": 37,
+   "name": "PERI 엄브렐러 화이트 XL",
+   "cat": "조명효과",
+   "desc": "화이트 엄브렐러 182cm",
+   "price": 20000,
+   "status": ""
+  },
+  {
+   "id": 38,
+   "name": "PERI 엄브렐러 트랜스루센트 M",
+   "cat": "조명효과",
+   "desc": "투과형 엄브렐러 M",
+   "price": 15000,
+   "status": ""
+  },
+  {
+   "id": 39,
+   "name": "PERI 엄브렐러 화이트 M",
+   "cat": "조명효과",
+   "desc": "화이트 엄브렐러 M",
+   "price": 15000,
+   "status": ""
+  },
+  {
+   "id": 40,
+   "name": "유쾌한 생각 반사판 24×36 M",
+   "cat": "조명효과",
+   "desc": "반사판 (화이트/실버)",
+   "price": 30000,
+   "status": ""
+  },
+  {
+   "id": 41,
+   "name": "Round Reflector 5in1",
+   "cat": "조명효과",
+   "desc": "원형 반사판 5in1",
+   "price": 20000,
+   "status": ""
+  },
+  {
+   "id": 42,
+   "name": "호루스벤누 붐스탠드",
+   "cat": "스탠드",
+   "desc": "붐 스탠드",
+   "price": 45000,
+   "status": ""
+  },
+  {
+   "id": 43,
+   "name": "Aurora ALS 932",
+   "cat": "스탠드",
+   "desc": "라이트 스탠드",
+   "price": 45000,
+   "status": ""
+  },
+  {
+   "id": 44,
+   "name": "액순 Accsoon PowerCage Pro II",
+   "cat": "스탠드",
+   "desc": "아이패드 파워 케이지/리그",
+   "price": 159000,
+   "status": ""
+  },
+  {
+   "id": 45,
+   "name": "SmallRig 3667C 케이지",
+   "cat": "스탠드",
+   "desc": "A7M4 카메라 케이지",
+   "price": 96800,
+   "status": ""
+  },
+  {
+   "id": 46,
+   "name": "SmallRig 24cm 매직암 (SR2066)",
+   "cat": "스탠드",
+   "desc": "매직암 (아티큘레이팅 암) 140mm",
+   "price": 21880,
+   "status": ""
+  },
+  {
+   "id": 47,
+   "name": "레오포토 PM-03 맥세이프 콜드슈 마운트",
+   "cat": "스탠드",
+   "desc": "스마트폰 마운트 (MagSafe/콜드슈)",
+   "price": 32740,
+   "status": ""
+  },
+  {
+   "id": 48,
+   "name": "NP-F930 배터리",
+   "cat": "전원",
+   "desc": "L형 배터리",
+   "price": 60000,
+   "status": "2개"
+  },
+  {
+   "id": 49,
+   "name": "보바 VA-121",
+   "cat": "전원",
+   "desc": "보조배터리 (파워뱅크)",
+   "price": 20000,
+   "status": "1개"
+  },
+  {
+   "id": 50,
+   "name": "NP2 Air 듀얼 충전기",
+   "cat": "전원",
+   "desc": "배터리 충전기 (NP-FZ100/BX1/FW50)",
+   "price": 35000,
+   "status": "1개"
+  },
+  {
+   "id": 51,
+   "name": "아이무비 60W USB-C PD 충전기",
+   "cat": "전원",
+   "desc": "PD 고속 충전기 (TX-P360E-KR)",
+   "price": 25000,
+   "status": "1개"
+  },
+  {
+   "id": 52,
+   "name": "코브라 테더 (CobraTether) C-to-C",
+   "cat": "케이블",
+   "desc": "10G",
+   "price": 210000,
+   "status": ""
+  },
+  {
+   "id": 53,
+   "name": "벨루가 (Beluga) C-to-C 8K",
+   "cat": "케이블",
+   "desc": "8K",
+   "price": 50000,
+   "status": ""
+  },
+  {
+   "id": 54,
+   "name": "벨루가 C-to-C 4K",
+   "cat": "케이블",
+   "desc": "4K",
+   "price": 35000,
+   "status": ""
+  },
+  {
+   "id": 55,
+   "name": "벨루가 C-to 익스텐션",
+   "cat": "케이블",
+   "desc": "연장선",
+   "price": 30000,
+   "status": ""
+  },
+  {
+   "id": 56,
+   "name": "테더툴스 (Tether Tools) C-to-C",
+   "cat": "케이블",
+   "desc": "C-to-C",
+   "price": 150000,
+   "status": ""
+  },
+  {
+   "id": 57,
+   "name": "MacBook Pro M4",
+   "cat": "컴퓨터",
+   "desc": "RAM 16GB / SSD 512GB",
+   "price": 2390000,
+   "status": ""
+  },
+  {
+   "id": 58,
+   "name": "iPad Air 5세대",
+   "cat": "컴퓨터",
+   "desc": "M1",
+   "price": 550000,
+   "status": ""
+  },
+  {
+   "id": 59,
+   "name": "iPhone 7 Plus",
+   "cat": "컴퓨터",
+   "desc": "32GB 실버",
+   "price": 70000,
+   "status": ""
+  },
+  {
+   "id": 60,
+   "name": "삼성 포터블 SSD T7",
+   "cat": "컴퓨터",
+   "desc": "1TB",
+   "price": 130000,
+   "status": ""
+  },
+  {
+   "id": 61,
+   "name": "샌디스크 포터블 SSD E30",
+   "cat": "컴퓨터",
+   "desc": "1TB ×2",
+   "price": 260000,
+   "status": ""
+  },
+  {
+   "id": 62,
+   "name": "벨킨 7in1 멀티포트",
+   "cat": "컴퓨터",
+   "desc": "USB-C 허브",
+   "price": 65000,
+   "status": ""
+  },
+  {
+   "id": 63,
+   "name": "모락 시뮬러S 노트북 거치대",
+   "cat": "컴퓨터",
+   "desc": "알루미늄 접이식 스탠드",
+   "price": 21900,
+   "status": ""
+  },
+  {
+   "id": 64,
+   "name": "Turbo Fan X3-A",
+   "cat": "기타",
+   "desc": "터보 팬 (7.4V 내장배터리)",
+   "price": 25000,
+   "status": ""
+  },
+  {
+   "id": 65,
+   "name": "배경천 · 커튼 · 소품",
+   "cat": "배경/소품",
+   "desc": "배경·세트 소품 다수",
+   "price": 1000000,
+   "status": ""
+  },
+  {
+   "id": 66,
+   "name": "CASIO EXILIM EX-H20G",
+   "cat": "수리검토",
+   "desc": "디지털 컴팩트",
+   "price": 0,
+   "status": "고장수리필요"
+  },
+  {
+   "id": 67,
+   "name": "SANYO VPC-C40",
+   "cat": "수리검토",
+   "desc": "디지털 컴팩트",
+   "price": 0,
+   "status": "작동불가"
+  },
+  {
+   "id": 68,
+   "name": "삼성 KENOX ME5",
+   "cat": "수리검토",
+   "desc": "디지털 컴팩트",
+   "price": 0,
+   "status": "작동불가"
+  },
+  {
+   "id": 69,
+   "name": "SONY DSC-H1",
+   "cat": "수리검토",
+   "desc": "디지털 컴팩트",
+   "price": 0,
+   "status": "작동불가"
+  },
+  {
+   "id": 70,
+   "name": "SONY DCR-TRV9",
+   "cat": "수리검토",
+   "desc": "미니DV 캠코더",
+   "price": 0,
+   "status": "작동불가"
+  },
+  {
+   "id": 71,
+   "name": "파나소닉 PV-DV100D",
+   "cat": "수리검토",
+   "desc": "미니DV 캠코더",
+   "price": 0,
+   "status": "작동불가"
+  },
+  {
+   "id": 72,
+   "name": "폴라로이드 CLOSEUP 636",
+   "cat": "수리검토",
+   "desc": "인스턴트 카메라",
+   "price": 30000,
+   "status": "판매/보류"
+  },
+  {
+   "id": 73,
+   "name": "캐논 오토보이 S2",
+   "cat": "수리검토",
+   "desc": "필름 컴팩트",
+   "price": 40000,
+   "status": "판매/보류"
+  }
+ ]
+}

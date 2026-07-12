@@ -43,6 +43,16 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .t-촬영{background:#f3e2da;color:#b5745c}.t-개인{background:#e7eee2;color:#6f8b62}.t-수빈{background:#e3e2f0;color:#6d6aa8}
 /* 구매 */
 .rank{flex:0 0 24px;font-weight:800;color:#c98e7f;text-align:center;font-size:15px}
+.rkbox{display:flex;flex-direction:column;align-items:center;gap:3px;flex:0 0 auto}
+.rkmv{display:flex;flex-direction:column;border:1px solid #e5ddcd;border-radius:6px;overflow:hidden}
+.rkmv button{border:0;background:#fff;color:#c98e7f;font-size:9px;padding:1px 7px;line-height:1.35;cursor:pointer}
+.rkmv button:first-child{border-bottom:1px solid #efe9df}
+.rkmv button:active{background:#f3e2da}
+.imgq{font-size:12px;text-decoration:none}
+.buysrc{background:#fff;border:1px solid #ece7df;border-radius:15px;padding:14px 16px;margin-top:14px}
+.buysrc h4{margin:0 0 8px;font-size:14px;color:#c98e7f}
+.buysrc a{color:#6f8b62;font-size:13px;text-decoration:none;font-weight:600}
+.buysrc li{margin:5px 0;font-size:13px;color:#9a9086}
 .band{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
 .bchip{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
 .b-best{background:#e7eee2;color:#5f7d53}.b-avg{background:#eee9e0;color:#8a7d68}.b-cap{background:#f6e3df;color:#b5564b}
@@ -50,6 +60,10 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .minib{border:1.5px solid #a3bd90;background:#fff;color:#6f8b62;font-size:11px;font-weight:700;padding:5px 10px;border-radius:20px;white-space:nowrap;cursor:pointer}
 /* 보유 */
 .own{font-size:14.5px;font-weight:700}.owns{font-size:11.5px;color:#9a9086;margin-top:3px}
+.cchip{background:#eef4ea;border:1px solid #dbe9df;border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:700;color:#5f8b6a}
+.catline{display:flex;flex-wrap:wrap;gap:6px}
+.stbadge{font-size:10px;background:#f3e2da;color:#b5745c;border-radius:20px;padding:1px 7px;font-weight:700}
+.opr{font-size:12.5px;font-weight:800;color:#8a7d68;white-space:nowrap;flex:0 0 auto}
 /* 가계부 */
 .ptabs{display:flex;gap:6px;margin:4px 0 14px}
 .pt{flex:1;border:1px solid #e5ddcd;background:#fff;color:#9a9086;font-size:12.5px;font-weight:700;padding:8px 0;border-radius:10px;cursor:pointer}
@@ -156,8 +170,32 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 <!-- 구매계획 -->
 <div class="scr" id="s-buy">
   <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync">☁ 이 기기 저장</div></div>
-  <div class="h1">구매계획</div><div class="sub">사고 싶은 순서대로 · "샀음"하면 보유현황으로</div>
+  <div class="h1">구매계획</div><div class="sub">순위대로 · 구매완료하면 가계부·보유현황 자동</div>
   <div id="buyList"></div>
+</div>
+<!-- 참고·구매처 -->
+<div class="scr" id="s-src">
+  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync">📎 구매처</div></div>
+  <div class="h1">참고 · 구매처</div><div class="sub">장비·필름 살 때 자주 보는 곳</div>
+  <div class="buysrc">
+    <h4>🔖 장비 구매처</h4>
+    <ul style="margin:0;padding-left:16px">
+      <li><a href="https://rockcha.co.kr/store/domestic?cat=accsoon" target="_blank" rel="noreferrer">락차 (rockcha)</a> · Accsoon 등</li>
+      <li><a href="https://hktools.co.kr/index.html" target="_blank" rel="noreferrer">HK Tools</a> · 촬영·공구</li>
+      <li><a href="https://www.plthink.com/" target="_blank" rel="noreferrer">유쾌한생각</a> · 조명·촬영</li>
+      <li><a href="https://www.mustcolor.com/" target="_blank" rel="noreferrer">머스트컬러</a> · 촬영·조명</li>
+      <li><a href="https://www.saeki.co.kr/main" target="_blank" rel="noreferrer">사에키</a> · 촬영·조명</li>
+    </ul>
+  </div>
+  <div class="buysrc">
+    <h4>🎞 필름 구매처</h4>
+    <ul style="margin:0;padding-left:16px">
+      <li><a href="https://smartstore.naver.com/paulcamera" target="_blank" rel="noreferrer">폴카메라</a></li>
+      <li><a href="https://smartstore.naver.com/newninestore" target="_blank" rel="noreferrer">뉴나인스토어</a></li>
+      <li><a href="https://smartstore.naver.com/waterstone-film-and-camera" target="_blank" rel="noreferrer">워터스톤 필름앤카메라</a></li>
+      <li><a href="https://www.allycamera.com/" target="_blank" rel="noreferrer">앨리카메라</a></li>
+    </ul>
+  </div>
 </div>
 <!-- 보유현황 -->
 <div class="scr" id="s-own">
@@ -186,8 +224,9 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 <button class="add" id="fab" onclick="openAdd()">+</button>
 <div class="tabs">
   <button class="tab on" data-t="todo" onclick="go('todo',this)"><span class="ic">📋</span><span class="lb">할 일</span></button>
-  <button class="tab" data-t="buy" onclick="go('buy',this)"><span class="ic">🛒</span><span class="lb">구매계획</span></button>
-  <button class="tab" data-t="own" onclick="go('own',this)"><span class="ic">📦</span><span class="lb">보유현황</span></button>
+  <button class="tab" data-t="buy" onclick="go('buy',this)"><span class="ic">🛒</span><span class="lb">구매</span></button>
+  <button class="tab" data-t="src" onclick="go('src',this)"><span class="ic">📎</span><span class="lb">구매처</span></button>
+  <button class="tab" data-t="own" onclick="go('own',this)"><span class="ic">📦</span><span class="lb">보유</span></button>
   <button class="tab" data-t="money" onclick="go('money',this)"><span class="ic">💰</span><span class="lb">가계부</span></button>
 </div>
 </div>
@@ -210,23 +249,51 @@ function wonShort(n){var a=Math.abs(n);if(a>=10000)return (n<0?'-':'')+Math.roun
 var _tt;function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(_tt);_tt=setTimeout(function(){t.classList.remove('on');},2000);}
 
 /* 장비비교 페이지에서 이동해온 보유장비 기본목록 */
-var DEFAULT_OWN=[{"name":"Sony A7M4","cat":"카메라","sub":"풀프레임 미러리스 (E마운트) · ₩2,700,000"},{"name":"니콘 FM10","cat":"카메라","sub":"필름 SLR (니콘 F, AI-S) · ₩150,000"},{"name":"펜탁스 에스피오 SW120II","cat":"카메라","sub":"필름 컴팩트 · ₩60,000"},{"name":"코니카 C35 EF","cat":"카메라","sub":"필름 컴팩트 · ₩80,000"},{"name":"후지필름 인스탁스 미니 에보","cat":"카메라","sub":"인스턴트 (하이브리드) · ₩250,000"},{"name":"SONY HDR-CX370V","cat":"카메라","sub":"캠코더 · ₩80,000"},{"name":"SONY HDR-CX590V","cat":"카메라","sub":"캠코더 · ₩100,000"},{"name":"JVC GZ-HD30","cat":"카메라","sub":"캠코더 · ₩70,000"},{"name":"CASIO EXILIM EX-H15","cat":"카메라","sub":"디지털 컴팩트 · ₩30,000"},{"name":"SONY 워크맨 NW-S754 8GB","cat":"카메라","sub":"미디어 플레이어 · ₩40,000"},{"name":"Samyang 35-150mm F2-2.8 FE","cat":"렌즈","sub":"소니 E · 보유 · [35-150mm F2-2.8]"},{"name":"Nikon 35-70mm F3.5-4.8","cat":"렌즈","sub":"니콘 F (AI-S) · 보유 · [35-70mm F3.5-4.8]"},{"name":"YUS AUTO TELE CONVERTER 2X","cat":"렌즈","sub":"Contax/Yashica (C/Y) · 보유 · [2배 텔레컨버터]"},{"name":"Haida PROII CPL-VND","cat":"필터 보유","sub":"— · ₩200,000 · [가변 ND + CPL]"},{"name":"Benro SHD L39+H UV","cat":"필터 보유","sub":"— · ₩45,000 · [UV 보호]"},{"name":"Benro SHD CPL-HD","cat":"필터 보유","sub":"— · ₩110,000 · [편광]"},{"name":"Kenko BLACK MIST No.05","cat":"필터 보유","sub":"— · ₩100,000 · [디퓨전(약)]"},{"name":"NiSi White Mist 1/4","cat":"필터 보유","sub":"— · ₩130,000 · [디퓨전+흰 글로우]"},{"name":"77mm K&amp;F Nano-X Black Diffusion 1/4","cat":"필터 보유","sub":"77mm · ₩55,000 · [블랙 디퓨전]"},{"name":"Kenko SOFTON SPECK [A]","cat":"필터 보유","sub":"82mm · ₩90,000 · [소프트/스펙 확산]"},{"name":"Kenko FOGGY [A]","cat":"필터 보유","sub":"82mm · ₩90,000 · [포그(안개) 확산]"},{"name":"Kenko NOSTALTONE BLUE","cat":"필터 보유","sub":"— · ₩100,000 · [색조+소프트]"},{"name":"Hoya STAR 6X","cat":"필터 보유","sub":"— · ₩45,000 · [별빛(6갈래)]"},{"name":"77mm WalkingWay Colorful Starlight","cat":"필터 보유","sub":"77mm · ₩45,000 · [컬러 스타/프리즘]"},{"name":"77mm WalkingWay Star +4","cat":"필터 보유","sub":"77mm · ₩35,000 · [4포인트 스타]"},{"name":"82mm Linear Prism / Multi-Strip","cat":"필터 보유","sub":"82mm · ₩60,000 · [프리즘/반복상]"},{"name":"82mm Split Diopter / Split Prism","cat":"필터 보유","sub":"82mm · ₩50,000 · [분할 초점/프리즘]"},{"name":"82mm Split Glass / Kaleidoscope","cat":"필터 보유","sub":"82mm · ₩50,000 · [분할 프리즘/칼레이도]"},{"name":"SUN-ART 썬빔 아트샷 세트","cat":"조명","sub":"광학 빔/썬빔 효과 조명 · ₩144,000"},{"name":"고독스 LUX JUNIOR","cat":"조명","sub":"레트로 스피드라이트 · ₩100,000"},{"name":"어퓨처 아마란 AL-M9","cat":"조명","sub":"미니 LED 라이트 · ₩40,000"},{"name":"500W 포그머신","cat":"조명","sub":"연무기 · ₩70,000"},{"name":"고독스 신형 스피드라이트 브라켓","cat":"조명","sub":"플래시 브라켓 · ₩20,000"},{"name":"고독스 단일접점 핫슈 라이저","cat":"조명","sub":"핫슈 라이저 · ₩15,000"},{"name":"Godox XPro V2 S 트리거","cat":"조명","sub":"무선 플래시 트리거 (소니) · ₩90,000"},{"name":"PERI 엄브렐러 실버 XL","cat":"조명효과","sub":"실버 엄브렐러 182cm · ₩20,000"},{"name":"PERI 엄브렐러 화이트 XL","cat":"조명효과","sub":"화이트 엄브렐러 182cm · ₩20,000"},{"name":"PERI 엄브렐러 트랜스루센트 M","cat":"조명효과","sub":"투과형 엄브렐러 M · ₩15,000"},{"name":"PERI 엄브렐러 화이트 M","cat":"조명효과","sub":"화이트 엄브렐러 M · ₩15,000"},{"name":"유쾌한 생각 반사판 24×36 M","cat":"조명효과","sub":"반사판 (화이트/실버) · ₩30,000"},{"name":"Round Reflector 5in1","cat":"조명효과","sub":"원형 반사판 5in1 · ₩20,000"},{"name":"호루스벤누 붐스탠드","cat":"스탠드","sub":"붐 스탠드 · ₩45,000"},{"name":"Aurora ALS 932","cat":"스탠드","sub":"라이트 스탠드 · ₩45,000"},{"name":"액순 Accsoon PowerCage Pro II","cat":"스탠드","sub":"아이패드 파워 케이지/리그 · ₩159,000 신품"},{"name":"SmallRig 3667C 케이지","cat":"스탠드","sub":"A7M4 카메라 케이지 · ₩96,800"},{"name":"SmallRig 24cm 매직암 (SR2066)","cat":"스탠드","sub":"매직암 (아티큘레이팅 암) 140mm · ₩21,880"},{"name":"레오포토 PM-03 맥세이프 콜드슈 마운트","cat":"스탠드","sub":"스마트폰 마운트 (MagSafe/콜드슈) · ₩32,740"},{"name":"NP-F930 배터리","cat":"전원","sub":"L형 배터리 · ₩60,000 개당 3만 · [2개]"},{"name":"보바 VA-121","cat":"전원","sub":"보조배터리 (파워뱅크) · ₩20,000 · [1개]"},{"name":"NP2 Air 듀얼 충전기","cat":"전원","sub":"배터리 충전기 (NP-FZ100/BX1/FW50) · ₩35,000 · [1개]"},{"name":"아이무비 60W USB-C PD 충전기","cat":"전원","sub":"PD 고속 충전기 (TX-P360E-KR) · ₩25,000 · [1개]"},{"name":"코브라 테더 (CobraTether) C-to-C","cat":"케이블","sub":"10G · ₩210,000"},{"name":"벨루가 (Beluga) C-to-C 8K","cat":"케이블","sub":"8K · ₩50,000"},{"name":"벨루가 C-to-C 4K","cat":"케이블","sub":"4K · ₩35,000"},{"name":"벨루가 C-to 익스텐션","cat":"케이블","sub":"연장선 · ₩30,000"},{"name":"테더툴스 (Tether Tools) C-to-C","cat":"케이블","sub":"C-to-C · ₩150,000"},{"name":"MacBook Pro M4","cat":"컴퓨터","sub":"RAM 16GB / SSD 512GB · ₩2,390,000 신품"},{"name":"iPad Air 5세대","cat":"컴퓨터","sub":"M1 · ₩550,000 중고"},{"name":"iPhone 7 Plus","cat":"컴퓨터","sub":"32GB 실버 · ₩70,000 중고"},{"name":"삼성 포터블 SSD T7","cat":"컴퓨터","sub":"1TB · ₩130,000"},{"name":"샌디스크 포터블 SSD E30","cat":"컴퓨터","sub":"1TB ×2 · ₩260,000 개당 13만"},{"name":"벨킨 7in1 멀티포트","cat":"컴퓨터","sub":"USB-C 허브 · ₩65,000"},{"name":"모락 시뮬러S 노트북 거치대","cat":"컴퓨터","sub":"알루미늄 접이식 스탠드 · ₩21,900"},{"name":"Turbo Fan X3-A","cat":"기타","sub":"터보 팬 (7.4V 내장배터리) · ₩25,000"},{"name":"배경천 · 커튼 · 소품","cat":"배경/소품","sub":"배경·세트 소품 다수 · ₩1,000,000 일괄 대략"},{"name":"CASIO EXILIM EX-H20G","cat":"수리검토","sub":"디지털 컴팩트 · — · [고장수리필요]"},{"name":"SANYO VPC-C40","cat":"수리검토","sub":"디지털 컴팩트 · — · [작동불가]"},{"name":"삼성 KENOX ME5","cat":"수리검토","sub":"디지털 컴팩트 · — · [작동불가]"},{"name":"SONY DSC-H1","cat":"수리검토","sub":"디지털 컴팩트 · — · [작동불가]"},{"name":"SONY DCR-TRV9","cat":"수리검토","sub":"미니DV 캠코더 · — · [작동불가]"},{"name":"파나소닉 PV-DV100D","cat":"수리검토","sub":"미니DV 캠코더 · — · [작동불가]"},{"name":"폴라로이드 CLOSEUP 636","cat":"수리검토","sub":"인스턴트 카메라 · ₩30,000 · [판매/보류]"},{"name":"캐논 오토보이 S2","cat":"수리검토","sub":"필름 컴팩트 · ₩40,000 · [판매/보류]"},{"name":"'+esc(o.name)+'","cat":"수리검토","sub":"'+esc(o.cat||'')+' · '+esc(o.ts||'')+' · ['+(o.price? o.price+'만':'—')+']"}];
+var DEFAULT_OWN=[{"name":"Sony A7M4","cat":"카메라","desc":"풀프레임 미러리스 (E마운트)","price":2700000,"status":""},{"name":"니콘 FM10","cat":"카메라","desc":"필름 SLR (니콘 F, AI-S)","price":150000,"status":""},{"name":"펜탁스 에스피오 SW120II","cat":"카메라","desc":"필름 컴팩트","price":60000,"status":""},{"name":"코니카 C35 EF","cat":"카메라","desc":"필름 컴팩트","price":80000,"status":""},{"name":"후지필름 인스탁스 미니 에보","cat":"카메라","desc":"인스턴트 (하이브리드)","price":250000,"status":""},{"name":"SONY HDR-CX370V","cat":"카메라","desc":"캠코더","price":80000,"status":""},{"name":"SONY HDR-CX590V","cat":"카메라","desc":"캠코더","price":100000,"status":""},{"name":"JVC GZ-HD30","cat":"카메라","desc":"캠코더","price":70000,"status":""},{"name":"CASIO EXILIM EX-H15","cat":"카메라","desc":"디지털 컴팩트","price":30000,"status":""},{"name":"SONY 워크맨 NW-S754 8GB","cat":"카메라","desc":"미디어 플레이어","price":40000,"status":""},{"name":"Samyang 35-150mm F2-2.8 FE","cat":"렌즈","desc":"소니 E · 35-150mm F2-2.8","price":1350000,"status":""},{"name":"Nikon 35-70mm F3.5-4.8","cat":"렌즈","desc":"니콘 F (AI-S) · 35-70mm F3.5-4.8","price":50000,"status":""},{"name":"YUS AUTO TELE CONVERTER 2X","cat":"렌즈","desc":"Contax/Yashica (C/Y) · 2배 텔레컨버터","price":30000,"status":""},{"name":"Haida PROII CPL-VND","cat":"필터","desc":"—","price":200000,"status":"가변 ND + CPL"},{"name":"Benro SHD L39+H UV","cat":"필터","desc":"—","price":45000,"status":"UV 보호"},{"name":"Benro SHD CPL-HD","cat":"필터","desc":"—","price":110000,"status":"편광"},{"name":"Kenko BLACK MIST No.05","cat":"필터","desc":"—","price":100000,"status":"디퓨전(약)"},{"name":"NiSi White Mist 1/4","cat":"필터","desc":"—","price":130000,"status":"디퓨전+흰 글로우"},{"name":"77mm K&amp;F Nano-X Black Diffusion 1/4","cat":"필터","desc":"77mm","price":55000,"status":"블랙 디퓨전"},{"name":"Kenko SOFTON SPECK [A]","cat":"필터","desc":"82mm","price":90000,"status":"소프트/스펙 확산"},{"name":"Kenko FOGGY [A]","cat":"필터","desc":"82mm","price":90000,"status":"포그(안개) 확산"},{"name":"Kenko NOSTALTONE BLUE","cat":"필터","desc":"—","price":100000,"status":"색조+소프트"},{"name":"Hoya STAR 6X","cat":"필터","desc":"—","price":45000,"status":"별빛(6갈래)"},{"name":"77mm WalkingWay Colorful Starlight","cat":"필터","desc":"77mm","price":45000,"status":"컬러 스타/프리즘"},{"name":"77mm WalkingWay Star +4","cat":"필터","desc":"77mm","price":35000,"status":"4포인트 스타"},{"name":"82mm Linear Prism / Multi-Strip","cat":"필터","desc":"82mm","price":60000,"status":"프리즘/반복상"},{"name":"82mm Split Diopter / Split Prism","cat":"필터","desc":"82mm","price":50000,"status":"분할 초점/프리즘"},{"name":"82mm Split Glass / Kaleidoscope","cat":"필터","desc":"82mm","price":50000,"status":"분할 프리즘/칼레이도"},{"name":"SUN-ART 썬빔 아트샷 세트","cat":"조명","desc":"광학 빔/썬빔 효과 조명","price":144000,"status":""},{"name":"고독스 LUX JUNIOR","cat":"조명","desc":"레트로 스피드라이트","price":100000,"status":""},{"name":"어퓨처 아마란 AL-M9","cat":"조명","desc":"미니 LED 라이트","price":40000,"status":""},{"name":"500W 포그머신","cat":"조명","desc":"연무기","price":70000,"status":""},{"name":"고독스 신형 스피드라이트 브라켓","cat":"조명","desc":"플래시 브라켓","price":20000,"status":""},{"name":"고독스 단일접점 핫슈 라이저","cat":"조명","desc":"핫슈 라이저","price":15000,"status":""},{"name":"Godox XPro V2 S 트리거","cat":"조명","desc":"무선 플래시 트리거 (소니)","price":90000,"status":""},{"name":"PERI 엄브렐러 실버 XL","cat":"조명효과","desc":"실버 엄브렐러 182cm","price":20000,"status":""},{"name":"PERI 엄브렐러 화이트 XL","cat":"조명효과","desc":"화이트 엄브렐러 182cm","price":20000,"status":""},{"name":"PERI 엄브렐러 트랜스루센트 M","cat":"조명효과","desc":"투과형 엄브렐러 M","price":15000,"status":""},{"name":"PERI 엄브렐러 화이트 M","cat":"조명효과","desc":"화이트 엄브렐러 M","price":15000,"status":""},{"name":"유쾌한 생각 반사판 24×36 M","cat":"조명효과","desc":"반사판 (화이트/실버)","price":30000,"status":""},{"name":"Round Reflector 5in1","cat":"조명효과","desc":"원형 반사판 5in1","price":20000,"status":""},{"name":"호루스벤누 붐스탠드","cat":"스탠드","desc":"붐 스탠드","price":45000,"status":""},{"name":"Aurora ALS 932","cat":"스탠드","desc":"라이트 스탠드","price":45000,"status":""},{"name":"액순 Accsoon PowerCage Pro II","cat":"스탠드","desc":"아이패드 파워 케이지/리그","price":159000,"status":""},{"name":"SmallRig 3667C 케이지","cat":"스탠드","desc":"A7M4 카메라 케이지","price":96800,"status":""},{"name":"SmallRig 24cm 매직암 (SR2066)","cat":"스탠드","desc":"매직암 (아티큘레이팅 암) 140mm","price":21880,"status":""},{"name":"레오포토 PM-03 맥세이프 콜드슈 마운트","cat":"스탠드","desc":"스마트폰 마운트 (MagSafe/콜드슈)","price":32740,"status":""},{"name":"NP-F930 배터리","cat":"전원","desc":"L형 배터리","price":60000,"status":"2개"},{"name":"보바 VA-121","cat":"전원","desc":"보조배터리 (파워뱅크)","price":20000,"status":"1개"},{"name":"NP2 Air 듀얼 충전기","cat":"전원","desc":"배터리 충전기 (NP-FZ100/BX1/FW50)","price":35000,"status":"1개"},{"name":"아이무비 60W USB-C PD 충전기","cat":"전원","desc":"PD 고속 충전기 (TX-P360E-KR)","price":25000,"status":"1개"},{"name":"코브라 테더 (CobraTether) C-to-C","cat":"케이블","desc":"10G","price":210000,"status":""},{"name":"벨루가 (Beluga) C-to-C 8K","cat":"케이블","desc":"8K","price":50000,"status":""},{"name":"벨루가 C-to-C 4K","cat":"케이블","desc":"4K","price":35000,"status":""},{"name":"벨루가 C-to 익스텐션","cat":"케이블","desc":"연장선","price":30000,"status":""},{"name":"테더툴스 (Tether Tools) C-to-C","cat":"케이블","desc":"C-to-C","price":150000,"status":""},{"name":"MacBook Pro M4","cat":"컴퓨터","desc":"RAM 16GB / SSD 512GB","price":2390000,"status":""},{"name":"iPad Air 5세대","cat":"컴퓨터","desc":"M1","price":550000,"status":""},{"name":"iPhone 7 Plus","cat":"컴퓨터","desc":"32GB 실버","price":70000,"status":""},{"name":"삼성 포터블 SSD T7","cat":"컴퓨터","desc":"1TB","price":130000,"status":""},{"name":"샌디스크 포터블 SSD E30","cat":"컴퓨터","desc":"1TB ×2","price":260000,"status":""},{"name":"벨킨 7in1 멀티포트","cat":"컴퓨터","desc":"USB-C 허브","price":65000,"status":""},{"name":"모락 시뮬러S 노트북 거치대","cat":"컴퓨터","desc":"알루미늄 접이식 스탠드","price":21900,"status":""},{"name":"Turbo Fan X3-A","cat":"기타","desc":"터보 팬 (7.4V 내장배터리)","price":25000,"status":""},{"name":"배경천 · 커튼 · 소품","cat":"배경/소품","desc":"배경·세트 소품 다수","price":1000000,"status":""},{"name":"CASIO EXILIM EX-H20G","cat":"수리검토","desc":"디지털 컴팩트","price":0,"status":"고장수리필요"},{"name":"SANYO VPC-C40","cat":"수리검토","desc":"디지털 컴팩트","price":0,"status":"작동불가"},{"name":"삼성 KENOX ME5","cat":"수리검토","desc":"디지털 컴팩트","price":0,"status":"작동불가"},{"name":"SONY DSC-H1","cat":"수리검토","desc":"디지털 컴팩트","price":0,"status":"작동불가"},{"name":"SONY DCR-TRV9","cat":"수리검토","desc":"미니DV 캠코더","price":0,"status":"작동불가"},{"name":"파나소닉 PV-DV100D","cat":"수리검토","desc":"미니DV 캠코더","price":0,"status":"작동불가"},{"name":"폴라로이드 CLOSEUP 636","cat":"수리검토","desc":"인스턴트 카메라","price":30000,"status":"판매/보류"},{"name":"캐논 오토보이 S2","cat":"수리검토","desc":"필름 컴팩트","price":40000,"status":"판매/보류"}];
+/* 장비비교 구매계획 기본 데이터 (단위 만원) */
+var DEFAULT_PLAN=[
+{name:'Techart 수동→AF 어댑터 (라이카M→소니E)',cat:'어댑터',best:35,avg:42,max:50,memo:'허브·필수. 현재 판매모델·지지무게 확인'},
+{name:'니콘 F → 라이카M 변환링',cat:'어댑터',best:2,avg:3,max:5,memo:'보유 니콘 35-70 연결용'},
+{name:'M42 → 라이카M 변환링',cat:'어댑터',best:1,avg:2,max:4,memo:'M42 올드렌즈 공용'},
+{name:'Helios 44-2 58mm F2',cat:'렌즈',best:4,avg:6,max:9,memo:'중고. 소용돌이 보케. 4만↓면 득템'},
+{name:'SMC/Super Takumar 55mm F1.8',cat:'렌즈',best:5,avg:7,max:10,memo:'중고. 따뜻한 클래식'},
+{name:'Pentacon 50mm F1.8',cat:'렌즈',best:3,avg:6,max:8,memo:'중고. 비눗방울 보케. 곰팡이 확인'},
+{name:'필름 바디 업그레이드 (검토)',cat:'바디',best:0,avg:0,max:0,memo:'보류 — 현 FM10로 가능. 감성 이유면'},
+{name:'랜턴90 (90cm 랜턴 소프트박스)',cat:'조명',best:8,avg:13,max:18,memo:'신품~15만, 제너릭~7만. 중고 8만↓ 득템'},
+{name:'300W급 컬러 영상조명 (아마란 300c/360c)',cat:'조명',best:45,avg:60,max:90,memo:'300c 45만↓ 득템, 90만↑ 금지'},
+{name:'맥북프로 M1 Max 32GB 1TB',cat:'컴퓨터',best:170,avg:182,max:200,memo:'단종=중고. 16·배터리90%+·풀박'},
+{name:'캐논 PowerShot V1',cat:'바디',best:85,avg:100,max:120,memo:'APS-C 브이로그캠·4K. 리퍼 85만↓ 득템'},
+{name:'DJI 오즈모 포켓 4',cat:'바디',best:60,avg:68,max:78,memo:'1인치 짐벌 포켓캠. 기본~68만'},
+{name:'QOOP Loop 카메라 홀스터',cat:'액세서리',best:1.5,avg:2.5,max:4,memo:'퀵릴리즈 홀스터. 실판매가 확인'},
+{name:'Meking X-30 롤러스탠드',cat:'액세서리',best:6,avg:9,max:14,memo:'조명·붐 지지 롤러스탠드'},
+{name:'QOOP 스택백 L',cat:'액세서리',best:3,avg:5,max:7,memo:'카메라 숄더/백팩 L'}
+];
 /* 기존 로컬 데이터 1회 이관(구매/보유) */
 function migrate(){
-  if(!localStorage.getItem(K.buy)){
-    var old=load('maydly-purchase-plan-v1',null);
-    if(Array.isArray(old)&&old.length){save(K.buy,old.map(function(o){return {id:uid(),name:o.name||o.title||'항목',best:o.best||'',avg:o.avg||'',cap:o.cap||'',memo:o.memo||o.note||''};}));}
-  }
   if(!localStorage.getItem(K.own)){
+    var seed=(typeof DEFAULT_OWN!=='undefined'?DEFAULT_OWN.map(function(o){return {id:uid(),name:o.name,cat:o.cat,desc:o.desc||'',price:o.price||0,status:o.status||''};}):[]);
     var oo=load('maydly-owned-fromplan',null);
-    if(Array.isArray(oo)&&oo.length){save(K.own,oo.map(function(o){return {id:uid(),name:o.name||'장비',cat:o.cat||'기타',sub:o.sub||o.memo||''};}));}
+    if(Array.isArray(oo)){oo.forEach(function(o){seed.unshift({id:uid(),name:o.name||'장비',cat:o.cat||'기타',desc:o.memo||'',price:(o.price?o.price*10000:0),status:'구매'});});}
+    save(K.own,seed);
   }
-  if(!localStorage.getItem(K.own)&&typeof DEFAULT_OWN!=='undefined'){save(K.own,DEFAULT_OWN.map(function(o){return {id:uid(),name:o.name,cat:o.cat,sub:o.sub};}));}
 }
 
 /* ===== 데이터 ===== */
-var todos,buys,owns,ledger;
-function reloadAll(){todos=load(K.todo,[]);buys=load(K.buy,[]);owns=load(K.own,[]);ledger=load(K.led,[]);}
+var todos,buys,owns,ledger,buyDel=[];
+var PLANKEY='maydly-purchase-plan-v1';  // 장비비교 구매계획과 동일 저장소(순위·목록 통일)
+function loadBuys(){
+  var r=null;try{r=JSON.parse(localStorage.getItem(PLANKEY)||'null');}catch(e){}
+  var items=(r&&Array.isArray(r.items))?r.items:(Array.isArray(r)?r:null);
+  buyDel=(r&&Array.isArray(r.del))?r.del:[];
+  if(!items||!items.length){items=(typeof DEFAULT_PLAN!=='undefined'?DEFAULT_PLAN:[]).map(function(o,i){return {_k:i+1,id:i+1,name:o.name,cat:o.cat,best:o.best,avg:o.avg,max:o.max,memo:o.memo,rank:i+1};});}
+  items=items.map(function(o,i){return {_k:(o._k!=null?o._k:null),id:o.id||i+1,name:o.name||'',cat:o.cat||'기타',best:+o.best||0,avg:+o.avg||0,max:(+o.max||+o.cap||0),memo:o.memo||'',rank:o.rank||i+1};});
+  items.sort(function(a,b){return (a.rank||99)-(b.rank||99);});
+  items.forEach(function(o,i){o.rank=i+1;});
+  return items;
+}
+function saveBuys(){buys.forEach(function(b,i){b.rank=i+1;});try{localStorage.setItem(PLANKEY,JSON.stringify({v:'app-sync',items:buys,del:buyDel}));}catch(e){}}
+function moveBuy(id,dir){var i=buys.findIndex(function(x){return x.id===id;});if(i<0)return;var j=i+dir;if(j<0||j>=buys.length)return;var t=buys[i];buys[i]=buys[j];buys[j]=t;saveBuys();renderBuy();}
+function reloadAll(){todos=load(K.todo,[]);buys=loadBuys();owns=load(K.own,[]);ledger=load(K.led,[]);}
 
 /* ===== 할 일 ===== */
 var TAGS=['촬영','개인','수빈'];
@@ -254,48 +321,80 @@ function toggleTodo(id){var t=todos.find(function(x){return x.id===id;});if(t){t
 /* ===== 구매계획 ===== */
 function renderBuy(){
   var el=document.getElementById('buyList');
-  if(!buys.length){el.innerHTML='<div class="empty">＋ 버튼으로 사고 싶은 걸 추가하세요<br>순위·가격대·메모를 적을 수 있어요</div>';return;}
-  el.innerHTML=buys.map(function(b,i){
+  if(!buys.length){el.innerHTML='<div class="empty">＋ 로 사고 싶은 걸 추가하세요<br>가격대(만원)·순위·메모</div>';return;}
+  var sB=0,sA=0,sM=0;buys.forEach(function(b){sB+=+b.best||0;sA+=+b.avg||0;sM+=+b.max||0;});
+  var h='<div class="card" style="padding:13px 15px"><div style="font-weight:800;color:#5f8b6a;margin-bottom:7px">💰 총 비용 <span style="font-weight:600;color:#a99e8f;font-size:12px">('+buys.length+'개 · 만원)</span></div>'
+    +'<div style="display:flex;justify-content:space-between;font-size:13.5px;padding:3px 0"><span>🟢 다 베스트가로</span><b style="color:#5f8b6a">'+sB+'만</b></div>'
+    +'<div style="display:flex;justify-content:space-between;font-size:13.5px;padding:3px 0"><span>평균가 합계</span><b>'+sA+'만</b></div>'
+    +'<div style="display:flex;justify-content:space-between;font-size:13.5px;padding:3px 0"><span>🔴 다 상한가면</span><b style="color:#b5564b">'+sM+'만</b></div></div>';
+  h+=buys.slice().sort(function(a,b){return (a.rank||99)-(b.rank||99);}).map(function(b,i){
     var chips='';
-    if(b.best)chips+='<span class="bchip b-best">득템 '+esc(b.best)+'</span>';
-    if(b.avg)chips+='<span class="bchip b-avg">평균 '+esc(b.avg)+'</span>';
-    if(b.cap)chips+='<span class="bchip b-cap">상한 '+esc(b.cap)+'</span>';
-    return '<div class="card"><div class="row"><div class="rank">'+(i+1)+'</div>'
-      +'<div class="lt"><div class="pn">'+esc(b.name)+'</div>'
+    if(b.best)chips+='<span class="bchip b-best">득템 '+b.best+'만</span>';
+    if(b.avg)chips+='<span class="bchip b-avg">평균 '+b.avg+'만</span>';
+    if(b.max)chips+='<span class="bchip b-cap">상한 '+b.max+'만</span>';
+    return '<div class="card"><div class="row">'
+      +'<div class="rkbox"><div class="rank">'+(b.rank||i+1)+'</div><div class="rkmv"><button onclick="moveBuy(\''+b.id+'\',-1)">▲</button><button onclick="moveBuy(\''+b.id+'\',1)">▼</button></div></div>'
+      +'<div class="lt"><div class="pn">'+esc(b.name)+' <a class="imgq" href="https://www.google.com/search?tbm=isch&q='+encodeURIComponent(b.name)+'" target="_blank" rel="noreferrer">🔍</a> <span style="font-size:11px;color:#9a9086;font-weight:600">'+esc(b.cat||'')+'</span></div>'
       +(chips?'<div class="band">'+chips+'</div>':'')
       +(b.memo?'<div class="pm">'+esc(b.memo)+'</div>':'')+'</div>'
-      +'<button class="minib" onclick="bought(\''+b.id+'\')">샀음</button>'
+      +'<button class="minib" onclick="sheetComplete(\''+b.id+'\')">구매완료</button>'
       +'<button class="del" onclick="delItem(\'buy\',\''+b.id+'\')">×</button>'
       +'</div></div>';
   }).join('');
+  el.innerHTML=h;
 }
-function bought(id){
+/* 구매완료: 금액·날짜 입력 → 가계부 지출 + 보유현황 자동, 구매계획서 제거 */
+function sheetComplete(id){
   var b=buys.find(function(x){return x.id===id;});if(!b)return;
-  owns.unshift({id:uid(),name:b.name,cat:'기타',sub:'구매계획에서 이동'});save(K.own,owns);
-  buys=buys.filter(function(x){return x.id!==id;});save(K.buy,buys);
-  renderBuy();renderOwn();toast(esc(b.name)+' → 보유현황으로');
+  window._buyId=id;window._ocat='카메라';var cats=['카메라','렌즈','조명','액세서리','기타'];
+  var today=(new Date()).toISOString().slice(0,10);
+  document.getElementById('sheet').innerHTML='<h3>구매완료 · '+esc(b.name)+'</h3>'
+    +'<div class="fld"><label>구매 금액</label><input id="c_amt" type="number" inputmode="numeric" placeholder="예: 320000"></div>'
+    +'<div class="fld"><label>구매 날짜</label><input id="c_date" type="date" value="'+today+'"></div>'
+    +'<div class="fld"><label>보유 분류</label><div class="chips" id="c_cats">'+cats.map(function(c){return '<div class="chip '+(c==='카메라'?'on':'')+'" onclick="pickOcat(this,\''+c+'\')">'+c+'</div>';}).join('')+'</div></div>'
+    +'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button><button class="msave" onclick="saveComplete()">완료 → 가계부·보유 반영</button></div>';
+  document.getElementById('mask').classList.add('on');
+  setTimeout(function(){var e=document.getElementById('c_amt');e&&e.focus();},50);
+}
+function saveComplete(){
+  var b=buys.find(function(x){return x.id===window._buyId;});if(!b)return;
+  var amt=parseInt(document.getElementById('c_amt').value,10);if(!amt||amt<0){toast('구매 금액을 입력하세요');return;}
+  var date=document.getElementById('c_date').value;if(!date){toast('날짜를 선택하세요');return;}
+  ledger.push({id:uid(),date:date,desc:b.name+' 구매',cat:'장비·카메라',type:'out',amt:amt,memo:'구매계획 완료'});save(K.led,ledger);
+  owns.unshift({id:uid(),name:b.name,cat:window._ocat,desc:'구매 '+date,price:amt,status:'구매'});save(K.own,owns);
+  if(b._k!=null&&buyDel.indexOf(b._k)<0)buyDel.push(b._k);
+  buys=buys.filter(function(x){return x.id!==window._buyId;});saveBuys();
+  renderBuy();renderOwn();renderMoney();closeSheet();
+  toast(esc(b.name)+' 구매완료 → 가계부·보유 반영됨');
 }
 
 /* ===== 보유현황 ===== */
 function renderOwn(){
   var el=document.getElementById('ownList');
-  if(!owns.length){el.innerHTML='<div class="empty">＋ 버튼으로 가진 장비를 추가하세요</div>';return;}
-  var groups={};owns.forEach(function(o){(groups[o.cat||'기타']=groups[o.cat||'기타']||[]).push(o);});
-  var order=['카메라','렌즈','조명','액세서리','기타'];
-  var keys=Object.keys(groups).sort(function(a,b){var ia=order.indexOf(a),ib=order.indexOf(b);return (ia<0?9:ia)-(ib<0?9:ib);});
-  el.innerHTML=keys.map(function(k){
-    return '<div class="seg">'+esc(k)+'</div>'+groups[k].map(function(o){
-      return '<div class="card"><div class="row"><div class="lt"><div class="own">'+esc(o.name)+'</div>'
-        +(o.sub?'<div class="owns">'+esc(o.sub)+'</div>':'')+'</div>'
+  if(!owns.length){el.innerHTML='<div class="empty">＋ 로 가진 장비를 추가하세요</div>';return;}
+  var order=['카메라','렌즈','필터','조명','조명효과','스탠드','전원','케이블','컴퓨터','기타','배경/소품','수리검토'];
+  var groups={},total=0,byCat={};
+  owns.forEach(function(o){var c=o.cat||'기타';(groups[c]=groups[c]||[]).push(o);total+=(+o.price||0);byCat[c]=(byCat[c]||0)+(+o.price||0);});
+  var keys=Object.keys(groups).sort(function(a,b){var ia=order.indexOf(a),ib=order.indexOf(b);return (ia<0?99:ia)-(ib<0?99:ib);});
+  var chips=keys.filter(function(k){return byCat[k]>0;}).map(function(k){return '<span class="cchip">'+esc(k)+' '+wonShort(byCat[k])+'</span>';}).join('');
+  var h='<div class="card" style="padding:13px 15px"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:800;color:#5f8b6a">📦 전체 보유가치</span><b style="font-size:18px;color:#5f8b6a">'+won(total)+'</b></div>'
+    +'<div style="font-size:11px;color:#a99e8f;margin-top:2px">'+owns.length+'개 · 대략 시세</div>'
+    +(chips?'<div class="catline" style="margin-top:8px">'+chips+'</div>':'')+'</div>';
+  h+=keys.map(function(k){
+    return '<div class="seg">'+esc(k)+' <span style="color:#9a9086;font-weight:600;font-size:11.5px">'+groups[k].length+'개 · '+won(byCat[k])+'</span></div>'+groups[k].map(function(o){
+      return '<div class="card"><div class="row"><div class="lt"><div class="own">'+esc(o.name)+' <a class="imgq" href="https://www.google.com/search?tbm=isch&q='+encodeURIComponent(o.name)+'" target="_blank" rel="noreferrer">🔍</a></div>'
+        +'<div class="owns">'+(o.desc?esc(o.desc):'')+(o.status?' <span class="stbadge">'+esc(o.status)+'</span>':'')+'</div></div>'
+        +(o.price?'<div class="opr">'+won(o.price)+'</div>':'')
         +'<button class="del" onclick="delItem(\'own\',\''+o.id+'\')">×</button></div></div>';
     }).join('');
   }).join('');
+  el.innerHTML=h;
 }
 
 /* 공통 삭제 */
 function delItem(kind,id){
   if(kind==='todo'){todos=todos.filter(function(x){return x.id!==id;});save(K.todo,todos);renderTodo();}
-  if(kind==='buy'){buys=buys.filter(function(x){return x.id!==id;});save(K.buy,buys);renderBuy();}
+  if(kind==='buy'){var bb=buys.find(function(x){return x.id===id;});if(bb&&bb._k!=null&&buyDel.indexOf(bb._k)<0)buyDel.push(bb._k);buys=buys.filter(function(x){return x.id!==id;});saveBuys();renderBuy();}
   if(kind==='own'){owns=owns.filter(function(x){return x.id!==id;});save(K.own,owns);renderOwn();}
   if(kind==='led'){ledger=ledger.filter(function(x){return x.id!==id;});save(K.led,ledger);renderMoney();}
 }
@@ -498,6 +597,7 @@ function clearLedger(){
 /* ===== 추가 모달 ===== */
 var curTab='todo';
 function openAdd(){
+  if(curTab==='src')return;
   if(curTab==='todo')sheetTodo();
   else if(curTab==='buy')sheetBuy();
   else if(curTab==='own')sheetOwn();
@@ -519,27 +619,31 @@ function pickTag(el,t){window._tag=t;document.querySelectorAll('#f_tags .chip').
 function saveTodo(){var v=document.getElementById('f_text').value.trim();if(!v){toast('내용을 입력하세요');return;}todos.unshift({id:uid(),text:v,tag:window._tag,done:false});save(K.todo,todos);renderTodo();closeSheet();}
 
 function sheetBuy(){
+  window._bcat='어댑터';var cats=['어댑터','렌즈','조명','바디','컴퓨터','액세서리','기타'];
   document.getElementById('sheet').innerHTML='<h3>구매계획 추가</h3>'
-    +'<div class="fld"><label>이름</label><input id="b_name" placeholder="예: Sony A7M5"></div>'
-    +'<div class="fld"><label>가격대 (선택)</label><input id="b_best" placeholder="득템가 예: 320↓" style="margin-bottom:7px"><input id="b_avg" placeholder="평균가 예: 360" style="margin-bottom:7px"><input id="b_cap" placeholder="상한가 예: 400"></div>'
-    +'<div class="fld"><label>메모 (선택)</label><textarea id="b_memo" rows="2" placeholder="왜 필요한지, 실매물 등"></textarea></div>'
+    +'<div class="fld"><label>장비명</label><input id="b_name" placeholder="예: Helios 44-2"></div>'
+    +'<div class="fld"><label>분류</label><div class="chips" id="b_cats">'+cats.map(function(c){return '<div class="chip '+(c==='어댑터'?'on':'')+'" onclick="pickBcat(this,\''+c+'\')">'+c+'</div>';}).join('')+'</div></div>'
+    +'<div class="fld"><label>가격 (만원, 선택)</label><input id="b_best" type="number" inputmode="numeric" placeholder="베스트(득템가)" style="margin-bottom:7px"><input id="b_avg" type="number" inputmode="numeric" placeholder="평균가" style="margin-bottom:7px"><input id="b_max" type="number" inputmode="numeric" placeholder="상한(이 이상 X)"></div>'
+    +'<div class="fld"><label>메모 (선택)</label><textarea id="b_memo" rows="2" placeholder="판단·득템 기준"></textarea></div>'
     +'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button><button class="msave" onclick="saveBuy()">추가</button></div>';
 }
-function saveBuy(){var n=document.getElementById('b_name').value.trim();if(!n){toast('이름을 입력하세요');return;}
-  buys.push({id:uid(),name:n,best:document.getElementById('b_best').value.trim(),avg:document.getElementById('b_avg').value.trim(),cap:document.getElementById('b_cap').value.trim(),memo:document.getElementById('b_memo').value.trim()});
-  save(K.buy,buys);renderBuy();closeSheet();}
+function pickBcat(el,c){window._bcat=c;document.querySelectorAll('#b_cats .chip').forEach(function(x){x.classList.remove('on');});el.classList.add('on');}
+function saveBuy(){var n=document.getElementById('b_name').value.trim();if(!n){toast('장비명을 입력하세요');return;}
+  buys.push({_k:null,id:(buys.reduce(function(m,b){return Math.max(m,b.id);},0)+1),name:n,cat:window._bcat,best:parseFloat(document.getElementById('b_best').value)||0,avg:parseFloat(document.getElementById('b_avg').value)||0,max:parseFloat(document.getElementById('b_max').value)||0,memo:document.getElementById('b_memo').value.trim(),rank:buys.length+1});
+  saveBuys();renderBuy();closeSheet();}
 
 function sheetOwn(){
-  window._ocat='카메라';var cats=['카메라','렌즈','조명','액세서리','기타'];
+  window._ocat='카메라';var cats=['카메라','렌즈','필터','조명','조명효과','스탠드','전원','케이블','컴퓨터','기타'];
   document.getElementById('sheet').innerHTML='<h3>보유 장비 추가</h3>'
     +'<div class="fld"><label>이름</label><input id="o_name" placeholder="예: Sony A7M4"></div>'
     +'<div class="fld"><label>분류</label><div class="chips" id="o_cats">'+cats.map(function(c){return '<div class="chip '+(c==='카메라'?'on':'')+'" onclick="pickOcat(this,\''+c+'\')">'+c+'</div>';}).join('')+'</div></div>'
-    +'<div class="fld"><label>설명 (선택)</label><input id="o_sub" placeholder="예: 메인 바디 · 2024 구입"></div>'
+    +'<div class="fld"><label>설명 (선택)</label><input id="o_sub" placeholder="예: 메인 바디"></div>'
+    +'<div class="fld"><label>대략 시세 (원, 선택)</label><input id="o_price" type="number" inputmode="numeric" placeholder="예: 2700000"></div>'
     +'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button><button class="msave" onclick="saveOwn()">추가</button></div>';
 }
 function pickOcat(el,c){window._ocat=c;document.querySelectorAll('#o_cats .chip').forEach(function(x){x.classList.remove('on');});el.classList.add('on');}
 function saveOwn(){var n=document.getElementById('o_name').value.trim();if(!n){toast('이름을 입력하세요');return;}
-  owns.unshift({id:uid(),name:n,cat:window._ocat,sub:document.getElementById('o_sub').value.trim()});save(K.own,owns);renderOwn();closeSheet();}
+  owns.unshift({id:uid(),name:n,cat:window._ocat,desc:document.getElementById('o_sub').value.trim(),price:parseInt(document.getElementById('o_price').value,10)||0,status:''});save(K.own,owns);renderOwn();closeSheet();}
 
 function sheetMoney(){
   window._mtype='out';
@@ -592,11 +696,25 @@ function go(id,btn){
   document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
   document.getElementById('s-'+id).classList.add('on');
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});btn.classList.add('on');
+  document.getElementById('fab').style.display=(id==='src')?'none':'';
   window.scrollTo(0,0);
 }
 
 /* ===== 시작 ===== */
-function boot(){reloadAll();migrate();reloadAll();renderTodo();renderBuy();renderOwn();renderMoney();}
+function boot(){reloadAll();migrate();reloadAll();renderTodo();renderBuy();renderOwn();renderMoney();syncGear();}
+/* 공유파일(PC 편집본) 동기화 — 구매계획·보유현황만. 가계부(민감)는 건드리지 않음.
+   버전이 바뀐 배포가 올라오면 폰 구매/보유 탭이 자동 최신화된다. file://에선 조용히 스킵. */
+function syncGear(){
+  try{
+    fetch('gear-data.json',{cache:'no-store'}).then(function(r){return r&&r.ok?r.json():null;}).then(function(g){
+      if(!g||!g.version||localStorage.getItem('gear_ver')===g.version)return;
+      if(Array.isArray(g.plan)){localStorage.setItem(PLANKEY,JSON.stringify({v:'app-sync',items:g.plan,del:[]}));}
+      if(Array.isArray(g.own)){localStorage.setItem(K.own,JSON.stringify(g.own.map(function(o,i){return {id:o.id||(i+1),name:o.name,cat:o.cat,desc:o.desc||'',price:o.price||0,status:o.status||''};})));}
+      localStorage.setItem('gear_ver',g.version);
+      reloadAll();renderBuy();renderOwn();
+    }).catch(function(){});
+  }catch(e){}
+}
 
 /* ===== PIN (허브와 동일 0898) ===== */
 var PW_HASH='9923e00231428d5272881c78ed1ffe7340dd73f4792d45ad24b5ab469fcc1a4b';
