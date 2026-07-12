@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수빈 첫차 SUV 장기렌트 종합정리 v2.0</title>
+<style>
+  :root{
+    --bg:#faf7f2; --card:#ffffff; --ink:#2c2a26; --sub:#6b665e;
+    --line:#e8e2d8; --accent:#c98a5e; --accent-soft:#f4e7dc;
+    --good:#4a7c59; --good-soft:#e5efe6; --warn:#b9603f; --warn-soft:#f7e5dd;
+    --blue:#4a6c8c; --blue-soft:#e3ebf2;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+    line-height:1.7; font-size:16px; -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:880px; margin:0 auto; padding:32px 20px 80px;}
+  header.top{
+    text-align:center; padding:28px 20px 32px; margin-bottom:8px;
+    border-bottom:1px solid var(--line);
+  }
+  .kicker{
+    display:inline-block; font-size:13px; letter-spacing:.14em; color:var(--accent);
+    background:var(--accent-soft); padding:5px 14px; border-radius:999px; margin-bottom:14px;
+  }
+  h1{font-size:27px; margin:.2em 0 .3em; letter-spacing:-.01em;}
+  .lead{color:var(--sub); font-size:15px; max-width:640px; margin:0 auto;}
+  .meta{margin-top:14px; font-size:12.5px; color:var(--sub);}
+
+  section{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:26px 24px; margin:22px 0; box-shadow:0 1px 3px rgba(70,60,45,.04);
+  }
+  h2{font-size:20px; margin:0 0 4px; display:flex; align-items:center; gap:10px;}
+  h2 .num{
+    flex:0 0 auto; width:30px; height:30px; border-radius:9px; background:var(--accent);
+    color:#fff; font-size:15px; display:flex; align-items:center; justify-content:center; font-weight:700;
+  }
+  h2 + .h2sub{color:var(--sub); font-size:14px; margin:0 0 18px 40px;}
+  h3{font-size:16px; margin:22px 0 8px;}
+
+  .callout{border-radius:12px; padding:16px 18px; margin:16px 0; font-size:14.5px; border:1px solid transparent;}
+  .callout.good{background:var(--good-soft); border-color:#cfe0d1;}
+  .callout.warn{background:var(--warn-soft); border-color:#eecfc2;}
+  .callout.blue{background:var(--blue-soft); border-color:#cdddea;}
+  .callout .ct{font-weight:700; display:block; margin-bottom:4px;}
+  .callout.good .ct{color:var(--good);}
+  .callout.warn .ct{color:var(--warn);}
+  .callout.blue .ct{color:var(--blue);}
+
+  .tablewrap{overflow-x:auto; margin:14px 0; -webkit-overflow-scrolling:touch;}
+  table{border-collapse:collapse; width:100%; min-width:600px; font-size:13.5px;}
+  th,td{border:1px solid var(--line); padding:9px 11px; text-align:left; vertical-align:top;}
+  thead th{background:var(--accent-soft); color:#8a5a34; font-weight:700;}
+  tbody th{background:#fbf8f3; font-weight:700; white-space:nowrap;}
+  td.pick{background:#f3f7f2;}
+  .tag{display:inline-block; font-size:11.5px; padding:2px 8px; border-radius:6px; font-weight:700;}
+  .tag.y{background:var(--good-soft); color:var(--good);}
+  .tag.n{background:var(--warn-soft); color:var(--warn);}
+  .tag.m{background:#f3eecf; color:#8a7320;}
+
+  ul.clean{margin:10px 0; padding-left:20px;}
+  ul.clean li{margin:7px 0;}
+  ul.check{list-style:none; padding-left:0; margin:12px 0;}
+  ul.check li{position:relative; padding:9px 12px 9px 40px; margin:8px 0;
+    background:#fbf8f3; border:1px solid var(--line); border-radius:10px; font-size:14.5px;}
+  ul.check li::before{content:"✓"; position:absolute; left:14px; top:9px; color:var(--accent); font-weight:800;}
+
+  /* 차종 카드 */
+  .seg{margin-top:22px;}
+  .seg-title{display:flex; align-items:center; gap:8px; font-size:15px; font-weight:800; color:#8a5a34;
+    background:var(--accent-soft); padding:8px 14px; border-radius:10px; margin-bottom:12px;}
+  .seg-title .em{font-size:17px;}
+  .cars{display:grid; grid-template-columns:1fr; gap:12px;}
+  @media(min-width:600px){.cars{grid-template-columns:1fr 1fr;}}
+  @media(min-width:820px){.cars{grid-template-columns:1fr 1fr 1fr;}}
+  .car{border:1px solid var(--line); border-radius:14px; padding:15px 15px 16px; background:#fdfbf8;}
+  .car h4{margin:0 0 2px; font-size:15.5px;}
+  .car .cat{font-size:11.5px; color:var(--sub); margin-bottom:9px;}
+  .car .row{font-size:12.5px; margin:3px 0;}
+  .car .row b{color:var(--accent);}
+  .car .verdict{font-size:12.5px; margin-top:9px; padding-top:9px; border-top:1px dashed var(--line); color:var(--ink);}
+  .badge{display:inline-block; font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:5px; margin-left:5px; vertical-align:middle;}
+  .badge.hot{background:var(--warn-soft); color:var(--warn);}
+  .badge.eco{background:var(--good-soft); color:var(--good);}
+
+  .steps{counter-reset:s; padding-left:0; list-style:none; margin:14px 0 0;}
+  .steps li{counter-increment:s; position:relative; padding:12px 14px 12px 52px; margin:10px 0;
+    background:#fbf8f3; border:1px solid var(--line); border-radius:12px; font-size:14.5px;}
+  .steps li::before{content:counter(s); position:absolute; left:14px; top:50%; transform:translateY(-50%);
+    width:26px; height:26px; border-radius:50%; background:var(--accent); color:#fff;
+    font-weight:700; display:flex; align-items:center; justify-content:center; font-size:13px;}
+  .steps li b{color:var(--accent);}
+
+  .src{font-size:12.5px; color:var(--sub);}
+  .src a{color:var(--blue); word-break:break-all;}
+  .disclaimer{font-size:12.5px; color:var(--sub); background:#fbf8f3; border:1px dashed var(--line);
+    border-radius:10px; padding:12px 14px; margin-top:8px;}
+  footer{text-align:center; color:var(--sub); font-size:12px; margin-top:32px;}
+  strong.hl{background:#fbeecb; padding:0 3px; border-radius:3px;}
+.mdlback{position:fixed;top:calc(env(safe-area-inset-top, 0px) + 10px);left:10px;z-index:200;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--ink);text-decoration:none;box-shadow:0 2px 10px rgba(70,60,45,.14)}.mdlback:active{transform:scale(.96)}</style>
+</head>
+<body>
+<a href="index.html" class="mdlback">← 목록</a>
+<div class="wrap">
+
+<header class="top">
+  <span class="kicker">수빈 · 조사-006 · v2.0</span>
+  <h1>수빈 첫차 SUV 장기렌트 종합정리</h1>
+  <p class="lead"><b>면허 딴 직후(운전경력 0)</b> 기준으로 다시 정리했어요.<br>가능 여부 → 초보에게 오히려 유리한 점 → 차종 폭넓게(경형~준중형·전기) → 계약 함정까지.</p>
+  <p class="meta">작성 2026-07-13 · v2.0 (경력 0 기준·차종 대폭 확대) · 개인 참고자료(외부 공개 금지) · 금액은 시세 예시</p>
+</header>
+
+<!-- 요약 -->
+<section>
+  <h2><span class="num">TL</span>30초 요약</h2>
+  <div class="callout good">
+    <span class="ct">면허 막 땄어도 (경력 0) — 됩니다, 그리고 오히려 유리할 수 있어요</span>
+    ① 경력 0도 가입 가능한 장기렌트 업체가 있음. ② <strong class="hl">초보는 자가 보험료가 비싸게 잡히는데, 장기렌트는 렌트사 단체보험이라 오히려 더 쌀 수 있음.</strong>
+    ③ 2024년부터 <strong class="hl">장기렌트 이용기간도 나중에 내 보험 경력으로 인정</strong>돼서, 초보 시절을 손해 없이 넘길 수 있음.
+  </div>
+  <ul class="clean">
+    <li>⚠️ <b>단, 조건</b> — 업체별로 만 21~26세 이상·연소득·신용점수 요건이 있음. 경력 0이면 보험 조건상 월납입료·면책금이 올라갈 수 있어 <b>여러 곳 견적 비교 필수</b>.</li>
+    <li>🚙 <b>차종</b> — 경형(캐스퍼)부터 소형(셀토스·코나·트랙스·티볼리·XM3), 준중형(투싼·스포티지), 하이브리드·전기(니로·EV3·코나EV)까지 아래 5그룹으로 정리.</li>
+    <li>💸 <b>월 예상</b> — 경차·전기 프로모션은 월 20~40만원대, 소형 SUV 일반 조건은 월 40만원대~, 준중형은 그 이상.</li>
+    <li>🚨 <b>가장 큰 함정</b> — 중도해지 위약금. 첫차라 얼마나 탈지 모르면 계약기간을 무리하게 길게 잡지 말 것.</li>
+  </ul>
+</section>
+
+<!-- 1. 경력 0 -->
+<section>
+  <h2><span class="num">1</span>면허 따자마자(경력 0) 되나요?</h2>
+  <p class="h2sub">수빈이 상황 그대로 — 결론은 "된다", 그리고 초보에게 유리한 지점이 있다.</p>
+
+  <div class="callout good">
+    <span class="ct">✅ 가입 가능</span>
+    운전경력이 0이어도(면허 취득 직후) 장기렌트가 가능한 업체가 있습니다. 단기 카셰어링(쏘카 등)이 "면허 1년 이상"을 요구하는 것과 달라요.
+  </div>
+
+  <div class="callout good">
+    <span class="ct">💡 초보에게 오히려 유리한 2가지 (v2.0 핵심)</span>
+    <b>1) 보험료 — 장기렌트가 더 쌀 수 있음.</b> 만 30세 미만·운전경력 짧으면 자가용 보험료가 높게 할증되는데,
+    장기렌트는 렌트사가 <b>단체보험</b>으로 일괄 처리해 개인 할증을 피할 수 있어요. 초보일수록 이 차이가 큼.<br><br>
+    <b>2) 경력 인정 — 시간 낭비가 아님.</b> 2024년부터 장기렌트 이용기간도 <b>보험 가입경력으로 인정</b>됩니다.
+    (임대차 계약서·임차료 납입증명을 보험사에 제출) → 나중에 내 이름으로 보험 들 때 "경력 0"에서 다시 시작 안 해도 됨.
+  </div>
+
+  <h3>대신 확인할 조건 (업체마다 다름)</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>항목</th><th>일반적인 요건</th><th>수빈이 체크</th></tr></thead>
+    <tbody>
+      <tr><th>나이</th><td>업체별로 만 21세 / 23세 / 26세 이상</td><td>나이대 맞는 업체부터 추림</td></tr>
+      <tr><th>운전경력</th><td>0도 가능한 업체 있음 (롯데·대성·KG렌터카 등)</td><td class="pick">경력 0 OK 업체 위주로</td></tr>
+      <tr><th>신용점수</th><td>대체로 600점대 후반 이상</td><td>본인 신용점수 확인</td></tr>
+      <tr><th>소득</th><td>일부 업체 연소득 기준(예: 7천만원 이하 등)</td><td>해당 시 소득증빙</td></tr>
+      <tr><th>보험 할증</th><td>경력 짧으면 월납입료·면책금↑ 가능</td><td class="pick">여러 곳 견적으로 비교</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout blue">
+    <span class="ct">💡 운전자 범위 — 초보라 더 중요</span>
+    보험은 <b>계약서에 등록된 운전자만</b> 보장. 기본은 본인·배우자·부모·자녀 수준이고 <b>형제자매·친구는 기본 제외</b>.
+    수빈이가 계약자면 수빈이가 반드시 운전자로 들어가야 하고, 초보라 누가 옆에서 대신 몰아줄 상황이 많다면 그 사람도 등록해야 면책(자비 처리)을 피합니다.
+  </div>
+</section>
+
+<!-- 2. 방식 비교 -->
+<section>
+  <h2><span class="num">2</span>장기렌트 vs 리스 vs 할부구매</h2>
+  <p class="h2sub">"빌리는 것"과 "사는 것"의 차이 — 명의·보험·세금·유지비가 여기서 갈림.</p>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>구분</th><th>장기렌트</th><th>리스</th><th>할부 구매</th></tr></thead>
+    <tbody>
+      <tr><th>차량 명의</th><td>렌트사</td><td>리스사</td><td class="pick">본인</td></tr>
+      <tr><th>번호판</th><td>허·하·호</td><td class="pick">일반</td><td class="pick">일반</td></tr>
+      <tr><th>보험</th><td class="pick"><span class="tag y">포함·단체보험</span><br>초보 할증 회피 유리</td><td><span class="tag n">직접 가입</span></td><td><span class="tag n">직접 가입</span></td></tr>
+      <tr><th>유지·정비·세금</th><td class="pick"><span class="tag y">포함/대행</span></td><td><span class="tag m">일부 본인</span></td><td><span class="tag n">전부 본인</span></td></tr>
+      <tr><th>초기비용</th><td class="pick">적음(선납 조절)</td><td>적음~중간</td><td>취등록세 등 목돈</td></tr>
+      <tr><th>오래 탈 때 총비용</th><td>중간~높음</td><td>중간</td><td class="pick">대체로 최저</td></tr>
+      <tr><th>중도해지</th><td><span class="tag n">위약금 큼</span></td><td><span class="tag n">위약금 큼</span></td><td class="pick">비교적 자유</td></tr>
+      <tr><th>초보 첫차 적합도</th><td class="pick"><b>높음</b> (보험·정비 스트레스↓)</td><td>사업자 절세용</td><td>오래 탈 확신 있을 때</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="callout blue">
+    <span class="ct">수빈이 상황 대입</span>
+    첫차 + 경력 0 + 출퇴근 데일리 → <b>장기렌트</b>가 보험 할증 회피·정비 대행·경력 인정까지 겹쳐 가장 편하고 유리한 출발점.
+    "이 차 4~5년 확실히 탄다"가 정해지면 그때 할부와 총비용을 다시 비교해도 늦지 않아요.
+  </div>
+</section>
+
+<!-- 3. 차종 대폭 확대 -->
+<section>
+  <h2><span class="num">3</span>차종 넓게 보기 — 경형부터 준중형·전기까지</h2>
+  <p class="h2sub">출퇴근 데일리 + 초보 기준. 아래로 갈수록 크고 비싸짐. 월 렌트료는 조건별 예시.</p>
+
+  <!-- 경형 -->
+  <div class="seg">
+    <div class="seg-title"><span class="em">🐣</span> 그룹 A · 경형 SUV / 경차 — 가장 작고 저렴, 주차 쉬움</div>
+    <div class="cars">
+      <div class="car">
+        <h4>현대 캐스퍼 <span class="badge hot">초보 인기</span></h4>
+        <div class="cat">경형 SUV · 가솔린</div>
+        <div class="row"><b>차값</b> 1,493~2,017만원</div>
+        <div class="row"><b>월 렌트</b> 약 20만원대~ (조건별)</div>
+        <div class="verdict">SUV 시야 + 경차 주차 편의 + 최신 안전사양. 초보 첫차 최상위 후보.</div>
+      </div>
+      <div class="car">
+        <h4>기아 레이</h4>
+        <div class="cat">경차(박스형) · 가솔린/LPG</div>
+        <div class="row"><b>차값</b> 1,300만원대~</div>
+        <div class="row"><b>월 렌트</b> 20만원 안팎 (조건별)</div>
+        <div class="verdict">네모난 차체라 차 끝 감 잡기 쉬움 = 초보 주차 최강. 실내 넓고 슬라이딩도어.</div>
+      </div>
+      <div class="car">
+        <h4>기아 모닝</h4>
+        <div class="cat">경차 · 가솔린</div>
+        <div class="row"><b>차값</b> 1,300만원대~</div>
+        <div class="row"><b>월 렌트</b> 저렴대</div>
+        <div class="verdict">연비·유지비 최저 라인. SUV는 아니지만 "부담 최소" 첫차 정석.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 소형 가솔린 -->
+  <div class="seg">
+    <div class="seg-title"><span class="em">🚙</span> 그룹 B · 소형 SUV (가솔린) — 첫 SUV의 표준, 공간·시야 균형</div>
+    <div class="cars">
+      <div class="car">
+        <h4>기아 셀토스 <span class="badge hot">추천</span></h4>
+        <div class="cat">소형 SUV · 가솔린/터보</div>
+        <div class="row"><b>차값</b> 2,477~3,584만원</div>
+        <div class="row"><b>월 렌트</b> 약 40만원대~</div>
+        <div class="verdict">준중형급 공간, 시야 높고 부드러움, 크루즈·차로유지 기본. 초보·여성 선호 1순위.</div>
+      </div>
+      <div class="car">
+        <h4>현대 코나</h4>
+        <div class="cat">소형 SUV · 가솔린</div>
+        <div class="row"><b>차값</b> 2,500만원대~</div>
+        <div class="row"><b>월 렌트</b> 약 20~40만원대 (조건별)</div>
+        <div class="verdict">주차 어시스트·서라운드뷰(상위트림)로 주차 스트레스↓. 하이브리드도 있음.</div>
+      </div>
+      <div class="car">
+        <h4>쉐보레 트랙스 크로스오버</h4>
+        <div class="cat">소형 SUV · 가솔린</div>
+        <div class="row"><b>차값</b> 2천만원대~ (가성비)</div>
+        <div class="row"><b>월 렌트</b> 가성비 라인</div>
+        <div class="verdict">동급 대비 차체 큼·공간 넓음. 가격 경쟁력. 디자인 호불호 확인.</div>
+      </div>
+      <div class="car">
+        <h4>KG모빌리티 티볼리</h4>
+        <div class="cat">소형 SUV · 가솔린</div>
+        <div class="row"><b>차값</b> 2천만원대</div>
+        <div class="row"><b>월 렌트</b> 저렴대</div>
+        <div class="verdict">가격 저렴, 무난한 크기. 옵션·연비는 상위 경쟁모델보다 소박.</div>
+      </div>
+      <div class="car">
+        <h4>르노 아르카나(XM3)</h4>
+        <div class="cat">소형 쿠페형 SUV · 가솔린/HEV</div>
+        <div class="row"><b>차값</b> 2천만원대~</div>
+        <div class="row"><b>월 렌트</b> 중간대</div>
+        <div class="verdict">쿠페형 디자인 개성. 뒷 시야는 디자인 특성상 확인 필요.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 하이브리드/전기 -->
+  <div class="seg">
+    <div class="seg-title"><span class="em">🔋</span> 그룹 C · 하이브리드 / 전기 SUV — 연료비 절감, 월납입에 유류비까지 고려</div>
+    <div class="cars">
+      <div class="car">
+        <h4>기아 니로 <span class="badge eco">연비</span></h4>
+        <div class="cat">소형 SUV · 하이브리드</div>
+        <div class="row"><b>월 렌트</b> 중간대 (조건별)</div>
+        <div class="verdict">하이브리드 대표 연비. 유류비까지 합치면 총 유지비 경쟁력.</div>
+      </div>
+      <div class="car">
+        <h4>현대 코나 하이브리드 <span class="badge eco">연비</span></h4>
+        <div class="cat">소형 SUV · 하이브리드</div>
+        <div class="row"><b>월 렌트</b> 약 20만원대~ (예시)</div>
+        <div class="verdict">도심연비 20km/L↑. 출퇴근 데일리 주행 많으면 유류비 이득 큼.</div>
+      </div>
+      <div class="car">
+        <h4>기아 EV3 <span class="badge eco">전기</span></h4>
+        <div class="cat">소형 SUV · 전기</div>
+        <div class="row"><b>월 렌트</b> 보조금 적용 36개월 42~45만원대</div>
+        <div class="verdict">전기차 보조금 반영 시 가성비. 단 충전 인프라·겨울 주행거리 확인 필요.</div>
+      </div>
+      <div class="car">
+        <h4>현대 코나 일렉트릭 <span class="badge eco">전기</span></h4>
+        <div class="cat">소형 SUV · 전기</div>
+        <div class="row"><b>월 렌트</b> 조건별</div>
+        <div class="verdict">가솔린 코나와 형제. 충전 여건 되면 유지비 저렴.</div>
+      </div>
+      <div class="car">
+        <h4>현대 캐스퍼 일렉트릭 <span class="badge eco">전기</span></h4>
+        <div class="cat">경형 SUV · 전기</div>
+        <div class="row"><b>차값</b> ~2,800만(보조금후 20초반)</div>
+        <div class="row"><b>월 렌트</b> 20만원대~ (예시)</div>
+        <div class="verdict">가장 작은 전기 SUV. 도심 근거리 출퇴근에 딱. 장거리엔 불리.</div>
+      </div>
+    </div>
+    <div class="callout warn" style="margin-top:14px;">
+      <span class="ct">⚠️ 전기차는 별도 체크</span>
+      전기 SUV는 월납입 싸 보여도 <b>집/직장 충전 여건, 겨울철 주행거리 감소, 중고·감가</b> 이슈가 있어요.
+      수빈이 출퇴근 거리와 충전 환경이 확정되면 전기차만 따로 심화 조사하는 걸 권장.
+    </div>
+  </div>
+
+  <!-- 준중형 -->
+  <div class="seg">
+    <div class="seg-title"><span class="em">🚗</span> 그룹 D · 준중형 SUV — 크고 안정적, 장거리·동승 많을 때</div>
+    <div class="cars">
+      <div class="car">
+        <h4>현대 투싼</h4>
+        <div class="cat">준중형 SUV · 가솔린/HEV</div>
+        <div class="row"><b>차값</b> 2,800만원대~</div>
+        <div class="row"><b>월 렌트</b> 소형보다 높음</div>
+        <div class="verdict">공간·주행 안정감 우수. 초보엔 차체가 커 주차 난도↑.</div>
+      </div>
+      <div class="car">
+        <h4>기아 스포티지</h4>
+        <div class="cat">준중형 SUV · 가솔린/HEV</div>
+        <div class="row"><b>차값</b> 3,000만원대~</div>
+        <div class="row"><b>월 렌트</b> 소형보다 높음</div>
+        <div class="verdict">투싼과 형제. 인기 준중형. 예산·주차 감당되면 만족도 높음.</div>
+      </div>
+      <div class="car">
+        <h4>르노 QM6</h4>
+        <div class="cat">중형 SUV · 가솔린/LPG</div>
+        <div class="row"><b>차값</b> 2천만원대 후반~</div>
+        <div class="row"><b>월 렌트</b> 중간대</div>
+        <div class="verdict">중형인데 가격 착함. LPG 있어 연료비↓. 첨단옵션은 소박.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    ※ 위 차값은 2026년 신차 기준, 월 렌트료는 <b>시세 예시</b>입니다(확정 견적 아님). 트림·계약기간·선납금·주행거리·개인 운전경력에 따라 크게 달라지므로 실제 금액은 <b>여러 업체 견적</b>으로 확인하세요. 특히 "월 20만원대" 같은 최저가는 선납금 많이 넣거나 주행거리 짧게 잡은 특정 프로모션 조건인 경우가 많습니다.
+  </div>
+</section>
+
+<!-- 4. 렌트료 구조 + 함정 -->
+<section>
+  <h2><span class="num">4</span>렌트료 구조 &amp; 계약 함정</h2>
+  <p class="h2sub">싸 보이는 월납입료의 정체 + 사인 전 반드시 확인할 것.</p>
+
+  <h3>월 렌트료에 보통 포함 / 별도</h3>
+  <ul class="clean">
+    <li><span class="tag y">포함</span> 보험료(단체보험) · 자동차세 · 정기점검/소모품(조건 따라)</li>
+    <li><span class="tag m">조건별</span> 선납금·보증금(많이 낼수록 월납↓) · 주행거리 약정(초과 시 km당 추가) · 면책금 30~50만원</li>
+  </ul>
+
+  <div class="callout warn">
+    <span class="ct">🚨 1순위 리스크 — 중도해지 위약금</span>
+    5년 계약 중 2년 타고 해지하면 <b>남은 기간 렌트료 상당분 + 차량 가치하락분</b>을 위약금으로 물 수 있어요(수백만~천만원대).
+    첫차라 얼마나 탈지 확신 없다면 <b>기간을 무리하게 길게 잡지 말 것.</b>
+  </div>
+
+  <h3>계약 전 체크리스트</h3>
+  <ul class="check">
+    <li><b>총 렌트료</b> 확인 (월납 × 개월 + 선납금 = 진짜 비용)</li>
+    <li><b>약정 주행거리</b>가 내 출퇴근 거리에 맞는지 — 초과 추가금 확인</li>
+    <li><b>면책금(자기부담금)</b> 수준 — 초보라 사고 확률 고려해 더 중요</li>
+    <li><b>중도해지 조건·위약금 산정식</b>을 계약 전에 이해</li>
+    <li><b>운전자 범위</b>에 실제 몰 사람 전부 등록</li>
+    <li><b>보험 경력 인정</b> 신청 방법 확인 (나중에 손해 안 보게)</li>
+    <li>여러 업체 견적을 <b>같은 조건(기간·주행거리·선납금)</b>으로 비교</li>
+  </ul>
+  <div class="callout blue">
+    <span class="ct">💡 해지 걱정될 때 대안</span>
+    ① 계약 승계(제3자 양도) ② 짧은 기간 + 연장 ③ 위약금 완화 특약 상품. 계약 전에 물어보기.
+  </div>
+</section>
+
+<!-- 5. 다음 스텝 -->
+<section>
+  <h2><span class="num">5</span>수빈이 다음 스텝</h2>
+  <p class="h2sub">정보를 실제 결정으로 옮기는 순서.</p>
+  <ol class="steps">
+    <li><b>내 조건 확정</b> — 출퇴근 왕복거리(→연 주행거리), 감당 월예산, 몇 년 탈지, 충전 환경(전기차 고려 시)</li>
+    <li><b>차급 좁히기</b> — 도심·주차 중심이면 경형(캐스퍼)·소형(셀토스/코나), 장거리·동승 많으면 준중형</li>
+    <li><b>업체 3~4곳 견적</b> — 경력 0 가능한 곳 위주로, <b>같은 조건</b>으로 통일해 비교</li>
+    <li><b>1~2개로 압축 후 직접 시승</b> — 주차·시야·핸들감 체감</li>
+    <li><b>계약서 함정 체크</b>(4번) + <b>보험 경력 인정</b> 신청 챙기기</li>
+  </ol>
+  <div class="callout good">
+    <span class="ct">한 줄 조언</span>
+    경력 0 첫차라면 <b>처음부터 최장 계약으로 묶기보다</b> 부담 적은 차급·기간으로 시작해 운전에 익숙해진 뒤 방향을 다시 정하는 게 안전합니다.
+    장기렌트 기간도 보험 경력으로 쌓이니, 초반 몇 년을 "경력 만드는 시간"으로 써도 손해가 아니에요.
+  </div>
+</section>
+
+<!-- 출처 -->
+<section>
+  <h2><span class="num">📎</span>참고 출처</h2>
+  <p class="src">2026년 7월 기준 웹 조사. 시세·조건은 시점에 따라 바뀌므로 계약 시점에 재확인 필요.</p>
+  <ul class="clean src">
+    <li>경력 0/초보 조건·보험 — <a href="https://www.eacar.co.kr/community/5346">이어카: 경력 1년 미만 장기렌트</a>, <a href="https://namu.wiki/w/%EC%8B%A0%EC%B0%A8%EC%9E%A5%EA%B8%B0%EB%A0%8C%ED%8A%B8">나무위키: 신차장기렌트</a>, <a href="https://drivingteacher.co.kr/blog/yrc6WQx5Mu7eVzEpFSK4">운전선생: 초보 렌터카 시기</a></li>
+    <li>보험 경력 인정 제도 — <a href="https://www.hankyung.com/article/2024041497461">한국경제: 장기렌터카 무사고 경력 인정</a>, <a href="https://www.eacar.co.kr/article/223674869074">이어카: 렌트 운전경력 보험경력 인정</a></li>
+    <li>렌트 vs 리스 vs 할부 — <a href="https://web.getcha.kr/blog/car-lease-vs-long-term-rent-vs-installment-comparison-2026">겟차 2026 비교</a>, <a href="https://www.motorgraph.com/news/articleView.html?idxno=31721">모터그래프</a></li>
+    <li>차종·가격 — <a href="https://car.mustarddata.com/guide/suv-recommend-2026/">SUV 추천 2026 12선</a>, <a href="https://www.hyundaimotorgroup.com/ko/news/CONT0000000000180743">현대: 2026 캐스퍼</a>, <a href="https://www.kia.com/kr/vehicles/seltos/price">기아 셀토스 가격</a>, <a href="https://blog.carlab.kr/2026/05/26/">카랩: 국산 하이브리드 SUV</a></li>
+    <li>전기/하이브리드 렌트 — <a href="https://www.taxandcar.co.kr/EVspecialprice/?bmode=view&idx=76059192">EV3 장기렌트 특가</a>, <a href="https://carcostpro.com/2026-kia-niro-hybrid-rent-cost/">니로 하이브리드 렌트</a>, <a href="https://web.getcha.kr/articles/rent-2026-casper-yearchange">캐스퍼 일렉트릭 렌트</a></li>
+    <li>초보 첫차 경차 — <a href="https://web.getcha.kr/blog/2026-compact-car-recommendation-guide-ray-casper-morning/">겟차: 레이·캐스퍼·모닝</a>, <a href="https://car.finance-information.net/chobounjeon-first-car-recommendation-2026">초보 첫차 TOP4</a></li>
+    <li>계약 주의사항 — <a href="https://web.getcha.kr/blog/long-term-car-rental-contract-precautions-2025-guide">겟차: 계약 유의사항</a>, <a href="https://carding.co.kr/2023/12/10/">카딩: 중도해지·인수</a></li>
+  </ul>
+</section>
+
+<footer>
+  수빈 개인 참고자료 · 조사-006 · v2.0 · 2026-07-13 작성 · 외부 공개 전 명진 확인
+</footer>
+
+</div>
+</body>
+</html>

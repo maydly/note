@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수빈 지정 7종 SUV — 영업사원 설명형 카탈로그</title>
+<style>
+  :root{
+    --bg:#faf7f2; --card:#ffffff; --ink:#2c2a26; --sub:#6b665e;
+    --line:#e8e2d8; --accent:#c98a5e; --accent-soft:#f4e7dc;
+    --good:#4a7c59; --good-soft:#e5efe6; --warn:#b9603f; --warn-soft:#f7e5dd;
+    --blue:#4a6c8c; --blue-soft:#e3ebf2;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+    line-height:1.68; font-size:16px; -webkit-text-size-adjust:100%;}
+  .wrap{max-width:860px; margin:0 auto; padding:32px 20px 80px;}
+  header.top{text-align:center; padding:26px 20px 30px; margin-bottom:8px; border-bottom:1px solid var(--line);}
+  .kicker{display:inline-block; font-size:13px; letter-spacing:.14em; color:var(--accent);
+    background:var(--accent-soft); padding:5px 14px; border-radius:999px; margin-bottom:14px;}
+  h1{font-size:25px; margin:.2em 0 .3em; letter-spacing:-.01em;}
+  .lead{color:var(--sub); font-size:14.5px; max-width:620px; margin:0 auto;}
+  .meta{margin-top:12px; font-size:12.5px; color:var(--sub);}
+
+  .note{background:#fbf8f3; border:1px dashed var(--line); border-radius:12px;
+    padding:13px 16px; font-size:13px; color:var(--sub); margin:20px 0;}
+  .note b{color:var(--ink);}
+  .note.blue{background:var(--blue-soft); border:1px solid #cdddea; color:var(--ink);}
+
+  .car{background:var(--card); border:1px solid var(--line); border-radius:18px;
+    padding:0; margin:24px 0; overflow:hidden; box-shadow:0 1px 4px rgba(70,60,45,.05);}
+  .car-head{display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
+    padding:18px 22px 14px; background:linear-gradient(180deg,#fdf8f2,#fff);}
+  .car-head .no{font-size:12px; color:var(--accent); font-weight:800; letter-spacing:.1em;}
+  .car-head h2{font-size:22px; margin:2px 0 4px;}
+  .car-head .badges .tag{margin-right:5px;}
+  .car-head .price{text-align:right; white-space:nowrap;}
+  .car-head .price .p{font-size:19px; font-weight:800; color:var(--accent);}
+  .car-head .price .pl{font-size:11px; color:var(--sub);}
+  .tag{display:inline-block; font-size:11px; padding:2px 8px; border-radius:5px; font-weight:700;}
+  .tag.g{background:#eef1e6; color:#6b7a3a;} .tag.h{background:var(--good-soft); color:var(--good);}
+  .tag.e{background:var(--blue-soft); color:var(--blue);} .tag.seg{background:#f3eecf; color:#8a7320;}
+
+  .imgslot{margin:0 22px; padding:22px 16px; border-radius:14px;
+    background:repeating-linear-gradient(45deg,#f6efe6,#f6efe6 12px,#f2e9dd 12px,#f2e9dd 24px);
+    border:1px solid var(--line); text-align:center;}
+  .imgslot .emoji{font-size:40px; line-height:1;}
+  .imgslot .photo{width:100%; max-width:420px; aspect-ratio:16/9; object-fit:cover;
+    border-radius:12px; border:1px solid var(--line); display:block; margin:0 auto; background:#f2e9dd;}
+  .imgslot .cap{font-size:12px; color:var(--sub); margin:8px 0 12px;}
+  .imgbtns{display:flex; flex-wrap:wrap; gap:8px; justify-content:center;}
+  .imgbtns a{font-size:12.5px; text-decoration:none; padding:7px 13px; border-radius:999px;
+    background:#fff; border:1px solid var(--line); color:var(--ink); font-weight:600;}
+  .imgbtns a.primary{background:var(--accent); color:#fff; border-color:var(--accent);}
+  .imgbtns a:hover{border-color:var(--accent);}
+
+  .car-body{padding:18px 22px 22px;}
+  .pitch{background:var(--blue-soft); border:1px solid #cdddea; border-radius:14px;
+    padding:15px 17px; margin:4px 0 16px; font-size:14.5px; position:relative;}
+  .pitch .who{display:flex; align-items:center; gap:8px; font-weight:800; color:var(--blue);
+    font-size:13px; margin-bottom:6px;}
+  .pitch .who .ic{width:24px; height:24px; border-radius:50%; background:var(--blue); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:13px;}
+  .pitch p{margin:6px 0;}
+
+  table.spec{border-collapse:collapse; width:100%; font-size:13px; margin:6px 0 14px;}
+  table.spec th,table.spec td{border:1px solid var(--line); padding:7px 10px; text-align:left; vertical-align:top;}
+  table.spec th{background:#fbf8f3; font-weight:700; white-space:nowrap; width:32%;}
+
+  .pros{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  @media(max-width:520px){.pros{grid-template-columns:1fr;}}
+  .pros .box{border-radius:11px; padding:11px 13px; font-size:13px;}
+  .pros .good{background:var(--good-soft); border:1px solid #cfe0d1;}
+  .pros .warn{background:var(--warn-soft); border:1px solid #eecfc2;}
+  .pros .box b{display:block; margin-bottom:3px;}
+  .pros .good b{color:var(--good);} .pros .warn b{color:var(--warn);}
+
+  section.close{background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:24px 22px; margin:24px 0;}
+  section.close h2{font-size:19px; margin:0 0 14px;}
+  .pick{border-radius:12px; padding:14px 16px; margin:12px 0; font-size:14px; border:1px solid transparent;}
+  .pick.a{background:var(--good-soft); border-color:#cfe0d1;}
+  .pick.b{background:var(--blue-soft); border-color:#cdddea;}
+  .pick.c{background:var(--warn-soft); border-color:#eecfc2;}
+  .pick b{color:var(--ink);}
+  .disclaimer{font-size:12px; color:var(--sub); background:#fbf8f3; border:1px dashed var(--line);
+    border-radius:10px; padding:11px 13px; margin-top:12px;}
+  footer{text-align:center; color:var(--sub); font-size:12px; margin-top:30px;}
+.mdlback{position:fixed;top:calc(env(safe-area-inset-top, 0px) + 10px);left:10px;z-index:200;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--ink);text-decoration:none;box-shadow:0 2px 10px rgba(70,60,45,.14)}.mdlback:active{transform:scale(.96)}</style>
+</head>
+<body>
+<a href="index.html" class="mdlback">← 목록</a>
+<div class="wrap">
+
+<header class="top">
+  <span class="kicker">수빈 · 조사-006 · 영업사원 설명형</span>
+  <h1>지정 7종 SUV — 영업사원 설명형 카탈로그</h1>
+  <p class="lead">각 차의 영업사원이 소개하듯 정리했어요.<br>사양표 + 공식 사진·이미지검색 바로가기 + 솔직한 장단점까지.</p>
+  <p class="meta">작성 2026-07-13 · v2.1 · 개인 참고자료 · 차값 4,000만원 이하 기준 · 가격/제원은 2026년 시점</p>
+</header>
+
+<div class="note blue">
+  🧭 <b>이 카탈로그의 관점</b> — 주차·초보 운전 난이도는 <b>명진이 함께 타고 도와주는 전제</b>라 판단 기준에서 뺐어요.
+  대신 <b>출퇴근이 고속도로 위주</b>인 점을 반영해, ① 고속 안정감 ② 주행보조(크루즈·차로유지) ③ 고속 연비·주행거리를 중심으로 봤습니다.
+  선택 기준은 <b>예산 · 공간/급 · 연료(가솔린·하이브리드·전기)</b>로 좁히면 돼요.
+</div>
+
+<div class="note">
+  📷 <b>사진 안내</b> — 각 차 대표 사진을 <b>폴더에 내려받아 오프라인에서도 뜨게 심었어요</b>.
+  더 다양한 각도·색상은 각 차의 <b>네이버·구글 이미지검색 + 공식홈</b> 버튼으로 확인하세요.
+  <span style="color:var(--sub);">사진 출처: Wikimedia Commons(자유 이용 CC 라이선스) 기여자.</span>
+</div>
+
+<!-- ===== 1. 셀토스 ===== -->
+<div class="car">
+  <div class="car-head">
+    <div>
+      <div class="no">01 · 기아</div>
+      <h2>셀토스</h2>
+      <div class="badges"><span class="tag seg">소형 SUV</span> <span class="tag g">가솔린</span> <span class="tag h">하이브리드</span></div>
+    </div>
+    <div class="price"><div class="p">2,477만~</div><div class="pl">가솔린 기준 · HEV 2,898만~</div></div>
+  </div>
+  <div class="imgslot">
+    <img class="photo" src="img/셀토스.jpg" alt="기아 셀토스">
+    <div class="cap">기아 셀토스 (소형 SUV)</div>
+    <div class="imgbtns">
+      <a class="primary" href="https://search.naver.com/search.naver?where=image&query=기아 셀토스 2026" target="_blank">네이버 이미지</a>
+      <a href="https://www.google.com/search?tbm=isch&q=기아 셀토스 2026" target="_blank">구글 이미지</a>
+      <a href="https://www.kia.com/kr/vehicles/seltos/" target="_blank">공식 홈</a>
+    </div>
+  </div>
+  <div class="car-body">
+    <div class="pitch">
+      <div class="who"><span class="ic">🙋</span> 셀토스 영업사원</div>
+      <p>"출퇴근이 고속도로 위주시라고요? 그럼 셀토스도 잘 맞아요. <b>스마트 크루즈랑 차로유지 보조가 들어가서
+      고속도로에서 차가 알아서 속도·차선을 잡아줍니다.</b> 소형인데 실내는 준중형급이라 답답하지 않고,
+      가솔린 터보 198마력이라 고속 합류나 추월도 여유가 있어요. 부담되면 하이브리드로 기름값도 잡을 수 있고요.
+      큰 차까진 필요 없고 <b>실속 있게 잘 만든 SUV</b> 찾으시면 무난하게 정답입니다."</p>
+    </div>
+    <table class="spec">
+      <tr><th>차급 / 연료</th><td>소형 SUV · 1.6 가솔린 터보 / 1.6 하이브리드</td></tr>
+      <tr><th>크기(전장×전폭)</th><td>4,390 × 1,800 mm</td></tr>
+      <tr><th>출력 / 토크</th><td>가솔린 터보 198마력 / 27kg·m</td></tr>
+      <tr><th>주행보조</th><td>스마트크루즈(정차&재출발), 차로유지, 전방충돌방지, 후측방 경고·방지</td></tr>
+      <tr><th>연비</th><td>가솔린 도심 약 11.5km/L · 하이브리드는 더 높음</td></tr>
+      <tr><th>가격(4천 이하)</th><td>가솔린 2,477~3,584만 · HEV 2,898만~</td></tr>
+    </table>
+    <div class="pros">
+      <div class="box good"><b>👍 강점</b>주행보조 충실 + 옵션·연비 균형. 소형이라 값·유지비 실속. 가장 무난한 선택.</div>
+      <div class="box warn"><b>👀 참고</b>워낙 흔해 개성은 덜함. 고속 정숙성·묵직함은 준중형·중형보다 한 수 아래.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 2. 니로 ===== -->
+<div class="car">
+  <div class="car-head">
+    <div>
+      <div class="no">02 · 기아</div>
+      <h2>니로</h2>
+      <div class="badges"><span class="tag seg">소형 SUV</span> <span class="tag h">하이브리드</span> <span class="tag e">전기</span></div>
+    </div>
+    <div class="price"><div class="p">2,832만~</div><div class="pl">하이브리드 · 세제혜택 후</div></div>
+  </div>
+  <div class="imgslot">
+    <img class="photo" src="img/니로.jpg" alt="기아 니로">
+    <div class="cap">기아 니로 (소형 하이브리드 SUV)</div>
+    <div class="imgbtns">
+      <a class="primary" href="https://search.naver.com/search.naver?where=image&query=기아 니로 2026" target="_blank">네이버 이미지</a>
+      <a href="https://www.google.com/search?tbm=isch&q=기아 니로 2026" target="_blank">구글 이미지</a>
+      <a href="https://www.kia.com/kr/vehicles/niro/" target="_blank">공식 홈</a>
+    </div>
+  </div>
+  <div class="car-body">
+    <div class="pitch">
+      <div class="who"><span class="ic">🙋</span> 니로 영업사원</div>
+      <p>"매일 출퇴근하실 거면 니로 꼭 보세요. <b>도심 연비가 20km/L를 넘고</b>, 고속에서도 하이브리드라 기름값이 확실히 덜 들어요.
+      셀토스랑 값은 비슷한데 매일 타는 분들은 <b>연 100만 원 가까이</b> 기름값을 아끼기도 합니다.
+      휠베이스가 길어 뒷좌석도 여유롭고, 하이브리드라 조용하고 부드러워서 장거리 출퇴근이 편안해요.
+      '기름값 스트레스 없는 실속 SUV' 찾으시면 이겁니다."</p>
+    </div>
+    <table class="spec">
+      <tr><th>차급 / 연료</th><td>소형 SUV · 1.6 하이브리드 (전기 모델도 있음)</td></tr>
+      <tr><th>크기</th><td>셀토스보다 약간 길고 넓음 · 휠베이스 +90mm(2열 여유)</td></tr>
+      <tr><th>연비</th><td>도심 20km/L 이상 (동급 최상위권)</td></tr>
+      <tr><th>연료비</th><td>가솔린 대비 연 약 100만원 절감 사례</td></tr>
+      <tr><th>주행보조</th><td>스마트크루즈·차로유지 등 기아 최신 세대 지원</td></tr>
+      <tr><th>가격(4천 이하)</th><td>HEV 2,832만~ · 프레스티지 3,098만</td></tr>
+    </table>
+    <div class="pros">
+      <div class="box good"><b>👍 강점</b>연비 甲. 매일 주행 많을수록 이득 커짐. 조용·부드러움으로 장거리 출퇴근 편안.</div>
+      <div class="box warn"><b>👀 참고</b>연비 이점은 도심이 가장 큼(고속 위주면 폭 다소 축소). 디자인·주행 재미는 무난한 편.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 3. 스포티지 ===== -->
+<div class="car">
+  <div class="car-head">
+    <div>
+      <div class="no">03 · 기아</div>
+      <h2>스포티지</h2>
+      <div class="badges"><span class="tag seg">준중형 SUV</span> <span class="tag g">가솔린</span> <span class="tag h">하이브리드</span></div>
+    </div>
+    <div class="price"><div class="p">약 2,700만~</div><div class="pl">상위 HEV는 3,900만대</div></div>
+  </div>
+  <div class="imgslot">
+    <img class="photo" src="img/스포티지.jpg" alt="기아 스포티지">
+    <div class="cap">기아 스포티지 (준중형 SUV)</div>
+    <div class="imgbtns">
+      <a class="primary" href="https://search.naver.com/search.naver?where=image&query=기아 스포티지 2026" target="_blank">네이버 이미지</a>
+      <a href="https://www.google.com/search?tbm=isch&q=기아 스포티지 2026" target="_blank">구글 이미지</a>
+      <a href="https://www.kia.com/kr/vehicles/sportage/" target="_blank">공식 홈</a>
+    </div>
+  </div>
+  <div class="car-body">
+    <div class="pitch">
+      <div class="who"><span class="ic">🙋</span> 스포티지 영업사원</div>
+      <p>"고속도로 출퇴근이시면 스포티지가 아주 잘 맞아요. <b>준중형이라 고속에서 차가 묵직하고 안정적</b>이라 장거리가 훨씬 덜 피곤합니다.
+      셀토스보다 30cm 길어서 트렁크·뒷좌석도 넉넉하고요. 스마트크루즈·차로유지 같은 주행보조도 상위 세대라 고속에서 든든해요.
+      셀토스 보고 오셨으면 조금만 보태서 <b>한 급 위</b>를 타시는 거예요. 오래 탈 든든한 차 원하시면 강추입니다."</p>
+    </div>
+    <table class="spec">
+      <tr><th>차급 / 연료</th><td>준중형 SUV · 1.6 가솔린 터보 / 하이브리드</td></tr>
+      <tr><th>크기(전장×전폭)</th><td>4,685 × 1,865 mm (셀토스보다 약 30cm 김)</td></tr>
+      <tr><th>출력 / 토크</th><td>가솔린 터보 180마력 / 27kg·m</td></tr>
+      <tr><th>강점</th><td>고속 안정감·공간. 주행보조 상위 세대</td></tr>
+      <tr><th>연비</th><td>가솔린 도심 약 11.2km/L (하이브리드는 더 높음)</td></tr>
+      <tr><th>가격(4천 이하)</th><td>약 2,700만대~ · 상위 HEV·AWD는 3,900만대 근접</td></tr>
+    </table>
+    <div class="pros">
+      <div class="box good"><b>👍 강점</b>고속 안정감·공간 우수. 고속도로 출퇴근에 특히 잘 맞음. 인기 준중형이라 중고가치도 무난.</div>
+      <div class="box warn"><b>👀 참고</b>상위 트림·하이브리드는 예산 4천에 근접. 소형 대비 유지비·연비는 약간 불리.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 4. 토레스 ===== -->
+<div class="car">
+  <div class="car-head">
+    <div>
+      <div class="no">04 · KGM</div>
+      <h2>토레스</h2>
+      <div class="badges"><span class="tag seg">중형 SUV</span> <span class="tag g">가솔린</span> <span class="tag h">하이브리드</span></div>
+    </div>
+    <div class="price"><div class="p">2,810만~</div><div class="pl">HEV 3,140만~ · 전기 EVX는 제외</div></div>
+  </div>
+  <div class="imgslot">
+    <img class="photo" src="img/토레스.jpg" alt="KGM 토레스">
+    <div class="cap">KGM 토레스 (중형 SUV)</div>
+    <div class="imgbtns">
+      <a class="primary" href="https://search.naver.com/search.naver?where=image&query=KGM 토레스 2026" target="_blank">네이버 이미지</a>
+      <a href="https://www.google.com/search?tbm=isch&q=KGM 토레스" target="_blank">구글 이미지</a>
+      <a href="https://www.kg-mobility.com/" target="_blank">공식 홈</a>
+    </div>
+  </div>
+  <div class="car-body">
+    <div class="pitch">
+      <div class="who"><span class="ic">🙋</span> 토레스 영업사원</div>
+      <p>"가격표 보시면 놀라실 거예요. <b>중형 SUV인데 2천8백만 원대부터</b> 시작합니다. 셀토스 값으로 훨씬 큰 차를 타시는 거예요.
+      차체가 크고 무거운 만큼 <b>고속도로에서 흔들림 없이 묵직하게</b> 갑니다. 각지고 터프한 디자인이라 '작은 지프' 느낌 좋아하는 분들이 많이 찾고요.
+      실내도 넓어서 짐도 사람도 시원하게 들어갑니다. 하이브리드도 있어 연비도 챙기고요.
+      <b>같은 돈으로 큰 차, 존재감 있는 차</b> 원하시면 토레스가 답입니다."</p>
+    </div>
+    <table class="spec">
+      <tr><th>차급 / 연료</th><td>중형 SUV · 가솔린 / 하이브리드(e-DHT) · 전기 EVX(별도)</td></tr>
+      <tr><th>성격</th><td>각진 터프 디자인, 넓은 실내, 고속 묵직함. 가성비 중형</td></tr>
+      <tr><th>가격(4천 이하)</th><td>가솔린 2,810만~ · HEV 3,140만~</td></tr>
+      <tr><th>제외 트림</th><td>전기 EVX 4,602만 (4천 초과)</td></tr>
+    </table>
+    <div class="pros">
+      <div class="box good"><b>👍 강점</b>같은 예산으로 <b>큰 중형 SUV</b>. 디자인 개성·공간·고속 안정감 만족도 높음.</div>
+      <div class="box warn"><b>👀 참고</b>첨단 주행보조·고속 정숙성은 기아/현대 대비 소박할 수 있음. 시승 때 고속 감각 체감 권장.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 5. 액티언 ===== -->
+<div class="car">
+  <div class="car-head">
+    <div>
+      <div class="no">05 · KGM</div>
+      <h2>액티언</h2>
+      <div class="badges"><span class="tag seg">중형 SUV</span> <span class="tag g">가솔린</span> <span class="tag h">하이브리드</span></div>
+    </div>
+    <div class="price"><div class="p">3,395만~</div><div class="pl">S7 3,395 · S9 3,649만</div></div>
+  </div>
+  <div class="imgslot">
+    <img class="photo" src="img/액티언.jpg" alt="KGM 액티언">
+    <div class="cap">KGM 액티언 (중형 SUV · 2세대)</div>
+    <div class="imgbtns">
+      <a class="primary" href="https://search.naver.com/search.naver?where=image&query=KGM 액티언 2026" target="_blank">네이버 이미지</a>
+      <a href="https://www.google.com/search?tbm=isch&q=KGM 액티언" target="_blank">구글 이미지</a>
+      <a href="https://www.kg-mobility.com/" target="_blank">공식 홈</a>
+    </div>
+  </div>
+  <div class="car-body">
+    <div class="pitch">
+      <div class="who"><span class="ic">🙋</span> 액티언 영업사원</div>
+      <p>"토레스가 터프한 형이라면, 액티언은 <b>세련된 동생</b>이에요. 사전예약 5만 대가 몰릴 만큼 디자인 반응이 뜨겁습니다.
+      실내도 요즘 감성으로 싹 바꿔서 전자식 기어에 <b>휴대폰 두 대 동시 무선충전</b>까지 되고요.
+      하이브리드는 204마력이라 고속 합류나 추월에서 힘이 넉넉합니다. 중형이라 <b>고속에서 안정적</b>이고요.
+      두 트림 다 3천만 원대라 '중형인데 예산 안에서 예쁜 신차' 찾으시면 딱입니다."</p>
+    </div>
+    <table class="spec">
+      <tr><th>차급 / 연료</th><td>중형 SUV(2세대) · 1.5 가솔린 터보 / 하이브리드(e-DHT)</td></tr>
+      <tr><th>출력</th><td>가솔린 170마력(아이신 8단) · HEV 204마력(전륜)</td></tr>
+      <tr><th>크기</th><td>전장 4,800mm대 (토레스보다 길고 낮음)</td></tr>
+      <tr><th>실내</th><td>전자식 기어 노브, 통합 공조 패널, 듀얼 무선충전</td></tr>
+      <tr><th>가격(4천 이하)</th><td>S7 3,395만 · S9 3,649만 (27년형 3,517만~)</td></tr>
+    </table>
+    <div class="pros">
+      <div class="box good"><b>👍 강점</b>중형 예산대에서 <b>디자인·신상 감성</b> + 고속 안정감. 트림 단순해 고르기 쉬움.</div>
+      <div class="box warn"><b>👀 참고</b>브랜드 A/S망·중고가치는 기아/현대보다 확인 필요. 신형이라 실차 후기 아직 쌓이는 중.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 6. 그랑 콜레오스 ===== -->
+<div class="car">
+  <div class="car-head">
+    <div>
+      <div class="no">06 · 르노</div>
+      <h2>그랑 콜레오스</h2>
+      <div class="badges"><span class="tag seg">중형 SUV</span> <span class="tag g">가솔린</span> <span class="tag h">하이브리드</span></div>
+    </div>
+    <div class="price"><div class="p">3,497만~</div><div class="pl">4천 이하는 하위 트림만</div></div>
+  </div>
+  <div class="imgslot">
+    <img class="photo" src="img/그랑콜레오스.jpg" alt="르노 그랑 콜레오스">
+    <div class="cap">르노 그랑 콜레오스 (중형 SUV)</div>
+    <div class="imgbtns">
+      <a class="primary" href="https://search.naver.com/search.naver?where=image&query=르노 그랑 콜레오스" target="_blank">네이버 이미지</a>
+      <a href="https://www.google.com/search?tbm=isch&q=르노 그랑 콜레오스" target="_blank">구글 이미지</a>
+      <a href="https://www.renault.co.kr/ko/model/koleos_overview.jsp" target="_blank">공식 홈</a>
+    </div>
+  </div>
+  <div class="car-body">
+    <div class="pitch">
+      <div class="who"><span class="ic">🙋</span> 그랑 콜레오스 영업사원</div>
+      <p>"고속도로 출퇴근이라면 이 차 정말 잘 맞아요. 하이브리드가 <b>245마력</b>인데 <b>복합 연비가 15.7km/L</b>예요 —
+      고속에서 힘 넉넉하고 기름값도 잡는다는 뜻이죠. 실내는 딱 '고급지다' 소리 나오고, 요즘 가장 핫한 중형 SUV입니다.
+      뒷좌석도 넓고 파노라마 선루프 열면 개방감이 정말 좋아요.
+      다만 솔직히, <b>예산 4천 안에서는 아랫급 트림</b>이 대상이에요 — 풀옵션 인기 트림은 4천을 넘거든요.
+      기본기·실내 고급감·고속 주행이 중요하시면 하위 트림으로도 충분히 만족하실 겁니다."</p>
+    </div>
+    <table class="spec">
+      <tr><th>차급 / 연료</th><td>중형 SUV · 2.0 가솔린 터보 / 1.5 터보 E-Tech 하이브리드(245마력)</td></tr>
+      <tr><th>연비(HEV)</th><td>복합 15.7km/L · 도심 최대 75% EV모드</td></tr>
+      <tr><th>강점</th><td>고속 파워·연비 밸런스, 실내 고급감. 뒷좌석 무릎 320mm·헤드룸 927mm, 파노라마 선루프</td></tr>
+      <tr><th>4천 이하 트림</th><td>가솔린 테크노 3,497 · 아이코닉 3,881 / HEV 테크노 ~3,814만</td></tr>
+      <tr><th>제외 트림</th><td>가솔린 4,092만~ · HEV 아이코닉 이상 4,208~4,581만</td></tr>
+    </table>
+    <div class="pros">
+      <div class="box good"><b>👍 강점</b>245마력·15.7km/L로 고속 출퇴근에 이상적. 실내 고급감 우수.</div>
+      <div class="box warn"><b>👀 참고</b><b>4천 이하는 하위 트림만</b> — 원하는 옵션이 상위면 예산 초과. 브랜드 A/S·중고가치 참고.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 7. 아토3 ===== -->
+<div class="car">
+  <div class="car-head">
+    <div>
+      <div class="no">07 · BYD</div>
+      <h2>아토3 (ATTO 3)</h2>
+      <div class="badges"><span class="tag seg">소형 SUV</span> <span class="tag e">전기</span></div>
+    </div>
+    <div class="price"><div class="p">3,150만~</div><div class="pl">플러스 3,330~3,350만 · 보조금 별도↓</div></div>
+  </div>
+  <div class="imgslot">
+    <img class="photo" src="img/아토3.jpg" alt="BYD 아토3">
+    <div class="cap">BYD 아토3 (소형 전기 SUV)</div>
+    <div class="imgbtns">
+      <a class="primary" href="https://search.naver.com/search.naver?where=image&query=BYD 아토3" target="_blank">네이버 이미지</a>
+      <a href="https://www.google.com/search?tbm=isch&q=BYD ATTO 3" target="_blank">구글 이미지</a>
+      <a href="https://www.bydauto.kr/car/byd-atto3" target="_blank">공식 홈</a>
+    </div>
+  </div>
+  <div class="car-body">
+    <div class="pitch">
+      <div class="who"><span class="ic">🙋</span> 아토3 영업사원</div>
+      <p>"전기차 관심 있으시면 아토3 보세요. BYD가 세계 1위 전기차 회사예요. <b>안전성 좋은 LFP 블레이드 배터리</b>라 화재 걱정을 크게 덜었고,
+      실내 마감·디스플레이는 해외 리뷰에서 '동급 최고'로 꼽힙니다. <b>보조금까지 받으면 실구매가가 확 내려가요.</b>
+      다만 솔직히 말씀드릴게요 — <b>출퇴근이 고속도로 위주</b>시라면 이 점은 꼭 아셔야 해요.
+      전기차는 고속 주행에서 배터리가 더 빨리 닳아서, 한 번 충전 <b>321km</b>가 실제 고속에선 더 짧게 느껴질 수 있어요.
+      집·회사에 충전이 확실히 되고 출퇴근 거리가 길지 않다면 좋은 선택입니다."</p>
+    </div>
+    <table class="spec">
+      <tr><th>차급 / 연료</th><td>소형 SUV · 순수 전기</td></tr>
+      <tr><th>크기</th><td>4,455 × 1,875 × 1,615 mm · 휠베이스 2,720mm</td></tr>
+      <tr><th>배터리 / 주행</th><td>60.48kWh LFP 블레이드 · 복합 321km(저온 309km) · 고속 위주면 더 짧아짐</td></tr>
+      <tr><th>성능 / 충전</th><td>150kW(204마력)·0→100 7.3초 · 급속 20→80% 약 30분</td></tr>
+      <tr><th>가격</th><td>기본 3,150만 · 플러스 3,330~3,350만 (보조금 국고 약 145만+지자체)</td></tr>
+    </table>
+    <div class="pros">
+      <div class="box good"><b>👍 강점</b>보조금 후 가성비·실내품질 좋음. LFP 배터리 안전성. 집/회사 충전 되면 유지비 저렴.</div>
+      <div class="box warn"><b>👀 참고</b><b>고속도로 출퇴근엔 주행거리(321km) 부담</b> — 충전 잦아질 수 있음. A/S망·중고가치·겨울 주행거리 확인.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 마무리 ===== -->
+<section class="close">
+  <h2>수빈이 관점 — 어떻게 좁힐까</h2>
+  <p style="color:var(--sub); font-size:13.5px; margin-top:-6px;">주차·초보 난이도는 제외(명진 동승). <b>고속도로 출퇴근</b> 기준으로 정리.</p>
+  <div class="pick b">
+    <b>🅐 고속 안정감·존재감 우선 →</b> 스포티지 · 액티언 · 토레스 · 그랑 콜레오스(준중형~중형). 고속에서 묵직하고 편안. 공간·디자인 만족도 높음.
+  </div>
+  <div class="pick a">
+    <b>🅑 실속·연비 우선 →</b> 셀토스 · 니로(소형). 값·유지비 부담 적고 주행보조도 충실. 니로는 연비 특화라 매일 출퇴근에 유리.
+  </div>
+  <div class="pick c">
+    <b>🅒 꼭 확인 →</b> ① 그랑 콜레오스는 <b>4천 이하가 하위 트림뿐</b>(원하는 옵션이 상위면 예산 초과) ② <b>아토3(전기)는 고속 위주 출퇴근이면 주행거리·충전 부담</b> — 충전환경 확실할 때만 ③ KGM·BYD는 A/S망·중고가치 확인.
+  </div>
+  <div class="disclaimer">
+    ※ 영업사원 멘트는 각 차의 장점을 소개하는 톤이지만, <b>장단점은 실제 사양·리뷰 기준</b>으로 균형 있게 넣었어요.
+    가격·제원은 2026년 시점 기준이며 트림·연식으로 바뀌니 계약 전 공식 가격표로 재확인하세요. 이 카탈로그는 <b>차 자체</b> 기준이고, 장기렌트 월 렌트료는 별도(선납금·기간·주행거리)입니다.
+  </div>
+</section>
+
+<footer>
+  수빈 개인 참고자료 · 조사-006 · 영업사원 설명형 카탈로그 v2.1 · 2026-07-13 · 외부 공개 전 명진 확인
+</footer>
+
+</div>
+</body>
+</html>

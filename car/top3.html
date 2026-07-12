@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수빈 TOP3 SUV VS 비교</title>
+<style>
+  :root{
+    --bg:#faf7f2; --card:#ffffff; --ink:#2c2a26; --sub:#6b665e;
+    --line:#e8e2d8; --accent:#c98a5e; --accent-soft:#f4e7dc;
+    --good:#4a7c59; --good-soft:#e5efe6; --warn:#b9603f; --warn-soft:#f7e5dd;
+    --blue:#4a6c8c; --blue-soft:#e3ebf2; --gold:#c99a3e; --gold-soft:#f6edd4;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+    line-height:1.6; font-size:16px; -webkit-text-size-adjust:100%;}
+  .wrap{max-width:940px; margin:0 auto; padding:32px 18px 80px;}
+  header.top{text-align:center; padding:24px 16px 26px;}
+  .kicker{display:inline-block; font-size:13px; letter-spacing:.14em; color:var(--accent);
+    background:var(--accent-soft); padding:5px 14px; border-radius:999px; margin-bottom:14px;}
+  h1{font-size:27px; margin:.2em 0 .3em; letter-spacing:-.02em;}
+  .lead{color:var(--sub); font-size:14.5px; max-width:640px; margin:0 auto;}
+  .meta{margin-top:12px; font-size:12.5px; color:var(--sub);}
+
+  .why{background:#fff; border:1px solid var(--line); border-radius:14px; padding:15px 18px;
+    font-size:13.5px; color:var(--sub); margin:18px 0 8px;}
+  .why b{color:var(--ink);}
+
+  /* 비교표 (애플 스타일) */
+  .cmpwrap{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:20px 0; padding-bottom:6px;}
+  table.cmp{border-collapse:separate; border-spacing:0; width:100%; min-width:720px; background:#fff;
+    border:1px solid var(--line); border-radius:16px; overflow:hidden;}
+  table.cmp th, table.cmp td{padding:12px 14px; text-align:center; vertical-align:top;
+    border-bottom:1px solid var(--line); font-size:13.5px;}
+  table.cmp thead th{background:#fff; border-bottom:2px solid var(--line); vertical-align:bottom;}
+  .rowlabel{text-align:left !important; background:#fbf8f3; font-weight:700; color:var(--sub);
+    white-space:nowrap; font-size:12.5px; position:sticky; left:0; z-index:2;
+    border-right:1px solid var(--line);}
+  table.cmp tbody tr:nth-child(even) .rowlabel{background:#f7f2ea;}
+  table.cmp col.c1{width:120px;}
+
+  /* 제품 헤더 */
+  .prod .rank{display:inline-block; font-size:12px; font-weight:800; color:#fff; background:var(--accent);
+    padding:2px 10px; border-radius:999px; margin-bottom:8px;}
+  .prod.win .rank{background:var(--gold);}
+  .prod .photo{width:100%; max-width:210px; aspect-ratio:16/10; object-fit:cover;
+    border-radius:12px; border:1px solid var(--line); display:block; margin:0 auto 6px; background:#f2e9dd;}
+  .prod .emoji{font-size:34px; line-height:1;}
+  .prod .pname{font-size:16px; font-weight:800; margin:4px 0 1px;}
+  .prod .pmaker{font-size:11.5px; color:var(--sub);}
+  .prod .pprice{font-size:15px; font-weight:800; color:var(--accent); margin-top:5px;}
+  .prod .pprice small{display:block; font-size:10.5px; color:var(--sub); font-weight:400;}
+  .prod .ibtn{display:inline-block; margin-top:8px; font-size:11px; text-decoration:none;
+    background:#fff; border:1px solid var(--line); border-radius:999px; padding:4px 10px; color:var(--ink); font-weight:600;}
+  .prod .ibtn:hover{border-color:var(--accent);}
+  th.prod.win{background:var(--gold-soft) !important;}
+
+  td.best{background:var(--good-soft); font-weight:700;}
+  td.best::after{content:" 🏆"; font-size:11px;}
+  .mini{font-size:11.5px; color:var(--sub); display:block; margin-top:2px;}
+  .dot{font-weight:800;}
+  .dot.g{color:var(--good);} .dot.y{color:#b3892b;} .dot.r{color:var(--warn);}
+
+  /* 차원별 승자 */
+  section{background:#fff; border:1px solid var(--line); border-radius:16px; padding:22px 20px; margin:22px 0;}
+  section h2{font-size:19px; margin:0 0 14px; display:flex; align-items:center; gap:9px;}
+  section h2 .ic{width:28px;height:28px;border-radius:8px;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
+  .dimrow{display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); font-size:14px;}
+  .dimrow:last-child{border-bottom:none;}
+  .dimrow .d{flex:0 0 128px; font-weight:700; color:var(--sub); font-size:13px;}
+  .dimrow .w{flex:0 0 auto; font-weight:800; color:var(--good);}
+  .dimrow .x{color:var(--sub); font-size:13px;}
+
+  .verdict{border-radius:12px; padding:15px 17px; margin:12px 0; font-size:14px; border:1px solid transparent;}
+  .verdict.gold{background:var(--gold-soft); border-color:#e6d6a6;}
+  .verdict.blue{background:var(--blue-soft); border-color:#cdddea;}
+  .verdict.green{background:var(--good-soft); border-color:#cfe0d1;}
+  .verdict b{color:var(--ink);}
+  .verdict .h{font-weight:800; display:block; margin-bottom:4px;}
+  .verdict.gold .h{color:var(--gold);} .verdict.blue .h{color:var(--blue);} .verdict.green .h{color:var(--good);}
+
+  .disclaimer{font-size:12px; color:var(--sub); background:#fbf8f3; border:1px dashed var(--line);
+    border-radius:10px; padding:11px 13px; margin-top:12px;}
+  .swap{font-size:12.5px; color:var(--sub); text-align:center; margin:10px 0;}
+  footer{text-align:center; color:var(--sub); font-size:12px; margin-top:30px;}
+.mdlback{position:fixed;top:calc(env(safe-area-inset-top, 0px) + 10px);left:10px;z-index:200;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--ink);text-decoration:none;box-shadow:0 2px 10px rgba(70,60,45,.14)}.mdlback:active{transform:scale(.96)}</style>
+</head>
+<body>
+<a href="index.html" class="mdlback">← 목록</a>
+<div class="wrap">
+
+<header class="top">
+  <span class="kicker">수빈 · 조사-006 · TOP3 VS</span>
+  <h1>TOP 3 정면 비교</h1>
+  <p class="lead">고속도로 출퇴근 · 예산 4천 이하 · 크기 상관없음(명진 동승) 기준<br>체급별 대표 3대를 애플 "비교하기"처럼 나란히 놓고 대결시켰어요.</p>
+  <p class="meta">작성 2026-07-13 · v1.0 · 개인 참고자료 · 🏆=그 항목 우세 · 가격/제원 2026년 기준</p>
+</header>
+
+<div class="why">
+  <b>왜 이 3대?</b> 지정 7종 중, 수빈이 조건(고속 출퇴근·4천 이하·주차 걱정 없음)에 맞춰 <b>체급별 최선</b>을 하나씩 뽑았어요 —
+  소형 실속의 <b>셀토스</b>, 준중형 올라운더 <b>스포티지</b>, 중형 프리미엄 <b>그랑 콜레오스</b>.
+  (연비 극대화면 니로, 중형 가성비면 액티언·토레스로 갈아끼울 수 있어요.)
+</div>
+
+<!-- 비교표 -->
+<div class="cmpwrap">
+<table class="cmp">
+  <colgroup><col class="c1"><col><col><col></colgroup>
+  <thead>
+    <tr>
+      <th class="rowlabel"></th>
+      <th class="prod win">
+        <span class="rank">🥇 1위</span>
+        <img class="photo" src="img/스포티지.jpg" alt="기아 스포티지">
+        <div class="pname">스포티지</div>
+        <div class="pmaker">기아 · 준중형</div>
+        <div class="pprice">약 2,700만~<small>상위HEV 3,900만대</small></div>
+        <a class="ibtn" href="https://search.naver.com/search.naver?where=image&query=기아 스포티지 2026" target="_blank">📷 사진</a>
+      </th>
+      <th class="prod">
+        <span class="rank">🥈 2위</span>
+        <img class="photo" src="img/그랑콜레오스.jpg" alt="르노 그랑 콜레오스">
+        <div class="pname">그랑 콜레오스</div>
+        <div class="pmaker">르노 · 중형</div>
+        <div class="pprice">3,497만~<small>4천이하 하위트림</small></div>
+        <a class="ibtn" href="https://search.naver.com/search.naver?where=image&query=르노 그랑 콜레오스" target="_blank">📷 사진</a>
+      </th>
+      <th class="prod">
+        <span class="rank">🥉 3위</span>
+        <img class="photo" src="img/셀토스.jpg" alt="기아 셀토스">
+        <div class="pname">셀토스</div>
+        <div class="pmaker">기아 · 소형</div>
+        <div class="pprice">2,477만~<small>HEV 2,898만~</small></div>
+        <a class="ibtn" href="https://search.naver.com/search.naver?where=image&query=기아 셀토스 2026" target="_blank">📷 사진</a>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="rowlabel">체급</td>
+      <td>준중형 SUV</td>
+      <td>중형 SUV</td>
+      <td>소형 SUV</td>
+    </tr>
+    <tr>
+      <td class="rowlabel">연료</td>
+      <td>가솔린 터보 / HEV</td>
+      <td>가솔린 터보 / HEV(245마력)</td>
+      <td>가솔린 터보 / HEV</td>
+    </tr>
+    <tr>
+      <td class="rowlabel">시작가(4천내)</td>
+      <td class="best">약 2,700만~</td>
+      <td>3,497만~ <span class="mini">하위 트림만</span></td>
+      <td>2,477만~ <span class="mini">가장 저렴</span></td>
+    </tr>
+    <tr>
+      <td class="rowlabel">크기(전장)</td>
+      <td>4,685 mm</td>
+      <td class="best">중형(가장 큼)</td>
+      <td>4,390 mm</td>
+    </tr>
+    <tr>
+      <td class="rowlabel">출력</td>
+      <td>가솔린 180마력</td>
+      <td class="best">HEV 245마력</td>
+      <td>가솔린 198마력</td>
+    </tr>
+    <tr>
+      <td class="rowlabel">연비</td>
+      <td>도심 약 11.2km/L <span class="mini">HEV는 더↑</span></td>
+      <td class="best">HEV 복합 15.7km/L</td>
+      <td>도심 약 11.5km/L <span class="mini">HEV는 더↑</span></td>
+    </tr>
+    <tr>
+      <td class="rowlabel">고속 안정감</td>
+      <td class="best"><span class="dot g">●●●</span> 준중형 묵직</td>
+      <td class="best"><span class="dot g">●●●</span> 중형+245마력</td>
+      <td><span class="dot y">●●</span> 소형치곤 준수</td>
+    </tr>
+    <tr>
+      <td class="rowlabel">주행보조</td>
+      <td class="best">최신 세대 충실</td>
+      <td>충실</td>
+      <td class="best">최신 세대 충실</td>
+    </tr>
+    <tr>
+      <td class="rowlabel">실내 고급감</td>
+      <td><span class="dot y">●●</span> 무난·깔끔</td>
+      <td class="best"><span class="dot g">●●●</span> 동급 최상급</td>
+      <td><span class="dot y">●●</span> 무난</td>
+    </tr>
+    <tr>
+      <td class="rowlabel">공간</td>
+      <td class="best">넉넉(준중형)</td>
+      <td class="best">넓음(중형)</td>
+      <td>실속(소형치곤 넓음)</td>
+    </tr>
+    <tr>
+      <td class="rowlabel">중고가치·A/S</td>
+      <td class="best">국산 인기 1위급</td>
+      <td>르노(수입계열) 확인</td>
+      <td class="best">국산 인기·탄탄</td>
+    </tr>
+    <tr>
+      <td class="rowlabel">고속출퇴근 적합</td>
+      <td class="best"><span class="dot g">최적</span></td>
+      <td class="best"><span class="dot g">최적</span></td>
+      <td><span class="dot y">좋음</span></td>
+    </tr>
+    <tr>
+      <td class="rowlabel">한줄평</td>
+      <td>빈틈 없는 <b>올라운더</b></td>
+      <td>고속·고급 <b>강자</b><span class="mini">단 예산상 하위트림</span></td>
+      <td>부담 적은 <b>실속 안전픽</b></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<p class="swap">← 표가 잘리면 좌우로 스크롤하세요 →</p>
+
+<!-- 차원별 승자 -->
+<section>
+  <h2><span class="ic">🏁</span>항목별 승자</h2>
+  <div class="dimrow"><div class="d">가성비(시작가)</div><div class="w">셀토스</div><div class="x">2,477만~ 가장 저렴. 스포티지도 근소차.</div></div>
+  <div class="dimrow"><div class="d">고속 파워·연비</div><div class="w">그랑 콜레오스</div><div class="x">HEV 245마력·15.7km/L. 고속 출퇴근에 이상적.</div></div>
+  <div class="dimrow"><div class="d">고속 안정감·공간</div><div class="w">스포티지</div><div class="x">준중형 묵직함 + 넉넉한 공간. 균형 최고.</div></div>
+  <div class="dimrow"><div class="d">실내 고급감</div><div class="w">그랑 콜레오스</div><div class="x">동급 최상급 마감·파노라마 선루프.</div></div>
+  <div class="dimrow"><div class="d">유지·중고·A/S</div><div class="w">스포티지 · 셀토스</div><div class="x">국산 인기라 중고가치·정비망 유리.</div></div>
+  <div class="dimrow"><div class="d">종합 밸런스</div><div class="w">스포티지</div><div class="x">약점 없는 올라운더. 그래서 1위.</div></div>
+</section>
+
+<!-- 최종 판정 -->
+<section>
+  <h2><span class="ic">🎯</span>최종 판정</h2>
+  <div class="verdict gold">
+    <span class="h">🥇 종합 1위 · 스포티지 — "고민되면 이거"</span>
+    고속 안정감·공간·주행보조·중고가치까지 <b>어디 하나 빠지는 게 없어요.</b> 예산 4천 안에서 원하는 트림 폭도 넓고,
+    가장 무난하게 후회 없는 선택. 특별한 취향이 없다면 스포티지가 정답.
+  </div>
+  <div class="verdict blue">
+    <span class="h">🥈 2위 · 그랑 콜레오스 — "고속·고급이 최우선이면"</span>
+    HEV 245마력에 연비 15.7km/L, 실내 고급감은 셋 중 최고. <b>매일 고속 출퇴근에 가장 잘 맞는 파워트레인.</b>
+    단, 예산 4천 안에서는 <b>하위 트림만</b> 되니 원하는 옵션이 상위면 초과할 수 있어요.
+  </div>
+  <div class="verdict green">
+    <span class="h">🥉 3위 · 셀토스 — "부담 줄이고 실속이면"</span>
+    가장 저렴하고 유지비 부담이 적어요. 소형이라 고속 정숙성은 위 둘보다 한 수 아래지만,
+    주행보조도 충실하고 연비(특히 HEV)도 좋아 <b>첫차로 안전한 실속픽.</b> 남는 예산은 옵션·보험에 쓸 수 있음.
+  </div>
+  <div class="disclaimer">
+    사진 출처: Wikimedia Commons(자유 이용 CC 라이선스) 기여자 · Wikimedia Commons(CC).<br>
+    ※ 순위는 <b>수빈이 조건(고속 출퇴근·4천 이하·크기 무관) 기준의 추천</b>이며 절대평가가 아니에요. 연비를 최우선하면 <b>니로</b>, 중형을 더 싸게 원하면 <b>액티언·토레스</b>로 3위 자리를 바꿀 수 있어요.
+    가격·제원은 2026년 시점 기준, 트림·연식으로 바뀌니 계약 전 공식 가격표로 재확인. 이 비교는 <b>차 자체</b> 기준이고 장기렌트 월 렌트료는 별도입니다.
+  </div>
+</section>
+
+<footer>
+  수빈 개인 참고자료 · 조사-006 · TOP3 VS 비교 v1.0 · 2026-07-13 · 외부 공개 전 명진 확인
+</footer>
+
+</div>
+</body>
+</html>
