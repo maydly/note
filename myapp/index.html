@@ -128,6 +128,20 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .covrow .covr{flex:1;color:#8a7a68;font-variant-numeric:tabular-nums}
 .covrow .covn{color:#a99;font-size:11px;white-space:nowrap}
 .covempty{font-size:11.5px;color:#b3a493;padding:6px 0}
+/* 촬영·모델 DB */
+.search{width:100%;border:1px solid #e5dbd0;background:#fff;border-radius:12px;padding:11px 13px;font-size:14px;color:#4a4038;margin:12px 0 8px;outline:none;box-sizing:border-box}
+.search:focus{border-color:#cbb8a6}
+.yfil{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+.yfil .yb{flex:0 0 auto;border:1px solid #e5dbd0;background:#fff;color:#96897a;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.yfil .yb.on{background:#6b5a49;border-color:#6b5a49;color:#fff}
+.shcard{background:#fff;border:1px solid #ece7df;border-radius:15px;padding:12px 13px;margin-bottom:8px;box-shadow:0 3px 9px rgba(90,70,50,.05);display:flex;align-items:center;gap:10px;cursor:pointer}
+.shav{width:38px;height:38px;flex:0 0 38px;border-radius:50%;background:#f3ece3;color:#8a7358;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center}
+.shbd{flex:1;min-width:0}
+.shn{font-size:14.5px;font-weight:800;color:#41382f;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.shd{font-size:11.5px;color:#a19485;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.shig{background:#fdf1f6;color:#c2657f;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;text-decoration:none;white-space:nowrap}
+.shrt{background:#eef4ee;color:#5f8b6a;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;white-space:nowrap}
+.shcnt{font-size:11px;color:#b8ab9b;white-space:nowrap}
 /* 모달 */
 .mask{position:fixed;inset:0;background:rgba(40,34,28,.42);z-index:70;display:none;align-items:flex-end;justify-content:center}
 .mask.on{display:flex}
@@ -235,6 +249,19 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <div style="text-align:center;margin-top:8px"><span onclick="clearLedger()" style="font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline">가계부 전체 비우기</span></div>
 </div>
 
+<!-- 촬영/모델 DB -->
+<div class="scr" id="s-shoot">
+  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync">📸 촬영 DB</div></div>
+  <div class="h1">촬영 · 모델</div><div class="sub" id="shootSub">지금까지 촬영한 기록 · 이름으로 검색</div>
+  <input class="search" id="shootQ" placeholder="🔍 이름·장소 검색" oninput="renderShoot()">
+  <div class="yfil" id="shootYears"></div>
+  <div id="shootList"></div>
+  <button class="impbtn cash" onclick="sheetShoot();document.getElementById('mask').classList.add('on')">＋ 촬영 한 건 추가</button>
+  <button class="impbtn" onclick="document.getElementById('shootFile').click()">↑ 촬영 데이터 불러오기 (비공개 JSON)</button>
+  <input type="file" id="shootFile" accept=".json,application/json" style="display:none" onchange="importShoots(this)">
+  <div style="text-align:center;margin-top:8px"><span onclick="clearShoots()" style="font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline">촬영 DB 전체 비우기</span></div>
+</div>
+
 <button class="add" id="fab" onclick="openAdd()">+</button>
 <div class="tabs">
   <button class="tab on" data-t="todo" onclick="go('todo',this)"><span class="ic">📋</span><span class="lb">할 일</span></button>
@@ -242,6 +269,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <button class="tab" data-t="src" onclick="go('src',this)"><span class="ic">📎</span><span class="lb">구매처</span></button>
   <button class="tab" data-t="own" onclick="go('own',this)"><span class="ic">📦</span><span class="lb">보유</span></button>
   <button class="tab" data-t="money" onclick="go('money',this)"><span class="ic">💰</span><span class="lb">가계부</span></button>
+  <button class="tab" data-t="shoot" onclick="go('shoot',this)"><span class="ic">📸</span><span class="lb">촬영</span></button>
 </div>
 </div>
 
@@ -253,7 +281,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 <script src="parse.js"></script>
 <script>
 /* ===== 저장소 ===== */
-var K={todo:'mj_todos',buy:'mj_buy',own:'mj_own',led:'mj_ledger'};
+var K={todo:'mj_todos',buy:'mj_buy',own:'mj_own',led:'mj_ledger',shoot:'mj_shoots'};
 function load(k,def){try{var v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){toast('저장 공간이 부족해요');}}
 function uid(){return 'x'+Math.random().toString(36).slice(2,9);}
@@ -293,7 +321,7 @@ function migrate(){
 }
 
 /* ===== 데이터 ===== */
-var todos,buys,owns,ledger,buyDel=[];
+var todos,buys,owns,ledger,shoots,buyDel=[];
 var PLANKEY='maydly-purchase-plan-v1';  // 장비비교 구매계획과 동일 저장소(순위·목록 통일)
 function loadBuys(){
   var r=null;try{r=JSON.parse(localStorage.getItem(PLANKEY)||'null');}catch(e){}
@@ -307,7 +335,7 @@ function loadBuys(){
 }
 function saveBuys(){buys.forEach(function(b,i){b.rank=i+1;});try{localStorage.setItem(PLANKEY,JSON.stringify({v:'app-sync',items:buys,del:buyDel}));}catch(e){}}
 function moveBuy(id,dir){var i=buys.findIndex(function(x){return x.id===id;});if(i<0)return;var j=i+dir;if(j<0||j>=buys.length)return;var t=buys[i];buys[i]=buys[j];buys[j]=t;saveBuys();renderBuy();}
-function reloadAll(){todos=load(K.todo,[]);buys=loadBuys();owns=load(K.own,[]);ledger=load(K.led,[]);}
+function reloadAll(){todos=load(K.todo,[]);buys=loadBuys();owns=load(K.own,[]);ledger=load(K.led,[]);shoots=load(K.shoot,[]);}
 
 /* ===== 할 일 ===== */
 var TAGS=['촬영','개인','수빈'];
@@ -411,6 +439,7 @@ function delItem(kind,id){
   if(kind==='buy'){var bb=buys.find(function(x){return x.id===id;});if(bb&&bb._k!=null&&buyDel.indexOf(bb._k)<0)buyDel.push(bb._k);buys=buys.filter(function(x){return x.id!==id;});saveBuys();renderBuy();}
   if(kind==='own'){owns=owns.filter(function(x){return x.id!==id;});save(K.own,owns);renderOwn();}
   if(kind==='led'){ledger=ledger.filter(function(x){return x.id!==id;});save(K.led,ledger);renderMoney();}
+  if(kind==='shoot'){shoots=shoots.filter(function(x){return x.id!==id;});save(K.shoot,shoots);renderShoot();}
 }
 
 /* ===== 가계부 ===== */
@@ -633,6 +662,122 @@ function clearLedger(){
   }
 }
 
+/* ===== 촬영 · 모델 DB (개인정보 → 이 기기에만 저장, 공개배포 안 함) ===== */
+var shootYear='전체';
+function initials(n){n=(n||'').trim();return n?n.slice(0,Math.min(2,n.length)):'?';}
+function igUrl(s){if(!s)return '';if(s.instaUrl&&/^https?:/.test(s.instaUrl))return s.instaUrl;
+  var h=(s.insta||'').trim().replace(/^@/,'');return h?'https://instagram.com/'+encodeURIComponent(h):'';}
+function shootYears(){var y={};shoots.forEach(function(s){var v=(s.date||'').slice(0,4);if(v)y[v]=1;});
+  return ['전체'].concat(Object.keys(y).sort().reverse());}
+function renderShoot(){
+  var q=(document.getElementById('shootQ')?document.getElementById('shootQ').value:'').trim().toLowerCase();
+  // 연도 칩
+  var yb=document.getElementById('shootYears');
+  if(yb)yb.innerHTML=shootYears().map(function(y){return '<button class="yb'+(y===shootYear?' on':'')+'" onclick="pickYear(\''+y+'\')">'+y+(y==='전체'?'':'년')+'</button>';}).join('');
+  var list=shoots.filter(function(s){
+    if(shootYear!=='전체'&&(s.date||'').slice(0,4)!==shootYear)return false;
+    if(!q)return true;
+    return ((s.name||'')+' '+(s.place||'')+' '+(s.shoot||'')+' '+(s.insta||'')).toLowerCase().indexOf(q)>=0;
+  });
+  var names={};shoots.forEach(function(s){if(s.name)names[s.name]=1;});
+  var sub=document.getElementById('shootSub');
+  if(sub)sub.textContent=shoots.length?('촬영 '+shoots.length+'건 · 고객 '+Object.keys(names).length+'명'+(q||shootYear!=='전체'?' → 지금 '+list.length+'건':'')):'아직 없어요 — 아래에서 불러오거나 추가하세요';
+  var el=document.getElementById('shootList');if(!el)return;
+  if(!list.length){el.innerHTML='<div class="empty">'+(shoots.length?'검색 결과가 없어요':'촬영 기록이 없어요<br>아래 «촬영 데이터 불러오기»로 넣거나 한 건씩 추가하세요')+'</div>';return;}
+  el.innerHTML=list.slice(0,300).map(shCard).join('')
+    +(list.length>300?'<div class="covempty" style="text-align:center">앞 300건만 표시 · 검색으로 좁혀보세요 (전체 '+list.length+'건)</div>':'');
+}
+function shCard(s){
+  var ig=igUrl(s);
+  var rate=(s.rateMJ||s.rateGS)?('<span class="shrt">평가 '+esc(String(s.rateMJ||'-'))+'/'+esc(String(s.rateGS||'-'))+'</span>'):'';
+  return '<div class="shcard" onclick="editShoot('+s.id+')">'
+    +'<div class="shav">'+esc(initials(s.name))+'</div>'
+    +'<div class="shbd"><div class="shn">'+esc(s.name||'(이름없음)')
+      +(ig?'<a class="shig" href="'+esc(ig)+'" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">@'+esc((s.insta||'인스타').replace(/^@/,''))+'</a>':'')
+      +rate+'</div>'
+    +'<div class="shd">'+esc((s.date||'').replace(/-/g,'.'))+(s.time?' '+esc(s.time):'')
+      +(s.place?' · '+esc(s.place):'')+(s.note?' · '+esc(s.note):'')+'</div></div>'
+    +'<button class="del" onclick="event.stopPropagation();delItem(\'shoot\','+s.id+')">×</button>'
+    +'</div>';
+}
+function pickYear(y){shootYear=y;renderShoot();}
+function sheetShoot(){
+  var today=(new Date()).toISOString().slice(0,10);
+  document.getElementById('sheet').innerHTML='<h3>촬영 추가</h3>'
+    +'<div class="fld"><label>모델 이름</label><input id="s_name" placeholder="예: 최혜주"></div>'
+    +'<div class="fld"><label>날짜</label><input id="s_date" type="date" value="'+today+'"></div>'
+    +'<div class="fld"><label>시간 (선택)</label><input id="s_time" type="time"></div>'
+    +'<div class="fld"><label>장소 (선택)</label><input id="s_place" placeholder="예: 남스튜디오"></div>'
+    +'<div class="fld"><label>인스타 (선택)</label><input id="s_insta" placeholder="예: uj1n (@ 없이)"></div>'
+    +'<div class="fld"><label>메모 (선택)</label><input id="s_note" placeholder="예: 재촬영 희망"></div>'
+    +'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button><button class="msave" onclick="saveShoot()">추가</button></div>';
+  setTimeout(function(){var e=document.getElementById('s_name');e&&e.focus();},50);
+}
+function nextShootId(){return shoots.reduce(function(m,s){return Math.max(m,+s.id||0);},0)+1;}
+function saveShoot(){
+  var n=document.getElementById('s_name').value.trim();if(!n){toast('모델 이름을 입력하세요');return;}
+  var d=document.getElementById('s_date').value;if(!d){toast('날짜를 선택하세요');return;}
+  shoots.unshift({id:nextShootId(),date:d,time:document.getElementById('s_time').value||'',name:n,
+    place:document.getElementById('s_place').value.trim(),shoot:'',
+    insta:document.getElementById('s_insta').value.trim().replace(/^@/,''),instaUrl:'',rateMJ:'',rateGS:'',
+    note:document.getElementById('s_note').value.trim()});
+  sortShoots();save(K.shoot,shoots);renderShoot();closeSheet();toast('촬영을 추가했어요');
+}
+function editShoot(id){
+  var s=shoots.find(function(x){return x.id===id;});if(!s)return;window._sEditId=id;
+  document.getElementById('sheet').innerHTML='<h3>촬영 수정</h3>'
+    +'<div class="fld"><label>모델 이름</label><input id="s_name" value="'+esc(s.name||'')+'"></div>'
+    +'<div class="fld"><label>날짜</label><input id="s_date" type="date" value="'+esc(s.date||'')+'"></div>'
+    +'<div class="fld"><label>시간</label><input id="s_time" type="time" value="'+esc(s.time||'')+'"></div>'
+    +'<div class="fld"><label>장소</label><input id="s_place" value="'+esc(s.place||'')+'"></div>'
+    +'<div class="fld"><label>인스타</label><input id="s_insta" value="'+esc((s.insta||'').replace(/^@/,''))+'"></div>'
+    +'<div class="fld"><label>평가 (명진 / 수빈)</label><input id="s_rmj" value="'+esc(String(s.rateMJ||''))+'" placeholder="명진 1~9" style="margin-bottom:7px"><input id="s_rgs" value="'+esc(String(s.rateGS||''))+'" placeholder="수빈 1~9"></div>'
+    +'<div class="fld"><label>메모</label><input id="s_note" value="'+esc(s.note||'')+'"></div>'
+    +'<div class="mact"><button class="mcancel" style="background:#f6e3df;color:#b5564b" onclick="if(confirm(\'이 촬영 기록을 삭제할까요?\')){delItem(\'shoot\','+id+');closeSheet();}">삭제</button><button class="msave" onclick="saveShootEdit()">저장</button></div>';
+  document.getElementById('mask').classList.add('on');
+}
+function saveShootEdit(){
+  var s=shoots.find(function(x){return x.id===window._sEditId;});if(!s)return;
+  var n=document.getElementById('s_name').value.trim();if(!n){toast('이름을 입력하세요');return;}
+  s.name=n;s.date=document.getElementById('s_date').value;s.time=document.getElementById('s_time').value||'';
+  s.place=document.getElementById('s_place').value.trim();
+  s.insta=document.getElementById('s_insta').value.trim().replace(/^@/,'');
+  s.rateMJ=document.getElementById('s_rmj').value.trim();s.rateGS=document.getElementById('s_rgs').value.trim();
+  s.note=document.getElementById('s_note').value.trim();
+  sortShoots();save(K.shoot,shoots);renderShoot();closeSheet();toast('수정됐어요');
+}
+function sortShoots(){shoots.sort(function(a,b){return ((a.date||'')+(a.time||''))<((b.date||'')+(b.time||''))?1:-1;});}
+/* 비공개 JSON 불러오기 (병합·중복제외). 개인정보라 공개사이트엔 안 올림 */
+function importShoots(inp){
+  var f=inp.files&&inp.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){
+    try{
+      var j=JSON.parse(r.result);
+      var rows=Array.isArray(j)?j:(j.shoots||j.list||[]);
+      var mapped=rows.map(function(s){return {id:0,date:(s.date||'').slice(0,10),time:s.time||'',name:(s.name||'').trim(),
+        place:s.place||'',shoot:s.shoot||'',insta:(s.insta||'').replace(/^@/,''),instaUrl:s.instaUrl||'',
+        rateMJ:s.rateMJ||'',rateGS:s.rateGS||'',note:s.note||''};}).filter(function(s){return s.name&&s.date;});
+      if(!mapped.length){toast('불러올 촬영 기록이 없어요 (JSON 형식 확인)');return;}
+      var key=function(s){return s.date+'|'+(s.time||'')+'|'+s.name+'|'+(s.place||'');};
+      var seen={};shoots.forEach(function(s){seen[key(s)]=1;});
+      var id=nextShootId(),added=0;
+      mapped.forEach(function(s){var k=key(s);if(!seen[k]){seen[k]=1;s.id=id++;shoots.push(s);added++;}});
+      sortShoots();save(K.shoot,shoots);shootYear='전체';
+      var qi=document.getElementById('shootQ');if(qi)qi.value='';
+      renderShoot();
+      toast(added+'건 추가'+(mapped.length-added>0?' (중복 '+(mapped.length-added)+'건 제외)':'')+' · 총 '+shoots.length+'건');
+    }catch(e){toast('파일을 읽지 못했어요: '+e.message);}
+  };
+  r.readAsText(f);inp.value='';
+}
+function clearShoots(){
+  if(!shoots.length){toast('이미 비어 있어요');return;}
+  if(confirm('촬영 기록 '+shoots.length+'건을 모두 지울까요?\n(다른 탭은 그대로예요)')){
+    shoots=[];save(K.shoot,shoots);renderShoot();toast('촬영 DB를 비웠어요');
+  }
+}
+
 /* ===== 추가 모달 ===== */
 var curTab='todo';
 function openAdd(){
@@ -640,6 +785,7 @@ function openAdd(){
   if(curTab==='todo')sheetTodo();
   else if(curTab==='buy')sheetBuy();
   else if(curTab==='own')sheetOwn();
+  else if(curTab==='shoot')sheetShoot();
   else sheetMoney();
   document.getElementById('mask').classList.add('on');
 }
@@ -740,7 +886,7 @@ function go(id,btn){
 }
 
 /* ===== 시작 ===== */
-function boot(){reloadAll();migrate();reloadAll();renderTodo();renderBuy();renderOwn();renderMoney();syncGear();}
+function boot(){reloadAll();migrate();reloadAll();renderTodo();renderBuy();renderOwn();renderMoney();renderShoot();syncGear();}
 /* 공유파일(PC 편집본) 동기화 — 구매계획·보유현황만. 가계부(민감)는 건드리지 않음.
    버전이 바뀐 배포가 올라오면 폰 구매/보유 탭이 자동 최신화된다. file://에선 조용히 스킵. */
 function syncGear(){
