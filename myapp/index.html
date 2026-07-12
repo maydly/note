@@ -142,6 +142,14 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .shig{background:#fdf1f6;color:#c2657f;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;text-decoration:none;white-space:nowrap}
 .shrt{background:#eef4ee;color:#5f8b6a;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;white-space:nowrap}
 .shcnt{font-size:11px;color:#b8ab9b;white-space:nowrap}
+.shav.ph{padding:0;overflow:hidden;background:#efe7dc}
+.shav.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.phnote{font-size:11.5px;color:#a1907d;line-height:1.6;margin-bottom:10px}
+.phgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-height:46vh;overflow-y:auto;margin-bottom:6px}
+.phit{position:relative;aspect-ratio:1/1;border-radius:10px;overflow:hidden;border:2px solid transparent;background:#f1eae1;cursor:pointer}
+.phit img{width:100%;height:100%;object-fit:cover;display:block}
+.phit.on{border-color:#b5745c;box-shadow:0 0 0 2px rgba(181,116,92,.2)}
+.phit.bad{opacity:.35}
 /* 모달 */
 .mask{position:fixed;inset:0;background:rgba(40,34,28,.42);z-index:70;display:none;align-items:flex-end;justify-content:center}
 .mask.on{display:flex}
@@ -335,7 +343,7 @@ function loadBuys(){
 }
 function saveBuys(){buys.forEach(function(b,i){b.rank=i+1;});try{localStorage.setItem(PLANKEY,JSON.stringify({v:'app-sync',items:buys,del:buyDel}));}catch(e){}}
 function moveBuy(id,dir){var i=buys.findIndex(function(x){return x.id===id;});if(i<0)return;var j=i+dir;if(j<0||j>=buys.length)return;var t=buys[i];buys[i]=buys[j];buys[j]=t;saveBuys();renderBuy();}
-function reloadAll(){todos=load(K.todo,[]);buys=loadBuys();owns=load(K.own,[]);ledger=load(K.led,[]);shoots=load(K.shoot,[]);}
+function reloadAll(){todos=load(K.todo,[]);buys=loadBuys();owns=load(K.own,[]);ledger=load(K.led,[]);shoots=load(K.shoot,[]);loadPhotos();}
 
 /* ===== 할 일 ===== */
 var TAGS=['촬영','개인','수빈'];
@@ -664,6 +672,13 @@ function clearLedger(){
 
 /* ===== 촬영 · 모델 DB (개인정보 → 이 기기에만 저장, 공개배포 안 함) ===== */
 var shootYear='전체';
+/* 얼굴 대표사진: 사진을 복사하지 않고 대표사진맵(Basic Auth 보호)을 참조만 한다.
+   사진맵을 한 번 열어 인증해두면 브라우저가 자격증명을 기억해 여기서도 보인다.
+   photos = {이름:{rep:'파일명', all:[...]}} — 비공개 JSON에서 로드(이름·파일명은 개인정보) */
+var photos={},photoBase='https://maydly-hub.netlify.app/photomap/썸네일/';
+function loadPhotos(){try{var r=JSON.parse(localStorage.getItem('mj_photos')||'null');if(r&&r.map){photos=r.map;if(r.base)photoBase=r.base;}}catch(e){}}
+function photoUrl(f){return f?photoBase.replace(/[^\x00-\x7F]+/g,function(s){return encodeURIComponent(s);})+encodeURIComponent(f):'';}
+function repOf(name){var p=photos[(name||'').trim()];if(!p)return '';return p.rep||(p.all&&p.all[0])||'';}
 function initials(n){n=(n||'').trim();return n?n.slice(0,Math.min(2,n.length)):'?';}
 function igUrl(s){if(!s)return '';if(s.instaUrl&&/^https?:/.test(s.instaUrl))return s.instaUrl;
   var h=(s.insta||'').trim().replace(/^@/,'');return h?'https://instagram.com/'+encodeURIComponent(h):'';}
@@ -687,11 +702,19 @@ function renderShoot(){
   el.innerHTML=list.slice(0,300).map(shCard).join('')
     +(list.length>300?'<div class="covempty" style="text-align:center">앞 300건만 표시 · 검색으로 좁혀보세요 (전체 '+list.length+'건)</div>':'');
 }
+function avatarHtml(s){
+  var f=repOf(s.name);
+  if(!f)return '<div class="shav">'+esc(initials(s.name))+'</div>';
+  // 사진 로드 실패(인증 안 됨·사진 없음) → 이니셜로 자동 대체
+  return '<div class="shav ph" onclick="event.stopPropagation();pickPhoto('+s.id+')">'
+    +'<img src="'+esc(photoUrl(f))+'" alt="" loading="lazy" onerror="this.parentNode.classList.remove(\'ph\');this.parentNode.textContent=\''+esc(initials(s.name))+'\'">'
+    +'</div>';
+}
 function shCard(s){
   var ig=igUrl(s);
   var rate=(s.rateMJ||s.rateGS)?('<span class="shrt">평가 '+esc(String(s.rateMJ||'-'))+'/'+esc(String(s.rateGS||'-'))+'</span>'):'';
   return '<div class="shcard" onclick="editShoot('+s.id+')">'
-    +'<div class="shav">'+esc(initials(s.name))+'</div>'
+    +avatarHtml(s)
     +'<div class="shbd"><div class="shn">'+esc(s.name||'(이름없음)')
       +(ig?'<a class="shig" href="'+esc(ig)+'" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">@'+esc((s.insta||'인스타').replace(/^@/,''))+'</a>':'')
       +rate+'</div>'
@@ -701,6 +724,28 @@ function shCard(s){
     +'</div>';
 }
 function pickYear(y){shootYear=y;renderShoot();}
+/* 대표 얼굴사진 고르기 — 그 모델의 사진들 중 마음에 드는 얼굴로 교체 (이 기기에 저장) */
+function pickPhoto(id){
+  var s=shoots.find(function(x){return x.id===id;});if(!s)return;
+  var p=photos[(s.name||'').trim()];
+  if(!p||!p.all||!p.all.length){toast('이 모델은 사진맵에 사진이 없어요');return;}
+  var cur=repOf(s.name);
+  document.getElementById('sheet').innerHTML='<h3>'+esc(s.name)+' · 대표 얼굴 고르기</h3>'
+    +'<div class="phnote">마음에 드는 얼굴을 누르면 대표사진이 됩니다. 사진이 안 보이면 아래 «사진맵 인증»을 한 번 열어주세요.</div>'
+    +'<div class="phgrid">'+p.all.map(function(f){
+        return '<div class="phit'+(f===cur?' on':'')+'" onclick="setPhoto(\''+esc((s.name||'').trim())+'\',\''+esc(f)+'\')">'
+          +'<img src="'+esc(photoUrl(f))+'" alt="" loading="lazy" onerror="this.parentNode.classList.add(\'bad\')"></div>';
+      }).join('')+'</div>'
+    +'<div class="mact"><button class="mcancel" onclick="closeSheet()">닫기</button>'
+    +'<button class="msave" onclick="window.open(\''+esc(photoBase.replace(/[^\x00-\x7F]+/g,function(x){return encodeURIComponent(x);}).replace(/[^\/]*\/$/,''))+'\',\'_blank\')">사진맵 인증</button></div>';
+  document.getElementById('mask').classList.add('on');
+}
+function setPhoto(name,f){
+  if(!photos[name])photos[name]={all:[]};
+  photos[name].rep=f;
+  try{localStorage.setItem('mj_photos',JSON.stringify({map:photos,base:photoBase}));}catch(e){}
+  renderShoot();closeSheet();toast('대표사진을 바꿨어요');
+}
 function sheetShoot(){
   var today=(new Date()).toISOString().slice(0,10);
   document.getElementById('sheet').innerHTML='<h3>촬영 추가</h3>'
@@ -754,6 +799,15 @@ function importShoots(inp){
   r.onload=function(){
     try{
       var j=JSON.parse(r.result);
+      // 얼굴 대표사진 매핑(이름→파일명)도 같이 로드 — 사진 자체는 복사하지 않고 사진맵을 참조만 함
+      if(j&&j.photos&&typeof j.photos==='object'){
+        Object.keys(j.photos).forEach(function(n){
+          var old=photos[n];var nw=j.photos[n];
+          photos[n]={rep:(old&&old.rep)?old.rep:nw.rep,all:nw.all||[]};  // 내가 고른 대표는 유지
+        });
+        if(j.photoBase)photoBase=j.photoBase;
+        try{localStorage.setItem('mj_photos',JSON.stringify({map:photos,base:photoBase}));}catch(e){}
+      }
       var rows=Array.isArray(j)?j:(j.shoots||j.list||[]);
       var mapped=rows.map(function(s){return {id:0,date:(s.date||'').slice(0,10),time:s.time||'',name:(s.name||'').trim(),
         place:s.place||'',shoot:s.shoot||'',insta:(s.insta||'').replace(/^@/,''),instaUrl:s.instaUrl||'',
