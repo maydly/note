@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수빈 인수·반납 × 48/60개월 전략 (고주행)</title>
+<style>
+  :root{
+    --bg:#faf7f2; --card:#ffffff; --ink:#2c2a26; --sub:#6b665e;
+    --line:#e8e2d8; --accent:#c98a5e; --accent-soft:#f4e7dc;
+    --good:#4a7c59; --good-soft:#e5efe6; --warn:#b9603f; --warn-soft:#f7e5dd;
+    --blue:#4a6c8c; --blue-soft:#e3ebf2;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+    line-height:1.6; font-size:16px; -webkit-text-size-adjust:100%;}
+  .wrap{max-width:920px; margin:0 auto; padding:30px 18px 80px;}
+  header.top{text-align:center; padding:24px 14px 26px;}
+  .kicker{display:inline-block; font-size:13px; letter-spacing:.14em; color:var(--accent);
+    background:var(--accent-soft); padding:5px 14px; border-radius:999px; margin-bottom:12px;}
+  h1{font-size:26px; margin:.2em 0 .3em; letter-spacing:-.01em;}
+  .lead{color:var(--sub); font-size:14.5px; max-width:660px; margin:0 auto;}
+  .meta{margin-top:10px; font-size:12px; color:var(--sub);}
+
+  section{background:#fff; border:1px solid var(--line); border-radius:16px; padding:22px 20px; margin:20px 0;}
+  section h2{font-size:19px; margin:0 0 4px; display:flex; align-items:center; gap:9px;}
+  section h2 .ic{width:28px;height:28px;border-radius:8px;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
+  h2 + .h2sub{color:var(--sub); font-size:13.5px; margin:0 0 14px 38px;}
+  h3{font-size:15.5px; margin:18px 0 6px;}
+
+  .callout{border-radius:12px; padding:15px 17px; margin:14px 0; font-size:14px; border:1px solid transparent;}
+  .callout.warn{background:var(--warn-soft); border-color:#eecfc2;}
+  .callout.blue{background:var(--blue-soft); border-color:#cdddea;}
+  .callout.good{background:var(--good-soft); border-color:#cfe0d1;}
+  .callout .ct{font-weight:700; display:block; margin-bottom:4px;}
+  .callout.warn .ct{color:var(--warn);} .callout.blue .ct{color:var(--blue);} .callout.good .ct{color:var(--good);}
+
+  .tablewrap{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:14px 0;}
+  table{border-collapse:collapse; width:100%; min-width:640px; font-size:13.5px; background:#fff;}
+  th,td{border:1px solid var(--line); padding:9px 11px; text-align:center; vertical-align:middle;}
+  thead th{background:var(--accent-soft); color:#8a5a34; font-weight:700;}
+  tbody th{background:#fbf8f3; text-align:left; white-space:nowrap;}
+  td.buy{background:var(--good-soft); font-weight:700;}
+  td.ret{background:#faf4ef;}
+  .win{color:var(--good); font-weight:800;}
+  .mini{display:block; font-size:11px; color:var(--sub); font-weight:400;}
+  .big{font-weight:800; color:var(--accent);}
+
+  .vs{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:14px 0;}
+  @media(max-width:560px){.vs{grid-template-columns:1fr;}}
+  .vsbox{border:1px solid var(--line); border-radius:13px; padding:15px 16px; background:#fbf8f3;}
+  .vsbox h4{margin:0 0 8px; font-size:15px;}
+  .vsbox.b48 h4{color:var(--good);} .vsbox.b60 h4{color:var(--blue);}
+  .vsbox ul{margin:0; padding-left:18px; font-size:13px;} .vsbox li{margin:5px 0;}
+
+  ul.clean{margin:8px 0; padding-left:20px;} ul.clean li{margin:6px 0; font-size:14px;}
+  .disclaimer{font-size:12px; color:var(--sub); background:#fbf8f3; border:1px dashed var(--line);
+    border-radius:10px; padding:11px 13px; margin-top:12px;}
+  .src{font-size:12px; color:var(--sub);} .src a{color:var(--blue); word-break:break-all;}
+  footer{text-align:center; color:var(--sub); font-size:12px; margin-top:26px;}
+  strong.hl{background:#fbeecb; padding:0 3px; border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <span class="kicker">수빈 · 조사-006 · 인수/반납 전략</span>
+  <h1>인수 vs 반납 · 48 vs 60개월</h1>
+  <p class="lead">매일 100km × 주 5~6일 = <b>연 약 3만km 고주행</b> 기준으로,<br>만기에 인수할지 반납할지 · 48개월과 60개월(1년 차이)이 어떻게 다른지 정리했어요.</p>
+  <p class="meta">작성 2026-07-13 · v1.0 · 개인 참고자료 · 금액은 추정(실견적 필요)</p>
+</header>
+
+<!-- 핵심 결론 -->
+<section>
+  <h2><span class="ic">!</span>먼저, 수빈이한테 맞는 결론</h2>
+  <div class="callout good">
+    <span class="ct">🎯 고주행(연 3만km)이면 → "인수형 장기렌트"가 유리</span>
+    수빈이처럼 주행거리가 많으면 <strong class="hl">장기렌트+만기 인수</strong>가 합리적이에요. 이유:<br>
+    ① <b>초과주행 추가금 면제</b> — 인수하면 km당 추가금(100~200원)을 안 받고 인수비만 받아요. (반납이면 초과 1만km당 100~200만원)<br>
+    ② <b>소모품·정비 포함</b> — 많이 탈수록 렌트료에 포함된 정비 혜택이 커짐<br>
+    ③ <b>감가 방어</b> — 고주행 차는 감가가 큰데, 렌트는 월정액 고정이라 그 리스크를 렌트사가 짐<br>
+    <span style="color:var(--sub);">업계 기준도 "연 2.5만km 넘으면 인수형 고려"입니다.</span>
+  </div>
+  <div class="callout warn">
+    <span class="ct">⚠️ 그래서 약정거리는 연 2만km가 아니라 연 3만km로</span>
+    앞의 견적(1-5)은 연 2만km 기준이었어요. 수빈이는 실제 연 3만km라 <b>약정을 연 3만km로 올려야</b> 합니다.
+    (월납입료는 조금 오르지만, 초과금 폭탄을 피함) 그래도 <b>인수 전제면</b> 초과금 자체가 사라져 약정거리 부담이 줄어요.
+  </div>
+</section>
+
+<!-- 인수 vs 반납 개념 -->
+<section>
+  <h2><span class="ic">1</span>인수 vs 반납 — 뭐가 다른가</h2>
+  <p class="h2sub">만기에 두 갈래. 판단 기준은 "인수가(잔존가치) vs 실제 중고시세".</p>
+  <div class="vs">
+    <div class="vsbox b48"><h4>🚗 인수 (내 차로)</h4>
+      <ul>
+        <li>만기에 <b>잔존가치(인수가)</b>를 내고 소유</li>
+        <li>초과주행 추가금 <b>면제</b> → 고주행 유리</li>
+        <li>계속 탈 거면 총비용 안정적</li>
+        <li>인수가 &lt; 중고시세면 <b>이득</b></li>
+      </ul>
+    </div>
+    <div class="vsbox b60"><h4>↩️ 반납 (돌려주기)</h4>
+      <ul>
+        <li>차 반납, 소유 안 함</li>
+        <li>초과주행·상태 따라 <b>정산금</b> 발생</li>
+        <li>고주행이면 정산 부담 큼</li>
+        <li>인수가 &gt; 중고시세면 반납이 나음</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout blue">
+    <span class="ct">💡 판단 한 줄</span>
+    <b>계약서 인수가(잔존가치)가 그때 중고 시세보다 싸면 인수, 비싸면 반납.</b>
+    고주행자는 초과금 면제 + 감가 걱정 없음 때문에 <b>인수 쪽이 유리한 경우가 많아요.</b>
+  </div>
+  <h3>잔존가치(인수가) 대략</h3>
+  <ul class="clean">
+    <li><b>3년(36개월) 계약:</b> 차값의 약 45~55%</li>
+    <li><b>4년(48개월) 계약:</b> 약 38~45%</li>
+    <li><b>5년(60개월) 계약:</b> 약 30~40%</li>
+    <li>인기 국산(기아·현대)은 잔가율↑ / 신생·전기차는 잔가율↓(감가 큼)</li>
+  </ul>
+</section>
+
+<!-- 48 vs 60 -->
+<section>
+  <h2><span class="ic">2</span>48개월 vs 60개월 (1년 차이)</h2>
+  <p class="h2sub">계약을 4년으로 할지 5년으로 할지. 월부담·총액·인수가가 다 달라져요.</p>
+  <div class="vs">
+    <div class="vsbox b48"><h4>48개월 (4년)</h4>
+      <ul>
+        <li>월납입료 <b>더 높음</b></li>
+        <li>총 렌트료 <b>적음</b>(1년 덜 냄)</li>
+        <li>인수가(잔가) <b>높음</b>(차가 덜 낡음)</li>
+        <li>더 빨리 새 차로 갈아탈 수 있음</li>
+      </ul>
+    </div>
+    <div class="vsbox b60"><h4>60개월 (5년)</h4>
+      <ul>
+        <li>월납입료 <b>더 낮음</b>(부담↓)</li>
+        <li>총 렌트료 <b>많음</b>(1년 더 냄)</li>
+        <li>인수가(잔가) <b>낮음</b>(인수 시 목돈↓)</li>
+        <li>고주행이면 5년 뒤 차 상태 더 낡음</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout blue">
+    <span class="ct">💡 고주행 + 인수 관점</span>
+    인수를 전제로 하면 <b>총액은 48·60개월이 비슷</b>해요(결국 차값+금융비를 냄). 차이는 <b>월 부담</b>과 <b>인수 시점 목돈</b>.
+    월 부담을 낮추고 싶으면 60개월, 총 지출·차 상태를 아끼려면 48개월. <b>단, 5년(60개월)이면 연 3만km × 5년 = 15만km라 차가 많이 낡으니</b>,
+    인수 후 오래 탈 각오면 60개월, 4~5년 뒤 교체 생각이면 48개월이 깔끔해요.
+  </div>
+</section>
+
+<!-- 추정 비교표 -->
+<section>
+  <h2><span class="ic">3</span>주요 후보 총비용 추정 (연 3만km·선수금0)</h2>
+  <p class="h2sub">고주행 HEV 후보 4종. "인수 총액 = 렌트료 합 + 인수가", "반납 = 렌트료 합". 모두 추정.</p>
+  <div class="tablewrap">
+  <table>
+    <thead>
+      <tr><th rowspan="2">차종</th><th colspan="2">48개월(4년)</th><th colspan="2">60개월(5년)</th></tr>
+      <tr><th>인수 총액</th><th>반납(렌트합)</th><th>인수 총액</th><th>반납(렌트합)</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>셀토스 HEV <span class="mini">차값 ~3,000만</span></th>
+        <td class="buy">약 3,300만</td><td class="ret">약 2,260만<span class="mini">월 ~47만</span></td>
+        <td class="buy">약 3,360만</td><td class="ret">약 2,520만<span class="mini">월 ~42만</span></td>
+      </tr>
+      <tr>
+        <th>니로 HEV <span class="mini">차값 ~3,000만</span></th>
+        <td class="buy">약 3,350만</td><td class="ret">약 2,300만<span class="mini">월 ~48만</span></td>
+        <td class="buy">약 3,420만</td><td class="ret">약 2,580만<span class="mini">월 ~43만</span></td>
+      </tr>
+      <tr>
+        <th>스포티지 <span class="mini">차값 ~3,300만</span></th>
+        <td class="buy">약 3,650만</td><td class="ret">약 2,500만<span class="mini">월 ~52만</span></td>
+        <td class="buy">약 3,740만</td><td class="ret">약 2,820만<span class="mini">월 ~47만</span></td>
+      </tr>
+      <tr>
+        <th>그랑 콜레오스 HEV <span class="mini">차값 ~3,800만</span></th>
+        <td class="buy">약 4,210만</td><td class="ret">약 2,880만<span class="mini">월 ~60만</span></td>
+        <td class="buy">약 4,300만</td><td class="ret">약 3,240만<span class="mini">월 ~54만</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="callout warn">
+    <span class="ct">⚠️ 이 표 읽는 법 + 정확도</span>
+    · <b>인수 총액</b>: 5년 다 타고 내 차 만들 때 최종 지출(렌트료 합 + 인수가). <b>반납</b>: 차 안 남기고 낸 렌트료만.<br>
+    · <b>48 vs 60 인수 총액이 비슷</b>한 게 포인트 — 월 부담(60개월↓)과 인수 목돈 시점만 다름.<br>
+    · 숫자는 <b>모두 추정</b>(연2만 견적×고주행 보정, 잔가율 가정)이라 실제와 차이 날 수 있어요. 최종은 <b>인수형·연3만km·선수금0</b>으로 실견적 필요.
+  </div>
+  <div class="callout blue">
+    <span class="ct">⚡ 아토3(전기)는 왜 뺐나</span>
+    전기차는 <b>고속·고주행에서 주행거리·충전 부담</b>이 크고 <b>감가(잔가↓)가 심해 인수가치가 애매</b>해요. 고주행+인수 관점에선 HEV가 유리해 표에서 제외했어요.
+    (집·회사 충전이 완벽하고 유류비 0을 노리는 경우만 별도 검토)
+  </div>
+</section>
+
+<!-- 수빈 액션 -->
+<section>
+  <h2><span class="ic">✓</span>수빈이 실행 정리</h2>
+  <ul class="clean">
+    <li><b>구조:</b> 인수형 장기렌트 (만기에 인수 옵션 열어두기)</li>
+    <li><b>약정거리:</b> 연 3만km (초과금 방지) — 인수 전제면 부담 완화</li>
+    <li><b>기간:</b> 월 부담 낮추려면 60개월 / 총지출·차 상태 아끼려면 48개월</li>
+    <li><b>차종:</b> 고주행이라 <b>연비 좋은 HEV</b>가 유류비까지 이득 (니로·셀토스HEV·스포티지HEV)</li>
+    <li><b>견적 요청 시:</b> "인수형, 연3만km, 선수금0, 48/60개월 각각" 조건으로 총액·인수가 같이 받기</li>
+  </ul>
+  <div class="disclaimer">
+    ※ 잔존가치·인수가·초과요금은 금융사·상품별로 달라요. 이 페이지는 판단 틀과 추정이며, 실제는 업체 견적서(인수가 명시)로 확인하세요.
+    개인 허브에 넣을 수 있게 독립 구성했습니다.
+  </div>
+</section>
+
+<section>
+  <h2><span class="ic">📎</span>참고 출처</h2>
+  <ul class="clean src">
+    <li>인수·잔존가치 — <a href="https://web.getcha.kr/blog/lease-rental-buyout-cost-complete-guide">겟차: 인수 비용 가이드</a>, <a href="https://web.getcha.kr/blog/car-residual-value-guide-lease-long-term-rental-2026">잔존가치 가이드 2026</a>, <a href="https://www.eacar.co.kr/article/223820849049">이어카: 만기 인수 vs 반납</a></li>
+    <li>고주행·초과요금 — <a href="https://boozamong.com/%EC%9E%A5%EA%B8%B0%EB%A0%8C%ED%8A%B8-%EB%A7%8C%EA%B8%B0-%EC%9D%B8%EC%88%98/">주차몽: 인수 유리한 경우</a>, <a href="https://namu.wiki/w/%EC%9E%A5%EA%B8%B0%EB%A0%8C%ED%8A%B8">나무위키: 장기렌트</a></li>
+  </ul>
+</section>
+
+<footer>
+  수빈 개인 참고자료 · 조사-006 · 인수/반납 × 48·60개월 전략 v1.0 · 2026-07-13 · 외부 공개 전 명진 확인
+</footer>
+
+</div>
+</body>
+</html>
