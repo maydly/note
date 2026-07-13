@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>중고차 할부 구매 vs 신차 장기렌트</title>
+<style>
+  :root{
+    --bg:#faf7f2; --card:#ffffff; --ink:#2c2a26; --sub:#6b665e;
+    --line:#e8e2d8; --accent:#c98a5e; --accent-soft:#f4e7dc;
+    --good:#4a7c59; --good-soft:#e5efe6; --warn:#b9603f; --warn-soft:#f7e5dd;
+    --blue:#4a6c8c; --blue-soft:#e3ebf2; --gold:#c99a3e; --gold-soft:#f6edd4;
+    --red:#b03a3a; --red-soft:#fae4e2;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+    line-height:1.62; font-size:16px; -webkit-text-size-adjust:100%;}
+  .wrap{max-width:920px; margin:0 auto; padding:30px 18px 80px;}
+  header.top{text-align:center; padding:24px 14px 24px;}
+  .kicker{display:inline-block; font-size:13px; letter-spacing:.14em; color:var(--accent);
+    background:var(--accent-soft); padding:5px 14px; border-radius:999px; margin-bottom:12px;}
+  h1{font-size:26px; margin:.2em 0 .3em; letter-spacing:-.01em;}
+  .lead{color:var(--sub); font-size:14.5px; max-width:680px; margin:0 auto;}
+  .meta{margin-top:10px; font-size:12px; color:var(--sub);}
+
+  section{background:#fff; border:1px solid var(--line); border-radius:16px; padding:22px 20px; margin:20px 0;}
+  section.bomb{border:2px solid var(--red); background:linear-gradient(180deg,#fef6f5,#fff);}
+  section h2{font-size:19px; margin:0 0 4px; display:flex; align-items:center; gap:9px;}
+  section h2 .ic{width:28px;height:28px;border-radius:8px;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
+  section.bomb h2 .ic{background:var(--red);}
+  h2 + .h2sub{color:var(--sub); font-size:13.5px; margin:0 0 14px 38px;}
+  h3{font-size:15.5px; margin:18px 0 8px;}
+
+  .callout{border-radius:12px; padding:15px 17px; margin:14px 0; font-size:14px; border:1px solid transparent;}
+  .callout.red{background:var(--red-soft); border-color:#f0c9c5;}
+  .callout.warn{background:var(--warn-soft); border-color:#eecfc2;}
+  .callout.good{background:var(--good-soft); border-color:#cfe0d1;}
+  .callout.blue{background:var(--blue-soft); border-color:#cdddea;}
+  .callout .ct{font-weight:800; display:block; margin-bottom:4px;}
+  .callout.red .ct{color:var(--red);} .callout.warn .ct{color:var(--warn);}
+  .callout.good .ct{color:var(--good);} .callout.blue .ct{color:var(--blue);}
+
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:14px 0;}
+  table{border-collapse:collapse; width:100%; min-width:600px; font-size:13.5px; background:#fff;}
+  th,td{border:1px solid var(--line); padding:10px 11px; text-align:center; vertical-align:middle;}
+  thead th{background:var(--accent-soft); color:#8a5a34; font-weight:700;}
+  thead th.g{background:var(--gold-soft); color:#8a6a1e;}
+  thead th.r{background:var(--red-soft); color:var(--red);}
+  tbody th{background:#fbf8f3; text-align:left; white-space:nowrap;}
+  td.win{background:var(--good-soft); font-weight:700; color:var(--good);}
+  td.lose{background:var(--red-soft); font-weight:700; color:var(--red);}
+  td.total{font-size:16px; font-weight:800;}
+  .mini{display:block; font-size:11px; color:var(--sub); font-weight:400;}
+  .big{font-size:22px; font-weight:800; color:var(--red);}
+
+  .bignum{display:flex; flex-wrap:wrap; gap:12px; margin:16px 0;}
+  .bn{flex:1; min-width:150px; border-radius:14px; padding:16px; text-align:center; border:1px solid var(--line);}
+  .bn.a{background:var(--gold-soft); border-color:#e6d6a6;}
+  .bn.b{background:var(--red-soft); border-color:#f0c9c5;}
+  .bn .lb{font-size:12px; color:var(--sub); font-weight:700;}
+  .bn .v{font-size:24px; font-weight:800; margin:4px 0;}
+  .bn.a .v{color:#8a6a1e;} .bn.b .v{color:var(--red);}
+  .bn .sm{font-size:11.5px; color:var(--sub);}
+
+  ul.clean{margin:8px 0; padding-left:20px;} ul.clean li{margin:7px 0; font-size:14px;}
+  .disclaimer{font-size:12px; color:var(--sub); background:#fbf8f3; border:1px dashed var(--line);
+    border-radius:10px; padding:11px 13px; margin-top:12px;}
+  footer{text-align:center; color:var(--sub); font-size:12px; margin-top:26px;}
+  strong.hl{background:#fbeecb; padding:0 3px; border-radius:3px;}
+.mdlback{position:fixed;top:calc(env(safe-area-inset-top, 0px) + 10px);left:10px;z-index:200;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--ink);text-decoration:none;box-shadow:0 2px 10px rgba(70,60,45,.14)}.mdlback:active{transform:scale(.96)}
+</style>
+</head>
+<body>
+<a href="index.html" class="mdlback">← 목록</a>
+<div class="wrap">
+
+<header class="top">
+  <span class="kicker">수빈 · 조사-006 · 방식 비교</span>
+  <h1>중고차 할부 구매 vs 신차 장기렌트</h1>
+  <p class="lead">"액티언 아니어도 차는 많으니, 중고차를 할부로 사면 싸지 않나?"<br>
+  → <b>숫자로 확인해봤습니다. 결론이 직관과 다릅니다.</b></p>
+  <p class="meta">작성 2026-07-14 · v1.0 · 수빈 조건(경력0·연 3만km·명진 운전 포함) 기준</p>
+</header>
+
+<!-- 폭탄 -->
+<section class="bomb">
+  <h2><span class="ic">💣</span>중고차 구매의 함정 — 초보 자차보험료</h2>
+  <p class="h2sub">이게 "중고차가 싸다"는 직관을 통째로 무너뜨립니다.</p>
+
+  <div class="callout red">
+    <span class="ct">🚨 수빈이가 차를 사면, 보험을 직접 들어야 합니다</span>
+    · <b>20대 + 운전경력 0</b> 첫 가입 → <b>연 300~400만원</b> (만 26세 미만은 할증 60~100%)<br>
+    · 만 26세 이상이어도 경력 0이면 연 150~200만원대<br>
+    → <strong class="hl">월 25~35만원이 보험료로만 고정 지출</strong>됩니다.
+  </div>
+
+  <div class="callout red">
+    <span class="ct">🚨 게다가 명진이 몰려면 "누구나 운전" 특약이 필요합니다</span>
+    개인 자동차보험의 <b>가족한정</b> 범위는 <b>본인 · 배우자 · 부모 · 자녀</b>뿐이에요.
+    <b>형제자매도 안 되고, 연인은 당연히 안 됩니다.</b><br><br>
+    보험료는 <b>누구나 운전 &gt; 가족한정 &gt; 부부한정 &gt; 1인한정</b> 순으로 비싼데,
+    <strong class="hl">명진을 넣으려면 가장 비싼 "누구나 운전"으로 가야 합니다.</strong>
+  </div>
+
+  <div class="callout good">
+    <span class="ct">✅ 장기렌트는 이걸 통째로 피합니다</span>
+    장기렌트는 <b>렌트사 단체보험</b>이라 개인 보험을 따로 안 듭니다. 렌트료에 이미 포함돼 있어요.<br>
+    · <b>초보 할증 없음</b> (개인 이력이 아니라 렌트사 단체보험)<br>
+    · 사고 나도 <b>내 보험료 할증 없음</b><br>
+    · <b>명진은 "운전자 추가 등록"</b>만 하면 됨 (개인보험 '누구나 운전'보다 훨씬 저렴)<br>
+    · 장기렌트 기간이 나중에 <b>보험 경력으로 인정</b>됨
+  </div>
+</section>
+
+<!-- 월 비용 비교 -->
+<section>
+  <h2><span class="ic">₩</span>월 비용 — 진짜로 비교하면</h2>
+  <p class="h2sub">중고차 2,000만원(48개월 할부·금리 7%) 기준 · 연 3만km 고주행 반영</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>항목</th><th class="g">신차 장기렌트<span class="mini">액티언 HEV</span></th><th class="r">중고차 할부 구매<span class="mini">2,000만원급</span></th></tr></thead>
+    <tbody>
+      <tr><th>월 납입금</th><td>689,000원<span class="mini">보험·세금·정비 포함</span></td><td>약 479,000원<span class="mini">할부금만</span></td></tr>
+      <tr><th>자차보험<span class="mini">경력0 + 누구나운전</span></th><td class="win">✅ 포함 (0원)</td><td class="lose">+ 약 250,000~330,000원</td></tr>
+      <tr><th>자동차세</th><td class="win">✅ 포함 (0원)</td><td class="lose">+ 약 35,000원</td></tr>
+      <tr><th>정비·소모품<span class="mini">고주행 연3만km</span></th><td class="win">✅ 포함 (0원)</td><td class="lose">+ 약 100,000~130,000원</td></tr>
+      <tr><th class="total">월 실부담</th>
+        <td class="total win">약 689,000원<span class="mini">연3만km 약정 시 74~79만</span></td>
+        <td class="total lose">약 864,000~974,000원</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bignum">
+    <div class="bn a"><div class="lb">신차 장기렌트</div><div class="v">약 69~79만</div><div class="sm">전부 포함 · 초기비용 0</div></div>
+    <div class="bn b"><div class="lb">중고차 할부</div><div class="v">약 86~97만</div><div class="sm">+ 취등록세 목돈 · 고장 리스크</div></div>
+  </div>
+
+  <div class="callout red">
+    <span class="ct">😱 중고차 할부가 오히려 월 10~20만원 더 비쌉니다</span>
+    "싼 차를 사니까 싸다"가 아니라 — <b>초보 보험료(월 25~33만) + 정비비(월 10~13만)가 고정으로 깔려서</b>
+    <strong class="hl">차값을 아무리 낮춰도 그 밑으로 안 내려갑니다.</strong>
+    게다가 <b>취등록세 목돈(약 100만원)</b>과 <b>중고차 고장 리스크</b>는 별도예요.
+  </div>
+</section>
+
+<!-- 그래도 중고차의 장점 -->
+<section>
+  <h2><span class="ic">⚖️</span>공정하게 — 중고차 할부의 장점도 있습니다</h2>
+  <ul class="clean">
+    <li>✅ <b>주행거리 제한이 없음</b> — 연 3만km 고주행에 초과금 걱정 zero (장기렌트는 인수형이면 면제되긴 함)</li>
+    <li>✅ <b>중도해지 위약금 없음</b> — 언제든 팔 수 있음</li>
+    <li>✅ <b>내 차</b> — 처음부터 소유</li>
+    <li>✅ <b>3년 무사고 후 보험료 하락</b> — 연 100~200만원대로 내려감 (다만 <b>초반 3년이 가장 비쌈</b>)</li>
+    <li>✅ <b>차값이 아주 싸면(1,000만원대)</b> 월 부담이 신차 렌트와 비슷해질 수 있음 — 단 오래된 차라 <b>고주행에 금방 망가짐</b></li>
+  </ul>
+
+  <div class="callout warn">
+    <span class="ct">⚠️ 하지만 5년 뒤를 보면</span>
+    · <b>신차 장기렌트(인수)</b>: 5년 뒤 <b>15만km 탄 액티언</b>이 내 차 — 아직 가치 있음<br>
+    · <b>중고차</b>: 중고 주행거리 + 15만km = <b>총 20만km 넘는 노후차</b> — 가치 거의 없음<br>
+    → 총액이 조금 덜 들어도, <b>남는 자산이 다릅니다.</b>
+  </div>
+</section>
+
+<!-- 결론 -->
+<section>
+  <h2><span class="ic">🎯</span>결론</h2>
+  <div class="callout good">
+    <span class="ct">✅ 수빈이 조건에선 신차 장기렌트가 맞습니다</span>
+    <b>결정적인 이유는 딱 하나 — 수빈이가 "경력 0"이라서</b>입니다.<br><br>
+    · 차를 <b>사면</b> → 초보 자차보험(연 300~400만) + 명진 넣으려면 '누구나 운전' 특약 → <b>월 25~35만 고정</b><br>
+    · <b>빌리면(장기렌트)</b> → 렌트사 단체보험이라 이 폭탄이 <b>렌트료에 이미 포함</b><br><br>
+    <strong class="hl">"경력 0 + 연인이 함께 운전"이라는 조합이 개인 보험에서 최악의 조건</strong>이라,
+    장기렌트가 그걸 통째로 우회해줍니다.
+  </div>
+
+  <div class="callout blue">
+    <span class="ct">💡 그리고 이건 시간이 해결해줍니다</span>
+    장기렌트 기간이 <b>보험 경력으로 인정</b>돼요. 3~5년 뒤엔 수빈이도 무사고 경력이 쌓여
+    <b>개인 보험료가 연 100~200만원대로 내려갑니다.</b> 그때는 구매가 유리해질 수 있어요.<br>
+    → <b>지금은 장기렌트, 나중에 경력 쌓이면 구매</b>가 자연스러운 순서입니다.
+  </div>
+
+  <h3>혹시 중고차 할부로 간다면</h3>
+  <ul class="clean">
+    <li><b>보험료 견적을 먼저 받아보세요.</b> 실제로 얼마 나오는지 보면 판단이 확실해집니다 (다이렉트 비교견적)</li>
+    <li><b>'누구나 운전' 특약 포함</b>으로 견적 받아야 정확합니다 (명진이 몰 거니까)</li>
+    <li>수빈이 <b>만 26세 이상인지</b>가 큰 갈림길 (미만이면 할증 60~100%)</li>
+    <li>차값보다 <b>보험+정비+세금</b>을 먼저 계산하세요 — 여기가 진짜 비용입니다</li>
+  </ul>
+
+  <div class="disclaimer">
+    ※ 보험료는 20대·경력0 통계 범위(연 300~400만, 26세 이상 경력0은 150~200만대)를 적용한 <b>추정</b>입니다.
+    실제는 나이·차종·보장범위·보험사에 따라 크게 달라지니 <b>반드시 다이렉트 비교견적</b>으로 확인하세요.
+    중고차 할부금은 2,000만원·48개월·금리 7% 가정(은행권 4.5~7.5%, 중고차는 신차보다 1~3%p 높음).
+  </div>
+</section>
+
+<footer>
+  수빈 개인 참고자료 · 조사-006 · 중고차 할부 vs 신차 장기렌트 v1.0 · 2026-07-14
+</footer>
+
+</div>
+</body>
+</html>
