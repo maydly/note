@@ -370,15 +370,30 @@ function ghPut(c,path,obj,sha){
     .then(function(r){if(!r.ok)return r.text().then(function(t){throw new Error('PUT '+r.status+' '+t.slice(0,120));});return r.json();});
 }
 function syncOn(){var c=syncCfg();return !!(c&&c.token&&c.repo);}
+function pathObj(kind){
+  if(kind==='ledger')return {path:'ledger.json',obj:ledger};
+  if(kind==='shoots')return {path:'shoots.json',obj:shoots};
+  if(kind==='photos')return {path:'photos.json',obj:{map:photos,base:photoBase}};
+  return null;
+}
+/* GitHub은 같은 repo 동시커밋을 하나만 받으므로 push는 큐로 «한 번에 하나»씩.
+   sha 충돌(409/422)이면 최신 sha 다시 받아 1회 재시도. */
+var pushChain=Promise.resolve();
 function cloudPush(kind){
   var c=syncCfg();if(!c||!c.token)return Promise.resolve();
-  var path,obj;
-  if(kind==='ledger'){path='ledger.json';obj=ledger;}
-  else if(kind==='shoots'){path='shoots.json';obj=shoots;}
-  else if(kind==='photos'){path='photos.json';obj={map:photos,base:photoBase};}
-  else return Promise.resolve();
-  return ghPut(c,path,obj,remoteSha[kind]).then(function(r){if(r&&r.content)remoteSha[kind]=r.content.sha;setSyncBadge('저장됨');})
-    .catch(function(e){setSyncBadge('오류');toast('클라우드 저장 실패: '+e.message);});
+  pushChain=pushChain.then(function(){return doPush(c,kind,false);})
+    .catch(function(e){setSyncBadge('오류');toast('클라우드 저장 실패('+kind+'): '+e.message);});
+  return pushChain;
+}
+function doPush(c,kind,retried){
+  var po=pathObj(kind);if(!po)return Promise.resolve();
+  return ghPut(c,po.path,po.obj,remoteSha[kind]).then(function(r){if(r&&r.content)remoteSha[kind]=r.content.sha;setSyncBadge('저장됨');})
+    .catch(function(e){
+      if(!retried&&/\b(409|422)\b|does not match|expected/i.test(e.message)){
+        return ghGet(c,po.path).then(function(g){remoteSha[kind]=g?g.sha:undefined;return doPush(c,kind,true);});
+      }
+      throw e;
+    });
 }
 function pushSoon(kind){if(!syncOn())return;setSyncBadge('저장중…');clearTimeout(pushTimers[kind]);pushTimers[kind]=setTimeout(function(){cloudPush(kind);},1200);}
 function cloudPull(){
