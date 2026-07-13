@@ -4,39 +4,50 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>수빈 7종 트림별 정리 (상위트림 먼저)</title>
+<title>수빈 트림·색상·옵션 종합 (고속 스탠스)</title>
 <style>
   :root{
     --bg:#faf7f2; --card:#ffffff; --ink:#2c2a26; --sub:#6b665e;
     --line:#e8e2d8; --accent:#c98a5e; --accent-soft:#f4e7dc;
     --good:#4a7c59; --good-soft:#e5efe6; --warn:#b9603f; --warn-soft:#f7e5dd;
     --blue:#4a6c8c; --blue-soft:#e3ebf2; --gold:#c99a3e; --gold-soft:#f6edd4;
+    --ev:#3d7a8c; --ev-soft:#e0eef2;
   }
   *{box-sizing:border-box;}
   body{margin:0; background:var(--bg); color:var(--ink);
     font-family:"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
     line-height:1.6; font-size:16px; -webkit-text-size-adjust:100%;}
-  .wrap{max-width:900px; margin:0 auto; padding:30px 18px 80px;}
-  header.top{text-align:center; padding:24px 14px 26px;}
+  .wrap{max-width:960px; margin:0 auto; padding:30px 18px 80px;}
+  header.top{text-align:center; padding:24px 14px 24px;}
   .kicker{display:inline-block; font-size:13px; letter-spacing:.14em; color:var(--accent);
     background:var(--accent-soft); padding:5px 14px; border-radius:999px; margin-bottom:12px;}
   h1{font-size:26px; margin:.2em 0 .3em; letter-spacing:-.01em;}
-  .lead{color:var(--sub); font-size:14.5px; max-width:640px; margin:0 auto;}
+  .lead{color:var(--sub); font-size:14.5px; max-width:680px; margin:0 auto;}
   .meta{margin-top:10px; font-size:12px; color:var(--sub);}
 
-  .note{background:var(--blue-soft); border:1px solid #cdddea; border-radius:12px;
-    padding:13px 16px; font-size:13.5px; margin:18px 0;}
+  .callout{border-radius:12px; padding:15px 17px; margin:16px 0; font-size:14px; border:1px solid transparent;}
+  .callout.warn{background:var(--warn-soft); border-color:#eecfc2;}
+  .callout.blue{background:var(--blue-soft); border-color:#cdddea;}
+  .callout.gold{background:var(--gold-soft); border-color:#e6d6a6;}
+  .callout .ct{font-weight:800; display:block; margin-bottom:4px;}
+  .callout.warn .ct{color:var(--warn);} .callout.blue .ct{color:var(--blue);} .callout.gold .ct{color:#8a6a1e;}
 
   .car{background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px 20px 20px; margin:20px 0;
     box-shadow:0 1px 3px rgba(70,60,45,.04);}
-  .car-head{display:flex; align-items:center; gap:14px; margin-bottom:12px;}
-  .car-head img{width:96px; height:60px; object-fit:cover; border-radius:10px; border:1px solid var(--line); flex:0 0 auto;}
+  .car.pick{border:2px solid var(--gold); background:linear-gradient(180deg,#fdf9ef,#fff);}
+  .car-head{display:flex; align-items:center; gap:14px; margin-bottom:12px; flex-wrap:wrap;}
+  .car-head img{width:110px; height:68px; object-fit:cover; border-radius:10px; border:1px solid var(--line); flex:0 0 auto;}
+  .car-head .t{flex:1; min-width:180px;}
   .car-head .t .nm{font-size:18px; font-weight:800;}
   .car-head .t .sub{font-size:12px; color:var(--sub);}
+  .rankbadge{flex:0 0 auto; font-size:11px; font-weight:800; padding:4px 10px; border-radius:999px;
+    background:var(--accent-soft); color:#8a5a34;}
+  .rankbadge.p1{background:var(--gold); color:#fff;}
 
-  .ladder{display:flex; flex-direction:column; gap:8px;}
+  h4.sec{font-size:13px; font-weight:800; color:var(--sub); margin:16px 0 7px; letter-spacing:.03em;}
+
   .trim{display:flex; align-items:flex-start; gap:10px; padding:11px 13px; border-radius:11px;
-    border:1px solid var(--line); background:#fbf8f3;}
+    border:1px solid var(--line); background:#fbf8f3; margin-bottom:7px;}
   .trim.top{background:var(--gold-soft); border-color:#e6d6a6;}
   .trim .lv{flex:0 0 auto; font-size:11px; font-weight:800; padding:3px 8px; border-radius:6px;
     background:#fff; border:1px solid var(--line); color:var(--sub); white-space:nowrap; margin-top:1px;}
@@ -48,254 +59,232 @@
   .trim .desc{font-size:12.5px; color:var(--sub); margin-top:2px;}
   .trim .desc b{color:var(--ink);}
 
-  .cap{font-size:11.5px; color:var(--sub); margin-top:8px;}
+  .opts{display:grid; grid-template-columns:1fr 1fr; gap:9px;}
+  @media(max-width:560px){.opts{grid-template-columns:1fr;}}
+  .optbox{border-radius:10px; padding:11px 13px; font-size:12.5px; border:1px solid var(--line);}
+  .optbox.base{background:var(--good-soft); border-color:#cfe0d1;}
+  .optbox.sel{background:#fbf8f3;}
+  .optbox b{display:block; margin-bottom:4px;}
+  .optbox.base b{color:var(--good);} .optbox.sel b{color:var(--accent);}
+
+  .colors{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;}
+  .sw{display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:5px 10px 5px 6px;
+    border-radius:999px; border:1px solid var(--line); background:#fff;}
+  .sw i{width:15px; height:15px; border-radius:50%; border:1px solid rgba(0,0,0,.12); display:inline-block;}
+  .sw.hot{border-color:var(--accent); font-weight:700;}
+  .cnote{font-size:11.5px; color:var(--sub); margin-top:6px;}
+  .cnote a{color:var(--blue);}
+
+  .hw{font-size:12.5px; background:var(--blue-soft); border:1px solid #cdddea; border-radius:10px;
+    padding:9px 12px; margin-top:10px;}
+  .hw b{color:var(--blue);}
   .disclaimer{font-size:12px; color:var(--sub); background:#fbf8f3; border:1px dashed var(--line);
     border-radius:10px; padding:11px 13px; margin-top:12px;}
-  section.tip{background:#fff; border:1px solid var(--line); border-radius:16px; padding:20px; margin:20px 0;}
-  section.tip h2{font-size:18px; margin:0 0 10px;}
-  ul.clean{margin:8px 0; padding-left:20px;} ul.clean li{margin:6px 0; font-size:14px;}
   footer{text-align:center; color:var(--sub); font-size:12px; margin-top:26px;}
-  .badge{display:inline-block; font-size:10px; font-weight:700; padding:1px 6px; border-radius:5px; background:var(--gold-soft); color:#8a6a1e;}
-.mdlback{position:fixed;top:calc(env(safe-area-inset-top, 0px) + 10px);left:10px;z-index:200;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--ink);text-decoration:none;box-shadow:0 2px 10px rgba(70,60,45,.14)}.mdlback:active{transform:scale(.96)}</style>
+  strong.hl{background:#fbeecb; padding:0 3px; border-radius:3px;}
+.mdlback{position:fixed;top:calc(env(safe-area-inset-top, 0px) + 10px);left:10px;z-index:200;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--ink);text-decoration:none;box-shadow:0 2px 10px rgba(70,60,45,.14)}.mdlback:active{transform:scale(.96)}
+</style>
 </head>
 <body>
 <a href="index.html" class="mdlback">← 목록</a>
 <div class="wrap">
 
 <header class="top">
-  <span class="kicker">수빈 · 조사-006 · 트림별</span>
-  <h1>7종 트림별 정리 — 풀옵 상위트림 먼저</h1>
-  <p class="lead">각 차의 <b>최상위(풀옵션) 트림을 맨 위</b>에 두고, 아래로 내려가며 무엇이 빠지는지 정리했어요.<br>"이왕이면 풀옵" 기준 → 추후 예산에 맞춰 내려 고르는 용도.</p>
-  <p class="meta">작성 2026-07-13 · v1.0 · 가격은 2026년 신차 출고가 · 🥇=최상위 풀옵션</p>
+  <span class="kicker">수빈 · 조사-006 · 트림·색상·옵션</span>
+  <h1>트림 · 색상 · 옵션 종합</h1>
+  <p class="lead"><b>최하위 트림은 뺐습니다</b>(안 볼 트림). 실제로 고를 트림만 남기고,<br>차마다 <b>색상 · 기본사양 · 선택옵션</b>을 정리했어요.</p>
+  <p class="meta">작성 2026-07-14 · v2.0 · <b>고속도로 주행 스탠스</b> 기준 · 가격은 2026년 출고가</p>
 </header>
 
-<div class="note">
-  💡 <b>읽는 법</b> — 맨 위 <span class="badge">🥇 최상위</span> 트림이 풀옵션. 아래로 갈수록 옵션·가격이 빠집니다.
-  <b>4천 초과</b> 표시는 이번 예산(4,000만) 밖 트림이에요. 수빈이 고주행이라 실사용엔 <b>연비·기본 안전옵션</b>이 중요하니, 꼭 최상위가 아니어도 중상위(시그니처/S7/아이코닉급)면 충분한 경우가 많아요.
+<!-- 고속 스탠스 -->
+<div class="callout warn">
+  <span class="ct">🛣️ 기준 변경: "출퇴근(도심)"이 아니라 "고속도로 정속주행"</span>
+  이게 평가를 바꿉니다. <b>고속 항속에선 하이브리드의 연비 이점이 크게 줄어듭니다</b> —
+  회생제동(감속 시 충전)이 거의 없어서 배터리·모터가 오히려 무게 부담이 되거든요.<br><br>
+  · 공인 도심 20km/L 하이브리드도 <b>고속에선 14~16km/L</b>로 떨어짐<br>
+  · <b>전기차도 고속에선 전비 급락</b>(공기저항) → 충전 더 자주<br>
+  → 그래서 <strong class="hl">"도심 연비 숫자"에 현혹되면 안 되고, 고속 연비·고속 안정감·주행보조로 봐야 합니다.</strong>
+</div>
+<div class="callout gold">
+  <span class="ct">✅ 그래서 액티언 선택이 더 유리해졌습니다</span>
+  액티언 하이브리드는 <b>고속 연비가 14.2km/L로 명시</b>돼 있고, <b>204마력</b>·<b>중형 고속 안정감</b>·<b>단일 트림 풀사양</b>이라
+  고속도로 정속주행 스탠스에 정확히 맞아요. 반대로 <b>니로(도심 20km/L 특화)는 강점이 희석</b>되고,
+  <b>전기차는 고속 효율 저하로 충전 부담이 커집니다.</b>
 </div>
 
-<!-- 셀토스 -->
-<div class="car">
-  <div class="car-head">
-    <img src="img/셀토스.jpg" alt="셀토스">
-    <div class="t"><div class="nm">기아 셀토스</div><div class="sub">소형 SUV · 가솔린 터보 / 하이브리드 · 4트림</div></div>
-  </div>
-  <div class="ladder">
-    <div class="trim top"><div class="lv">🥇 최상위</div><div class="body">
-      <div class="tn">X-Line <span class="price">3,217~3,584만</span></div>
-      <div class="desc">구 '그래비티' 대체. <b>전용 블랙 엠블럼·스포티 디자인</b>. 개성·외관 중시 최상위.</div></div></div>
-    <div class="trim"><div class="lv">상위</div><div class="body">
-      <div class="tn">시그니처 <span class="price">3,101~3,469만</span></div>
-      <div class="desc"><b>10.25인치 내비 기본</b>, 풀오토 에어컨, 애프터블로우, 무선 업데이트 등 프리미엄 대폭 강화.</div></div></div>
-    <div class="trim"><div class="lv">중간</div><div class="body">
-      <div class="tn">프레스티지 <span class="price">2,840~3,208만</span></div>
-      <div class="desc">편의 사양 추가된 실속 중간 트림. 가성비 무난.</div></div></div>
-    <div class="trim"><div class="lv">기본</div><div class="body">
-      <div class="tn">트렌디 <span class="price">2,477~2,898만</span></div>
-      <div class="desc">엔트리. 기본 사양 중심(가솔린 2,477 / HEV 2,898).</div></div></div>
-  </div>
-  <div class="cap">※ 고주행 추천: 시그니처 HEV(연비+내비 기본)면 충분. X-Line은 디자인 프리미엄.</div>
-</div>
-
-<!-- 니로 -->
-<div class="car">
-  <div class="car-head">
-    <img src="img/니로.jpg" alt="니로">
-    <div class="t"><div class="nm">기아 니로</div><div class="sub">소형 SUV · 하이브리드 · 연비 특화</div></div>
-  </div>
-  <div class="ladder">
-    <div class="trim top"><div class="lv">🥇 최상위</div><div class="body">
-      <div class="tn">시그니처 <span class="price">약 3,300만대</span></div>
-      <div class="desc">통풍시트·내비·공기청정 등 편의 풀. 연비 좋은 차의 풀옵.</div></div></div>
-    <div class="trim"><div class="lv">중간</div><div class="body">
-      <div class="tn">프레스티지 <span class="price">3,098만</span></div>
-      <div class="desc"><b>내비·통풍시트·공기청정 기본</b>. 실구매 인기 중상위.</div></div></div>
-    <div class="trim"><div class="lv">기본</div><div class="body">
-      <div class="tn">트렌디 <span class="price">2,832만~</span></div>
-      <div class="desc">세제혜택 후 시작가. 연비만 보면 기본도 충분.</div></div></div>
-  </div>
-  <div class="cap">※ 고주행 최강 연비. 유류비 아끼려면 니로가 핵심 후보. 프레스티지면 충분.</div>
-</div>
-
-<!-- 아토3 -->
-<div class="car">
-  <div class="car-head">
-    <img src="img/아토3.jpg" alt="아토3">
-    <div class="t"><div class="nm">BYD 아토3</div><div class="sub">소형 전기 SUV · 2트림</div></div>
-  </div>
-  <div class="ladder">
-    <div class="trim top"><div class="lv">🥇 최상위</div><div class="body">
-      <div class="tn">플러스 <span class="price">3,350만</span></div>
-      <div class="desc"><b>전동 테일게이트·통풍시트·31색 앰비언트·8스피커·공기청정·V2L·디락 사운드</b>. 사실상 풀옵.</div></div></div>
-    <div class="trim"><div class="lv">기본</div><div class="body">
-      <div class="tn">기본(Base) <span class="price">3,150만</span></div>
-      <div class="desc">앰비언트 단색·6스피커·전동테일게이트 없음. 보조금 받으면 2천만원대.</div></div></div>
-  </div>
-  <div class="cap">※ 전기차라 고속·고주행엔 주행거리·충전 부담. 인수 관점에선 순위 낮음(1-7 참고).</div>
-</div>
-
-<!-- 스포티지 -->
-<div class="car">
-  <div class="car-head">
-    <img src="img/스포티지.jpg" alt="스포티지">
-    <div class="t"><div class="nm">기아 스포티지</div><div class="sub">준중형 SUV · 가솔린 / 하이브리드 · 4트림</div></div>
-  </div>
-  <div class="ladder">
-    <div class="trim top"><div class="lv">🥇 최상위</div><div class="body">
-      <div class="tn">X-Line <span class="price">3,525~4,107만</span> <span class="over">일부 4천 초과</span></div>
-      <div class="desc">스포티 전용 디자인 최상위. 풀옵 조합은 4천 넘음.</div></div></div>
-    <div class="trim"><div class="lv">상위</div><div class="body">
-      <div class="tn">시그니처 <span class="price">3천만대 중~후반</span></div>
-      <div class="desc">프리미엄 편의·안전 대폭. 준중형 풀옵 감성.</div></div></div>
-    <div class="trim"><div class="lv">중상</div><div class="body">
-      <div class="tn">노블레스 <span class="price">3천만대 초~중반</span></div>
-      <div class="desc">실속 상위. 인기 조합.</div></div></div>
-    <div class="trim"><div class="lv">기본</div><div class="body">
-      <div class="tn">프레스티지 <span class="price">2,836만~</span></div>
-      <div class="desc">준중형 엔트리. 전체 범위 2,836~4,042만.</div></div></div>
-  </div>
-  <div class="cap">※ 고주행 종합 1순위 후보. 노블레스~시그니처 HEV면 연비·안정감 균형 좋음(4천 이내).</div>
-</div>
-
-<!-- 토레스 -->
-<div class="car">
-  <div class="car-head">
-    <img src="img/토레스.jpg" alt="토레스">
-    <div class="t"><div class="nm">KGM 토레스</div><div class="sub">중형 SUV · 가솔린 / 하이브리드</div></div>
-  </div>
-  <div class="ladder">
-    <div class="trim top"><div class="lv">🥇 최상위</div><div class="body">
-      <div class="tn">블랙에디션 / HEV 상위 <span class="price">3,550만~ (HEV는 더↑)</span></div>
-      <div class="desc">블랙 전용 디자인 + 상위 편의. 하이브리드 상위트림이 사실상 풀옵.</div></div></div>
-    <div class="trim"><div class="lv">중상</div><div class="body">
-      <div class="tn">T7 <span class="price">3,229만</span></div>
-      <div class="desc">가솔린 상위 실속. 큰 차체·넓은 실내.</div></div></div>
-    <div class="trim"><div class="lv">기본/HEV</div><div class="body">
-      <div class="tn">가솔린 2,810만~ · HEV 3,140만~</div>
-      <div class="desc">중형인데 저렴한 시작가가 강점.</div></div></div>
-  </div>
-  <div class="cap">※ 같은 값 큰 차. 다만 주행보조·연비·중고가치는 기아/현대보다 소박.</div>
-</div>
-
-<!-- 액티언 -->
-<div class="car">
+<!-- ===== 1. 액티언 HEV ===== -->
+<div class="car pick">
   <div class="car-head">
     <img src="img/액티언.jpg" alt="액티언">
-    <div class="t"><div class="nm">KGM 액티언</div><div class="sub">중형 SUV · <b>하이브리드 3,695만 단일트림 권장</b> (가솔린 S7~S9)</div></div>
+    <div class="t"><div class="nm">KGM 액티언 하이브리드 ♥</div>
+      <div class="sub">중형 SUV · e-DHT 204마력 · <b>고속 14.2km/L</b> (복합 15.0)</div></div>
+    <span class="rankbadge p1">🥇 우리의 선택</span>
   </div>
-  <div class="ladder">
-    <div class="trim top"><div class="lv">♥ 우리의 선택</div><div class="body">
-      <div class="tn">하이브리드 (단일 트림) <span class="price">3,695만</span></div>
-      <div class="desc"><b>고주행이면 이거 하나로 끝.</b> 복합 <b>15.0km/L</b>(고속 14.2)·e-DHT <b>204마력</b>·도심 94% 전기모드.
-      <b>단일 트림이라 20인치 휠·풀LED 등 전 사양이 기본</b> — 트림·옵션 고민이 아예 없음. 배터리보증 10년/20만km.
-      <b>가솔린은 고주행에 연료비 부담이 커 비권장.</b></div></div></div>
-    <div class="trim"><div class="lv">가솔린 최상위</div><div class="body">
-      <div class="tn">S9 풀옵션 <span class="price">4,092만</span> <span class="over">4천 초과</span></div>
-      <div class="desc">S9 + 스웨이드 인테리어·액티브 배기사운드 등 풀옵. <b>S9 기본은 3,649만</b>.</div></div></div>
-    <div class="trim"><div class="lv">상위</div><div class="body">
-      <div class="tn">S9 <span class="price">3,649만</span></div>
-      <div class="desc">S7에 <b>파워 테일게이트·3D 어라운드뷰·후측방 충돌보조</b> 추가.</div></div></div>
-    <div class="trim"><div class="lv">기본(옵션 풍부)</div><div class="body">
-      <div class="tn">S7 <span class="price">3,395만</span></div>
-      <div class="desc">기본인데 <b>12.3 계기판·12.3 내비·20인치 휠·8에어백·어댑티브 크루즈·전동시트·천연가죽</b> 기본. 가성비 핵심.</div></div></div>
+
+  <h4 class="sec">트림 — 고민할 게 없음</h4>
+  <div class="trim top"><div class="lv">단일 트림</div><div class="body">
+    <div class="tn">하이브리드 S8 <span class="price">3,695만원</span></div>
+    <div class="desc"><b>하이브리드는 트림이 하나뿐</b>입니다. 20인치 휠·풀LED까지 전부 기본이라 트림 고민 자체가 없어요.
+    <span style="color:var(--warn);">(가솔린 S7/S9는 고주행에 연료비 부담이 커 제외)</span></div></div></div>
+
+  <h4 class="sec">기본 포함 / 선택 옵션</h4>
+  <div class="opts">
+    <div class="optbox base"><b>✅ 기본 포함 (추가금 0)</b>
+      20인치 휠 · 퀼팅 가죽시트 · <b>360도 어라운드뷰</b> · 통풍시트 · 전동 트렁크 · OTA 업데이트 · Full LED 헤드램프 · 어댑티브 크루즈 · 12.3인치 계기판+내비 · 듀얼 무선충전</div>
+    <div class="optbox sel"><b>➕ 선택 옵션</b>
+      파노라마 선루프 · 3D 어라운드뷰 모니터링 · 딥 컨트롤 패키지Ⅱ · <b>20인치 미쉐린 흡음형 타이어</b>(고속 정숙성↑) · 알파인 오디오 시스템</div>
   </div>
-  <div class="cap">※ S7만으로도 사양이 풍부해 "가성비 풀옵" 소리 나옴. 옵션: 4WD 202만·투톤 41만 등.</div>
+  <div class="hw">🛣️ <b>고속 스탠스 팁</b> — 고속도로를 오래 달리면 <b>노면소음</b>이 피로도를 좌우합니다.
+    <b>미쉐린 흡음형 타이어</b> 옵션은 이 용도에 실질적으로 값어치가 있어요. 알파인 오디오도 장거리 만족도↑.</div>
+
+  <h4 class="sec">외장 색상 — 원톤 7 + 투톤 5 = 총 12가지</h4>
+  <div class="colors">
+    <span class="sw hot"><i style="background:#f2f2f0;"></i>그랜드 화이트 <b style="color:var(--accent);">48.8% 1위</b></span>
+    <span class="sw hot"><i style="background:#1c1c1e;"></i>스페이스 블랙 <b style="color:var(--accent);">26.4% 2위</b></span>
+    <span class="sw hot"><i style="background:#b0764a;"></i>로얄 카퍼 <b style="color:var(--accent);">5.1% 3위</b></span>
+    <span class="sw"><i style="background:#cfc6bb;"></i>라떼 그레이지</span>
+    <span class="sw"><i style="background:#7e8388;"></i>아이언 메탈</span>
+    <span class="sw"><i style="background:#3d4c3f;"></i>포레스트 그린</span>
+    <span class="sw"><i style="background:#2f4a6b;"></i>댄디 블루</span>
+  </div>
+  <div class="cnote">※ 투톤은 댄디 블루·스페이스 블랙을 뺀 <b>5가지</b>에서 선택 가능. 색상 이미지는 <a href="https://www.kg-mobility.com/pr/model/show-room/200000100010018" target="_blank">KGM 공식 쇼룸</a>에서 실물 확인 권장.</div>
 </div>
 
-<!-- 그랑콜레오스 -->
+<!-- ===== 2. 그랑 콜레오스 ===== -->
 <div class="car">
   <div class="car-head">
     <img src="img/그랑콜레오스.jpg" alt="그랑 콜레오스">
-    <div class="t"><div class="nm">르노 그랑 콜레오스</div><div class="sub">중형 SUV · 가솔린 터보 / E-Tech HEV · 3트림</div></div>
+    <div class="t"><div class="nm">르노 그랑 콜레오스 E-Tech HEV</div>
+      <div class="sub">중형 SUV · <b>245마력 · 복합 15.7km/L</b> — 고속 스탠스 최강</div></div>
+    <span class="rankbadge">🥈 2위</span>
   </div>
-  <div class="ladder">
-    <div class="trim top"><div class="lv">🥇 최상위</div><div class="body">
-      <div class="tn">에스프리 알핀 <span class="price">가솔린 4,092만 / HEV 4,481만~</span> <span class="over">4천 초과</span></div>
-      <div class="desc">전용 20인치 휠·삼색기 스티치·블루 그라데이션. 풀옵션 성격. (아이코닉 대비 +275만)</div></div></div>
-    <div class="trim"><div class="lv">중간(인기)</div><div class="body">
-      <div class="tn">아이코닉 <span class="price">가솔린 3,881만 / HEV 4,208만</span></div>
-      <div class="desc">대형 디스플레이·고급 편의. <b>실구매 최다</b>. AR-HUD·보스 10스피커·ANC 옵션 선택 가능. (테크노 대비 +365만)</div></div></div>
-    <div class="trim"><div class="lv">기본</div><div class="body">
-      <div class="tn">테크노 <span class="price">가솔린 3,497만 / HEV 3,814만</span></div>
-      <div class="desc">기본기·실내 고급감은 이미 우수. <b>4천 이내는 테크노(+가솔린 아이코닉)까지.</b></div></div></div>
+
+  <h4 class="sec">트림 (하위 '테크노' 유지 — 4천 이하가 이것뿐)</h4>
+  <div class="trim top"><div class="lv">최상위</div><div class="body">
+    <div class="tn">에스프리 알핀 <span class="price">HEV 4,481만~</span> <span class="over">예산 초과</span></div>
+    <div class="desc">무광 새틴 어반 그레이, 블루 포인트 그릴, 블랙 로장주 엠블럼, 전용 20인치 휠. 풀옵션 성격.</div></div></div>
+  <div class="trim"><div class="lv">인기</div><div class="body">
+    <div class="tn">아이코닉 <span class="price">HEV 4,208만</span> <span class="over">예산 초과</span></div>
+    <div class="desc">대형 디스플레이·고급 편의. <b>실구매 최다</b>. AR-HUD·보스 10스피커·ANC 선택 가능.</div></div></div>
+  <div class="trim"><div class="lv">4천 이내</div><div class="body">
+    <div class="tn">테크노 <span class="price">HEV 3,814만</span></div>
+    <div class="desc"><b>예산 4천 안에선 이것뿐.</b> 기본기·실내 고급감은 이미 우수하지만, 원하는 옵션(보스·AR-HUD)이 상위 트림이면 예산 초과.</div></div></div>
+
+  <h4 class="sec">외장 색상</h4>
+  <div class="colors">
+    <span class="sw"><i style="background:#f4f4f2;"></i>솔리드 화이트</span>
+    <span class="sw"><i style="background:#e9e7e2;"></i>새틴 유니버스 화이트<span style="color:var(--sub);">(무광)</span></span>
+    <span class="sw"><i style="background:#82868a;"></i>어반 그레이</span>
+    <span class="sw"><i style="background:#d8cdbc;"></i>밀키 베이지</span>
+    <span class="sw"><i style="background:#171a1f;"></i>블랙 사파이어</span>
+    <span class="sw"><i style="background:#8d2b2b;"></i>메탈릭 레드</span>
+    <span class="sw"><i style="background:#2b3f63;"></i>블루 코스모스</span>
   </div>
-  <div class="cap">※ 245마력·15.7km/L로 고속 최적. 단 4천 이내는 테크노(HEV)·아이코닉(가솔린)까지라 옵션 상위는 예산 초과.</div>
+  <div class="hw">🛣️ <b>고속 스탠스</b> — 245마력에 복합 15.7km/L로 <b>고속 정속에 가장 이상적</b>. 다만 4천 예산이면 테크노 한 트림뿐이라 선택지가 좁습니다.</div>
 </div>
 
-<!-- ===== 전기차 3종 (추가) ===== -->
-<div class="note" style="background:#e0eef2; border:1px solid #c3dde5; color:#2c2a26;">
-  ⚡ <b>전기차 추가</b> — 집 근처 충전소를 쓸 수 있어 전기차를 후보에 넣었어요. <b>고주행이라 주행거리가 긴 트림(롱레인지)이 필수</b>입니다.
-  가격은 <b>보조금 전 출고가</b>(세제혜택 후)이며, 보조금 받으면 실구매가는 더 내려갑니다.
+<!-- ===== 3. 스포티지 HEV ===== -->
+<div class="car">
+  <div class="car-head">
+    <img src="img/스포티지.jpg" alt="스포티지">
+    <div class="t"><div class="nm">기아 스포티지 하이브리드</div>
+      <div class="sub">준중형 SUV · 고속 안정 + <b>기아 중고가치·A/S</b></div></div>
+    <span class="rankbadge">🥉 3위</span>
+  </div>
+
+  <h4 class="sec">트림 (최하위 '프레스티지' 제외)</h4>
+  <div class="trim top"><div class="lv">최상위</div><div class="body">
+    <div class="tn">X-Line <span class="price">3,995만</span></div>
+    <div class="desc">스포티 전용 디자인. 4천에 딱 걸침.</div></div></div>
+  <div class="trim"><div class="lv">상위</div><div class="body">
+    <div class="tn">시그니처 <span class="price">3,931만</span></div>
+    <div class="desc">동승석 전동 허리지지대, 세이프티 파워윈도우 등 프리미엄 편의.</div></div></div>
+  <div class="trim"><div class="lv">권장</div><div class="body">
+    <div class="tn">노블레스 <span class="price">3,670만</span></div>
+    <div class="desc"><b>2열 이중접합 차음 글라스</b>(고속 정숙성↑) · 세이프티 파워윈도우. <b>가성비 균형점.</b></div></div></div>
+  <div class="cnote">※ 프레스티지(3,346만)는 최하위라 제외.</div>
+
+  <h4 class="sec">외장 색상</h4>
+  <div class="colors">
+    <span class="sw"><i style="background:#f5f5f3;"></i>스노우 화이트 펄</span>
+    <span class="sw"><i style="background:#8b8d8c;"></i>울프 그레이</span>
+    <span class="sw"><i style="background:#5f6265;"></i>그래비티 그레이</span>
+    <span class="sw"><i style="background:#6e7175;"></i>쉐도우 매트 그레이<span style="color:var(--sub);">(무광)</span></span>
+    <span class="sw"><i style="background:#16181a;"></i>퓨전 블랙</span>
+    <span class="sw"><i style="background:#2c4a6b;"></i>헤리티지 블루</span>
+    <span class="sw"><i style="background:#3b5f7d;"></i>베스타 블루</span>
+    <span class="sw"><i style="background:#3c4a3a;"></i>정글 우드 그린</span>
+  </div>
+  <div class="hw">🛣️ <b>고속 스탠스</b> — 노블레스부터 들어가는 <b>2열 이중접합 차음 글라스</b>가 고속 소음에 효과적. 고속 위주면 노블레스 이상 권장.</div>
 </div>
 
+<!-- ===== 4. 토레스 EVX ===== -->
 <div class="car">
   <div class="car-head">
     <img src="img/토레스EVX.jpg" alt="토레스 EVX">
-    <div class="t"><div class="nm">KGM 토레스 EVX <span class="badge">🥇 종합 1위</span></div><div class="sub">중형 전기 SUV · 448~452km · 배터리보증 10년/100만km</div></div>
+    <div class="t"><div class="nm">KGM 토레스 EVX <span style="font-size:11px; background:var(--ev-soft); color:var(--ev); padding:1px 7px; border-radius:5px;">전기</span></div>
+      <div class="sub">중형 전기 SUV · 452km · <b>배터리보증 10년/100만km</b></div></div>
+    <span class="rankbadge">4위</span>
   </div>
-  <div class="ladder">
-    <div class="trim top"><div class="lv">🥇 최상위</div><div class="body">
-      <div class="tn">E7 <span class="price">4,812만</span></div>
-      <div class="desc">상위 편의·디자인 풀. 보조금 받으면 실구매 3천만원대 후반~4천 초반.</div></div></div>
-    <div class="trim"><div class="lv">기본</div><div class="body">
-      <div class="tn">E5 <span class="price">4,602만</span></div>
-      <div class="desc">기본형인데 이미 충분. <b>보조금 후 실구매 3천만원대 후반</b>. 가성비 핵심.</div></div></div>
-  </div>
-  <div class="cap">※ <b>배터리 보증 10년·100만km</b> — 연 3만km 고주행에도 평생 보증 안. 고주행자에겐 결정적 강점.</div>
+  <div class="trim top"><div class="lv">최상위</div><div class="body">
+    <div class="tn">E7 <span class="price">4,812만</span></div>
+    <div class="desc">상위 편의·디자인. 보조금 후 실구매 4천 초반.</div></div></div>
+  <div class="trim"><div class="lv">기본(2트림뿐)</div><div class="body">
+    <div class="tn">E5 <span class="price">4,602만</span></div>
+    <div class="desc">기본형인데 이미 충분. <b>보조금 후 3천만원대 후반.</b></div></div></div>
+
+  <h4 class="sec">외장 색상</h4>
+  <div class="cnote">무채색 위주 구성(파란 전기차 번호판과 조화). <b>투톤</b> 선택 시 루프·스포일러·C필러가 블랙. C필러 실버 가니쉬는 원톤에서만 선택 가능.
+    정확한 색상명은 <a href="https://www.kg-mobility.com/" target="_blank">KGM 공식</a>에서 확인.</div>
+  <div class="hw">🛣️ <b>고속 스탠스 주의</b> — 전기차는 고속에서 전비가 떨어져 <b>452km보다 실제로 더 짧게</b> 갑니다. 고속 위주면 충전 횟수를 한 번 더 계산하세요.</div>
 </div>
 
+<!-- ===== 5. EV3 ===== -->
 <div class="car">
   <div class="car-head">
-    <img src="img/EV3.jpg" alt="기아 EV3">
-    <div class="t"><div class="nm">기아 EV3 <span class="badge">🥈 종합 2위</span></div><div class="sub">소형 전기 SUV · 롱레인지 501km / 스탠다드 347km</div></div>
+    <img src="img/EV3.jpg" alt="EV3">
+    <div class="t"><div class="nm">기아 EV3 <span style="font-size:11px; background:var(--ev-soft); color:var(--ev); padding:1px 7px; border-radius:5px;">전기</span></div>
+      <div class="sub">소형 전기 SUV · 롱레인지 <b>복합 501km / 고속 447km</b></div></div>
+    <span class="rankbadge">5위</span>
   </div>
-  <div class="ladder">
-    <div class="trim top"><div class="lv">🥇 최상위</div><div class="body">
-      <div class="tn">롱레인지 GT라인 <span class="price">4,895만</span></div>
-      <div class="desc">주행 501km + 최상위 사양. 롱레인지 어스 4,810만.</div></div></div>
-    <div class="trim"><div class="lv">고주행 권장</div><div class="body">
-      <div class="tn">롱레인지 에어 <span class="price">4,415만</span></div>
-      <div class="desc"><b>주행 501km(고속 447km)</b>. 수빈이 고주행엔 <b>이 라인 이상</b>이 정답. 보조금 후 3천대 후반~.</div></div></div>
-    <div class="trim"><div class="lv">기본(비권장)</div><div class="body">
-      <div class="tn">스탠다드 에어 <span class="price">3,995만</span></div>
-      <div class="desc">보조금 후 3,200~3,300만으로 가장 쌈. <b>단 주행 347km(고속 314km)</b>라 고주행엔 충전이 너무 잦아짐.</div></div></div>
-  </div>
-  <div class="cap">※ 5,500만 미만이라 국고 보조금 100% 대상. <b>배터리 보증 km 한도는 계약 전 확인</b>(30만km 대비).</div>
+  <div class="trim top"><div class="lv">최상위</div><div class="body">
+    <div class="tn">롱레인지 GT라인 <span class="price">4,895만</span></div>
+    <div class="desc">주행 501km + 최상위 사양.</div></div></div>
+  <div class="trim"><div class="lv">권장</div><div class="body">
+    <div class="tn">롱레인지 어스 / 에어 <span class="price">4,810 / 4,415만</span></div>
+    <div class="desc"><b>고주행이면 롱레인지 필수.</b> 5,500만 미만이라 국고 보조금 100% 대상 → 실구매 3천대 후반~.</div></div></div>
+  <div class="cnote">※ <b>스탠다드(3,995만, 복합 347km·고속 314km)는 제외</b> — 고속·고주행에 충전이 너무 잦아집니다.</div>
+  <div class="hw">🛣️ <b>고속 스탠스</b> — 고속 447km는 후보 중 최장. 다만 실제 고속 정속에선 더 줄 수 있어요. <b>배터리 보증 km 한도 반드시 확인</b>(연 3만km → 10년 30만km).</div>
 </div>
 
+<!-- ===== 6~ 나머지 요약 ===== -->
 <div class="car">
   <div class="car-head">
-    <img src="img/니로EV.jpg" alt="기아 니로 EV">
-    <div class="t"><div class="nm">기아 니로 EV</div><div class="sub">소형 전기 SUV · 401km · 64.8kWh</div></div>
+    <div class="t"><div class="nm">나머지 후보 (요약)</div>
+      <div class="sub">고속 스탠스에선 순위가 밀린 차들 — 최하위 트림 제외 기준</div></div>
   </div>
-  <div class="ladder">
-    <div class="trim top"><div class="lv">🥇 상위</div><div class="body">
-      <div class="tn">상위 트림 <span class="price">4천만원대</span></div>
-      <div class="desc">기아 전기차의 무난한 선택. 편의사양 충실.</div></div></div>
-    <div class="trim"><div class="lv">기본</div><div class="body">
-      <div class="tn">기본 트림 <span class="price">4천만원대</span></div>
-      <div class="desc">주행 401km. EV3 롱레인지(501km)보다 짧아 충전 횟수가 늘어남.</div></div></div>
-  </div>
-  <div class="cap">※ 니로 하이브리드와 같은 차체. 주행거리에서 EV3·EVX에 밀림.</div>
+  <div class="trim"><div class="lv">6위</div><div class="body">
+    <div class="tn">KGM 토레스 <span class="price">T7 3,229만 / 블랙에디션 3,550만</span></div>
+    <div class="desc">같은 KGM이면 <b>액티언이 반급 위</b>(고속 안정·사양·단일트림). 캠핑·차박이 주 용도가 아니면 액티언 권장. <span style="color:var(--sub);">(기본 트림 제외)</span></div></div></div>
+  <div class="trim"><div class="lv">7위</div><div class="body">
+    <div class="tn">기아 셀토스 <span class="price">프레스티지 2,840~ / 시그니처 3,101~ / X-Line 3,217~</span></div>
+    <div class="desc">저렴·실속. 소형이라 <b>고속 정숙성·안정감은 중형 대비 열세</b>. <span style="color:var(--sub);">(트렌디 제외)</span></div></div></div>
+  <div class="trim"><div class="lv">8위</div><div class="body">
+    <div class="tn">기아 니로 HEV <span class="price">프레스티지 3,098만 / 시그니처 3,300만대</span></div>
+    <div class="desc"><b style="color:var(--warn);">고속 스탠스에서 순위 하락.</b> 도심 20km/L가 강점인 차라, <b>고속 위주면 그 강점이 희석</b>돼 액티언 대비 이점이 크지 않음. <span style="color:var(--sub);">(트렌디 제외)</span></div></div></div>
+  <div class="trim"><div class="lv">9~10위</div><div class="body">
+    <div class="tn">니로 EV (401km) · BYD 아토3 플러스 (321km)</div>
+    <div class="desc">둘 다 <b>주행거리가 짧아 고속·고주행엔 충전 부담</b>이 큼. 아토3는 기본 트림 제외(플러스만).</div></div></div>
 </div>
 
-<section class="tip">
-  <h2>정리 — 수빈이(고주행) 기준 트림 조언</h2>
-  <ul class="clean">
-    <li>⚡ <b>전기차(1·2순위):</b> <b>토레스 EVX는 기본 E5로도 충분</b>(보조금 후 3천대 후반). <b>EV3는 반드시 롱레인지</b>(스탠다드 347km는 고주행에 부적합).</li>
-    <li><b>연비 우선(니로·셀토스HEV):</b> 프레스티지/시그니처면 충분. 굳이 최상위 아니어도 됨.</li>
-    <li><b>준중형(스포티지):</b> 노블레스~시그니처 HEV가 4천 이내 균형점. X-Line 풀옵은 4천 초과.</li>
-    <li><b>가성비 풀옵(액티언):</b> S7만으로 사양 풍부. S9은 편의 좀 더, 풀옵(4,092)은 예산 초과.</li>
-    <li><b>고급(그랑콜레오스):</b> 4천 이내면 테크노(HEV)/아이코닉(가솔린)까지. 알핀 풀옵은 예산 밖.</li>
-  </ul>
-  <div class="disclaimer">
-    ※ 트림 구성·가격은 2026년 시점 기준이며 연식·프로모션으로 바뀝니다. 정확한 트림/옵션 가격은 각 제조사 공식 가격표로 재확인하세요.
-    사진 출처: Wikimedia Commons(CC). 개인 허브 편입용 독립 구성.
-  </div>
-</section>
+<div class="disclaimer">
+  ※ <b>최하위 트림은 제외</b>했습니다(실제로 안 볼 트림). 가격은 2026년 출고가(세제혜택 후, 전기차는 보조금 전).
+  색상은 확인된 것만 표기했고, <b>일부 차종(셀토스·니로·EV3·아토3) 색상은 제조사 공식 페이지에서 확인</b>이 필요합니다.
+  색상 원 표시는 이해를 돕기 위한 <b>근사 색</b>이며 실제 도장과 다를 수 있어요 — <b>실물·공식 갤러리 확인 권장</b>.
+</div>
 
 <footer>
-  수빈 개인 참고자료 · 조사-006 · 7종 트림별 정리(상위트림 먼저) v1.0 · 2026-07-13 · 외부 공개 전 명진 확인
+  수빈 개인 참고자료 · 조사-006 · 트림·색상·옵션 종합 v2.0 (고속 스탠스) · 2026-07-14
 </footer>
 
 </div>
