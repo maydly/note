@@ -223,6 +223,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div>
   <div class="h1">구매계획</div><div class="sub">순위대로 · 구매완료하면 가계부·보유현황 자동</div>
   <div id="buyList"></div>
+  <div style="text-align:center;margin-top:12px"><span onclick="resetBuysFromGear()" style="font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline">🔄 순서를 장비비교(gear-data) 기준으로 복구</span></div>
 </div>
 <!-- 참고·구매처 -->
 <div class="scr" id="s-src">
@@ -363,6 +364,18 @@ function loadBuys(){
 }
 function saveBuys(){buys.forEach(function(b,i){b.rank=i+1;});try{localStorage.setItem(PLANKEY,JSON.stringify({v:'app-sync',items:buys,del:buyDel}));}catch(e){}}
 function moveBuy(id,dir){var i=buys.findIndex(function(x){return String(x.id)===String(id);});if(i<0)return;var j=i+dir;if(j<0||j>=buys.length)return;var t=buys[i];buys[i]=buys[j];buys[j]=t;saveBuys();pushSoon('buys');renderBuy();}
+/* 구매계획 순서를 장비비교 공유파일(gear-data.json) 기준으로 되돌리고 클라우드에 반영(덮어쓰기) */
+function resetBuysFromGear(){
+  if(!confirm('구매계획 순서를 장비비교(gear-data) 기준 15개로 되돌릴까요?\n지금 클라우드 순서를 덮어써서 모든 기기가 이 순서로 통일됩니다.'))return;
+  setSyncBadge('복구중…');
+  fetch('gear-data.json',{cache:'no-store'}).then(function(r){return r&&r.ok?r.json():null;}).then(function(g){
+    if(!g||!Array.isArray(g.plan)){toast('gear-data를 못 읽었어요');return;}
+    buys=g.plan.map(function(o,i){return {_k:(o._k!=null?o._k:null),id:o.id||(i+1),name:o.name,cat:o.cat||'기타',best:+o.best||0,avg:+o.avg||0,max:(+o.max||+o.cap||0),memo:o.memo||'',rank:i+1};});
+    buyDel=[];saveBuys();renderBuy();
+    if(syncOn())cloudPush('buys').then(function(){toast('순서 복구 완료 · 클라우드 반영됨(다른 기기는 새로고침)');});
+    else toast('순서 복구 완료(이 기기)');
+  }).catch(function(){toast('복구 실패 — 네트워크 확인');setSyncBadge('오류');});
+}
 function reloadAll(){todos=load(K.todo,[]);buys=loadBuys();owns=load(K.own,[]);ledger=load(K.led,[]);shoots=load(K.shoot,[]);loadPhotos();}
 
 /* ===== ☁ 클라우드 동기화 (비공개 GitHub 저장소, 브라우저에서 직접) =====
@@ -393,6 +406,7 @@ function pathObj(kind){
   if(kind==='photos')return {path:'photos.json',obj:{map:photos,base:photoBase}};
   if(kind==='buys')return {path:'buys.json',obj:{items:buys,del:buyDel}};
   if(kind==='owns')return {path:'owns.json',obj:owns};
+  if(kind==='todos')return {path:'todos.json',obj:todos};
   return null;
 }
 /* GitHub은 같은 repo 동시커밋을 하나만 받으므로 push는 큐로 «한 번에 하나»씩.
@@ -418,14 +432,15 @@ function pushSoon(kind){if(!syncOn())return;setSyncBadge('저장중…');clearTi
 function cloudPull(){
   var c=syncCfg();if(!c||!c.token){return Promise.resolve();}
   setSyncBadge('동기화중…');
-  return Promise.all([ghGet(c,'ledger.json'),ghGet(c,'shoots.json'),ghGet(c,'photos.json'),ghGet(c,'buys.json'),ghGet(c,'owns.json')]).then(function(res){
-    var L=res[0],S=res[1],P=res[2],B=res[3],O=res[4];
-    remoteSha={ledger:L&&L.sha,shoots:S&&S.sha,photos:P&&P.sha,buys:B&&B.sha,owns:O&&O.sha};
+  return Promise.all([ghGet(c,'ledger.json'),ghGet(c,'shoots.json'),ghGet(c,'photos.json'),ghGet(c,'buys.json'),ghGet(c,'owns.json'),ghGet(c,'todos.json')]).then(function(res){
+    var L=res[0],S=res[1],P=res[2],B=res[3],O=res[4],T=res[5];
+    remoteSha={ledger:L&&L.sha,shoots:S&&S.sha,photos:P&&P.sha,buys:B&&B.sha,owns:O&&O.sha,todos:T&&T.sha};
     if(L&&Array.isArray(L.json)){ledger=L.json;save(K.led,ledger);}
     if(S&&Array.isArray(S.json)){shoots=S.json;save(K.shoot,shoots);}
     if(P&&P.json){photos=P.json.map||P.json;if(P.json.base)photoBase=P.json.base;try{localStorage.setItem('mj_photos',JSON.stringify({map:photos,base:photoBase}));}catch(e){}}
     if(B&&B.json){var bi=Array.isArray(B.json)?B.json:(B.json.items||[]);buyDel=Array.isArray(B.json.del)?B.json.del:buyDel;buys=bi;saveBuys();}
     if(O&&Array.isArray(O.json)){owns=O.json;save(K.own,owns);}
+    if(T&&Array.isArray(T.json)){todos=T.json;save(K.todo,todos);}
     // 원격에 없는 항목은 로컬을 올려 시드(첫 기기)
     var seed=[];
     if(!L&&ledger.length)seed.push(cloudPush('ledger'));
@@ -433,7 +448,8 @@ function cloudPull(){
     if(!P&&Object.keys(photos).length)seed.push(cloudPush('photos'));
     if(!B&&buys.length)seed.push(cloudPush('buys'));
     if(!O&&owns.length)seed.push(cloudPush('owns'));
-    renderMoney();renderShoot();renderBuy();renderOwn();
+    if(!T&&todos.length)seed.push(cloudPush('todos'));
+    renderMoney();renderShoot();renderBuy();renderOwn();renderTodo();
     return Promise.all(seed);
   }).then(function(){setSyncBadge('동기화됨');}).catch(function(e){setSyncBadge('오류');toast('동기화 실패: '+e.message);});
 }
@@ -484,7 +500,7 @@ function todoCard(t){
     +'<button class="del" onclick="delItem(\'todo\',\''+t.id+'\')">×</button>'
     +'</div></div>';
 }
-function toggleTodo(id){var t=todos.find(function(x){return x.id===id;});if(t){t.done=!t.done;save(K.todo,todos);renderTodo();}}
+function toggleTodo(id){var t=todos.find(function(x){return String(x.id)===String(id);});if(t){t.done=!t.done;save(K.todo,todos);pushSoon('todos');renderTodo();}}
 
 /* ===== 구매계획 ===== */
 function renderBuy(){
@@ -561,7 +577,7 @@ function renderOwn(){
 
 /* 공통 삭제 */
 function delItem(kind,id){
-  if(kind==='todo'){todos=todos.filter(function(x){return x.id!==id;});save(K.todo,todos);renderTodo();}
+  if(kind==='todo'){todos=todos.filter(function(x){return String(x.id)!==String(id);});save(K.todo,todos);pushSoon('todos');renderTodo();}
   if(kind==='buy'){var bb=buys.find(function(x){return String(x.id)===String(id);});if(bb&&bb._k!=null&&buyDel.indexOf(bb._k)<0)buyDel.push(bb._k);buys=buys.filter(function(x){return String(x.id)!==String(id);});saveBuys();pushSoon('buys');renderBuy();}
   if(kind==='own'){owns=owns.filter(function(x){return String(x.id)!==String(id);});save(K.own,owns);pushSoon('owns');renderOwn();}
   if(kind==='led'){ledger=ledger.filter(function(x){return x.id!==id;});save(K.led,ledger);pushSoon('ledger');renderMoney();}
@@ -1059,7 +1075,7 @@ function sheetTodo(){
   setTimeout(function(){var e=document.getElementById('f_text');e&&e.focus();},50);
 }
 function pickTag(el,t){window._tag=t;document.querySelectorAll('#f_tags .chip').forEach(function(c){c.classList.remove('on');});el.classList.add('on');}
-function saveTodo(){var v=document.getElementById('f_text').value.trim();if(!v){toast('내용을 입력하세요');return;}todos.unshift({id:uid(),text:v,tag:window._tag,done:false});save(K.todo,todos);renderTodo();closeSheet();}
+function saveTodo(){var v=document.getElementById('f_text').value.trim();if(!v){toast('내용을 입력하세요');return;}todos.unshift({id:uid(),text:v,tag:window._tag,done:false});save(K.todo,todos);pushSoon('todos');renderTodo();closeSheet();}
 
 function sheetBuy(){
   window._bcat='어댑터';var cats=['어댑터','렌즈','조명','바디','컴퓨터','액세서리','기타'];
