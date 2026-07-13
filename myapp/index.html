@@ -143,6 +143,15 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .shrt{background:#eef4ee;color:#5f8b6a;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;white-space:nowrap}
 .shcnt{font-size:11px;color:#b8ab9b;white-space:nowrap}
 .shseq{background:#eef1f6;color:#5f6f8b;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;white-space:nowrap;cursor:pointer}
+.shseqline{font-size:11px;color:#9a8b7a;margin-top:4px;line-height:1.5}
+.shseqline b{color:#6b5a49}
+.shlbl{font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;white-space:nowrap;color:#fff}
+.lblpick{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.lblpick .lb{border:1px solid #e5dbd0;background:#fff;color:#7a6a58;font-size:15px;font-weight:800;padding:10px 0;border-radius:10px;cursor:pointer;text-align:center}
+.lblpick .lb.on{color:#fff;border-color:transparent}
+.lblclear{text-align:center;margin-top:8px}
+.lblclear span{font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline}
+.gmean{font-size:12px;color:#8a7a68;margin-top:8px;text-align:center;font-weight:700}
 .yfil .yb.cancel.on{background:#b5564b;border-color:#b5564b}
 .shcard.cancel{background:#fdf5f3;border-color:#f0dcd6}
 .shav.cx{background:#f3ddd6;color:#c1685a;font-weight:800}
@@ -840,7 +849,9 @@ function avatarHtml(s){
 }
 function shCard(s){
   var ig=igUrl(s);
-  var rate=(s.rateMJ||s.rateGS)?('<span class="shrt">평가 '+esc(String(s.rateMJ||'-'))+'/'+esc(String(s.rateGS||'-'))+'</span>'):'';
+  var mj=+s.rateMJ||0;
+  var rate=mj?('<span class="shlbl" style="background:'+scoreColor(mj)+'" title="'+esc(SCORE_MEAN[mj]||'')+'">명진 '+mj+'</span>'):'';
+  if(s.rateGS)rate+='<span class="shrt">수빈 '+esc(String(s.rateGS))+'</span>';
   if(s.cancel){
     return '<div class="shcard cancel" onclick="editShoot('+s.id+')">'
       +'<div class="shav cx">✕</div>'
@@ -850,13 +861,22 @@ function shCard(s){
   }
   var sq=shootSeq[s.id];
   var seqb=(sq&&sq.total>1)?'<span class="shseq" onclick="event.stopPropagation();showSeq(\''+esc((s.name||'').replace(/\\/g,'').replace(/'/g,''))+'\')">'+sq.n+'/'+sq.total+'회차</span>':'';
+  // 재촬영이면 전체 회차 날짜를 카드에 바로 표시(현재 회차는 굵게) — 안 눌러도 언제인지 보이게
+  var seqline='';
+  if(sq&&sq.total>1){
+    seqline='<div class="shseqline">📅 '+sq.dates.map(function(d,i){
+      var t=(i+1)+'회 '+((d||'').slice(2).replace(/-/g,'.'));
+      return (i+1===sq.n)?'<b>'+t+'</b>':t;
+    }).join(' · ')+'</div>';
+  }
   return '<div class="shcard" onclick="editShoot('+s.id+')">'
     +avatarHtml(s)
     +'<div class="shbd"><div class="shn">'+esc(s.name||'(이름없음)')+seqb
       +(ig?'<a class="shig" href="'+esc(ig)+'" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">@'+esc((s.insta||'인스타').replace(/^@/,''))+'</a>':'')
       +rate+'</div>'
     +'<div class="shd">'+esc((s.date||'').replace(/-/g,'.'))+(s.time?' '+esc(s.time):'')
-      +(s.place?' · '+esc(s.place):'')+(s.note?' · '+esc(s.note):'')+'</div></div>'
+      +(s.place?' · '+esc(s.place):'')+(s.note?' · '+esc(s.note):'')+'</div>'
+    +seqline+'</div>'
     +'<button class="del" onclick="event.stopPropagation();delItem(\'shoot\','+s.id+')">×</button>'
     +'</div>';
 }
@@ -883,6 +903,13 @@ function setPhoto(name,f){
   try{localStorage.setItem('mj_photos',JSON.stringify({map:photos,base:photoBase}));}catch(e){}
   pushSoon('photos');renderShoot();closeSheet();toast('대표사진을 바꿨어요');
 }
+/* 명진점수 1~9 역척도(1=최고 이쁘고잘한다 … 9=최악). 색: 1(초록)→9(빨강). rateMJ에 저장 */
+var SCORE_MEAN={1:'이쁘고 잘한다',2:'이쁘다',3:'잘한다',4:'적당히 이쁘다',5:'적당히 잘한다',6:'애매하다',7:'휴~',8:'힘들다',9:'최악'};
+function scoreColor(n){n=+n;if(!n)return '';var h=Math.round((9-n)/8*120);return 'hsl('+h+',60%,44%)';}
+function scoreChips(cur){cur=+cur||0;var h='';for(var i=1;i<=9;i++){var on=(i===cur);h+='<div class="lb'+(on?' on':'')+'" style="'+(on?'background:'+scoreColor(i)+';':'')+'" onclick="pickScore('+i+')">'+i+'</div>';}return h;}
+function pickScore(n){window._score=(window._score===n?0:n);
+  document.querySelectorAll('#s_grade .lb').forEach(function(el,i){var v=i+1,on=(v===window._score);el.className='lb'+(on?' on':'');el.style.background=on?scoreColor(v):'';});
+  var m=document.getElementById('s_gmean');if(m)m.textContent=window._score?(window._score+' · '+SCORE_MEAN[window._score]):'점수를 눌러 선택 (1=최고 … 9=최악)';}
 function sheetShoot(){
   var today=(new Date()).toISOString().slice(0,10);
   document.getElementById('sheet').innerHTML='<h3>촬영 추가</h3>'
@@ -906,14 +933,15 @@ function saveShoot(){
   sortShoots();save(K.shoot,shoots);pushSoon('shoots');renderShoot();closeSheet();toast('촬영을 추가했어요');
 }
 function editShoot(id){
-  var s=shoots.find(function(x){return x.id===id;});if(!s)return;window._sEditId=id;
+  var s=shoots.find(function(x){return x.id===id;});if(!s)return;window._sEditId=id;window._score=+s.rateMJ||0;
   document.getElementById('sheet').innerHTML='<h3>촬영 수정</h3>'
     +'<div class="fld"><label>모델 이름</label><input id="s_name" value="'+esc(s.name||'')+'"></div>'
     +'<div class="fld"><label>날짜</label><input id="s_date" type="date" value="'+esc(s.date||'')+'"></div>'
     +'<div class="fld"><label>시간</label><input id="s_time" type="time" value="'+esc(s.time||'')+'"></div>'
     +'<div class="fld"><label>장소</label><input id="s_place" value="'+esc(s.place||'')+'"></div>'
     +'<div class="fld"><label>인스타</label><input id="s_insta" value="'+esc((s.insta||'').replace(/^@/,''))+'"></div>'
-    +'<div class="fld"><label>평가 (명진 / 수빈)</label><input id="s_rmj" value="'+esc(String(s.rateMJ||''))+'" placeholder="명진 1~9" style="margin-bottom:7px"><input id="s_rgs" value="'+esc(String(s.rateGS||''))+'" placeholder="수빈 1~9"></div>'
+    +'<div class="fld"><label>명진 점수 (1=최고 … 9=최악)</label><div class="lblpick" id="s_grade">'+scoreChips(+s.rateMJ||0)+'</div><div class="gmean" id="s_gmean">'+((+s.rateMJ)?((+s.rateMJ)+' · '+SCORE_MEAN[+s.rateMJ]):'점수를 눌러 선택 (1=최고 … 9=최악)')+'</div></div>'
+    +'<div class="fld"><label>수빈 점수 (선택, 1~9)</label><input id="s_rgs" type="number" inputmode="numeric" min="1" max="9" value="'+esc(String(s.rateGS||''))+'" placeholder="수빈 1~9"></div>'
     +'<div class="fld"><label>메모</label><input id="s_note" value="'+esc(s.note||'')+'"></div>'
     +'<div class="mact"><button class="mcancel" style="background:#f6e3df;color:#b5564b" onclick="if(confirm(\'이 촬영 기록을 삭제할까요?\')){delItem(\'shoot\','+id+');closeSheet();}">삭제</button><button class="msave" onclick="saveShootEdit()">저장</button></div>';
   document.getElementById('mask').classList.add('on');
@@ -924,7 +952,7 @@ function saveShootEdit(){
   s.name=n;s.date=document.getElementById('s_date').value;s.time=document.getElementById('s_time').value||'';
   s.place=document.getElementById('s_place').value.trim();
   s.insta=document.getElementById('s_insta').value.trim().replace(/^@/,'');
-  s.rateMJ=document.getElementById('s_rmj').value.trim();s.rateGS=document.getElementById('s_rgs').value.trim();
+  s.rateMJ=window._score||'';s.rateGS=document.getElementById('s_rgs').value.trim();
   s.note=document.getElementById('s_note').value.trim();
   sortShoots();save(K.shoot,shoots);pushSoon('shoots');renderShoot();closeSheet();toast('수정됐어요');
 }
