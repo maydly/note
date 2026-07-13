@@ -97,6 +97,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .vtabs{display:flex;background:#ece5da;border-radius:12px;padding:3px;margin:6px 0 12px}
 .vt{flex:1;text-align:center;font-size:13px;font-weight:700;color:#9a9086;padding:8px 0;border-radius:9px;cursor:pointer}
 .vt.on{background:#fff;color:#c98e7f;box-shadow:0 1px 3px rgba(90,70,50,.1)}
+.tmeta{font-size:11px;color:#a99e8f;margin-top:3px}
 /* 요약 카테고리 막대 */
 .catrow{display:flex;align-items:center;gap:10px;margin:9px 0}
 .catic{width:30px;height:30px;border-radius:9px;background:#f0ebe2;display:grid;place-items:center;font-size:15px;flex:0 0 auto}
@@ -216,6 +217,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 <div class="scr on" id="s-todo">
   <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div>
   <div class="h1">할 일</div><div class="sub" id="todoSub"></div>
+  <div class="vtabs" id="todoViews"></div>
   <div id="todoList"></div>
 </div>
 <!-- 구매계획 -->
@@ -291,6 +293,13 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <div style="text-align:center;margin-top:8px"><span onclick="clearShoots()" style="font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline">촬영 DB 전체 비우기</span></div>
 </div>
 
+<!-- 위시: 가고싶은곳 · 사고싶은거 -->
+<div class="scr" id="s-wish">
+  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div>
+  <div class="h1">위시</div><div class="sub" id="wishSub">가고 싶은 곳 · 사고 싶은 것</div>
+  <div id="wishList"></div>
+</div>
+
 <button class="add" id="fab" onclick="openAdd()">+</button>
 <div class="tabs">
   <button class="tab on" data-t="todo" onclick="go('todo',this)"><span class="ic">📋</span><span class="lb">할 일</span></button>
@@ -299,6 +308,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <button class="tab" data-t="own" onclick="go('own',this)"><span class="ic">📦</span><span class="lb">보유</span></button>
   <button class="tab" data-t="money" onclick="go('money',this)"><span class="ic">💰</span><span class="lb">가계부</span></button>
   <button class="tab" data-t="shoot" onclick="go('shoot',this)"><span class="ic">📸</span><span class="lb">촬영</span></button>
+  <button class="tab" data-t="wish" onclick="go('wish',this)"><span class="ic">✨</span><span class="lb">위시</span></button>
 </div>
 </div>
 
@@ -310,7 +320,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 <script src="parse.js"></script>
 <script>
 /* ===== 저장소 ===== */
-var K={todo:'mj_todos',buy:'mj_buy',own:'mj_own',led:'mj_ledger',shoot:'mj_shoots'};
+var K={todo:'mj_todos',buy:'mj_buy',own:'mj_own',led:'mj_ledger',shoot:'mj_shoots',wish:'mj_wish'};
 function load(k,def){try{var v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){toast('저장 공간이 부족해요');}}
 function uid(){return 'x'+Math.random().toString(36).slice(2,9);}
@@ -350,7 +360,7 @@ function migrate(){
 }
 
 /* ===== 데이터 ===== */
-var todos,buys,owns,ledger,shoots,buyDel=[];
+var todos,buys,owns,ledger,shoots,wishes,buyDel=[];
 var PLANKEY='maydly-purchase-plan-v1';  // 장비비교 구매계획과 동일 저장소(순위·목록 통일)
 function loadBuys(){
   var r=null;try{r=JSON.parse(localStorage.getItem(PLANKEY)||'null');}catch(e){}
@@ -376,7 +386,7 @@ function resetBuysFromGear(){
     else toast('순서 복구 완료(이 기기)');
   }).catch(function(){toast('복구 실패 — 네트워크 확인');setSyncBadge('오류');});
 }
-function reloadAll(){todos=load(K.todo,[]);buys=loadBuys();owns=load(K.own,[]);ledger=load(K.led,[]);shoots=load(K.shoot,[]);loadPhotos();}
+function reloadAll(){todos=load(K.todo,[]);buys=loadBuys();owns=load(K.own,[]);ledger=load(K.led,[]);shoots=load(K.shoot,[]);wishes=load(K.wish,[]);loadPhotos();}
 
 /* ===== ☁ 클라우드 동기화 (비공개 GitHub 저장소, 브라우저에서 직접) =====
    토큰은 이 기기 localStorage에만 저장 — 사이트 코드·공개 저장소엔 절대 안 들어간다.
@@ -407,6 +417,7 @@ function pathObj(kind){
   if(kind==='buys')return {path:'buys.json',obj:{items:buys,del:buyDel}};
   if(kind==='owns')return {path:'owns.json',obj:owns};
   if(kind==='todos')return {path:'todos.json',obj:todos};
+  if(kind==='wishes')return {path:'wishes.json',obj:wishes};
   return null;
 }
 /* GitHub은 같은 repo 동시커밋을 하나만 받으므로 push는 큐로 «한 번에 하나»씩.
@@ -432,15 +443,16 @@ function pushSoon(kind){if(!syncOn())return;setSyncBadge('저장중…');clearTi
 function cloudPull(){
   var c=syncCfg();if(!c||!c.token){return Promise.resolve();}
   setSyncBadge('동기화중…');
-  return Promise.all([ghGet(c,'ledger.json'),ghGet(c,'shoots.json'),ghGet(c,'photos.json'),ghGet(c,'buys.json'),ghGet(c,'owns.json'),ghGet(c,'todos.json')]).then(function(res){
-    var L=res[0],S=res[1],P=res[2],B=res[3],O=res[4],T=res[5];
-    remoteSha={ledger:L&&L.sha,shoots:S&&S.sha,photos:P&&P.sha,buys:B&&B.sha,owns:O&&O.sha,todos:T&&T.sha};
+  return Promise.all([ghGet(c,'ledger.json'),ghGet(c,'shoots.json'),ghGet(c,'photos.json'),ghGet(c,'buys.json'),ghGet(c,'owns.json'),ghGet(c,'todos.json'),ghGet(c,'wishes.json')]).then(function(res){
+    var L=res[0],S=res[1],P=res[2],B=res[3],O=res[4],T=res[5],W=res[6];
+    remoteSha={ledger:L&&L.sha,shoots:S&&S.sha,photos:P&&P.sha,buys:B&&B.sha,owns:O&&O.sha,todos:T&&T.sha,wishes:W&&W.sha};
     if(L&&Array.isArray(L.json)){ledger=L.json;save(K.led,ledger);}
     if(S&&Array.isArray(S.json)){shoots=S.json;save(K.shoot,shoots);}
     if(P&&P.json){photos=P.json.map||P.json;if(P.json.base)photoBase=P.json.base;try{localStorage.setItem('mj_photos',JSON.stringify({map:photos,base:photoBase}));}catch(e){}}
     if(B&&B.json){var bi=Array.isArray(B.json)?B.json:(B.json.items||[]);buyDel=Array.isArray(B.json.del)?B.json.del:buyDel;buys=bi;saveBuys();}
     if(O&&Array.isArray(O.json)){owns=O.json;save(K.own,owns);}
     if(T&&Array.isArray(T.json)){todos=T.json;save(K.todo,todos);}
+    if(W&&Array.isArray(W.json)){wishes=W.json;save(K.wish,wishes);}
     // 원격에 없는 항목은 로컬을 올려 시드(첫 기기)
     var seed=[];
     if(!L&&ledger.length)seed.push(cloudPush('ledger'));
@@ -449,7 +461,8 @@ function cloudPull(){
     if(!B&&buys.length)seed.push(cloudPush('buys'));
     if(!O&&owns.length)seed.push(cloudPush('owns'));
     if(!T&&todos.length)seed.push(cloudPush('todos'));
-    renderMoney();renderShoot();renderBuy();renderOwn();renderTodo();
+    if(!W&&wishes.length)seed.push(cloudPush('wishes'));
+    renderMoney();renderShoot();renderBuy();renderOwn();renderTodo();renderWish();
     return Promise.all(seed);
   }).then(function(){setSyncBadge('동기화됨');}).catch(function(e){setSyncBadge('오류');toast('동기화 실패: '+e.message);});
 }
@@ -479,12 +492,18 @@ function saveSync(){
 }
 function disconnectSync(){localStorage.removeItem(SYNCKEY);remoteSha={};closeSheet();setSyncBadge();toast('이 기기 연결을 해제했어요 (데이터는 남아있어요)');}
 
-/* ===== 할 일 ===== */
+/* ===== 할 일 (날짜 기록 + 캘린더 보기) ===== */
 var TAGS=['촬영','개인','수빈'];
+var todoView='list', todoYM=null, todoSel=null;
+function todoDateOf(t){return t.due||t.doneAt||t.created||'';}  // 캘린더에서 대표로 쓰는 날짜
 function renderTodo(){
-  var today=new Date();var open=todos.filter(function(t){return !t.done;}),done=todos.filter(function(t){return t.done;});
+  var open=todos.filter(function(t){return !t.done;}),done=todos.filter(function(t){return t.done;});
   document.getElementById('todoSub').textContent=(todos.length?done.length+'/'+todos.length+' 완료':'할 일을 추가해 보세요');
-  var el=document.getElementById('todoList');var h='';
+  var vt=document.getElementById('todoViews');
+  if(vt)vt.innerHTML=[['list','목록'],['cal','📅 캘린더']].map(function(v){return '<div class="vt'+(todoView===v[0]?' on':'')+'" onclick="setTodoView(\''+v[0]+'\')">'+v[1]+'</div>';}).join('');
+  var el=document.getElementById('todoList');
+  if(todoView==='cal'){el.innerHTML=todoCalendar();return;}
+  var h='';
   if(!todos.length){h='<div class="empty">＋ 버튼으로 할 일을 추가하세요<br>촬영·개인·수빈 태그로 구분돼요</div>';}
   else{
     if(open.length){h+='<div class="seg">진행 중</div>'+open.map(todoCard).join('');}
@@ -492,15 +511,86 @@ function renderTodo(){
   }
   el.innerHTML=h;
 }
+function setTodoView(v){todoView=v;todoSel=null;renderTodo();}
 function todoCard(t){
+  var meta=[];
+  if(t.due)meta.push('예정 '+t.due.slice(5).replace('-','/'));
+  if(t.created)meta.push('추가 '+t.created.slice(5).replace('-','/'));
+  if(t.done&&t.doneAt)meta.push('완료 '+t.doneAt.slice(5).replace('-','/'));
   return '<div class="card '+(t.done?'done':'')+'"><div class="row">'
     +'<div class="ck '+(t.done?'on':'')+'" onclick="toggleTodo(\''+t.id+'\')"></div>'
-    +'<div class="tt">'+esc(t.text)+'</div>'
+    +'<div class="tt">'+esc(t.text)+(meta.length?'<div class="tmeta">'+meta.join(' · ')+'</div>':'')+'</div>'
     +(t.tag?'<span class="tag t-'+t.tag+'">'+t.tag+'</span>':'')
     +'<button class="del" onclick="delItem(\'todo\',\''+t.id+'\')">×</button>'
     +'</div></div>';
 }
-function toggleTodo(id){var t=todos.find(function(x){return String(x.id)===String(id);});if(t){t.done=!t.done;save(K.todo,todos);pushSoon('todos');renderTodo();}}
+function todoCalendar(){
+  var now=new Date();var ym=todoYM||{y:now.getFullYear(),m:now.getMonth()};
+  var first=new Date(ym.y,ym.m,1),dow=first.getDay(),days=new Date(ym.y,ym.m+1,0).getDate();
+  // 날짜별 예정/완료 카운트
+  var due={},don={};
+  todos.forEach(function(t){if(t.due)due[t.due]=(due[t.due]||0)+1;if(t.doneAt)don[t.doneAt]=(don[t.doneAt]||0)+1;});
+  var td=now.getDate(),isThis=now.getFullYear()===ym.y&&now.getMonth()===ym.m;
+  var lbl=ym.y+'년 '+(ym.m+1)+'월';
+  var h='<div class="mnav"><button onclick="todoNav(-1)">‹</button><div class="ml">'+lbl+'</div><button onclick="todoNav(1)">›</button></div>';
+  h+='<div class="cal">'+['일','월','화','수','목','금','토'].map(function(d){return '<div class="cdow">'+d+'</div>';}).join('');
+  for(var i=0;i<dow;i++)h+='<div class="cell empty"></div>';
+  for(var d=1;d<=days;d++){
+    var ds=ym.y+'-'+pad(ym.m+1)+'-'+pad(d);
+    h+='<div class="cell'+(isThis&&d===td?' today':'')+(todoSel===ds?' sel':'')+'" onclick="todoPick(\''+ds+'\')">'
+      +'<div class="cd">'+d+'</div>'
+      +(due[ds]?'<div class="cin" style="color:#8a6a4a">예 '+due[ds]+'</div>':'')
+      +(don[ds]?'<div class="cout" style="color:#5f8b6a">완 '+don[ds]+'</div>':'')
+      +'</div>';
+  }
+  h+='</div>';
+  if(todoSel){
+    var day=todos.filter(function(t){return t.due===todoSel||t.doneAt===todoSel||t.created===todoSel;});
+    h+='<div class="seg">'+(+todoSel.slice(8,10))+'일'+(day.length?'':' — 없음')+'</div>'+day.map(todoCard).join('');
+  }else{
+    h+='<div class="seg">날짜를 눌러 그날 할 일을 보세요 · 예(예정)/완(완료)</div>';
+  }
+  return h;
+}
+function todoNav(dir){var now=new Date();var ym=todoYM||{y:now.getFullYear(),m:now.getMonth()};var dt=new Date(ym.y,ym.m+dir,1);todoYM={y:dt.getFullYear(),m:dt.getMonth()};todoSel=null;renderTodo();}
+function todoPick(ds){todoSel=(todoSel===ds?null:ds);renderTodo();}
+function todayStr(){var n=new Date();return n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate());}
+function toggleTodo(id){var t=todos.find(function(x){return String(x.id)===String(id);});if(t){t.done=!t.done;t.doneAt=t.done?todayStr():'';save(K.todo,todos);pushSoon('todos');renderTodo();}}
+
+/* ===== 위시: 가고싶은곳 · 사고싶은거 ===== */
+function renderWish(){
+  var el=document.getElementById('wishList');if(!el)return;
+  var sub=document.getElementById('wishSub');
+  var pl=wishes.filter(function(w){return w.type==='place';}),bu=wishes.filter(function(w){return w.type!=='place';});
+  if(sub)sub.textContent=wishes.length?('가고싶은곳 '+pl.length+' · 사고싶은거 '+bu.length):'가고 싶은 곳 · 사고 싶은 것';
+  if(!wishes.length){el.innerHTML='<div class="empty">＋ 로 추가하세요<br>📍 가고싶은곳 · 🛒 사고싶은거</div>';return;}
+  function sec(title,arr){
+    if(!arr.length)return '<div class="seg">'+title+' — 없음</div>';
+    return '<div class="seg">'+title+' ('+arr.length+')</div>'+arr.map(wishCard).join('');
+  }
+  el.innerHTML=sec('📍 가고싶은곳',pl)+sec('🛒 사고싶은거',bu);
+}
+function wishCard(w){
+  return '<div class="card '+(w.done?'done':'')+'"><div class="row">'
+    +'<div class="ck '+(w.done?'on':'')+'" onclick="toggleWish(\''+w.id+'\')"></div>'
+    +'<div class="tt">'+esc(w.name)+(w.memo?'<div class="tmeta">'+esc(w.memo)+'</div>':'')+'</div>'
+    +'<button class="del" onclick="delItem(\'wish\',\''+w.id+'\')">×</button>'
+    +'</div></div>';
+}
+function sheetWish(){
+  window._wtype='place';
+  document.getElementById('sheet').innerHTML='<h3>위시 추가</h3>'
+    +'<div class="fld"><label>종류</label><div class="io" id="w_io"><button class="on-out" onclick="pickWtype(\'place\')">📍 가고싶은곳</button><button onclick="pickWtype(\'buy\')">🛒 사고싶은거</button></div></div>'
+    +'<div class="fld"><label>이름</label><input id="w_name" placeholder="예: 제주 소길리 카페 / 에어팟 프로"></div>'
+    +'<div class="fld"><label>메모 (선택)</label><input id="w_memo" placeholder="예: 뷰 좋음 / 세일 때"></div>'
+    +'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button><button class="msave" onclick="saveWish()">추가</button></div>';
+  setTimeout(function(){var e=document.getElementById('w_name');e&&e.focus();},50);
+}
+function pickWtype(t){window._wtype=t;var io=document.getElementById('w_io');io.children[0].className=t==='place'?'on-out':'';io.children[1].className=t==='buy'?'on-in':'';}
+function saveWish(){var n=document.getElementById('w_name').value.trim();if(!n){toast('이름을 입력하세요');return;}
+  wishes.unshift({id:uid(),type:window._wtype,name:n,memo:document.getElementById('w_memo').value.trim(),done:false,created:todayStr()});
+  save(K.wish,wishes);pushSoon('wishes');renderWish();closeSheet();toast('위시에 추가했어요');}
+function toggleWish(id){var w=wishes.find(function(x){return String(x.id)===String(id);});if(w){w.done=!w.done;save(K.wish,wishes);pushSoon('wishes');renderWish();}}
 
 /* ===== 구매계획 ===== */
 function renderBuy(){
@@ -581,7 +671,8 @@ function delItem(kind,id){
   if(kind==='buy'){var bb=buys.find(function(x){return String(x.id)===String(id);});if(bb&&bb._k!=null&&buyDel.indexOf(bb._k)<0)buyDel.push(bb._k);buys=buys.filter(function(x){return String(x.id)!==String(id);});saveBuys();pushSoon('buys');renderBuy();}
   if(kind==='own'){owns=owns.filter(function(x){return String(x.id)!==String(id);});save(K.own,owns);pushSoon('owns');renderOwn();}
   if(kind==='led'){ledger=ledger.filter(function(x){return x.id!==id;});save(K.led,ledger);pushSoon('ledger');renderMoney();}
-  if(kind==='shoot'){shoots=shoots.filter(function(x){return x.id!==id;});save(K.shoot,shoots);pushSoon('shoots');renderShoot();}
+  if(kind==='shoot'){shoots=shoots.filter(function(x){return String(x.id)!==String(id);});save(K.shoot,shoots);pushSoon('shoots');renderShoot();}
+  if(kind==='wish'){wishes=wishes.filter(function(x){return String(x.id)!==String(id);});save(K.wish,wishes);pushSoon('wishes');renderWish();}
 }
 
 /* ===== 가계부 ===== */
@@ -1060,6 +1151,7 @@ function openAdd(){
   else if(curTab==='buy')sheetBuy();
   else if(curTab==='own')sheetOwn();
   else if(curTab==='shoot')sheetShoot();
+  else if(curTab==='wish')sheetWish();
   else sheetMoney();
   document.getElementById('mask').classList.add('on');
 }
@@ -1071,11 +1163,15 @@ function sheetTodo(){
   document.getElementById('sheet').innerHTML='<h3>할 일 추가</h3>'
     +'<div class="fld"><label>내용</label><input id="f_text" placeholder="예: 최혜주님 원본 전달" autofocus></div>'
     +'<div class="fld"><label>태그</label><div class="chips" id="f_tags">'+TAGS.map(function(t){return '<div class="chip '+(t==='촬영'?'on':'')+'" onclick="pickTag(this,\''+t+'\')">'+t+'</div>';}).join('')+'</div></div>'
+    +'<div class="fld"><label>예정일 (선택 · 캘린더에 표시)</label><input id="f_due" type="date"></div>'
     +'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button><button class="msave" onclick="saveTodo()">추가</button></div>';
   setTimeout(function(){var e=document.getElementById('f_text');e&&e.focus();},50);
 }
 function pickTag(el,t){window._tag=t;document.querySelectorAll('#f_tags .chip').forEach(function(c){c.classList.remove('on');});el.classList.add('on');}
-function saveTodo(){var v=document.getElementById('f_text').value.trim();if(!v){toast('내용을 입력하세요');return;}todos.unshift({id:uid(),text:v,tag:window._tag,done:false});save(K.todo,todos);pushSoon('todos');renderTodo();closeSheet();}
+function saveTodo(){var v=document.getElementById('f_text').value.trim();if(!v){toast('내용을 입력하세요');return;}
+  var due=(document.getElementById('f_due')||{}).value||'';
+  todos.unshift({id:uid(),text:v,tag:window._tag,done:false,created:todayStr(),due:due,doneAt:''});
+  save(K.todo,todos);pushSoon('todos');renderTodo();closeSheet();}
 
 function sheetBuy(){
   window._bcat='어댑터';var cats=['어댑터','렌즈','조명','바디','컴퓨터','액세서리','기타'];
@@ -1160,7 +1256,7 @@ function go(id,btn){
 }
 
 /* ===== 시작 ===== */
-function boot(){reloadAll();migrate();reloadAll();renderTodo();renderBuy();renderOwn();renderMoney();renderShoot();syncGear();setSyncBadge();
+function boot(){reloadAll();migrate();reloadAll();renderTodo();renderBuy();renderOwn();renderMoney();renderShoot();renderWish();syncGear();setSyncBadge();
   if(syncOn())cloudPull().then(function(){ensureOwns();renderOwn();});else ensureOwns();}
 /* 보유 기본 보강(1회) — 명진 요청 추가분. 이미 있거나 사용자가 지운 뒤엔 다시 안 넣음 */
 function ensureOwns(){
