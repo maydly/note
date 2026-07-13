@@ -197,13 +197,13 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 <div id="app" style="display:none">
 <!-- 할 일 -->
 <div class="scr on" id="s-todo">
-  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync">☁ 이 기기 저장</div></div>
+  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div>
   <div class="h1">할 일</div><div class="sub" id="todoSub"></div>
   <div id="todoList"></div>
 </div>
 <!-- 구매계획 -->
 <div class="scr" id="s-buy">
-  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync">☁ 이 기기 저장</div></div>
+  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div>
   <div class="h1">구매계획</div><div class="sub">순위대로 · 구매완료하면 가계부·보유현황 자동</div>
   <div id="buyList"></div>
 </div>
@@ -233,13 +233,13 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 </div>
 <!-- 보유현황 -->
 <div class="scr" id="s-own">
-  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync">☁ 이 기기 저장</div></div>
+  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div>
   <div class="h1">보유현황</div><div class="sub">지금 가진 장비</div>
   <div id="ownList"></div>
 </div>
 <!-- 가계부 -->
 <div class="scr" id="s-money">
-  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync">☁ 이 기기 저장</div></div>
+  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div>
   <div class="h1">가계부</div><div class="sub">수입·지출 기록 (이체·충전 제외한 실거래 기준)</div>
   <div class="ptabs" id="ptabs"></div>
   <div class="vtabs" id="vtabs"></div>
@@ -251,6 +251,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <div class="mnote" id="mNote"></div>
   <div id="moneyBody"></div>
   <button class="impbtn cash" onclick="sheetMoney();document.getElementById('mask').classList.add('on')">＋ 직접 추가 (현금 지출·수입 등)</button>
+  <button class="impbtn" onclick="sheetSync()">☁ 클라우드 동기화 연결 (모든 기기 자동 · 추천)</button>
   <button class="impbtn" onclick="document.getElementById('impFile').click()">＋ 은행 엑셀 가져오기 (하나·카카오뱅크·카카오페이 · 매달 누적)</button>
   <input type="file" id="impFile" style="display:none" onchange="importLedger(this)">
   <details class="covwrap"><summary>📅 가져온 범위 · 기록</summary><div id="covBox"></div></details>
@@ -259,13 +260,14 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 
 <!-- 촬영/모델 DB -->
 <div class="scr" id="s-shoot">
-  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync">📸 촬영 DB</div></div>
+  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div>
   <div class="h1">촬영 · 모델</div><div class="sub" id="shootSub">지금까지 촬영한 기록 · 이름으로 검색</div>
   <input class="search" id="shootQ" placeholder="🔍 이름·장소 검색" oninput="renderShoot()">
   <div class="yfil" id="shootYears"></div>
   <div id="shootList"></div>
   <button class="impbtn cash" onclick="sheetShoot();document.getElementById('mask').classList.add('on')">＋ 촬영 한 건 추가</button>
-  <button class="impbtn" onclick="document.getElementById('shootFile').click()">↑ 촬영 데이터 불러오기 (비공개 JSON)</button>
+  <button class="impbtn" onclick="sheetSync()">☁ 클라우드 동기화 연결 (모든 기기 자동 · 추천)</button>
+  <button class="impbtn" onclick="document.getElementById('shootFile').click()">↑ 촬영 데이터 불러오기 (비공개 JSON · 1회용)</button>
   <!-- accept 제한을 두면 폰(안드로이드·Drive)에서 파일이 회색으로 안 눌리는 일이 잦아 열어둔다. 형식 검사는 JS에서 -->
   <input type="file" id="shootFile" style="display:none" onchange="importShoots(this)">
   <div style="text-align:center;margin-top:8px"><span onclick="clearShoots()" style="font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline">촬영 DB 전체 비우기</span></div>
@@ -346,6 +348,83 @@ function saveBuys(){buys.forEach(function(b,i){b.rank=i+1;});try{localStorage.se
 function moveBuy(id,dir){var i=buys.findIndex(function(x){return x.id===id;});if(i<0)return;var j=i+dir;if(j<0||j>=buys.length)return;var t=buys[i];buys[i]=buys[j];buys[j]=t;saveBuys();renderBuy();}
 function reloadAll(){todos=load(K.todo,[]);buys=loadBuys();owns=load(K.own,[]);ledger=load(K.led,[]);shoots=load(K.shoot,[]);loadPhotos();}
 
+/* ===== ☁ 클라우드 동기화 (비공개 GitHub 저장소, 브라우저에서 직접) =====
+   토큰은 이 기기 localStorage에만 저장 — 사이트 코드·공개 저장소엔 절대 안 들어간다.
+   데이터(가계부·촬영)는 브라우저 ↔ 비공개 repo로 직접 오가고, 서버(나)를 거치지 않는다.
+   모델: 앱 열면 pull(원격이 최신), 원격이 비면 로컬을 올려 시드, 편집하면 push. */
+var SYNCKEY='mj_sync', remoteSha={}, pushTimers={};
+function syncCfg(){try{return JSON.parse(localStorage.getItem(SYNCKEY)||'null');}catch(e){return null;}}
+function b64enc(str){return btoa(unescape(encodeURIComponent(str)));}
+function b64dec(b64){return decodeURIComponent(escape(atob((b64||'').replace(/\n/g,''))));}
+function ghHeaders(c){return {Authorization:'Bearer '+c.token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};}
+function ghGet(c,path){
+  return fetch('https://api.github.com/repos/'+c.repo+'/contents/'+encodeURIComponent(path)+'?ref='+(c.branch||'main')+'&t='+Date.now(),
+    {headers:ghHeaders(c),cache:'no-store'})
+    .then(function(r){if(r.status===404)return null;if(!r.ok)throw new Error('GET '+r.status);return r.json();})
+    .then(function(d){if(!d||!d.content)return null;return {json:JSON.parse(b64dec(d.content)),sha:d.sha};});
+}
+function ghPut(c,path,obj,sha){
+  return fetch('https://api.github.com/repos/'+c.repo+'/contents/'+encodeURIComponent(path),
+    {method:'PUT',headers:ghHeaders(c),
+     body:JSON.stringify({message:'sync '+path,content:b64enc(JSON.stringify(obj)),sha:sha||undefined,branch:c.branch||'main'})})
+    .then(function(r){if(!r.ok)return r.text().then(function(t){throw new Error('PUT '+r.status+' '+t.slice(0,120));});return r.json();});
+}
+function syncOn(){var c=syncCfg();return !!(c&&c.token&&c.repo);}
+function cloudPush(kind){
+  var c=syncCfg();if(!c||!c.token)return Promise.resolve();
+  var path,obj;
+  if(kind==='ledger'){path='ledger.json';obj=ledger;}
+  else if(kind==='shoots'){path='shoots.json';obj=shoots;}
+  else if(kind==='photos'){path='photos.json';obj={map:photos,base:photoBase};}
+  else return Promise.resolve();
+  return ghPut(c,path,obj,remoteSha[kind]).then(function(r){if(r&&r.content)remoteSha[kind]=r.content.sha;setSyncBadge('저장됨');})
+    .catch(function(e){setSyncBadge('오류');toast('클라우드 저장 실패: '+e.message);});
+}
+function pushSoon(kind){if(!syncOn())return;setSyncBadge('저장중…');clearTimeout(pushTimers[kind]);pushTimers[kind]=setTimeout(function(){cloudPush(kind);},1200);}
+function cloudPull(){
+  var c=syncCfg();if(!c||!c.token){return Promise.resolve();}
+  setSyncBadge('동기화중…');
+  return Promise.all([ghGet(c,'ledger.json'),ghGet(c,'shoots.json'),ghGet(c,'photos.json')]).then(function(res){
+    var L=res[0],S=res[1],P=res[2];
+    remoteSha={ledger:L&&L.sha,shoots:S&&S.sha,photos:P&&P.sha};
+    if(L&&Array.isArray(L.json)){ledger=L.json;save(K.led,ledger);}
+    if(S&&Array.isArray(S.json)){shoots=S.json;save(K.shoot,shoots);}
+    if(P&&P.json){photos=P.json.map||P.json;if(P.json.base)photoBase=P.json.base;try{localStorage.setItem('mj_photos',JSON.stringify({map:photos,base:photoBase}));}catch(e){}}
+    // 원격에 없는 항목은 로컬을 올려 시드(첫 기기)
+    var seed=[];
+    if(!L&&ledger.length)seed.push(cloudPush('ledger'));
+    if(!S&&shoots.length)seed.push(cloudPush('shoots'));
+    if(!P&&Object.keys(photos).length)seed.push(cloudPush('photos'));
+    renderMoney();renderShoot();
+    return Promise.all(seed);
+  }).then(function(){setSyncBadge('동기화됨');}).catch(function(e){setSyncBadge('오류');toast('동기화 실패: '+e.message);});
+}
+function setSyncBadge(txt){
+  var on=syncOn();
+  document.querySelectorAll('.sync[data-sync]').forEach(function(e){e.textContent=on?('☁ '+(txt||'동기화됨')):'☁ 이 기기 저장';});
+}
+function sheetSync(){
+  var c=syncCfg()||{};
+  document.getElementById('sheet').innerHTML='<h3>☁ 클라우드 동기화</h3>'
+    +'<div class="phnote">비공개 GitHub 저장소에 <b>가계부·촬영</b>을 저장해 모든 기기(PC·폰)에서 자동 동기화합니다.<br>토큰은 <b>이 기기에만</b> 저장되고 사이트·코드엔 들어가지 않아요. 기기마다 한 번만 연결하면 그 뒤론 자동이에요.</div>'
+    +'<div class="fld"><label>저장소 (owner/repo)</label><input id="sy_repo" value="'+esc(c.repo||'bucket0825/mj-solo')+'" autocapitalize="off" autocorrect="off"></div>'
+    +'<div class="fld"><label>토큰 (github_pat_…)</label><input id="sy_tok" type="password" placeholder="'+(c.token?'●●●●● 저장됨 (바꿀 때만 입력)':'github_pat_...')+'" autocapitalize="off" autocorrect="off"></div>'
+    +'<div class="mact"><button class="mcancel" onclick="closeSheet()">닫기</button><button class="msave" onclick="saveSync()">연결 · 지금 동기화</button></div>'
+    +(c.token?'<div style="text-align:center;margin-top:10px"><span onclick="disconnectSync()" style="font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline">이 기기 연결 해제</span></div>':'');
+  document.getElementById('mask').classList.add('on');
+}
+function saveSync(){
+  var repo=document.getElementById('sy_repo').value.trim();
+  var tok=document.getElementById('sy_tok').value.trim();
+  var c=syncCfg()||{};
+  if(repo)c.repo=repo; if(tok)c.token=tok; c.branch=c.branch||'main';
+  if(!c.repo||!c.token){toast('저장소와 토큰을 모두 입력하세요');return;}
+  try{localStorage.setItem(SYNCKEY,JSON.stringify(c));}catch(e){}
+  closeSheet();toast('연결됨 · 동기화 중…');remoteSha={};
+  cloudPull().then(function(){toast('동기화 완료 · 이제 자동으로 유지돼요');});
+}
+function disconnectSync(){localStorage.removeItem(SYNCKEY);remoteSha={};closeSheet();setSyncBadge();toast('이 기기 연결을 해제했어요 (데이터는 남아있어요)');}
+
 /* ===== 할 일 ===== */
 var TAGS=['촬영','개인','수빈'];
 function renderTodo(){
@@ -411,7 +490,7 @@ function saveComplete(){
   var b=buys.find(function(x){return x.id===window._buyId;});if(!b)return;
   var amt=parseInt(document.getElementById('c_amt').value,10);if(!amt||amt<0){toast('구매 금액을 입력하세요');return;}
   var date=document.getElementById('c_date').value;if(!date){toast('날짜를 선택하세요');return;}
-  ledger.push({id:uid(),date:date,desc:b.name+' 구매',cat:'장비·카메라',type:'out',amt:amt,memo:'구매계획 완료'});save(K.led,ledger);
+  ledger.push({id:uid(),date:date,desc:b.name+' 구매',cat:'장비·카메라',type:'out',amt:amt,memo:'구매계획 완료'});save(K.led,ledger);pushSoon('ledger');
   owns.unshift({id:uid(),name:b.name,cat:window._ocat,desc:'구매 '+date,price:amt,status:'구매'});save(K.own,owns);
   if(b._k!=null&&buyDel.indexOf(b._k)<0)buyDel.push(b._k);
   buys=buys.filter(function(x){return x.id!==window._buyId;});saveBuys();
@@ -447,8 +526,8 @@ function delItem(kind,id){
   if(kind==='todo'){todos=todos.filter(function(x){return x.id!==id;});save(K.todo,todos);renderTodo();}
   if(kind==='buy'){var bb=buys.find(function(x){return x.id===id;});if(bb&&bb._k!=null&&buyDel.indexOf(bb._k)<0)buyDel.push(bb._k);buys=buys.filter(function(x){return x.id!==id;});saveBuys();renderBuy();}
   if(kind==='own'){owns=owns.filter(function(x){return x.id!==id;});save(K.own,owns);renderOwn();}
-  if(kind==='led'){ledger=ledger.filter(function(x){return x.id!==id;});save(K.led,ledger);renderMoney();}
-  if(kind==='shoot'){shoots=shoots.filter(function(x){return x.id!==id;});save(K.shoot,shoots);renderShoot();}
+  if(kind==='led'){ledger=ledger.filter(function(x){return x.id!==id;});save(K.led,ledger);pushSoon('ledger');renderMoney();}
+  if(kind==='shoot'){shoots=shoots.filter(function(x){return x.id!==id;});save(K.shoot,shoots);pushSoon('shoots');renderShoot();}
 }
 
 /* ===== 가계부 ===== */
@@ -651,7 +730,7 @@ function importLedger(inp){
       var added=0;
       mapped.forEach(function(t){var k=key(t);if(!seen[k]){seen[k]=1;ledger.push(t);added++;}});
       ledger.sort(function(a,b){return a.date<b.date?-1:1;});
-      save(K.led,ledger);
+      save(K.led,ledger);pushSoon('ledger');
       var d=mapped.map(function(t){return t.date;}).sort();
       // 가져오기 기록 (언제 · 어느 범위 · 몇 건)
       var accts={};mapped.forEach(function(t){if(t.acct)accts[t.acct]=1;});
@@ -670,7 +749,7 @@ function importLedger(inp){
 function clearLedger(){
   if(!ledger.length){toast('이미 비어 있어요');return;}
   if(confirm('가계부 내역 '+ledger.length+'건을 모두 지울까요?\n(할일·구매·보유는 그대로예요)')){
-    ledger=[];save(K.led,ledger);selDay=null;renderMoney();toast('가계부를 비웠어요');
+    ledger=[];save(K.led,ledger);pushSoon('ledger');selDay=null;renderMoney();toast('가계부를 비웠어요');
   }
 }
 
@@ -748,7 +827,7 @@ function setPhoto(name,f){
   if(!photos[name])photos[name]={all:[]};
   photos[name].rep=f;
   try{localStorage.setItem('mj_photos',JSON.stringify({map:photos,base:photoBase}));}catch(e){}
-  renderShoot();closeSheet();toast('대표사진을 바꿨어요');
+  pushSoon('photos');renderShoot();closeSheet();toast('대표사진을 바꿨어요');
 }
 function sheetShoot(){
   var today=(new Date()).toISOString().slice(0,10);
@@ -770,7 +849,7 @@ function saveShoot(){
     place:document.getElementById('s_place').value.trim(),shoot:'',
     insta:document.getElementById('s_insta').value.trim().replace(/^@/,''),instaUrl:'',rateMJ:'',rateGS:'',
     note:document.getElementById('s_note').value.trim()});
-  sortShoots();save(K.shoot,shoots);renderShoot();closeSheet();toast('촬영을 추가했어요');
+  sortShoots();save(K.shoot,shoots);pushSoon('shoots');renderShoot();closeSheet();toast('촬영을 추가했어요');
 }
 function editShoot(id){
   var s=shoots.find(function(x){return x.id===id;});if(!s)return;window._sEditId=id;
@@ -793,7 +872,7 @@ function saveShootEdit(){
   s.insta=document.getElementById('s_insta').value.trim().replace(/^@/,'');
   s.rateMJ=document.getElementById('s_rmj').value.trim();s.rateGS=document.getElementById('s_rgs').value.trim();
   s.note=document.getElementById('s_note').value.trim();
-  sortShoots();save(K.shoot,shoots);renderShoot();closeSheet();toast('수정됐어요');
+  sortShoots();save(K.shoot,shoots);pushSoon('shoots');renderShoot();closeSheet();toast('수정됐어요');
 }
 function sortShoots(){shoots.sort(function(a,b){return ((a.date||'')+(a.time||''))<((b.date||'')+(b.time||''))?1:-1;});}
 /* 비공개 JSON 불러오기 (병합·중복제외). 개인정보라 공개사이트엔 안 올림 */
@@ -811,6 +890,7 @@ function importShoots(inp){
         });
         if(j.photoBase)photoBase=j.photoBase;
         try{localStorage.setItem('mj_photos',JSON.stringify({map:photos,base:photoBase}));}catch(e){}
+        pushSoon('photos');
       }
       var rows=Array.isArray(j)?j:(j.shoots||j.list||[]);
       var mapped=rows.map(function(s){return {id:0,date:(s.date||'').slice(0,10),time:s.time||'',name:(s.name||'').trim(),
@@ -821,7 +901,7 @@ function importShoots(inp){
       var seen={};shoots.forEach(function(s){seen[key(s)]=1;});
       var id=nextShootId(),added=0;
       mapped.forEach(function(s){var k=key(s);if(!seen[k]){seen[k]=1;s.id=id++;shoots.push(s);added++;}});
-      sortShoots();save(K.shoot,shoots);shootYear='전체';
+      sortShoots();save(K.shoot,shoots);pushSoon('shoots');shootYear='전체';
       var qi=document.getElementById('shootQ');if(qi)qi.value='';
       renderShoot();
       toast(added+'건 추가'+(mapped.length-added>0?' (중복 '+(mapped.length-added)+'건 제외)':'')+' · 총 '+shoots.length+'건');
@@ -832,7 +912,7 @@ function importShoots(inp){
 function clearShoots(){
   if(!shoots.length){toast('이미 비어 있어요');return;}
   if(confirm('촬영 기록 '+shoots.length+'건을 모두 지울까요?\n(다른 탭은 그대로예요)')){
-    shoots=[];save(K.shoot,shoots);renderShoot();toast('촬영 DB를 비웠어요');
+    shoots=[];save(K.shoot,shoots);pushSoon('shoots');renderShoot();toast('촬영 DB를 비웠어요');
   }
 }
 
@@ -907,7 +987,7 @@ function saveMoney(){
   var amt=parseInt(document.getElementById('m_amt').value,10);if(!amt||amt<0){toast('금액을 입력하세요');return;}
   var date=document.getElementById('m_date').value;if(!date){toast('날짜를 선택하세요');return;}
   ledger.push({id:uid(),date:date,desc:document.getElementById('m_desc').value.trim(),cat:document.getElementById('m_cat').value,type:window._mtype,amt:amt,acct:'현금',memo:''});
-  save(K.led,ledger);viewYM={y:+date.slice(0,4),m:+date.slice(5,7)-1};renderMoney();closeSheet();toast('현금 내역을 기록했어요');
+  save(K.led,ledger);pushSoon('ledger');viewYM={y:+date.slice(0,4),m:+date.slice(5,7)-1};renderMoney();closeSheet();toast('현금 내역을 기록했어요');
 }
 /* 내역 수정 (수입/지출·분류·금액·날짜·내용 변경 + 삭제) */
 function editLedger(id){
@@ -930,7 +1010,7 @@ function saveEdit(){
   var t=ledger.find(function(x){return x.id===window._editId;});if(!t)return;
   var amt=parseInt(document.getElementById('m_amt').value,10);if(!amt||amt<0){toast('금액을 확인하세요');return;}
   t.type=window._mtype;t.amt=amt;t.cat=document.getElementById('m_cat').value;t.date=document.getElementById('m_date').value;t.desc=document.getElementById('m_desc').value.trim();
-  save(K.led,ledger);renderMoney();closeSheet();toast('수정됐어요');
+  save(K.led,ledger);pushSoon('ledger');renderMoney();closeSheet();toast('수정됐어요');
 }
 
 /* ===== 탭 전환 ===== */
@@ -944,7 +1024,7 @@ function go(id,btn){
 }
 
 /* ===== 시작 ===== */
-function boot(){reloadAll();migrate();reloadAll();renderTodo();renderBuy();renderOwn();renderMoney();renderShoot();syncGear();}
+function boot(){reloadAll();migrate();reloadAll();renderTodo();renderBuy();renderOwn();renderMoney();renderShoot();syncGear();setSyncBadge();if(syncOn())cloudPull();}
 /* 공유파일(PC 편집본) 동기화 — 구매계획·보유현황만. 가계부(민감)는 건드리지 않음.
    버전이 바뀐 배포가 올라오면 폰 구매/보유 탭이 자동 최신화된다. file://에선 조용히 스킵. */
 function syncGear(){
