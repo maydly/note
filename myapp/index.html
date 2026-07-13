@@ -142,6 +142,11 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .shig{background:#fdf1f6;color:#c2657f;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;text-decoration:none;white-space:nowrap}
 .shrt{background:#eef4ee;color:#5f8b6a;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;white-space:nowrap}
 .shcnt{font-size:11px;color:#b8ab9b;white-space:nowrap}
+.shseq{background:#eef1f6;color:#5f6f8b;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;white-space:nowrap;cursor:pointer}
+.yfil .yb.cancel.on{background:#b5564b;border-color:#b5564b}
+.shcard.cancel{background:#fdf5f3;border-color:#f0dcd6}
+.shav.cx{background:#f3ddd6;color:#c1685a;font-weight:800}
+.shcx{background:#f6e0da;color:#b5564b;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;white-space:nowrap}
 .shav.ph{padding:0;overflow:hidden;background:#efe7dc}
 .shav.ph img{width:100%;height:100%;object-fit:cover;display:block}
 .phnote{font-size:11.5px;color:#a1907d;line-height:1.6;margin-bottom:10px}
@@ -780,25 +785,50 @@ function repOf(name){var p=photos[(name||'').trim()];if(!p)return '';return p.re
 function initials(n){n=(n||'').trim();return n?n.slice(0,Math.min(2,n.length)):'?';}
 function igUrl(s){if(!s)return '';if(s.instaUrl&&/^https?:/.test(s.instaUrl))return s.instaUrl;
   var h=(s.insta||'').trim().replace(/^@/,'');return h?'https://instagram.com/'+encodeURIComponent(h):'';}
-function shootYears(){var y={};shoots.forEach(function(s){var v=(s.date||'').slice(0,4);if(v)y[v]=1;});
-  return ['전체'].concat(Object.keys(y).sort().reverse());}
-function renderShoot(){
-  var q=(document.getElementById('shootQ')?document.getElementById('shootQ').value:'').trim().toLowerCase();
-  // 연도 칩
-  var yb=document.getElementById('shootYears');
-  if(yb)yb.innerHTML=shootYears().map(function(y){return '<button class="yb'+(y===shootYear?' on':'')+'" onclick="pickYear(\''+y+'\')">'+y+(y==='전체'?'':'년')+'</button>';}).join('');
-  var list=shoots.filter(function(s){
-    if(shootYear!=='전체'&&(s.date||'').slice(0,4)!==shootYear)return false;
-    if(!q)return true;
-    return ((s.name||'')+' '+(s.place||'')+' '+(s.shoot||'')+' '+(s.insta||'')).toLowerCase().indexOf(q)>=0;
+function shootYears(){var y={};shoots.forEach(function(s){if(s.cancel)return;var v=(s.date||'').slice(0,4);if(v)y[v]=1;});
+  var arr=['전체'].concat(Object.keys(y).sort().reverse());
+  if(shoots.some(function(s){return s.cancel;}))arr.push('취소');
+  return arr;}
+/* 회차 계산: 실촬영만, 이름별 날짜 오름차순 → 각 촬영이 그 사람의 몇 번째인지 + 총 횟수 + 전체 날짜목록 */
+var shootSeq={};
+function computeSeq(){
+  shootSeq={};var byName={};
+  shoots.forEach(function(s){if(s.cancel||!s.name)return;(byName[s.name]=byName[s.name]||[]).push(s);});
+  Object.keys(byName).forEach(function(n){
+    var arr=byName[n].slice().sort(function(a,b){return ((a.date||'')+(a.time||''))<((b.date||'')+(b.time||'')) ? -1 : 1;});
+    var dates=arr.map(function(x){return x.date;});
+    arr.forEach(function(s,i){shootSeq[s.id]={n:i+1,total:arr.length,dates:dates};});
   });
-  var names={};shoots.forEach(function(s){if(s.name)names[s.name]=1;});
+}
+function renderShoot(){
+  computeSeq();
+  var q=(document.getElementById('shootQ')?document.getElementById('shootQ').value:'').trim().toLowerCase();
+  var yb=document.getElementById('shootYears');
+  if(yb)yb.innerHTML=shootYears().map(function(y){var lb=y==='전체'?'전체':(y==='취소'?'🔴 취소':y+'년');return '<button class="yb'+(y===shootYear?' on':'')+(y==='취소'?' cancel':'')+'" onclick="pickYear(\''+y+'\')">'+lb+'</button>';}).join('');
+  var list=shoots.filter(function(s){
+    if(shootYear==='취소'){if(!s.cancel)return false;}
+    else {if(s.cancel)return false;                                   // 취소는 취소필터에서만
+      if(shootYear!=='전체'&&(s.date||'').slice(0,4)!==shootYear)return false;}
+    if(!q)return true;
+    return ((s.name||'')+' '+(s.place||'')+' '+(s.shoot||'')+' '+(s.insta||'')+' '+(s.note||'')).toLowerCase().indexOf(q)>=0;
+  });
+  var names={},real=0,can=0;shoots.forEach(function(s){if(s.cancel)can++;else{real++;if(s.name)names[s.name]=1;}});
   var sub=document.getElementById('shootSub');
-  if(sub)sub.textContent=shoots.length?('촬영 '+shoots.length+'건 · 고객 '+Object.keys(names).length+'명'+(q||shootYear!=='전체'?' → 지금 '+list.length+'건':'')):'아직 없어요 — 아래에서 불러오거나 추가하세요';
+  if(sub)sub.textContent=shoots.length?('촬영 '+real+'건 · 고객 '+Object.keys(names).length+'명'+(can?' · 취소 '+can:'')+(q||shootYear!=='전체'?' → 지금 '+list.length+'건':'')):'아직 없어요 — 아래에서 불러오거나 추가하세요';
   var el=document.getElementById('shootList');if(!el)return;
   if(!list.length){el.innerHTML='<div class="empty">'+(shoots.length?'검색 결과가 없어요':'촬영 기록이 없어요<br>아래 «촬영 데이터 불러오기»로 넣거나 한 건씩 추가하세요')+'</div>';return;}
   el.innerHTML=list.slice(0,300).map(shCard).join('')
     +(list.length>300?'<div class="covempty" style="text-align:center">앞 300건만 표시 · 검색으로 좁혀보세요 (전체 '+list.length+'건)</div>':'');
+}
+/* 회차 뱃지 클릭 → 그 사람 촬영 이력(언제 몇 회차) */
+function showSeq(name){
+  var n=(name||'').trim();var seq=null;
+  for(var id in shootSeq){if(shootSeq.hasOwnProperty(id)){var mine=shoots.find(function(s){return String(s.id)===id;});if(mine&&mine.name===n){seq=shootSeq[id];break;}}}
+  if(!seq){toast('이력이 없어요');return;}
+  var rows=seq.dates.map(function(d,i){return '<div class="covrow"><span class="cova">'+(i+1)+'회차</span><span class="covr">'+esc((d||'').replace(/-/g,'.'))+'</span></div>';}).join('');
+  document.getElementById('sheet').innerHTML='<h3>'+esc(n)+' · 촬영 이력 ('+seq.total+'회)</h3>'+rows
+    +'<div class="mact"><button class="mcancel" onclick="closeSheet()">닫기</button></div>';
+  document.getElementById('mask').classList.add('on');
 }
 function avatarHtml(s){
   var f=repOf(s.name);
@@ -811,9 +841,18 @@ function avatarHtml(s){
 function shCard(s){
   var ig=igUrl(s);
   var rate=(s.rateMJ||s.rateGS)?('<span class="shrt">평가 '+esc(String(s.rateMJ||'-'))+'/'+esc(String(s.rateGS||'-'))+'</span>'):'';
+  if(s.cancel){
+    return '<div class="shcard cancel" onclick="editShoot('+s.id+')">'
+      +'<div class="shav cx">✕</div>'
+      +'<div class="shbd"><div class="shn">'+esc(s.name||'(이름없음)')+'<span class="shcx">취소</span></div>'
+      +'<div class="shd">'+esc((s.date||'').replace(/-/g,'.'))+(s.note?' · '+esc(s.note):'')+'</div></div>'
+      +'<button class="del" onclick="event.stopPropagation();delItem(\'shoot\','+s.id+')">×</button></div>';
+  }
+  var sq=shootSeq[s.id];
+  var seqb=(sq&&sq.total>1)?'<span class="shseq" onclick="event.stopPropagation();showSeq(\''+esc((s.name||'').replace(/\\/g,'').replace(/'/g,''))+'\')">'+sq.n+'/'+sq.total+'회차</span>':'';
   return '<div class="shcard" onclick="editShoot('+s.id+')">'
     +avatarHtml(s)
-    +'<div class="shbd"><div class="shn">'+esc(s.name||'(이름없음)')
+    +'<div class="shbd"><div class="shn">'+esc(s.name||'(이름없음)')+seqb
       +(ig?'<a class="shig" href="'+esc(ig)+'" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">@'+esc((s.insta||'인스타').replace(/^@/,''))+'</a>':'')
       +rate+'</div>'
     +'<div class="shd">'+esc((s.date||'').replace(/-/g,'.'))+(s.time?' '+esc(s.time):'')
