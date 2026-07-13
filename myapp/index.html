@@ -252,7 +252,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <div id="moneyBody"></div>
   <button class="impbtn cash" onclick="sheetMoney();document.getElementById('mask').classList.add('on')">＋ 직접 추가 (현금 지출·수입 등)</button>
   <button class="impbtn" onclick="document.getElementById('impFile').click()">＋ 은행 엑셀 가져오기 (하나·카카오뱅크·카카오페이 · 매달 누적)</button>
-  <input type="file" id="impFile" accept=".xlsx,.xls,.csv,.json,application/json" style="display:none" onchange="importLedger(this)">
+  <input type="file" id="impFile" style="display:none" onchange="importLedger(this)">
   <details class="covwrap"><summary>📅 가져온 범위 · 기록</summary><div id="covBox"></div></details>
   <div style="text-align:center;margin-top:8px"><span onclick="clearLedger()" style="font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline">가계부 전체 비우기</span></div>
 </div>
@@ -266,7 +266,8 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <div id="shootList"></div>
   <button class="impbtn cash" onclick="sheetShoot();document.getElementById('mask').classList.add('on')">＋ 촬영 한 건 추가</button>
   <button class="impbtn" onclick="document.getElementById('shootFile').click()">↑ 촬영 데이터 불러오기 (비공개 JSON)</button>
-  <input type="file" id="shootFile" accept=".json,application/json" style="display:none" onchange="importShoots(this)">
+  <!-- accept 제한을 두면 폰(안드로이드·Drive)에서 파일이 회색으로 안 눌리는 일이 잦아 열어둔다. 형식 검사는 JS에서 -->
+  <input type="file" id="shootFile" style="display:none" onchange="importShoots(this)">
   <div style="text-align:center;margin-top:8px"><span onclick="clearShoots()" style="font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline">촬영 DB 전체 비우기</span></div>
 </div>
 
@@ -622,13 +623,16 @@ function summaryView(list){
 /* 원장 가져오기 (파일 → 이 기기 localStorage) */
 function importLedger(inp){
   var f=inp.files&&inp.files[0];if(!f)return;
-  var isJson=/\.json$/i.test(f.name);
   var r=new FileReader();
   r.onload=function(){
     try{
+      // 형식은 파일명이 아니라 내용으로 판별 (폰 파일선택기가 확장자를 안 넘기는 경우 대비)
+      var buf=r.result, txt=null, j=null;
+      try{txt=new TextDecoder('utf-8').decode(new Uint8Array(buf));}catch(e){}
+      if(txt){var t0=txt.replace(/^﻿/,'').trim().charAt(0);
+        if(t0==='{'||t0==='['){try{j=JSON.parse(txt);}catch(e){}}}
       var mapped;
-      if(isJson){
-        var j=JSON.parse(r.result);
+      if(j){
         var rows=Array.isArray(j)?j:(j.tx||j.ledger||[]);
         mapped=rows.map(function(t){
           var type=t.type||(t.in>0?'in':'out');
@@ -637,7 +641,7 @@ function importLedger(inp){
         }).filter(function(t){return t.date&&t.amt;});
       } else {
         if(typeof XLSX==='undefined'||typeof MJParse==='undefined'){toast('엑셀 모듈 로딩 중 — 새로고침 후 다시 시도');return;}
-        var wb=XLSX.read(new Uint8Array(r.result),{type:'array'});
+        var wb=XLSX.read(new Uint8Array(buf),{type:'array'});
         mapped=MJParse.parseWorkbook(wb).map(function(t){return {id:uid(),date:t.date,time:t.time||'',desc:t.desc,cat:t.cat,type:t.type,amt:t.amt,acct:t.acct||'',memo:''};});
       }
       if(!mapped.length){toast('불러올 내역이 없어요 (은행 엑셀·JSON 형식 확인)');return;}
@@ -660,7 +664,7 @@ function importLedger(inp){
       toast(added+'건 추가'+(mapped.length-added>0?' (중복 '+(mapped.length-added)+'건 제외)':'')+' · 총 '+ledger.length+'건');
     }catch(e){toast('파일을 읽지 못했어요: '+e.message);}
   };
-  if(isJson)r.readAsText(f);else r.readAsArrayBuffer(f);
+  r.readAsArrayBuffer(f);
   inp.value='';
 }
 function clearLedger(){
