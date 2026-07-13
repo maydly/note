@@ -155,6 +155,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .lblclear span{font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline}
 .gmean{font-size:12px;color:#8a7a68;margin-top:8px;text-align:center;font-weight:700}
 .yfil .yb.cancel.on{background:#b5564b;border-color:#b5564b}
+.yfil .yb.noig.on{background:#a9803f;border-color:#a9803f}
 .shcard.cancel{background:#fdf5f3;border-color:#f0dcd6}
 .shav.cx{background:#f3ddd6;color:#c1685a;font-weight:800}
 .shcx{background:#f6e0da;color:#b5564b;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;white-space:nowrap}
@@ -798,6 +799,7 @@ function igUrl(s){if(!s)return '';if(s.instaUrl&&/^https?:/.test(s.instaUrl))ret
   var h=(s.insta||'').trim().replace(/^@/,'');return h?'https://instagram.com/'+encodeURIComponent(h):'';}
 function shootYears(){var y={};shoots.forEach(function(s){if(s.cancel)return;var v=(s.date||'').slice(0,4);if(v)y[v]=1;});
   var arr=['전체'].concat(Object.keys(y).sort().reverse());
+  if(shoots.some(function(s){return !s.cancel&&!(s.insta||'').trim();}))arr.push('인스타없음');
   if(shoots.some(function(s){return s.cancel;}))arr.push('취소');
   return arr;}
 /* 회차 계산: 같은 사람 판별을 이름만이 아니라 «이름+인스타»로 한다(동명이인 분리).
@@ -831,21 +833,28 @@ function renderShoot(){
   computeSeq();
   var q=(document.getElementById('shootQ')?document.getElementById('shootQ').value:'').trim().toLowerCase();
   var yb=document.getElementById('shootYears');
-  if(yb)yb.innerHTML=shootYears().map(function(y){var lb=y==='전체'?'전체':(y==='취소'?'🔴 취소':y+'년');return '<button class="yb'+(y===shootYear?' on':'')+(y==='취소'?' cancel':'')+'" onclick="pickYear(\''+y+'\')">'+lb+'</button>';}).join('');
+  if(yb)yb.innerHTML=shootYears().map(function(y){var lb=y==='전체'?'전체':(y==='취소'?'🔴 취소':(y==='인스타없음'?'❗인스타없음':y+'년'));return '<button class="yb'+(y===shootYear?' on':'')+(y==='취소'?' cancel':'')+(y==='인스타없음'?' noig':'')+'" onclick="pickYear(\''+y+'\')">'+lb+'</button>';}).join('');
+  var noig=shootYear==='인스타없음';
   var list=shoots.filter(function(s){
     if(shootYear==='취소'){if(!s.cancel)return false;}
-    else {if(s.cancel)return false;                                   // 취소는 취소필터에서만
+    else if(noig){if(s.cancel||(s.insta||'').trim())return false;}       // 인스타 빈 실촬영만
+    else {if(s.cancel)return false;
       if(shootYear!=='전체'&&(s.date||'').slice(0,4)!==shootYear)return false;}
     if(!q)return true;
     return ((s.name||'')+' '+(s.place||'')+' '+(s.shoot||'')+' '+(s.insta||'')+' '+(s.note||'')).toLowerCase().indexOf(q)>=0;
   });
-  var names={},real=0,can=0;shoots.forEach(function(s){if(s.cancel)can++;else{real++;if(s.name)names[s.name]=1;}});
+  // 인스타없음 필터는 이름당 1개만(작업목록) — 한 명 채우면 다른 촬영도 자동 반영되므로
+  if(noig){var seen={};list=list.filter(function(s){if(seen[s.name])return false;seen[s.name]=1;return true;});}
+  var names={},real=0,can=0,noc=0;shoots.forEach(function(s){if(s.cancel)can++;else{real++;if(s.name)names[s.name]=1;if(!(s.insta||'').trim())noc++;}});
   var sub=document.getElementById('shootSub');
-  if(sub)sub.textContent=shoots.length?('촬영 '+real+'건 · 고객 '+Object.keys(names).length+'명'+(can?' · 취소 '+can:'')+(q||shootYear!=='전체'?' → 지금 '+list.length+'건':'')):'아직 없어요 — 아래에서 불러오거나 추가하세요';
+  if(sub){
+    if(noig)sub.textContent='인스타 없는 사람 '+list.length+'명 · 하나 채우면 그 사람 다른 촬영도 자동 반영';
+    else sub.textContent=shoots.length?('촬영 '+real+'건 · 고객 '+Object.keys(names).length+'명'+(can?' · 취소 '+can:'')+(q||shootYear!=='전체'?' → 지금 '+list.length+'건':'')):'아직 없어요 — 아래에서 불러오거나 추가하세요';
+  }
   var el=document.getElementById('shootList');if(!el)return;
-  if(!list.length){el.innerHTML='<div class="empty">'+(shoots.length?'검색 결과가 없어요':'촬영 기록이 없어요<br>아래 «촬영 데이터 불러오기»로 넣거나 한 건씩 추가하세요')+'</div>';return;}
+  if(!list.length){el.innerHTML='<div class="empty">'+(noig?'인스타 없는 사람이 없어요 🎉':(shoots.length?'검색 결과가 없어요':'촬영 기록이 없어요<br>아래 «촬영 데이터 불러오기»로 넣거나 한 건씩 추가하세요'))+'</div>';return;}
   el.innerHTML=list.slice(0,300).map(shCard).join('')
-    +(list.length>300?'<div class="covempty" style="text-align:center">앞 300건만 표시 · 검색으로 좁혀보세요 (전체 '+list.length+'건)</div>':'');
+    +(list.length>300?'<div class="covempty" style="text-align:center">앞 300명만 표시 · 검색으로 좁혀보세요 (전체 '+list.length+'명)</div>':'');
 }
 /* 회차 뱃지 클릭 → 그 사람 촬영 이력(언제 몇 회차). id 기준이라 동명이인도 정확 */
 function showSeq(id){
@@ -969,10 +978,15 @@ function saveShootEdit(){
   var n=document.getElementById('s_name').value.trim();if(!n){toast('이름을 입력하세요');return;}
   s.name=n;s.date=document.getElementById('s_date').value;s.time=document.getElementById('s_time').value||'';
   s.place=document.getElementById('s_place').value.trim();
-  s.insta=document.getElementById('s_insta').value.trim().replace(/^@/,'');
   s.rateMJ=window._score||'';s.rateGS=document.getElementById('s_rgs').value.trim();
   s.note=document.getElementById('s_note').value.trim();
-  sortShoots();save(K.shoot,shoots);pushSoon('shoots');renderShoot();closeSheet();toast('수정됐어요');
+  var newIg=document.getElementById('s_insta').value.trim().replace(/^@/,'');
+  s.insta=newIg;
+  // 인스타를 넣었으면 같은 이름의 인스타 빈 다른 촬영에도 자동 반영 (한 명 = 한 번)
+  var prop=0;
+  if(newIg)shoots.forEach(function(x){if(x!==s&&!x.cancel&&x.name===s.name&&!(x.insta||'').trim()){x.insta=newIg;prop++;}});
+  sortShoots();save(K.shoot,shoots);pushSoon('shoots');renderShoot();closeSheet();
+  toast(prop?('수정됨 · '+s.name+' 다른 촬영 '+prop+'건에도 인스타 반영'):'수정됐어요');
 }
 function sortShoots(){shoots.sort(function(a,b){return ((a.date||'')+(a.time||''))<((b.date||'')+(b.time||''))?1:-1;});}
 /* 비공개 JSON 불러오기 (병합·중복제외). 개인정보라 공개사이트엔 안 올림 */
