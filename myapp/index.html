@@ -26,10 +26,12 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .del{flex:0 0 auto;border:none;background:none;color:#d4bfb6;font-size:18px;padding:2px 4px;cursor:pointer;line-height:1}
 .del:active{color:#c2564b}
 /* 탭바 */
-.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(460px,100vw);background:rgba(255,255,255,.96);border-top:1px solid #ebe5db;display:flex;padding:8px 6px calc(env(safe-area-inset-bottom) + 8px);backdrop-filter:blur(10px);z-index:50}
-.tab{flex:1;border:none;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;cursor:pointer;color:#b3ab9f}
-.tab .ic{font-size:20px}.tab .lb{font-size:10px;font-weight:700}
+.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(460px,100vw);background:rgba(255,255,255,.96);border-top:1px solid #ebe5db;display:flex;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:8px 4px calc(env(safe-area-inset-bottom) + 8px);backdrop-filter:blur(10px);z-index:50}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;width:58px;border:none;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;cursor:pointer;color:#b3ab9f}
+.tab .ic{font-size:20px}.tab .lb{font-size:10px;font-weight:700;white-space:nowrap}
 .tab.on{color:#c98e7f}
+.tab.on .ic{transform:scale(1.08)}
 .add{position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom) + 80px);width:52px;height:52px;border-radius:50%;background:#c98e7f;color:#fff;border:none;font-size:26px;box-shadow:0 6px 18px rgba(160,110,90,.4);z-index:55;cursor:pointer}
 .add:active{transform:scale(.94)}
 /* 할일 */
@@ -98,6 +100,9 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .vt{flex:1;text-align:center;font-size:13px;font-weight:700;color:#9a9086;padding:8px 0;border-radius:9px;cursor:pointer}
 .vt.on{background:#fff;color:#c98e7f;box-shadow:0 1px 3px rgba(90,70,50,.1)}
 .tmeta{font-size:11px;color:#a99e8f;margin-top:3px}
+.moodrow{display:flex;gap:8px;justify-content:space-between}
+.moodb{flex:1;text-align:center;font-size:26px;padding:8px 0;border-radius:12px;background:#f6f2ec;cursor:pointer;filter:grayscale(.5);opacity:.6;transition:.15s}
+.moodb.on{background:#fdf6ea;filter:none;opacity:1;box-shadow:0 0 0 2px #dcc3a0 inset;transform:scale(1.05)}
 /* 요약 카테고리 막대 */
 .catrow{display:flex;align-items:center;gap:10px;margin:9px 0}
 .catic{width:30px;height:30px;border-radius:9px;background:#f0ebe2;display:grid;place-items:center;font-size:15px;flex:0 0 auto}
@@ -213,12 +218,29 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 </div>
 
 <div id="app" style="display:none">
-<!-- 할 일 -->
-<div class="scr on" id="s-todo">
+<!-- 오늘 -->
+<div class="scr on" id="s-today">
   <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div>
-  <div class="h1">할 일</div><div class="sub" id="todoSub"></div>
-  <div class="vtabs" id="todoViews"></div>
+  <div class="h1" id="todayTitle">오늘</div><div class="sub" id="todayDate"></div>
+  <div id="todayBody"></div>
+</div>
+<!-- 할 일(투두) -->
+<div class="scr" id="s-todo">
+  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div>
+  <div class="h1">투두</div><div class="sub" id="todoSub"></div>
   <div id="todoList"></div>
+</div>
+<!-- 도전 -->
+<div class="scr" id="s-chal">
+  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div>
+  <div class="h1">도전</div><div class="sub" id="chalSub">매일 체크 · 연속일수(🔥)로 습관 만들기</div>
+  <div id="chalList"></div>
+</div>
+<!-- 캘린더 -->
+<div class="scr" id="s-cal">
+  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div>
+  <div class="h1">캘린더</div><div class="sub">할 일 예정·완료를 날짜로</div>
+  <div id="calBody"></div>
 </div>
 <!-- 구매계획 -->
 <div class="scr" id="s-buy">
@@ -299,16 +321,27 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <div class="h1">위시</div><div class="sub" id="wishSub">가고 싶은 곳 · 사고 싶은 것</div>
   <div id="wishList"></div>
 </div>
+<!-- 정보 -->
+<div class="scr" id="s-info">
+  <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div>
+  <div class="h1">정보</div><div class="sub" id="infoSub">필요한 정보·링크 모음</div>
+  <div class="yfil" id="infoCats"></div>
+  <div id="infoList"></div>
+</div>
 
 <button class="add" id="fab" onclick="openAdd()">+</button>
 <div class="tabs">
-  <button class="tab on" data-t="todo" onclick="go('todo',this)"><span class="ic">📋</span><span class="lb">할 일</span></button>
+  <button class="tab on" data-t="today" onclick="go('today',this)"><span class="ic">☀️</span><span class="lb">오늘</span></button>
+  <button class="tab" data-t="todo" onclick="go('todo',this)"><span class="ic">📋</span><span class="lb">투두</span></button>
+  <button class="tab" data-t="chal" onclick="go('chal',this)"><span class="ic">🔥</span><span class="lb">도전</span></button>
+  <button class="tab" data-t="cal" onclick="go('cal',this)"><span class="ic">📅</span><span class="lb">캘린더</span></button>
   <button class="tab" data-t="buy" onclick="go('buy',this)"><span class="ic">🛒</span><span class="lb">구매</span></button>
-  <button class="tab" data-t="src" onclick="go('src',this)"><span class="ic">📎</span><span class="lb">구매처</span></button>
   <button class="tab" data-t="own" onclick="go('own',this)"><span class="ic">📦</span><span class="lb">보유</span></button>
   <button class="tab" data-t="money" onclick="go('money',this)"><span class="ic">💰</span><span class="lb">가계부</span></button>
   <button class="tab" data-t="shoot" onclick="go('shoot',this)"><span class="ic">📸</span><span class="lb">촬영</span></button>
+  <button class="tab" data-t="src" onclick="go('src',this)"><span class="ic">📎</span><span class="lb">구매처</span></button>
   <button class="tab" data-t="wish" onclick="go('wish',this)"><span class="ic">✨</span><span class="lb">위시</span></button>
+  <button class="tab" data-t="info" onclick="go('info',this)"><span class="ic">📚</span><span class="lb">정보</span></button>
 </div>
 </div>
 
@@ -320,7 +353,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 <script src="parse.js"></script>
 <script>
 /* ===== 저장소 ===== */
-var K={todo:'mj_todos',buy:'mj_buy',own:'mj_own',led:'mj_ledger',shoot:'mj_shoots',wish:'mj_wish'};
+var K={todo:'mj_todos',buy:'mj_buy',own:'mj_own',led:'mj_ledger',shoot:'mj_shoots',wish:'mj_wish',chal:'mj_chals',info:'mj_infos',mood:'mj_moods'};
 function load(k,def){try{var v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){toast('저장 공간이 부족해요');}}
 function uid(){return 'x'+Math.random().toString(36).slice(2,9);}
@@ -360,7 +393,7 @@ function migrate(){
 }
 
 /* ===== 데이터 ===== */
-var todos,buys,owns,ledger,shoots,wishes,buyDel=[];
+var todos,buys,owns,ledger,shoots,wishes,chals,infos,moods,buyDel=[];
 var PLANKEY='maydly-purchase-plan-v1';  // 장비비교 구매계획과 동일 저장소(순위·목록 통일)
 function loadBuys(){
   var r=null;try{r=JSON.parse(localStorage.getItem(PLANKEY)||'null');}catch(e){}
@@ -386,7 +419,7 @@ function resetBuysFromGear(){
     else toast('순서 복구 완료(이 기기)');
   }).catch(function(){toast('복구 실패 — 네트워크 확인');setSyncBadge('오류');});
 }
-function reloadAll(){todos=load(K.todo,[]);buys=loadBuys();owns=load(K.own,[]);ledger=load(K.led,[]);shoots=load(K.shoot,[]);wishes=load(K.wish,[]);loadPhotos();}
+function reloadAll(){todos=load(K.todo,[]);buys=loadBuys();owns=load(K.own,[]);ledger=load(K.led,[]);shoots=load(K.shoot,[]);wishes=load(K.wish,[]);chals=load(K.chal,[]);infos=load(K.info,[]);moods=load(K.mood,{});loadPhotos();}
 
 /* ===== ☁ 클라우드 동기화 (비공개 GitHub 저장소, 브라우저에서 직접) =====
    토큰은 이 기기 localStorage에만 저장 — 사이트 코드·공개 저장소엔 절대 안 들어간다.
@@ -418,6 +451,9 @@ function pathObj(kind){
   if(kind==='owns')return {path:'owns.json',obj:owns};
   if(kind==='todos')return {path:'todos.json',obj:todos};
   if(kind==='wishes')return {path:'wishes.json',obj:wishes};
+  if(kind==='chals')return {path:'chals.json',obj:chals};
+  if(kind==='infos')return {path:'infos.json',obj:infos};
+  if(kind==='moods')return {path:'moods.json',obj:moods};
   return null;
 }
 /* GitHub은 같은 repo 동시커밋을 하나만 받으므로 push는 큐로 «한 번에 하나»씩.
@@ -443,9 +479,9 @@ function pushSoon(kind){if(!syncOn())return;setSyncBadge('저장중…');clearTi
 function cloudPull(){
   var c=syncCfg();if(!c||!c.token){return Promise.resolve();}
   setSyncBadge('동기화중…');
-  return Promise.all([ghGet(c,'ledger.json'),ghGet(c,'shoots.json'),ghGet(c,'photos.json'),ghGet(c,'buys.json'),ghGet(c,'owns.json'),ghGet(c,'todos.json'),ghGet(c,'wishes.json')]).then(function(res){
-    var L=res[0],S=res[1],P=res[2],B=res[3],O=res[4],T=res[5],W=res[6];
-    remoteSha={ledger:L&&L.sha,shoots:S&&S.sha,photos:P&&P.sha,buys:B&&B.sha,owns:O&&O.sha,todos:T&&T.sha,wishes:W&&W.sha};
+  return Promise.all([ghGet(c,'ledger.json'),ghGet(c,'shoots.json'),ghGet(c,'photos.json'),ghGet(c,'buys.json'),ghGet(c,'owns.json'),ghGet(c,'todos.json'),ghGet(c,'wishes.json'),ghGet(c,'chals.json'),ghGet(c,'infos.json'),ghGet(c,'moods.json')]).then(function(res){
+    var L=res[0],S=res[1],P=res[2],B=res[3],O=res[4],T=res[5],W=res[6],C=res[7],I=res[8],M=res[9];
+    remoteSha={ledger:L&&L.sha,shoots:S&&S.sha,photos:P&&P.sha,buys:B&&B.sha,owns:O&&O.sha,todos:T&&T.sha,wishes:W&&W.sha,chals:C&&C.sha,infos:I&&I.sha,moods:M&&M.sha};
     if(L&&Array.isArray(L.json)){ledger=L.json;save(K.led,ledger);}
     if(S&&Array.isArray(S.json)){shoots=S.json;save(K.shoot,shoots);}
     if(P&&P.json){photos=P.json.map||P.json;if(P.json.base)photoBase=P.json.base;try{localStorage.setItem('mj_photos',JSON.stringify({map:photos,base:photoBase}));}catch(e){}}
@@ -453,6 +489,9 @@ function cloudPull(){
     if(O&&Array.isArray(O.json)){owns=O.json;save(K.own,owns);}
     if(T&&Array.isArray(T.json)){todos=T.json;save(K.todo,todos);}
     if(W&&Array.isArray(W.json)){wishes=W.json;save(K.wish,wishes);}
+    if(C&&Array.isArray(C.json)){chals=C.json;save(K.chal,chals);}
+    if(I&&Array.isArray(I.json)){infos=I.json;save(K.info,infos);}
+    if(M&&M.json&&typeof M.json==='object'){moods=M.json;save(K.mood,moods);}
     // 원격에 없는 항목은 로컬을 올려 시드(첫 기기)
     var seed=[];
     if(!L&&ledger.length)seed.push(cloudPush('ledger'));
@@ -462,7 +501,10 @@ function cloudPull(){
     if(!O&&owns.length)seed.push(cloudPush('owns'));
     if(!T&&todos.length)seed.push(cloudPush('todos'));
     if(!W&&wishes.length)seed.push(cloudPush('wishes'));
-    renderMoney();renderShoot();renderBuy();renderOwn();renderTodo();renderWish();
+    if(!C&&chals.length)seed.push(cloudPush('chals'));
+    if(!I&&infos.length)seed.push(cloudPush('infos'));
+    if(!M&&Object.keys(moods).length)seed.push(cloudPush('moods'));
+    renderAll();
     return Promise.all(seed);
   }).then(function(){setSyncBadge('동기화됨');}).catch(function(e){setSyncBadge('오류');toast('동기화 실패: '+e.message);});
 }
@@ -492,17 +534,17 @@ function saveSync(){
 }
 function disconnectSync(){localStorage.removeItem(SYNCKEY);remoteSha={};closeSheet();setSyncBadge();toast('이 기기 연결을 해제했어요 (데이터는 남아있어요)');}
 
-/* ===== 할 일 (날짜 기록 + 캘린더 보기) ===== */
+/* ===== 공통 ===== */
+function todayStr(){var n=new Date();return n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate());}
+function renderAll(){renderToday();renderTodo();renderChal();renderCal();renderBuy();renderOwn();renderMoney();renderShoot();renderWish();renderInfo();}
+
+/* ===== 투두 ===== */
 var TAGS=['촬영','개인','수빈'];
-var todoView='list', todoYM=null, todoSel=null;
-function todoDateOf(t){return t.due||t.doneAt||t.created||'';}  // 캘린더에서 대표로 쓰는 날짜
+var todoYM=null, todoSel=null;
 function renderTodo(){
   var open=todos.filter(function(t){return !t.done;}),done=todos.filter(function(t){return t.done;});
-  document.getElementById('todoSub').textContent=(todos.length?done.length+'/'+todos.length+' 완료':'할 일을 추가해 보세요');
-  var vt=document.getElementById('todoViews');
-  if(vt)vt.innerHTML=[['list','목록'],['cal','📅 캘린더']].map(function(v){return '<div class="vt'+(todoView===v[0]?' on':'')+'" onclick="setTodoView(\''+v[0]+'\')">'+v[1]+'</div>';}).join('');
-  var el=document.getElementById('todoList');
-  if(todoView==='cal'){el.innerHTML=todoCalendar();return;}
+  var sub=document.getElementById('todoSub');if(sub)sub.textContent=(todos.length?done.length+'/'+todos.length+' 완료':'할 일을 추가해 보세요');
+  var el=document.getElementById('todoList');if(!el)return;
   var h='';
   if(!todos.length){h='<div class="empty">＋ 버튼으로 할 일을 추가하세요<br>촬영·개인·수빈 태그로 구분돼요</div>';}
   else{
@@ -511,7 +553,6 @@ function renderTodo(){
   }
   el.innerHTML=h;
 }
-function setTodoView(v){todoView=v;todoSel=null;renderTodo();}
 function todoCard(t){
   var meta=[];
   if(t.due)meta.push('예정 '+t.due.slice(5).replace('-','/'));
@@ -524,38 +565,133 @@ function todoCard(t){
     +'<button class="del" onclick="delItem(\'todo\',\''+t.id+'\')">×</button>'
     +'</div></div>';
 }
-function todoCalendar(){
+function toggleTodo(id){var t=todos.find(function(x){return String(x.id)===String(id);});if(t){t.done=!t.done;t.doneAt=t.done?todayStr():'';save(K.todo,todos);pushSoon('todos');renderTodo();renderToday();renderCal();}}
+
+/* ===== 캘린더(할 일 날짜) ===== */
+function renderCal(){
+  var el=document.getElementById('calBody');if(!el)return;
   var now=new Date();var ym=todoYM||{y:now.getFullYear(),m:now.getMonth()};
   var first=new Date(ym.y,ym.m,1),dow=first.getDay(),days=new Date(ym.y,ym.m+1,0).getDate();
-  // 날짜별 예정/완료 카운트
   var due={},don={};
   todos.forEach(function(t){if(t.due)due[t.due]=(due[t.due]||0)+1;if(t.doneAt)don[t.doneAt]=(don[t.doneAt]||0)+1;});
   var td=now.getDate(),isThis=now.getFullYear()===ym.y&&now.getMonth()===ym.m;
-  var lbl=ym.y+'년 '+(ym.m+1)+'월';
-  var h='<div class="mnav"><button onclick="todoNav(-1)">‹</button><div class="ml">'+lbl+'</div><button onclick="todoNav(1)">›</button></div>';
+  var h='<div class="mnav"><button onclick="calNav(-1)">‹</button><div class="ml">'+ym.y+'년 '+(ym.m+1)+'월</div><button onclick="calNav(1)">›</button></div>';
   h+='<div class="cal">'+['일','월','화','수','목','금','토'].map(function(d){return '<div class="cdow">'+d+'</div>';}).join('');
   for(var i=0;i<dow;i++)h+='<div class="cell empty"></div>';
   for(var d=1;d<=days;d++){
     var ds=ym.y+'-'+pad(ym.m+1)+'-'+pad(d);
-    h+='<div class="cell'+(isThis&&d===td?' today':'')+(todoSel===ds?' sel':'')+'" onclick="todoPick(\''+ds+'\')">'
+    h+='<div class="cell'+(isThis&&d===td?' today':'')+(todoSel===ds?' sel':'')+'" onclick="calPick(\''+ds+'\')">'
       +'<div class="cd">'+d+'</div>'
       +(due[ds]?'<div class="cin" style="color:#8a6a4a">예 '+due[ds]+'</div>':'')
-      +(don[ds]?'<div class="cout" style="color:#5f8b6a">완 '+don[ds]+'</div>':'')
-      +'</div>';
+      +(don[ds]?'<div class="cout" style="color:#5f8b6a">완 '+don[ds]+'</div>':'')+'</div>';
   }
   h+='</div>';
   if(todoSel){
     var day=todos.filter(function(t){return t.due===todoSel||t.doneAt===todoSel||t.created===todoSel;});
     h+='<div class="seg">'+(+todoSel.slice(8,10))+'일'+(day.length?'':' — 없음')+'</div>'+day.map(todoCard).join('');
-  }else{
-    h+='<div class="seg">날짜를 눌러 그날 할 일을 보세요 · 예(예정)/완(완료)</div>';
-  }
-  return h;
+  }else h+='<div class="seg">날짜를 눌러 그날 할 일을 보세요 · 예(예정)/완(완료)</div>';
+  el.innerHTML=h;
 }
-function todoNav(dir){var now=new Date();var ym=todoYM||{y:now.getFullYear(),m:now.getMonth()};var dt=new Date(ym.y,ym.m+dir,1);todoYM={y:dt.getFullYear(),m:dt.getMonth()};todoSel=null;renderTodo();}
-function todoPick(ds){todoSel=(todoSel===ds?null:ds);renderTodo();}
-function todayStr(){var n=new Date();return n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate());}
-function toggleTodo(id){var t=todos.find(function(x){return String(x.id)===String(id);});if(t){t.done=!t.done;t.doneAt=t.done?todayStr():'';save(K.todo,todos);pushSoon('todos');renderTodo();}}
+function calNav(dir){var now=new Date();var ym=todoYM||{y:now.getFullYear(),m:now.getMonth()};var dt=new Date(ym.y,ym.m+dir,1);todoYM={y:dt.getFullYear(),m:dt.getMonth()};todoSel=null;renderCal();}
+function calPick(ds){todoSel=(todoSel===ds?null:ds);renderCal();}
+
+/* ===== 오늘(대시보드) ===== */
+var MOODS=['😄','🙂','😐','😔','😫'];
+function renderToday(){
+  var el=document.getElementById('todayBody');if(!el)return;
+  var now=new Date();var hh=now.getHours();
+  var greet=hh<6?'늦은 밤이야':hh<12?'좋은 아침 ☀️':hh<18?'좋은 오후':'저녁이야 🌙';
+  var t=document.getElementById('todayTitle');if(t)t.textContent=greet+', 명진';
+  var ds=document.getElementById('todayDate');if(ds)ds.textContent=now.getFullYear()+'.'+pad(now.getMonth()+1)+'.'+pad(now.getDate())+' ('+['일','월','화','수','목','금','토'][now.getDay()]+')';
+  var today=todayStr();
+  // 기분
+  var mood=moods[today]||'';
+  var h='<div class="card"><div style="font-weight:800;margin-bottom:8px">오늘 기분</div><div class="moodrow">'
+    +MOODS.map(function(m){return '<div class="moodb'+(m===mood?' on':'')+'" onclick="setMood(\''+m+'\')">'+m+'</div>';}).join('')+'</div></div>';
+  // 오늘 할 일(예정=오늘 or 미완료)
+  var due=todos.filter(function(x){return !x.done&&x.due===today;});
+  var noDue=todos.filter(function(x){return !x.done&&!x.due;});
+  var todayTodos=due.concat(noDue).slice(0,6);
+  h+='<div class="seg">오늘 할 일'+(due.length?' · 예정 '+due.length:'')+'</div>';
+  h+=todayTodos.length?todayTodos.map(todoCard).join(''):'<div class="empty" style="padding:16px">오늘 할 일이 없어요 🎉</div>';
+  // 오늘 도전
+  h+='<div class="seg">오늘 도전</div>';
+  if(!chals.length)h+='<div class="empty" style="padding:16px">🔥 도전 탭에서 습관을 추가해요</div>';
+  else h+=chals.map(function(c){var done=c.days&&c.days[today];return '<div class="card"><div class="row">'
+    +'<div class="ck '+(done?'on':'')+'" onclick="toggleChal(\''+c.id+'\')"></div>'
+    +'<div class="tt">'+esc(c.name)+'<div class="tmeta">🔥 '+chalStreak(c)+'일 연속</div></div>'
+    +'</div></div>';}).join('');
+  // 오늘 촬영
+  var shootT=(typeof shoots!=='undefined'?shoots:[]).filter(function(s){return !s.cancel&&s.date===today;});
+  if(shootT.length)h+='<div class="seg">오늘 촬영 '+shootT.length+'</div>'+shootT.map(function(s){return '<div class="card"><div class="tt">📸 '+esc(s.name)+(s.time?' · '+esc(s.time):'')+(s.place?' · '+esc(s.place):'')+'</div></div>';}).join('');
+  el.innerHTML=h;
+}
+function setMood(m){var d=todayStr();moods[d]=(moods[d]===m?'':m);save(K.mood,moods);pushSoon('moods');renderToday();}
+
+/* ===== 도전(습관·연속일수) ===== */
+function chalStreak(c){
+  var n=0,d=new Date();
+  for(var i=0;i<400;i++){var ds=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+    if(c.days&&c.days[ds]){n++;}else if(i===0){/* 오늘 아직 미체크면 어제부터 카운트 */}else break;
+    d.setDate(d.getDate()-1);}
+  return n;
+}
+function renderChal(){
+  var el=document.getElementById('chalList');if(!el)return;
+  var today=todayStr();
+  var sub=document.getElementById('chalSub');if(sub)sub.textContent=chals.length?(chals.length+'개 · 오늘 '+chals.filter(function(c){return c.days&&c.days[today];}).length+' 완료'):'매일 체크 · 연속일수(🔥)로 습관 만들기';
+  if(!chals.length){el.innerHTML='<div class="empty">＋ 로 도전을 추가하세요<br>예: 물 2L · 스트레칭 · 사진 1장</div>';return;}
+  el.innerHTML=chals.map(function(c){var done=c.days&&c.days[today];var st=chalStreak(c);
+    var total=c.days?Object.keys(c.days).length:0;
+    return '<div class="card '+(done?'done':'')+'"><div class="row">'
+      +'<div class="ck '+(done?'on':'')+'" onclick="toggleChal(\''+c.id+'\')"></div>'
+      +'<div class="tt">'+esc(c.name)+'<div class="tmeta">🔥 '+st+'일 연속 · 누적 '+total+'일</div></div>'
+      +'<span class="shseq">'+st+'🔥</span>'
+      +'<button class="del" onclick="delItem(\'chal\',\''+c.id+'\')">×</button>'
+      +'</div></div>';}).join('');
+}
+function toggleChal(id){var c=chals.find(function(x){return String(x.id)===String(id);});if(!c)return;var d=todayStr();c.days=c.days||{};if(c.days[d])delete c.days[d];else c.days[d]=1;save(K.chal,chals);pushSoon('chals');renderChal();renderToday();}
+function sheetChal(){
+  document.getElementById('sheet').innerHTML='<h3>도전 추가</h3>'
+    +'<div class="fld"><label>습관 이름</label><input id="ch_name" placeholder="예: 물 2L 마시기"></div>'
+    +'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button><button class="msave" onclick="saveChal()">추가</button></div>';
+  setTimeout(function(){var e=document.getElementById('ch_name');e&&e.focus();},50);
+}
+function saveChal(){var n=document.getElementById('ch_name').value.trim();if(!n){toast('이름을 입력하세요');return;}
+  chals.push({id:uid(),name:n,days:{},created:todayStr()});save(K.chal,chals);pushSoon('chals');renderChal();closeSheet();toast('도전을 추가했어요');}
+
+/* ===== 정보(허브) ===== */
+var infoCat='전체';
+var INFO_CATS=['생활','건강','여행','맛집','링크','기타'];
+function renderInfo(){
+  var el=document.getElementById('infoList');if(!el)return;
+  var cats=['전체'].concat(INFO_CATS.filter(function(c){return infos.some(function(x){return x.cat===c;});}));
+  var cf=document.getElementById('infoCats');
+  if(cf)cf.innerHTML=cats.map(function(c){return '<button class="yb'+(c===infoCat?' on':'')+'" onclick="pickInfoCat(\''+c+'\')">'+c+'</button>';}).join('');
+  var sub=document.getElementById('infoSub');if(sub)sub.textContent=infos.length?(infos.length+'개'):'필요한 정보·링크 모음';
+  var list=infos.filter(function(x){return infoCat==='전체'||x.cat===infoCat;});
+  if(!list.length){el.innerHTML='<div class="empty">＋ 로 정보를 추가하세요<br>메모·링크를 분류해서</div>';return;}
+  el.innerHTML=list.map(function(x){
+    var body=esc(x.body||'').replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" rel="noreferrer">$1</a>');
+    return '<div class="card"><div class="row"><div class="tt"><b>'+esc(x.title)+'</b>'
+      +(x.cat?' <span class="tag" style="background:#eee3d7;color:#9a8b7a">'+esc(x.cat)+'</span>':'')
+      +(x.body?'<div class="tmeta" style="white-space:pre-wrap;line-height:1.5">'+body+'</div>':'')+'</div>'
+      +'<button class="del" onclick="delItem(\'info\',\''+x.id+'\')">×</button></div></div>';}).join('');
+}
+function pickInfoCat(c){infoCat=c;renderInfo();}
+function sheetInfo(){
+  window._icat='생활';
+  document.getElementById('sheet').innerHTML='<h3>정보 추가</h3>'
+    +'<div class="fld"><label>분류</label><div class="chips" id="i_cats">'+INFO_CATS.map(function(c){return '<div class="chip '+(c==='생활'?'on':'')+'" onclick="pickIcat(this,\''+c+'\')">'+c+'</div>';}).join('')+'</div></div>'
+    +'<div class="fld"><label>제목</label><input id="i_title" placeholder="예: 단골 필름현상소"></div>'
+    +'<div class="fld"><label>내용/링크 (선택)</label><textarea id="i_body" rows="3" placeholder="메모나 https:// 링크"></textarea></div>'
+    +'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button><button class="msave" onclick="saveInfo()">추가</button></div>';
+  setTimeout(function(){var e=document.getElementById('i_title');e&&e.focus();},50);
+}
+function pickIcat(el,c){window._icat=c;document.querySelectorAll('#i_cats .chip').forEach(function(x){x.classList.remove('on');});el.classList.add('on');}
+function saveInfo(){var t=document.getElementById('i_title').value.trim();if(!t){toast('제목을 입력하세요');return;}
+  infos.unshift({id:uid(),cat:window._icat,title:t,body:document.getElementById('i_body').value.trim(),created:todayStr()});
+  save(K.info,infos);pushSoon('infos');renderInfo();closeSheet();toast('정보를 추가했어요');}
 
 /* ===== 위시: 가고싶은곳 · 사고싶은거 ===== */
 function renderWish(){
@@ -673,6 +809,8 @@ function delItem(kind,id){
   if(kind==='led'){ledger=ledger.filter(function(x){return x.id!==id;});save(K.led,ledger);pushSoon('ledger');renderMoney();}
   if(kind==='shoot'){shoots=shoots.filter(function(x){return String(x.id)!==String(id);});save(K.shoot,shoots);pushSoon('shoots');renderShoot();}
   if(kind==='wish'){wishes=wishes.filter(function(x){return String(x.id)!==String(id);});save(K.wish,wishes);pushSoon('wishes');renderWish();}
+  if(kind==='chal'){chals=chals.filter(function(x){return String(x.id)!==String(id);});save(K.chal,chals);pushSoon('chals');renderChal();renderToday();}
+  if(kind==='info'){infos=infos.filter(function(x){return String(x.id)!==String(id);});save(K.info,infos);pushSoon('infos');renderInfo();}
 }
 
 /* ===== 가계부 ===== */
@@ -1144,10 +1282,12 @@ function clearShoots(){
 }
 
 /* ===== 추가 모달 ===== */
-var curTab='todo';
+var curTab='today';
 function openAdd(){
   if(curTab==='src')return;
-  if(curTab==='todo')sheetTodo();
+  if(curTab==='todo'||curTab==='today'||curTab==='cal')sheetTodo();
+  else if(curTab==='chal')sheetChal();
+  else if(curTab==='info')sheetInfo();
   else if(curTab==='buy')sheetBuy();
   else if(curTab==='own')sheetOwn();
   else if(curTab==='shoot')sheetShoot();
@@ -1252,11 +1392,12 @@ function go(id,btn){
   document.getElementById('s-'+id).classList.add('on');
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});btn.classList.add('on');
   document.getElementById('fab').style.display=(id==='src')?'none':'';
+  try{btn.scrollIntoView({inline:'center',block:'nearest'});}catch(e){}
   window.scrollTo(0,0);
 }
 
 /* ===== 시작 ===== */
-function boot(){reloadAll();migrate();reloadAll();renderTodo();renderBuy();renderOwn();renderMoney();renderShoot();renderWish();syncGear();setSyncBadge();
+function boot(){reloadAll();migrate();reloadAll();renderAll();syncGear();setSyncBadge();
   if(syncOn())cloudPull().then(function(){ensureOwns();renderOwn();});else ensureOwns();}
 /* 보유 기본 보강(1회) — 명진 요청 추가분. 이미 있거나 사용자가 지운 뒤엔 다시 안 넣음 */
 function ensureOwns(){
