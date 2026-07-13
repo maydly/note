@@ -188,10 +188,13 @@
 
   <!-- 백업/동기화 (최하단, 접힘) -->
   <details id="sync" class="sync-details">
-    <summary>💾 백업·동기화 <span>· 평소엔 안 써도 됨 (눌러서 펼치기)</span></summary>
+    <summary>📱 폰으로 보내기 · 백업 <span>· 계획을 고쳤으면 여기서 폰에 반영 (눌러서 펼치기)</span></summary>
     <div class="sync">
-      <p class="small" style="margin-top:8px"><b>언제 쓰나요?</b> 이 계획은 <b>지금 보는 브라우저에만</b> 저장돼요. ① <b>폰↔PC로 옮기거나</b> ② <b>클로드가 사이트에 영구 저장</b>하게 하려면 → "JSON 복사"를 눌러 클로드에게 주세요. 복원은 "불러오기", 처음으로 되돌리기는 "초기화".</p>
+      <p class="small" style="margin-top:8px"><b>왜 필요한가요?</b> 이 계획은 <b>지금 보는 브라우저에만</b> 저장돼요. 그래서 PC에서 고친 게 폰에 저절로 가지 않아요.<br>
+      <b>폰에 반영하려면:</b> ① <b>「📱 폰으로 보내기」</b>를 누르면 <code>gear-data.json</code> 파일이 내려받아져요 → ② 클로드에게 <b>"폰에 반영해줘"</b>라고 하면 사이트에 올려줘요 → ③ 폰에서 명진앱을 열면 <b>구매·보유 탭이 자동으로 최신화</b>돼요.<br>
+      <span style="color:#8a7a68">(나머지 버튼은 백업용 — "JSON 복사"는 텍스트 백업, "불러오기"는 복원, "초기화"는 처음으로 되돌리기)</span></p>
       <div class="btnrow" style="margin-top:8px">
+        <button id="btn-tophone" class="primary">📱 폰으로 보내기 (gear-data.json 내려받기)</button>
         <button id="btn-export" class="ghost">고정저장용 JSON 복사</button>
         <button id="btn-import" class="ghost">JSON 불러오기(붙여넣기)</button>
         <button id="btn-reset" class="ghost">기본값으로 초기화</button>
@@ -380,6 +383,28 @@
     else if((id=t.getAttribute('data-buy'))!=null) buy(+id);
     else if((id=t.getAttribute('data-edit'))!=null) onEdit(+id);
     else if((id=t.getAttribute('data-del'))!=null) del(+id);
+  });
+  /* 📱 폰으로 보내기 — 지금 PC 구매계획 + 라이브 보유현황을 합쳐 gear-data.json 파일로 내려받는다.
+     명진앱(폰)은 이 파일의 version이 바뀌면 구매·보유 탭을 자동 최신화한다. (편집 → 파일갱신 → 반영) */
+  document.getElementById('btn-tophone').addEventListener('click', function(){
+    var msg=document.getElementById('sync-msg');
+    msg.textContent='만드는 중… (현재 보유현황을 가져오는 중)';
+    var plan=items.map(function(it,i){return {_k:(it._k!=null?it._k:null),id:it.id,name:it.name,cat:it.cat,best:it.best,avg:it.avg,max:it.max,memo:it.memo||'',rank:i+1};});
+    var d=new Date(),p=function(n){return (n<10?'0':'')+n;};
+    var ver=String(d.getFullYear()).slice(2)+p(d.getMonth()+1)+p(d.getDate())+'-'+p(d.getHours())+p(d.getMinutes());
+    var finish=function(own){
+      var data={version:ver,note:'명진 장비 공유데이터(구매계획+보유현황). 장비명·가격만(비민감). PC 장비비교에서 편집→이 파일 갱신→폰앱 자동동기화.',plan:plan,own:own};
+      var blob=new Blob([JSON.stringify(data,null,1)],{type:'application/json'});
+      var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gear-data.json';
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+      setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
+      msg.textContent='gear-data.json 내려받았어요 (구매 '+plan.length+'개 · 보유 '+own.length+'개, 버전 '+ver+'). 클로드에게 "폰에 반영해줘" 하면 배포돼서 폰이 자동 동기화됩니다.';
+    };
+    // 보유현황은 이미 사이트에 있는 gear-data.json에서 가져온다(같은 출처라 그대로 읽힘)
+    fetch('/note/myapp/gear-data.json',{cache:'no-store'})
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(g){ finish((g&&Array.isArray(g.own))?g.own:[]); })
+      .catch(function(){ finish([]); msg.textContent+=' (보유현황을 못 읽어 구매계획만 담았어요 — 클로드가 보유는 유지해 줍니다)'; });
   });
   document.getElementById('btn-export').addEventListener('click', function(){
     var io=document.getElementById('io'); io.value=JSON.stringify(items,null,2); io.select();
