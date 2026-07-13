@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>액티언 하이브리드 실견적 (선수금 0%)</title>
+<style>
+  :root{
+    --bg:#faf7f2; --card:#ffffff; --ink:#2c2a26; --sub:#6b665e;
+    --line:#e8e2d8; --accent:#c98a5e; --accent-soft:#f4e7dc;
+    --good:#4a7c59; --good-soft:#e5efe6; --warn:#b9603f; --warn-soft:#f7e5dd;
+    --blue:#4a6c8c; --blue-soft:#e3ebf2; --gold:#c99a3e; --gold-soft:#f6edd4;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+    line-height:1.6; font-size:16px; -webkit-text-size-adjust:100%;}
+  .wrap{max-width:900px; margin:0 auto; padding:30px 18px 80px;}
+  header.top{text-align:center; padding:24px 14px 24px;}
+  .kicker{display:inline-block; font-size:13px; letter-spacing:.14em; color:#8a6a1e;
+    background:var(--gold-soft); padding:5px 14px; border-radius:999px; margin-bottom:12px;}
+  h1{font-size:26px; margin:.2em 0 .3em; letter-spacing:-.01em;}
+  .lead{color:var(--sub); font-size:14.5px; max-width:640px; margin:0 auto;}
+  .meta{margin-top:10px; font-size:12px; color:var(--sub);}
+  .hero{width:100%; max-width:420px; border-radius:14px; border:1px solid var(--line); margin:14px auto 0; display:block;}
+
+  section{background:#fff; border:1px solid var(--line); border-radius:16px; padding:22px 20px; margin:20px 0;}
+  section h2{font-size:19px; margin:0 0 4px; display:flex; align-items:center; gap:9px;}
+  section h2 .ic{width:28px;height:28px;border-radius:8px;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
+  h2 + .h2sub{color:var(--sub); font-size:13.5px; margin:0 0 14px 38px;}
+
+  .callout{border-radius:12px; padding:15px 17px; margin:14px 0; font-size:14px; border:1px solid transparent;}
+  .callout.warn{background:var(--warn-soft); border-color:#eecfc2;}
+  .callout.blue{background:var(--blue-soft); border-color:#cdddea;}
+  .callout.good{background:var(--good-soft); border-color:#cfe0d1;}
+  .callout.gold{background:var(--gold-soft); border-color:#e6d6a6;}
+  .callout .ct{font-weight:800; display:block; margin-bottom:4px;}
+  .callout.warn .ct{color:var(--warn);} .callout.blue .ct{color:var(--blue);}
+  .callout.good .ct{color:var(--good);} .callout.gold .ct{color:#8a6a1e;}
+
+  .tablewrap{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:14px 0;}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:13.5px; background:#fff;}
+  th,td{border:1px solid var(--line); padding:10px 11px; text-align:center; vertical-align:middle;}
+  thead th{background:var(--accent-soft); color:#8a5a34; font-weight:700;}
+  tbody th{background:#fbf8f3; text-align:left; white-space:nowrap;}
+  td.big{font-size:17px; font-weight:800; color:var(--accent);}
+  td.pick{background:var(--gold-soft);}
+  .mini{display:block; font-size:11px; color:var(--sub); font-weight:400;}
+  .badge{display:inline-block; font-size:10.5px; font-weight:800; padding:2px 7px; border-radius:5px;}
+  .badge.real{background:var(--good); color:#fff;}
+  .badge.est{background:#f3eecf; color:#8a7320;}
+
+  .copybox{background:#fbf8f3; border:1px dashed var(--accent); border-radius:12px; padding:15px 17px;
+    font-size:13.5px; line-height:1.75; margin-top:10px;}
+  .copybox b{color:var(--accent);}
+  ul.clean{margin:8px 0; padding-left:20px;} ul.clean li{margin:6px 0; font-size:14px;}
+  ul.check{list-style:none; padding-left:0;}
+  ul.check li{position:relative; padding:9px 12px 9px 38px; margin:8px 0;
+    background:#fbf8f3; border:1px solid var(--line); border-radius:10px; font-size:14px;}
+  ul.check li::before{content:"✓"; position:absolute; left:14px; top:9px; color:var(--accent); font-weight:800;}
+
+  .fillin td{height:38px; background:#fffdf9;}
+  .cta{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+  .cta a{font-size:13px; text-decoration:none; padding:9px 15px; border-radius:999px;
+    background:var(--accent); color:#fff; font-weight:700;}
+  .cta a.ghost{background:#fff; color:var(--ink); border:1px solid var(--line);}
+  .disclaimer{font-size:12px; color:var(--sub); background:#fbf8f3; border:1px dashed var(--line);
+    border-radius:10px; padding:11px 13px; margin-top:12px;}
+  .src{font-size:12px; color:var(--sub);} .src a{color:var(--blue); word-break:break-all;}
+  footer{text-align:center; color:var(--sub); font-size:12px; margin-top:26px;}
+  strong.hl{background:#fbeecb; padding:0 3px; border-radius:3px;}
+.mdlback{position:fixed;top:calc(env(safe-area-inset-top, 0px) + 10px);left:10px;z-index:200;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--ink);text-decoration:none;box-shadow:0 2px 10px rgba(70,60,45,.14)}.mdlback:active{transform:scale(.96)}
+</style>
+</head>
+<body>
+<a href="index.html" class="mdlback">← 목록</a>
+<div class="wrap">
+
+<header class="top">
+  <span class="kicker">수빈 · 조사-006 · 우리의 선택 ♥</span>
+  <h1>액티언 하이브리드 실견적</h1>
+  <p class="lead">선수금 0%(무보증) 기준 <b>실제 견적 숫자</b>를 찾았어요.<br>렌트 vs 리스, 48 vs 60개월, 인수까지 정리했습니다.</p>
+  <img class="hero" src="img/액티언.jpg" alt="KGM 액티언">
+  <p class="meta">작성 2026-07-14 · v1.0 · 차값 3,695만원 · 단일트림 · 15.0km/L</p>
+</header>
+
+<!-- 실견적 -->
+<section>
+  <h2><span class="ic">₩</span>선수금 0% 실견적</h2>
+  <p class="h2sub">초기 목돈 0원, 매달 렌트료만. <span class="badge real">실측</span>은 실제 견적 사이트 숫자입니다.</p>
+
+  <div class="tablewrap">
+  <table>
+    <thead>
+      <tr><th>방식</th><th>48개월</th><th>60개월</th><th>보험</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>장기렌트 <span class="badge real">실측</span><span class="mini">허·하·호 번호판</span></th>
+        <td class="big pick">689,000원</td>
+        <td class="big pick">652,100원</td>
+        <td><b style="color:var(--good);">포함 ✅</b><span class="mini">렌트사 단체보험</span></td>
+      </tr>
+      <tr>
+        <th>리스(인수형) <span class="badge real">실측</span><span class="mini">일반 번호판</span></th>
+        <td class="big">577,200원</td>
+        <td class="big">524,900원</td>
+        <td><b style="color:var(--warn);">별도 ❌</b><span class="mini">본인이 직접 가입</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout gold">
+    <span class="ct">🎯 수빈이는 "장기렌트"가 맞습니다 — 숫자로 보면</span>
+    리스가 월 <b>11만원 싸 보이지만</b>, 리스는 <b>보험을 직접 가입</b>해야 해요.
+    <b>수빈이는 면허 딴 직후(운전경력 0)</b>라 자차보험이 비싸게 잡힙니다 — 연 150~200만원(<b>월 12~17만원</b>) 수준.<br><br>
+    · 리스 577,200 + 보험 약 13만 = <b>약 707,000원</b><br>
+    · 장기렌트 <b>689,000원</b> (보험·세금·정비 다 포함)<br>
+    → <strong class="hl">오히려 장기렌트가 저렴하거나 비슷</strong>합니다. 게다가 사고 나도 <b>내 보험료 할증 없음</b> + 장기렌트 기간은 나중에 <b>보험 경력으로 인정</b>돼요.
+  </div>
+
+  <div class="callout warn">
+    <span class="ct">⚠️ 이 숫자에 빠진 것 — 주행거리</span>
+    위 견적은 <b>업계 표준(연 2만km)</b> 기준일 가능성이 큽니다. 수빈이는 <b>연 3만km</b>라 약정을 올려야 해요.
+    → <b>월 5~10만원 정도 더 붙는다고 보세요</b> (실제 <b>액티언 HEV 연 3만km 기준 월 약 74~79만원</b> 예상, 48개월).
+    올리지 않으면 초과 1만km × 100~200원 = <b>연 100~200만원</b> 추가 청구됩니다.
+  </div>
+</section>
+
+<!-- 48 vs 60 -->
+<section>
+  <h2><span class="ic">📅</span>48개월 vs 60개월 — 총액으로 보면</h2>
+  <p class="h2sub">장기렌트 기준. 인수가는 잔존가치 추정(고주행이라 낮게 잡음).</p>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>구분</th><th>48개월(4년)</th><th>60개월(5년)</th></tr></thead>
+    <tbody>
+      <tr><th>월 렌트료 <span class="badge real">실측</span></th><td class="big">689,000원</td><td class="big">652,100원</td></tr>
+      <tr><th>총 렌트료<span class="mini">월 × 개월</span></th><td>약 <b>3,307만원</b></td><td>약 <b>3,913만원</b></td></tr>
+      <tr><th>인수가(잔가) <span class="badge est">추정</span><span class="mini">고주행 반영</span></th><td>약 1,300~1,500만</td><td>약 1,000~1,200만</td></tr>
+      <tr><th>💠 인수 총액</th><td class="pick"><b>약 4,600~4,800만</b><span class="mini">4년 뒤 내 차</span></td><td class="pick"><b>약 4,900~5,100만</b><span class="mini">5년 뒤 내 차</span></td></tr>
+      <tr><th>↩️ 반납 총액</th><td>약 3,307만<span class="mini">차 안 남음</span></td><td>약 3,913만<span class="mini">차 안 남음</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="callout blue">
+    <span class="ct">💡 읽는 법</span>
+    <b>48개월</b>: 총 지출 적고 인수가는 높음(목돈 필요). 4년 뒤 16만km 탄 차를 인수.<br>
+    <b>60개월</b>: 월 부담 3.7만원 낮지만 총액은 600만원 더. 5년 뒤 <b>15만km</b> 탄 차를 인수(더 낡음).<br><br>
+    <b>고주행이라 5년이면 15만km입니다.</b> 그때 인수해서 더 탈지, 아니면 4년에 끊고 갈아탈지가 갈림길이에요.
+    <b>인수해서 오래 탈 생각이면 60개월</b>(월 부담↓·인수가↓), <b>4년쯤에 새 차로 갈아탈 생각이면 48개월</b>이 깔끔합니다.
+  </div>
+  <div class="callout good">
+    <span class="ct">✅ 고주행이라 "인수형"으로 계약하세요</span>
+    인수를 전제로 하면 <b>초과주행 추가금이 면제</b>됩니다(중고가 걱정이 없어지니까). 연 3만km 타는 수빈이한테는 이게 가장 큰 절약 포인트예요.
+  </div>
+</section>
+
+<!-- 견적 요청 문구 -->
+<section>
+  <h2><span class="ic">📋</span>이대로 견적 요청하세요 (복붙용)</h2>
+  <p class="h2sub">조건을 통일해야 업체 비교가 됩니다. 아래를 그대로 보내면 돼요.</p>
+  <div class="copybox">
+    안녕하세요, <b>KGM 액티언 하이브리드</b> 장기렌트 견적 문의드립니다.<br><br>
+    · 차종: <b>액티언 하이브리드 (단일 트림, 3,695만원)</b><br>
+    · 계약 형태: <b>인수형 장기렌트</b> (만기 인수 희망)<br>
+    · 선수금/보증금: <b>0% (무보증·무선수금)</b><br>
+    · 연간 약정 주행거리: <b>연 30,000km</b> (출퇴근 왕복 100km × 주 5~6일)<br>
+    · 계약기간: <b>48개월 / 60개월 각각</b> 견적 부탁드립니다<br>
+    · 운전자: <b>운전경력 1년 미만(면허 취득 직후)</b> — 가입 가능 여부 및 조건 확인 부탁드립니다<br><br>
+    <b>함께 알려주세요:</b><br>
+    ① 월 렌트료 / ② 총 렌트료 / ③ <b>만기 인수가(잔존가치)</b> / ④ 초과주행 km당 요금<br>
+    ⑤ 자기부담금(면책금) / ⑥ 중도해지 위약금 산정 방식 / ⑦ 운전자 등록 범위
+  </div>
+  <div class="cta">
+    <a href="https://auto.danawa.com/leaserent/" target="_blank">다나와 렌트/리스 비교</a>
+    <a class="ghost" href="https://rentncar.com/product/2026-%EC%95%A1%ED%8B%B0%EC%96%B8/64521/" target="_blank">렌트앤카 액티언</a>
+    <a class="ghost" href="https://www.carnoon.co.kr/newcar/estimate/11793" target="_blank">카눈 액티언 HEV</a>
+    <a class="ghost" href="https://funcar.kr/product/%EC%95%A1%ED%8B%B0%EC%96%B8-%ED%95%98%EC%9D%B4%EB%B8%8C%EB%A6%AC%EB%93%9C/212" target="_blank">펀카</a>
+  </div>
+</section>
+
+<!-- 업체 비교 빈칸표 -->
+<section>
+  <h2><span class="ic">✍️</span>업체별 비교 (받아서 채우기)</h2>
+  <p class="h2sub">같은 조건으로 3~4곳 받아 여기에 적어두고 비교하세요.</p>
+  <div class="tablewrap">
+  <table class="fillin">
+    <thead><tr><th>업체</th><th>월 렌트료<br>(48개월)</th><th>월 렌트료<br>(60개월)</th><th>인수가</th><th>초과km 요금</th><th>면책금</th></tr></thead>
+    <tbody>
+      <tr><th>기준(참고)<span class="mini">연 2만km·선수금0</span></th><td>689,000</td><td>652,100</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><th>업체 ①</th><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><th>업체 ②</th><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><th>업체 ③</th><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><th>업체 ④</th><td></td><td></td><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3 style="font-size:15px; margin:18px 0 8px;">계약 전 최종 체크</h3>
+  <ul class="check">
+    <li><b>인수형</b>으로 계약됐는지 (초과주행 추가금 면제 조건)</li>
+    <li><b>연 3만km</b> 약정으로 잡혔는지 (연 2만km면 초과금 폭탄)</li>
+    <li><b>만기 인수가</b>가 계약서에 명시됐는지</li>
+    <li><b>수빈이가 운전자로 등록</b>됐는지 (미등록 사고 = 보험 면책)</li>
+    <li><b>가솔린 아니고 하이브리드</b> 맞는지 (3,695만 / 15.0km/L)</li>
+    <li><b>중도해지 위약금</b> 산정 방식 이해했는지</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="ic">📎</span>출처</h2>
+  <ul class="clean src">
+    <li>액티언 HEV 선수금0 실견적 — <a href="https://web.getcha.kr/blog/rent-0pay-kgm-actyon-hybrid-17001" target="_blank">겟차: 액티언 하이브리드 초기비용 0원</a>, <a href="https://www.carnoon.co.kr/newcar/estimate/11793" target="_blank">카눈 액티언 HEV 견적</a></li>
+    <li>액티언 HEV 제원·가격 — <a href="https://www.dailycar.co.kr/content/news.html?type=view&autoId=57972" target="_blank">데일리카: 3,695만원 출시</a></li>
+  </ul>
+  <div class="disclaimer">
+    ※ 월 렌트료는 <b>선수금 0%·연 2만km 표준</b> 기준 실견적 숫자이며, <b>연 3만km로 올리면 월 5~10만원 상승</b>합니다.
+    인수가·총액은 추정이고 금융사·심사·프로모션에 따라 달라져요. <b>실제 계약은 반드시 업체 정식 견적서로 확인하세요.</b>
+  </div>
+</section>
+
+<footer>
+  수빈 개인 참고자료 · 조사-006 · 액티언 하이브리드 실견적 v1.0 · 2026-07-14
+</footer>
+
+</div>
+</body>
+</html>
