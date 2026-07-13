@@ -362,7 +362,7 @@ function loadBuys(){
   return items;
 }
 function saveBuys(){buys.forEach(function(b,i){b.rank=i+1;});try{localStorage.setItem(PLANKEY,JSON.stringify({v:'app-sync',items:buys,del:buyDel}));}catch(e){}}
-function moveBuy(id,dir){var i=buys.findIndex(function(x){return x.id===id;});if(i<0)return;var j=i+dir;if(j<0||j>=buys.length)return;var t=buys[i];buys[i]=buys[j];buys[j]=t;saveBuys();renderBuy();}
+function moveBuy(id,dir){var i=buys.findIndex(function(x){return String(x.id)===String(id);});if(i<0)return;var j=i+dir;if(j<0||j>=buys.length)return;var t=buys[i];buys[i]=buys[j];buys[j]=t;saveBuys();pushSoon('buys');renderBuy();}
 function reloadAll(){todos=load(K.todo,[]);buys=loadBuys();owns=load(K.own,[]);ledger=load(K.led,[]);shoots=load(K.shoot,[]);loadPhotos();}
 
 /* ===== ☁ 클라우드 동기화 (비공개 GitHub 저장소, 브라우저에서 직접) =====
@@ -391,6 +391,8 @@ function pathObj(kind){
   if(kind==='ledger')return {path:'ledger.json',obj:ledger};
   if(kind==='shoots')return {path:'shoots.json',obj:shoots};
   if(kind==='photos')return {path:'photos.json',obj:{map:photos,base:photoBase}};
+  if(kind==='buys')return {path:'buys.json',obj:{items:buys,del:buyDel}};
+  if(kind==='owns')return {path:'owns.json',obj:owns};
   return null;
 }
 /* GitHub은 같은 repo 동시커밋을 하나만 받으므로 push는 큐로 «한 번에 하나»씩.
@@ -416,18 +418,22 @@ function pushSoon(kind){if(!syncOn())return;setSyncBadge('저장중…');clearTi
 function cloudPull(){
   var c=syncCfg();if(!c||!c.token){return Promise.resolve();}
   setSyncBadge('동기화중…');
-  return Promise.all([ghGet(c,'ledger.json'),ghGet(c,'shoots.json'),ghGet(c,'photos.json')]).then(function(res){
-    var L=res[0],S=res[1],P=res[2];
-    remoteSha={ledger:L&&L.sha,shoots:S&&S.sha,photos:P&&P.sha};
+  return Promise.all([ghGet(c,'ledger.json'),ghGet(c,'shoots.json'),ghGet(c,'photos.json'),ghGet(c,'buys.json'),ghGet(c,'owns.json')]).then(function(res){
+    var L=res[0],S=res[1],P=res[2],B=res[3],O=res[4];
+    remoteSha={ledger:L&&L.sha,shoots:S&&S.sha,photos:P&&P.sha,buys:B&&B.sha,owns:O&&O.sha};
     if(L&&Array.isArray(L.json)){ledger=L.json;save(K.led,ledger);}
     if(S&&Array.isArray(S.json)){shoots=S.json;save(K.shoot,shoots);}
     if(P&&P.json){photos=P.json.map||P.json;if(P.json.base)photoBase=P.json.base;try{localStorage.setItem('mj_photos',JSON.stringify({map:photos,base:photoBase}));}catch(e){}}
+    if(B&&B.json){var bi=Array.isArray(B.json)?B.json:(B.json.items||[]);buyDel=Array.isArray(B.json.del)?B.json.del:buyDel;buys=bi;saveBuys();}
+    if(O&&Array.isArray(O.json)){owns=O.json;save(K.own,owns);}
     // 원격에 없는 항목은 로컬을 올려 시드(첫 기기)
     var seed=[];
     if(!L&&ledger.length)seed.push(cloudPush('ledger'));
     if(!S&&shoots.length)seed.push(cloudPush('shoots'));
     if(!P&&Object.keys(photos).length)seed.push(cloudPush('photos'));
-    renderMoney();renderShoot();
+    if(!B&&buys.length)seed.push(cloudPush('buys'));
+    if(!O&&owns.length)seed.push(cloudPush('owns'));
+    renderMoney();renderShoot();renderBuy();renderOwn();
     return Promise.all(seed);
   }).then(function(){setSyncBadge('동기화됨');}).catch(function(e){setSyncBadge('오류');toast('동기화 실패: '+e.message);});
 }
@@ -507,7 +513,7 @@ function renderBuy(){
 }
 /* 구매완료: 금액·날짜 입력 → 가계부 지출 + 보유현황 자동, 구매계획서 제거 */
 function sheetComplete(id){
-  var b=buys.find(function(x){return x.id===id;});if(!b)return;
+  var b=buys.find(function(x){return String(x.id)===String(id);});if(!b)return;
   window._buyId=id;window._ocat='카메라';var cats=['카메라','렌즈','조명','액세서리','기타'];
   var today=(new Date()).toISOString().slice(0,10);
   document.getElementById('sheet').innerHTML='<h3>구매완료 · '+esc(b.name)+'</h3>'
@@ -519,13 +525,13 @@ function sheetComplete(id){
   setTimeout(function(){var e=document.getElementById('c_amt');e&&e.focus();},50);
 }
 function saveComplete(){
-  var b=buys.find(function(x){return x.id===window._buyId;});if(!b)return;
+  var b=buys.find(function(x){return String(x.id)===String(window._buyId);});if(!b)return;
   var amt=parseInt(document.getElementById('c_amt').value,10);if(!amt||amt<0){toast('구매 금액을 입력하세요');return;}
   var date=document.getElementById('c_date').value;if(!date){toast('날짜를 선택하세요');return;}
   ledger.push({id:uid(),date:date,desc:b.name+' 구매',cat:'장비·카메라',type:'out',amt:amt,memo:'구매계획 완료'});save(K.led,ledger);pushSoon('ledger');
   owns.unshift({id:uid(),name:b.name,cat:window._ocat,desc:'구매 '+date,price:amt,status:'구매'});save(K.own,owns);
   if(b._k!=null&&buyDel.indexOf(b._k)<0)buyDel.push(b._k);
-  buys=buys.filter(function(x){return x.id!==window._buyId;});saveBuys();
+  buys=buys.filter(function(x){return String(x.id)!==String(window._buyId);});saveBuys();pushSoon('buys');pushSoon('owns');
   renderBuy();renderOwn();renderMoney();closeSheet();
   toast(esc(b.name)+' 구매완료 → 가계부·보유 반영됨');
 }
@@ -556,8 +562,8 @@ function renderOwn(){
 /* 공통 삭제 */
 function delItem(kind,id){
   if(kind==='todo'){todos=todos.filter(function(x){return x.id!==id;});save(K.todo,todos);renderTodo();}
-  if(kind==='buy'){var bb=buys.find(function(x){return x.id===id;});if(bb&&bb._k!=null&&buyDel.indexOf(bb._k)<0)buyDel.push(bb._k);buys=buys.filter(function(x){return x.id!==id;});saveBuys();renderBuy();}
-  if(kind==='own'){owns=owns.filter(function(x){return x.id!==id;});save(K.own,owns);renderOwn();}
+  if(kind==='buy'){var bb=buys.find(function(x){return String(x.id)===String(id);});if(bb&&bb._k!=null&&buyDel.indexOf(bb._k)<0)buyDel.push(bb._k);buys=buys.filter(function(x){return String(x.id)!==String(id);});saveBuys();pushSoon('buys');renderBuy();}
+  if(kind==='own'){owns=owns.filter(function(x){return String(x.id)!==String(id);});save(K.own,owns);pushSoon('owns');renderOwn();}
   if(kind==='led'){ledger=ledger.filter(function(x){return x.id!==id;});save(K.led,ledger);pushSoon('ledger');renderMoney();}
   if(kind==='shoot'){shoots=shoots.filter(function(x){return x.id!==id;});save(K.shoot,shoots);pushSoon('shoots');renderShoot();}
 }
@@ -1066,8 +1072,8 @@ function sheetBuy(){
 }
 function pickBcat(el,c){window._bcat=c;document.querySelectorAll('#b_cats .chip').forEach(function(x){x.classList.remove('on');});el.classList.add('on');}
 function saveBuy(){var n=document.getElementById('b_name').value.trim();if(!n){toast('장비명을 입력하세요');return;}
-  buys.push({_k:null,id:(buys.reduce(function(m,b){return Math.max(m,b.id);},0)+1),name:n,cat:window._bcat,best:parseFloat(document.getElementById('b_best').value)||0,avg:parseFloat(document.getElementById('b_avg').value)||0,max:parseFloat(document.getElementById('b_max').value)||0,memo:document.getElementById('b_memo').value.trim(),rank:buys.length+1});
-  saveBuys();renderBuy();closeSheet();}
+  buys.push({_k:null,id:(buys.reduce(function(m,b){return Math.max(m,+b.id||0);},0)+1),name:n,cat:window._bcat,best:parseFloat(document.getElementById('b_best').value)||0,avg:parseFloat(document.getElementById('b_avg').value)||0,max:parseFloat(document.getElementById('b_max').value)||0,memo:document.getElementById('b_memo').value.trim(),rank:buys.length+1});
+  saveBuys();pushSoon('buys');renderBuy();closeSheet();}
 
 function sheetOwn(){
   window._ocat='카메라';var cats=['카메라','렌즈','필터','조명','조명효과','스탠드','전원','케이블','컴퓨터','기타'];
@@ -1080,7 +1086,7 @@ function sheetOwn(){
 }
 function pickOcat(el,c){window._ocat=c;document.querySelectorAll('#o_cats .chip').forEach(function(x){x.classList.remove('on');});el.classList.add('on');}
 function saveOwn(){var n=document.getElementById('o_name').value.trim();if(!n){toast('이름을 입력하세요');return;}
-  owns.unshift({id:uid(),name:n,cat:window._ocat,desc:document.getElementById('o_sub').value.trim(),price:parseInt(document.getElementById('o_price').value,10)||0,status:''});save(K.own,owns);renderOwn();closeSheet();}
+  owns.unshift({id:uid(),name:n,cat:window._ocat,desc:document.getElementById('o_sub').value.trim(),price:parseInt(document.getElementById('o_price').value,10)||0,status:''});save(K.own,owns);pushSoon('owns');renderOwn();closeSheet();}
 
 function sheetMoney(){
   window._mtype='out';
@@ -1138,10 +1144,25 @@ function go(id,btn){
 }
 
 /* ===== 시작 ===== */
-function boot(){reloadAll();migrate();reloadAll();renderTodo();renderBuy();renderOwn();renderMoney();renderShoot();syncGear();setSyncBadge();if(syncOn())cloudPull();}
-/* 공유파일(PC 편집본) 동기화 — 구매계획·보유현황만. 가계부(민감)는 건드리지 않음.
-   버전이 바뀐 배포가 올라오면 폰 구매/보유 탭이 자동 최신화된다. file://에선 조용히 스킵. */
+function boot(){reloadAll();migrate();reloadAll();renderTodo();renderBuy();renderOwn();renderMoney();renderShoot();syncGear();setSyncBadge();
+  if(syncOn())cloudPull().then(function(){ensureOwns();renderOwn();});else ensureOwns();}
+/* 보유 기본 보강(1회) — 명진 요청 추가분. 이미 있거나 사용자가 지운 뒤엔 다시 안 넣음 */
+function ensureOwns(){
+  if(localStorage.getItem('mj_own_ext1'))return;
+  var need=[
+    {name:'Apple Magic Keyboard',cat:'컴퓨터',desc:'매직 키보드',price:0},
+    {name:'로지텍 MX Master 3S',cat:'컴퓨터',desc:'무선 마우스',price:0},
+    {name:'SUNWAYFOTO FL-120',cat:'스탠드',desc:'플래시 브라켓/레일',price:0}
+  ];
+  var added=0;
+  need.forEach(function(n){if(!owns.some(function(o){return (o.name||'').replace(/\s/g,'').toLowerCase()===n.name.replace(/\s/g,'').toLowerCase();})){owns.unshift({id:uid(),name:n.name,cat:n.cat,desc:n.desc,price:n.price,status:''});added++;}});
+  try{localStorage.setItem('mj_own_ext1','1');}catch(e){}
+  if(added){save(K.own,owns);pushSoon('owns');}
+}
+/* 공유파일(PC 편집본) 동기화 — 클라우드 동기화가 켜져 있으면 그쪽이 우선이라 스킵.
+   버전이 바뀐 배포가 올라오면 (클라우드 미연결 기기의) 구매/보유가 최신화된다. file://에선 조용히 스킵. */
 function syncGear(){
+  if(syncOn())return;                          // 클라우드 연결 시 클라우드가 원본
   try{
     fetch('gear-data.json',{cache:'no-store'}).then(function(r){return r&&r.ok?r.json():null;}).then(function(g){
       if(!g||!g.version||localStorage.getItem('gear_ver')===g.version)return;
