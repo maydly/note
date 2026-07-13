@@ -1,1 +1,6 @@
 .DS_Store
+
+# Google Drive / Windows 탐색기가 만드는 찌꺼기
+# (.git 내부까지 생성되어 저장소를 깨뜨린 이력 있음 — 260714 수리)
+desktop.ini
+Thumbs.db
