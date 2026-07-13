@@ -68,10 +68,20 @@
   .optbox.base b{color:var(--good);} .optbox.sel b{color:var(--accent);}
 
   .colors{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;}
-  .sw{display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:5px 10px 5px 6px;
-    border-radius:999px; border:1px solid var(--line); background:#fff;}
-  .sw i{width:15px; height:15px; border-radius:50%; border:1px solid rgba(0,0,0,.12); display:inline-block;}
-  .sw.hot{border-color:var(--accent); font-weight:700;}
+  .sw{display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:5px 11px 5px 6px;
+    border-radius:999px; border:1px solid var(--line); background:#fff; text-decoration:none; color:var(--ink);
+    cursor:pointer; transition:.15s;}
+  .sw:hover{border-color:var(--accent); color:var(--accent); box-shadow:0 2px 8px rgba(201,138,94,.18); transform:translateY(-1px);}
+  .sw i{width:18px; height:18px; border-radius:50%; border:1px solid rgba(0,0,0,.15); display:inline-block; flex:0 0 auto;}
+  .sw .cam{font-size:10px; opacity:.55;}
+  .sw.hot{border-color:var(--accent); font-weight:700; background:#fffaf5;}
+  .colorhelp{font-size:11.5px; color:var(--accent); background:var(--accent-soft); border-radius:8px;
+    padding:6px 10px; display:inline-block; margin:8px 0 2px; font-weight:700;}
+  .gallery{display:flex; flex-wrap:wrap; gap:7px; margin-top:9px;}
+  .gallery a{font-size:12px; text-decoration:none; padding:7px 13px; border-radius:999px; font-weight:700;
+    background:var(--accent); color:#fff;}
+  .gallery a.ghost{background:#fff; color:var(--ink); border:1px solid var(--line);}
+  .gallery a:hover{opacity:.88;}
   .cnote{font-size:11.5px; color:var(--sub); margin-top:6px;}
   .cnote a{color:var(--blue);}
 
@@ -138,16 +148,23 @@
     <b>미쉐린 흡음형 타이어</b> 옵션은 이 용도에 실질적으로 값어치가 있어요. 알파인 오디오도 장거리 만족도↑.</div>
 
   <h4 class="sec">외장 색상 — 원톤 7 + 투톤 5 = 총 12가지</h4>
+  <div class="colorhelp">👆 색상을 누르면 <b>그 색 액티언 실물 사진</b>이 바로 열려요</div>
   <div class="colors">
-    <span class="sw hot"><i style="background:#f2f2f0;"></i>그랜드 화이트 <b style="color:var(--accent);">48.8% 1위</b></span>
-    <span class="sw hot"><i style="background:#1c1c1e;"></i>스페이스 블랙 <b style="color:var(--accent);">26.4% 2위</b></span>
-    <span class="sw hot"><i style="background:#b0764a;"></i>로얄 카퍼 <b style="color:var(--accent);">5.1% 3위</b></span>
-    <span class="sw"><i style="background:#cfc6bb;"></i>라떼 그레이지</span>
-    <span class="sw"><i style="background:#7e8388;"></i>아이언 메탈</span>
-    <span class="sw"><i style="background:#3d4c3f;"></i>포레스트 그린</span>
-    <span class="sw"><i style="background:#2f4a6b;"></i>댄디 블루</span>
+    <a class="sw hot" target="_blank" href="https://search.naver.com/search.naver?where=image&query=KGM 액티언 그랜드 화이트"><i style="background:#f2f2f0;"></i>그랜드 화이트 <b style="color:var(--accent);">48.8% 1위</b> <span class="cam">📷</span></a>
+    <a class="sw hot" target="_blank" href="https://search.naver.com/search.naver?where=image&query=KGM 액티언 스페이스 블랙"><i style="background:#1c1c1e;"></i>스페이스 블랙 <b style="color:var(--accent);">26.4% 2위</b> <span class="cam">📷</span></a>
+    <a class="sw hot" target="_blank" href="https://search.naver.com/search.naver?where=image&query=KGM 액티언 로얄 카퍼"><i style="background:#b0764a;"></i>로얄 카퍼 <b style="color:var(--accent);">5.1% 3위</b> <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=KGM 액티언 라떼 그레이지"><i style="background:#cfc6bb;"></i>라떼 그레이지 <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=KGM 액티언 아이언 메탈"><i style="background:#7e8388;"></i>아이언 메탈 <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=KGM 액티언 포레스트 그린"><i style="background:#3d4c3f;"></i>포레스트 그린 <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=KGM 액티언 댄디 블루"><i style="background:#2f4a6b;"></i>댄디 블루 <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=KGM 액티언 투톤"><i style="background:linear-gradient(135deg,#cfc6bb 50%,#1c1c1e 50%);"></i>투톤 (5가지) <span class="cam">📷</span></a>
   </div>
-  <div class="cnote">※ 투톤은 댄디 블루·스페이스 블랙을 뺀 <b>5가지</b>에서 선택 가능. 색상 이미지는 <a href="https://www.kg-mobility.com/pr/model/show-room/200000100010018" target="_blank">KGM 공식 쇼룸</a>에서 실물 확인 권장.</div>
+  <div class="gallery">
+    <a href="https://www.kg-mobility.com/pr/model/show-room/200000100010018" target="_blank">🎨 KGM 공식 컬러 쇼룸</a>
+    <a class="ghost" href="https://search.naver.com/search.naver?where=image&query=KGM 액티언 색상 실물" target="_blank">📷 액티언 색상 전체 사진</a>
+    <a class="ghost" href="https://www.youtube.com/results?search_query=액티언+색상+실물+비교" target="_blank">▶ 색상 비교 영상</a>
+  </div>
+  <div class="cnote">※ 투톤은 댄디 블루·스페이스 블랙을 뺀 <b>5가지</b>에서 선택 가능. 동그라미는 <b>근사 색</b>이라 실제 도장과 다를 수 있어요 — 위 사진 링크로 실물 확인하세요.</div>
 </div>
 
 <!-- ===== 2. 그랑 콜레오스 ===== -->
@@ -171,14 +188,19 @@
     <div class="desc"><b>예산 4천 안에선 이것뿐.</b> 기본기·실내 고급감은 이미 우수하지만, 원하는 옵션(보스·AR-HUD)이 상위 트림이면 예산 초과.</div></div></div>
 
   <h4 class="sec">외장 색상</h4>
+  <div class="colorhelp">👆 색상을 누르면 실물 사진이 열려요</div>
   <div class="colors">
-    <span class="sw"><i style="background:#f4f4f2;"></i>솔리드 화이트</span>
-    <span class="sw"><i style="background:#e9e7e2;"></i>새틴 유니버스 화이트<span style="color:var(--sub);">(무광)</span></span>
-    <span class="sw"><i style="background:#82868a;"></i>어반 그레이</span>
-    <span class="sw"><i style="background:#d8cdbc;"></i>밀키 베이지</span>
-    <span class="sw"><i style="background:#171a1f;"></i>블랙 사파이어</span>
-    <span class="sw"><i style="background:#8d2b2b;"></i>메탈릭 레드</span>
-    <span class="sw"><i style="background:#2b3f63;"></i>블루 코스모스</span>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=그랑 콜레오스 솔리드 화이트"><i style="background:#f4f4f2;"></i>솔리드 화이트 <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=그랑 콜레오스 새틴 유니버스 화이트"><i style="background:#e9e7e2;"></i>새틴 유니버스 화이트<span style="color:var(--sub);">(무광)</span> <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=그랑 콜레오스 어반 그레이"><i style="background:#82868a;"></i>어반 그레이 <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=그랑 콜레오스 밀키 베이지"><i style="background:#d8cdbc;"></i>밀키 베이지 <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=그랑 콜레오스 블랙 사파이어"><i style="background:#171a1f;"></i>블랙 사파이어 <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=그랑 콜레오스 메탈릭 레드"><i style="background:#8d2b2b;"></i>메탈릭 레드 <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=그랑 콜레오스 블루 코스모스"><i style="background:#2b3f63;"></i>블루 코스모스 <span class="cam">📷</span></a>
+  </div>
+  <div class="gallery">
+    <a href="https://www.renault.co.kr/ko/model/koleos_overview.jsp" target="_blank">🎨 르노 공식 페이지</a>
+    <a class="ghost" href="https://search.naver.com/search.naver?where=image&query=그랑 콜레오스 색상 실물" target="_blank">📷 색상 전체 사진</a>
   </div>
   <div class="hw">🛣️ <b>고속 스탠스</b> — 245마력에 복합 15.7km/L로 <b>고속 정속에 가장 이상적</b>. 다만 4천 예산이면 테크노 한 트림뿐이라 선택지가 좁습니다.</div>
 </div>
@@ -205,15 +227,20 @@
   <div class="cnote">※ 프레스티지(3,346만)는 최하위라 제외.</div>
 
   <h4 class="sec">외장 색상</h4>
+  <div class="colorhelp">👆 색상을 누르면 실물 사진이 열려요</div>
   <div class="colors">
-    <span class="sw"><i style="background:#f5f5f3;"></i>스노우 화이트 펄</span>
-    <span class="sw"><i style="background:#8b8d8c;"></i>울프 그레이</span>
-    <span class="sw"><i style="background:#5f6265;"></i>그래비티 그레이</span>
-    <span class="sw"><i style="background:#6e7175;"></i>쉐도우 매트 그레이<span style="color:var(--sub);">(무광)</span></span>
-    <span class="sw"><i style="background:#16181a;"></i>퓨전 블랙</span>
-    <span class="sw"><i style="background:#2c4a6b;"></i>헤리티지 블루</span>
-    <span class="sw"><i style="background:#3b5f7d;"></i>베스타 블루</span>
-    <span class="sw"><i style="background:#3c4a3a;"></i>정글 우드 그린</span>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=기아 스포티지 스노우 화이트 펄"><i style="background:#f5f5f3;"></i>스노우 화이트 펄 <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=기아 스포티지 울프 그레이"><i style="background:#8b8d8c;"></i>울프 그레이 <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=기아 스포티지 그래비티 그레이"><i style="background:#5f6265;"></i>그래비티 그레이 <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=기아 스포티지 쉐도우 매트 그레이"><i style="background:#6e7175;"></i>쉐도우 매트 그레이<span style="color:var(--sub);">(무광)</span> <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=기아 스포티지 퓨전 블랙"><i style="background:#16181a;"></i>퓨전 블랙 <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=기아 스포티지 헤리티지 블루"><i style="background:#2c4a6b;"></i>헤리티지 블루 <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=기아 스포티지 베스타 블루"><i style="background:#3b5f7d;"></i>베스타 블루 <span class="cam">📷</span></a>
+    <a class="sw" target="_blank" href="https://search.naver.com/search.naver?where=image&query=기아 스포티지 정글 우드 그린"><i style="background:#3c4a3a;"></i>정글 우드 그린 <span class="cam">📷</span></a>
+  </div>
+  <div class="gallery">
+    <a href="https://www.kia.com/kr/vehicles/sportage/gallery" target="_blank">🎨 기아 공식 갤러리</a>
+    <a class="ghost" href="https://search.naver.com/search.naver?where=image&query=기아 스포티지 색상 실물" target="_blank">📷 색상 전체 사진</a>
   </div>
   <div class="hw">🛣️ <b>고속 스탠스</b> — 노블레스부터 들어가는 <b>2열 이중접합 차음 글라스</b>가 고속 소음에 효과적. 고속 위주면 노블레스 이상 권장.</div>
 </div>
@@ -234,8 +261,11 @@
     <div class="desc">기본형인데 이미 충분. <b>보조금 후 3천만원대 후반.</b></div></div></div>
 
   <h4 class="sec">외장 색상</h4>
-  <div class="cnote">무채색 위주 구성(파란 전기차 번호판과 조화). <b>투톤</b> 선택 시 루프·스포일러·C필러가 블랙. C필러 실버 가니쉬는 원톤에서만 선택 가능.
-    정확한 색상명은 <a href="https://www.kg-mobility.com/" target="_blank">KGM 공식</a>에서 확인.</div>
+  <div class="gallery">
+    <a href="https://search.naver.com/search.naver?where=image&query=토레스 EVX 색상 실물" target="_blank">📷 색상 실물 사진 보기</a>
+    <a class="ghost" href="https://www.kg-mobility.com/" target="_blank">🎨 KGM 공식</a>
+  </div>
+  <div class="cnote">무채색 위주 구성(파란 전기차 번호판과 조화). <b>투톤</b> 선택 시 루프·스포일러·C필러가 블랙. C필러 실버 가니쉬는 원톤에서만 선택 가능.</div>
   <div class="hw">🛣️ <b>고속 스탠스 주의</b> — 전기차는 고속에서 전비가 떨어져 <b>452km보다 실제로 더 짧게</b> 갑니다. 고속 위주면 충전 횟수를 한 번 더 계산하세요.</div>
 </div>
 
@@ -254,6 +284,11 @@
     <div class="tn">롱레인지 어스 / 에어 <span class="price">4,810 / 4,415만</span></div>
     <div class="desc"><b>고주행이면 롱레인지 필수.</b> 5,500만 미만이라 국고 보조금 100% 대상 → 실구매 3천대 후반~.</div></div></div>
   <div class="cnote">※ <b>스탠다드(3,995만, 복합 347km·고속 314km)는 제외</b> — 고속·고주행에 충전이 너무 잦아집니다.</div>
+  <h4 class="sec">외장 색상</h4>
+  <div class="gallery">
+    <a href="https://search.naver.com/search.naver?where=image&query=기아 EV3 색상 실물" target="_blank">📷 색상 실물 사진 보기</a>
+    <a class="ghost" href="https://www.kia.com/kr/vehicles/ev3/" target="_blank">🎨 기아 EV3 공식</a>
+  </div>
   <div class="hw">🛣️ <b>고속 스탠스</b> — 고속 447km는 후보 중 최장. 다만 실제 고속 정속에선 더 줄 수 있어요. <b>배터리 보증 km 한도 반드시 확인</b>(연 3만km → 10년 30만km).</div>
 </div>
 
@@ -275,12 +310,21 @@
   <div class="trim"><div class="lv">9~10위</div><div class="body">
     <div class="tn">니로 EV (401km) · BYD 아토3 플러스 (321km)</div>
     <div class="desc">둘 다 <b>주행거리가 짧아 고속·고주행엔 충전 부담</b>이 큼. 아토3는 기본 트림 제외(플러스만).</div></div></div>
+
+  <h4 class="sec">이 차들 색상 실물 보기</h4>
+  <div class="gallery">
+    <a class="ghost" href="https://search.naver.com/search.naver?where=image&query=KGM 토레스 색상 실물" target="_blank">📷 토레스</a>
+    <a class="ghost" href="https://search.naver.com/search.naver?where=image&query=기아 셀토스 색상 실물" target="_blank">📷 셀토스</a>
+    <a class="ghost" href="https://search.naver.com/search.naver?where=image&query=기아 니로 색상 실물" target="_blank">📷 니로</a>
+    <a class="ghost" href="https://search.naver.com/search.naver?where=image&query=기아 니로 EV 색상 실물" target="_blank">📷 니로 EV</a>
+    <a class="ghost" href="https://search.naver.com/search.naver?where=image&query=BYD 아토3 색상 실물" target="_blank">📷 아토3</a>
+  </div>
 </div>
 
 <div class="disclaimer">
-  ※ <b>최하위 트림은 제외</b>했습니다(실제로 안 볼 트림). 가격은 2026년 출고가(세제혜택 후, 전기차는 보조금 전).
-  색상은 확인된 것만 표기했고, <b>일부 차종(셀토스·니로·EV3·아토3) 색상은 제조사 공식 페이지에서 확인</b>이 필요합니다.
-  색상 원 표시는 이해를 돕기 위한 <b>근사 색</b>이며 실제 도장과 다를 수 있어요 — <b>실물·공식 갤러리 확인 권장</b>.
+  ※ <b>최하위 트림은 제외</b>했습니다(실제로 안 볼 트림). 가격은 2026년 출고가(세제혜택 후, 전기차는 보조금 전).<br>
+  🎨 <b>색상 동그라미는 근사 색</b>이라 실제 도장(펄·메탈릭·무광)과 다릅니다. <b>반드시 색상을 눌러 실물 사진으로 확인</b>하세요.
+  특히 <b>무광(새틴/매트) 색상</b>은 사진과 실물 차이가 크고, <b>세차·보수 비용이 더 듭니다.</b>
 </div>
 
 <footer>
