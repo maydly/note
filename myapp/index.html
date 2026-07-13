@@ -145,6 +145,8 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .shseq{background:#eef1f6;color:#5f6f8b;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;white-space:nowrap;cursor:pointer}
 .shseqline{font-size:11px;color:#9a8b7a;margin-top:4px;line-height:1.5}
 .shseqline b{color:#6b5a49}
+.shseqline .seqwarn{color:#c39a86}
+.shseq.warn{background:#f6ecdf;color:#a9803f}
 .shlbl{font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;white-space:nowrap;color:#fff}
 .lblpick{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .lblpick .lb{border:1px solid #e5dbd0;background:#fff;color:#7a6a58;font-size:15px;font-weight:800;padding:10px 0;border-radius:10px;cursor:pointer;text-align:center}
@@ -798,15 +800,31 @@ function shootYears(){var y={};shoots.forEach(function(s){if(s.cancel)return;var
   var arr=['전체'].concat(Object.keys(y).sort().reverse());
   if(shoots.some(function(s){return s.cancel;}))arr.push('취소');
   return arr;}
-/* 회차 계산: 실촬영만, 이름별 날짜 오름차순 → 각 촬영이 그 사람의 몇 번째인지 + 총 횟수 + 전체 날짜목록 */
+/* 회차 계산: 같은 사람 판별을 이름만이 아니라 «이름+인스타»로 한다(동명이인 분리).
+   - 인스타가 있으면 그걸로 같은 사람 확정
+   - 그 이름에 인스타가 하나뿐이면, 인스타 없는 촬영도 같은 사람으로 봄
+   - 그 이름에 인스타가 아예 없으면 이름으로만 묶되 nameOnly=true(동명이인 가능 경고) */
 var shootSeq={};
+function personKey(s,groupInstas){
+  var ig=(s.insta||'').trim().toLowerCase();
+  if(ig)return s.name+'|'+ig;
+  if(groupInstas.length===1)return s.name+'|'+groupInstas[0];
+  return s.name+'|·';
+}
 function computeSeq(){
   shootSeq={};var byName={};
   shoots.forEach(function(s){if(s.cancel||!s.name)return;(byName[s.name]=byName[s.name]||[]).push(s);});
   Object.keys(byName).forEach(function(n){
-    var arr=byName[n].slice().sort(function(a,b){return ((a.date||'')+(a.time||''))<((b.date||'')+(b.time||'')) ? -1 : 1;});
-    var dates=arr.map(function(x){return x.date;});
-    arr.forEach(function(s,i){shootSeq[s.id]={n:i+1,total:arr.length,dates:dates};});
+    var grp=byName[n],iset={};
+    grp.forEach(function(s){var ig=(s.insta||'').trim().toLowerCase();if(ig)iset[ig]=1;});
+    var groupInstas=Object.keys(iset), nameOnly=(groupInstas.length===0);
+    var persons={};
+    grp.forEach(function(s){var k=personKey(s,groupInstas);(persons[k]=persons[k]||[]).push(s);});
+    Object.keys(persons).forEach(function(k){
+      var arr=persons[k].slice().sort(function(a,b){return ((a.date||'')+(a.time||''))<((b.date||'')+(b.time||'')) ? -1 : 1;});
+      var dates=arr.map(function(x){return x.date;});
+      arr.forEach(function(s,i){shootSeq[s.id]={n:i+1,total:arr.length,dates:dates,nameOnly:nameOnly};});
+    });
   });
 }
 function renderShoot(){
@@ -829,13 +847,13 @@ function renderShoot(){
   el.innerHTML=list.slice(0,300).map(shCard).join('')
     +(list.length>300?'<div class="covempty" style="text-align:center">앞 300건만 표시 · 검색으로 좁혀보세요 (전체 '+list.length+'건)</div>':'');
 }
-/* 회차 뱃지 클릭 → 그 사람 촬영 이력(언제 몇 회차) */
-function showSeq(name){
-  var n=(name||'').trim();var seq=null;
-  for(var id in shootSeq){if(shootSeq.hasOwnProperty(id)){var mine=shoots.find(function(s){return String(s.id)===id;});if(mine&&mine.name===n){seq=shootSeq[id];break;}}}
-  if(!seq){toast('이력이 없어요');return;}
+/* 회차 뱃지 클릭 → 그 사람 촬영 이력(언제 몇 회차). id 기준이라 동명이인도 정확 */
+function showSeq(id){
+  var seq=shootSeq[id];if(!seq){toast('이력이 없어요');return;}
+  var s=shoots.find(function(x){return String(x.id)===String(id);})||{};
+  var warn=seq.nameOnly?'<div class="phnote">⚠️ 인스타 정보가 없어 <b>이름만으로</b> 묶었어요. 동명이인이면 다른 사람이 섞여 있을 수 있어요. (인스타를 채우면 자동으로 정확히 구분돼요)</div>':'<div class="phnote">✅ 인스타로 같은 사람 확인됨</div>';
   var rows=seq.dates.map(function(d,i){return '<div class="covrow"><span class="cova">'+(i+1)+'회차</span><span class="covr">'+esc((d||'').replace(/-/g,'.'))+'</span></div>';}).join('');
-  document.getElementById('sheet').innerHTML='<h3>'+esc(n)+' · 촬영 이력 ('+seq.total+'회)</h3>'+rows
+  document.getElementById('sheet').innerHTML='<h3>'+esc(s.name||'')+' · 촬영 이력 ('+seq.total+'회)</h3>'+warn+rows
     +'<div class="mact"><button class="mcancel" onclick="closeSheet()">닫기</button></div>';
   document.getElementById('mask').classList.add('on');
 }
@@ -860,14 +878,14 @@ function shCard(s){
       +'<button class="del" onclick="event.stopPropagation();delItem(\'shoot\','+s.id+')">×</button></div>';
   }
   var sq=shootSeq[s.id];
-  var seqb=(sq&&sq.total>1)?'<span class="shseq" onclick="event.stopPropagation();showSeq(\''+esc((s.name||'').replace(/\\/g,'').replace(/'/g,''))+'\')">'+sq.n+'/'+sq.total+'회차</span>':'';
+  var seqb=(sq&&sq.total>1)?'<span class="shseq'+(sq.nameOnly?' warn':'')+'" onclick="event.stopPropagation();showSeq('+s.id+')">'+sq.n+'/'+sq.total+'회차'+(sq.nameOnly?'?':'')+'</span>':'';
   // 재촬영이면 전체 회차 날짜를 카드에 바로 표시(현재 회차는 굵게) — 안 눌러도 언제인지 보이게
   var seqline='';
   if(sq&&sq.total>1){
     seqline='<div class="shseqline">📅 '+sq.dates.map(function(d,i){
       var t=(i+1)+'회 '+((d||'').slice(2).replace(/-/g,'.'));
       return (i+1===sq.n)?'<b>'+t+'</b>':t;
-    }).join(' · ')+'</div>';
+    }).join(' · ')+(sq.nameOnly?' <span class="seqwarn">· 이름기준(동명이인 가능)</span>':'')+'</div>';
   }
   return '<div class="shcard" onclick="editShoot('+s.id+')">'
     +avatarHtml(s)
