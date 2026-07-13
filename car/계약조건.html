@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>계약 조건 — 면허·운전자등록·중고차 검토</title>
+<style>
+  :root{
+    --bg:#faf7f2; --card:#ffffff; --ink:#2c2a26; --sub:#6b665e;
+    --line:#e8e2d8; --accent:#c98a5e; --accent-soft:#f4e7dc;
+    --good:#4a7c59; --good-soft:#e5efe6; --warn:#b9603f; --warn-soft:#f7e5dd;
+    --blue:#4a6c8c; --blue-soft:#e3ebf2; --gold:#c99a3e; --gold-soft:#f6edd4;
+    --red:#b03a3a; --red-soft:#fae4e2;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+    line-height:1.62; font-size:16px; -webkit-text-size-adjust:100%;}
+  .wrap{max-width:900px; margin:0 auto; padding:30px 18px 80px;}
+  header.top{text-align:center; padding:24px 14px 24px;}
+  .kicker{display:inline-block; font-size:13px; letter-spacing:.14em; color:var(--warn);
+    background:var(--warn-soft); padding:5px 14px; border-radius:999px; margin-bottom:12px;}
+  h1{font-size:26px; margin:.2em 0 .3em; letter-spacing:-.01em;}
+  .lead{color:var(--sub); font-size:14.5px; max-width:660px; margin:0 auto;}
+  .meta{margin-top:10px; font-size:12px; color:var(--sub);}
+
+  section{background:#fff; border:1px solid var(--line); border-radius:16px; padding:22px 20px; margin:20px 0;}
+  section.alert{border:2px solid var(--red); background:linear-gradient(180deg,#fef6f5,#fff);}
+  section h2{font-size:19px; margin:0 0 4px; display:flex; align-items:center; gap:9px;}
+  section h2 .ic{width:28px;height:28px;border-radius:8px;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
+  section.alert h2 .ic{background:var(--red);}
+  h2 + .h2sub{color:var(--sub); font-size:13.5px; margin:0 0 14px 38px;}
+  h3{font-size:15.5px; margin:18px 0 8px;}
+
+  .callout{border-radius:12px; padding:15px 17px; margin:14px 0; font-size:14px; border:1px solid transparent;}
+  .callout.red{background:var(--red-soft); border-color:#f0c9c5;}
+  .callout.warn{background:var(--warn-soft); border-color:#eecfc2;}
+  .callout.good{background:var(--good-soft); border-color:#cfe0d1;}
+  .callout.blue{background:var(--blue-soft); border-color:#cdddea;}
+  .callout .ct{font-weight:800; display:block; margin-bottom:4px;}
+  .callout.red .ct{color:var(--red);} .callout.warn .ct{color:var(--warn);}
+  .callout.good .ct{color:var(--good);} .callout.blue .ct{color:var(--blue);}
+
+  .steps{counter-reset:s; padding-left:0; list-style:none; margin:14px 0 0;}
+  .steps li{counter-increment:s; position:relative; padding:13px 15px 13px 54px; margin:10px 0;
+    background:#fbf8f3; border:1px solid var(--line); border-radius:12px; font-size:14px;}
+  .steps li::before{content:counter(s); position:absolute; left:15px; top:50%; transform:translateY(-50%);
+    width:27px; height:27px; border-radius:50%; background:var(--accent); color:#fff;
+    font-weight:800; display:flex; align-items:center; justify-content:center; font-size:13px;}
+  .steps li.now{background:var(--red-soft); border-color:#f0c9c5;}
+  .steps li.now::before{background:var(--red);}
+  .steps li b{color:var(--ink);}
+
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:14px 0;}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:13.5px; background:#fff;}
+  th,td{border:1px solid var(--line); padding:10px 11px; text-align:center; vertical-align:middle;}
+  thead th{background:var(--accent-soft); color:#8a5a34; font-weight:700;}
+  tbody th{background:#fbf8f3; text-align:left; white-space:nowrap;}
+  td.no{background:var(--red-soft); color:var(--red); font-weight:700;}
+  td.yes{background:var(--good-soft); color:var(--good); font-weight:700;}
+  td.warn{background:var(--warn-soft); color:var(--warn); font-weight:700;}
+  .mini{display:block; font-size:11px; color:var(--sub); font-weight:400;}
+
+  ul.clean{margin:8px 0; padding-left:20px;} ul.clean li{margin:7px 0; font-size:14px;}
+  ul.check{list-style:none; padding-left:0;}
+  ul.check li{position:relative; padding:9px 12px 9px 38px; margin:8px 0;
+    background:#fbf8f3; border:1px solid var(--line); border-radius:10px; font-size:14px;}
+  ul.check li::before{content:"✓"; position:absolute; left:14px; top:9px; color:var(--accent); font-weight:800;}
+  .verdict{border-radius:12px; padding:16px 18px; margin:14px 0; font-size:14.5px;}
+  .verdict.no{background:var(--red-soft); border:1px solid #f0c9c5;}
+  .verdict.no b{color:var(--red);}
+  .disclaimer{font-size:12px; color:var(--sub); background:#fbf8f3; border:1px dashed var(--line);
+    border-radius:10px; padding:11px 13px; margin-top:12px;}
+  footer{text-align:center; color:var(--sub); font-size:12px; margin-top:26px;}
+  strong.hl{background:#fbeecb; padding:0 3px; border-radius:3px;}
+.mdlback{position:fixed;top:calc(env(safe-area-inset-top, 0px) + 10px);left:10px;z-index:200;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--ink);text-decoration:none;box-shadow:0 2px 10px rgba(70,60,45,.14)}.mdlback:active{transform:scale(.96)}
+</style>
+</head>
+<body>
+<a href="index.html" class="mdlback">← 목록</a>
+<div class="wrap">
+
+<header class="top">
+  <span class="kicker">수빈 · 조사-006 · 계약 전 필수</span>
+  <h1>계약 조건 — 면허 · 운전자등록 · 중고차</h1>
+  <p class="lead">수빈 명의 장기렌트 + 명진 운전자 등록 전제로,<br>계약이 되는지 · 순서가 어떻게 되는지 · 중고차 장기렌트는 어떤지 정리했어요.</p>
+  <p class="meta">작성 2026-07-14 · v1.0 · 장기렌트 기준</p>
+</header>
+
+<!-- 1. 면허 -->
+<section class="alert">
+  <h2><span class="ic">!</span>면허 발급 전 = 계약 불가</h2>
+  <p class="h2sub">이게 이번 계획의 <b>선행 조건</b>입니다. 일정이 여기에 묶여요.</p>
+
+  <div class="callout red">
+    <span class="ct">🚨 수빈이 면허가 나와야 계약이 됩니다</span>
+    장기렌트는 "빌려서 <b>운전하는</b>" 계약이라 <b>면허가 자격 요건</b>이에요.
+    <strong class="hl">계약자(임차인)에게 유효한 운전면허가 없으면 계약 자체가 불가능</strong>합니다.
+    수빈 명의로 할 거니까 <b>수빈 면허가 필수</b>. 계약·출고일에 <b>면허증 실물(또는 모바일 면허증)</b>도 지참해야 해요.
+  </div>
+
+  <div class="callout blue">
+    <span class="ct">💡 하지만 일정을 낭비할 필요는 없어요</span>
+    면허 발급을 기다리는 동안 <b>견적은 미리 받아둘 수 있습니다.</b>
+    특히 <b>포레스트 그린 재고·출고 대기</b>가 있을 수 있으니, 지금부터 견적·재고를 확인해두면
+    면허 나오는 시점에 바로 계약할 수 있어요.
+  </div>
+
+  <h3>진행 순서</h3>
+  <ol class="steps">
+    <li class="now"><b>수빈 면허 발급</b> ← <b style="color:var(--red);">지금 여기 (선행 조건)</b><br>
+      <span style="color:var(--sub); font-size:13px;">면허증이 나와야 그다음이 진행됩니다.</span></li>
+    <li><b>견적 병행</b> — 면허 기다리는 동안 업체 3~4곳 견적 + 포레스트 그린 재고/출고 대기 확인 <span style="color:var(--good);">(지금 해도 됨)</span></li>
+    <li><b>계약</b> — 수빈 명의 · 인수형 · 연 3만km · 선수금 0% · <b>명진 운전자 추가 등록</b></li>
+    <li><b>출고</b> — 면허증 실물 지참</li>
+  </ol>
+
+  <div class="callout warn">
+    <span class="ct">⚠️ 참고 — 면허 없이 차를 가지려면?</span>
+    <b>현금 구매</b>만 가능합니다(차량 구매·명의등록·보험가입은 면허와 무관).
+    <b>장기렌트·리스·할부는 안 됩니다.</b> 할부는 "구매자=실운행자" 전제라 면허 있는 가족과 공동명의가 필요할 수 있고요.
+    → 우리는 <b>장기렌트</b>로 가니까 <b>면허가 반드시 먼저</b>입니다.
+  </div>
+</section>
+
+<!-- 2. 운전자 등록 -->
+<section>
+  <h2><span class="ic">👥</span>명진 운전자 등록 — 그냥 되는 게 아닙니다</h2>
+  <p class="h2sub">이거 놓치면 <b>사고 시 보험이 아예 안 나옵니다.</b> 가장 중요한 실무 포인트예요.</p>
+
+  <div class="callout red">
+    <span class="ct">🚨 명진은 기본 운전자 범위에 들어가지 않습니다</span>
+    장기렌트 보험의 <b>기본 운전자 범위</b>는 보통 <b>임차인 본인 · 배우자 · 부모 · 자녀</b>예요.
+    <strong class="hl">형제자매 · 친구 · 연인은 기본 제외</strong>입니다.<br><br>
+    → 수빈 명의 계약이면 <b>명진은 기본 범위 밖</b>이라, <b>반드시 "운전자 추가 등록"</b>을 별도로 해야 합니다.
+    <b>등록 안 하고 명진이 몰다 사고 나면 → 보험 면책 = 전액 자비 처리</b>입니다.
+  </div>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>상황</th><th>보험 처리</th><th>결과</th></tr></thead>
+    <tbody>
+      <tr><th>수빈(임차인)이 운전</th><td class="yes">✅ 보장</td><td>정상</td></tr>
+      <tr><th>명진 — <b>운전자 등록함</b></th><td class="yes">✅ 보장</td><td>정상 <span class="mini">추가 보험료 발생 가능</span></td></tr>
+      <tr><th>명진 — <b>등록 안 함</b></th><td class="no">❌ 면책</td><td class="no">사고 전액 자비 부담</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout warn">
+    <span class="ct">💰 운전자 추가 시 비용·조건</span>
+    · 운전자를 추가하면 <b>보험료가 오를 수 있습니다</b>(운전자 범위가 넓어질수록 위험이 커지니까).<br>
+    · 다만 <b>명진은 운전경력이 있으니</b>, 경력 0인 수빈 단독보다 조건이 나쁘지 않을 수 있어요. <b>업체에 두 케이스 다 견적 요청</b>하세요.<br>
+    · 추가 운전자도 <b>연령·경력 조건</b>을 충족해야 합니다(명진은 문제없을 것).
+  </div>
+
+  <h3>견적 요청 시 이렇게 물어보세요</h3>
+  <ul class="check">
+    <li>"임차인은 <b>수빈(운전경력 0, 면허 발급 예정)</b>, <b>추가 운전자로 명진</b>을 등록하고 싶습니다"</li>
+    <li>"<b>운전자 추가 시 월 렌트료가 얼마나 오르는지</b> 알려주세요"</li>
+    <li>"추가 운전자의 <b>연령·경력 요건</b>이 있나요?"</li>
+    <li>"<b>수빈 단독 등록 / 명진 추가 등록</b> 두 가지 견적을 각각 주세요"</li>
+    <li>"등록된 운전자가 아닌 사람이 몰면 <b>어떤 면책 조항</b>이 적용되나요?"</li>
+  </ul>
+</section>
+
+<!-- 3. 중고차 장기렌트 -->
+<section>
+  <h2><span class="ic">🚗</span>중고차 장기렌트 — 검토 결과</h2>
+  <p class="h2sub">월납이 확 싸지는 건 사실. 그런데 <b>수빈이 조건과는 궁합이 안 맞습니다.</b></p>
+
+  <h3>중고차 장기렌트란</h3>
+  <ul class="clean">
+    <li>렌터카사 보유 <b>인증 중고차</b>를 장기렌트로 빌리는 방식</li>
+    <li><b>보험료·자동차세·정기점검 포함</b>은 신차 장기렌트와 동일</li>
+    <li>월납입금이 <b>신차 대비 20~40% 저렴</b> (액티언 HEV 68.9만 → 중고면 대략 <b>41~55만원대</b>)</li>
+    <li><b>출고 대기 없음</b> — 재고 차량이라 당일~수일 내 수령 가능</li>
+  </ul>
+
+  <div class="verdict no">
+    <b>❌ 결론: 수빈이한테는 비추천입니다.</b> 이유가 4가지 있어요.
+  </div>
+
+  <div class="callout red">
+    <span class="ct">① 액티언 하이브리드는 중고 매물이 사실상 없습니다</span>
+    액티언 하이브리드는 <b>2025년 7월 출시</b>된 신차예요. <b>중고 매물 자체가 거의 없습니다.</b>
+    → 중고차 장기렌트로 가면 <strong class="hl">액티언을 포기하고 다른 차로 바꿔야 합니다.</strong>
+    포레스트 그린은 더더욱 못 고르고요.
+  </div>
+
+  <div class="callout red">
+    <span class="ct">② 연 3만km 고주행 × 중고차 = 총주행거리 폭발</span>
+    중고차는 <b>이미 주행거리가 쌓여 있습니다.</b> 여기에 연 3만km를 5년 더하면 <b>+15만km</b>.<br>
+    예: 5만km 탄 중고차 → 5년 뒤 <b>20만km</b>. 고장·정비 리스크가 급격히 올라갑니다.
+    (신차라면 5년 뒤에도 15만km)
+  </div>
+
+  <div class="callout red">
+    <span class="ct">③ 하이브리드 배터리 보증이 이미 깎여 있습니다</span>
+    액티언 HEV 배터리 보증은 <b>10년 / 20만km</b>인데, 중고차는 <b>그 기간·거리를 이미 쓰고 있는 상태</b>예요.
+    <b>고주행이라 20만km를 훨씬 빨리 넘깁니다</b> → 보증 밖에서 배터리 문제가 생기면 부담이 큽니다.
+  </div>
+
+  <div class="callout warn">
+    <span class="ct">④ 사고 이력 확인이 어렵고, 인수 가치도 낮습니다</span>
+    중고차 장기렌트는 <b>기존 차량의 사고 이력을 확인하기 어렵다</b>는 게 알려진 단점이에요.
+    또 <b>인수를 전제</b>로 하는 우리 계획에서, 중고차를 5년 더 타고 인수하면 그 차는 이미 20만km 넘은 노후차입니다.
+  </div>
+
+  <div class="callout good">
+    <span class="ct">✅ 그래도 중고차를 고려한다면 — 이럴 때만</span>
+    · <b>예산이 정말 빡빡할 때</b> (월 41~55만원대로 낮출 수 있음)<br>
+    · <b>차종·색상을 포기</b>할 수 있을 때 (액티언·포레스트 그린 못 고름)<br>
+    · <b>반드시 "정비형" 상품으로</b> — 주행거리 많으면 정비 포함이 필수. 비정비형은 고장 시 자비<br>
+    · <b>제조사 보증 잔여기간</b>을 반드시 확인 (남아있으면 제조사 정비 가능)<br>
+    · <b>사고 이력·차량 상태 점검</b>을 꼼꼼히
+  </div>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>구분</th><th>신차 장기렌트 <span class="mini">(액티언 HEV)</span></th><th>중고차 장기렌트</th></tr></thead>
+    <tbody>
+      <tr><th>월 렌트료(48개월)</th><td>689,000원</td><td class="yes">약 41~55만원 <span class="mini">20~40%↓</span></td></tr>
+      <tr><th>액티언 선택</th><td class="yes">✅ 가능</td><td class="no">❌ 매물 없음</td></tr>
+      <tr><th>포레스트 그린</th><td class="yes">✅ 가능</td><td class="no">❌ 색상 선택 불가</td></tr>
+      <tr><th>5년 뒤 총주행</th><td class="yes">약 15만km</td><td class="no">20만km+ <span class="mini">중고 주행 + 15만</span></td></tr>
+      <tr><th>배터리 보증</th><td class="yes">10년/20만km 온전</td><td class="no">이미 소진 중</td></tr>
+      <tr><th>사고 이력</th><td class="yes">없음(신차)</td><td class="warn">확인 어려움</td></tr>
+      <tr><th>출고 대기</th><td class="warn">있을 수 있음</td><td class="yes">✅ 즉시 수령</td></tr>
+      <tr><th>인수 가치</th><td class="yes">양호</td><td class="no">낮음(노후차)</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout blue">
+    <span class="ct">🎯 정리</span>
+    중고차 장기렌트의 최대 장점(<b>싼 월납·즉시 출고</b>)은 매력적이지만,
+    <b>수빈이는 ① 액티언·포레스트 그린을 고르고 싶고 ② 연 3만km 고주행이며 ③ 인수를 전제</b>로 합니다.
+    이 셋과 중고차는 정면으로 충돌해요.
+    <strong class="hl">신차 장기렌트(액티언 HEV)로 가는 게 맞습니다.</strong>
+  </div>
+</section>
+
+<!-- 최종 체크 -->
+<section>
+  <h2><span class="ic">✓</span>최종 정리 — 우리 계약 조건</h2>
+  <ul class="check">
+    <li><b>선행:</b> 수빈 면허 발급 (이게 없으면 계약 불가)</li>
+    <li><b>차종:</b> KGM 액티언 <b>하이브리드</b> (단일트림 3,695만) · <b>포레스트 그린</b></li>
+    <li><b>방식:</b> <b>신차</b> 장기렌트 (중고차 ❌) · <b>인수형</b></li>
+    <li><b>명의:</b> 수빈 (운전경력 0)</li>
+    <li><b>운전자:</b> 수빈 + <b>명진 추가 등록</b> (기본 범위 밖이라 반드시 별도 등록!)</li>
+    <li><b>조건:</b> 선수금 0% · <b>연 3만km 약정</b> · 48 / 60개월 각각 견적</li>
+    <li><b>지금 할 일:</b> 면허 기다리며 <b>견적 + 포레스트 그린 재고 확인</b> 병행</li>
+  </ul>
+  <div class="disclaimer">
+    ※ 운전자 범위·추가 조건·면책 조항은 <b>업체·상품마다 다릅니다.</b> 반드시 계약서로 확인하세요.
+    중고차 장기렌트 월납(41~55만원)은 신차 대비 20~40% 절감 통계를 액티언에 적용한 <b>추정</b>입니다.
+  </div>
+</section>
+
+<footer>
+  수빈 개인 참고자료 · 조사-006 · 계약조건(면허·운전자등록·중고차) v1.0 · 2026-07-14
+</footer>
+
+</div>
+</body>
+</html>
