@@ -100,9 +100,12 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .vt{flex:1;text-align:center;font-size:13px;font-weight:700;color:#9a9086;padding:8px 0;border-radius:9px;cursor:pointer}
 .vt.on{background:#fff;color:#c98e7f;box-shadow:0 1px 3px rgba(90,70,50,.1)}
 .tmeta{font-size:11px;color:#a99e8f;margin-top:3px}
-.moodrow{display:flex;gap:8px;justify-content:space-between}
-.moodb{flex:1;text-align:center;font-size:26px;padding:8px 0;border-radius:12px;background:#f6f2ec;cursor:pointer;filter:grayscale(.5);opacity:.6;transition:.15s}
-.moodb.on{background:#fdf6ea;filter:none;opacity:1;box-shadow:0 0 0 2px #dcc3a0 inset;transform:scale(1.05)}
+.moodslot{margin-top:9px}
+.moodslot:first-of-type{margin-top:2px}
+.moodlb{font-size:11.5px;font-weight:700;color:#9a8b7a;margin-bottom:4px}
+.moodrow{display:flex;gap:6px;justify-content:space-between}
+.moodb{flex:1;text-align:center;font-size:23px;padding:6px 0;border-radius:11px;background:#f6f2ec;cursor:pointer;filter:grayscale(.55);opacity:.55;transition:.15s}
+.moodb.on{background:#fdf6ea;filter:none;opacity:1;box-shadow:0 0 0 2px #dcc3a0 inset;transform:scale(1.06)}
 /* 요약 카테고리 막대 */
 .catrow{display:flex;align-items:center;gap:10px;margin:9px 0}
 .catic{width:30px;height:30px;border-radius:9px;background:#f0ebe2;display:grid;place-items:center;font-size:15px;flex:0 0 auto}
@@ -597,6 +600,15 @@ function calPick(ds){todoSel=(todoSel===ds?null:ds);renderCal();}
 
 /* ===== 오늘(대시보드) ===== */
 var MOODS=['😄','🙂','😐','😔','😫'];
+/* 컨디션은 하루 3번: 아침·중간·밤. moods[날짜]={am,mid,pm}
+   (예전 형식 moods[날짜]='😄' 문자열은 '중간'으로 자동 변환) */
+var MSLOTS=[['am','🌅 아침'],['mid','☀️ 중간'],['pm','🌙 밤']];
+function moodOf(d){
+  var v=moods[d];
+  if(!v)return {am:'',mid:'',pm:''};
+  if(typeof v==='string')return {am:'',mid:v,pm:''};   // 옛 데이터 호환
+  return {am:v.am||'',mid:v.mid||'',pm:v.pm||''};
+}
 function renderToday(){
   var el=document.getElementById('todayBody');if(!el)return;
   var now=new Date();var hh=now.getHours();
@@ -604,10 +616,17 @@ function renderToday(){
   var t=document.getElementById('todayTitle');if(t)t.textContent=greet+', 명진';
   var ds=document.getElementById('todayDate');if(ds)ds.textContent=now.getFullYear()+'.'+pad(now.getMonth()+1)+'.'+pad(now.getDate())+' ('+['일','월','화','수','목','금','토'][now.getDay()]+')';
   var today=todayStr();
-  // 기분
-  var mood=moods[today]||'';
-  var h='<div class="card"><div style="font-weight:800;margin-bottom:8px">오늘 기분</div><div class="moodrow">'
-    +MOODS.map(function(m){return '<div class="moodb'+(m===mood?' on':'')+'" onclick="setMood(\''+m+'\')">'+m+'</div>';}).join('')+'</div></div>';
+  // 컨디션 — 아침·중간·밤 3번
+  var md=moodOf(today);
+  var filled=MSLOTS.filter(function(s){return md[s[0]];}).length;
+  var h='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+    +'<span style="font-weight:800">오늘 컨디션</span><span style="font-size:11px;color:#a99e8f">'+filled+'/3 기록</span></div>'
+    +MSLOTS.map(function(s){
+      var key=s[0],cur=md[key];
+      return '<div class="moodslot"><div class="moodlb">'+s[1]+'</div><div class="moodrow">'
+        +MOODS.map(function(m){return '<div class="moodb'+(m===cur?' on':'')+'" onclick="setMood(\''+key+'\',\''+m+'\')">'+m+'</div>';}).join('')
+        +'</div></div>';
+    }).join('')+'</div>';
   // 오늘 할 일(예정=오늘 or 미완료)
   var due=todos.filter(function(x){return !x.done&&x.due===today;});
   var noDue=todos.filter(function(x){return !x.done&&!x.due;});
@@ -626,7 +645,12 @@ function renderToday(){
   if(shootT.length)h+='<div class="seg">오늘 촬영 '+shootT.length+'</div>'+shootT.map(function(s){return '<div class="card"><div class="tt">📸 '+esc(s.name)+(s.time?' · '+esc(s.time):'')+(s.place?' · '+esc(s.place):'')+'</div></div>';}).join('');
   el.innerHTML=h;
 }
-function setMood(m){var d=todayStr();moods[d]=(moods[d]===m?'':m);save(K.mood,moods);pushSoon('moods');renderToday();}
+function setMood(slot,m){
+  var d=todayStr(),cur=moodOf(d);
+  cur[slot]=(cur[slot]===m?'':m);                       // 같은 걸 다시 누르면 해제
+  if(!cur.am&&!cur.mid&&!cur.pm)delete moods[d];else moods[d]=cur;
+  save(K.mood,moods);pushSoon('moods');renderToday();
+}
 
 /* ===== 도전(습관·연속일수) ===== */
 function chalStreak(c){
