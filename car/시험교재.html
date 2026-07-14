@@ -116,10 +116,13 @@
     background:var(--accent); color:#fff;}
   .links a.ghost{background:#fff; color:var(--ink); border:1px solid var(--line);}
 .mdlback{position:fixed;top:calc(env(safe-area-inset-top, 0px) + 10px);left:10px;z-index:200;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--ink);text-decoration:none;box-shadow:0 2px 10px rgba(70,60,45,.14)}.mdlback:active{transform:scale(.96)}
+  /* 이 페이지는 탭바가 상단에 고정되므로, 뒤로가기 버튼을 탭바 안에 넣어 겹침을 없앤다 */
+  .tabs .mdlback{position:static; z-index:auto; box-shadow:none; display:flex; align-items:center;
+    flex:0 0 auto; padding:10px 14px; border-color:var(--line); color:var(--sub);}
+  .tabs .mdlback:hover{color:var(--ink); border-color:var(--accent);}
 </style>
 </head>
 <body>
-<a href="index.html" class="mdlback">← 목록</a>
 <div class="wrap">
 
 <header class="top">
@@ -137,6 +140,7 @@
 </div>
 
 <div class="tabs">
+  <a href="index.html" class="mdlback">← 목록</a>
   <button class="on" data-t="p1">📝 ① 필기 암기집</button>
   <button data-t="p2">🅿️ ② 기능시험 대본</button>
   <button data-t="p3">🛣️ ③ 도로주행 대본</button>
@@ -150,8 +154,9 @@
   <h2><span class="ic">📝</span>필기 — 3~5일이면 끝나는 시험</h2>
   <div class="callout gold">
     <span class="ct">🎯 합격선을 정확히 알고 시작하세요</span>
-    <b>2종은 40문제 중 24개(60점)면 합격.</b> <strong class="hl">16개를 틀려도 붙습니다.</strong>
-    떨어져도 <b>다음날 바로 재응시</b> 가능해요.<br>
+    <b>2종은 40문제 · 40분 · 100점 만점에 60점이면 합격.</b> 떨어져도 <b>다음날 바로 재응시</b> 가능해요.<br>
+    <span style="color:var(--warn);font-weight:800;">⚠️ 단, "몇 개 틀려도 된다"로 계산하면 안 됩니다.</span>
+    문항마다 배점이 <b>2점 · 3점 · 5점</b>으로 달라요. <b>동영상 문제가 5점</b>이라 그걸 버리면 개수로는 여유가 있어도 떨어질 수 있습니다.<br>
     <b>완벽하게 만들 필요가 전혀 없는 시험입니다.</b> 여기 쓰는 시간은 그대로 차 계약이 밀리는 시간이에요.
     <b>힘은 기능시험에 아껴두세요.</b>
   </div>
@@ -191,14 +196,22 @@
   <div class="tw"><table>
     <thead><tr><th>도로</th><th>최고속도</th><th>최저속도</th></tr></thead>
     <tbody>
-      <tr><th>일반도로 (편도 1차로)</th><td>60km/h</td><td>—</td></tr>
-      <tr><th>일반도로 (편도 2차로 이상)</th><td>80km/h</td><td>—</td></tr>
+      <tr><th><b style="color:var(--warn);">도시부 일반도로</b> <span class="mini">주거·상업·공업지역 (안전속도 5030)</span></th><td class="p">50km/h ★</td><td>—</td></tr>
+      <tr><th><b style="color:var(--warn);">이면도로</b> <span class="mini">주택가 골목 (안전속도 5030)</span></th><td class="p">30km/h ★</td><td>—</td></tr>
+      <tr><th>그 밖의 일반도로 (편도 1차로)</th><td>60km/h</td><td>—</td></tr>
+      <tr><th>그 밖의 일반도로 (편도 2차로 이상)</th><td>80km/h</td><td>—</td></tr>
       <tr><th>자동차전용도로</th><td>90km/h</td><td>30km/h</td></tr>
       <tr><th>고속도로 (편도 1차로)</th><td>80km/h</td><td>50km/h</td></tr>
       <tr><th>고속도로 (편도 2차로 이상)</th><td>100km/h</td><td>50km/h</td></tr>
-      <tr><th>어린이보호구역</th><td colspan="2" class="p">30km/h ★단골 출제</td></tr>
+      <tr><th>어린이보호구역(스쿨존)</th><td colspan="2" class="p">30km/h 이하 ★단골 출제</td></tr>
     </tbody>
   </table></div>
+  <div class="callout red">
+    <span class="ct">🚨 표보다 위에 있는 원칙 — 현장 표지가 항상 우선</span>
+    위 표는 <b>"표지가 따로 없을 때의 기본값"</b>입니다. <strong class="hl">도로에 제한속도 표지가 서 있으면 그 표지가 무조건 우선</strong>이에요.<br>
+    <b>도시부(주거·상업·공업지역)는 2021년부터 50km/h가 원칙</b>으로 바뀌었습니다(안전속도 5030).
+    <b>"편도 1차로 = 60"</b> 만 외우고 시내에서 60으로 달리면 <b>과속</b>이에요. 필기에도 실제 운전에도 걸립니다.
+  </div>
 
   <h3>날씨에 따른 감속 <span style="font-size:12px;color:var(--sub);font-weight:400;">(★ 매 시험 나옴)</span></h3>
   <div class="tw"><table>
@@ -291,7 +304,8 @@
     <li><b>컴퓨터(CBT)</b> 로 봅니다. 화면에서 마우스로 답을 고르고, <b>결과는 당일 즉시</b> 나옵니다.</li>
     <li>문제 중에 <b>사진형·일러스트형·동영상형</b>이 섞여 나옵니다. <b>앱에서 이 유형만 미리 몇 개 풀어보세요.</b>
       처음 보면 당황하는데, 한 번만 봐두면 아무것도 아닙니다.</li>
-    <li><b>모르는 문제는 찍고 넘어가세요.</b> 16개 틀려도 붙습니다. 한 문제에 매달리지 마세요.</li>
+    <li><b>모르는 문제는 찍고 넘어가세요.</b> 60점이면 붙습니다. 한 문제에 매달리지 마세요.
+      <b>단, 배점 큰 동영상 문제(5점)는 끝까지 보고 풀 것.</b></li>
   </ul>
   <div class="links">
     <a href="https://drivingteacher.co.kr/test" target="_blank" rel="noopener">웹 모의고사 바로 풀기</a>
@@ -308,7 +322,7 @@
   <div class="callout gold">
     <span class="ct">📊 시험 스펙</span>
     <b>· 100점 만점, 80점 이상 합격</b> (20점까지 감점 여유)<br>
-    <b>· 총 제한시간 9분 30초</b> · 주행거리 약 300m<br>
+    <b>· 주행거리 약 300m</b> · 제한시간 있음 <span style="font-size:12px;color:var(--sub);">(코스 길이에 따라 <b>시험장별로 다름</b> — 응시할 시험장에 확인)</span><br>
     <b>· 사람이 아니라 컴퓨터가 자동 채점</b>합니다<br>
     <b>· 떨어지면 3일 뒤에나 재응시</b> (+ 재예약 대기)
   </div>
@@ -330,20 +344,24 @@
       <tr><td class="f">3</td><td class="l">시험관 지시 불응</td><td class="l">지시 나오면 그대로 따르기</td></tr>
       <tr><td class="f">4</td><td class="l"><b>출발 지시 후 30초 내 미출발</b></td><td class="l">깜빡이 켜고 <b>바로 출발.</b> 뜸 들이면 실격.</td></tr>
       <tr><td class="f">5</td><td class="l"><b>경사로에서 정지 안 함</b> / <b>직각주차에서 확인선 미접촉</b><br>(= 과제를 아예 이행 안 함)</td><td class="l">각 코스에서 <b>"해야 할 동작"을 반드시 시도</b></td></tr>
-      <tr><td class="f">6</td><td class="l"><b>경사로에서 30초 초과</b> 또는 <b>뒤로 1m 이상 밀림</b></td><td class="l">자동차라 밀릴 일이 거의 없음 (§경사로 참고)</td></tr>
+      <tr><td class="f">6</td><td class="l"><b>경사로에서 30초 초과</b> 또는 <b>뒤로 1m 이상 밀림</b></td><td class="l"><b>자동변속기</b>라 밀릴 일이 거의 없음 (§경사로 참고)</td></tr>
       <tr><td class="f">7</td><td class="l"><b>교차로 신호위반</b> 또는 <b>앞범퍼가 정지선 초과</b></td><td class="l"><b>정지선 훨씬 앞에서</b> 여유 있게 정지</td></tr>
     </tbody>
   </table></div>
   <div class="callout good">
     <span class="ct">✅ 한 줄 요약</span>
-    <strong class="hl">"벨트 매고 · 연석 안 박고 · 정지선 안 넘고 · 경사로에서 서고 · 주차 확인선 찍고 · 30초 안에 출발"</strong>
-    — 이 여섯 개면 실격은 없습니다.
+    <strong class="hl">"벨트 매고 · 시험관 말 듣고 · 연석 안 박고 · 정지선 안 넘고 · 경사로에서 서고 · 주차 확인선 찍고 · 30초 안에 출발"</strong>
+    — 이 일곱 개면 실격은 없습니다.<br>
+    <b style="color:var(--warn);">단, 실격을 피했다고 자동 합격은 아니에요.</b> <b>감점이 20점을 넘어도 떨어집니다</b>(80점 미만).
+    그래서 아래 대본이 필요합니다.
   </div>
 </section>
 
 <section>
   <h2><span class="ic">🎬</span>실전 대본 — 승차부터 종료까지</h2>
-  <p class="h2sub">코스 순서는 <b>고정</b>입니다. 아래를 <b>순서 그대로 통째로 외우세요.</b> (자동변속기 기준)</p>
+  <p class="h2sub"><b>과제 종류는 전국 공통</b>(경사로 · 신호교차로 · 직각주차 · 돌발 · 가속)이지만,
+  <b>배치와 순서는 시험장마다 다를 수 있습니다.</b> 아래 대본으로 <b>동작</b>을 외우고,
+  <b>순서·배치는 응시할 시험장의 코스도면·영상</b>으로 맞추세요. (자동변속기 기준)</p>
 
   <div class="flow">
     <div class="fstep"><div class="num hot">0</div><div class="fc hot">
@@ -453,8 +471,9 @@
   <div class="callout warn">
     <span class="ct">🎯 여기서 나오는 전략</span>
     <b>차로 준수(-15)가 압도적으로 큽니다.</b> 즉 <strong class="hl">"선을 밟지 않는 것"이 기능시험의 8할</strong>이에요.<br>
-    <b>선을 밟는 이유는 대부분 "빨리 가려고 해서"</b>입니다. 제한시간이 <b>9분 30초</b>나 되니
-    <b>느리게 가도 시간은 충분합니다.</b> <b>천천히, 선만 안 밟게.</b>
+    <b>선을 밟는 이유는 대부분 "빨리 가려고 해서"</b>입니다. 그런데 <b>시간 초과는 5초당 −3점짜리 감점일 뿐</b>이고,
+    <b>선을 밟는 건 −15점</b>이에요. <strong class="hl">서두르다 선을 밟느니, 천천히 가서 시간 감점 몇 점 받는 게 훨씬 낫습니다.</strong><br>
+    <b>천천히. 선만 안 밟게.</b>
   </div>
 </section>
 
@@ -509,7 +528,7 @@
   </div>
   <div class="callout blue">
     <span class="ct">🚗 그리고 우리에겐 무제한 연습이 있습니다</span>
-    <b>연습면허</b>만 나오면 <b>명진(면허 2년 이상)이 동승</b>해서 실제 도로에서 <b>얼마든지 연습</b>할 수 있어요.
+    <b>연습면허</b>만 나오면 <b>명진(유효면허 2년 이상)이 동승 + 주행연습 표지 부착</b> 조건으로 실제 도로에서 <b>충분히 연습</b>할 수 있어요.
     <b>학원 다니는 사람도 도로주행 교육은 몇 시간이 전부</b>입니다.
     <strong class="hl">이 시험은 우리가 학원보다 유리합니다.</strong>
   </div>
@@ -520,7 +539,10 @@
   <div class="tw"><table>
     <thead><tr><th>실격 사유</th><th>피하는 법</th></tr></thead>
     <tbody>
-      <tr><td class="l"><b>신호 위반</b> (빨간불 통과 · 정지선 침범)</td><td class="l">노란불이면 <b>무조건 정지.</b> 애매하면 서세요.</td></tr>
+      <tr><td class="l"><b>신호 위반</b> (빨간불 통과 · 정지선 침범)</td><td class="l">노란불 →
+      <b>정지선 앞에서 안전하게 멈출 수 있으면 정지.</b><br>
+      <span style="color:var(--red);font-weight:800;">이미 교차로에 진입했거나 급브레이크가 위험하면 그대로 통과</span>
+      <span class="mini">뒤차 추돌이 더 위험합니다</span></td></tr>
       <tr><td class="l"><b>중앙선 침범</b></td><td class="l">좌회전·회전 시 크게 돌지 않기</td></tr>
       <tr><td class="l"><b>보행자 보호 의무 위반</b> (횡단보도)</td><td class="l"><b>사람이 보이면 무조건 정지.</b> 눈치 보지 말 것.</td></tr>
       <tr><td class="l"><b>어린이보호구역 규정 속도 초과</b></td><td class="l">스쿨존 표지 보이면 <b>30km/h 아래로</b></td></tr>
@@ -559,8 +581,8 @@
   <div class="tw"><table>
     <thead><tr><th>순서</th><th>동작</th><th>틀리면</th></tr></thead>
     <tbody>
-      <tr><th>① 신호</th><td class="l"><b>변경 30m 전</b>부터 방향지시등</td><td class="p">-7 <span class="mini">늦게 켜도 감점</span></td></tr>
-      <tr><th>② 확인</th><td class="l"><b>사이드미러 + 고개 돌려</b> 사각지대 확인</td><td class="p">-10 <span class="mini">가장 큰 감점</span></td></tr>
+      <tr><th>① 신호</th><td class="l"><b>변경 30m 전</b>부터 방향지시등</td><td class="p">감점 <span class="mini">늦게 켜도 감점</span></td></tr>
+      <tr><th>② 확인</th><td class="l"><b>사이드미러 + 고개 돌려</b> 사각지대 확인</td><td class="p">감점 (큼) <span class="mini">가장 크게 깎이는 곳</span></td></tr>
       <tr><th>③ 변경</th><td class="l">부드럽게 이동 (급하게 꺾지 않기)</td><td class="p">감점</td></tr>
       <tr><th>④ 끄기</th><td class="l">변경이 <b>끝나면 바로</b> 깜빡이 끄기</td><td class="p">감점 <span class="mini">계속 켜두면 감점</span></td></tr>
     </tbody>
@@ -626,11 +648,15 @@
   <h2><span class="ic">👥</span>명진과 하는 도로연습 — 5회차 커리큘럼</h2>
   <p class="h2sub"><b>연습면허 발급 후</b>부터 가능. 이게 도로주행 합격을 사실상 결정합니다.</p>
   <div class="callout red">
-    <span class="ct">🚨 시작하기 전에 — 이거 안 하면 1년을 날립니다</span>
+    <span class="ct">🚨 시작하기 전에 — 이 두 개 없으면 연습 자체가 불법입니다</span>
     <b>① "주행연습" 표지(가로 30cm × 세로 11cm)를 차량 앞·뒤에 반드시 부착</b><br>
-    <b>② 정식 면허 취득 후 2년 지난 사람(= 명진)이 반드시 동승</b><br><br>
-    <strong class="hl">표지를 안 붙이고 운전하다 걸리면 → 연습면허 취소 + 1년간 면허시험 재응시 금지입니다.</strong>
-    차 계약이 통째로 1년 밀려요. <b>귀찮아도 매번 붙이세요.</b>
+    <b>② 그 차를 운전할 수 있는 유효한 면허를 2년 이상 보유한 사람(= 명진)이 반드시 동승</b>
+    <span class="mini">면허 정지·취소 상태면 자격 없음</span><br><br>
+    <strong class="hl">표지를 안 붙이고 운전하다 적발되면 → 연습면허가 취소됩니다.</strong>
+    그러면 <b>기능시험부터 전부 다시</b>예요. 지금까지 들인 시간이 통째로 날아가고 차 계약도 그만큼 밀립니다.
+    <b>귀찮아도 매번 붙이세요.</b><br>
+    <span style="font-size:12.5px;color:var(--sub);">※ "1년간 재응시 금지"라는 자료도 있으나 <b>법령 원문에서 확정하지 못했습니다(확인 필요).</b>
+    어느 쪽이든 <b>표지는 반드시 붙인다</b>가 답이라 결론은 같습니다.</span>
   </div>
 </section>
 
@@ -662,7 +688,8 @@
       <div class="fd">
         <b>목표: 실격 항목 자동화</b><br>
         · <b>좌·우회전</b>: 30m 전 깜빡이 → 회전 → 끄기<br>
-        · <b>노란불이면 무조건 정지</b> 훈련 (신호위반 = 실격)<br>
+        · <b>노란불 판단</b> 훈련 — <b>멈출 수 있으면 정지 / 이미 진입했으면 통과.</b>
+        명진이 옆에서 "지금은 서야 해 / 지금은 가야 해"를 <b>매번 말해주며</b> 감각을 만들어 주세요 (신호위반 = 실격)<br>
         · <b>횡단보도에 사람 보이면 무조건 정지</b> (보행자 보호 위반 = 실격)<br>
         · <b>스쿨존</b> 지나며 30km/h 감각
       </div>
@@ -701,7 +728,7 @@
     <li><b>속도</b> — 너무 느리지 않은가? (느려도 감점)</li>
     <li><b>제동</b> — 가속 안 할 땐 브레이크에 발 / 정차 중 브레이크 유지</li>
     <li><b>자세</b> — 두 손 / 핸들 위쪽 / 팔 안 꼬기</li>
-    <li><b>신호</b> — 노란불에 정지했는가? 정지선 안 넘었는가?</li>
+    <li><b>신호</b> — 노란불 판단이 맞았는가?(멈출 수 있으면 정지 / 진입했으면 통과) 정지선 안 넘었는가?</li>
     <li><b>보행자</b> — 횡단보도에서 멈췄는가?</li>
     <li><b>간격</b> — 주차 차량 옆 1m 확보</li>
   </ul>
