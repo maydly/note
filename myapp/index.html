@@ -110,6 +110,19 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .moodtxt:focus{border-color:#dcc3a0;background:#fff}
 .moodtxt::placeholder{color:#c3b7a7}
 .cmood{font-size:9px;line-height:1.1;letter-spacing:-1px;margin-top:1px}
+/* 도전 — 진행률·단계 */
+.pbar{height:8px;background:#efe8df;border-radius:99px;overflow:hidden;margin-top:8px}
+.pbarf{height:100%;background:linear-gradient(90deg,#c9a87f,#a9c48f);border-radius:99px;transition:width .3s}
+.prow{display:flex;justify-content:space-between;font-size:12px;color:#8a7a68;margin-top:5px}
+.prow b{color:#6b5a49}
+.pnote{font-size:12px;color:#8a7a68;background:#faf6f0;border-radius:9px;padding:7px 10px;margin-top:7px;line-height:1.5}
+.steprow{display:flex;align-items:center;gap:9px;font-size:13.5px;color:#5a4f43;padding:7px 2px;border-top:1px dotted #eee3d7;cursor:pointer}
+.steprow.done{color:#b3a998;text-decoration:line-through}
+.kindpick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.kindb{border:1.5px solid #e5dbd0;background:#fff;border-radius:12px;padding:10px;cursor:pointer;text-align:left}
+.kindb b{display:block;font-size:14px;color:#5a4f43}
+.kindb span{display:block;font-size:11px;color:#a99e8f;margin-top:2px;line-height:1.4}
+.kindb.on{border-color:#c98e7f;background:#fdf6f2}
 /* 요약 카테고리 막대 */
 .catrow{display:flex;align-items:center;gap:10px;margin:9px 0}
 .catic{width:30px;height:30px;border-radius:9px;background:#f0ebe2;display:grid;place-items:center;font-size:15px;flex:0 0 auto}
@@ -656,13 +669,26 @@ function renderToday(){
   var todayTodos=due.concat(noDue).slice(0,6);
   h+='<div class="seg">오늘 할 일'+(due.length?' · 예정 '+due.length:'')+'</div>';
   h+=todayTodos.length?todayTodos.map(todoCard).join(''):'<div class="empty" style="padding:16px">오늘 할 일이 없어요 🎉</div>';
-  // 오늘 도전
+  // 오늘 도전 — 습관은 체크, 목표·계획은 «다음에 뭘 하면 되는지»
+  var habits=chals.filter(function(c){return chalKind(c)==='habit';});
+  var goals=chals.filter(function(c){return chalKind(c)==='goal';});
+  var plans=chals.filter(function(c){return chalKind(c)==='plan';});
   h+='<div class="seg">오늘 도전</div>';
-  if(!chals.length)h+='<div class="empty" style="padding:16px">🔥 도전 탭에서 습관을 추가해요</div>';
-  else h+=chals.map(function(c){var done=c.days&&c.days[today];return '<div class="card"><div class="row">'
-    +'<div class="ck '+(done?'on':'')+'" onclick="toggleChal(\''+c.id+'\')"></div>'
-    +'<div class="tt">'+esc(c.name)+'<div class="tmeta">🔥 '+chalStreak(c)+'일 연속</div></div>'
-    +'</div></div>';}).join('');
+  if(!chals.length)h+='<div class="empty" style="padding:16px">🔥 도전 탭에서 목표·계획·습관을 등록해요</div>';
+  else{
+    h+=habits.map(function(c){var done=c.days&&c.days[today];return '<div class="card '+(done?'done':'')+'"><div class="row">'
+      +'<div class="ck '+(done?'on':'')+'" onclick="toggleChal(\''+c.id+'\')"></div>'
+      +'<div class="tt">'+esc(c.name)+'<div class="tmeta">🔥 '+chalStreak(c)+'일 연속</div></div>'
+      +'</div></div>';}).join('');
+    h+=goals.map(function(c){var g=goalPace(c);if(!g)return '';
+      return '<div class="card"><div class="tt"><b>🎯 '+esc(c.name)+'</b>'
+        +'<div class="tmeta">'+g.pct+'% · '+(g.left<=0?'🎉 달성!':(g.per?('오늘 '+numFmt(g.per)+' '+esc(c.unit||'')+' 하면 돼요'):(numFmt(g.left)+' '+esc(c.unit||'')+' 남음')))+'</div></div>'
+        +'<div class="pbar" style="margin-top:6px"><div class="pbarf" style="width:'+g.pct+'%"></div></div></div>';}).join('');
+    h+=plans.map(function(c){var p=planProg(c);if(!p.total)return '';
+      return '<div class="card"><div class="tt"><b>📋 '+esc(c.name)+'</b>'
+        +'<div class="tmeta">'+p.pct+'% · '+(p.next?('👉 '+esc(p.next)):'🎉 완료!')+'</div></div>'
+        +'<div class="pbar" style="margin-top:6px"><div class="pbarf" style="width:'+p.pct+'%"></div></div></div>';}).join('');
+  }
   // 오늘 촬영
   var shootT=(typeof shoots!=='undefined'?shoots:[]).filter(function(s){return !s.cancel&&s.date===today;});
   if(shootT.length)h+='<div class="seg">오늘 촬영 '+shootT.length+'</div>'+shootT.map(function(s){return '<div class="card"><div class="tt">📸 '+esc(s.name)+(s.time?' · '+esc(s.time):'')+(s.place?' · '+esc(s.place):'')+'</div></div>';}).join('');
@@ -682,7 +708,12 @@ function setMoodText(slot,val,d){
   save(K.mood,moods);pushSoon('moods');
 }
 
-/* ===== 도전(습관·연속일수) ===== */
+/* ===== 도전 =====
+   종류를 먼저 정하고 그에 맞게 제대로 세팅한다.
+   🔥습관 = 매일 체크·연속일수 | 🎯목표 = 목표치·마감 → 진행률·필요 페이스 | 📋계획 = 단계 체크리스트 → 다음 단계
+   📅일정 = 날짜 정해진 1회성 → 투두(예정일)로 보내 캘린더에 뜨게 한다 (도전 목록엔 안 쌓음)
+   kind 없는 옛 데이터는 습관으로 본다. */
+function chalKind(c){return c.kind||'habit';}
 function chalStreak(c){
   var n=0,d=new Date();
   for(var i=0;i<400;i++){var ds=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
@@ -690,29 +721,171 @@ function chalStreak(c){
     d.setDate(d.getDate()-1);}
   return n;
 }
+function daysLeft(due){
+  if(!due)return null;
+  var t=new Date(todayStr()),d=new Date(due);
+  return Math.round((d-t)/86400000);
+}
+function numFmt(n){n=+n||0;return n.toLocaleString('ko-KR');}
+/* 목표: 남은 양 ÷ 남은 일수 = 하루에 얼마씩 해야 하는지 */
+function goalPace(c){
+  var tgt=+c.target||0,cur=+c.current||0;
+  if(!tgt)return null;
+  var left=Math.max(0,tgt-cur), dl=daysLeft(c.due);
+  var pct=Math.min(100,Math.round(cur/tgt*100));
+  var per=(dl!==null&&dl>0&&left>0)?Math.ceil(left/dl):null;
+  return {tgt:tgt,cur:cur,left:left,dl:dl,pct:pct,per:per};
+}
+function planProg(c){
+  var st=c.steps||[];var done=st.filter(function(s){return s.done;}).length;
+  var next=st.find(function(s){return !s.done;});
+  return {done:done,total:st.length,pct:st.length?Math.round(done/st.length*100):0,next:next?next.t:''};
+}
 function renderChal(){
   var el=document.getElementById('chalList');if(!el)return;
   var today=todayStr();
-  var sub=document.getElementById('chalSub');if(sub)sub.textContent=chals.length?(chals.length+'개 · 오늘 '+chals.filter(function(c){return c.days&&c.days[today];}).length+' 완료'):'매일 체크 · 연속일수(🔥)로 습관 만들기';
-  if(!chals.length){el.innerHTML='<div class="empty">＋ 로 도전을 추가하세요<br>예: 물 2L · 스트레칭 · 사진 1장</div>';return;}
-  el.innerHTML=chals.map(function(c){var done=c.days&&c.days[today];var st=chalStreak(c);
-    var total=c.days?Object.keys(c.days).length:0;
-    return '<div class="card '+(done?'done':'')+'"><div class="row">'
-      +'<div class="ck '+(done?'on':'')+'" onclick="toggleChal(\''+c.id+'\')"></div>'
-      +'<div class="tt">'+esc(c.name)+'<div class="tmeta">🔥 '+st+'일 연속 · 누적 '+total+'일</div></div>'
-      +'<span class="shseq">'+st+'🔥</span>'
-      +'<button class="del" onclick="delItem(\'chal\',\''+c.id+'\')">×</button>'
-      +'</div></div>';}).join('');
+  var habits=chals.filter(function(c){return chalKind(c)==='habit';});
+  var goals=chals.filter(function(c){return chalKind(c)==='goal';});
+  var plans=chals.filter(function(c){return chalKind(c)==='plan';});
+  var sub=document.getElementById('chalSub');
+  if(sub)sub.textContent=chals.length?('목표 '+goals.length+' · 계획 '+plans.length+' · 습관 '+habits.length):'＋ 로 목표·계획·습관을 등록하세요';
+  if(!chals.length){el.innerHTML='<div class="empty">＋ 를 누르면 <b>일정·목표·계획·습관</b> 중에 고를 수 있어요<br>목표·계획은 진행까지 도와드려요</div>';return;}
+  var h='';
+  if(goals.length){h+='<div class="seg">🎯 목표</div>'+goals.map(goalCard).join('');}
+  if(plans.length){h+='<div class="seg">📋 계획</div>'+plans.map(planCard).join('');}
+  if(habits.length){h+='<div class="seg">🔥 습관</div>'+habits.map(habitCard).join('');}
+  el.innerHTML=h;
+}
+function habitCard(c){
+  var today=todayStr();var done=c.days&&c.days[today];var st=chalStreak(c);
+  var total=c.days?Object.keys(c.days).length:0;
+  return '<div class="card '+(done?'done':'')+'"><div class="row">'
+    +'<div class="ck '+(done?'on':'')+'" onclick="toggleChal(\''+c.id+'\')"></div>'
+    +'<div class="tt">'+esc(c.name)+'<div class="tmeta">🔥 '+st+'일 연속 · 누적 '+total+'일</div></div>'
+    +'<span class="shseq">'+st+'🔥</span>'
+    +'<button class="del" onclick="delItem(\'chal\',\''+c.id+'\')">×</button>'
+    +'</div></div>';
+}
+function goalCard(c){
+  var g=goalPace(c);
+  var unit=esc(c.unit||'');
+  var h='<div class="card"><div class="row"><div class="tt"><b>'+esc(c.name)+'</b>';
+  if(c.why)h+='<div class="tmeta">💭 '+esc(c.why)+'</div>';
+  h+='</div><button class="del" onclick="delItem(\'chal\',\''+c.id+'\')">×</button></div>';
+  if(g){
+    h+='<div class="pbar"><div class="pbarf" style="width:'+g.pct+'%"></div></div>'
+      +'<div class="prow"><span>'+numFmt(g.cur)+' / '+numFmt(g.tgt)+' '+unit+'</span><b>'+g.pct+'%</b></div>';
+    var bits=[];
+    if(g.dl!==null)bits.push(g.dl>0?('마감까지 '+g.dl+'일'):(g.dl===0?'오늘이 마감!':('마감 '+Math.abs(g.dl)+'일 지남')));
+    if(g.per)bits.push('하루 '+numFmt(g.per)+' '+unit+'씩');
+    if(g.left<=0)bits=['🎉 목표 달성!'];
+    if(bits.length)h+='<div class="pnote">'+bits.join(' · ')+'</div>';
+  }else h+='<div class="pnote">목표치를 정하면 진행률·필요 페이스를 계산해드려요</div>';
+  h+='<button class="impbtn cash" style="margin-top:8px" onclick="sheetGoalProg(\''+c.id+'\')">＋ 진행 기록</button>';
+  return h+'</div>';
+}
+function planCard(c){
+  var p=planProg(c);var dl=daysLeft(c.due);
+  var h='<div class="card"><div class="row"><div class="tt"><b>'+esc(c.name)+'</b>'
+    +'<div class="tmeta">'+p.done+'/'+p.total+' 단계'+(dl!==null?(' · 마감까지 '+dl+'일'):'')+'</div></div>'
+    +'<button class="del" onclick="delItem(\'chal\',\''+c.id+'\')">×</button></div>'
+    +'<div class="pbar"><div class="pbarf" style="width:'+p.pct+'%"></div></div>'
+    +'<div class="prow"><span>진행</span><b>'+p.pct+'%</b></div>';
+  if(p.next)h+='<div class="pnote">👉 다음 단계: <b>'+esc(p.next)+'</b></div>';
+  else if(p.total)h+='<div class="pnote">🎉 모든 단계 완료!</div>';
+  h+=(c.steps||[]).map(function(s,i){
+    return '<div class="steprow'+(s.done?' done':'')+'" onclick="toggleStep(\''+c.id+'\','+i+')">'
+      +'<div class="ck '+(s.done?'on':'')+'"></div><span>'+esc(s.t)+'</span></div>';}).join('');
+  return h+'</div>';
 }
 function toggleChal(id){var c=chals.find(function(x){return String(x.id)===String(id);});if(!c)return;var d=todayStr();c.days=c.days||{};if(c.days[d])delete c.days[d];else c.days[d]=1;save(K.chal,chals);pushSoon('chals');renderChal();renderToday();}
+function toggleStep(id,i){var c=chals.find(function(x){return String(x.id)===String(id);});if(!c||!c.steps||!c.steps[i])return;
+  c.steps[i].done=!c.steps[i].done;save(K.chal,chals);pushSoon('chals');renderChal();renderToday();}
+/* 목표 진행 기록 — 지금까지 얼마나 했는지 갱신 */
+function sheetGoalProg(id){
+  var c=chals.find(function(x){return String(x.id)===String(id);});if(!c)return;window._gid=id;
+  document.getElementById('sheet').innerHTML='<h3>'+esc(c.name)+' · 진행 기록</h3>'
+    +'<div class="phnote">지금까지 누적으로 얼마나 했는지 적어주세요. (목표 '+numFmt(c.target)+' '+esc(c.unit||'')+')</div>'
+    +'<div class="fld"><label>현재까지 (누적)</label><input id="g_cur" type="number" inputmode="numeric" value="'+(+c.current||0)+'"></div>'
+    +'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button><button class="msave" onclick="saveGoalProg()">저장</button></div>';
+  document.getElementById('mask').classList.add('on');
+  setTimeout(function(){var e=document.getElementById('g_cur');e&&e.focus();},50);
+}
+function saveGoalProg(){
+  var c=chals.find(function(x){return String(x.id)===String(window._gid);});if(!c)return;
+  c.current=parseFloat(document.getElementById('g_cur').value)||0;
+  save(K.chal,chals);pushSoon('chals');renderChal();renderToday();closeSheet();
+  var g=goalPace(c);toast(g&&g.left<=0?'🎉 목표 달성!':'진행 기록됨'+(g&&g.per?(' · 하루 '+numFmt(g.per)+' '+(c.unit||'')+'씩'):''));
+}
+
+/* 추가 시트 — 먼저 «무엇인지» 고르게 한다 */
+var CH_KINDS=[['schedule','📅 일정','날짜가 정해진 한 번의 일'],['goal','🎯 목표','도달하고 싶은 결과'],['plan','📋 계획','여러 단계로 해나갈 것'],['habit','🔥 습관','매일 반복할 것']];
 function sheetChal(){
-  document.getElementById('sheet').innerHTML='<h3>도전 추가</h3>'
-    +'<div class="fld"><label>습관 이름</label><input id="ch_name" placeholder="예: 물 2L 마시기"></div>'
-    +'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button><button class="msave" onclick="saveChal()">추가</button></div>';
+  window._ck='goal';
+  document.getElementById('sheet').innerHTML='<h3>무엇을 등록할까요?</h3>'
+    +'<div class="phnote">이게 <b>일정</b>인지 <b>목표</b>인지 <b>계획</b>인지 <b>습관</b>인지 먼저 정하면, 그에 맞게 제대로 세팅해드려요.</div>'
+    +'<div class="kindpick" id="ch_kinds">'+CH_KINDS.map(function(k){
+      return '<div class="kindb'+(k[0]==='goal'?' on':'')+'" onclick="pickChalKind(\''+k[0]+'\')"><b>'+k[1]+'</b><span>'+k[2]+'</span></div>';}).join('')+'</div>'
+    +'<div id="ch_form"></div>';
+  chalForm('goal');
+  document.getElementById('mask').classList.add('on');
+}
+function pickChalKind(k){
+  window._ck=k;
+  document.querySelectorAll('#ch_kinds .kindb').forEach(function(el,i){el.className='kindb'+(CH_KINDS[i][0]===k?' on':'');});
+  chalForm(k);
+}
+function chalForm(k){
+  var f=document.getElementById('ch_form');if(!f)return;
+  var today=todayStr();var h='';
+  if(k==='schedule'){
+    h='<div class="fld"><label>무슨 일정</label><input id="ch_name" placeholder="예: 최혜주님 촬영"></div>'
+     +'<div class="fld"><label>날짜</label><input id="ch_due" type="date" value="'+today+'"></div>'
+     +'<div class="phnote">일정은 <b>투두·캘린더</b>에 예정일로 등록돼요.</div>';
+  } else if(k==='goal'){
+    h='<div class="fld"><label>무슨 목표</label><input id="ch_name" placeholder="예: 렌즈값 모으기"></div>'
+     +'<div class="fld"><label>얼마나 (목표치)</label><input id="ch_target" type="number" inputmode="numeric" placeholder="예: 1000000" style="margin-bottom:7px"><input id="ch_unit" placeholder="단위 — 예: 원 / 회 / kg"></div>'
+     +'<div class="fld"><label>지금까지 (선택)</label><input id="ch_cur" type="number" inputmode="numeric" placeholder="0"></div>'
+     +'<div class="fld"><label>언제까지 (선택)</label><input id="ch_due" type="date"></div>'
+     +'<div class="fld"><label>왜 하려는지 (선택)</label><input id="ch_why" placeholder="예: 인물 단렌즈로 퀄 올리기"></div>'
+     +'<div class="phnote">목표치·마감을 넣으면 <b>진행률</b>과 <b>하루에 얼마씩</b> 해야 하는지 계산해드려요.</div>';
+  } else if(k==='plan'){
+    h='<div class="fld"><label>무슨 계획</label><input id="ch_name" placeholder="예: 포트폴리오 개편"></div>'
+     +'<div class="fld"><label>단계 (한 줄에 하나씩)</label><textarea id="ch_steps" rows="5" placeholder="사진 셀렉\n보정\n페이지 만들기\n공유"></textarea></div>'
+     +'<div class="fld"><label>언제까지 (선택)</label><input id="ch_due" type="date"></div>'
+     +'<div class="phnote">단계를 적어두면 <b>진행률</b>과 <b>다음 단계</b>를 계속 알려드려요.</div>';
+  } else {
+    h='<div class="fld"><label>무슨 습관</label><input id="ch_name" placeholder="예: 물 2L 마시기"></div>'
+     +'<div class="phnote">매일 체크하면 <b>연속일수(🔥)</b>가 쌓여요.</div>';
+  }
+  f.innerHTML=h+'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button><button class="msave" onclick="saveChal()">등록</button></div>';
   setTimeout(function(){var e=document.getElementById('ch_name');e&&e.focus();},50);
 }
-function saveChal(){var n=document.getElementById('ch_name').value.trim();if(!n){toast('이름을 입력하세요');return;}
-  chals.push({id:uid(),name:n,days:{},created:todayStr()});save(K.chal,chals);pushSoon('chals');renderChal();closeSheet();toast('도전을 추가했어요');}
+function saveChal(){
+  var k=window._ck||'habit';
+  var n=(document.getElementById('ch_name')||{}).value;n=(n||'').trim();
+  if(!n){toast('이름을 입력하세요');return;}
+  var dueEl=document.getElementById('ch_due');var due=dueEl?dueEl.value:'';
+  if(k==='schedule'){
+    if(!due){toast('날짜를 선택하세요');return;}
+    todos.unshift({id:uid(),text:n,tag:'개인',done:false,created:todayStr(),due:due,doneAt:''});
+    save(K.todo,todos);pushSoon('todos');renderTodo();renderCal();renderToday();closeSheet();
+    toast('일정을 투두·캘린더에 등록했어요');return;
+  }
+  var c={id:uid(),kind:k,name:n,created:todayStr(),due:due||''};
+  if(k==='goal'){
+    c.target=parseFloat((document.getElementById('ch_target')||{}).value)||0;
+    c.unit=((document.getElementById('ch_unit')||{}).value||'').trim();
+    c.current=parseFloat((document.getElementById('ch_cur')||{}).value)||0;
+    c.why=((document.getElementById('ch_why')||{}).value||'').trim();
+  } else if(k==='plan'){
+    var raw=((document.getElementById('ch_steps')||{}).value||'').split('\n').map(function(s){return s.trim();}).filter(Boolean);
+    if(!raw.length){toast('단계를 한 줄에 하나씩 적어주세요');return;}
+    c.steps=raw.map(function(t){return {t:t,done:false};});
+  } else { c.days={}; }
+  chals.push(c);save(K.chal,chals);pushSoon('chals');renderChal();renderToday();closeSheet();
+  toast((k==='goal'?'목표':k==='plan'?'계획':'습관')+'을 등록했어요');
+}
 
 /* ===== 정보(허브) ===== */
 var infoCat='전체';
