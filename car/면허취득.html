@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>수빈 면허 취득 — 절차·비용·준비물·일정</title>
+<title>수빈 면허 취득 — 학원 없이 최단으로 따는 법</title>
 <style>
   :root{
     --bg:#faf7f2; --card:#ffffff; --ink:#2c2a26; --sub:#6b665e;
@@ -44,21 +44,25 @@
   .callout.gold .ct{color:#8a6a1e;} .callout.warn .ct{color:var(--warn);}
   .callout.good .ct{color:var(--good);} .callout.blue .ct{color:var(--blue);} .callout.red .ct{color:var(--red);}
 
-  /* 6단계 플로우 */
+  /* 단계 플로우 */
   .flow{display:flex; flex-direction:column; gap:0;}
   .fstep{display:flex; gap:14px; position:relative; padding-bottom:16px;}
   .fstep:last-child{padding-bottom:0;}
   .fstep .num{flex:0 0 auto; width:38px; height:38px; border-radius:50%; background:var(--accent); color:#fff;
     font-weight:800; display:flex; align-items:center; justify-content:center; font-size:15px; z-index:2;}
   .fstep .num.done{background:var(--good);}
+  .fstep .num.hot{background:var(--red);}
   .fstep:not(:last-child)::before{content:""; position:absolute; left:18px; top:38px; bottom:0;
     width:2px; background:var(--line);}
   .fstep .fc{flex:1; background:#fbf8f3; border:1px solid var(--line); border-radius:12px; padding:13px 15px;}
+  .fstep .fc.hot{background:#fdf1ef; border-color:#f0c9c5;}
   .fstep .ft{font-weight:800; font-size:15px; display:flex; flex-wrap:wrap; align-items:center; gap:8px;}
   .fstep .fee{font-size:12px; font-weight:800; color:var(--accent); background:var(--accent-soft);
     padding:2px 8px; border-radius:5px;}
   .fstep .fee.free{color:var(--good); background:var(--good-soft);}
-  .fstep .fd{font-size:13px; color:var(--sub); margin-top:4px;}
+  .fstep .day{font-size:11.5px; font-weight:800; color:var(--blue); background:var(--blue-soft);
+    padding:2px 8px; border-radius:5px;}
+  .fstep .fd{font-size:13px; color:var(--sub); margin-top:5px;}
   .fstep .fd b{color:var(--ink);}
   .pass{display:inline-block; font-size:11.5px; font-weight:800; background:var(--good-soft); color:var(--good);
     padding:2px 8px; border-radius:5px;}
@@ -87,6 +91,8 @@
   .tip h4{margin:0 0 4px; font-size:15px;}
   .tip .sc{font-size:11.5px; color:var(--good); font-weight:800; background:var(--good-soft);
     padding:2px 8px; border-radius:5px; display:inline-block; margin-bottom:8px;}
+  .tip .sc.r{color:var(--red); background:var(--red-soft);}
+  .tip .sc.b{color:var(--blue); background:var(--blue-soft);}
   .tip ul{margin:0; padding-left:17px; font-size:13px;} .tip li{margin:5px 0;}
 
   .links{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
@@ -98,6 +104,12 @@
     border-radius:10px; padding:11px 13px; margin-top:12px;}
   footer{text-align:center; color:var(--sub); font-size:12px; margin-top:26px;}
   strong.hl{background:#fbeecb; padding:0 3px; border-radius:3px;}
+  .act{counter-reset:a; list-style:none; padding-left:0; margin:10px 0 0;}
+  .act li{counter-increment:a; position:relative; padding:12px 14px 12px 46px; margin:9px 0;
+    background:#fff; border:2px solid var(--good); border-radius:12px; font-size:14.5px;}
+  .act li::before{content:counter(a); position:absolute; left:12px; top:11px; width:24px; height:24px;
+    border-radius:50%; background:var(--good); color:#fff; font-weight:800; font-size:13px;
+    display:flex; align-items:center; justify-content:center;}
 .mdlback{position:fixed;top:calc(env(safe-area-inset-top, 0px) + 10px);left:10px;z-index:200;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--ink);text-decoration:none;box-shadow:0 2px 10px rgba(70,60,45,.14)}.mdlback:active{transform:scale(.96)}
 </style>
 </head>
@@ -107,230 +119,338 @@
 
 <header class="top">
   <span class="kicker">수빈 · 조사-006 · 면허 취득</span>
-  <h1>면허 취득 — 절차 · 비용 · 준비물 · 일정</h1>
+  <h1>면허 취득 — 학원 없이, 최단으로</h1>
   <p class="lead"><b>면허 발급이 장기렌트 계약의 선행 조건</b>이라, 이걸 뚫는 게 지금 가장 중요한 일이에요.<br>
-  절차 6단계 · 비용 · 준비물 · 시험별 준비법을 전부 정리했습니다.</p>
-  <p class="meta">작성 2026-07-14 · v1.0 · 2026년 기준</p>
+  <b>학원은 안 가고, 목표는 "빨리"</b> — 그 기준으로 절차 · 비용 · 준비물 · 최단 일정을 전부 다시 짰습니다.</p>
+  <p class="meta">작성 2026-07-14 · v2.0 (독학 최단 코스) · 2026년 기준</p>
 </header>
 
 <!-- 결론 먼저 -->
 <section class="key">
-  <h2><span class="ic">★</span>먼저, 수빈이는 이 코스가 정답</h2>
+  <h2><span class="ic">★</span>결론 — 2종 자동 · 직접응시 · 목표 <u>3~4주</u></h2>
   <div class="callout gold">
-    <span class="ct">🎯 2종 보통 (자동) · 운전전문학원</span>
-    <b>① 왜 2종 자동?</b> 수빈이는 <b>액티언(자동변속기)</b> 만 몰 거예요. 2종 보통 자동이면 10인승 이하 승용차·SUV를 다 몰 수 있습니다.
-    <strong class="hl">가장 빠르고 쉬운 코스</strong>예요. (수동차를 몰 일이 없다면 굳이 1종 갈 이유 없음)<br><br>
-    <b>② 왜 학원?</b> <b>지금 면허가 자동차 계약의 병목</b>입니다. 독학은 10만원대로 싸지만,
-    <b>불합격할 때마다 재응시 대기 → 계약이 계속 밀립니다.</b>
-    학원은 80만원대지만 <b>익숙한 코스에서 시험을 봐서 합격률이 가장 높아요.</b>
-    <b>여기선 "돈"보다 "속도"가 더 비쌉니다.</b>
+    <span class="ct">🎯 코스: 2종 보통(자동) · 학원 없이 시험장 직접응시</span>
+    <b>① 왜 2종 자동?</b> 수빈이는 <b>액티언(자동변속기)</b> 만 몰 거예요.
+    2종 보통 자동이면 10인승 이하 승용차·SUV를 다 몹니다. <strong class="hl">가장 빠르고, 가장 쉽고, 가장 쌉니다.</strong>
+    (수동차를 몰 계획이 없다면 1종·수동으로 갈 이유가 전혀 없어요)<br><br>
+    <b>② 학원 없이도 빨리 가능한가? → 가능합니다.</b>
+    독학이 느려지는 진짜 이유는 "학원을 안 가서"가 아니라 <b>시험에 떨어져서</b>예요.
+    그리고 <b>떨어지는 이유는 연습 부족</b>이고요.
+    <strong class="hl">즉, 학원비 80만원을 안 쓰는 대신 "연습"만 따로 확보하면 속도는 거의 안 잃습니다.</strong>
   </div>
-  <div class="callout blue">
-    <span class="ct">💡 참고 — 2종 자동의 유일한 제약</span>
-    2종 보통 <b>자동</b>은 <b>수동변속기 차량을 못 몹니다.</b> 나중에 수동차를 몰 계획이 있다면 2종 보통(수동)이나 1종 보통을 고려하세요.
-    하지만 <b>액티언 하이브리드는 자동</b>이고, 요즘 차 대부분이 자동이라 실사용엔 문제없어요.
+  <div class="callout good">
+    <span class="ct">✅ 우리한테 유리한 조건 — 명진이 있다</span>
+    독학의 가장 큰 약점은 <b>"도로주행 연습할 차와 사람이 없다"</b> 인데,
+    <b>우리는 그게 이미 해결돼 있어요.</b><br>
+    <b>연습면허</b>만 나오면, <b>면허 2년 이상 된 명진이 동승</b>하는 조건으로 <b>실제 도로에서 얼마든지 연습할 수 있습니다.</b>
+    학원 다니는 사람도 도로주행 교육은 몇 시간밖에 못 받아요. <strong class="hl">이 부분은 오히려 우리가 학원보다 유리합니다.</strong>
+  </div>
+  <div class="callout red">
+    <span class="ct">⚠️ 그래서 진짜 승부처는 딱 하나 — "기능시험"</span>
+    도로주행은 명진이 커버되지만, <b>기능시험(장내 코스)</b> 은 <b>연습할 장소가 시험장 코스밖에 없어요.</b>
+    일반 도로에서 T자 주차·경사로를 연습할 수 없으니까요.<br>
+    <b>여기만 따로 해결하면 독학 최단 코스가 완성됩니다.</b> (아래 §4에서 해결책 정리)
   </div>
 </section>
 
-<!-- 6단계 절차 -->
+<!-- 최단 타임라인 -->
 <section>
-  <h2><span class="ic">1</span>절차 6단계 — 어느 것도 못 건너뜁니다</h2>
-  <p class="h2sub">순서대로 진행되고, 앞 단계를 통과해야 다음으로 갑니다.</p>
+  <h2><span class="ic">1</span>최단 타임라인 — 한 번에 붙는 시나리오</h2>
+  <p class="h2sub">전부 1회 합격 기준. 실제 총 기간은 <b>"시험 예약이 얼마나 밀렸느냐"</b> 가 거의 다 결정합니다.</p>
 
   <div class="flow">
-    <div class="fstep"><div class="num">1</div><div class="fc">
-      <div class="ft">교통안전교육 <span class="fee free">무료</span></div>
-      <div class="fd">시험장 교육장에서 <b>1시간 시청각 교육</b>. 신규 취득자 전원 의무. 그냥 듣기만 하면 됨.</div>
-    </div></div>
+    <div class="fstep">
+      <div class="num done">0</div>
+      <div class="fc">
+        <div class="ft">사전 준비 <span class="day">D-3 ~ D-0</span> <span class="fee free">거의 무료</span></div>
+        <div class="fd"><b>증명사진 촬영</b>(3.5×4.5cm, 6개월 이내) · <b>필기 문제은행 앱 설치</b> ·
+        <b>응시할 시험장 정하기</b>(← 이게 전체 일정을 결정, §5 참고)</div>
+      </div>
+    </div>
 
-    <div class="fstep"><div class="num">2</div><div class="fc">
-      <div class="ft">신체검사 <span class="fee">6,000~10,000원</span></div>
-      <div class="fd"><b>시력·청력</b> 등 기본 검사. 병원 또는 시험장 내 신체검사장. <b>안경 쓰면 안경 착용하고 검사</b>(면허증에 안경 조건 표기됨).</div>
-    </div></div>
+    <div class="fstep">
+      <div class="num">1</div>
+      <div class="fc">
+        <div class="ft">교통안전교육 <span class="day">1일차</span> <span class="fee free">무료 · 1시간</span></div>
+        <div class="fd">학과시험 응시 <b>전에</b> 반드시 받아야 하는 의무교육. <b>1시간</b>. 시험장에서 바로 듣거나 온라인 수강 가능.
+        <b>학원 안 가도 이건 필수</b>예요.</div>
+      </div>
+    </div>
 
-    <div class="fstep"><div class="num">3</div><div class="fc">
-      <div class="ft">학과시험 (필기) <span class="fee">10,000원</span> <span class="pass">2종 60점 합격</span></div>
-      <div class="fd">컴퓨터(CBT)로 <b>40문제 / 40분</b>. 문제당 2.5점. <b>2종은 24문제만 맞히면 합격</b>(1종은 70점).<br>
-      → <b>공개된 문제은행(약 1,000문제)에서 그대로 출제</b>됩니다. 앱으로 반복하면 됩니다.</div>
-    </div></div>
+    <div class="fstep">
+      <div class="num">2</div>
+      <div class="fc">
+        <div class="ft">신체검사(적성검사) <span class="day">1일차</span> <span class="fee">6,000~10,000원</span></div>
+        <div class="fd">시력·색맹·청력 간단 검사. <b>시험장 안 신체검사장에서 즉시</b> 가능. 안경 쓰면 <b>꼭 끼고 가기.</b></div>
+      </div>
+    </div>
 
-    <div class="fstep"><div class="num">4</div><div class="fc">
-      <div class="ft">기능시험 (장내) <span class="fee">25,000원</span> <span class="pass">80점 합격</span></div>
-      <div class="fd"><b>4시간 장내기능교육</b> 이수 후 응시. 코스: <b>출발 · 경사로 · 직각주차(T자) · 교차로 · 가속</b>.
-      <b>컴퓨터 자동 채점</b>이라 감점 기준이 기계적입니다(안전벨트 미착용, 시동 꺼짐 등).</div>
-    </div></div>
+    <div class="fstep">
+      <div class="num">3</div>
+      <div class="fc">
+        <div class="ft">학과시험(필기) <span class="day">1일차 · 당일 가능</span> <span class="fee">10,000원</span> <span class="pass">2종 60점</span></div>
+        <div class="fd"><b>40문제 중 24개 맞으면 합격.</b> <strong class="hl">교육 → 신검 → 필기를 하루에 다 끝낼 수 있어요.</strong>
+        결과도 <b>당일 즉시</b> 나옵니다.<br>
+        ⏱ <b>합격하면 유효기간 1년</b> — 그 안에 기능·도로주행을 끝내면 됩니다.</div>
+      </div>
+    </div>
 
-    <div class="fstep"><div class="num">5</div><div class="fc">
-      <div class="ft">연습면허 발급 <span class="fee">4,000원</span></div>
-      <div class="fd">기능시험 합격하면 나옵니다. <b>유효기간 1년</b> — 이 안에 도로주행에 합격해야 해요.<br>
-      <b>이걸로 도로주행 연습 가능</b>(단, 운전면허 소지자 동승 필요 → <b>명진이 옆에 타면 됨</b>).</div>
-    </div></div>
+    <div class="fstep">
+      <div class="num hot">4</div>
+      <div class="fc hot">
+        <div class="ft">🔥 기능시험(장내) <span class="day">예약 대기 발생</span> <span class="fee">25,000원</span> <span class="pass">80점</span></div>
+        <div class="fd"><b>여기가 독학의 유일한 관문.</b> 굴절·곡선·방향전환(T자)·평행주차·경사로 등 코스 주행.
+        <b>사람이 아니라 컴퓨터가 자동 채점</b>해요.<br>
+        ⛔ <b>떨어지면 3일 뒤에나 재응시 가능</b> (월요일 불합격 → 목요일 가능) <b>+ 예약 대기까지 다시</b>.
+        <strong class="hl">한 방에 붙는 게 곧 속도입니다.</strong></div>
+      </div>
+    </div>
 
-    <div class="fstep"><div class="num">6</div><div class="fc">
-      <div class="ft">도로주행시험 <span class="fee">30,000원</span> <span class="pass">70점 합격</span></div>
-      <div class="fd">실제 도로 <b>5km 이상</b> 주행. <b>4개 코스 중 추첨으로 1개</b> 선택되고, <b>내비게이션 음성 안내</b>를 따라 운전합니다.</div>
-    </div></div>
+    <div class="fstep">
+      <div class="num done">5</div>
+      <div class="fc">
+        <div class="ft">연습운전면허 발급 <span class="day">기능 합격 당일</span> <span class="fee">4,000원</span></div>
+        <div class="fd">기능 붙으면 <b>바로 그 자리에서</b> 나옵니다. 유효기간 <b>1년(연장 불가)</b>.<br>
+        🚗 <strong class="hl">이 순간부터 명진이 옆에 타면 실제 도로에서 연습 가능</strong> — 우리의 최대 무기.</div>
+      </div>
+    </div>
 
-    <div class="fstep"><div class="num done">✓</div><div class="fc" style="background:var(--good-soft); border-color:#cfe0d1;">
-      <div class="ft">🎉 면허증 발급 <span class="fee">10,000원 (모바일 IC 15,000원)</span></div>
-      <div class="fd"><b>시험장에서 신청하면 당일~며칠 내 발급.</b> → <b>이때부터 장기렌트 계약 가능!</b></div>
-    </div></div>
+    <div class="fstep">
+      <div class="num hot">6</div>
+      <div class="fc hot">
+        <div class="ft">🔥 도로주행시험 <span class="day">예약 대기 발생</span> <span class="fee">30,000원</span> <span class="pass">70점</span></div>
+        <div class="fd">실제 도로 <b>5km 이상</b> 주행. 여러 코스 중 <b>추첨</b>으로 결정되고, <b>내비게이션 음성 안내</b>를 따라갑니다.<br>
+        ⛔ <b>떨어지면 여기도 3일 뒤 재응시.</b> 다만 <b>명진과 연습을 충분히 했다면 가장 안 무서운 단계</b>예요.</div>
+      </div>
+    </div>
+
+    <div class="fstep">
+      <div class="num done">7</div>
+      <div class="fc">
+        <div class="ft">🎉 면허증 발급 <span class="day">합격 당일</span> <span class="fee">10,000원</span></div>
+        <div class="fd">사진 촬영 후 <b>당일 수령</b>. (모바일 운전면허증은 별도 약 15,000원)<br>
+        ✅ <strong class="hl">이때부터 장기렌트 계약 가능</strong> — 액티언 계약서에 도장 찍을 수 있습니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout blue">
+    <span class="ct">📅 그래서 총 얼마나 걸리나</span>
+    <b>이론적 최단:</b> 1일차에 교육+신검+필기 → 기능 → 연습면허 → 도로주행. <b>순수 시험 일수만 보면 1~2주도 가능</b>합니다.<br>
+    <b>현실적 목표:</b> <strong class="hl">3~4주</strong> — <b>기능·도로주행 예약 대기</b>(시험장별로 며칠~2주)와
+    <b>연습 시간</b>이 실제 기간을 만듭니다.<br>
+    <b>최악:</b> 기능·도로주행에서 각각 떨어지면 <b>+3일 대기 + 재예약 대기</b> → 6~8주까지 늘어남.
+  </div>
+</section>
+
+<!-- 재응시 규칙 -->
+<section>
+  <h2><span class="ic">2</span>"빨리"의 적 — 재응시 대기 규칙</h2>
+  <p class="h2sub">떨어지면 다음날 바로 못 봅니다. 이 규칙이 독학이 느려지는 진짜 원인이에요.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>시험</th><th>불합격 시 언제 다시 볼 수 있나</th><th>체감 지연</th></tr></thead>
+      <tbody>
+        <tr><th>학과시험(필기)</th><td class="win">다음날 바로 재응시 가능</td><td>거의 없음 😌</td></tr>
+        <tr><th>기능시험</th><td class="lose">불합격일부터 <b>3일 경과 후</b><span class="mini">월 불합격 → 목요일부터</span></td><td class="lose">3일 + 재예약 대기</td></tr>
+        <tr><th>도로주행시험</th><td class="lose">불합격일부터 <b>3일 경과 후</b></td><td class="lose">3일 + 재예약 대기</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout warn">
+    <span class="ct">💡 여기서 나오는 전략</span>
+    <b>필기는 떨어져도 타격이 거의 없습니다</b>(다음날 재응시). 그러니 <b>필기는 과하게 준비하지 말고 빨리 치세요.</b><br>
+    반대로 <b>기능·도로주행은 한 번 떨어질 때마다 최소 일주일씩 밀립니다.</b>
+    <strong class="hl">돈과 시간을 쓸 곳은 "연습"이고, 그 연습은 기능·도로주행에 몰아야 합니다.</strong>
   </div>
 </section>
 
 <!-- 비용 -->
 <section>
-  <h2><span class="ic">₩</span>비용 — 학원 vs 독학</h2>
-  <p class="h2sub">시험 응시료는 동일. 차이는 <b>교육비</b>와 <b>합격률(=재응시 비용·시간)</b>.</p>
-
-  <h3>시험 응시료 (공통, 1회 기준)</h3>
+  <h2><span class="ic">3</span>비용 — 독학이면 <u>약 10만원</u></h2>
+  <p class="h2sub">한 번에 다 붙는다는 가정. 학원(80만원+) 대비 <b>70만원 이상 절약</b>.</p>
   <div class="tw">
-  <table>
-    <tbody>
-      <tr><th>교통안전교육</th><td>무료</td></tr>
-      <tr><th>신체검사</th><td>6,000 ~ 10,000원</td></tr>
-      <tr><th>학과시험(필기)</th><td>10,000원</td></tr>
-      <tr><th>기능시험</th><td>25,000원</td></tr>
-      <tr><th>연습면허 발급</th><td>4,000원</td></tr>
-      <tr><th>도로주행시험</th><td>30,000원</td></tr>
-      <tr><th>면허증 발급</th><td>10,000원 <span class="mini">모바일 IC 15,000원</span></td></tr>
-      <tr class="total"><th>합계 (한 번에 붙을 경우)</th><td>약 <b>9~10만원</b></td></tr>
-    </tbody>
-  </table>
+    <table>
+      <thead><tr><th>항목</th><th class="g">금액</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><th>교통안전교육 (1시간)</th><td class="g">무료</td><td>필수</td></tr>
+        <tr><th>신체검사(적성검사)</th><td class="g">6,000~10,000원</td><td>장소별 상이</td></tr>
+        <tr><th>학과시험(필기)</th><td class="g">10,000원</td><td>불합격 시 재응시료 다시</td></tr>
+        <tr><th>기능시험</th><td class="g">25,000원</td><td>불합격 시 재응시료 다시</td></tr>
+        <tr><th>연습운전면허 발급</th><td class="g">4,000원</td><td>기능 합격 후</td></tr>
+        <tr><th>도로주행시험</th><td class="g">30,000원</td><td>불합격 시 재응시료 다시</td></tr>
+        <tr><th>면허증 발급</th><td class="g">10,000원</td><td>모바일면허증 별도 약 15,000원</td></tr>
+        <tr class="total"><th>합계 (1회 합격 기준)</th><td class="win">약 9~10만원</td><td>—</td></tr>
+        <tr><th>➕ 기능 연습비 (별도)</th><td class="g">수만원 ~ 십수만원</td><td>§4 참고 · <b>여기에 쓰는 돈이 제일 남는 돈</b></td></tr>
+        <tr class="total"><th>현실 총액</th><td class="win">약 15~25만원</td><td class="win">학원 80만원 대비 <b>55만원+ 절약</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="disclaimer">※ 응시 수수료는 2026년 기준이며 변동될 수 있습니다. 도로주행 시험 차량 사용 방식(시험장 차량 임차 여부·비용)은
+  <b>시험장마다 다를 수 있어 접수 전 해당 시험장에 확인 필요</b>합니다.</div>
+</section>
+
+<!-- 기능시험 해결 -->
+<section class="key">
+  <h2><span class="ic">4</span>핵심 — 기능시험 연습, 학원 없이 어떻게?</h2>
+  <p class="h2sub">여기만 뚫으면 독학 최단 코스가 완성됩니다. 아래 3가지를 <b>같이</b> 쓰세요.</p>
+
+  <div class="tips">
+    <div class="tip">
+      <span class="sc r">1순위 · 가장 확실</span>
+      <h4>🚙 "기능만" 단기 교습 사기</h4>
+      <ul>
+        <li>학원 <b>정규 코스(80만원)에 등록하는 게 아니라</b>, <b>기능 몇 시간만</b> 따로 구매</li>
+        <li>운전학원·개인 교습소에 <b>"기능시험 대비 4시간만"</b> 문의</li>
+        <li>수만원~십수만원 수준</li>
+        <li><b>실제 시험 코스에서 실제 시험 차량으로</b> 연습하는 게 합격률을 압도적으로 올림</li>
+      </ul>
+    </div>
+    <div class="tip">
+      <span class="sc b">2순위 · 무료</span>
+      <h4>📺 시험장별 코스 영상</h4>
+      <ul>
+        <li><b>기능 코스는 시험장마다 다릅니다</b> — 일반 영상 말고 <b>응시할 그 시험장 영상</b>만 볼 것</li>
+        <li>유튜브에 <b>"◯◯운전면허시험장 기능시험 코스"</b> 로 검색</li>
+        <li>차 안 시점 영상으로 <b>기어·깜빡이·정지 타이밍을 통째로 외우기</b></li>
+      </ul>
+    </div>
+    <div class="tip">
+      <span class="sc">3순위 · 확인 필요</span>
+      <h4>🅿️ 시험장 코스 연습</h4>
+      <ul>
+        <li>일부 면허시험장은 <b>시험 코스 사전 연습</b>을 유료로 제공</li>
+        <li><b>시험장마다 운영 여부가 달라</b> 반드시 <b>전화 확인</b> 필요</li>
+        <li>도로교통공단 <b>1577-1120</b></li>
+      </ul>
+    </div>
   </div>
 
-  <h3>총비용 비교</h3>
-  <div class="tw">
-  <table>
-    <thead><tr><th>구분</th><th class="g">운전전문학원 <span class="mini">권장</span></th><th>독학 (개별접수)</th></tr></thead>
-    <tbody>
-      <tr><th>비용</th><td class="g">약 <b>80만원 이상</b><span class="mini">지역·학원별 상이</span></td><td class="win">약 <b>10만원 내외</b></td></tr>
-      <tr><th>합격률</th><td class="g win">✅ <b>가장 높음</b><span class="mini">익숙한 코스에서 시험</span></td><td class="lose">낮음<span class="mini">낯선 시험장</span></td></tr>
-      <tr><th>불합격 시</th><td class="g">재교육·재응시 지원</td><td class="lose">재응시 대기 <span class="mini">일정 계속 밀림</span></td></tr>
-      <tr><th>소요 기간</th><td class="g win">약 <b>2~4주</b></td><td class="lose">불확실 <span class="mini">시험 일정에 좌우</span></td></tr>
-      <tr><th>계약 일정</th><td class="g win">✅ 예측 가능</td><td class="lose">❌ 계속 지연 위험</td></tr>
-    </tbody>
-  </table>
+  <div class="callout good">
+    <span class="ct">✅ 기능시험은 "운전 실력"이 아니라 "절차 암기" 시험입니다</span>
+    <b>사람이 아니라 컴퓨터가 채점</b>해요. 즉 <b>감점 항목이 정해져 있고, 그것만 안 하면 붙습니다.</b>
+    잘 모는 게 아니라 <b>정해진 순서를 정확히 밟는 것</b>이 전부예요.<br>
+    <b>가장 많이 틀리는 것:</b> 안전벨트 미착용 · <b>방향지시등(깜빡이) 안 켜기</b> · 시동 꺼짐 · 정지선 침범 · 제한시간 초과.<br>
+    <strong class="hl">"운전 자세 조정 → 안전벨트 → 깜빡이" 이 세 개만 몸에 붙이면 절반은 먹고 들어갑니다.</strong>
+  </div>
+</section>
+
+<!-- 도로주행 = 명진 -->
+<section>
+  <h2><span class="ic">5</span>도로주행 — 여기선 명진이 학원을 이깁니다</h2>
+  <p class="h2sub">연습면허가 나오는 순간부터, 무제한 실도로 연습이 가능해집니다.</p>
+
+  <div class="callout good">
+    <span class="ct">🚗 연습면허로 도로 연습하는 조건</span>
+    <b>① 동승자:</b> <b>정식 운전면허 취득 후 2년이 지난 사람</b>이 <b>1명 이상 반드시 동승</b>해서 운전 지도.
+    → <b>명진이 여기 해당됩니다.</b><br>
+    <b>② 표지 부착:</b> <b>"주행연습" 표지</b>를 <b>차량 앞·뒤에 부착</b>. 규격 <b>가로 30cm × 세로 11cm</b>.
+    (인터넷에서 다운로드·출력하거나 문구점·온라인 구매)<br>
+    <b>③ 유효기간:</b> 연습면허는 <b>1년, 연장 불가.</b>
   </div>
 
+  <div class="callout red">
+    <span class="ct">🚨 절대 실수하면 안 되는 것 — 표지 미부착</span>
+    <b>"주행연습" 표지를 안 붙이고 운전하다 걸리면 → 연습면허 취소 + 1년간 운전면허시험 재응시 금지입니다.</b><br>
+    <strong class="hl">한 번의 실수로 1년을 날립니다. 차값·계약이 통째로 1년 밀려요.</strong>
+    귀찮아도 <b>연습할 때마다 앞뒤에 무조건 붙이세요.</b>
+  </div>
+
+  <div class="callout blue">
+    <span class="ct">💡 도로주행 시험 감점 포인트</span>
+    <b>내비 음성 안내</b>를 따라가므로 길을 외울 필요는 없어요. 대신 아래에서 갈립니다.<br>
+    <b>· 신호·정지선 준수</b>(정지선 넘기면 바로 감점) <b>· 방향지시등</b>(차선변경 3초 전) <b>· 속도 유지</b>(너무 느려도 감점)
+    <b>· 안전거리</b> <b>· 좌우 확인(고개를 돌려서 — 눈만 굴리면 안 봤다고 봄)</b><br>
+    <b>명진과 연습할 때 이 5개를 소리 내서 체크</b>하면 시험장에서 그대로 나옵니다.
+  </div>
+</section>
+
+<!-- 필기 -->
+<section>
+  <h2><span class="ic">6</span>필기(학과) — 3~5일이면 충분</h2>
+  <p class="h2sub">가장 쉬운 단계이고, 떨어져도 다음날 재응시 가능. <b>여기에 시간 쓰지 마세요.</b></p>
+  <ul class="clean">
+    <li><b>문제은행이 공개돼 있고, 거기서 거의 그대로 나옵니다.</b> 이해가 아니라 <b>반복</b>이 정답.</li>
+    <li><b>2종은 40문제 중 24개(60점)면 합격.</b> 16개나 틀려도 됩니다. 만점 노릴 필요 전혀 없어요.</li>
+    <li><b>앱/웹 모의고사를 계속 돌리다가, 2~3회 연속 80점 이상 나오면 바로 접수.</b></li>
+    <li>시험은 <b>컴퓨터(CBT)</b> 로 보고 <b>결과가 당일 즉시</b> 나옵니다.</li>
+  </ul>
   <div class="callout warn">
-    <span class="ct">💰 "70만원 아끼려다 몇 달을 잃는다"</span>
-    독학이 70만원 싼 건 맞아요. 하지만 <b>지금 면허가 자동차 계약을 막고 있습니다.</b>
-    기능·도로주행에서 한 번씩만 떨어져도 재응시 대기로 <b>몇 주씩 밀립니다.</b><br>
-    → <strong class="hl">면허를 빨리 따는 게 우선이면 학원, 시간이 넉넉하고 돈을 아끼려면 독학.</strong>
-    이건 <b>수빈이가 선택할 문제</b>예요.
+    <span class="ct">⏱ 속도 팁</span>
+    <b>교통안전교육(1시간) → 신체검사 → 필기시험</b>을 <b>같은 날 한 번에</b> 끝낼 수 있어요.
+    시험장 가는 김에 <strong class="hl">하루에 3단계를 처리</strong>하고, 그 자리에서 <b>기능시험 접수</b>까지 하고 나오세요.
   </div>
 </section>
 
 <!-- 준비물 -->
 <section>
-  <h2><span class="ic">📋</span>준비물 체크리스트</h2>
+  <h2><span class="ic">7</span>준비물 체크리스트</h2>
   <ul class="check">
-    <li><b>신분증</b> (주민등록증 등)</li>
-    <li><b>컬러 사진 1매</b> — <b>3.5cm × 4.5cm</b>, <b>6개월 이내</b> 촬영, 상반신 정면 탈모<br>
-      <span style="color:var(--sub); font-size:13px;">머리 길이(정수리~턱) 3.2~3.6cm. 사진관에서 "운전면허 사진"이라고 하면 됨. 여러 장 뽑아두면 편함</span></li>
-    <li><b>응시원서</b> (시험장·학원에서 작성)</li>
-    <li><b>수수료</b> (카드 결제 가능)</li>
-    <li><b>안경</b> — 시력 교정이 필요하면 반드시 착용하고 신체검사</li>
+    <li><b>신분증</b> (주민등록증 / 여권 / 학생증+등본 등)</li>
+    <li><b>컬러 증명사진 3.5cm × 4.5cm</b> — <b>6개월 이내</b> 촬영, <strong class="hl">넉넉히 여러 장</strong>
+      <span class="mini">응시원서 · 연습면허 · 면허증에 각각 들어가서 계속 필요합니다</span></li>
+    <li><b>응시원서</b> (시험장 현장 작성 가능)</li>
+    <li><b>수수료</b> (카드 결제 가능하나 현금도 챙기면 안전)</li>
+    <li><b>안경·렌즈</b> — 평소 쓰는 사람은 <b>반드시 착용하고</b> 신체검사</li>
+    <li><b>편한 신발</b> — 기능·도로주행 시험일. <b>슬리퍼·힐·통굽 금지</b> (페달 감각 망침)</li>
+    <li><b>"주행연습" 표지 (30×11cm)</b> — 연습면허 나오기 전에 미리 준비해두기</li>
   </ul>
-  <div class="callout blue">
-    <span class="ct">📸 사진 팁</span>
-    사진은 <b>면허증에 몇 년 동안 박혀 있습니다.</b> 사진관에서 제대로 찍고 <b>여분(4~8매)</b>을 받아두면
-    나중에 다른 곳에도 쓸 수 있어요.
-  </div>
 </section>
 
-<!-- 시험별 준비법 -->
+<!-- 시험장 선택 -->
 <section>
-  <h2><span class="ic">📚</span>시험별 준비법</h2>
-  <div class="tips">
-    <div class="tip">
-      <h4>① 학과시험 (필기)</h4>
-      <span class="sc">2종 60점 · 24/40문제</span>
-      <ul>
-        <li><b>문제은행 약 1,000문제가 공개</b>돼 있고 <b>거기서 그대로 출제</b>됩니다</li>
-        <li>→ <b>앱으로 반복 학습</b>이 가장 효율적 (요즘 합격 공식)</li>
-        <li>시험 전 <b>모의고사 2~3회</b> 풀고 <b>오답노트</b> 정리</li>
-        <li>헷갈리는 건 <b>법규·표지판·함정문제</b> — 여기만 집중</li>
-        <li>보통 <b>1주일 준비면 합격</b> 가능</li>
-      </ul>
-    </div>
-    <div class="tip">
-      <h4>② 기능시험 (장내)</h4>
-      <span class="sc">80점 · 컴퓨터 채점</span>
-      <ul>
-        <li><b>4시간 장내기능교육</b> 이수 후 응시</li>
-        <li>코스: 출발·경사로·<b>직각주차(T자)</b>·교차로·가속</li>
-        <li><b>컴퓨터 자동 채점</b>이라 감점이 기계적 — <b>절차를 정확히</b>(안전벨트, 방향지시등, 시동 유지)</li>
-        <li><b>운전 자세 조정이 제일 중요</b> — 시야 확보 + 페달 위치</li>
-        <li>긴장하면 시동 꺼짐 → <b>천천히</b></li>
-      </ul>
-    </div>
-    <div class="tip">
-      <h4>③ 도로주행</h4>
-      <span class="sc">70점 · 5km 이상</span>
-      <ul>
-        <li><b>4개 코스 중 추첨 1개</b>, <b>내비 음성 안내</b>를 따라감</li>
-        <li>코스는 <b>주요 건물·표지판을 기준으로 연결해서 암기</b></li>
-        <li>시험관에게 <b>"안전하게 운전한다"는 신뢰감</b>을 주는 게 핵심</li>
-        <li>탑승 시 <b>가볍게 인사 → 좌석·미러 조절 → 안전벨트</b> 순서를 능숙하게</li>
-        <li><b>연습면허로 명진과 함께 도로 연습</b> 가능 (동승자는 면허 소지자여야 함)</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 일정 -->
-<section>
-  <h2><span class="ic">📅</span>일정 — 자동차 계약과 맞물려서</h2>
-  <div class="callout good">
-    <span class="ct">🗓️ 학원 기준 예상 일정 (약 2~4주)</span>
-    <b>1주차</b> — 학원 등록 · 신체검사 · 교통안전교육 · <b>필기 공부(앱)</b> → 학과시험<br>
-    <b>2주차</b> — 장내기능교육(4시간) → <b>기능시험</b> → 연습면허 발급<br>
-    <b>3~4주차</b> — 도로주행 교육 · 코스 연습 → <b>도로주행시험</b> → <b>🎉 면허증 발급</b><br>
-    <span style="color:var(--sub); font-size:13px;">※ 학원·지역·시험 일정에 따라 달라집니다. 불합격 시 재응시 대기가 붙어요.</span>
-  </div>
-  <div class="callout gold">
-    <span class="ct">⚡ 병행하면 시간을 안 버립니다</span>
-    면허 진행하는 <b>2~4주 동안</b>, 자동차 쪽도 동시에 굴리세요:<br>
-    · <b>액티언 HEV 견적</b> 3~4곳 (인수형 · 연 3만km · 선수금 0% · 48/60개월)<br>
-    · <b>포레스트 그린 재고·출고 대기 기간</b> 확인 (색상 재고가 없으면 대기가 길 수 있음)<br>
-    · <b>명진 운전자 추가 등록</b> 조건·추가 보험료 문의<br>
-    → <b>면허 나오는 날 바로 계약</b>할 수 있게 준비해두는 거예요.
-  </div>
-</section>
-
-<!-- 링크 -->
-<section>
-  <h2><span class="ic">🔗</span>바로가기</h2>
+  <h2><span class="ic">8</span>시험장 선택 = 일정 선택</h2>
+  <p class="h2sub">사실상 전체 기간을 결정하는 변수예요. 여기서 승부가 납니다.</p>
+  <ul class="clean">
+    <li><b>시험장은 자유롭게 고를 수 있습니다.</b> 집에서 가깝다고 무조건 거기 갈 필요 없어요.</li>
+    <li><b>도로교통공단 안전운전 통합민원(safedriving.or.kr)</b> 에서 <b>시험장별 예약 가능 날짜</b>를 볼 수 있습니다.</li>
+    <li><strong class="hl">먼저 할 일: 후보 시험장 2~3곳의 기능·도로주행 예약 여유일을 비교하세요.</strong>
+      한 곳이 2주 밀렸는데 옆 시험장이 3일이면, <b>조금 멀어도 그쪽이 2주를 벌어줍니다.</b></li>
+    <li><b>취소표 노리기</b> — 예약 페이지를 수시로 보면 취소분이 풀립니다. 특히 주중 오전.</li>
+    <li><b>기능시험 코스는 시험장마다 다릅니다.</b> 시험장을 정한 <b>뒤에</b> 그 시험장 코스 영상만 파세요.</li>
+  </ul>
   <div class="links">
-    <a href="https://www.safedriving.or.kr/dtGuide/selectDtGuide01.do" target="_blank">🏛️ 도로교통공단 면허시험 안내</a>
-    <a class="ghost" href="https://drivingteacher.co.kr/test" target="_blank">📝 필기 모의고사(무료)</a>
-    <a class="ghost" href="https://qbanktest.co.kr/drive/DriveMain/drive_main" target="_blank">📚 문제은행</a>
-    <a class="ghost" href="https://drivingteacher.co.kr/guide/driver-test" target="_blank">🚗 기능시험 가이드</a>
-    <a class="ghost" href="https://search.naver.com/search.naver?query=운전면허학원 2종보통 자동 비용" target="_blank">🏫 근처 학원 알아보기</a>
-  </div>
-  <div class="disclaimer">
-    ※ 응시료·수수료는 2026년 기준이며 변경될 수 있습니다. 학원비는 <b>지역·학원마다 편차가 큽니다</b>(80만원 이상은 대략치) — 반드시 여러 곳 비교하세요.
-    소요 기간도 시험 일정·합격 여부에 따라 달라집니다. 정확한 정보는 <b>도로교통공단 공식</b>에서 확인하세요.
+    <a href="https://www.safedriving.or.kr/" target="_blank" rel="noopener">도로교통공단 통합민원 (접수·예약)</a>
+    <a class="ghost" href="https://drivingteacher.co.kr/" target="_blank" rel="noopener">운전선생 (필기 모의고사)</a>
   </div>
 </section>
 
-<!-- 액션 -->
+<!-- 병행 전략 -->
+<section class="key">
+  <h2><span class="ic">9</span>병행 전략 — 면허 기다리는 동안 차도 준비</h2>
+  <p class="h2sub">면허 나오는 날 <b>바로 계약</b>할 수 있게, 3~4주를 놀리지 않습니다.</p>
+  <div class="callout gold">
+    <span class="ct">🚗 면허 진행과 동시에 굴릴 것</span>
+    <b>① 액티언 HEV 견적 3~4곳</b> — 선수금 0%, 인수형, 연 3만km 조건으로 비교<br>
+    <b>② 포레스트 그린 재고·출고 대기 확인</b> — <b>색상 재고가 없으면 대기가 길어집니다.</b> 이건 미리 알아야 해요<br>
+    <b>③ 명진 운전자 추가 등록 조건 문의</b> — 렌트사마다 조건·추가 보험료가 다릅니다<br>
+    <b>④ 48개월 vs 60개월</b> 최종 결정
+  </div>
+  <div class="callout warn">
+    <span class="ct">⚠️ 단, 계약은 면허 나온 뒤에</span>
+    <b>면허가 없으면 계약 자체가 불가능</b>합니다. 지금은 <b>견적·재고 확인·조건 협의까지만</b> 해두고,
+    <b>도장은 면허증 받은 날 찍으세요.</b>
+  </div>
+</section>
+
+<!-- 지금 당장 -->
 <section>
-  <h2><span class="ic">✓</span>지금 바로 할 일</h2>
-  <ul class="check">
-    <li><b>2종 보통(자동)</b>으로 결정 (액티언=자동이라 충분)</li>
-    <li><b>근처 운전전문학원 2~3곳 비용·일정 비교</b> (또는 독학 결정)</li>
-    <li><b>증명사진 촬영</b> (3.5×4.5, 여분 넉넉히)</li>
-    <li><b>필기 앱 설치 → 문제은행 반복</b> (1주면 충분)</li>
-    <li><b>[병행] 액티언 견적 + 포레스트 그린 재고 확인</b></li>
-  </ul>
+  <h2><span class="ic">▶</span>지금 당장 할 3가지</h2>
+  <ol class="act">
+    <li><b>증명사진 찍기</b> (3.5×4.5cm, 여유 있게 여러 장) — 없으면 아무것도 시작 못 합니다</li>
+    <li><b>필기 문제은행 앱 설치하고 오늘부터 돌리기</b> — 3~5일이면 끝나요</li>
+    <li><strong class="hl">safedriving.or.kr에서 후보 시험장 2~3곳의 기능·도로주행 예약 여유일 확인</strong>
+      — <b>이게 전체 일정을 결정합니다. 제일 먼저 확인할 것.</b></li>
+  </ol>
 </section>
 
-<footer>
-  수빈 개인 참고자료 · 조사-006 · 면허 취득 절차·비용·준비물·일정 v1.0 · 2026-07-14
-</footer>
+<div class="disclaimer">
+  ※ 본 내용은 2026년 7월 기준 공개 정보(도로교통공단 등)를 정리한 것입니다. 수수료·절차·예약 운영 방식은 변경될 수 있으므로,
+  실제 접수 전 <b>도로교통공단 안전운전 통합민원(safedriving.or.kr) 또는 1577-1120</b>으로 최종 확인하세요.
+  기능시험 코스 연습 제공 여부, 도로주행 시험 차량 사용 방식은 <b>시험장별로 다릅니다.</b>
+</div>
+
+<footer>수빈 · 조사-006 첫차 SUV 장기렌트 정리 · 1-11 면허 취득 · v2.0 (독학 최단 코스) · 2026-07-14</footer>
 
 </div>
 </body>
