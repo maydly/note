@@ -111,6 +111,13 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .moodtxt::placeholder{color:#c3b7a7}
 .cmood{font-size:9px;line-height:1.1;letter-spacing:-1px;margin-top:1px}
 .cchal{font-size:8.5px;line-height:1.1;color:#a9803f;font-weight:700;margin-top:1px}
+/* 캘린더 상세 — 보기 전용 행 */
+.vrow{display:flex;align-items:center;gap:9px;padding:5px 0;border-top:1px dotted #eee3d7}
+.vrow:first-child{border-top:none;padding-top:0}
+.vlb{font-size:11.5px;font-weight:700;color:#9a8b7a;min-width:52px}
+.vem{font-size:17px;line-height:1;min-width:20px;text-align:center}
+.vtx{font-size:13px;color:#5a4f43;line-height:1.45}
+.vtag{font-size:10.5px;font-weight:800;color:#a9967f;background:#f3ece2;padding:2px 7px;border-radius:999px;white-space:nowrap}
 /* 도전 — 진행률·단계 */
 .pbar{height:8px;background:#efe8df;border-radius:99px;overflow:hidden;margin-top:8px}
 .pbarf{height:100%;background:linear-gradient(90deg,#c9a87f,#a9c48f);border-radius:99px;transition:width .3s}
@@ -623,29 +630,64 @@ function renderCal(){
       +'</div>';
   }
   h+='</div>';
+  /* 선택한 날 — 캘린더는 «확인만» 하는 곳이라 전부 읽기 전용. 기록·수정은 오늘/투두/도전 탭에서 */
   if(todoSel){
     var lbl=(+todoSel.slice(5,7))+'월 '+(+todoSel.slice(8,10))+'일';
     var isToday=(todoSel===todayStr());
-    // ① 컨디션 (지난 날도 기록·수정 가능)
-    h+=moodCard(todoSel,lbl+(isToday?' (오늘)':'')+' 컨디션');
-    // ② 그날 할 일
+    var empty=true;
+    var body='';
+    // ① 컨디션(보기만)
+    var m=moodOf(todoSel);
+    if(m.am.e||m.am.t||m.mid.e||m.mid.t||m.pm.e||m.pm.t){
+      empty=false;
+      body+='<div class="seg">🌤 컨디션</div><div class="card">'
+        +MSLOTS.map(function(s){var c=m[s[0]];
+          if(!c.e&&!c.t)return '';
+          return '<div class="vrow"><span class="vlb">'+s[1]+'</span><span class="vem">'+(c.e||'')+'</span>'
+            +'<span class="vtx">'+esc(c.t||'')+'</span></div>';}).join('')
+        +'</div>';
+    }
+    // ② 할 일(보기만)
     var day=todos.filter(function(t){return t.due===todoSel||t.doneAt===todoSel||t.created===todoSel;});
-    h+='<div class="seg">📋 할 일'+(day.length?' '+day.length:' — 없음')+'</div>'+day.map(todoCard).join('');
-    // ③ 그날 도전 — 습관은 그날 체크, 목표·계획은 그날 마감이면 표시
-    h+='<div class="seg">🔥 도전'+(habits.length?'':' — 습관 없음')+'</div>';
-    h+=habits.map(function(c){var done=c.days&&c.days[todoSel];
-      return '<div class="card '+(done?'done':'')+'"><div class="row">'
-        +'<div class="ck '+(done?'on':'')+'" onclick="toggleChal(\''+c.id+'\',\''+todoSel+'\')"></div>'
-        +'<div class="tt">'+esc(c.name)+'<div class="tmeta">'+(done?'이 날 완료 ✓':'이 날 미체크')+'</div></div>'
-        +'</div></div>';}).join('');
+    if(day.length){
+      empty=false;
+      body+='<div class="seg">📋 할 일 '+day.length+'</div>'+day.map(function(t){
+        var why=t.doneAt===todoSel?'완료':(t.due===todoSel?'예정':'추가');
+        return '<div class="card '+(t.done?'done':'')+'"><div class="vrow">'
+          +'<span class="vem">'+(t.done?'✅':'⬜')+'</span>'
+          +'<span class="vtx" style="flex:1">'+esc(t.text)+'</span>'
+          +'<span class="vtag">'+why+'</span></div></div>';}).join('');
+    }
+    // ③ 도전 — 그날 체크한 습관(보기만) + 그날 마감
+    var hd=habits.filter(function(c){return c.days&&c.days[todoSel];});
+    if(hd.length){
+      empty=false;
+      body+='<div class="seg">🔥 이 날 한 습관 '+hd.length+'</div><div class="card">'
+        +hd.map(function(c){return '<div class="vrow"><span class="vem">✅</span><span class="vtx">'+esc(c.name)+'</span></div>';}).join('')
+        +'</div>';
+    }
     var dueList=chals.filter(function(c){var k=chalKind(c);return (k==='goal'||k==='plan')&&c.due===todoSel;});
-    if(dueList.length)h+='<div class="seg">🎯 이 날 마감</div>'+dueList.map(function(c){
-      return chalKind(c)==='goal'?goalCard(c):planCard(c);}).join('');
-    // ④ 그날 촬영
+    if(dueList.length){
+      empty=false;
+      body+='<div class="seg">🎯 이 날 마감</div>'+dueList.map(function(c){
+        var k=chalKind(c);
+        var info=k==='goal'?(function(){var g=goalPace(c);return g?(g.pct+'% · '+numFmt(g.cur)+'/'+numFmt(g.tgt)+' '+esc(c.unit||'')):'';})()
+                          :(function(){var p=planProg(c);return p.pct+'% · '+p.done+'/'+p.total+' 단계'+(p.next?(' · 다음: '+esc(p.next)):'');})();
+        return '<div class="card"><div class="vrow"><span class="vem">'+(k==='goal'?'🎯':'📋')+'</span>'
+          +'<span class="vtx" style="flex:1"><b>'+esc(c.name)+'</b><div class="tmeta">'+info+'</div></span></div></div>';}).join('');
+    }
+    // ④ 촬영(보기만)
     var shootD=(typeof shoots!=='undefined'?shoots:[]).filter(function(s){return !s.cancel&&s.date===todoSel;});
-    if(shootD.length)h+='<div class="seg">📸 촬영 '+shootD.length+'</div>'+shootD.map(function(s){
-      return '<div class="card"><div class="tt">'+esc(s.name)+(s.time?' · '+esc(s.time):'')+(s.place?' · '+esc(s.place):'')+'</div></div>';}).join('');
-  }else h+='<div class="seg">날짜를 눌러 그날 컨디션·할 일·도전을 보세요 (지난 날도 기록 가능)</div>';
+    if(shootD.length){
+      empty=false;
+      body+='<div class="seg">📸 촬영 '+shootD.length+'</div>'+shootD.map(function(s){
+        return '<div class="card"><div class="vrow"><span class="vem">📸</span><span class="vtx">'+esc(s.name)
+          +(s.time?' · '+esc(s.time):'')+(s.place?' · '+esc(s.place):'')+'</span></div></div>';}).join('');
+    }
+    h+='<div class="seg">'+lbl+(isToday?' (오늘)':'')+'</div>';
+    h+=empty?'<div class="empty" style="padding:20px">이 날은 기록이 없어요<br><span style="font-size:11.5px">기록은 ☀️오늘 · 📋투두 · 🔥도전 탭에서</span></div>':body;
+    h+='<div class="pnote" style="text-align:center">📖 캘린더는 <b>보기 전용</b>이에요 · 기록·수정은 ☀️오늘 / 📋투두 / 🔥도전 탭에서</div>';
+  }else h+='<div class="seg">날짜를 눌러 그날 컨디션·할 일·도전·촬영을 확인하세요</div>';
   el.innerHTML=h;
 }
 function calNav(dir){var now=new Date();var ym=todoYM||{y:now.getFullYear(),m:now.getMonth()};var dt=new Date(ym.y,ym.m+dir,1);todoYM={y:dt.getFullYear(),m:dt.getMonth()};todoSel=null;renderCal();}
@@ -1543,8 +1585,8 @@ function clearShoots(){
 /* ===== 추가 모달 ===== */
 var curTab='cal';
 function openAdd(){
-  if(curTab==='src')return;
-  if(curTab==='todo'||curTab==='today'||curTab==='cal')sheetTodo();
+  if(curTab==='src'||curTab==='cal')return;      // 캘린더·구매처는 보기 전용
+  if(curTab==='todo'||curTab==='today')sheetTodo();
   else if(curTab==='chal')sheetChal();
   else if(curTab==='info')sheetInfo();
   else if(curTab==='buy')sheetBuy();
@@ -1650,7 +1692,7 @@ function go(id,btn){
   document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
   document.getElementById('s-'+id).classList.add('on');
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});btn.classList.add('on');
-  document.getElementById('fab').style.display=(id==='src')?'none':'';
+  document.getElementById('fab').style.display=(id==='src'||id==='cal')?'none':'';  // 보기 전용 탭
   try{btn.scrollIntoView({inline:'center',block:'nearest'});}catch(e){}
   window.scrollTo(0,0);
 }
