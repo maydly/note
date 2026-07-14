@@ -109,6 +109,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .moodtxt{width:100%;box-sizing:border-box;margin-top:5px;border:1px solid #ece3d6;background:#fcfaf7;border-radius:9px;padding:7px 10px;font-size:12.5px;color:#5a4f43;outline:none}
 .moodtxt:focus{border-color:#dcc3a0;background:#fff}
 .moodtxt::placeholder{color:#c3b7a7}
+.cmood{font-size:9px;line-height:1.1;letter-spacing:-1px;margin-top:1px}
 /* 요약 카테고리 막대 */
 .catrow{display:flex;align-items:center;gap:10px;margin:9px 0}
 .catic{width:30px;height:30px;border-radius:9px;background:#f0ebe2;display:grid;place-items:center;font-size:15px;flex:0 0 auto}
@@ -586,16 +587,23 @@ function renderCal(){
   for(var i=0;i<dow;i++)h+='<div class="cell empty"></div>';
   for(var d=1;d<=days;d++){
     var ds=ym.y+'-'+pad(ym.m+1)+'-'+pad(d);
+    // 그날 컨디션 이모지(아침·낮·밤 순). 이모지 없이 메모만 있으면 📝
+    var md=moodOf(ds);
+    var es=[md.am.e,md.mid.e,md.pm.e].filter(Boolean).join('');
+    if(!es&&(md.am.t||md.mid.t||md.pm.t))es='📝';
     h+='<div class="cell'+(isThis&&d===td?' today':'')+(todoSel===ds?' sel':'')+'" onclick="calPick(\''+ds+'\')">'
       +'<div class="cd">'+d+'</div>'
+      +(es?'<div class="cmood">'+es+'</div>':'')
       +(due[ds]?'<div class="cin" style="color:#8a6a4a">예 '+due[ds]+'</div>':'')
       +(don[ds]?'<div class="cout" style="color:#5f8b6a">완 '+don[ds]+'</div>':'')+'</div>';
   }
   h+='</div>';
   if(todoSel){
+    var lbl=(+todoSel.slice(5,7))+'월 '+(+todoSel.slice(8,10))+'일';
+    h+='<div class="seg">'+lbl+' 컨디션</div>'+moodCard(todoSel,lbl+' 컨디션');   // 지난 날도 여기서 기록·수정 가능
     var day=todos.filter(function(t){return t.due===todoSel||t.doneAt===todoSel||t.created===todoSel;});
-    h+='<div class="seg">'+(+todoSel.slice(8,10))+'일'+(day.length?'':' — 없음')+'</div>'+day.map(todoCard).join('');
-  }else h+='<div class="seg">날짜를 눌러 그날 할 일을 보세요 · 예(예정)/완(완료)</div>';
+    h+='<div class="seg">'+lbl+' 할 일'+(day.length?'':' — 없음')+'</div>'+day.map(todoCard).join('');
+  }else h+='<div class="seg">날짜를 눌러 그날 컨디션·할 일을 보세요 (지난 날도 기록 가능)</div>';
   el.innerHTML=h;
 }
 function calNav(dir){var now=new Date();var ym=todoYM||{y:now.getFullYear(),m:now.getMonth()};var dt=new Date(ym.y,ym.m+dir,1);todoYM={y:dt.getFullYear(),m:dt.getMonth()};todoSel=null;renderCal();}
@@ -606,7 +614,7 @@ var MOODS=['😄','🙂','😐','😔','😫'];
 /* 컨디션은 하루 3번(아침·중간·밤), 각각 이모지 + 상태메모.
    moods[날짜] = {am:{e:'😄',t:'푹 잠'}, mid:{e,t}, pm:{e,t}}
    옛 형식 자동변환: '😄'(문자열) → 중간 / {am:'😄'}(이모지만) → {am:{e:'😄',t:''}} */
-var MSLOTS=[['am','🌅 아침'],['mid','☀️ 중간'],['pm','🌙 밤']];
+var MSLOTS=[['am','🌅 아침'],['mid','☀️ 낮'],['pm','🌙 밤']];
 function slotNorm(v){
   if(!v)return {e:'',t:''};
   if(typeof v==='string')return {e:v,t:''};
@@ -619,6 +627,21 @@ function moodOf(d){
   return {am:slotNorm(v.am),mid:slotNorm(v.mid),pm:slotNorm(v.pm)};
 }
 function moodEmpty(c){return !c.am.e&&!c.am.t&&!c.mid.e&&!c.mid.t&&!c.pm.e&&!c.pm.t;}
+/* 컨디션 카드(공용) — 오늘 탭과 캘린더의 선택한 날 둘 다 이걸 쓴다. 날짜를 넘기면 그 날짜를 기록·수정 */
+function moodCard(d,title){
+  var md=moodOf(d);
+  var filled=MSLOTS.filter(function(s){return md[s[0]].e||md[s[0]].t;}).length;
+  return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+    +'<span style="font-weight:800">'+esc(title)+'</span><span style="font-size:11px;color:#a99e8f">'+filled+'/3 기록</span></div>'
+    +MSLOTS.map(function(s){
+      var key=s[0],cur=md[key];
+      return '<div class="moodslot"><div class="moodlb">'+s[1]+'</div><div class="moodrow">'
+        +MOODS.map(function(m){return '<div class="moodb'+(m===cur.e?' on':'')+'" onclick="setMood(\''+key+'\',\''+m+'\',\''+d+'\')">'+m+'</div>';}).join('')
+        +'</div>'
+        +'<input class="moodtxt" value="'+esc(cur.t)+'" placeholder="상태 메모 (선택) — 예: 푹 잤는데 허리 뻐근" onchange="setMoodText(\''+key+'\',this.value,\''+d+'\')">'
+        +'</div>';
+    }).join('')+'</div>';
+}
 function renderToday(){
   var el=document.getElementById('todayBody');if(!el)return;
   var now=new Date();var hh=now.getHours();
@@ -626,19 +649,7 @@ function renderToday(){
   var t=document.getElementById('todayTitle');if(t)t.textContent=greet+', 명진';
   var ds=document.getElementById('todayDate');if(ds)ds.textContent=now.getFullYear()+'.'+pad(now.getMonth()+1)+'.'+pad(now.getDate())+' ('+['일','월','화','수','목','금','토'][now.getDay()]+')';
   var today=todayStr();
-  // 컨디션 — 아침·중간·밤 3번, 각각 이모지 + 상태메모
-  var md=moodOf(today);
-  var filled=MSLOTS.filter(function(s){return md[s[0]].e||md[s[0]].t;}).length;
-  var h='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
-    +'<span style="font-weight:800">오늘 컨디션</span><span style="font-size:11px;color:#a99e8f">'+filled+'/3 기록</span></div>'
-    +MSLOTS.map(function(s){
-      var key=s[0],cur=md[key];
-      return '<div class="moodslot"><div class="moodlb">'+s[1]+'</div><div class="moodrow">'
-        +MOODS.map(function(m){return '<div class="moodb'+(m===cur.e?' on':'')+'" onclick="setMood(\''+key+'\',\''+m+'\')">'+m+'</div>';}).join('')
-        +'</div>'
-        +'<input class="moodtxt" id="mt_'+key+'" value="'+esc(cur.t)+'" placeholder="상태 메모 (선택) — 예: 푹 잤는데 허리 뻐근" onchange="setMoodText(\''+key+'\',this.value)">'
-        +'</div>';
-    }).join('')+'</div>';
+  var h=moodCard(today,'오늘 컨디션');
   // 오늘 할 일(예정=오늘 or 미완료)
   var due=todos.filter(function(x){return !x.done&&x.due===today;});
   var noDue=todos.filter(function(x){return !x.done&&!x.due;});
@@ -657,15 +668,15 @@ function renderToday(){
   if(shootT.length)h+='<div class="seg">오늘 촬영 '+shootT.length+'</div>'+shootT.map(function(s){return '<div class="card"><div class="tt">📸 '+esc(s.name)+(s.time?' · '+esc(s.time):'')+(s.place?' · '+esc(s.place):'')+'</div></div>';}).join('');
   el.innerHTML=h;
 }
-function setMood(slot,m){
-  var d=todayStr(),cur=moodOf(d);
+function setMood(slot,m,d){
+  d=d||todayStr();var cur=moodOf(d);
   cur[slot].e=(cur[slot].e===m?'':m);                   // 같은 걸 다시 누르면 해제
   if(moodEmpty(cur))delete moods[d];else moods[d]=cur;
-  save(K.mood,moods);pushSoon('moods');renderToday();
+  save(K.mood,moods);pushSoon('moods');renderToday();renderCal();
 }
-/* 상태메모 — 입력 끝났을 때(blur) 저장. 다시 그리면 커서가 튀므로 카운터만 갱신 */
-function setMoodText(slot,val){
-  var d=todayStr(),cur=moodOf(d);
+/* 상태메모 — 입력 끝났을 때(blur) 저장. 다시 그리면 커서가 튀므로 재렌더는 안 한다 */
+function setMoodText(slot,val,d){
+  d=d||todayStr();var cur=moodOf(d);
   cur[slot].t=(val||'').trim();
   if(moodEmpty(cur))delete moods[d];else moods[d]=cur;
   save(K.mood,moods);pushSoon('moods');
