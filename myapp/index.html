@@ -110,6 +110,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .moodtxt:focus{border-color:#dcc3a0;background:#fff}
 .moodtxt::placeholder{color:#c3b7a7}
 .cmood{font-size:9px;line-height:1.1;letter-spacing:-1px;margin-top:1px}
+.cchal{font-size:8.5px;line-height:1.1;color:#a9803f;font-weight:700;margin-top:1px}
 /* 도전 — 진행률·단계 */
 .pbar{height:8px;background:#efe8df;border-radius:99px;overflow:hidden;margin-top:8px}
 .pbarf{height:100%;background:linear-gradient(90deg,#c9a87f,#a9c48f);border-radius:99px;transition:width .3s}
@@ -239,7 +240,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 
 <div id="app" style="display:none">
 <!-- 오늘 -->
-<div class="scr on" id="s-today">
+<div class="scr" id="s-today">
   <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div>
   <div class="h1" id="todayTitle">오늘</div><div class="sub" id="todayDate"></div>
   <div id="todayBody"></div>
@@ -256,10 +257,10 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <div class="h1">도전</div><div class="sub" id="chalSub">매일 체크 · 연속일수(🔥)로 습관 만들기</div>
   <div id="chalList"></div>
 </div>
-<!-- 캘린더 -->
-<div class="scr" id="s-cal">
+<!-- 캘린더 (홈) -->
+<div class="scr on" id="s-cal">
   <div class="hd"><div class="wm">maydly · 명진앱</div><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div>
-  <div class="h1">캘린더</div><div class="sub">할 일 예정·완료를 날짜로</div>
+  <div class="h1">캘린더</div><div class="sub">컨디션 · 할 일 · 도전을 날짜로 한눈에</div>
   <div id="calBody"></div>
 </div>
 <!-- 구매계획 -->
@@ -351,10 +352,10 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 
 <button class="add" id="fab" onclick="openAdd()">+</button>
 <div class="tabs">
-  <button class="tab on" data-t="today" onclick="go('today',this)"><span class="ic">☀️</span><span class="lb">오늘</span></button>
+  <button class="tab on" data-t="cal" onclick="go('cal',this)"><span class="ic">📅</span><span class="lb">캘린더</span></button>
+  <button class="tab" data-t="today" onclick="go('today',this)"><span class="ic">☀️</span><span class="lb">오늘</span></button>
   <button class="tab" data-t="todo" onclick="go('todo',this)"><span class="ic">📋</span><span class="lb">투두</span></button>
   <button class="tab" data-t="chal" onclick="go('chal',this)"><span class="ic">🔥</span><span class="lb">도전</span></button>
-  <button class="tab" data-t="cal" onclick="go('cal',this)"><span class="ic">📅</span><span class="lb">캘린더</span></button>
   <button class="tab" data-t="buy" onclick="go('buy',this)"><span class="ic">🛒</span><span class="lb">구매</span></button>
   <button class="tab" data-t="own" onclick="go('own',this)"><span class="ic">📦</span><span class="lb">보유</span></button>
   <button class="tab" data-t="money" onclick="go('money',this)"><span class="ic">💰</span><span class="lb">가계부</span></button>
@@ -598,25 +599,53 @@ function renderCal(){
   var h='<div class="mnav"><button onclick="calNav(-1)">‹</button><div class="ml">'+ym.y+'년 '+(ym.m+1)+'월</div><button onclick="calNav(1)">›</button></div>';
   h+='<div class="cal">'+['일','월','화','수','목','금','토'].map(function(d){return '<div class="cdow">'+d+'</div>';}).join('');
   for(var i=0;i<dow;i++)h+='<div class="cell empty"></div>';
+  // 도전: 날짜별 습관 체크수 + 그날 마감인 목표·계획
+  var habits=chals.filter(function(c){return chalKind(c)==='habit';});
+  var hab={},dueChal={};
+  habits.forEach(function(c){Object.keys(c.days||{}).forEach(function(k){hab[k]=(hab[k]||0)+1;});});
+  chals.forEach(function(c){var k=chalKind(c);if((k==='goal'||k==='plan')&&c.due)dueChal[c.due]=(dueChal[c.due]||0)+1;});
+
   for(var d=1;d<=days;d++){
     var ds=ym.y+'-'+pad(ym.m+1)+'-'+pad(d);
     // 그날 컨디션 이모지(아침·낮·밤 순). 이모지 없이 메모만 있으면 📝
     var md=moodOf(ds);
     var es=[md.am.e,md.mid.e,md.pm.e].filter(Boolean).join('');
     if(!es&&(md.am.t||md.mid.t||md.pm.t))es='📝';
+    var chline=[];
+    if(hab[ds])chline.push('🔥'+hab[ds]);
+    if(dueChal[ds])chline.push('🎯');
     h+='<div class="cell'+(isThis&&d===td?' today':'')+(todoSel===ds?' sel':'')+'" onclick="calPick(\''+ds+'\')">'
       +'<div class="cd">'+d+'</div>'
       +(es?'<div class="cmood">'+es+'</div>':'')
       +(due[ds]?'<div class="cin" style="color:#8a6a4a">예 '+due[ds]+'</div>':'')
-      +(don[ds]?'<div class="cout" style="color:#5f8b6a">완 '+don[ds]+'</div>':'')+'</div>';
+      +(don[ds]?'<div class="cout" style="color:#5f8b6a">완 '+don[ds]+'</div>':'')
+      +(chline.length?'<div class="cchal">'+chline.join(' ')+'</div>':'')
+      +'</div>';
   }
   h+='</div>';
   if(todoSel){
     var lbl=(+todoSel.slice(5,7))+'월 '+(+todoSel.slice(8,10))+'일';
-    h+='<div class="seg">'+lbl+' 컨디션</div>'+moodCard(todoSel,lbl+' 컨디션');   // 지난 날도 여기서 기록·수정 가능
+    var isToday=(todoSel===todayStr());
+    // ① 컨디션 (지난 날도 기록·수정 가능)
+    h+=moodCard(todoSel,lbl+(isToday?' (오늘)':'')+' 컨디션');
+    // ② 그날 할 일
     var day=todos.filter(function(t){return t.due===todoSel||t.doneAt===todoSel||t.created===todoSel;});
-    h+='<div class="seg">'+lbl+' 할 일'+(day.length?'':' — 없음')+'</div>'+day.map(todoCard).join('');
-  }else h+='<div class="seg">날짜를 눌러 그날 컨디션·할 일을 보세요 (지난 날도 기록 가능)</div>';
+    h+='<div class="seg">📋 할 일'+(day.length?' '+day.length:' — 없음')+'</div>'+day.map(todoCard).join('');
+    // ③ 그날 도전 — 습관은 그날 체크, 목표·계획은 그날 마감이면 표시
+    h+='<div class="seg">🔥 도전'+(habits.length?'':' — 습관 없음')+'</div>';
+    h+=habits.map(function(c){var done=c.days&&c.days[todoSel];
+      return '<div class="card '+(done?'done':'')+'"><div class="row">'
+        +'<div class="ck '+(done?'on':'')+'" onclick="toggleChal(\''+c.id+'\',\''+todoSel+'\')"></div>'
+        +'<div class="tt">'+esc(c.name)+'<div class="tmeta">'+(done?'이 날 완료 ✓':'이 날 미체크')+'</div></div>'
+        +'</div></div>';}).join('');
+    var dueList=chals.filter(function(c){var k=chalKind(c);return (k==='goal'||k==='plan')&&c.due===todoSel;});
+    if(dueList.length)h+='<div class="seg">🎯 이 날 마감</div>'+dueList.map(function(c){
+      return chalKind(c)==='goal'?goalCard(c):planCard(c);}).join('');
+    // ④ 그날 촬영
+    var shootD=(typeof shoots!=='undefined'?shoots:[]).filter(function(s){return !s.cancel&&s.date===todoSel;});
+    if(shootD.length)h+='<div class="seg">📸 촬영 '+shootD.length+'</div>'+shootD.map(function(s){
+      return '<div class="card"><div class="tt">'+esc(s.name)+(s.time?' · '+esc(s.time):'')+(s.place?' · '+esc(s.place):'')+'</div></div>';}).join('');
+  }else h+='<div class="seg">날짜를 눌러 그날 컨디션·할 일·도전을 보세요 (지난 날도 기록 가능)</div>';
   el.innerHTML=h;
 }
 function calNav(dir){var now=new Date();var ym=todoYM||{y:now.getFullYear(),m:now.getMonth()};var dt=new Date(ym.y,ym.m+dir,1);todoYM={y:dt.getFullYear(),m:dt.getMonth()};todoSel=null;renderCal();}
@@ -798,7 +827,10 @@ function planCard(c){
       +'<div class="ck '+(s.done?'on':'')+'"></div><span>'+esc(s.t)+'</span></div>';}).join('');
   return h+'</div>';
 }
-function toggleChal(id){var c=chals.find(function(x){return String(x.id)===String(id);});if(!c)return;var d=todayStr();c.days=c.days||{};if(c.days[d])delete c.days[d];else c.days[d]=1;save(K.chal,chals);pushSoon('chals');renderChal();renderToday();}
+/* 습관 체크 — 날짜를 넘기면 그 날짜를 체크(캘린더에서 지난 날도 채울 수 있게) */
+function toggleChal(id,d){var c=chals.find(function(x){return String(x.id)===String(id);});if(!c)return;
+  d=d||todayStr();c.days=c.days||{};if(c.days[d])delete c.days[d];else c.days[d]=1;
+  save(K.chal,chals);pushSoon('chals');renderChal();renderToday();renderCal();}
 function toggleStep(id,i){var c=chals.find(function(x){return String(x.id)===String(id);});if(!c||!c.steps||!c.steps[i])return;
   c.steps[i].done=!c.steps[i].done;save(K.chal,chals);pushSoon('chals');renderChal();renderToday();}
 /* 목표 진행 기록 — 지금까지 얼마나 했는지 갱신 */
@@ -1509,7 +1541,7 @@ function clearShoots(){
 }
 
 /* ===== 추가 모달 ===== */
-var curTab='today';
+var curTab='cal';
 function openAdd(){
   if(curTab==='src')return;
   if(curTab==='todo'||curTab==='today'||curTab==='cal')sheetTodo();
