@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수빈 면허 취득 — 절차·비용·준비물·일정</title>
+<style>
+  :root{
+    --bg:#faf7f2; --card:#ffffff; --ink:#2c2a26; --sub:#6b665e;
+    --line:#e8e2d8; --accent:#c98a5e; --accent-soft:#f4e7dc;
+    --good:#4a7c59; --good-soft:#e5efe6; --warn:#b9603f; --warn-soft:#f7e5dd;
+    --blue:#4a6c8c; --blue-soft:#e3ebf2; --gold:#c99a3e; --gold-soft:#f6edd4;
+    --red:#b03a3a; --red-soft:#fae4e2;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+    line-height:1.62; font-size:16px; -webkit-text-size-adjust:100%;}
+  .wrap{max-width:920px; margin:0 auto; padding:30px 18px 80px;}
+  header.top{text-align:center; padding:24px 14px 24px;}
+  .kicker{display:inline-block; font-size:13px; letter-spacing:.14em; color:var(--accent);
+    background:var(--accent-soft); padding:5px 14px; border-radius:999px; margin-bottom:12px;}
+  h1{font-size:26px; margin:.2em 0 .3em; letter-spacing:-.01em;}
+  .lead{color:var(--sub); font-size:14.5px; max-width:680px; margin:0 auto;}
+  .meta{margin-top:10px; font-size:12px; color:var(--sub);}
+
+  section{background:#fff; border:1px solid var(--line); border-radius:16px; padding:22px 20px; margin:20px 0;}
+  section.key{border:2px solid var(--gold); background:linear-gradient(180deg,#fdf9ef,#fff);}
+  section h2{font-size:19px; margin:0 0 4px; display:flex; align-items:center; gap:9px;}
+  section h2 .ic{width:28px;height:28px;border-radius:8px;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
+  section.key h2 .ic{background:var(--gold);}
+  h2 + .h2sub{color:var(--sub); font-size:13.5px; margin:0 0 14px 38px;}
+  h3{font-size:15.5px; margin:20px 0 8px;}
+
+  .callout{border-radius:12px; padding:15px 17px; margin:14px 0; font-size:14px; border:1px solid transparent;}
+  .callout.gold{background:var(--gold-soft); border-color:#e6d6a6;}
+  .callout.warn{background:var(--warn-soft); border-color:#eecfc2;}
+  .callout.good{background:var(--good-soft); border-color:#cfe0d1;}
+  .callout.blue{background:var(--blue-soft); border-color:#cdddea;}
+  .callout.red{background:var(--red-soft); border-color:#f0c9c5;}
+  .callout .ct{font-weight:800; display:block; margin-bottom:4px;}
+  .callout.gold .ct{color:#8a6a1e;} .callout.warn .ct{color:var(--warn);}
+  .callout.good .ct{color:var(--good);} .callout.blue .ct{color:var(--blue);} .callout.red .ct{color:var(--red);}
+
+  /* 6단계 플로우 */
+  .flow{display:flex; flex-direction:column; gap:0;}
+  .fstep{display:flex; gap:14px; position:relative; padding-bottom:16px;}
+  .fstep:last-child{padding-bottom:0;}
+  .fstep .num{flex:0 0 auto; width:38px; height:38px; border-radius:50%; background:var(--accent); color:#fff;
+    font-weight:800; display:flex; align-items:center; justify-content:center; font-size:15px; z-index:2;}
+  .fstep .num.done{background:var(--good);}
+  .fstep:not(:last-child)::before{content:""; position:absolute; left:18px; top:38px; bottom:0;
+    width:2px; background:var(--line);}
+  .fstep .fc{flex:1; background:#fbf8f3; border:1px solid var(--line); border-radius:12px; padding:13px 15px;}
+  .fstep .ft{font-weight:800; font-size:15px; display:flex; flex-wrap:wrap; align-items:center; gap:8px;}
+  .fstep .fee{font-size:12px; font-weight:800; color:var(--accent); background:var(--accent-soft);
+    padding:2px 8px; border-radius:5px;}
+  .fstep .fee.free{color:var(--good); background:var(--good-soft);}
+  .fstep .fd{font-size:13px; color:var(--sub); margin-top:4px;}
+  .fstep .fd b{color:var(--ink);}
+  .pass{display:inline-block; font-size:11.5px; font-weight:800; background:var(--good-soft); color:var(--good);
+    padding:2px 8px; border-radius:5px;}
+
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:14px 0;}
+  table{border-collapse:collapse; width:100%; min-width:520px; font-size:13.5px; background:#fff;}
+  th,td{border:1px solid var(--line); padding:10px 11px; text-align:center; vertical-align:middle;}
+  thead th{background:var(--accent-soft); color:#8a5a34; font-weight:700;}
+  thead th.g{background:var(--gold-soft); color:#8a6a1e;}
+  tbody th{background:#fbf8f3; text-align:left; white-space:nowrap;}
+  td.g{background:#fdf9ef; font-weight:700;}
+  td.win{background:var(--good-soft); color:var(--good); font-weight:700;}
+  td.lose{background:var(--red-soft); color:var(--red); font-weight:700;}
+  .total td{font-size:16px; font-weight:800;}
+  .mini{display:block; font-size:11px; color:var(--sub); font-weight:400;}
+
+  ul.clean{margin:8px 0; padding-left:20px;} ul.clean li{margin:7px 0; font-size:14px;}
+  ul.check{list-style:none; padding-left:0;}
+  ul.check li{position:relative; padding:10px 12px 10px 38px; margin:8px 0;
+    background:#fbf8f3; border:1px solid var(--line); border-radius:10px; font-size:14px;}
+  ul.check li::before{content:"☐"; position:absolute; left:14px; top:9px; color:var(--accent); font-weight:800; font-size:15px;}
+
+  .tips{display:grid; grid-template-columns:1fr; gap:12px;}
+  @media(min-width:700px){.tips{grid-template-columns:1fr 1fr 1fr;}}
+  .tip{border:1px solid var(--line); border-radius:13px; padding:15px 16px; background:#fbf8f3;}
+  .tip h4{margin:0 0 4px; font-size:15px;}
+  .tip .sc{font-size:11.5px; color:var(--good); font-weight:800; background:var(--good-soft);
+    padding:2px 8px; border-radius:5px; display:inline-block; margin-bottom:8px;}
+  .tip ul{margin:0; padding-left:17px; font-size:13px;} .tip li{margin:5px 0;}
+
+  .links{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+  .links a{font-size:13px; text-decoration:none; padding:9px 15px; border-radius:999px; font-weight:700;
+    background:var(--accent); color:#fff;}
+  .links a.ghost{background:#fff; color:var(--ink); border:1px solid var(--line);}
+  .links a:hover{opacity:.88;}
+  .disclaimer{font-size:12px; color:var(--sub); background:#fbf8f3; border:1px dashed var(--line);
+    border-radius:10px; padding:11px 13px; margin-top:12px;}
+  footer{text-align:center; color:var(--sub); font-size:12px; margin-top:26px;}
+  strong.hl{background:#fbeecb; padding:0 3px; border-radius:3px;}
+.mdlback{position:fixed;top:calc(env(safe-area-inset-top, 0px) + 10px);left:10px;z-index:200;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--ink);text-decoration:none;box-shadow:0 2px 10px rgba(70,60,45,.14)}.mdlback:active{transform:scale(.96)}
+</style>
+</head>
+<body>
+<a href="index.html" class="mdlback">← 목록</a>
+<div class="wrap">
+
+<header class="top">
+  <span class="kicker">수빈 · 조사-006 · 면허 취득</span>
+  <h1>면허 취득 — 절차 · 비용 · 준비물 · 일정</h1>
+  <p class="lead"><b>면허 발급이 장기렌트 계약의 선행 조건</b>이라, 이걸 뚫는 게 지금 가장 중요한 일이에요.<br>
+  절차 6단계 · 비용 · 준비물 · 시험별 준비법을 전부 정리했습니다.</p>
+  <p class="meta">작성 2026-07-14 · v1.0 · 2026년 기준</p>
+</header>
+
+<!-- 결론 먼저 -->
+<section class="key">
+  <h2><span class="ic">★</span>먼저, 수빈이는 이 코스가 정답</h2>
+  <div class="callout gold">
+    <span class="ct">🎯 2종 보통 (자동) · 운전전문학원</span>
+    <b>① 왜 2종 자동?</b> 수빈이는 <b>액티언(자동변속기)</b> 만 몰 거예요. 2종 보통 자동이면 10인승 이하 승용차·SUV를 다 몰 수 있습니다.
+    <strong class="hl">가장 빠르고 쉬운 코스</strong>예요. (수동차를 몰 일이 없다면 굳이 1종 갈 이유 없음)<br><br>
+    <b>② 왜 학원?</b> <b>지금 면허가 자동차 계약의 병목</b>입니다. 독학은 10만원대로 싸지만,
+    <b>불합격할 때마다 재응시 대기 → 계약이 계속 밀립니다.</b>
+    학원은 80만원대지만 <b>익숙한 코스에서 시험을 봐서 합격률이 가장 높아요.</b>
+    <b>여기선 "돈"보다 "속도"가 더 비쌉니다.</b>
+  </div>
+  <div class="callout blue">
+    <span class="ct">💡 참고 — 2종 자동의 유일한 제약</span>
+    2종 보통 <b>자동</b>은 <b>수동변속기 차량을 못 몹니다.</b> 나중에 수동차를 몰 계획이 있다면 2종 보통(수동)이나 1종 보통을 고려하세요.
+    하지만 <b>액티언 하이브리드는 자동</b>이고, 요즘 차 대부분이 자동이라 실사용엔 문제없어요.
+  </div>
+</section>
+
+<!-- 6단계 절차 -->
+<section>
+  <h2><span class="ic">1</span>절차 6단계 — 어느 것도 못 건너뜁니다</h2>
+  <p class="h2sub">순서대로 진행되고, 앞 단계를 통과해야 다음으로 갑니다.</p>
+
+  <div class="flow">
+    <div class="fstep"><div class="num">1</div><div class="fc">
+      <div class="ft">교통안전교육 <span class="fee free">무료</span></div>
+      <div class="fd">시험장 교육장에서 <b>1시간 시청각 교육</b>. 신규 취득자 전원 의무. 그냥 듣기만 하면 됨.</div>
+    </div></div>
+
+    <div class="fstep"><div class="num">2</div><div class="fc">
+      <div class="ft">신체검사 <span class="fee">6,000~10,000원</span></div>
+      <div class="fd"><b>시력·청력</b> 등 기본 검사. 병원 또는 시험장 내 신체검사장. <b>안경 쓰면 안경 착용하고 검사</b>(면허증에 안경 조건 표기됨).</div>
+    </div></div>
+
+    <div class="fstep"><div class="num">3</div><div class="fc">
+      <div class="ft">학과시험 (필기) <span class="fee">10,000원</span> <span class="pass">2종 60점 합격</span></div>
+      <div class="fd">컴퓨터(CBT)로 <b>40문제 / 40분</b>. 문제당 2.5점. <b>2종은 24문제만 맞히면 합격</b>(1종은 70점).<br>
+      → <b>공개된 문제은행(약 1,000문제)에서 그대로 출제</b>됩니다. 앱으로 반복하면 됩니다.</div>
+    </div></div>
+
+    <div class="fstep"><div class="num">4</div><div class="fc">
+      <div class="ft">기능시험 (장내) <span class="fee">25,000원</span> <span class="pass">80점 합격</span></div>
+      <div class="fd"><b>4시간 장내기능교육</b> 이수 후 응시. 코스: <b>출발 · 경사로 · 직각주차(T자) · 교차로 · 가속</b>.
+      <b>컴퓨터 자동 채점</b>이라 감점 기준이 기계적입니다(안전벨트 미착용, 시동 꺼짐 등).</div>
+    </div></div>
+
+    <div class="fstep"><div class="num">5</div><div class="fc">
+      <div class="ft">연습면허 발급 <span class="fee">4,000원</span></div>
+      <div class="fd">기능시험 합격하면 나옵니다. <b>유효기간 1년</b> — 이 안에 도로주행에 합격해야 해요.<br>
+      <b>이걸로 도로주행 연습 가능</b>(단, 운전면허 소지자 동승 필요 → <b>명진이 옆에 타면 됨</b>).</div>
+    </div></div>
+
+    <div class="fstep"><div class="num">6</div><div class="fc">
+      <div class="ft">도로주행시험 <span class="fee">30,000원</span> <span class="pass">70점 합격</span></div>
+      <div class="fd">실제 도로 <b>5km 이상</b> 주행. <b>4개 코스 중 추첨으로 1개</b> 선택되고, <b>내비게이션 음성 안내</b>를 따라 운전합니다.</div>
+    </div></div>
+
+    <div class="fstep"><div class="num done">✓</div><div class="fc" style="background:var(--good-soft); border-color:#cfe0d1;">
+      <div class="ft">🎉 면허증 발급 <span class="fee">10,000원 (모바일 IC 15,000원)</span></div>
+      <div class="fd"><b>시험장에서 신청하면 당일~며칠 내 발급.</b> → <b>이때부터 장기렌트 계약 가능!</b></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 비용 -->
+<section>
+  <h2><span class="ic">₩</span>비용 — 학원 vs 독학</h2>
+  <p class="h2sub">시험 응시료는 동일. 차이는 <b>교육비</b>와 <b>합격률(=재응시 비용·시간)</b>.</p>
+
+  <h3>시험 응시료 (공통, 1회 기준)</h3>
+  <div class="tw">
+  <table>
+    <tbody>
+      <tr><th>교통안전교육</th><td>무료</td></tr>
+      <tr><th>신체검사</th><td>6,000 ~ 10,000원</td></tr>
+      <tr><th>학과시험(필기)</th><td>10,000원</td></tr>
+      <tr><th>기능시험</th><td>25,000원</td></tr>
+      <tr><th>연습면허 발급</th><td>4,000원</td></tr>
+      <tr><th>도로주행시험</th><td>30,000원</td></tr>
+      <tr><th>면허증 발급</th><td>10,000원 <span class="mini">모바일 IC 15,000원</span></td></tr>
+      <tr class="total"><th>합계 (한 번에 붙을 경우)</th><td>약 <b>9~10만원</b></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>총비용 비교</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>구분</th><th class="g">운전전문학원 <span class="mini">권장</span></th><th>독학 (개별접수)</th></tr></thead>
+    <tbody>
+      <tr><th>비용</th><td class="g">약 <b>80만원 이상</b><span class="mini">지역·학원별 상이</span></td><td class="win">약 <b>10만원 내외</b></td></tr>
+      <tr><th>합격률</th><td class="g win">✅ <b>가장 높음</b><span class="mini">익숙한 코스에서 시험</span></td><td class="lose">낮음<span class="mini">낯선 시험장</span></td></tr>
+      <tr><th>불합격 시</th><td class="g">재교육·재응시 지원</td><td class="lose">재응시 대기 <span class="mini">일정 계속 밀림</span></td></tr>
+      <tr><th>소요 기간</th><td class="g win">약 <b>2~4주</b></td><td class="lose">불확실 <span class="mini">시험 일정에 좌우</span></td></tr>
+      <tr><th>계약 일정</th><td class="g win">✅ 예측 가능</td><td class="lose">❌ 계속 지연 위험</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout warn">
+    <span class="ct">💰 "70만원 아끼려다 몇 달을 잃는다"</span>
+    독학이 70만원 싼 건 맞아요. 하지만 <b>지금 면허가 자동차 계약을 막고 있습니다.</b>
+    기능·도로주행에서 한 번씩만 떨어져도 재응시 대기로 <b>몇 주씩 밀립니다.</b><br>
+    → <strong class="hl">면허를 빨리 따는 게 우선이면 학원, 시간이 넉넉하고 돈을 아끼려면 독학.</strong>
+    이건 <b>수빈이가 선택할 문제</b>예요.
+  </div>
+</section>
+
+<!-- 준비물 -->
+<section>
+  <h2><span class="ic">📋</span>준비물 체크리스트</h2>
+  <ul class="check">
+    <li><b>신분증</b> (주민등록증 등)</li>
+    <li><b>컬러 사진 1매</b> — <b>3.5cm × 4.5cm</b>, <b>6개월 이내</b> 촬영, 상반신 정면 탈모<br>
+      <span style="color:var(--sub); font-size:13px;">머리 길이(정수리~턱) 3.2~3.6cm. 사진관에서 "운전면허 사진"이라고 하면 됨. 여러 장 뽑아두면 편함</span></li>
+    <li><b>응시원서</b> (시험장·학원에서 작성)</li>
+    <li><b>수수료</b> (카드 결제 가능)</li>
+    <li><b>안경</b> — 시력 교정이 필요하면 반드시 착용하고 신체검사</li>
+  </ul>
+  <div class="callout blue">
+    <span class="ct">📸 사진 팁</span>
+    사진은 <b>면허증에 몇 년 동안 박혀 있습니다.</b> 사진관에서 제대로 찍고 <b>여분(4~8매)</b>을 받아두면
+    나중에 다른 곳에도 쓸 수 있어요.
+  </div>
+</section>
+
+<!-- 시험별 준비법 -->
+<section>
+  <h2><span class="ic">📚</span>시험별 준비법</h2>
+  <div class="tips">
+    <div class="tip">
+      <h4>① 학과시험 (필기)</h4>
+      <span class="sc">2종 60점 · 24/40문제</span>
+      <ul>
+        <li><b>문제은행 약 1,000문제가 공개</b>돼 있고 <b>거기서 그대로 출제</b>됩니다</li>
+        <li>→ <b>앱으로 반복 학습</b>이 가장 효율적 (요즘 합격 공식)</li>
+        <li>시험 전 <b>모의고사 2~3회</b> 풀고 <b>오답노트</b> 정리</li>
+        <li>헷갈리는 건 <b>법규·표지판·함정문제</b> — 여기만 집중</li>
+        <li>보통 <b>1주일 준비면 합격</b> 가능</li>
+      </ul>
+    </div>
+    <div class="tip">
+      <h4>② 기능시험 (장내)</h4>
+      <span class="sc">80점 · 컴퓨터 채점</span>
+      <ul>
+        <li><b>4시간 장내기능교육</b> 이수 후 응시</li>
+        <li>코스: 출발·경사로·<b>직각주차(T자)</b>·교차로·가속</li>
+        <li><b>컴퓨터 자동 채점</b>이라 감점이 기계적 — <b>절차를 정확히</b>(안전벨트, 방향지시등, 시동 유지)</li>
+        <li><b>운전 자세 조정이 제일 중요</b> — 시야 확보 + 페달 위치</li>
+        <li>긴장하면 시동 꺼짐 → <b>천천히</b></li>
+      </ul>
+    </div>
+    <div class="tip">
+      <h4>③ 도로주행</h4>
+      <span class="sc">70점 · 5km 이상</span>
+      <ul>
+        <li><b>4개 코스 중 추첨 1개</b>, <b>내비 음성 안내</b>를 따라감</li>
+        <li>코스는 <b>주요 건물·표지판을 기준으로 연결해서 암기</b></li>
+        <li>시험관에게 <b>"안전하게 운전한다"는 신뢰감</b>을 주는 게 핵심</li>
+        <li>탑승 시 <b>가볍게 인사 → 좌석·미러 조절 → 안전벨트</b> 순서를 능숙하게</li>
+        <li><b>연습면허로 명진과 함께 도로 연습</b> 가능 (동승자는 면허 소지자여야 함)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 일정 -->
+<section>
+  <h2><span class="ic">📅</span>일정 — 자동차 계약과 맞물려서</h2>
+  <div class="callout good">
+    <span class="ct">🗓️ 학원 기준 예상 일정 (약 2~4주)</span>
+    <b>1주차</b> — 학원 등록 · 신체검사 · 교통안전교육 · <b>필기 공부(앱)</b> → 학과시험<br>
+    <b>2주차</b> — 장내기능교육(4시간) → <b>기능시험</b> → 연습면허 발급<br>
+    <b>3~4주차</b> — 도로주행 교육 · 코스 연습 → <b>도로주행시험</b> → <b>🎉 면허증 발급</b><br>
+    <span style="color:var(--sub); font-size:13px;">※ 학원·지역·시험 일정에 따라 달라집니다. 불합격 시 재응시 대기가 붙어요.</span>
+  </div>
+  <div class="callout gold">
+    <span class="ct">⚡ 병행하면 시간을 안 버립니다</span>
+    면허 진행하는 <b>2~4주 동안</b>, 자동차 쪽도 동시에 굴리세요:<br>
+    · <b>액티언 HEV 견적</b> 3~4곳 (인수형 · 연 3만km · 선수금 0% · 48/60개월)<br>
+    · <b>포레스트 그린 재고·출고 대기 기간</b> 확인 (색상 재고가 없으면 대기가 길 수 있음)<br>
+    · <b>명진 운전자 추가 등록</b> 조건·추가 보험료 문의<br>
+    → <b>면허 나오는 날 바로 계약</b>할 수 있게 준비해두는 거예요.
+  </div>
+</section>
+
+<!-- 링크 -->
+<section>
+  <h2><span class="ic">🔗</span>바로가기</h2>
+  <div class="links">
+    <a href="https://www.safedriving.or.kr/dtGuide/selectDtGuide01.do" target="_blank">🏛️ 도로교통공단 면허시험 안내</a>
+    <a class="ghost" href="https://drivingteacher.co.kr/test" target="_blank">📝 필기 모의고사(무료)</a>
+    <a class="ghost" href="https://qbanktest.co.kr/drive/DriveMain/drive_main" target="_blank">📚 문제은행</a>
+    <a class="ghost" href="https://drivingteacher.co.kr/guide/driver-test" target="_blank">🚗 기능시험 가이드</a>
+    <a class="ghost" href="https://search.naver.com/search.naver?query=운전면허학원 2종보통 자동 비용" target="_blank">🏫 근처 학원 알아보기</a>
+  </div>
+  <div class="disclaimer">
+    ※ 응시료·수수료는 2026년 기준이며 변경될 수 있습니다. 학원비는 <b>지역·학원마다 편차가 큽니다</b>(80만원 이상은 대략치) — 반드시 여러 곳 비교하세요.
+    소요 기간도 시험 일정·합격 여부에 따라 달라집니다. 정확한 정보는 <b>도로교통공단 공식</b>에서 확인하세요.
+  </div>
+</section>
+
+<!-- 액션 -->
+<section>
+  <h2><span class="ic">✓</span>지금 바로 할 일</h2>
+  <ul class="check">
+    <li><b>2종 보통(자동)</b>으로 결정 (액티언=자동이라 충분)</li>
+    <li><b>근처 운전전문학원 2~3곳 비용·일정 비교</b> (또는 독학 결정)</li>
+    <li><b>증명사진 촬영</b> (3.5×4.5, 여분 넉넉히)</li>
+    <li><b>필기 앱 설치 → 문제은행 반복</b> (1주면 충분)</li>
+    <li><b>[병행] 액티언 견적 + 포레스트 그린 재고 확인</b></li>
+  </ul>
+</section>
+
+<footer>
+  수빈 개인 참고자료 · 조사-006 · 면허 취득 절차·비용·준비물·일정 v1.0 · 2026-07-14
+</footer>
+
+</div>
+</body>
+</html>
