@@ -1138,14 +1138,21 @@ function renderSaju(){
       +'<button class="impbtn cash" style="margin-top:9px" onclick="(window.sajuConnect||function(){})()">🔗 수빈앱 연결 (구글 로그인)</button></div>';
     el.innerHTML=h;return;
   }
-  var wait=d.reqs.filter(function(r){return r.status!=='done';});
-  h+='<div class="tmeta" style="margin:0 2px 8px">'+esc(d.email||'')+' · 대기 '+wait.length+' / 전체 '+d.reqs.length
+  h+='<div class="tmeta" style="margin:0 2px 8px">'+esc(d.email||'')
     +' · <span onclick="(window.sajuDisconnect||function(){})()" style="color:#c2a99e;text-decoration:underline;cursor:pointer">연결해제</span></div>';
   if(d.err)h+='<div class="pnote" style="color:#b5564b">'+esc(d.err)+'</div>';
-  if(!d.reqs.length)h+='<div class="empty" style="padding:16px">아직 온 요청이 없어요 🍀</div>';
-  else h+=d.reqs.map(sajuCard).join('');
+  var recv=d.reqs.filter(function(r){return r.from!=='coach';});   // 수빈이 명진한테 사달래(명진이 답)
+  var sent=d.reqs.filter(function(r){return r.from==='coach';});   // 명진이 수빈한테 사달래(수빈이 답)
+  // 받은 요청
+  h+='<div class="seg">📥 수빈이 사달래 ('+recv.length+')</div>';
+  h+=recv.length?recv.map(sajuCard).join(''):'<div class="empty" style="padding:14px">아직 없어요 🍀</div>';
+  // 내가 수빈에게 보낸 것
+  h+='<div class="seg">📤 내가 수빈에게 ('+sent.length+')</div>';
+  h+='<button class="impbtn cash" onclick="sajuSendPrompt()">＋ 수빈에게 «사줘» 보내기</button>';
+  h+=sent.length?sent.map(sajuSentCard).join(''):'';
   el.innerHTML=h;
 }
+/* 받은 요청 카드 — 명진이 답장/완료 */
 function sajuCard(r){
   var done=r.status==='done';
   var link=r.url?' <a class="shig" href="'+esc(r.url)+'" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">링크</a>':'';
@@ -1158,7 +1165,23 @@ function sajuCard(r){
     +'<button class="impbtn" style="margin:0;flex:1" onclick="(window.sajuSetStatus||function(){})(\''+r.id+'\',\''+(done?'wait':'done')+'\')">'+(done?'대기로':'✅ 사줬어')+'</button>'
     +'</div></div>';
 }
+/* 내가 보낸 카드 — 수빈의 답/상태를 봄, 삭제 가능 */
+function sajuSentCard(r){
+  var done=r.status==='done';
+  var link=r.url?' <a class="shig" href="'+esc(r.url)+'" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">링크</a>':'';
+  return '<div class="card '+(done?'done':'')+'"><div class="row"><div class="tt"><b>'+esc(r.item||'(품목)')+'</b>'+link
+    +(r.note?'<div class="tmeta">📝 '+esc(r.note)+'</div>':'')
+    +(r.reply?'<div class="tmeta">💬 수빈: '+esc(r.reply)+'</div>':'')+'</div>'
+    +'<span class="shrt" style="background:'+(done?'#e4f2e7':'#f6ecdf')+';color:'+(done?'#3f8f5f':'#a9803f')+'">'+(done?'수빈이 사줌':'기다리는중')+'</span></div>'
+    +'<div style="text-align:right;margin-top:6px"><span onclick="(window.sajuDelete||function(){})(\''+r.id+'\')" style="font-size:11.5px;color:#c2a99e;text-decoration:underline;cursor:pointer">보낸 요청 삭제</span></div></div>';
+}
 function sajuReply(id){var t=prompt('수빈에게 답장 (예: 이번 주말에 사줄게)');if(t!=null&&window.sajuSetReply)window.sajuSetReply(id,t.trim());}
+function sajuSendPrompt(){
+  var item=prompt('수빈에게 «사줘» — 뭘?');if(item==null||!item.trim())return;
+  var url=prompt('링크 (선택, 없으면 비워둬)')||'';
+  var note=prompt('메모 (선택)')||'';
+  if(window.sajuSend)window.sajuSend(item.trim(),url.trim(),note.trim()).then(function(ok){if(ok)toast('수빈에게 보냈어 🙏');});
+}
 function wishCard(w){
   return '<div class="card '+(w.done?'done':'')+'"><div class="row">'
     +'<div class="ck '+(w.done?'on':'')+'" onclick="toggleWish(\''+w.id+'\')"></div>'
@@ -1907,7 +1930,7 @@ if(localStorage.getItem('mj_session')==='1')enter();else document.getElementById
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, browserLocalPersistence, setPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc, deleteDoc, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 const cfg={apiKey:"AIzaSyBfyRE7CNENjgSfe25xHAdr87gOllpYtvM",authDomain:"subin-routine.firebaseapp.com",projectId:"subin-routine",appId:"1:102755018689:web:2927e3b73fb5391db17140"};
 window.sajuData={connected:false,email:'',reqs:[],err:'',loading:true};
 function paint(){ if(window.renderSaju) try{window.renderSaju();}catch(e){} }
@@ -1944,6 +1967,13 @@ try{
   window.sajuDisconnect=async ()=>{ try{ await signOut(auth); }catch(e){} };
   window.sajuSetStatus=async (id,st)=>{ try{ await updateDoc(doc(db,'requests',id),{status:st}); }catch(e){ alert('상태 변경 실패: '+(e.code||e.message)); } };
   window.sajuSetReply=async (id,txt)=>{ try{ await updateDoc(doc(db,'requests',id),{reply:txt}); }catch(e){ alert('답장 실패: '+(e.code||e.message)); } };
+  // 명진→수빈 사줘 보내기: 같은 requests 컬렉션에 from:'coach'로 저장(수빈 것과 구분)
+  window.sajuSend=async (item,url,note)=>{
+    if(!subinUid){ alert('먼저 연결(로그인)해줘'); return false; }
+    try{ await addDoc(collection(db,'requests'),{uid:subinUid,from:'coach',item:item,url:url||'',note:note||'',status:'wait',reply:'',createdAt:serverTimestamp()}); return true; }
+    catch(e){ alert('보내기 실패: '+(e.code||e.message)); return false; }
+  };
+  window.sajuDelete=async (id)=>{ try{ await deleteDoc(doc(db,'requests',id)); }catch(e){ alert('삭제 실패: '+(e.code||e.message)); } };
 }catch(e){ window.sajuData.err='연동 초기화 실패: '+(e.message||e); }
 paint();
 </script>
