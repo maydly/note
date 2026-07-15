@@ -269,6 +269,34 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .pinrow{display:flex;gap:9px;margin-top:6px;width:100%;max-width:300px}
 .pin{flex:1;min-width:0;font-size:18px;text-align:center;letter-spacing:6px;padding:13px;border:1.5px solid #d8e5d6;border-radius:14px;background:#fff;outline:none}
 .pin:focus{border-color:#4f9a6a}
+/* ===== 사주세요 탭 (수빈 요청 수신) — ask- 접두어로 기존 클래스와 격리 ===== */
+.ask-login{background:#fffdf5;border:1px dashed #cfe3d3;border-radius:13px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:#4a6a52;line-height:1.6}
+.ask-login b{color:#357a51}
+.ask-login .ask-lbtn{margin-top:10px;display:inline-flex;align-items:center;gap:7px;border:1px solid #cfe0d2;background:#fff;color:#357a51;font-size:13px;font-weight:700;padding:9px 16px;border-radius:11px;cursor:pointer}
+.ask-login .ask-lbtn:active{transform:scale(.98)}
+.ask-me{font-size:12px;color:#8ba18e;margin:0 2px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ask-me .ask-out{border:none;background:none;color:#a3b0a0;font-size:11px;font-weight:700;text-decoration:underline;cursor:pointer}
+.ask-empty{text-align:center;color:#aab6a8;font-size:13px;padding:30px 10px;line-height:1.7}
+.ask-rc{background:#fff;border:1px solid #e2ece0;border-radius:15px;padding:13px 14px;margin-bottom:10px;box-shadow:0 3px 9px rgba(90,70,50,.05)}
+.ask-it{font-weight:800;font-size:15px;color:#3a3230;display:flex;align-items:center;gap:6px}
+.ask-lnk{font-size:12px;color:#4f9a6a;margin-top:4px;text-decoration:none;display:inline-block;font-weight:600;overflow-wrap:anywhere}
+.ask-nt{font-size:13px;color:#6f7d6c;margin-top:7px;line-height:1.5;background:#f4f8f2;border-radius:9px;padding:7px 9px}
+.ask-st{display:inline-block;font-size:11px;font-weight:800;padding:3px 9px;border-radius:20px;margin-top:9px}
+.ask-st.wait{background:#f1ede6;color:#a08b6a}
+.ask-st.seen{background:#e7eef6;color:#5b7fa6}
+.ask-st.ok{background:#e6f2ea;color:#357a51}
+.ask-st.done{background:#eef0ec;color:#8a968a}
+.ask-acts{display:flex;gap:6px;margin-top:10px}
+.ask-acts button{flex:1;border:1px solid #dae7d8;background:#fff;color:#357a51;font-size:12px;font-weight:800;padding:8px 2px;border-radius:10px;cursor:pointer}
+.ask-acts button:active{transform:scale(.96)}
+.ask-acts button.sel{background:#4f9a6a;color:#fff;border-color:#4f9a6a}
+.ask-rep{display:flex;gap:6px;margin-top:9px}
+.ask-rep input{flex:1;border:1px solid #dae7d8;border-radius:10px;padding:8px 10px;font-size:12px;background:#fff;font-family:inherit;color:#3a3230}
+.ask-rep input:focus{outline:2px solid #4f9a6a;border-color:#4f9a6a}
+.ask-rep button{border:none;background:#357a51;color:#fff;font-size:12px;font-weight:800;padding:8px 14px;border-radius:10px;cursor:pointer}
+.ask-sent{font-size:12px;color:#357a51;margin-top:8px;background:#eef5ee;border-radius:9px;padding:6px 9px;line-height:1.5}
+.ask-sent b{font-weight:800}
+.tab .dot{display:inline-block;width:6px;height:6px;background:#e05a4f;border-radius:50%;vertical-align:top;margin-left:1px}
 .gobtn{border:none;background:#4f9a6a;color:#fff;font-size:16px;font-weight:700;padding:13px 20px;border-radius:14px;cursor:pointer}
 .err{font-size:12.5px;color:#c2564b;min-height:16px}
 .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:rgba(46,42,38,.92);color:#fff;font-size:13px;font-weight:600;padding:11px 18px;border-radius:22px;z-index:95;opacity:0;transition:opacity .2s;pointer-events:none;max-width:88vw;text-align:center}
@@ -402,6 +430,12 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <div class="yfil" id="infoCats"></div>
   <div id="infoList"></div>
 </div>
+<!-- 사주세요 (수빈 요청 수신) -->
+<div class="scr" id="s-ask">
+  <div class="hd"><div class="wm"><span class="wmk"><svg viewBox="0 0 100 100" width="15" height="15" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="wm" x1="0" y1="0" x2="0.35" y2="1"><stop offset="0" stop-color="#86d2a0"/><stop offset="0.55" stop-color="#4f9a6a"/><stop offset="1" stop-color="#357a51"/></linearGradient></defs><g transform="translate(50,53)" fill="url(#wm)"><path d="M0 0 C-2.4,-10.5 -17,-15.5 -17,-27.5 C-17,-36.5 -8,-40.5 0,-32.5 C8,-40.5 17,-36.5 17,-27.5 C17,-15.5 2.4,-10.5 0,0 Z"/><path d="M0 0 C-2.4,-10.5 -17,-15.5 -17,-27.5 C-17,-36.5 -8,-40.5 0,-32.5 C8,-40.5 17,-36.5 17,-27.5 C17,-15.5 2.4,-10.5 0,0 Z" transform="rotate(90)"/><path d="M0 0 C-2.4,-10.5 -17,-15.5 -17,-27.5 C-17,-36.5 -8,-40.5 0,-32.5 C8,-40.5 17,-36.5 17,-27.5 C17,-15.5 2.4,-10.5 0,0 Z" transform="rotate(180)"/><path d="M0 0 C-2.4,-10.5 -17,-15.5 -17,-27.5 C-17,-36.5 -8,-40.5 0,-32.5 C8,-40.5 17,-36.5 17,-27.5 C17,-15.5 2.4,-10.5 0,0 Z" transform="rotate(270)"/><circle cx="0" cy="0" r="2.6" fill="#357a51" opacity="0.5"/></g></svg></span>maydly · 명진앱</div></div>
+  <div class="h1">사주세요 🙏</div><div class="sub">수빈이 보낸 요청을 여기서 봐</div>
+  <div id="askBody"></div>
+</div>
 
 <button class="add" id="fab" onclick="openAdd()">+</button>
 <div class="tabs">
@@ -416,6 +450,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <button class="tab" data-t="shoot" onclick="go('shoot',this)"><span class="ic">📸</span><span class="lb">촬영</span></button>
   <button class="tab" data-t="src" onclick="go('src',this)"><span class="ic">📎</span><span class="lb">구매처</span></button>
   <button class="tab" data-t="info" onclick="go('info',this)"><span class="ic">📚</span><span class="lb">정보</span></button>
+  <button class="tab" data-t="ask" onclick="go('ask',this)"><span class="ic">🙏</span><span class="lb">사주세요</span><span class="dot" id="askDot" style="display:none"></span></button>
 </div>
 <div class="tabwrap"><div class="tabfade l" id="fadeL"><i>‹</i></div><div class="tabfade r" id="fadeR"><i>›</i></div></div>
 </div>
@@ -1810,7 +1845,8 @@ function go(id,btn){
   document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
   document.getElementById('s-'+id).classList.add('on');
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});btn.classList.add('on');
-  document.getElementById('fab').style.display=(id==='src'||id==='cal')?'none':'';  // 보기 전용 탭
+  document.getElementById('fab').style.display=(id==='src'||id==='cal'||id==='ask')?'none':'';  // 보기 전용 탭
+  if(id==='ask'&&window.askActivate){try{window.askActivate();}catch(e){}}  // 사주세요 탭: 이 탭 누를 때만 Firebase 지연 로딩
   try{btn.scrollIntoView({inline:'center',block:'nearest'});}catch(e){}
   window.scrollTo(0,0);
 }
@@ -1867,5 +1903,152 @@ function sha256(ascii){function rr(v,a){return (v>>>a)|(v<<(32-a));}
   for(i=0;i<8;i++)for(j=3;j+1;j--){var b=(hash[i]>>(j*8))&255;result+=((b<16)?0:'')+b.toString(16);}
   return result;}
 if(localStorage.getItem('mj_session')==='1')enter();else document.getElementById('pin').focus();
+</script>
+
+<!-- ===== 사주세요 탭 전용: Firebase 지연 로딩 (이 탭 처음 누를 때만 SDK·로그인) =====
+     기존 11개 탭·mj_* localStorage·GitHub 동기화와 완전 분리된 독립 모듈.
+     아래 코드는 앱 켤 때 firebase를 전혀 불러오지 않는다. window.askActivate()가
+     처음 호출될 때(=사주세요 탭 첫 진입) 비로소 동적 import 한다. -->
+<script type="module">
+  // subin-routine Firebase 설정 — 수빈 루틴앱(개발-001)에서 그대로 복사.
+  // 명진앱이 수빈과 같은 프로젝트(subin-routine)에 접속해야 requests 데이터가 공유된다.
+  const firebaseConfig = {
+    apiKey: "AIzaSyBfyRE7CNENjgSfe25xHAdr87gOllpYtvM",
+    authDomain: "subin-routine.firebaseapp.com",
+    projectId: "subin-routine",
+    storageBucket: "subin-routine.firebasestorage.app",
+    messagingSenderId: "102755018689",
+    appId: "1:102755018689:web:2927e3b73fb5391db17140"
+  };
+
+  const MJ_STATES = { wait:'새 요청 · 아직 안 봄', seen:'봤어 표시함 👀', ok:'사줄게 표시함 💚', done:'완료 처리함 🎁' };
+
+  let fbReady = false, fbLoading = false;
+  let auth = null, db = null, provider = null, fx = null;
+  let unsubReqs = null, currentUser = null, reqs = [], loadError = '';
+
+  function askEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function askBody(){ return document.getElementById('askBody'); }
+
+  // 사주세요 탭 첫 진입 시에만 호출됨 (go()에서 id==='ask')
+  window.askActivate = async function(){
+    if(fbReady){ render(); return; }
+    if(fbLoading){ return; }
+    fbLoading = true;
+    const b = askBody(); if(b) b.innerHTML = '<div class="ask-empty">불러오는 중…</div>';
+    try{
+      const [appMod, authMod, fsMod] = await Promise.all([
+        import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"),
+        import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"),
+        import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js")
+      ]);
+      const app = appMod.initializeApp(firebaseConfig);
+      auth = authMod.getAuth(app);
+      provider = new authMod.GoogleAuthProvider();
+      db = fsMod.getFirestore(app);
+      fx = { authMod, fsMod };
+      fbReady = true; fbLoading = false;
+      authMod.onAuthStateChanged(auth, function(user){
+        currentUser = user || null;
+        if(currentUser){ subscribe(); }
+        else { if(unsubReqs){ unsubReqs(); unsubReqs=null; } reqs=[]; render(); }
+      });
+      render();
+    }catch(e){
+      fbLoading = false; loadError = (e && e.message) || '네트워크 오류';
+      render();
+    }
+  };
+
+  function subscribe(){
+    if(!db || unsubReqs) return;
+    const { collection, onSnapshot } = fx.fsMod;
+    unsubReqs = onSnapshot(collection(db, 'requests'), function(snap){
+      const arr = [];
+      snap.forEach(function(d){ const o = d.data() || {}; o._id = d.id; arr.push(o); });
+      arr.sort(function(a,c){ return (ms(c.createdAt) - ms(a.createdAt)); }); // 최신 먼저
+      reqs = arr;
+      render();
+    }, function(err){ loadError = (err && err.message) || '읽기 오류'; render(); });
+  }
+  function ms(t){ if(!t) return 0; if(typeof t.toMillis==='function') return t.toMillis(); if(t.seconds) return t.seconds*1000; return 0; }
+
+  window.askLogin = async function(){
+    if(!fbReady) return;
+    try{ await fx.authMod.signInWithPopup(auth, provider); }
+    catch(e){ alert('로그인이 취소됐거나 실패했어. 다시 눌러줘.'); }
+  };
+  window.askLogout = async function(){
+    if(!fbReady || !auth) return;
+    try{ await fx.authMod.signOut(auth); }catch(e){}
+  };
+
+  window.askSetStatus = async function(id, st){
+    if(!db) return;
+    const { doc, updateDoc } = fx.fsMod;
+    try{ await updateDoc(doc(db,'requests',id), { status: st }); }
+    catch(e){ alert('상태 저장 실패: ' + ((e&&e.message)||'')); }
+  };
+  window.askReply = async function(id){
+    if(!db) return;
+    const inp = document.getElementById('ask-rep-'+id);
+    const v = inp ? inp.value.trim() : '';
+    const { doc, updateDoc } = fx.fsMod;
+    try{ await updateDoc(doc(db,'requests',id), { reply: v }); }
+    catch(e){ alert('답장 저장 실패: ' + ((e&&e.message)||'')); }
+  };
+
+  function render(){
+    const b = askBody(); if(!b) return;
+    const dot = document.getElementById('askDot');
+
+    if(loadError){
+      b.innerHTML = '<div class="ask-login">연결에 문제가 생겼어. 인터넷 연결을 확인하고 탭을 다시 눌러줘.<br><span style="color:#a08b6a">('+askEsc(loadError)+')</span></div>';
+      if(dot) dot.style.display='none';
+      return;
+    }
+    if(!fbReady){ b.innerHTML = '<div class="ask-empty">불러오는 중…</div>'; return; }
+
+    if(!currentUser){
+      b.innerHTML = '<div class="ask-login">🔑 이 탭 <b>처음 누를 때만</b> 구글 로그인 한 번이면 돼. 다른 탭은 지금이랑 똑같이 로그인 없이 써.<br>'
+        + '<button class="ask-lbtn" onclick="askLogin()">구글 계정으로 로그인</button></div>';
+      if(dot) dot.style.display='none';
+      return;
+    }
+
+    let html = '<div class="ask-me"><span>👤 '+askEsc(currentUser.displayName||currentUser.email||'로그인됨')
+      +'</span><button class="ask-out" onclick="askLogout()">로그아웃</button></div>';
+
+    if(!reqs.length){
+      html += '<div class="ask-empty">아직 받은 요청이 없어.<br>수빈이 보내면 여기에 떠 🙏</div>';
+      b.innerHTML = html;
+      if(dot) dot.style.display='none';
+      return;
+    }
+
+    let waitCount = 0;
+    reqs.forEach(function(r){
+      const st = r.status || 'wait';
+      if(st === 'wait') waitCount++;
+      html += '<div class="ask-rc"><div class="ask-it">'+askEsc(r.item||'(제목 없음)')+'</div>';
+      if(r.url) html += '<a class="ask-lnk" href="'+askEsc(r.url)+'" target="_blank" rel="noopener">🔗 링크 열기</a>';
+      if(r.note) html += '<div class="ask-nt">'+askEsc(r.note)+'</div>';
+      html += '<span class="ask-st '+st+'">'+(MJ_STATES[st]||MJ_STATES.wait)+'</span>';
+      html += '<div class="ask-acts">'
+        + askBtn(r._id, st, 'seen', '👀 봤어')
+        + askBtn(r._id, st, 'ok', '💚 사줄게')
+        + askBtn(r._id, st, 'done', '✅ 완료') + '</div>';
+      html += '<div class="ask-rep"><input id="ask-rep-'+r._id+'" placeholder="한마디 답장 (선택)" value="'+askEsc(r.reply||'')+'">'
+        + '<button onclick="askReply(\''+r._id+'\')">보내기</button></div>';
+      if(r.reply) html += '<div class="ask-sent"><b>내 답장:</b> '+askEsc(r.reply)+'</div>';
+      html += '</div>';
+    });
+    b.innerHTML = html;
+    if(dot) dot.style.display = waitCount > 0 ? 'inline-block' : 'none';
+  }
+  function askBtn(id, cur, st, label){
+    const sel = (cur === st) ? ' sel' : '';
+    return '<button class="'+sel.trim()+'" onclick="askSetStatus(\''+id+'\',\''+st+'\')">'+label+'</button>';
+  }
 </script>
 </body></html>
