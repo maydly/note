@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수빈의 SUV 선택 허브 — 데모</title>
+<style>
+  :root{
+    --bg:#f7f5f1; --surface:#fff; --surface-2:#faf8f4;
+    --text:#26241f; --muted:#7c766c; --border:#e6e0d6;
+    --accent:#b5794a; --accent-soft:#f5e9dd;
+    --success:#4a7c59; --success-soft:#e6efe7;
+    --warning:#b5843a; --warning-soft:#f8efdc;
+    --danger:#b04a42; --danger-soft:#fae5e2;
+    --c-sportage:#4a6c8c; --c-actyon:#4a7c59; --c-seltos:#a05c8a;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--text);
+    font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+    line-height:1.6; font-size:16px; -webkit-text-size-adjust:100%;}
+  .mockbar{background:#3d3a34; color:#fff; text-align:center; padding:9px 14px; font-size:12.5px; font-weight:700;}
+  .mockbar b{color:#f0c674;}
+
+  header.top{background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:50;}
+  .hin{max-width:1180px; margin:0 auto; padding:16px 18px 0;}
+  .brandrow{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;}
+  h1{font-size:21px; margin:0; letter-spacing:-.02em;}
+  .sub{font-size:12.5px; color:var(--muted);}
+  .condrow{display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 0;}
+  .chip{font-size:11.5px; font-weight:700; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--muted); padding:4px 10px; border-radius:999px;}
+  .chip.on{background:var(--accent-soft); border-color:#e4cdb4; color:#8a5730;}
+  nav.tabs{display:flex; gap:2px; overflow-x:auto; margin-top:12px; -webkit-overflow-scrolling:touch;}
+  nav.tabs button{flex:0 0 auto; background:none; border:none; border-bottom:3px solid transparent;
+    color:var(--muted); font-size:14px; font-weight:700; padding:11px 15px; cursor:pointer; font-family:inherit; white-space:nowrap;}
+  nav.tabs button.on{color:var(--accent); border-bottom-color:var(--accent);}
+
+  .wrap{max-width:1180px; margin:0 auto; padding:24px 18px 100px;}
+  .pane{display:none;} .pane.on{display:block;}
+  section{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:22px 20px; margin:18px 0;}
+  h2{font-size:19px; margin:0 0 6px; letter-spacing:-.01em;}
+  h2 .n{color:var(--accent); font-weight:800; margin-right:8px;}
+  .h2sub{color:var(--muted); font-size:13.5px; margin:0 0 16px;}
+  h3{font-size:16px; margin:22px 0 10px; padding-left:11px; border-left:4px solid var(--accent);}
+
+  .badge{display:inline-block; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:5px; vertical-align:middle;}
+  .b-samp{background:var(--warning-soft); color:var(--warning);}
+  .b-need{background:var(--danger-soft); color:var(--danger);}
+  .b-ok{background:var(--success-soft); color:var(--success);}
+  .b-est{background:#eae6f2; color:#6b5a8a;}
+
+  .callout{border-radius:12px; padding:15px 17px; margin:14px 0; font-size:14px; border:1px solid transparent;}
+  .callout.warn{background:var(--warning-soft); border-color:#e8d5a8;}
+  .callout.good{background:var(--success-soft); border-color:#cfe0d1;}
+  .callout.danger{background:var(--danger-soft); border-color:#f0cbc6;}
+  .callout .ct{font-weight:800; display:block; margin-bottom:4px;}
+  .callout.warn .ct{color:var(--warning);} .callout.good .ct{color:var(--success);} .callout.danger .ct{color:var(--danger);}
+
+  .grid{display:grid; grid-template-columns:1fr; gap:14px;}
+  @media(min-width:760px){ .grid.c2{grid-template-columns:1fr 1fr;} .grid.c3{grid-template-columns:repeat(3,1fr);} }
+  .card{border:1px solid var(--border); border-radius:14px; padding:16px 17px; background:var(--surface-2);}
+  .card h4{margin:0 0 8px; font-size:15.5px;}
+  .card ul{margin:0; padding-left:17px; font-size:13.5px; color:var(--muted);} .card li{margin:5px 0;}
+
+  .vcard{border:2px solid var(--border); border-radius:16px; overflow:hidden; background:var(--surface);}
+  .vcard.win{border-color:var(--success); box-shadow:0 0 0 3px var(--success-soft);}
+  .vtop{padding:12px 15px; color:#fff; font-weight:800; font-size:14.5px; display:flex; justify-content:space-between; align-items:center; gap:6px;}
+  .v-sportage .vtop{background:var(--c-sportage);} .v-actyon .vtop{background:var(--c-actyon);} .v-seltos .vtop{background:var(--c-seltos);}
+  .vbody{padding:12px 15px;}
+  .vrow{display:flex; justify-content:space-between; align-items:baseline; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px; gap:8px;}
+  .vrow:last-child{border-bottom:none;}
+  .vrow .k{color:var(--muted); flex:1;} .vrow .v{font-weight:800; text-align:right; white-space:nowrap;}
+  .vrow.hero{border-bottom:2px solid var(--border); padding-bottom:10px; margin-bottom:4px;}
+  .vrow.hero .k{font-size:12px;} .vrow.hero .v{font-size:22px; letter-spacing:-.02em;}
+  .vrow.sum{background:var(--surface-2); margin:6px -15px 0; padding:8px 15px; border-bottom:none;}
+  .vrow .v.neg{color:var(--success);}
+
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--border); border-radius:14px; background:#fff;}
+  table{border-collapse:separate; border-spacing:0; width:100%; min-width:720px; font-size:13.5px;}
+  th,td{padding:10px 12px; border-bottom:1px solid var(--border); text-align:right;}
+  thead th{background:var(--surface-2); font-weight:800; text-align:center; font-size:13px;}
+  tbody th{text-align:left; color:var(--muted); font-weight:700; white-space:nowrap; background:var(--surface-2);
+    border-right:1px solid var(--border); font-size:12.5px;}
+  td.best{background:var(--success-soft); font-weight:800; color:var(--success);}
+  .grp td{background:#efe9df !important; font-weight:800; text-align:left; font-size:12px; letter-spacing:.04em;}
+
+  .calc{display:grid; grid-template-columns:1fr; gap:16px;}
+  @media(min-width:960px){ .calc{grid-template-columns:320px 1fr;} }
+  .inputs{border:1px solid var(--border); border-radius:14px; padding:16px; background:var(--surface-2); align-self:start;}
+  @media(min-width:960px){ .inputs{position:sticky; top:150px;} }
+  .fld{margin-bottom:12px;}
+  .fld label{display:block; font-size:12.5px; font-weight:700; color:var(--muted); margin-bottom:5px;}
+  .fld input{width:100%; padding:9px 11px; border:1px solid var(--border); border-radius:9px;
+    font-size:14px; font-family:inherit; background:#fff; color:var(--text); text-align:right;}
+  .fld input:focus{outline:2px solid var(--accent); outline-offset:-1px;}
+  .seg{display:flex; gap:5px;}
+  .seg button{flex:1; padding:9px 4px; border:1px solid var(--border); background:#fff; border-radius:9px;
+    font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit; color:var(--muted); min-height:40px;}
+  .seg button.on{background:var(--accent); color:#fff; border-color:var(--accent);}
+  .chkline{display:flex; align-items:center; gap:8px; font-size:13px; padding:9px 11px; background:#fff;
+    border:1px solid var(--border); border-radius:9px; cursor:pointer;}
+  .chkline input{width:auto;}
+
+  .btns{display:flex; flex-wrap:wrap; gap:7px; margin-top:12px;}
+  .btn{padding:9px 14px; border-radius:9px; border:1px solid var(--border); background:#fff; color:var(--text);
+    font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit; min-height:40px;}
+  .btn.pri{background:var(--accent); color:#fff; border-color:var(--accent);}
+  .btn.warn{background:var(--warning-soft); border-color:#e8d5a8; color:#8a6320;}
+
+  .stars{display:flex; gap:3px;}
+  .st{width:26px; height:26px; border-radius:6px; border:1px solid var(--border); background:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--muted); cursor:pointer; font-weight:700;}
+  .st.on{background:var(--accent); color:#fff; border-color:var(--accent);}
+  .score{display:flex; align-items:center; gap:8px; padding:6px 0; font-size:13px;}
+  .score .lbl{flex:1; font-weight:700; color:var(--muted); font-size:12.5px;}
+  .who{font-size:10px; font-weight:800; padding:2px 6px; border-radius:5px;}
+  .who.s{background:#fce9f5; color:#9c3f7c;} .who.m{background:#e3ecf5; color:#3d6285;}
+  .wrow{display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--border);}
+  .wrow label{flex:1; font-size:13px; font-weight:700; color:var(--muted);}
+  .wrow input[type=range]{flex:1.4;}
+  .wrow .wv{width:44px; text-align:right; font-weight:800; font-size:13px;}
+
+  .result{border:2px solid var(--accent); border-radius:14px; padding:18px; background:linear-gradient(180deg,#fdf9f4,#fff);}
+  .bigno{font-size:12.5px; color:var(--muted); font-weight:700;}
+  .money{font-size:30px; font-weight:800; letter-spacing:-.02em; margin:2px 0 6px;}
+  .note{font-size:12.5px; color:var(--muted); background:var(--surface-2); border:1px dashed var(--border);
+    border-radius:10px; padding:12px 14px; margin-top:14px;}
+  footer{text-align:center; color:var(--muted); font-size:12px; padding:20px;}
+
+  @media print{
+    .mockbar, nav.tabs, .inputs, .btns, footer{display:none !important;}
+    .pane{display:block !important;}
+    body{background:#fff;} section{break-inside:avoid; border-color:#ccc;}
+  }
+</style>
+</head>
+<body>
+
+<div class="mockbar">🧪 <b>데모(DEMO)</b> — 계산기가 <b>실제로 동작</b>합니다. 단, 월 렌트료·인수금·잔가는 <b>샘플값</b>이라 실제 견적을 넣기 전엔 결론으로 쓰면 안 됩니다.</div>
+
+<header class="top">
+  <div class="hin">
+    <div class="brandrow">
+      <h1>수빈의 SUV 선택 허브</h1>
+      <span class="sub">스포티지 · 액티언 · 셀토스 — 장기렌트 인수 기준</span>
+    </div>
+    <div class="condrow">
+      <span class="chip on">60개월</span><span class="chip on">선수금 0</span><span class="chip on">보증금 0</span>
+      <span class="chip on">만기 인수</span><span class="chip" id="chipKm">연 31,200km</span><span class="chip">고속 위주</span>
+    </div>
+    <nav class="tabs">
+      <button class="on" data-t="t1">🏠 홈</button>
+      <button data-t="t3">⚖️ 비교 · 계산</button>
+      <button data-t="t4">🎯 최종 선택</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ============ 홈 ============ -->
+<div class="pane on" id="t1">
+  <section style="border-color:var(--accent);">
+    <h2><span class="n">★</span>먼저 — 지금 이미 얼마를 쓰고 있나</h2>
+    <p class="h2sub">🔒 <b>내 지출은 내가 입력</b>합니다. 입력값은 <b>이 폰(브라우저)에만 저장</b>되고 인터넷에 안 올라가요. <span class="badge b-ok">비공개</span></p>
+    <div class="grid c2">
+      <div class="card">
+        <h4>지금 매달 나가는 차량 지출 <span style="font-size:12px;color:var(--muted);">(만원 단위 입력)</span></h4>
+        <div class="fld" style="margin-bottom:9px;"><label>⛽ 주유</label><input id="b_gas" type="number" placeholder="예: 50"></div>
+        <div class="fld" style="margin-bottom:9px;"><label>👤 친구차 (송금·과태료 등)</label><input id="b_friend" type="number" placeholder="예: 15"></div>
+        <div class="fld" style="margin-bottom:9px;"><label>🔧 정비·수리 (월 평균)</label><input id="b_fix" type="number" placeholder="예: 15"></div>
+        <div class="fld" style="margin-bottom:9px;"><label>🛣 하이패스 (통행료)</label><input id="b_toll" type="number" placeholder="예: 7"></div>
+        <div class="vrow" style="border-top:2px solid var(--border);padding-top:8px;"><span class="k"><b>지금 합계</b></span><span class="v" style="font-size:18px;color:var(--danger);" id="b_now">— 만/월</span></div>
+      </div>
+      <div class="card" style="background:var(--danger-soft);border-color:#f0cbc6;">
+        <h4>🚨 핵심 — 차도 없이 이만큼 나가고 있다</h4>
+        <ul style="color:var(--text);">
+          <li>지금 타는 건 <b>친구차</b>인데도 매달 <b id="b_now2">—</b> 이 나감</li>
+          <li><b id="b_waste">—</b> (친구차 + 정비)은 <b>"차도 없으면서 새는 돈"</b></li>
+          <li>친구차 안 타면 그 금액은 <b>즉시 사라짐</b></li>
+          <li><b>진짜 질문은 "렌트가 싼가"가 아니라 "얼마 더 내면 내 차가 생기나"</b></li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>지금 vs 장기렌트 후 <span class="badge b-samp">렌트료는 견적 전 샘플</span></h3>
+    <div class="cols" style="display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:8px;">
+      <div class="grid c3" style="gap:8px;">
+        <div class="fld"><label>렌트료(월,샘플)</label><input id="b_rent" type="number" value="76"></div>
+        <div class="fld"><label>친구차 연비(km/L)</label><input id="b_oldeco" type="number" value="10"></div>
+        <div class="fld"><label>새차 연비(km/L)</label><input id="b_neweco" type="number" value="14"></div>
+      </div>
+    </div>
+    <div class="tw"><table>
+      <thead><tr><th style="text-align:left;">항목</th><th>지금 (친구차)</th><th>스포티지 렌트 후</th></tr></thead>
+      <tbody id="b_tbl"></tbody>
+    </table></div>
+    <div class="callout good">
+      <span class="ct">⛽ 기름값은 "연비 비율"로 줄어듭니다</span>
+      같은 거리를 달려도 연비가 좋으면 기름이 덜 들어요. <b>친구차 10 → 스포티지 14면 주유비가 약 29% 감소</b>합니다.
+      주행거리가 얼마든 <b>연비 비율만큼</b> 줄어들어요. 친구차 실연비가 10보다 나쁘면 절감이 더 커집니다.
+    </div>
+    <div class="callout warn">
+      <span class="ct">📌 정직하게</span>
+      장기렌트는 <b id="b_delta">—</b> <b>더 내는 선택</b>입니다(싸지는 게 아님).
+      대신 <b>5년 뒤 차가 자산으로 남고</b>, 주말에도 타고, 친구차 눈치를 안 봅니다.
+      <b>이미 상당한 돈을 쓰고 있었다는 게 이 결정의 진짜 배경</b>이에요.<br>
+      <span style="font-size:12px;">※ 렌트료·정비포함 여부는 실제 견적으로 확정. 위 숫자는 입력값 기준입니다.</span>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">A</span>이 앱이 존재하는 이유</h2>
+    <div class="callout danger">
+      <span class="ct">🚨 월 렌트료만 비교하면 100% 틀립니다</span>
+      장기렌트 월납은 <b>(차값 − 잔존가치)</b>를 60개월로 나눈 것입니다.<br>
+      → <b>잔가가 높은 차(기아)는 월 렌트료가 싸지만, 인수할 때 그 높은 잔가를 그대로 물어야 합니다.</b><br>
+      → <b>잔가가 낮은 차(KGM)는 월 렌트료가 비싸지만, 인수금이 쌉니다.</b><br><br>
+      <b>진짜 비용 = (월 렌트료 × 60) + 인수금 + 부대비용 + 연료비 + 초과요금 − 5년 뒤 차값</b><br>
+      이걸 <b>실질비용</b>이라 부르고, 이 앱은 그것만 봅니다.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">B</span>기준별 현재 1위</h2>
+    <p class="h2sub">한 차를 정답으로 밀지 않습니다. <b>무엇을 우선하느냐에 따라 답이 달라집니다.</b> <span class="badge b-samp">샘플 견적 기준</span></p>
+    <div class="grid c3" id="winners"></div>
+  </section>
+
+  <section>
+    <h2><span class="n">C</span>계약서에서 반드시 확인할 것</h2>
+    <div class="grid c2">
+      <div class="card"><h4>⚠️ 약정거리 초과 = 돈</h4><ul>
+        <li>우리는 <b>연 31,200km</b> — 일반 약정(연 2만)이면 <b>연 1만km씩 초과</b></li>
+        <li>5년이면 <b>5만km 초과</b> → km당 100원만 잡아도 <b>500만원</b></li>
+        <li><b>"인수할 건데 초과거리 정산 면제되나요?"</b> ← 계약서로 확인. 계산기에서 켜고 꺼보세요</li></ul></div>
+      <div class="card"><h4>📋 견적서 필수 확인</h4><ul>
+        <li>보험 <b>운전자 범위 — 명진 추가 등록</b> (연인은 '가족한정'에 안 들어감)</li>
+        <li>대물 한도 · 면책금 · 사고 시 할증</li>
+        <li>정비 · 타이어 포함 여부</li>
+        <li>중도해지 위약금</li>
+        <li><b>만기 인수금 + 인수 부대비용</b>(이전등록·취득세)</li></ul></div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ 비교 · 계산 ============ -->
+<div class="pane" id="t3">
+  <section>
+    <h2><span class="n">A</span>계산기</h2>
+    <p class="h2sub">왼쪽을 바꾸면 오른쪽이 즉시 바뀝니다. 입력은 <b>자동 저장</b>됩니다.</p>
+    <div class="calc">
+      <div class="inputs">
+        <div class="fld"><label>하루 주행거리 (km)</label><input id="i_daily" type="number" value="100"></div>
+        <div class="fld"><label>주간 운행일 (일)</label><input id="i_days" type="number" value="6"></div>
+        <div class="fld"><label>연간 운행주 (주)</label><input id="i_weeks" type="number" value="52"></div>
+        <div class="fld"><label>+ 촬영 추가 주행 (km/년)</label><input id="i_extra" type="number" value="0"></div>
+        <div class="fld"><label>= 연간 예상 주행거리</label><input id="i_annual" type="number" readonly style="background:var(--accent-soft);font-weight:800;"></div>
+
+        <div class="fld"><label>약정거리 (km/년)</label>
+          <div class="seg" id="seg_limit">
+            <button class="on" data-v="30000">3만</button><button data-v="35000">3.5만</button><button data-v="40000">4만</button>
+          </div></div>
+        <div class="fld"><label>초과 km당 요금 (원)</label><input id="i_over" type="number" value="100"></div>
+        <div class="fld">
+          <label class="chkline"><input id="i_waive" type="checkbox"> <span>인수 시 초과거리 <b>면제</b></span></label>
+        </div>
+
+        <div class="fld"><label>유가 (원/L)</label><input id="i_fuel" type="number" value="1700"></div>
+        <div class="fld"><label>계약 기간 (개월)</label><input id="i_months" type="number" value="60"></div>
+        <div class="fld"><label>선수금 (원)</label><input id="i_upfront" type="number" value="0"></div>
+
+        <div class="fld"><label>5년 뒤 차값 시나리오</label>
+          <div class="seg" id="seg_res">
+            <button data-v="0.85">보수</button><button class="on" data-v="1">기준</button><button data-v="1.15">낙관</button>
+          </div></div>
+
+        <div class="btns">
+          <button class="btn warn" id="b_sample">🧪 샘플 견적 채우기</button>
+          <button class="btn" id="b_reset">초기화</button>
+          <button class="btn" id="b_print">🖨 인쇄 / PDF</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="grid c3" id="cards"></div>
+        <div class="callout warn" style="margin-top:14px;">
+          <span class="ct">⚠️ 이 계산의 한계</span>
+          차량 선택을 위한 <b>비교 도구</b>일 뿐, 실제 렌트사 견적·계약서·보험·세금·인수비용과 다를 수 있습니다.
+          <b>최종 계약 전 실제 견적서로 반드시 확인하세요.</b>
+        </div>
+        <div class="note" id="fuelnote"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">B</span>전체 비교표</h2>
+    <p class="h2sub">같은 조건(선수금 0 · 60개월 · 만기 인수)으로만 비교합니다.</p>
+    <div class="tw"><table id="cmp"></table></div>
+  </section>
+</div>
+
+<!-- ============ 최종 선택 ============ -->
+<div class="pane" id="t4">
+  <section>
+    <h2><span class="n">A</span>수빈 · 명진 각자 점수</h2>
+    <p class="h2sub">둘이 같이 앉아서 매기세요. <b>1~5점.</b></p>
+    <div class="grid c3" id="scoreboard"></div>
+  </section>
+  <section>
+    <h2><span class="n">B</span>가중치</h2>
+    <p class="h2sub">무엇을 더 중요하게 볼지 정합니다. <b>합계 100%</b></p>
+    <div id="weights"></div>
+    <div class="vrow" style="padding-top:10px;"><span class="k">합계</span><span class="v" id="wsum">100%</span></div>
+  </section>
+  <section>
+    <h2><span class="n">C</span>결과</h2>
+    <div class="result">
+      <div class="bigno">현재 입력값 기준 · 종합 1위</div>
+      <div class="money" id="topPick">—</div>
+      <div id="rank"></div>
+    </div>
+    <div class="btns">
+      <button class="btn" id="b_export">📤 JSON 내보내기</button>
+      <button class="btn" id="b_import">📥 JSON 불러오기</button>
+      <input type="file" id="f_import" accept=".json" style="display:none;">
+    </div>
+  </section>
+</div>
+
+<footer>수빈 · 조사-006 · SUV 장기렌트 의사결정 허브 — <b>데모 v0.2</b></footer>
+</div>
+
+<script>
+"use strict";
+var KRW = new Intl.NumberFormat('ko-KR');
+function won(n){ if(!isFinite(n)||n===null) return '—'; return KRW.format(Math.round(n)) + '원'; }
+function man(n){ if(!isFinite(n)||n===null) return '—'; return KRW.format(Math.round(n/10000)) + '만'; }
+function num(id){ var e=document.getElementById(id); var v=parseFloat(e.value); return isFinite(v)?v:0; }
+
+/* ===== 차량 데이터 =====
+   가격·연비 = 2026-07-01 제조사 공식 기준 [공식확인].
+   월렌트료·인수금·잔가 = [샘플] — 실제 견적으로 교체 필요.
+   잔가율 = 5년/15만km 고주행 추정. 브랜드 실측 잔가(스포티지 3년 86.6% / KGM 68.1%)에
+   고주행 페널티(5만km 초과 × 40~60원/km)를 반영한 추정치. */
+var VEHICLES = [
+  { id:'sportage', name:'스포티지 HEV', brand:'기아', cls:'v-sportage',
+    trim:'노블레스 + 드라이브와이즈', price:38470000,
+    fuelEco:16.3, fuelEcoHwy:15.5, hda:'HDA2 (옵션 124만)', awd:'가능 (+223만, 연비 −10%)',
+    cargo:'637L / 1,923L (가솔린 기준)', size:'4,685 × 1,865 × 1,660', verified:true,
+    resaleRate:0.50,
+    sample:{ monthlyRent:780000, buyout:15000000, acqFee:1500000 },
+    scores:{ design:4, space:4, highway:5, shoot:4, econ:4, asset:5 } },
+  { id:'actyon', name:'액티언 HEV', brand:'KGM', cls:'v-actyon',
+    trim:'S8 단일트림 (2027년형)', price:37900000,
+    fuelEco:15.0, fuelEcoHwy:14.2, hda:'없음 (IACC+CLKA)', awd:'불가 (2WD 전용)',
+    cargo:'652L / 1,424L', size:'4,740 × 1,910 × 1,680', verified:true,
+    resaleRate:0.33,
+    sample:{ monthlyRent:800000, buyout:12500000, acqFee:1300000 },
+    scores:{ design:4, space:5, highway:3, shoot:5, econ:3, asset:2 } },
+  { id:'seltos', name:'셀토스 HEV', brand:'기아', cls:'v-seltos',
+    trim:'시그니처 (신형·2026)', price:35200000,
+    fuelEco:19.5, fuelEcoHwy:17.5, hda:'HDA2 기본 (프레스티지↑)', awd:'불가 (HEV는 2WD)',
+    cargo:'536L (2열폴딩 미공개)', size:'4,430 × 1,830 × 1,600', verified:true,
+    resaleRate:0.48,
+    sample:{ monthlyRent:720000, buyout:13500000, acqFee:1300000 },
+    scores:{ design:4, space:3, highway:5, shoot:3, econ:5, asset:4 } }
+];
+/* 5년 후 차값 = 차량가 × resaleRate (고주행 반영 추정) */
+VEHICLES.forEach(function(v){ v.sample.resale5y = Math.round(v.price * v.resaleRate); });
+
+var STATE = { limit:30000, resScen:1, quotes:{}, scores:{}, weights:{
+  design:20, monthly:15, net:20, asset:15, highway:10, shoot:10, feature:10 } };
+var WLABEL = { design:'디자인', monthly:'월 부담', net:'5년 실질비용', asset:'자산가치',
+  highway:'장거리 주행', shoot:'촬영 활용성', feature:'편의 기능' };
+
+/* ===== 저장 ===== */
+function save(){ try{ localStorage.setItem('suv-hub-demo', JSON.stringify(STATE)); }catch(e){} }
+function load(){ try{ var s=localStorage.getItem('suv-hub-demo'); if(s) STATE=Object.assign(STATE, JSON.parse(s)); }catch(e){} }
+
+/* ===== 계산 ===== */
+function annualKm(){
+  return num('i_daily') * num('i_days') * num('i_weeks') + num('i_extra');
+}
+function calc(v){
+  var q = STATE.quotes[v.id] || {};
+  var mr = q.monthlyRent || v.sample.monthlyRent;
+  var bo = q.buyout      || v.sample.buyout;
+  var af = q.acqFee      || v.sample.acqFee;
+  var rs = (q.resale5y   || v.sample.resale5y) * STATE.resScen;
+
+  var months = num('i_months') || 60;
+  var years  = months / 12;
+  var akm    = annualKm();
+  var fuelPrice = num('i_fuel');
+  var eco = v.fuelEco || 1;
+
+  var rentTotal = mr * months + num('i_upfront');
+  var fuelYear  = eco > 0 ? (akm / eco) * fuelPrice : 0;
+  var fuel5     = fuelYear * years;
+
+  var overKm   = Math.max(0, akm - STATE.limit) * years;
+  var overCost = document.getElementById('i_waive').checked ? 0 : overKm * num('i_over');
+
+  var total = rentTotal + bo + af + fuel5 + overCost;
+  var net   = total - rs;
+
+  return { mr:mr, bo:bo, af:af, rs:rs, rentTotal:rentTotal, fuel5:fuel5,
+    overKm:overKm, overCost:overCost, total:total, net:net, monthlyAvg:net/months,
+    isSample: !(q.monthlyRent) };
+}
+
+/* ===== 렌더 ===== */
+function render(){
+  document.getElementById('i_annual').value = annualKm();
+  document.getElementById('chipKm').textContent = '연 ' + KRW.format(annualKm()) + 'km';
+
+  var rs = VEHICLES.map(function(v){ return { v:v, c:calc(v) }; });
+  var bestNet = Math.min.apply(null, rs.map(function(r){ return r.c.net; }));
+
+  /* 카드 */
+  document.getElementById('cards').innerHTML = rs.map(function(r){
+    var v=r.v, c=r.c, win = c.net===bestNet;
+    return '<div class="vcard '+v.cls+(win?' win':'')+'">'
+      + '<div class="vtop"><span>'+v.name+'</span>'+(win?'<span class="badge b-ok">실질비용 1위</span>':'<span class="badge b-samp">샘플</span>')+'</div>'
+      + '<div class="vbody">'
+      + '<div class="vrow hero"><span class="k">5년 실질비용</span><span class="v">'+man(c.net)+'</span></div>'
+      + '<div class="vrow"><span class="k">월평균 실부담</span><span class="v">'+won(c.monthlyAvg)+'</span></div>'
+      + '<div class="vrow"><span class="k">월 렌트료</span><span class="v">'+won(c.mr)+'</span></div>'
+      + '<div class="vrow"><span class="k">60개월 납입</span><span class="v">'+man(c.rentTotal)+'</span></div>'
+      + '<div class="vrow"><span class="k">만기 인수금</span><span class="v">'+man(c.bo)+'</span></div>'
+      + '<div class="vrow"><span class="k">인수 부대비용</span><span class="v">'+man(c.af)+'</span></div>'
+      + '<div class="vrow"><span class="k">5년 연료비</span><span class="v">'+man(c.fuel5)+'</span></div>'
+      + '<div class="vrow"><span class="k">초과거리 ('+KRW.format(Math.round(c.overKm))+'km)</span><span class="v">'+man(c.overCost)+'</span></div>'
+      + '<div class="vrow sum"><span class="k">5년 총지출</span><span class="v">'+man(c.total)+'</span></div>'
+      + '<div class="vrow sum"><span class="k">− 5년 후 차값 <span class="badge b-est">추정</span></span><span class="v neg">−'+man(c.rs)+'</span></div>'
+      + '</div></div>';
+  }).join('');
+
+  /* 연료비 노트 */
+  var f = rs.map(function(r){ return r.v.name+' '+man(r.c.fuel5); }).join(' · ');
+  document.getElementById('fuelnote').innerHTML = '⛽ 연 '+KRW.format(annualKm())+'km · 유가 '+KRW.format(num('i_fuel'))+'원/L 기준 <b>5년 연료비</b> — '+f
+    + '<br>※ 고속 항속에선 회생제동이 거의 없어 <b>하이브리드 실연비가 공인연비보다 낮게</b> 나옵니다. 실제로는 공인연비의 75~85% 수준을 보세요.';
+
+  /* 비교표 */
+  var rows = [
+    ['grp','기본'],
+    ['제조사', function(r){ return r.v.brand; }],
+    ['트림', function(r){ return r.v.trim; }],
+    ['차량 가격', function(r){ return man(r.v.price); }],
+    ['grp','🛣️ 주행 — 고속 3만km/년이라 여기가 돈이다'],
+    ['공인 복합연비', function(r){ return r.v.fuelEco + ' km/L'; }],
+    ['고속도로 연비', function(r){ return '<b>' + r.v.fuelEcoHwy + ' km/L</b>'; }],
+    ['고속도로 주행보조', function(r){ return r.v.hda; }],
+    ['AWD (촬영 산길)', function(r){ return r.v.awd; }],
+    ['grp','📦 공간 — 촬영 장비'],
+    ['적재공간', function(r){ return r.v.cargo; }],
+    ['크기 (장×폭×고)', function(r){ return r.v.size; }],
+    ['grp','💰 비용 (동일 조건)'],
+    ['월 렌트료', function(r){ return won(r.c.mr); }, true],
+    ['60개월 총 납입', function(r){ return man(r.c.rentTotal); }],
+    ['만기 인수금', function(r){ return man(r.c.bo); }],
+    ['인수 부대비용', function(r){ return man(r.c.af); }],
+    ['5년 연료비', function(r){ return man(r.c.fuel5); }],
+    ['초과거리 비용', function(r){ return man(r.c.overCost); }],
+    ['5년 총지출', function(r){ return man(r.c.total); }],
+    ['5년 후 차값 (추정)', function(r){ return man(r.c.rs); }],
+    ['실질비용', function(r){ return man(r.c.net); }, false, true],
+    ['월평균 실부담', function(r){ return won(r.c.monthlyAvg); }],
+    ['grp','데이터'],
+    ['공식 사양 확인', function(r){ return r.v.verified ? '<span class="badge b-ok">확인</span>' : '<span class="badge b-need">조사중</span>'; }],
+    ['견적 입력', function(r){ return r.c.isSample ? '<span class="badge b-samp">샘플</span>' : '<span class="badge b-ok">실견적</span>'; }]
+  ];
+  var html = '<thead><tr><th style="text-align:left;">항목</th>'
+    + rs.map(function(r){ return '<th>'+r.v.name+'</th>'; }).join('') + '</tr></thead><tbody>';
+  rows.forEach(function(row){
+    if(row[0]==='grp'){ html += '<tr class="grp"><td colspan="4">'+row[1]+'</td></tr>'; return; }
+    var vals = rs.map(function(r){ return row[1](r); });
+    var bi = -1;
+    if(row[3]){ var mn=Math.min.apply(null, rs.map(function(r){return r.c.net;})); bi = rs.findIndex(function(r){return r.c.net===mn;}); }
+    if(row[2]){ var mm=Math.min.apply(null, rs.map(function(r){return r.c.mr;}));  bi = rs.findIndex(function(r){return r.c.mr===mm;}); }
+    html += '<tr><th>'+row[0]+'</th>' + vals.map(function(v,i){
+      return '<td'+(i===bi?' class="best"':'')+'>'+v+'</td>'; }).join('') + '</tr>';
+  });
+  html += '</tbody>';
+  document.getElementById('cmp').innerHTML = html;
+
+  /* 기준별 1위 */
+  function pick(fn, lo){ var s = rs.slice().sort(function(a,b){ return lo ? fn(a)-fn(b) : fn(b)-fn(a); }); return s[0]; }
+  var W = [
+    ['💵 월 부담이 가장 낮은 차', pick(function(r){return r.c.mr;}, true), function(r){return won(r.c.mr);}],
+    ['📉 5년 총지출이 가장 낮은 차', pick(function(r){return r.c.total;}, true), function(r){return man(r.c.total);}],
+    ['💎 5년 뒤 자산가치가 높은 차', pick(function(r){return r.c.rs;}, false), function(r){return man(r.c.rs);}],
+    ['⭐ 실질비용이 가장 낮은 차', pick(function(r){return r.c.net;}, true), function(r){return man(r.c.net);}],
+    ['⛽ 연료비가 가장 낮은 차', pick(function(r){return r.c.fuel5;}, true), function(r){return man(r.c.fuel5);}],
+    ['🛣️ 고속·촬영 균형이 좋은 차', pick(function(r){return r.v.scores.highway + r.v.scores.shoot;}, false), function(r){return '고속 '+r.v.scores.highway+' · 촬영 '+r.v.scores.shoot;}]
+  ];
+  document.getElementById('winners').innerHTML = W.map(function(w){
+    return '<div class="card"><h4>'+w[0]+'</h4><div style="font-size:20px;font-weight:800;margin:4px 0 2px;">'+w[1].v.name+'</div>'
+      + '<div style="font-size:13px;color:var(--muted);">'+w[2](w[1])+'</div></div>';
+  }).join('');
+
+  renderScores(rs);
+  save();
+}
+
+/* ===== 점수 · 가중치 ===== */
+var SKEYS = [['design','외관'],['interior','실내'],['color','색상'],['feature','기능'],['space','공간'],['shoot','촬영 활용']];
+function getScore(vid, who, key){
+  var s = STATE.scores[vid] || {}; var w = s[who] || {};
+  return w[key] || 3;
+}
+function setScore(vid, who, key, val){
+  if(!STATE.scores[vid]) STATE.scores[vid]={};
+  if(!STATE.scores[vid][who]) STATE.scores[vid][who]={};
+  STATE.scores[vid][who][key]=val; render();
+}
+function renderScores(rs){
+  document.getElementById('scoreboard').innerHTML = VEHICLES.map(function(v){
+    var rows = SKEYS.map(function(k){
+      return ['수빈','명진'].map(function(who){
+        var cur = getScore(v.id, who, k[0]);
+        var stars = [1,2,3,4,5].map(function(n){
+          return '<span class="st'+(n<=cur?' on':'')+'" data-v="'+v.id+'" data-w="'+who+'" data-k="'+k[0]+'" data-n="'+n+'">'+n+'</span>';
+        }).join('');
+        return '<div class="score"><span class="lbl">'+k[1]+'</span><span class="who '+(who==='수빈'?'s':'m')+'">'+who+'</span><div class="stars">'+stars+'</div></div>';
+      }).join('');
+    }).join('');
+    return '<div class="card"><h4 style="color:var(--c-'+v.id+');">'+v.name+'</h4>'+rows+'</div>';
+  }).join('');
+  document.querySelectorAll('.st').forEach(function(s){
+    s.addEventListener('click', function(){
+      setScore(this.dataset.v, this.dataset.w, this.dataset.k, parseInt(this.dataset.n));
+    });
+  });
+
+  /* 가중치 */
+  var wsum = 0; Object.keys(STATE.weights).forEach(function(k){ wsum += STATE.weights[k]; });
+  document.getElementById('weights').innerHTML = Object.keys(WLABEL).map(function(k){
+    return '<div class="wrow"><label>'+WLABEL[k]+'</label>'
+      + '<input type="range" min="0" max="40" value="'+STATE.weights[k]+'" data-wk="'+k+'">'
+      + '<span class="wv">'+STATE.weights[k]+'%</span></div>';
+  }).join('');
+  document.getElementById('wsum').innerHTML = wsum + '%' + (wsum!==100 ? ' <span class="badge b-need">100%가 아닙니다</span>' : ' <span class="badge b-ok">OK</span>');
+  document.querySelectorAll('[data-wk]').forEach(function(r){
+    r.addEventListener('input', function(){ STATE.weights[this.dataset.wk] = parseInt(this.value); render(); });
+  });
+
+  /* 종합 점수 — 비용지표는 정규화(낮을수록 100) */
+  var nets = rs.map(function(r){return r.c.net;}), mrs = rs.map(function(r){return r.c.mr;}), rss = rs.map(function(r){return r.c.rs;});
+  function norm(val, arr, lower){
+    var mn=Math.min.apply(null,arr), mx=Math.max.apply(null,arr);
+    if(mx===mn) return 50;
+    var t = (val-mn)/(mx-mn);
+    return (lower ? 1-t : t) * 100;
+  }
+  var totals = rs.map(function(r){
+    var emo = SKEYS.reduce(function(a,k){ return a + (getScore(r.v.id,'수빈',k[0]) + getScore(r.v.id,'명진',k[0]))/2; },0) / SKEYS.length; // 1~5
+    var design = emo/5*100;
+    var s = 0;
+    s += STATE.weights.design  * design;
+    s += STATE.weights.monthly * norm(r.c.mr,  mrs,  true);
+    s += STATE.weights.net     * norm(r.c.net, nets, true);
+    s += STATE.weights.asset   * norm(r.c.rs,  rss,  false);
+    s += STATE.weights.highway * (r.v.scores.highway/5*100);
+    s += STATE.weights.shoot   * (r.v.scores.shoot/5*100);
+    s += STATE.weights.feature * (r.v.scores.econ/5*100);
+    return { v:r.v, score: wsum>0 ? s/wsum : 0 };
+  }).sort(function(a,b){ return b.score-a.score; });
+
+  document.getElementById('topPick').textContent = totals[0].v.name;
+  document.getElementById('rank').innerHTML = totals.map(function(t,i){
+    return '<div class="vrow"><span class="k">'+(i+1)+'위 '+t.v.name+'</span><span class="v">'+t.score.toFixed(1)+'점</span></div>';
+  }).join('');
+}
+
+/* ===== 이벤트 ===== */
+document.querySelectorAll('nav.tabs button').forEach(function(b){
+  b.addEventListener('click', function(){
+    document.querySelectorAll('nav.tabs button').forEach(function(x){x.classList.remove('on');});
+    document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('on');});
+    this.classList.add('on');
+    document.getElementById(this.dataset.t).classList.add('on');
+    window.scrollTo(0,0);
+  });
+});
+['i_daily','i_days','i_weeks','i_extra','i_over','i_fuel','i_months','i_upfront'].forEach(function(id){
+  document.getElementById(id).addEventListener('input', render);
+});
+document.getElementById('i_waive').addEventListener('change', render);
+document.getElementById('seg_limit').querySelectorAll('button').forEach(function(b){
+  b.addEventListener('click', function(){
+    this.parentNode.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
+    this.classList.add('on'); STATE.limit = parseInt(this.dataset.v); render();
+  });
+});
+document.getElementById('seg_res').querySelectorAll('button').forEach(function(b){
+  b.addEventListener('click', function(){
+    this.parentNode.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
+    this.classList.add('on'); STATE.resScen = parseFloat(this.dataset.v); render();
+  });
+});
+document.getElementById('b_reset').addEventListener('click', function(){
+  if(confirm('입력값을 모두 초기화할까요?')){ localStorage.removeItem('suv-hub-demo'); location.reload(); }
+});
+document.getElementById('b_print').addEventListener('click', function(){ window.print(); });
+document.getElementById('b_sample').addEventListener('click', function(){
+  alert('현재 표시된 월 렌트료·인수금·잔가는 전부 샘플값입니다.\n\n실제 견적을 3~4곳에서 받아 넣기 전까지는\n이 결과를 결론으로 쓰면 안 됩니다.\n\n(본 구현에서 견적 입력 폼이 들어갑니다)');
+});
+document.getElementById('b_export').addEventListener('click', function(){
+  var blob = new Blob([JSON.stringify(STATE,null,2)], {type:'application/json'});
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = '수빈SUV선택_저장본.json'; a.click();
+});
+document.getElementById('b_import').addEventListener('click', function(){ document.getElementById('f_import').click(); });
+document.getElementById('f_import').addEventListener('change', function(e){
+  var f = e.target.files[0]; if(!f) return;
+  var rd = new FileReader();
+  rd.onload = function(ev){ try{ STATE = JSON.parse(ev.target.result); save(); location.reload(); }
+    catch(err){ alert('불러오기 실패: 올바른 JSON이 아닙니다.'); } };
+  rd.readAsText(f);
+});
+
+/* ===== 홈 기준선 (사적 정보 — 로컬에만 저장, 파일에 안 박힘) ===== */
+var BKEYS = ['b_gas','b_friend','b_fix','b_toll','b_rent','b_oldeco','b_neweco'];
+function bLoad(){
+  try{ var s=JSON.parse(localStorage.getItem('suv-hub-baseline')||'{}');
+    BKEYS.forEach(function(k){ if(s[k]!=null && document.getElementById(k)) document.getElementById(k).value=s[k]; });
+  }catch(e){}
+}
+function bSave(){
+  var o={}; BKEYS.forEach(function(k){ var e=document.getElementById(k); if(e&&e.value!=='') o[k]=e.value; });
+  try{ localStorage.setItem('suv-hub-baseline', JSON.stringify(o)); }catch(e){}
+}
+function bNum(id){ var e=document.getElementById(id); var v=parseFloat(e&&e.value); return isFinite(v)?v:0; }
+function renderBaseline(){
+  var gas=bNum('b_gas'), friend=bNum('b_friend'), fix=bNum('b_fix'), toll=bNum('b_toll');
+  var now = gas+friend+fix+toll;
+  var rent=bNum('b_rent'), oldE=bNum('b_oldeco')||10, newE=bNum('b_neweco')||14;
+  var gasAfter = newE>0 ? gas*(oldE/newE) : gas;
+  var after = rent + gasAfter + toll; // 친구차·정비 사라짐 가정
+  var delta = after - now;
+  function m(x){ return (Math.round(x*10)/10)+'만'; }
+  document.getElementById('b_now').textContent = now>0 ? m(now)+'/월' : '— 만/월';
+  document.getElementById('b_now2').textContent = now>0 ? m(now)+'원' : '—';
+  document.getElementById('b_waste').textContent = (friend+fix)>0 ? '월 '+m(friend+fix) : '—';
+  document.getElementById('b_delta').textContent = now>0 ? '월 약 '+m(delta) : '월 —';
+  document.getElementById('b_tbl').innerHTML =
+     row('렌트료','0','<span class="badge b-samp">샘플</span> '+m(rent))
+   + row('⛽ 주유', m(gas), '<span class="best2">'+m(gasAfter)+'</span> <span style="font-size:11px;color:var(--muted);">(연비 '+oldE+'→'+newE+')</span>')
+   + row('👤 친구차', m(friend), '<span class="best2">0 (사라짐)</span>')
+   + row('🔧 정비', m(fix), '<span class="best2">≈0 (새차·보증)</span>')
+   + row('🛣 하이패스', m(toll), m(toll))
+   + '<tr style="font-weight:800;"><th>월 합계</th><td style="font-size:17px;">'+m(now)+'</td><td style="font-size:17px;color:var(--warning);">'+m(after)+'</td></tr>'
+   + row('남는 자산','<span style="color:var(--danger);">없음</span>','<span class="best2">5년 뒤 내 차</span>');
+  bSave();
+}
+function row(k,a,b){ return '<tr><th>'+k+'</th><td>'+a+'</td><td class="best">'+b+'</td></tr>'; }
+BKEYS.forEach(function(k){ var e=document.getElementById(k); if(e) e.addEventListener('input', renderBaseline); });
+
+bLoad();
+renderBaseline();
+load();
+render();
+</script>
+</body>
+</html>

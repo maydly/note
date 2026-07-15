@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스포티지 트림 — 그림으로 쉽게 (수빈용)</title>
+<style>
+  :root{
+    --bg:#f7f5f1; --surface:#fff; --surface-2:#faf8f4; --text:#2a2620; --muted:#867e72;
+    --border:#e7e1d7; --accent:#4a6c8c; --accent-soft:#e5edf4;
+    --green:#4a7c59; --green-soft:#e7f0e8; --warm:#b5794a; --warm-soft:#f5e9dc;
+    --sun:#d99a3a; --sun-soft:#faf0d8; --rose:#a8567f; --rose-soft:#f7e6f0;
+    --sky:#5b8aa8; --line:#3a352e;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--text);
+    font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+    line-height:1.7; font-size:16.5px; -webkit-text-size-adjust:100%;}
+  .wrap{max-width:860px; margin:0 auto; padding:26px 16px 90px;}
+
+  header.top{text-align:center; padding:16px 10px 8px;}
+  .kick{display:inline-block; font-size:12.5px; letter-spacing:.1em; color:var(--accent);
+    background:var(--accent-soft); padding:5px 13px; border-radius:999px; margin-bottom:12px; font-weight:800;}
+  h1{font-size:25px; margin:.1em 0 .35em; letter-spacing:-.02em;}
+  .lead{color:var(--muted); font-size:14.5px; max-width:560px; margin:0 auto;}
+  .hero{width:100%; border-radius:18px; border:1px solid var(--border); margin:16px 0 6px; display:block;}
+  .herocap{text-align:center; font-size:12px; color:var(--muted);}
+
+  .intro{background:var(--green-soft); border:1px solid #cfe3d3; border-radius:16px; padding:18px 20px; margin:18px 0; font-size:15px;}
+  .intro b{color:var(--green);}
+
+  h2.grp{font-size:20px; margin:34px 0 4px; display:flex; align-items:center; gap:10px;}
+  h2.grp .tag{font-size:11.5px; font-weight:800; padding:3px 11px; border-radius:999px;}
+  .tag.base{background:var(--accent-soft); color:var(--accent);}
+  .tag.opt{background:var(--sun-soft); color:var(--sun);}
+  .tag.sig{background:var(--warm-soft); color:var(--warm);}
+  .grpsub{color:var(--muted); font-size:13.5px; margin:0 0 6px 2px;}
+
+  .feat{background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:18px; margin:14px 0;
+    display:grid; grid-template-columns:1fr; gap:14px;}
+  @media(min-width:600px){ .feat{grid-template-columns:200px 1fr; align-items:center;} }
+  .ill{background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:10px; }
+  .ill svg{width:100%; height:auto; display:block;}
+  .fbody h3{margin:0 0 4px; font-size:18px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .en{font-size:12px; color:var(--muted); font-weight:600;}
+  .what{font-size:15px; margin:6px 0;}
+  .why{background:var(--sun-soft); border-radius:11px; padding:10px 13px; font-size:14px; margin-top:8px;}
+  .why b{color:var(--sun);}
+  .where{font-size:12.5px; font-weight:800; margin-top:9px;}
+  .pill{display:inline-block; padding:2px 9px; border-radius:999px; font-size:11.5px; font-weight:800; margin-left:4px;}
+  .pill.n{background:var(--accent-soft); color:var(--accent);}
+  .pill.s{background:var(--warm-soft); color:var(--warm);}
+  .pill.o{background:var(--sun-soft); color:var(--sun);}
+
+  .verdict{background:var(--surface); border:2px solid var(--border); border-radius:18px; overflow:hidden; margin:14px 0;}
+  .vh{padding:14px 18px; color:#fff; font-weight:800; font-size:17px;}
+  .verdict.n .vh{background:var(--accent);} .verdict.s .vh{background:var(--warm);}
+  .vb{padding:16px 18px;}
+  .vb .price{font-size:26px; font-weight:800; letter-spacing:-.02em;}
+  .vb .psub{font-size:12.5px; color:var(--muted); margin-bottom:10px;}
+  .vb ul{margin:8px 0 0; padding-left:18px; font-size:14px;} .vb li{margin:6px 0;}
+  .vb .good{color:var(--green); font-weight:700;}
+
+  .compare{display:grid; grid-template-columns:1fr; gap:14px; margin:14px 0;}
+  @media(min-width:640px){ .compare{grid-template-columns:1fr 1fr;} }
+
+  .bignote{background:var(--rose-soft); border:1px solid #eccbdd; border-radius:16px; padding:18px 20px; font-size:15px; margin:20px 0;}
+  .bignote .t{font-weight:800; color:var(--rose); font-size:16px; margin-bottom:6px;}
+  .final{background:linear-gradient(180deg,#fdf9f4,#fff); border:2px solid var(--warm); border-radius:18px; padding:20px; margin:22px 0;}
+  .final .t{font-weight:800; font-size:18px; margin-bottom:8px;}
+
+  .src{font-size:11.5px; color:var(--muted); background:var(--surface-2); border:1px dashed var(--border);
+    border-radius:10px; padding:11px 13px; margin-top:16px;}
+  .src a{color:var(--accent);}
+  footer{text-align:center; color:var(--muted); font-size:11.5px; margin-top:18px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <span class="kick">수빈 · 스포티지 · 하나도 몰라도 OK</span>
+  <h1>차 옵션, 그림으로 하나씩 볼게요</h1>
+  <p class="lead">용어는 다 어려워요. 하나도 몰라도 괜찮습니다.<br>그림 보면서 <b>"아 이게 이거구나"</b>만 하면 돼요.</p>
+  <img class="hero" src="img/스포티지.jpg" alt="기아 스포티지"
+    onerror="this.style.display='none'">
+  <p class="herocap">기아 스포티지 (우리가 보는 차)</p>
+</header>
+
+<div class="intro">
+  🚗 차는 <b>트림(trim)</b>이라고 해서 "같은 차의 등급"이 여러 개예요.
+  마치 같은 아이스크림도 <b>기본맛 / 토핑 올린 것 / 프리미엄</b>이 있는 것처럼요.<br><br>
+  우리가 보는 건 딱 <b>2개</b>예요 — <b class="">노블레스</b>(실속)와 <b>시그니처</b>(고급).
+  <b>뭐가 다른지 그림으로 하나씩</b> 볼게요. 다 보고 나면 "난 이게 좋아"가 생길 거예요.
+</div>
+
+<!-- ============ 그룹 1: 매일 쓰는 것 ============ -->
+<h2 class="grp">🌟 매일 쓰는 것 <span class="tag base">노블레스에 이미 다 있음</span></h2>
+<p class="grpsub">이건 등급 올릴 필요 없이 <b>노블레스에 기본으로</b> 들어있어요. 매일 체감하는 것들.</p>
+
+<!-- 통풍시트 -->
+<div class="feat">
+  <div class="ill">
+    <svg viewBox="0 0 200 140" role="img" aria-label="통풍시트 그림">
+      <!-- 시트 -->
+      <path d="M60 30 q-14 0 -14 16 l0 42 q0 6 6 6 l8 0 q6 0 6 -6 l0 -36 q0 -6 6 -6 l40 0 q6 0 6 6 l0 6" fill="none" stroke="#3a352e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="58" y="86" width="86" height="20" rx="8" fill="#cdd8e0" stroke="#3a352e" stroke-width="4"/>
+      <rect x="60" y="34" width="20" height="52" rx="9" fill="#cdd8e0" stroke="#3a352e" stroke-width="4"/>
+      <!-- 바람 구멍 -->
+      <circle cx="90" cy="96" r="2.4" fill="#5b8aa8"/><circle cx="104" cy="96" r="2.4" fill="#5b8aa8"/>
+      <circle cx="118" cy="96" r="2.4" fill="#5b8aa8"/>
+      <!-- 시원한 바람 화살표 -->
+      <g stroke="#5b8aa8" stroke-width="3" stroke-linecap="round" fill="none">
+        <path d="M90 84 q3 -8 0 -16"/><path d="M104 84 q3 -8 0 -16"/><path d="M118 84 q3 -8 0 -16"/>
+      </g>
+      <!-- 해(더움) -->
+      <circle cx="170" cy="28" r="12" fill="#faf0d8" stroke="#d99a3a" stroke-width="3"/>
+      <g stroke="#d99a3a" stroke-width="3" stroke-linecap="round"><path d="M170 8v6"/><path d="M186 28h-6"/><path d="M182 16l-4 4"/></g>
+    </svg>
+  </div>
+  <div class="fbody">
+    <h3>🪑 통풍시트 <span class="en">에어컨 의자</span></h3>
+    <p class="what"><b>의자에서 시원한 바람이 나와요.</b> 방석·등받이에 작은 구멍이 뚫려 있어서, 켜면 엉덩이랑 등에 에어컨 바람이 통해요.</p>
+    <div class="why">☀️ <b>수빈이한테:</b> 여름에 땡볕에 세워둔 차 타면 시트가 뜨겁잖아요. 이게 있으면 <b>등에 땀이 안 차요.</b> 매일 타는 사람은 이거 하나로 여름이 달라져요.</div>
+    <div class="where">📍 <span class="pill n">노블레스부터 기본</span> <span style="color:var(--muted);font-weight:600;">(엔트리 등급엔 없음)</span></div>
+  </div>
+</div>
+
+<!-- HDA2 -->
+<div class="feat">
+  <div class="ill">
+    <svg viewBox="0 0 200 140" role="img" aria-label="고속도로 주행보조 그림">
+      <!-- 도로 -->
+      <path d="M40 130 L86 40 L114 40 L160 130 Z" fill="#eceae4" stroke="#3a352e" stroke-width="3"/>
+      <!-- 차선 점선 (가운데) -->
+      <g stroke="#d99a3a" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 12"><path d="M100 128 L100 44"/></g>
+      <!-- 앞차 -->
+      <rect x="90" y="52" width="20" height="14" rx="3" fill="#cdd8e0" stroke="#3a352e" stroke-width="2.5"/>
+      <!-- 내 차 -->
+      <rect x="84" y="98" width="32" height="22" rx="5" fill="#5b8aa8" stroke="#3a352e" stroke-width="3"/>
+      <!-- 안전거리 표시 -->
+      <g stroke="#4a7c59" stroke-width="2.5" stroke-linecap="round"><path d="M124 70 L124 96"/><path d="M120 74 L124 70 L128 74"/><path d="M120 92 L124 96 L128 92"/></g>
+      <text x="132" y="86" font-size="10" fill="#4a7c59" font-weight="700">거리<tspan x="132" dy="11">유지</tspan></text>
+      <!-- 스티어링 자동 표시 -->
+      <circle cx="100" cy="109" r="4.5" fill="none" stroke="#fff" stroke-width="2"/>
+    </svg>
+  </div>
+  <div class="fbody">
+    <h3>🛣️ 고속도로 주행보조 <span class="en">HDA2</span></h3>
+    <p class="what"><b>고속도로에서 차가 스스로 차선 가운데를 지키고, 앞차와 거리를 맞춰 속도를 조절해요.</b> 핸들·페달을 자동으로 도와줘요. (완전 자율주행은 아니고, <b>운전자가 손은 얹고 있어야</b> 해요.)</p>
+    <div class="why">🚗 <b>수빈이한테:</b> 매일 고속도로를 타는데, 이게 있으면 <b>운전이 훨씬 덜 피곤해요.</b> 초보한테 특히 좋아요 — 차선 삐뚤어지거나 앞차에 너무 붙는 걸 차가 잡아줘요. <b>우리한테 제일 중요한 기능.</b></div>
+    <div class="where">📍 <span class="pill o">'드라이브 와이즈' 옵션 (124만원)</span> — 노블레스부터 넣을 수 있어요</div>
+  </div>
+</div>
+
+<!-- 파노라믹 디스플레이 -->
+<div class="feat">
+  <div class="ill">
+    <svg viewBox="0 0 200 140" role="img" aria-label="파노라믹 디스플레이 그림">
+      <!-- 대시보드 -->
+      <path d="M20 96 q80 -20 160 0 l0 20 q-80 -14 -160 0 Z" fill="#eceae4" stroke="#3a352e" stroke-width="3"/>
+      <!-- 화면 2개 -->
+      <rect x="42" y="52" width="54" height="34" rx="5" fill="#5b8aa8" stroke="#3a352e" stroke-width="3"/>
+      <rect x="104" y="52" width="54" height="34" rx="5" fill="#4a7c59" stroke="#3a352e" stroke-width="3"/>
+      <!-- 계기 -->
+      <circle cx="60" cy="69" r="8" fill="none" stroke="#fff" stroke-width="2.5"/>
+      <text x="76" y="72" font-size="9" fill="#fff">km/h</text>
+      <!-- 내비 -->
+      <path d="M118 78 L128 60 L138 78" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="fbody">
+    <h3>🖥️ 파노라믹 디스플레이 <span class="en">넓은 두 화면</span></h3>
+    <p class="what"><b>운전대 앞 계기판과 가운데 내비게이션이 큰 화면 두 개로 쭉 이어져 있어요.</b> 요즘 신차의 그 "넓은 화면" 있잖아요, 그거예요.</p>
+    <div class="why">🗺️ <b>수빈이한테:</b> 초보는 내비가 크고 잘 보여야 안 헤매요. 화면이 크면 <b>길 찾기가 훨씬 편하고</b> 차도 최신형처럼 느껴져요.</div>
+    <div class="where">📍 <span class="pill n">노블레스부터 기본</span></div>
+  </div>
+</div>
+
+<!-- 파워시트 -->
+<div class="feat">
+  <div class="ill">
+    <svg viewBox="0 0 200 140" role="img" aria-label="전동 파워시트 그림">
+      <rect x="70" y="40" width="20" height="50" rx="9" fill="#cdd8e0" stroke="#3a352e" stroke-width="4"/>
+      <rect x="68" y="88" width="70" height="18" rx="8" fill="#cdd8e0" stroke="#3a352e" stroke-width="4"/>
+      <!-- 움직임 화살표 -->
+      <g stroke="#4a7c59" stroke-width="3" stroke-linecap="round" fill="none">
+        <path d="M150 97 h20"/><path d="M164 91 l6 6 l-6 6"/>
+        <path d="M150 97 h-2"/>
+      </g>
+      <!-- 버튼 -->
+      <rect x="150" y="60" width="24" height="16" rx="4" fill="#faf0d8" stroke="#d99a3a" stroke-width="2.5"/>
+      <circle cx="158" cy="68" r="2.4" fill="#d99a3a"/><circle cx="166" cy="68" r="2.4" fill="#d99a3a"/>
+    </svg>
+  </div>
+  <div class="fbody">
+    <h3>🎚️ 전동 파워시트 <span class="en">버튼으로 의자 조절</span></h3>
+    <p class="what"><b>의자를 손으로 밀지 않고, 버튼으로 앞뒤·높낮이를 맞춰요.</b> 내 몸에 딱 맞는 자세를 버튼 하나로 미세하게 조절할 수 있어요.</p>
+    <div class="why">🧍 <b>수빈이한테:</b> 초보일수록 <b>운전 자세가 중요해요</b>(잘 보이고 페달이 편해야 안전). 버튼으로 정확히 맞출 수 있어서 좋아요.</div>
+    <div class="where">📍 <span class="pill n">노블레스부터 기본</span> (운전석)</div>
+  </div>
+</div>
+
+<!-- ============ 그룹 2: 시그니처만 (고급감) ============ -->
+<h2 class="grp">✨ 시그니처에만 있는 것 <span class="tag sig">+265만원</span></h2>
+<p class="grpsub">없어도 운전엔 지장 없어요. <b>"있으면 더 고급스럽고 예쁜"</b> 것들이에요.</p>
+
+<!-- HUD -->
+<div class="feat">
+  <div class="ill">
+    <svg viewBox="0 0 200 140" role="img" aria-label="헤드업 디스플레이 그림">
+      <!-- 앞유리 -->
+      <path d="M30 30 L170 30 L156 96 L44 96 Z" fill="#eef2f5" stroke="#3a352e" stroke-width="3"/>
+      <!-- 운전대 -->
+      <path d="M70 118 q30 -18 60 0" fill="none" stroke="#3a352e" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="100" cy="118" r="6" fill="none" stroke="#3a352e" stroke-width="4"/>
+      <!-- 유리에 뜬 숫자 -->
+      <text x="80" y="62" font-size="22" font-weight="800" fill="#4a7c59">80</text>
+      <path d="M120 50 L134 50 L134 44 L146 56 L134 68 L134 62 L120 62 Z" fill="#5b8aa8"/>
+      <text x="70" y="80" font-size="10" fill="#867e72">앞유리에 속도·길안내가 떠요</text>
+    </svg>
+  </div>
+  <div class="fbody">
+    <h3>🔷 헤드업 디스플레이 <span class="en">HUD</span></h3>
+    <p class="what"><b>속도랑 길 안내가 앞유리에 떠요.</b> 운전 중에 고개를 안 내려도 유리 너머로 숫자가 보이는 거예요. 마치 게임 화면처럼요.</p>
+    <div class="why">👀 <b>수빈이한테:</b> 시선을 안 내려도 되니 <b>초보한테 은근 편하고 안전</b>해요. 근데 <b>없어도 계기판 보면 되니까 "필수"는 아니에요.</b></div>
+    <div class="where">📍 <span class="pill s">시그니처부터 기본</span></div>
+  </div>
+</div>
+
+<!-- 프로젝션 LED -->
+<div class="feat">
+  <div class="ill">
+    <svg viewBox="0 0 200 140" role="img" aria-label="프로젝션 LED 헤드램프 그림">
+      <!-- 차 앞 -->
+      <rect x="60" y="40" width="80" height="40" rx="10" fill="#cdd8e0" stroke="#3a352e" stroke-width="3"/>
+      <!-- 라이트 -->
+      <circle cx="76" cy="60" r="7" fill="#faf0d8" stroke="#3a352e" stroke-width="2.5"/>
+      <circle cx="124" cy="60" r="7" fill="#faf0d8" stroke="#3a352e" stroke-width="2.5"/>
+      <!-- 밝고 선명한 빛 -->
+      <path d="M76 67 L58 120 L94 120 Z" fill="#faf0d8" opacity="0.85"/>
+      <path d="M124 67 L106 120 L142 120 Z" fill="#faf0d8" opacity="0.85"/>
+      <path d="M76 67 L58 120 L94 120 Z" fill="none" stroke="#d99a3a" stroke-width="2"/>
+      <path d="M124 67 L106 120 L142 120 Z" fill="none" stroke="#d99a3a" stroke-width="2"/>
+    </svg>
+  </div>
+  <div class="fbody">
+    <h3>💡 프로젝션 LED 헤드램프 <span class="en">더 밝은 전조등</span></h3>
+    <p class="what"><b>밤에 켜는 앞 라이트가 더 밝고 선명해요.</b> 빛이 넓게 퍼지지 않고 또렷하게 멀리 비춰서, 밤길·시골길이 잘 보여요.</p>
+    <div class="why">🌙 <b>수빈이한테:</b> 밤 운전이 무서운 초보한테 밝은 라이트는 도움돼요. 다만 <b>기본 라이트도 요즘은 충분히 밝아서</b> "더 좋은" 정도예요.</div>
+    <div class="where">📍 <span class="pill s">시그니처부터 기본</span></div>
+  </div>
+</div>
+
+<!-- 프리미엄 가죽 + 디지털키 (묶음) -->
+<div class="feat">
+  <div class="ill">
+    <svg viewBox="0 0 200 140" role="img" aria-label="프리미엄 가죽과 디지털키 그림">
+      <!-- 폰 -->
+      <rect x="44" y="34" width="42" height="72" rx="9" fill="#5b8aa8" stroke="#3a352e" stroke-width="3"/>
+      <rect x="52" y="44" width="26" height="40" rx="4" fill="#fff" opacity="0.9"/>
+      <path d="M60 64 l4 4 l8 -10" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="65" cy="96" r="4" fill="none" stroke="#fff" stroke-width="2.5"/>
+      <!-- 잠금해제 화살표 -->
+      <g stroke="#d99a3a" stroke-width="3" stroke-linecap="round" fill="none"><path d="M92 70 h20"/><path d="M106 64 l6 6 l-6 6"/></g>
+      <!-- 차 -->
+      <rect x="118" y="56" width="56" height="30" rx="8" fill="#cdd8e0" stroke="#3a352e" stroke-width="3"/>
+      <circle cx="132" cy="88" r="6" fill="#3a352e"/><circle cx="160" cy="88" r="6" fill="#3a352e"/>
+    </svg>
+  </div>
+  <div class="fbody">
+    <h3>📱 디지털 키 2 + 프리미엄 가죽시트</h3>
+    <p class="what"><b>디지털 키:</b> 열쇠 없이 <b>휴대폰으로 문 열고 시동</b>을 걸 수 있어요. <br><b>프리미엄 가죽:</b> 시트 재질이 더 좋은 걸로 바뀌어요.</p>
+    <div class="why">🔑 <b>수빈이한테:</b> 폰으로 문 여는 건 편하고 멋져요. 근데 <b>둘 다 "있으면 좋은" 것</b>이지 운전엔 상관없어요.</div>
+    <div class="where">📍 <span class="pill s">시그니처부터 기본</span></div>
+  </div>
+</div>
+
+<!-- ============ 그룹 3: 따로 사는 옵션 ============ -->
+<h2 class="grp">🧩 따로 돈 내고 넣는 것 <span class="tag opt">옵션</span></h2>
+<p class="grpsub">트림과 별개로, <b>추가로 골라서 넣는</b> 것들이에요.</p>
+
+<!-- 서라운드뷰 -->
+<div class="feat">
+  <div class="ill">
+    <svg viewBox="0 0 200 140" role="img" aria-label="서라운드뷰 그림">
+      <!-- 화면 -->
+      <rect x="50" y="24" width="100" height="92" rx="10" fill="#2a2620" stroke="#3a352e" stroke-width="3"/>
+      <!-- 위에서 본 차 -->
+      <rect x="86" y="54" width="28" height="42" rx="7" fill="#5b8aa8" stroke="#fff" stroke-width="2"/>
+      <!-- 360 카메라 원호 -->
+      <g stroke="#d99a3a" stroke-width="2.5" fill="none" opacity="0.9">
+        <path d="M70 75 a30 30 0 0 1 60 0"/><path d="M74 90 a26 26 0 0 0 52 0"/>
+      </g>
+      <text x="66" y="110" font-size="9" fill="#faf0d8">위에서 본 것처럼 보여요</text>
+    </svg>
+  </div>
+  <div class="fbody">
+    <h3>🎥 서라운드뷰 <span class="en">위에서 본 화면 · '모니터링' 옵션</span></h3>
+    <p class="what"><b>차를 하늘에서 내려다본 것처럼 화면에 보여줘요.</b> 카메라 여러 개를 합쳐서, 주차할 때 차 사방이 다 보여요.</p>
+    <div class="why">🅿️ <b>수빈이한테:</b> <b>초보 주차에 진짜 큰 도움</b>이에요. 옆·뒤 안 보여서 무서운 게 확 줄어요. 명진이 옆에 있어도, 혼자 주차 연습할 때 좋아요.</div>
+    <div class="where">📍 <span class="pill o">'모니터링' 옵션 (114만원)</span> — 노블레스부터</div>
+  </div>
+</div>
+
+<!-- AWD -->
+<div class="feat">
+  <div class="ill">
+    <svg viewBox="0 0 200 140" role="img" aria-label="4륜구동 그림">
+      <rect x="52" y="52" width="96" height="34" rx="10" fill="#cdd8e0" stroke="#3a352e" stroke-width="3"/>
+      <!-- 바퀴 4개 (다 힘 들어감) -->
+      <circle cx="72" cy="90" r="11" fill="#3a352e"/><circle cx="72" cy="90" r="4" fill="#4a7c59"/>
+      <circle cx="128" cy="90" r="11" fill="#3a352e"/><circle cx="128" cy="90" r="4" fill="#4a7c59"/>
+      <text x="60" y="120" font-size="10" fill="#4a7c59" font-weight="700">네 바퀴 다 힘</text>
+      <!-- 눈/산 표시 -->
+      <path d="M150 40 l10 -18 l10 18 Z" fill="#e5edf4" stroke="#5b8aa8" stroke-width="2.5"/>
+    </svg>
+  </div>
+  <div class="fbody">
+    <h3>❄️ AWD (4륜구동) <span class="en">네 바퀴로 굴러감</span></h3>
+    <p class="what"><b>보통 차는 두 바퀴로 가는데, 네 바퀴 모두에 힘이 들어가요.</b> 눈길·빗길·비포장 산길에서 더 안 미끄러져요.</p>
+    <div class="why">🎬 <b>우리 경우:</b> 촬영 산길 때문에 끌리지만 — <b>고속도로 위주라 평소엔 거의 안 써요.</b> 게다가 <b>+223만원</b>에 <b>기름값도 늘어요.</b> 눈길은 겨울 타이어로 대신할 수 있어서, <b>안 넣는 걸 추천</b>해요.</div>
+    <div class="where">📍 <span class="pill o">옵션 223만원</span> · <b style="color:var(--warm)">추천 안 함</b></div>
+  </div>
+</div>
+
+<!-- ============ 결론 ============ -->
+<h2 class="grp">🎯 그래서, 둘 중 뭐?</h2>
+<p class="grpsub">우리한테 꼭 필요한 <b>HDA2 + 서라운드뷰</b> 옵션을 넣은 실제 가격이에요.</p>
+
+<div class="compare">
+  <div class="verdict n">
+    <div class="vh">🅰 노블레스 <span style="font-weight:600;font-size:13px;">실속형</span></div>
+    <div class="vb">
+      <div class="price">약 3,961만</div>
+      <div class="psub">노블레스 3,723 + HDA2 124 + 서라운드뷰 114</div>
+      <ul>
+        <li class="good">✅ 4,000만원 예산 안</li>
+        <li>통풍시트·파워시트·넓은 화면 <b>다 있음</b></li>
+        <li>HDA2·서라운드뷰 <b>옵션으로 넣음</b></li>
+        <li>없는 것: HUD, 더 밝은 라이트, 폰 열쇠, 프리미엄 가죽</li>
+      </ul>
+    </div>
+  </div>
+  <div class="verdict s">
+    <div class="vh">🅱 시그니처 <span style="font-weight:600;font-size:13px;">고급형</span></div>
+    <div class="vb">
+      <div class="price">약 4,226만</div>
+      <div class="psub">시그니처 3,988 + HDA2 124 + 서라운드뷰 114</div>
+      <ul>
+        <li style="color:var(--warm);font-weight:700;">⚠️ 4,000만원 넘음 (+265만)</li>
+        <li>노블레스에 있는 것 <b>전부 +</b></li>
+        <li><b>HUD · 더 밝은 라이트 · 폰 열쇠 · 프리미엄 가죽</b> 추가</li>
+        <li>"더 예쁘고 고급스럽게" 원하면 이쪽</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="bignote">
+  <div class="t">💗 수빈이 기준으로 쉽게 정하는 법</div>
+  <b>운전에 필요한 건 노블레스에 다 있어요.</b> HDA2(고속도로 도움)도 통풍시트(여름)도 넓은 화면도요.<br><br>
+  시그니처는 <b>"HUD·밝은 라이트·폰 열쇠·좋은 가죽"</b> 이 4개를 <b>265만원 더 주고</b> 얻는 거예요.<br>
+  → <b>이 4개가 "265만원 값어치 한다" 싶으면 시그니처</b>, <b>"운전만 편하면 돼" 싶으면 노블레스.</b><br>
+  정답은 없어요. <b>수빈이가 차에서 뭘 제일 좋아할지</b>로 정하면 돼요.
+</div>
+
+<div class="final">
+  <div class="t">🚗 참고 — 이건 "차 값"이에요</div>
+  우리는 <b>장기렌트(60개월)</b>로 볼 거라, 실제로는 이 값을 <b>60개월로 나눠서 매달</b> 내요.
+  265만원 차이는 <b>매달 약 4~5천원 차이</b>예요. "한 달에 5천 원 더 내고 고급형" 이렇게 생각하면 쉬워요.<br>
+  <b>다음 단계:</b> 노블레스/시그니처 정하면 → 렌트회사 3~4곳에 <b>똑같은 조건으로 견적</b>을 받아요. 그때 진짜 월 금액이 나와요.
+</div>
+
+<div class="src">
+  📚 가격: <a href="https://www.kia.com/kr/vehicles/sportage/price" target="_blank" rel="noopener noreferrer">기아 공식(2026.07.01)</a> ·
+  트림별 구성은 매체 정리 기준 → <b>계약 전 공식 가격표로 최종 확인</b>. 그림은 이해를 돕기 위한 설명용 일러스트예요(실제 모양과 다를 수 있어요).
+</div>
+<footer>수빈 · 조사-006 · 스포티지 트림 그림설명 v0.2 · 2026-07-14</footer>
+</div>
+</body>
+</html>
