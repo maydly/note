@@ -1083,20 +1083,36 @@ function saveChal(){
 /* ===== 정보(허브) ===== */
 var infoCat='전체';
 var INFO_CATS=['생활','건강','여행','맛집','링크','기타'];
+/* 정보 = 수빈·명진 공용(Firestore sharedInfo). 로그인(사주세요 연결)해야 보임. window.infoAdd/infoDel(모듈) */
 function renderInfo(){
+  window.renderInfo=renderInfo;
   var el=document.getElementById('infoList');if(!el)return;
-  var cats=['전체'].concat(INFO_CATS.filter(function(c){return infos.some(function(x){return x.cat===c;});}));
+  var d=window.sharedInfoData;
+  var connected=!!(window.sajuData&&window.sajuData.connected);
+  var sub=document.getElementById('infoSub');
+  if(!connected){
+    if(sub)sub.textContent='수빈과 공유하는 정보';
+    var cf0=document.getElementById('infoCats');if(cf0)cf0.innerHTML='';
+    el.innerHTML='<div class="card"><div class="tt">정보는 <b>수빈과 함께 쓰는 공유 메모</b>예요</div>'
+      +'<div class="tmeta">연결하면 양쪽에서 같은 내용이 보이고, 서로 추가·수정할 수 있어요.</div>'
+      +'<button class="impbtn cash" style="margin-top:9px" onclick="(window.sajuConnect||function(){})()">🔗 수빈앱 연결 (구글 로그인)</button></div>';
+    return;
+  }
+  var items=(d&&d.items)||[];
+  var cats=['전체'].concat(INFO_CATS.filter(function(c){return items.some(function(x){return x.cat===c;});}));
   var cf=document.getElementById('infoCats');
   if(cf)cf.innerHTML=cats.map(function(c){return '<button class="yb'+(c===infoCat?' on':'')+'" onclick="pickInfoCat(\''+c+'\')">'+c+'</button>';}).join('');
-  var sub=document.getElementById('infoSub');if(sub)sub.textContent=infos.length?(infos.length+'개'):'필요한 정보·링크 모음';
-  var list=infos.filter(function(x){return infoCat==='전체'||x.cat===infoCat;});
-  if(!list.length){el.innerHTML='<div class="empty">＋ 로 정보를 추가하세요<br>메모·링크를 분류해서</div>';return;}
-  el.innerHTML=list.map(function(x){
+  if(sub)sub.textContent='🔗 수빈과 공유중 · '+items.length+'개';
+  var list=items.filter(function(x){return infoCat==='전체'||x.cat===infoCat;});
+  var addBtn='<button class="impbtn cash" onclick="sheetInfo();document.getElementById(\'mask\').classList.add(\'on\')">＋ 정보 추가 (수빈과 공유)</button>';
+  if(!list.length){el.innerHTML=addBtn+'<div class="empty">아직 공유 정보가 없어요<br>＋ 로 추가하면 수빈도 봐요 🍀</div>';return;}
+  el.innerHTML=addBtn+list.map(function(x){
     var body=esc(x.body||'').replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" rel="noreferrer">$1</a>');
     return '<div class="card"><div class="row"><div class="tt"><b>'+esc(x.title)+'</b>'
-      +(x.cat?' <span class="tag" style="background:#eee3d7;color:#9a8b7a">'+esc(x.cat)+'</span>':'')
+      +(x.cat?' <span class="tag" style="background:#e5efe3;color:#5f7d53">'+esc(x.cat)+'</span>':'')
+      +(x.from?' <span class="tag" style="background:#eef1f6;color:#5f6f8b">'+esc(x.from)+'</span>':'')
       +(x.body?'<div class="tmeta" style="white-space:pre-wrap;line-height:1.5">'+body+'</div>':'')+'</div>'
-      +'<button class="del" onclick="delItem(\'info\',\''+x.id+'\')">×</button></div></div>';}).join('');
+      +'<button class="del" onclick="(window.infoDel||function(){})(\''+x.id+'\')">×</button></div></div>';}).join('');
 }
 function pickInfoCat(c){infoCat=c;renderInfo();}
 function sheetInfo(){
@@ -1110,8 +1126,9 @@ function sheetInfo(){
 }
 function pickIcat(el,c){window._icat=c;document.querySelectorAll('#i_cats .chip').forEach(function(x){x.classList.remove('on');});el.classList.add('on');}
 function saveInfo(){var t=document.getElementById('i_title').value.trim();if(!t){toast('제목을 입력하세요');return;}
-  infos.unshift({id:uid(),cat:window._icat,title:t,body:document.getElementById('i_body').value.trim(),created:todayStr()});
-  save(K.info,infos);pushSoon('infos');renderInfo();closeSheet();toast('정보를 추가했어요');}
+  if(!window.infoAdd){toast('먼저 연결(로그인)해줘');return;}
+  window.infoAdd(window._icat,t,document.getElementById('i_body').value.trim());
+  closeSheet();toast('추가했어요 · 수빈과 공유돼요 🍀');}
 
 /* ===== 위시: 가고싶은곳 · 사고싶은거 ===== */
 function renderWish(){
@@ -1933,7 +1950,8 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signO
 import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc, deleteDoc, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 const cfg={apiKey:"AIzaSyBfyRE7CNENjgSfe25xHAdr87gOllpYtvM",authDomain:"subin-routine.firebaseapp.com",projectId:"subin-routine",appId:"1:102755018689:web:2927e3b73fb5391db17140"};
 window.sajuData={connected:false,email:'',reqs:[],err:'',loading:true};
-function paint(){ if(window.renderSaju) try{window.renderSaju();}catch(e){} }
+window.sharedInfoData={items:[],ready:false};
+function paint(){ if(window.renderSaju) try{window.renderSaju();}catch(e){} if(window.renderInfo) try{window.renderInfo();}catch(e){} }
 try{
   const app=initializeApp(cfg,"saju"); const auth=getAuth(app), db=getFirestore(app);
   setPersistence(auth, browserLocalPersistence).catch(()=>{});   // 기기당 로그인 1회 유지
@@ -1950,6 +1968,13 @@ try{
         window.sajuData.reqs=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(((b.createdAt&&b.createdAt.seconds)||0)-((a.createdAt&&a.createdAt.seconds)||0)));
         window.sajuData.err=''; paint();
       },(e)=>{ window.sajuData.err='요청 읽기 실패: '+(e.code||e.message); paint(); });
+      // 공유 정보(수빈·명진 동일) — sharedInfo 컬렉션 구독
+      if(!window._infoUnsub){
+        window._infoUnsub=onSnapshot(collection(db,'sharedInfo'),(s)=>{
+          window.sharedInfoData.items=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(((b.createdAt&&b.createdAt.seconds)||0)-((a.createdAt&&a.createdAt.seconds)||0)));
+          window.sharedInfoData.ready=true; if(window.renderInfo)try{window.renderInfo();}catch(e){}
+        },(e)=>{ if(window.renderInfo)try{window.renderInfo();}catch(e){} });
+      }
     } else {
       window.sajuData.connected=false; window.sajuData.email=''; window.sajuData.reqs=[]; if(unsub){unsub();unsub=null;}
     }
@@ -1974,6 +1999,12 @@ try{
     catch(e){ alert('보내기 실패: '+(e.code||e.message)); return false; }
   };
   window.sajuDelete=async (id)=>{ try{ await deleteDoc(doc(db,'requests',id)); }catch(e){ alert('삭제 실패: '+(e.code||e.message)); } };
+<<<<<<< HEAD
+=======
+  // 공유 정보 추가/삭제
+  window.infoAdd=async (cat,title,body)=>{ try{ await addDoc(collection(db,'sharedInfo'),{cat:cat||'기타',title:title,body:body||'',from:(auth.currentUser&&auth.currentUser.email==='bucket0825@gmail.com')?'명진':'수빈',createdAt:serverTimestamp()}); }catch(e){ alert('정보 추가 실패: '+(e.code||e.message)); } };
+  window.infoDel=async (id)=>{ try{ await deleteDoc(doc(db,'sharedInfo',id)); }catch(e){ alert('삭제 실패: '+(e.code||e.message)); } };
+>>>>>>> 6849ce7 (feat(myapp): ③ 정보를 공유 Firestore(sharedInfo)로 — 수빈과 동일 싱크)
 }catch(e){ window.sajuData.err='연동 초기화 실패: '+(e.message||e); }
 paint();
 </script>
