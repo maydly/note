@@ -1209,7 +1209,7 @@ function renderBuy(){
 /* 구매완료: 금액·날짜 입력 → 가계부 지출 + 보유현황 자동, 구매계획서 제거 */
 function sheetComplete(id){
   var b=buys.find(function(x){return String(x.id)===String(id);});if(!b)return;
-  window._buyId=id;window._ocat='카메라';var cats=['카메라','렌즈','조명','액세서리','기타'];
+  window._buyId=id;window._ocat='카메라';var cats=['카메라','렌즈','필터','조명','조명효과','스탠드','전원','케이블','컴퓨터','기타'];
   var today=(new Date()).toISOString().slice(0,10);
   document.getElementById('sheet').innerHTML='<h3>구매완료 · '+esc(b.name)+'</h3>'
     +'<div class="fld"><label>구매 금액</label><input id="c_amt" type="number" inputmode="numeric" placeholder="예: 320000"></div>'
@@ -1789,7 +1789,8 @@ function sheetOwn(){
     +'<div class="fld"><label>대략 시세 (원, 선택)</label><input id="o_price" type="number" inputmode="numeric" placeholder="예: 2700000"></div>'
     +'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button><button class="msave" onclick="saveOwn()">추가</button></div>';
 }
-function pickOcat(el,c){window._ocat=c;document.querySelectorAll('#o_cats .chip').forEach(function(x){x.classList.remove('on');});el.classList.add('on');}
+/* 보유추가·구매완료 두 시트가 공유 — 클릭한 칩의 «형제»만 초기화(컨테이너 하드코딩 금지) */
+function pickOcat(el,c){window._ocat=c;var p=el.parentNode;if(p)p.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on');});el.classList.add('on');}
 function saveOwn(){var n=document.getElementById('o_name').value.trim();if(!n){toast('이름을 입력하세요');return;}
   owns.unshift({id:uid(),name:n,cat:window._ocat,desc:document.getElementById('o_sub').value.trim(),price:parseInt(document.getElementById('o_price').value,10)||0,status:''});save(K.own,owns);pushSoon('owns');renderOwn();closeSheet();}
 
