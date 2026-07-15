@@ -265,6 +265,9 @@
   .info-seg { display:flex; gap:6px; background:#f0ece5; border-radius:12px; padding:4px; margin-bottom:12px; }
   .info-seg-btn { flex:1; border:none; background:none; padding:9px 0; border-radius:9px; font-family:inherit; font-size:13.5px; font-weight:700; color:#8a8177; cursor:pointer; }
   .info-seg-btn.active { background:#fff; color:#3a352e; box-shadow:0 1px 4px rgba(0,0,0,.08); }
+    .si-add { display:flex; gap:6px; flex-wrap:wrap; }
+    .si-add input { flex:1; min-width:120px; border:1px solid #e5ddd2; border-radius:9px; padding:9px; font-family:inherit; font-size:13px; outline:none; }
+    .si-add button { border:none; background:#a3bd90; color:#fff; border-radius:9px; padding:9px 15px; font-weight:700; cursor:pointer; font-family:inherit; }
 
   .progress-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
   .progress-dots { display: flex; gap: 4px; flex: 1; flex-wrap: wrap; }
@@ -1023,6 +1026,12 @@
         <button class="info-seg-btn active" data-iseg="welfare" onclick="infoSwitch('welfare')">복지</button>
         <button class="info-seg-btn" data-iseg="health" onclick="infoSwitch('health')">건강</button>
         <button class="info-seg-btn" data-iseg="travel" onclick="infoSwitch('travel')">여행</button>
+        <button class="info-seg-btn" data-iseg="shared" onclick="infoSwitch('shared')">🔗 공유</button>
+      </div>
+      <div class="tab-panel" id="panel-shared">
+        <div style="font-size:12.5px;color:#8a8177;margin-bottom:10px">🔗 명진이랑 같이 쓰는 메모예요. 서로 추가·수정돼요.</div>
+        <div class="si-add"><input id="si-title" placeholder="제목 (예: 단골 카페)"><input id="si-body" placeholder="내용/링크 (선택)"><button onclick="siAdd()">추가</button></div>
+        <div id="shared-info-list" style="margin-top:10px"></div>
       </div>
     <div class="tab-panel active" id="panel-welfare">
       <div class="wf-hero">
@@ -2395,7 +2404,8 @@
   const curMonth = () => TODAY_STR.slice(0,7);
   function startShopListeners(){
     unsubWish?.(); unsubBuy?.(); unsubLedger?.(); unsubPlace?.(); unsubReq?.();
-    unsubReq = onSnapshot(query(collection(db,'requests'), where('uid','==',subinUid)), s=>{ requests=s.docs.map(d=>({id:d.id,...d.data()})).sort(byCreated); renderShop(); }, e=>showToast('사주세요 불러오기 실패: '+e.message));
+    unsubReq = if(window.siSubscribe)window.siSubscribe();
+      onSnapshot(query(collection(db,'requests'), where('uid','==',subinUid)), s=>{ requests=s.docs.map(d=>({id:d.id,...d.data()})).sort(byCreated); renderShop(); }, e=>showToast('사주세요 불러오기 실패: '+e.message));
     unsubWish = onSnapshot(query(collection(db,'wishlist'), where('uid','==',subinUid)), s=>{ wishlist=s.docs.map(d=>({id:d.id,...d.data()})).sort(byCreated); renderShop(); }, e=>showToast('위시 불러오기 실패: '+e.message));
     unsubBuy = onSnapshot(query(collection(db,'purchases'), where('uid','==',subinUid)), s=>{ purchases=s.docs.map(d=>({id:d.id,...d.data()})).sort(byCreated); renderShop(); }, e=>showToast('구매 불러오기 실패: '+e.message));
     unsubLedger = onSnapshot(query(collection(db,'ledger'), where('uid','==',subinUid)), s=>{ ledger=s.docs.map(d=>({id:d.id,...d.data()})).sort(byCreated); renderShop(); }, e=>showToast('가계부 불러오기 실패: '+e.message));
@@ -2493,9 +2503,21 @@
     if(cb) cb.innerHTML = shopSeg==='wish'?wishItems(true):shopSeg==='buy'?buyItems(true):shopSeg==='place'?placeItems(true):(ledgerSummary()+ledgerItems(true));
   }
   let infoSeg = 'welfare';
+  /* 🔗 공유 정보(명진·수빈 동일) — sharedInfo 컬렉션 */
+  let sharedInfo=[];
+  function siEsc(s){return esc(s||'');}
+  window.siRender=function(){ const box=document.getElementById('shared-info-list'); if(!box) return;
+    if(!sharedInfo.length){ box.innerHTML='<div class="shop-empty" style="padding:16px 0"><img class="empty-bear" src="rila/rila_10.png" alt=""><br>아직 공유 정보가 없어</div>'; return; }
+    box.innerHTML=sharedInfo.map(function(x){ var body=siEsc(x.body).replace(/(https?://[^s]+)/g,'<a href="$1" target="_blank" rel="noreferrer">$1</a>');
+      return '<div class="req-card"><button class="req-del" onclick="siDel(''+x.id+'')">✕</button><div class="req-item">'+siEsc(x.title)+(x.from?' <span style="font-size:11px;color:#8a8177">·'+siEsc(x.from)+'</span>':'')+'</div>'+(x.body?'<div class="req-note">'+body+'</div>':'')+'</div>'; }).join(''); };
+  window.siAdd=async function(){ const t=(document.getElementById('si-title')||{}).value||''; const b=(document.getElementById('si-body')||{}).value||''; if(!t.trim()){showToast('제목을 적어줘');return;}
+    try{ await addDoc(collection(db,'sharedInfo'),{cat:'기타',title:t.trim(),body:b.trim(),from:'수빈',createdAt:serverTimestamp()}); document.getElementById('si-title').value=''; document.getElementById('si-body').value=''; showToast('추가했어 · 명진도 봐 🍀'); }catch(e){showToast('실패: '+e.message);} };
+  window.siDel=async function(id){ try{ await deleteDoc(doc(db,'sharedInfo',id)); }catch(e){showToast('삭제 실패: '+e.message);} };
+  function siSubscribe(){ try{ onSnapshot(collection(db,'sharedInfo'), function(s){ sharedInfo=s.docs.map(function(d){return Object.assign({id:d.id},d.data());}).sort(function(a,b){return (((b.createdAt&&b.createdAt.seconds)||0)-((a.createdAt&&a.createdAt.seconds)||0));}); if(window.siRender)window.siRender(); }); }catch(e){} }
   window.infoSwitch = (seg) => {
     infoSeg = seg;
-    ['welfare','health','travel'].forEach(s => { const v=document.getElementById('panel-'+s); if(v) v.classList.toggle('active', s===seg); });
+    ['welfare','health','travel','shared'].forEach(s => { const v=document.getElementById('panel-'+s); if(v) v.classList.toggle('active', s===seg); });
+    if(seg==='shared' && window.siRender) window.siRender();
     document.querySelectorAll('.info-seg-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-iseg')===seg));
     if(seg==='health' && window.hbReset) window.hbReset();
     if(seg==='travel' && window.tvInit) window.tvInit();
