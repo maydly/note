@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#f1eef0">
+<title>maydly · 촬영 시안</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#f1eef0;color:#2e2a26;
+  font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased}
+body{display:flex;flex-direction:column}
+.top{flex:none;display:flex;align-items:center;gap:11px;
+  padding:calc(env(safe-area-inset-top) + 12px) 16px 0}
+.back{text-decoration:none;color:#a99e8f;font-size:22px;font-weight:700;line-height:1;padding:4px 6px 6px 0}
+.wm{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.wm .d{color:#c98e7f}
+.wm .s{font-size:12px;font-weight:600;color:#a99e8f;margin-left:7px;letter-spacing:0}
+.tabs{flex:none;display:flex;gap:8px;padding:12px 16px 12px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:none;cursor:pointer;font-family:inherit;font-size:14px;font-weight:700;
+  padding:9px 16px;border-radius:22px;background:#fff;color:#7a7166;border:1.5px solid #e2dace;
+  transition:all .15s;white-space:nowrap}
+.tab .n{font-size:11px;font-weight:600;opacity:.75;margin-left:4px}
+.tab.on{background:#c98e7f;border-color:#c98e7f;color:#fff}
+.tab:active{transform:scale(.96)}
+.frame{flex:1;min-height:0;padding:0 10px calc(env(safe-area-inset-bottom) + 10px)}
+.frame iframe{width:100%;height:100%;border:1.5px solid #e2dace;border-radius:18px;background:#faf7f2;display:none}
+.frame iframe.on{display:block}
+.open{flex:none;text-align:center;padding:0 16px 10px}
+.open a{font-size:12px;color:#a99e8f;text-decoration:none}
+.open a b{color:#c98e7f}
+</style>
+</head>
+<body>
+<div class="top">
+  <a class="back" href="../index.html" title="허브로">‹</a>
+  <div class="wm">촬영 시안<span class="d">.</span><span class="s">모델 전달용 무드보드</span></div>
+</div>
+
+<div class="tabs" id="tabs"></div>
+<div class="frame" id="frame"></div>
+<div class="open"><a id="openlink" href="#" target="_blank" rel="noopener">현재 시안 새 창으로 크게 보기 <b>↗</b></a></div>
+
+<script>
+var SIANS=[
+  {key:'rain',  lb:'🌧️ 우중',     n:'13컷', file:'우중시안_촬영컨셉시안.html'},
+  {key:'sea',   lb:'🌊 바다',     n:'23컷', file:'바다시안_촬영컨셉시안.html'},
+  {key:'couple',lb:'💞 바다 커플', n:'14컷', file:'바다커플시안_촬영컨셉시안.html'},
+  {key:'campus',lb:'🎞️ 새내기',   n:'18컷', file:'새내기시안_촬영컨셉시안.html'}
+];
+var tabsEl=document.getElementById('tabs'),frameEl=document.getElementById('frame'),openEl=document.getElementById('openlink');
+SIANS.forEach(function(s,i){
+  var b=document.createElement('button');b.className='tab';b.id='tab-'+s.key;
+  b.innerHTML=s.lb+'<span class="n">'+s.n+'</span>';
+  b.onclick=function(){show(i);};
+  tabsEl.appendChild(b);
+  var f=document.createElement('iframe');f.id='fr-'+s.key;f.loading='lazy';f.title=s.lb;
+  frameEl.appendChild(f);
+});
+function show(i){
+  SIANS.forEach(function(s,j){
+    document.getElementById('tab-'+s.key).classList.toggle('on',i===j);
+    var f=document.getElementById('fr-'+s.key);
+    if(i===j){if(!f.src)f.src=encodeURI(s.file);f.classList.add('on');}
+    else f.classList.remove('on');
+  });
+  openEl.href=encodeURI(SIANS[i].file);
+  try{history.replaceState(null,'','#'+SIANS[i].key);}catch(e){}
+}
+var h=location.hash.replace('#',''),idx=0;
+SIANS.forEach(function(s,i){if(s.key===h)idx=i;});
+show(idx);
+</script>
+</body>
+</html>
