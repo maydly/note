@@ -351,6 +351,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 <div class="scr" id="s-own">
   <div class="hd"><div class="wm"><span class="wmk"><svg viewBox="0 0 100 100" width="15" height="15" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="wm" x1="0" y1="0" x2="0.35" y2="1"><stop offset="0" stop-color="#86d2a0"/><stop offset="0.55" stop-color="#4f9a6a"/><stop offset="1" stop-color="#357a51"/></linearGradient><linearGradient id="wms" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f9a6a"/><stop offset="1" stop-color="#2f6a45"/></linearGradient></defs><g transform="translate(50,53)" fill="url(#wm)" ><path d="M0 0 C-2.4,-10.5 -17,-15.5 -17,-27.5 C-17,-36.5 -8,-40.5 0,-32.5 C8,-40.5 17,-36.5 17,-27.5 C17,-15.5 2.4,-10.5 0,0 Z"/><path d="M0 0 C-2.4,-10.5 -17,-15.5 -17,-27.5 C-17,-36.5 -8,-40.5 0,-32.5 C8,-40.5 17,-36.5 17,-27.5 C17,-15.5 2.4,-10.5 0,0 Z" transform="rotate(90)"/><path d="M0 0 C-2.4,-10.5 -17,-15.5 -17,-27.5 C-17,-36.5 -8,-40.5 0,-32.5 C8,-40.5 17,-36.5 17,-27.5 C17,-15.5 2.4,-10.5 0,0 Z" transform="rotate(180)"/><path d="M0 0 C-2.4,-10.5 -17,-15.5 -17,-27.5 C-17,-36.5 -8,-40.5 0,-32.5 C8,-40.5 17,-36.5 17,-27.5 C17,-15.5 2.4,-10.5 0,0 Z" transform="rotate(270)"/><circle cx="0" cy="0" r="2.6" fill="#357a51" opacity="0.5"/><path d="M-6,-20 C-9,-26 -6,-31 -1,-31" stroke="#fff" stroke-opacity="0.35" stroke-width="2" fill="none" stroke-linecap="round"/></g></svg></span>maydly · 명진앱</div><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div>
   <div class="h1">보유현황</div><div class="sub">지금 가진 장비</div>
+  <button onclick="sheetOwnPurchase()" style="margin:10px 0 4px;border:none;background:#4f9a6a;color:#fff;font-weight:800;font-size:13.5px;padding:11px 16px;border-radius:12px;box-shadow:0 3px 10px rgba(79,154,106,.25);cursor:pointer;font-family:inherit">🛒 구매해서 추가 <span style="font-weight:600;opacity:.85">당근·중고 등</span></button>
   <div id="ownList"></div>
 </div>
 <!-- 가계부 -->
@@ -1833,6 +1834,33 @@ function sheetOwn(){
 function pickOcat(el,c){window._ocat=c;var p=el.parentNode;if(p)p.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on');});el.classList.add('on');}
 function saveOwn(){var n=document.getElementById('o_name').value.trim();if(!n){toast('이름을 입력하세요');return;}
   owns.unshift({id:uid(),name:n,cat:window._ocat,desc:document.getElementById('o_sub').value.trim(),price:parseInt(document.getElementById('o_price').value,10)||0,status:''});save(K.own,owns);pushSoon('owns');renderOwn();closeSheet();}
+
+/* 구매해서 보유 추가 (당근·중고 등 수기) — 보유 반영 + 원하면 가계부 지출도 자동 */
+function sheetOwnPurchase(){
+  window._ocat='카메라';var cats=['카메라','렌즈','필터','조명','조명효과','스탠드','전원','케이블','컴퓨터','기타'];
+  var today=(new Date()).toISOString().slice(0,10);
+  document.getElementById('sheet').innerHTML='<h3>🛒 구매해서 보유 추가</h3>'
+    +'<div class="fld"><label>이름</label><input id="p_name" placeholder="예: 미놀타 50mm F1.4"></div>'
+    +'<div class="fld"><label>분류</label><div class="chips" id="p_cats">'+cats.map(function(c){return '<div class="chip '+(c==='카메라'?'on':'')+'" onclick="pickOcat(this,\''+c+'\')">'+c+'</div>';}).join('')+'</div></div>'
+    +'<div class="fld"><label>구매 금액 (원)</label><input id="p_amt" type="number" inputmode="numeric" placeholder="예: 80000"></div>'
+    +'<div class="fld"><label>구매 날짜</label><input id="p_date" type="date" value="'+today+'"></div>'
+    +'<div class="fld"><label>어디서 샀는지 (선택)</label><input id="p_src" placeholder="예: 당근"></div>'
+    +'<div class="fld"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="p_led" checked style="width:17px;height:17px;accent-color:#4f9a6a;margin:0"> 가계부에도 지출로 기록</label></div>'
+    +'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button><button class="msave" onclick="saveOwnPurchase()">추가 → 보유 반영</button></div>';
+  document.getElementById('mask').classList.add('on');
+  setTimeout(function(){var e=document.getElementById('p_name');e&&e.focus();},50);
+}
+function saveOwnPurchase(){
+  var n=document.getElementById('p_name').value.trim();if(!n){toast('이름을 입력하세요');return;}
+  var amt=parseInt(document.getElementById('p_amt').value,10)||0;
+  var date=document.getElementById('p_date').value||(new Date()).toISOString().slice(0,10);
+  var src=document.getElementById('p_src').value.trim();
+  var toLed=document.getElementById('p_led').checked&&amt>0;
+  owns.unshift({id:uid(),name:n,cat:window._ocat,desc:(src?src+' ':'')+'구매 '+date,price:amt,status:'구매'});save(K.own,owns);pushSoon('owns');
+  if(toLed){ledger.push({id:uid(),date:date,desc:n+' 구매'+(src?'('+src+')':''),cat:'장비·카메라',type:'out',amt:amt,memo:'보유 수기추가'});save(K.led,ledger);pushSoon('ledger');renderMoney();}
+  renderOwn();closeSheet();
+  toast(esc(n)+' 보유 추가'+(toLed?' + 가계부 지출 기록':'')+'됨');
+}
 
 function sheetMoney(){
   window._mtype='out';
