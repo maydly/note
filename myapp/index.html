@@ -1288,7 +1288,7 @@ function renderOwn(){
     +(chips?'<div class="catline" style="margin-top:8px">'+chips+'</div>':'')+'</div>';
   h+=keys.map(function(k){
     return '<div class="seg">'+esc(k)+' <span style="color:#9a9086;font-weight:600;font-size:11.5px">'+groups[k].length+'개 · '+won(byCat[k])+'</span></div>'+groups[k].map(function(o){
-      return '<div class="card"><div class="row"><div class="lt"><div class="own">'+esc(o.name)+' <a class="imgq" href="https://www.google.com/search?tbm=isch&q='+encodeURIComponent(o.name)+'" target="_blank" rel="noreferrer">🔍</a></div>'
+      return '<div class="card" onclick="sheetOwnEdit(\''+o.id+'\')" style="cursor:pointer"><div class="row"><div class="lt"><div class="own">'+esc(o.name)+' <a class="imgq" href="https://www.google.com/search?tbm=isch&q='+encodeURIComponent(o.name)+'" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">🔍</a></div>'
         +'<div class="owns">'+(o.desc?esc(o.desc):'')+(o.status?' <span class="stbadge">'+esc(o.status)+'</span>':'')+'</div></div>'
         +(o.price||o.paid?'<div class="opr" style="text-align:right">'+won(o.price||o.paid)
           +(o.paid&&o.price&&+o.paid!==+o.price
@@ -1296,7 +1296,7 @@ function renderOwn(){
               ?'<span style="color:#3f8f5f">▲'+wonShort(o.price-o.paid)+'</span>'
               :'<span style="color:#c2564b">▼'+wonShort(o.paid-o.price)+'</span>')+'</div>'
             :'')+'</div>':'')
-        +'<button class="del" onclick="delItem(\'own\',\''+o.id+'\')">×</button></div></div>';
+        +'<button class="del" onclick="event.stopPropagation();delItem(\'own\',\''+o.id+'\')">×</button></div></div>';
     }).join('');
   }).join('');
   el.innerHTML=h;
@@ -1842,6 +1842,31 @@ function sheetOwn(){
 function pickOcat(el,c){window._ocat=c;var p=el.parentNode;if(p)p.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on');});el.classList.add('on');}
 function saveOwn(){var n=document.getElementById('o_name').value.trim();if(!n){toast('이름을 입력하세요');return;}
   owns.unshift({id:uid(),name:n,cat:window._ocat,desc:document.getElementById('o_sub').value.trim(),price:parseInt(document.getElementById('o_price').value,10)||0,paid:parseInt(document.getElementById('o_paid').value,10)||0,status:''});save(K.own,owns);pushSoon('owns');renderOwn();closeSheet();}
+
+/* 보유 항목 탭 → 수정 (산 금액·시세·분류·설명·상태) */
+function sheetOwnEdit(id){
+  var o=owns.find(function(x){return String(x.id)===String(id);});if(!o)return;
+  window._ocat=o.cat||'기타';
+  var cats=['카메라','렌즈','필터','조명','조명효과','스탠드','전원','케이블','컴퓨터','기타','배경/소품','수리검토'];
+  document.getElementById('sheet').innerHTML='<h3>✏️ 보유 수정</h3>'
+    +'<div class="fld"><label>이름</label><input id="e_name" value="'+esc(o.name)+'"></div>'
+    +'<div class="fld"><label>분류</label><div class="chips" id="e_cats">'+cats.map(function(c){return '<div class="chip '+(c===window._ocat?'on':'')+'" onclick="pickOcat(this,\''+c+'\')">'+c+'</div>';}).join('')+'</div></div>'
+    +'<div class="fld"><label>설명 (선택)</label><input id="e_sub" value="'+esc(o.desc||'')+'"></div>'
+    +'<div class="fld"><label>내가 산 금액 (원, 선택)</label><input id="e_paid" type="number" inputmode="numeric" value="'+(+o.paid||'')+'" placeholder="예: 2280000"></div>'
+    +'<div class="fld"><label>현재 시세 (원, 선택)</label><input id="e_price" type="number" inputmode="numeric" value="'+(+o.price||'')+'" placeholder="예: 2000000"></div>'
+    +'<div class="fld"><label>상태 (선택)</label><input id="e_st" value="'+esc(o.status||'')+'" placeholder="예: 2개 · 수리불가 · 판매보류"></div>'
+    +'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button><button class="msave" onclick="saveOwnEdit(\''+o.id+'\')">저장</button></div>';
+  document.getElementById('mask').classList.add('on');
+}
+function saveOwnEdit(id){
+  var o=owns.find(function(x){return String(x.id)===String(id);});if(!o)return;
+  var n=document.getElementById('e_name').value.trim();if(!n){toast('이름을 입력하세요');return;}
+  o.name=n;o.cat=window._ocat;o.desc=document.getElementById('e_sub').value.trim();
+  o.paid=parseInt(document.getElementById('e_paid').value,10)||0;
+  o.price=parseInt(document.getElementById('e_price').value,10)||0;
+  o.status=document.getElementById('e_st').value.trim();
+  save(K.own,owns);pushSoon('owns');renderOwn();closeSheet();toast(esc(n)+' 수정됨');
+}
 
 /* 구매해서 보유 추가 (당근·중고 등 수기) — 보유 반영 + 원하면 가계부 지출도 자동 */
 function sheetOwnPurchase(){
