@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>빈티지 필름 관리</title>
+<style>
+  :root{--ink:#20242a;--muted:#66717d;--line:#d9e0e6;--paper:#f8f6f1;--panel:#fff;--accent:#176b87;--soft:#eef6f7;--warm:#8d5b12;--good:#2d7558;--bad:#a8432f}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Arial,sans-serif;line-height:1.55;-webkit-text-size-adjust:100%}
+  a{color:var(--accent);text-decoration:none}
+  .wrap{max-width:520px;margin:0 auto;padding:0 0 70px}
+  header{background:#efe9dd;border-bottom:1px solid var(--line);padding:20px 18px 14px}
+  .eyebrow{font-size:11px;letter-spacing:.18em;font-weight:900;color:var(--warm);text-transform:uppercase}
+  h1{font-size:21px;margin:6px 0 4px;letter-spacing:-.01em}
+  .sub{font-size:13px;color:#4a5560;margin:0}
+  .mock-flag{display:inline-block;margin-top:9px;background:#eef6f7;border:1px solid #cfe1e5;border-radius:6px;padding:4px 9px;font-size:11.5px;font-weight:800;color:#12556b}
+  nav.tabs{position:sticky;top:0;z-index:5;display:flex;gap:4px;background:rgba(248,246,241,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);padding:8px;overflow-x:auto}
+  nav.tabs button{flex:0 0 auto;border:1px solid #cdd7dd;background:#fff;border-radius:999px;padding:8px 12px;font-size:12.5px;font-weight:800;color:#3f4a54;cursor:pointer}
+  nav.tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  section{padding:16px 15px 6px;display:none}
+  section.on{display:block}
+  h2{font-size:16px;margin:2px 0 12px;display:flex;align-items:center;gap:7px}
+  h3{font-size:13px;color:#3f4a54;margin:16px 0 8px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin:0 0 14px}
+  .notice{background:#fbf6ea;border:1px solid #e7d9b8;border-left:5px solid var(--warm);border-radius:8px;padding:11px 13px;margin:0 0 14px;font-size:12.5px}
+  .notice.info{background:#eef6f7;border-color:#cfe1e5;border-left-color:var(--accent)}
+  .chip{display:inline-flex;align-items:center;gap:5px;background:var(--soft);border:1px solid #cfe1e5;border-radius:8px;padding:4px 9px;font-size:12px;font-weight:700;margin:0 5px 5px 0}
+  .chip.w{background:#fbf6ea;border-color:#e5d8bf;color:var(--warm)}
+  .chip.s{background:#f0f4f6;border-color:#d9e0e6;color:#3f4a54}
+  .chip.f{background:#fff;border-color:#cdd7dd;color:#2a3942}
+  .badge{display:inline-block;border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:900;white-space:nowrap}
+  .b-good{background:#e9f1ec;color:var(--good);border:1px solid #cfe2d7}
+  .b-warm{background:#f5efe3;color:var(--warm);border:1px solid #e5d8bf}
+  .b-bad{background:#f4e6e1;color:var(--bad);border:1px solid #e6cdc4}
+  .b-low{background:#eef3f5;color:#3f4a54;border:1px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}
+  th{background:#f0f4f6;font-size:11.5px;white-space:nowrap}
+  .rec{background:#eef6f7;border:1px solid #cfe1e5;border-radius:8px;padding:10px 12px;margin-top:10px;font-size:13px}
+  .rec b{color:#12556b}
+  label{display:block;font-size:12px;font-weight:700;color:#3f4a54;margin:0 0 4px}
+  select,input[type=text],input[type=number]{width:100%;padding:9px 10px;border:1px solid #cdd7dd;border-radius:8px;font-size:14px;background:#fff;font-family:inherit}
+  .row{display:flex;gap:8px;margin-bottom:10px}
+  .row>div{flex:1;min-width:0}
+  button.act{width:100%;border:none;background:var(--accent);color:#fff;border-radius:9px;padding:11px;font-weight:900;font-size:14px;cursor:pointer}
+  button.act.sub{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}
+  .fcard{border:1px solid var(--line);border-radius:11px;overflow:hidden;margin:0 0 14px;background:#fff}
+  .fcard .bar{height:6px}
+  .fcard .hd{display:flex;align-items:center;gap:10px;padding:12px 14px 8px;justify-content:space-between}
+  .fcard .hd .nm{font-weight:900;font-size:15px}
+  .fcard .hd .iso{font-size:11.5px;color:var(--muted);font-weight:700}
+  .fcard .one{font-size:13px;color:#33404a;font-style:italic;padding:0 14px 10px}
+  .fcard .grid{display:grid;grid-template-columns:auto 1fr;gap:5px 10px;padding:0 14px 10px;font-size:12.5px}
+  .fcard .grid .k{color:var(--muted);font-weight:700;white-space:nowrap}
+  .fcard .recline{padding:10px 14px;border-top:1px solid var(--line);background:#fafbfb}
+  .fcard .recline .lab{font-size:11px;font-weight:900;color:var(--warm);letter-spacing:.04em}
+  .fcard .warnline{padding:8px 14px;border-top:1px solid var(--line);background:#fdf5f2;font-size:12px;color:#8a3a28}
+  /* 구매처 */
+  .vcard{border:1px solid var(--line);border-radius:11px;background:#fff;padding:13px 14px;margin:0 0 12px}
+  .vcard .vh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+  .vcard .vn{font-weight:900;font-size:14.5px}
+  .vcard .vnote{font-size:12px;color:#53616d;margin:6px 0 8px}
+  .vcard .go{display:inline-block;margin-top:4px;border:1px solid #cdd7dd;border-radius:8px;padding:7px 11px;font-weight:800;font-size:12.5px;color:var(--accent);background:#fff}
+  .swatch{width:36px;height:36px;border-radius:8px;flex:0 0 auto;border:1px solid rgba(0,0,0,.12)}
+  .stock{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin-bottom:9px;background:#fff}
+  .stock .info{flex:1;min-width:0}
+  .stock .info .n{font-weight:800;font-size:13.5px}
+  .stock .info .d{font-size:12px;color:var(--muted)}
+  .stock .info .tags{margin-top:4px}
+  .qbox{display:flex;align-items:center;gap:8px}
+  .qbtn{width:28px;height:28px;border-radius:7px;border:1px solid #cdd7dd;background:#fff;font-size:16px;font-weight:900;color:var(--accent);cursor:pointer;line-height:1}
+  .qn{font-weight:900;font-size:16px;min-width:20px;text-align:center;color:var(--accent)}
+  .shoplink{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .shoplink a{flex:1;min-width:130px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:9px;padding:11px;font-weight:900;font-size:13px;color:#fff}
+  .karrot{background:#ff8a3d}.bunjang{background:#ff4757}
+  .deal{border:1px solid var(--line);border-radius:9px;padding:11px 12px;margin-bottom:9px;background:#fff}
+  .deal .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .deal .top .p{font-weight:900}
+  .deal .per{font-size:12.5px;font-weight:800}
+  .deal .memo{font-size:12.5px;color:#53616d;margin-top:4px}
+  .deal .btns{display:flex;gap:6px;margin-top:9px}
+  .deal .btns button{flex:1;font-size:12px;padding:7px;border-radius:7px;cursor:pointer;font-weight:800}
+  .setout{background:#eef6f7;border:1px solid #cfe1e5;border-radius:9px;padding:13px;margin-top:12px}
+  .setout .big{font-size:15px;font-weight:900;color:#12556b}
+  .mini{font-size:11.5px;color:var(--muted);margin-top:5px}
+  .foot{padding:16px;color:var(--muted);font-size:11.5px;text-align:center}
+  .src{background:#f4f1ea;border:1px dashed #d9cdb0;border-radius:8px;padding:9px 11px;font-size:11.5px;color:#6b5a2e;margin-bottom:12px}
+  .catlab{font-size:11px;font-weight:900;color:var(--warm);letter-spacing:.05em;margin:14px 0 6px}
+  .catlab span{color:var(--muted);font-weight:700}
+  .namewrap{display:flex;flex-wrap:wrap;gap:6px}
+  .namechip{border:1px solid #cdd7dd;background:#fff;border-radius:999px;padding:7px 11px;font-size:12.5px;font-weight:700;color:#33404a;cursor:pointer;line-height:1.2}
+  .namechip:hover{background:#eef6f7}
+  .namechip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .namechip .iso{opacity:.55;font-weight:800;font-size:11px;margin-left:3px}
+  .namechip.on .iso{opacity:.85}
+  .galline{padding:10px 14px;border-top:1px solid var(--line);background:#fbfcfc}
+  .galline .lab{font-size:11px;font-weight:900;color:var(--accent);letter-spacing:.03em}
+  .galbtns{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+  .galbtns a{display:inline-flex;align-items:center;border:1px solid #cdd7dd;border-radius:8px;padding:7px 11px;font-size:12px;font-weight:800;color:var(--accent);background:#fff}
+  .galbtns a:hover{background:#eef6f7}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><a href="../hub/" style="color:inherit;text-decoration:none">← 허브</a> · MAYDLY · FILM ARCHIVE</div>
+    <h1>🎞️ 빈티지 필름 통합관리</h1>
+    <p class="sub">필름 특징 · 추천 · 셋팅 · 재고 · 구매처 · 중고 매물.</p>
+    <span class="mock-flag">필름 도감(49종) · 구매처 · 재고 · 조사기준일 2026-07-16</span>
+  </header>
+
+  <nav class="tabs">
+    <button class="on" data-t="rec">🧭 추천</button>
+    <button data-t="lib">📖 필름 도감</button>
+    <button data-t="shop">🏬 구매처</button>
+    <button data-t="set">📸 셋팅 계산</button>
+    <button data-t="buy">💰 구매 가이드</button>
+    <button data-t="stock">📦 보유 재고</button>
+    <button data-t="deal">🛒 매물</button>
+    <button data-t="plan">🛒 구매계획</button>
+  </nav>
+
+  <!-- 추천 -->
+  <section id="rec" class="on">
+    <h2>🧭 내 필름, 언제 뭘 쓸까</h2>
+    <div class="notice info">보유한 필름을 알아보고 <b>각 필름의 특징 + 추천 날씨·상황</b>을 카드로 보여줍니다.</div>
+    <div id="recList"></div>
+    <div class="rec"><b>🎯 실패하면 안 되는 컷</b><br>만료 필름은 복불복 → 노출 다르게 <b>2~3컷 브라케팅</b>(+1/+2/+3).</div>
+  </section>
+
+  <!-- 필름 도감 -->
+  <section id="lib">
+    <h2>📖 필름 도감</h2>
+    <div class="notice">필름명을 <b>눌러서</b> 특징·추천·<b>예시사진 갤러리</b>를 확인하세요. (사진 버튼은 새 탭으로 실제 갤러리가 열립니다)</div>
+    <div class="row"><div><input type="text" id="libSearch" placeholder="필름 이름 검색 (예: 프리즘, 포트라)" oninput="renderLib()"></div></div>
+    <div id="libNames"></div>
+    <div id="libDetail" style="margin-top:12px"></div>
+  </section>
+
+  <!-- 구매처 -->
+  <section id="shop">
+    <h2>🏬 필름 구매처</h2>
+    <div class="src">📎 웹 조사(2026-07-16 기준). 취급 목록·가격은 재고에 따라 바뀌니 <b>기준일 참고</b>. 정확한 현재가는 각 링크에서 확인.</div>
+    <div id="shopList"></div>
+    <div class="notice info"><b>브랜드별 현재 국내 유통 정리</b><br>
+      · 코닥 신품: 골드200 · 컬러플러스200 · 울트라맥스400 · 포트라160/400/800 · 엑타100 · 엑타컬러프로<br>
+      · 후지: C200/C100 · 수페리아프리미엄400 · 벨비아50/100(슬라이드) · 아크로스100 II(흑백)<br>
+      · 시네필름: 시네스틸800T/400D · 어로어400D/800T · 코닥 비전3(500T·250D) · 더블엑스<br>
+      · 니치·재포장: 코노(MOJO·BEBOP·OFFBEAT) · 에스쿠라 헤이세이 · 럭키필름 · 마이하트<br>
+      · 로모그래피: 컬러네거·로모크롬·레드스케일 &nbsp; · 흑백: 일포드 HP5+·XP2·델타 · 롤라이<br>
+      · 중고만(단종): 오토오토 · 코니카 센츄리아 · 아그파 비스타</div>
+  </section>
+
+  <!-- 셋팅 계산 -->
+  <section id="set">
+    <h2>📸 만료필름 셋팅 계산기</h2>
+    <div class="src">📎 합침: 기존 <b>「일본빈티지렌즈 쇼핑가이드」 만료필름 노출표</b>(note/07_장비비교자료) 기준.</div>
+    <div class="panel">
+      <div class="row">
+        <div><label>박스 감도</label>
+          <select id="cIso"><option value="100">ISO 100</option><option value="200">ISO 200</option><option value="400" selected>ISO 400</option><option value="800">ISO 800</option></select></div>
+        <div><label>유통기한/제조 연도</label><input type="number" id="cYear" value="2002" min="1970" max="2026"></div>
+      </div>
+      <div class="row">
+        <div><label>보관 상태</label><select id="cStore"><option value="cold">냉동/냉장</option><option value="room" selected>상온</option><option value="hot">더운 곳·습함</option></select></div>
+        <div><label>필름 종류</label><select id="cType"><option value="neg" selected>컬러네거/흑백(관대)</option><option value="slide">슬라이드 E6(예민)</option></select></div>
+      </div>
+      <button class="act" onclick="calcSet()">셋팅 계산</button>
+      <div id="setOut"></div>
+    </div>
+    <div class="notice"><b>변수 3가지</b> ①보관상태가 제일 큼 ②필름종류(네거·흑백 관대, 슬라이드 예민) ③예측불가→귀한 필름은 브라케팅.<br><b>수동바디 팁</b>: 만료필름은 <b>롤 통째로 같은 보정</b> → 롤 시작 때 ISO 한 번만 세팅.</div>
+  </section>
+
+  <!-- 구매 가이드 -->
+  <section id="buy">
+    <h2>💰 구매 가이드 · 개당 1만원 이하</h2>
+    <div class="notice"><b>개당 1만원 이하 + 상태 괜찮음</b>이면 담기. (참고: 코닥 골드200 신품 최저 ~16,490원, 2026-07 다나와)</div>
+    <div class="panel">
+      <div class="row">
+        <div><label>총 가격(원)</label><input type="number" id="gPrice" placeholder="40000"></div>
+        <div><label>개수(롤)</label><input type="number" id="gQty" placeholder="5"></div>
+      </div>
+      <button class="act sub" onclick="calcPer()">개당 단가 계산</button>
+      <div id="perOut"></div>
+    </div>
+    <h3>상태 체크(살 때 확인)</h3>
+    <div class="panel" style="font-size:13px">
+      <div>❄️ <b>냉장/냉동 보관</b>이었나 → 열화 적음, 가치 ↑</div>
+      <div>🌡️ <b>상온 장기 방치</b>는 감점 → 색틀어짐·안개, 싸야 함</div>
+      <div>📅 <b>유통기한</b> 오래될수록 밝게 보정, 너무 오래된 건 복불복</div>
+      <div>📦 <b>미개봉·밀봉</b> 우선 → 개봉·습기품은 곰팡이·얼룩 위험</div>
+      <div>🎞️ <b>필름 종류</b> 네거·흑백은 관대, 슬라이드는 보수적으로</div>
+    </div>
+  </section>
+
+  <!-- 보유 재고 -->
+  <section id="stock">
+    <h2>📦 보유 필름 재고</h2>
+    <div id="stockList"></div>
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;font-size:14px"><strong>총 보유</strong><b id="stockTotal" style="color:var(--accent)">0롤</b></div>
+    </div>
+    <h3>＋ 필름 추가</h3>
+    <div class="panel">
+      <div style="margin-bottom:10px"><label>필름 이름</label><input type="text" id="sName" placeholder="예: 코닥 골드 100" list="filmNames"></div>
+      <datalist id="filmNames"></datalist>
+      <div class="row">
+        <div><label>박스 ISO</label><select id="sIso"><option>100</option><option>200</option><option selected>400</option><option>800</option></select></div>
+        <div><label>연도</label><input type="number" id="sYear" value="2002"></div>
+        <div><label>롤 수</label><input type="number" id="sQty" value="1"></div>
+      </div>
+      <div style="margin-bottom:10px"><label>보관</label><select id="sStore"><option value="cold">냉동/냉장</option><option value="room" selected>상온</option><option value="hot">더운 곳</option></select></div>
+      <button class="act" onclick="addStock()">재고에 추가</button>
+    </div>
+  </section>
+
+  <!-- 매물 -->
+  <section id="deal">
+    <h2>🛒 중고 매물</h2>
+    <div class="notice">⚠️ 당근·번개는 <b>자동 수집 불가</b>(공개 API 없음). <b>검색 바로가기</b> + <b>본 매물 기록·개당단가 자동판정</b>으로.</div>
+    <h3>① 검색 바로가기</h3>
+    <div class="shoplink">
+      <a class="karrot" href="https://www.daangn.com/search/코닥골드100" target="_blank" rel="noopener">🥕 당근 · 코닥골드100</a>
+      <a class="bunjang" href="https://m.bunjang.co.kr/search/products?q=코닥골드100" target="_blank" rel="noopener">⚡ 번개 · 코닥골드100</a>
+    </div>
+    <div class="shoplink">
+      <a class="karrot" href="https://www.daangn.com/search/만료필름" target="_blank" rel="noopener">🥕 당근 · 만료필름</a>
+      <a class="bunjang" href="https://m.bunjang.co.kr/search/products?q=빈티지필름" target="_blank" rel="noopener">⚡ 번개 · 빈티지필름</a>
+    </div>
+    <h3>② 본 매물 기록 (개당단가 자동)</h3>
+    <div class="panel">
+      <div style="margin-bottom:10px"><label>매물명</label><input type="text" id="dName" placeholder="예: 코닥골드100 5롤"></div>
+      <div class="row">
+        <div><label>플랫폼</label><select id="dPlat"><option>당근</option><option>번개</option><option>기타</option></select></div>
+        <div><label>총가격</label><input type="number" id="dPrice" placeholder="40000"></div>
+        <div><label>개수</label><input type="number" id="dQty" placeholder="5"></div>
+      </div>
+      <div style="margin-bottom:10px"><label>메모(보관·위치 등)</label><input type="text" id="dMemo" placeholder="예: 마포·미개봉·냉장"></div>
+      <button class="act" onclick="addDeal()">매물 기록</button>
+    </div>
+    <div id="dealList"></div>
+  </section>
+
+  <!-- 구매계획 -->
+  <section id="plan">
+    <h2>🛒 구매계획</h2>
+    <div class="notice info">매물·구매처에서 <b>담기</b>한 필름이 여기로. 샀으면 <b>보유 재고로 이동</b>.</div>
+    <div id="planList"></div>
+  </section>
+
+  <div class="foot">
+    빈티지 필름 관리 · 조사기준일 2026-07-16<br>
+    maydly 명진앱 · 운영-010 · 필름 별도 카테고리<br>
+    <span style="color:#b9a; cursor:pointer" onclick="resetDemo()">데이터 초기화</span>
+  </div>
+</div>
+
+<script>
+/* ================= 필름 도감 ================= */
+var FILM_LIB=[
+  {cat:'코닥', key:['골드100','gold100'], name:'코닥 골드 100', iso:'100', avail:'used', bar:'linear-gradient(90deg,#f0b429,#e8531f)',
+   one:'따뜻한 황금빛·저감도. 지금은 중고.', color:'노랑·주황 웜톤, 채도 안정', grain:'곱고 부드러움', mood:'향수·클래식',
+   weather:['맑음','일몰'], scene:['인물','밝은 야외','따뜻한 풍경'], warn:'구형(현행은 200). 흐림·실내 약함. 중고·만료 유통.'},
+  {cat:'코닥', key:['골드200','gold200','골드','gold'], name:'코닥 골드 200', iso:'200', avail:'new', bar:'linear-gradient(90deg,#f0b429,#e8531f)',
+   one:'국민 웜톤 범용필름.', color:'노랑·주황 따뜻, 자연 발색', grain:'곱다', mood:'향수·포근',
+   weather:['맑음','약한 흐림','일몰'], scene:['일상','인물','여행'], warn:'흐린 날 누런기. 저녁·실내 부족.'},
+  {cat:'코닥', key:['컬러플러스','colorplus'], name:'코닥 컬러플러스 200', iso:'200', avail:'new', bar:'linear-gradient(90deg,#f0a020,#d63a2a)',
+   one:'골드 사촌, 더 레트로·가성비.', color:'붉은기·따뜻, 살짝 올드', grain:'중간', mood:'레트로',
+   weather:['맑음','한낮'], scene:['일상','거리','여행'], warn:'저조도 약함.'},
+  {cat:'코닥', key:['울트라맥스','ultramax'], name:'코닥 울트라맥스 400', iso:'400', avail:'new', bar:'linear-gradient(90deg,#e94f1d,#a8322a)',
+   one:'만능 고감도, 쨍한 채도. 여행 만능.', color:'채도 높고 선명, 안정적 블루톤', grain:'조금 굵음', mood:'생생·활기',
+   weather:['흐림','실내','저녁','혼합광'], scene:['이벤트','실내','여행','만능'], warn:'맑은 대낮엔 다소 과함.'},
+  {cat:'코닥', key:['프로이미지','proimage'], name:'코닥 프로이미지 100', iso:'100', avail:'new', bar:'linear-gradient(90deg,#e08a2a,#c25a2f)',
+   one:'전문가용 인물, 더위에 강함.', color:'저채도 자연, 고운 피부톤', grain:'미세', mood:'차분·정갈',
+   weather:['맑음','흐림'], scene:['인물','기념','포트레이트'], warn:'화려한 발색 아님.'},
+  {cat:'코닥', key:['엑타100','ektar100','ektar'], name:'코닥 엑타 100', iso:'100', avail:'new', bar:'linear-gradient(90deg,#e0432a,#7a2a86)',
+   one:'초고채도·초미립, 풍경 최강.', color:'매우 선명, 파랑·초록 강렬', grain:'거의 없음', mood:'선명·강렬',
+   weather:['맑음','쨍한 날'], scene:['풍경','도시','제품'], warn:'인물엔 붉게 쨍 → 호불호.'},
+  {cat:'코닥', key:['엑타컬러160','엑타컬러프로160','ektacolor160'], name:'코닥 엑타컬러 프로 160', iso:'160', avail:'new', bar:'linear-gradient(90deg,#e8b98a,#c98a6a)',
+   one:'업소·프로용, 자연 피부톤.', color:'저채도 자연(포트라 계열)', grain:'고움', mood:'차분·프로',
+   weather:['맑음','흐림','실내창가'], scene:['인물','웨딩','기념'], warn:'프로 리팩. 냉장 유통 권장.'},
+  {cat:'코닥', key:['엑타컬러400','엑타컬러프로400','ektacolor400'], name:'코닥 엑타컬러 프로 400', iso:'400', avail:'new', bar:'linear-gradient(90deg,#e8b98a,#c98a6a)',
+   one:'업소·프로용 고감도 인물.', color:'저채도 자연, 부드러움', grain:'중간', mood:'차분·프로',
+   weather:['흐림','실내','저녁'], scene:['인물','실내 행사'], warn:'프로 리팩. 냉장 유통 권장.'},
+  {cat:'코닥', key:['포트라160','portra160'], name:'코닥 포트라 160', iso:'160', avail:'new', bar:'linear-gradient(90deg,#e8b98a,#c98a6a)',
+   one:'최고 미립 저채도. 맑은날 인물.', color:'부드러운 파스텔, 낮은 콘트라스트', grain:'최고 수준 미립', mood:'차분·고급',
+   weather:['맑음','실내창가'], scene:['인물','웨딩','정물'], warn:'저감도라 흐림·실내 여유 적음. 고가.'},
+  {cat:'코닥', key:['포트라800','portra800'], name:'코닥 포트라 800', iso:'800', avail:'new', bar:'linear-gradient(90deg,#e8b98a,#c98a6a)',
+   one:'고감도 인물, 저조도·야간.', color:'부드러운 피부톤, 살짝 웜', grain:'고움(800치곤)', mood:'무드·야간 인물',
+   weather:['저녁','실내','야간','흐림'], scene:['실내 인물','야간 스냅'], warn:'그레인 약간·고가.'},
+  {cat:'코닥', key:['포트라400','portra400','포트라','portra'], name:'코닥 포트라 400', iso:'400', avail:'new', bar:'linear-gradient(90deg,#e8b98a,#c98a6a)',
+   one:'인물의 왕. 관용도 최강 만능.', color:'부드러운 자연 피부톤, 파스텔', grain:'매우 고움', mood:'차분·고급·화사',
+   weather:['흐림','맑음','실내창가'], scene:['인물','웨딩','스냅','만능'], warn:'고가. 만원 이하 매물 귀함.'},
+  {cat:'후지', key:['c100','씨100','후지c100'], name:'후지 C100', iso:'100', avail:'new', bar:'linear-gradient(90deg,#3a9a56,#2a7a86)',
+   one:'저감도 시원 색감, 곱다.', color:'시원·자연, 좋은 피부톤', grain:'곱다', mood:'청량·담백',
+   weather:['맑음','밝은 야외'], scene:['풍경','인물','일상'], warn:'저조도 약함(100).'},
+  {cat:'후지', key:['c200','씨200','후지c200'], name:'후지 C200', iso:'200', avail:'new', bar:'linear-gradient(90deg,#3a9a56,#2a7a86)',
+   one:'수퍼리아 사촌, 가성비 시원.', color:'시원·자연, 뛰어난 피부톤', grain:'중간', mood:'맑음·담백',
+   weather:['맑음','약한 흐림'], scene:['일상','풍경','여행'], warn:'저조도 약함(200).'},
+  {cat:'후지', key:['수페리아프리미엄','수퍼리아프리미엄','superiapremium'], name:'후지 수페리아 프리미엄 400', iso:'400', avail:'new', bar:'linear-gradient(90deg,#3aa856,#1f7a3f)',
+   one:'현행 고감도(일본 내수) 청량.', color:'초록·시안 시원, 하늘 채도', grain:'중간', mood:'청량·시티팝',
+   weather:['흐림','혼합광','실내','맑음'], scene:['풍경','거리','실내','만능'], warn:'수입·시세 변동.'},
+  {cat:'후지', key:['오토오토','수퍼리아','수페리아','superia','xtra','x-tra'], name:'후지 수퍼리아 / 오토오토 400', iso:'400', avail:'used', bar:'linear-gradient(90deg,#3aa856,#1f7a3f)',
+   one:'청량 시티팝. 한국판은 단종.', color:'초록·시안 시원, 자연 채도', grain:'중간(굵음)', mood:'청량·레트로',
+   weather:['흐림','혼합광','실내','맑음'], scene:['풍경','거리','일상'], warn:'오토오토(한국판) 단종 → 중고·만료.'},
+  {cat:'후지', key:['벨비아50','velvia50'], name:'후지 벨비아 50 *슬라이드', iso:'50', avail:'new', bar:'linear-gradient(90deg,#1f8a5a,#8a2a6a)',
+   one:'슬라이드 최고 채도. 풍경 끝판.', color:'초고채도·강대비, 초록·붉은', grain:'초미립', mood:'강렬·리치',
+   weather:['맑음','쨍한 날'], scene:['풍경','자연'], warn:'E6 슬라이드 → 노출 관용 매우 좁음. 만료엔 예민.'},
+  {cat:'후지', key:['벨비아100','velvia100','벨비아','velvia'], name:'후지 벨비아 100 *슬라이드', iso:'100', avail:'new', bar:'linear-gradient(90deg,#1f8a5a,#8a2a6a)',
+   one:'초고채도 슬라이드, 50보다 약간 관대.', color:'초고채도·강대비', grain:'초미립', mood:'강렬·리치',
+   weather:['맑음','쨍한 날'], scene:['풍경','자연','제품'], warn:'E6 슬라이드 → 노출 정확히.'},
+  {cat:'시네필름', key:['시네스틸50','cinestill50','50d'], name:'시네스틸 50D', iso:'50', avail:'new', bar:'linear-gradient(90deg,#e0a03a,#2a7a86)',
+   one:'맑고 투명한 하늘·눈 표현 강한 저감도.', color:'투명·세밀, 맑은 하늘', grain:'초미립', mood:'청명·정교',
+   weather:['맑음','쨍한 날','설경'], scene:['풍경','하늘','눈','디테일'], warn:'저감도(50) → 밝은 빛 필요. 주광용.'},
+  {cat:'시네필름', key:['시네스틸400','cinestill400','시네스틸400d'], name:'시네스틸 400D', iso:'400', avail:'new', bar:'linear-gradient(90deg,#e0a03a,#2a7a86)',
+   one:'주광 시네필름, 부드러운 만능.', color:'자연 파스텔, 은은한 할레이션', grain:'중간', mood:'시네마틱·부드러움',
+   weather:['맑음','흐림','주광'], scene:['일상','인물','여행','만능'], warn:'렘젯 제거 재포장. C-41 가능.'},
+  {cat:'시네필름', key:['시네스틸800','cinestill800','시네스틸800t'], name:'시네스틸 800T', iso:'800', avail:'new', bar:'linear-gradient(90deg,#c33a5a,#2a4a86)',
+   one:'텅스텐 야간용. 네온 빛번짐.', color:'텅스텐 밸런스, 붉은 할레이션', grain:'중간~굵음', mood:'시네마틱·네온',
+   weather:['야간','네온','실내조명'], scene:['밤거리','야경','무드'], warn:'텅스텐(야간)용 → 주광선 필터 필요. 고가.'},
+  {cat:'시네필름', key:['어로어400','auroer400','오로어400'], name:'어로어 400D', iso:'400', avail:'new', bar:'linear-gradient(90deg,#e0a03a,#2a7a86)',
+   one:'시네필름 리팩(주광). 시네스틸 대안.', color:'주광 부드러움, 할레이션', grain:'중간', mood:'시네마틱',
+   weather:['맑음','흐림','주광'], scene:['일상','인물','여행'], warn:'렘젯 현상 가능한 곳 확인.'},
+  {cat:'시네필름', key:['어로어800','auroer800','오로어800'], name:'어로어 800T', iso:'800', avail:'new', bar:'linear-gradient(90deg,#c33a5a,#2a4a86)',
+   one:'시네필름 리팩(텅스텐 야간).', color:'텅스텐 야간·네온 번짐', grain:'중간~굵음', mood:'시네마틱·네온',
+   weather:['야간','네온','실내조명'], scene:['밤거리','야경'], warn:'텅스텐(야간)용. 렘젯 현상소 확인.'},
+  {cat:'시네필름', key:['250d','비전3250','vision3250'], name:'코닥 비전3 250D *시네', iso:'250', avail:'new', bar:'linear-gradient(90deg,#e0a03a,#2a7a86)',
+   one:'영화 주광 원본. 관용도 큼.', color:'자연·시네마틱, 넓은 관용도', grain:'중간', mood:'영화적·부드러움',
+   weather:['맑음','흐림','주광'], scene:['영화감성','인물','풍경'], warn:'렘젯 코팅 → 전용 현상소(ECN-2) 필요.'},
+  {cat:'시네필름', key:['500t','비전3500','vision3500','비전3','vision3'], name:'코닥 비전3 500T *시네', iso:'500', avail:'new', bar:'linear-gradient(90deg,#c33a5a,#2a4a86)',
+   one:'영화 텅스텐 야간 원본. 고감도.', color:'텅스텐 야간, 시네마틱', grain:'중간(고감도)', mood:'영화적·무드',
+   weather:['야간','실내','텅스텐 조명'], scene:['야경','영화감성','거리'], warn:'렘젯 코팅 → 전용 현상소. 주광선 필터.'},
+  {cat:'시네필름', key:['더블엑스','double-x','doublex','5222','트라이엑스','tri-x'], name:'이스트만 더블엑스 (5222) *흑백', iso:'250', avail:'new', bar:'linear-gradient(90deg,#3a3f45,#9aa0a6)',
+   one:'흑백 시네필름. 클래식 거친 명암.', color:'흑백, 강한 명암·클래식', grain:'중간~굵음', mood:'영화적·다큐',
+   weather:['맑음','흐림','실내'], scene:['흑백 영화감성','거리','인물'], warn:'흑백현상 필요.'},
+  {cat:'로모', key:['로모컬러100','lomo100','로모그래피컬러100'], name:'로모그래피 컬러 네거 100', iso:'100', avail:'new', bar:'linear-gradient(90deg,#d43a8a,#e0a03a)',
+   one:'밝은날 채도, 로모 발색.', color:'쨍한 채도, 튀는 색', grain:'중간', mood:'팝·경쾌',
+   weather:['맑음','밝은 날'], scene:['일상','스냅','여행'], warn:'표준색보다 튐. 저조도 약함.'},
+  {cat:'로모', key:['로모컬러400','lomo400','로모그래피컬러400','로모그래피','lomography'], name:'로모그래피 컬러 네거 400', iso:'400', avail:'new', bar:'linear-gradient(90deg,#d43a5a,#8a3ad4)',
+   one:'만능 채도, 로모 발색.', color:'채도 높고 쨍, 튀는 색', grain:'조금 굵음', mood:'팝·개성',
+   weather:['흐림','실내','맑음'], scene:['일상','스냅','만능'], warn:'표준색보다 튐.'},
+  {cat:'로모', key:['퍼플','purple','로모크롬퍼플'], name:'로모크롬 퍼플 *색변환', iso:'400', avail:'new', bar:'linear-gradient(90deg,#8a3ad4,#d43a5a)',
+   one:'초록→보라 색변환. 몽환.', color:'녹색이 보라로, 초현실', grain:'중간', mood:'몽환·유니크',
+   weather:['맑음','초록 많은 곳'], scene:['자연·숲','실험','예술'], warn:'색이 완전히 변함 → 표준용도 아님.'},
+  {cat:'로모', key:['메트로폴리스','metropolis'], name:'로모크롬 메트로폴리스', iso:'100', avail:'new', bar:'linear-gradient(90deg,#4a4f55,#8a3ad4)',
+   one:'저채도 어반 무드. 가변감도.', color:'채도 낮은 어반 톤', grain:'중간~굵음', mood:'어반·시네마틱',
+   weather:['흐림','도시','저녁'], scene:['도시','거리','무드'], warn:'감도 100-400 가변(현상 지정).'},
+  {cat:'로모', key:['레드스케일','redscale'], name:'로모 레드스케일 XR', iso:'200', avail:'new', bar:'linear-gradient(90deg,#c0402a,#e0a03a)',
+   one:'붉은·주황 톤. 노을 감성.', color:'전면 붉은·주황, 노을톤', grain:'중간', mood:'레트로·강렬',
+   weather:['맑음','한낮','노을'], scene:['실험','노을','거리'], warn:'감도 50-200 가변. 붉은톤 고정.'},
+  {cat:'흑백', key:['아크로스','acros'], name:'후지 아크로스 100 II', iso:'100', avail:'new', bar:'linear-gradient(90deg,#3a3f45,#9aa0a6)',
+   one:'초미립 흑백, 정교한 계조.', color:'흑백, 매끈한 명암·긴 계조', grain:'매우 고움', mood:'정갈·모던',
+   weather:['맑음','흐림','장노출'], scene:['풍경','인물','건축'], warn:'흑백현상 필요. 슬로우(100).'},
+  {cat:'흑백', key:['hp5'], name:'일포드 HP5 Plus 400', iso:'400', avail:'new', bar:'linear-gradient(90deg,#3a3f45,#9aa0a6)',
+   one:'만능 흑백 표준. 증감 잘됨.', color:'흑백, 부드러운 계조·클래식', grain:'고움(400)', mood:'클래식·다큐',
+   weather:['맑음','흐림','실내'], scene:['거리','인물','다큐','만능'], warn:'흑백현상 필요. 1600 증감 인기.'},
+  {cat:'흑백', key:['xp2'], name:'일포드 XP2 Super 400', iso:'400', avail:'new', bar:'linear-gradient(90deg,#3a3f45,#9aa0a6)',
+   one:'C-41 흑백 → 컬러현상소 가능.', color:'흑백, 부드럽고 관대', grain:'고움', mood:'모던·부드러움',
+   weather:['맑음','흐림','실내'], scene:['거리','인물','입문 흑백'], warn:'C-41(일반 현상소 가능)이 장점.'},
+  {cat:'흑백', key:['델타3200','delta3200','델타'], name:'일포드 델타 3200', iso:'3200', avail:'new', bar:'linear-gradient(90deg,#20242a,#8a8f95)',
+   one:'초고감도 흑백. 야간·저조도.', color:'흑백, 거친 입자·강한 분위기', grain:'매우 굵음', mood:'야간·무드',
+   weather:['야간','실내 어두움'], scene:['야경','라이브','무드'], warn:'흑백현상 필요. 그레인 큼(감성용).'},
+  {cat:'흑백', key:['cinis','시니스','코노cinis'], name:'코노 CINIS 400 *흑백', iso:'400', avail:'new', bar:'linear-gradient(90deg,#3a3f45,#9aa0a6)',
+   one:'코노 흑백. 개성 명암.', color:'흑백, 거친 개성', grain:'중간~굵음', mood:'실험적·다큐',
+   weather:['맑음','흐림'], scene:['흑백 개성','거리'], warn:'흑백현상 필요·소량.'},
+  {cat:'흑백', key:['롤라이','rollei','rpx','retro'], name:'롤라이 RPX·Retro *흑백', iso:'400', avail:'new', bar:'linear-gradient(90deg,#3a3f45,#9aa0a6)',
+   one:'독일 흑백. 레트로·고해상.', color:'흑백, 또렷한 대비·높은 해상', grain:'고움', mood:'클래식·다큐',
+   weather:['맑음','흐림'], scene:['흑백 감성','풍경','인물'], warn:'흑백현상 필요. 일부 적외 특성.'},
+  {cat:'재포장·니치', key:['프리즘','prism'], name:'프리즘 400 (Prism)', iso:'400', avail:'new', bar:'linear-gradient(90deg,#3a7ac0,#2a4a86)',
+   one:'또렷한 하늘색·은은한 블루톤. 계속 손이 가는 인기.', color:'은은한 블루톤, 또렷한 하늘색', grain:'중간', mood:'블루·데일리',
+   weather:['맑음','파란 하늘'], scene:['하늘·풍경','일상','여행'], warn:'재포장 필름(정체 다양). 블루톤 지향.'},
+  {cat:'재포장·니치', key:['야시카','yashica'], name:'야시카 클래식 400 (Yashica)', iso:'400', avail:'new', bar:'linear-gradient(90deg,#3a7ac0,#2a4a86)',
+   one:'과하지 않은 블루톤+안정적 색감. 하늘이 예쁨.', color:'과하지 않은 블루톤, 안정적', grain:'스타일리시한 입자', mood:'하늘·안정',
+   weather:['맑음','약한 흐림'], scene:['하늘·풍경','일상','스냅'], warn:'재포장 필름. C-41.'},
+  {cat:'재포장·니치', key:['에도','edo','에스쿠라에도'], name:'에스쿠라 에도 400 (Escura EDO)', iso:'400', avail:'new', bar:'linear-gradient(90deg,#5a7a9a,#3a4a6a)',
+   one:'저채도·저대비 빈티지 블루. 일본 감성.', color:'저채도·저대비 빈티지 블루', grain:'중간', mood:'빈티지·감성',
+   weather:['맑음','흐림','역광'], scene:['감성 스냅','일상','여행'], warn:'빛·노출 따라 분위기 크게 변함. 재포장.'},
+  {cat:'재포장·니치', key:['아쿠아','aqua','레토아쿠아','reto'], name:'레토 아쿠아 400 (RETO Aqua)', iso:'400', avail:'new', bar:'linear-gradient(90deg,#3a7ac0,#2a4a86)',
+   one:'거친 노이즈+물빠진 블루톤. 빈티지 무드.', color:'아이시 블루, 물빠진 저채도', grain:'거친 그레인', mood:'로우파이·빈티지',
+   weather:['맑음','자연광'], scene:['빈티지 무드','바다·물','거리'], warn:'그레이니·페이디드가 콘셉트. 재포장.'},
+  {cat:'재포장·니치', key:['글로우','glow','레토글로우'], name:'레토 글로우 400 (RETO Glow)', iso:'400', avail:'new', bar:'linear-gradient(90deg,#e0a06a,#c25a7f)',
+   one:'아쿠아보다 따뜻한 빈티지 톤. 저채도.', color:'따뜻·저채도 빈티지', grain:'거친 그레인', mood:'로우파이·웜',
+   weather:['맑음','한낮'], scene:['빈티지 무드','일상'], warn:'재포장. 아쿠아의 웜 버전.'},
+  {cat:'재포장·니치', key:['mojo','모조'], name:'코노 MOJO 200', iso:'200', avail:'new', bar:'linear-gradient(90deg,#8a3ad4,#d43a5a)',
+   one:'오스트리아 실험 컬러(무드 시프트).', color:'독특한 컬러시프트·빈티지', grain:'중간', mood:'실험적·유니크',
+   weather:['맑음','밝은 날'], scene:['개성','예술','스냅'], warn:'표준색 아님·고가·소량.'},
+  {cat:'재포장·니치', key:['bebop','비밥'], name:'코노 BEBOP 200', iso:'200', avail:'new', bar:'linear-gradient(90deg,#8a3ad4,#d43a5a)',
+   one:'코노 실험 컬러(개성 발색).', color:'튀는 색감·빈티지', grain:'중간', mood:'실험적·유니크',
+   weather:['맑음','밝은 날'], scene:['개성','예술'], warn:'표준색 아님·고가·소량.'},
+  {cat:'재포장·니치', key:['offbeat','오프비트'], name:'코노 OFFBEAT 200', iso:'200', avail:'new', bar:'linear-gradient(90deg,#8a3ad4,#d43a5a)',
+   one:'코노 실험 컬러(오프비트 무드).', color:'독특한 색전환', grain:'중간', mood:'실험적·유니크',
+   weather:['맑음','밝은 날'], scene:['개성','예술'], warn:'표준색 아님·고가·소량.'},
+  {cat:'재포장·니치', key:['에스쿠라헤이세이','헤이세이','heisei'], name:'에스쿠라 헤이세이 400', iso:'400', avail:'new', bar:'linear-gradient(90deg,#e0a06a,#c25a7f)',
+   one:'일본 90년대 무드 재포장 컬러.', color:'따뜻·노스탤지어, 파스텔', grain:'중간', mood:'헤이세이·감성',
+   weather:['맑음','약한 흐림','실내창가'], scene:['일상','인물','감성 스냅'], warn:'재포장 → 편차 있을 수 있음.'},
+  {cat:'재포장·니치', key:['럭키','lucky','shd'], name:'럭키필름 (Lucky) *중국', iso:'100', avail:'new', bar:'linear-gradient(90deg,#c0402a,#8a2a12)',
+   one:'중국 필름. 거친 개성·가성비.', color:'올드·빈티지(흑백 SHD100도)', grain:'굵음', mood:'로우파이·빈티지',
+   weather:['맑음','한낮'], scene:['거리','실험','가성비'], warn:'품질 편차·거친 입자.'},
+  {cat:'재포장·니치', key:['마이하트','myheart'], name:'마이하트 (MyHeart) 250·400·500', iso:'400', avail:'new', bar:'linear-gradient(90deg,#e08a9a,#c25a6f)',
+   one:'가성비 빈티지 따뜻 색감.', color:'따뜻·빈티지, 부드러움', grain:'중간', mood:'가성비·레트로',
+   weather:['맑음','한낮'], scene:['일상','입문','스냅'], warn:'재포장 → 품질 편차 있을 수 있음.'},
+  {cat:'단종·중고', key:['코니카','konica','센츄리아','centuria'], name:'코니카 센츄리아 *단종', iso:'200', avail:'used', bar:'linear-gradient(90deg,#c0a02a,#8a6a12)',
+   one:'부드러운 옐로톤. 지금은 중고.', color:'부드러움, 약한 옐로우', grain:'중간', mood:'올드·따뜻',
+   weather:['맑음','한낮'], scene:['일상','빈티지 감성'], warn:'단종 → 만료·중고만.'},
+  {cat:'단종·중고', key:['비스타','vista','아그파'], name:'아그파 비스타 *단종', iso:'400', avail:'used', bar:'linear-gradient(90deg,#d43a5a,#8a2a6a)',
+   one:'붉은기·쨍한 채도. 귀함.', color:'붉은·마젠타, 강한 채도', grain:'중간', mood:'강렬·레트로',
+   weather:['맑음','한낮'], scene:['거리','채도','노을'], warn:'단종 → 만료·고가.'}
+];
+function findProfile(name){var n=(name||'').toLowerCase().replace(/\s/g,'');
+  for(var i=0;i<FILM_LIB.length;i++)for(var j=0;j<FILM_LIB[i].key.length;j++)if(n.indexOf(FILM_LIB[i].key[j].toLowerCase().replace(/\s/g,''))>=0)return FILM_LIB[i];
+  return null;}
+function genericProfile(iso){iso=+iso;
+  if(iso<=100)return {name:'저감도 필름(일반)',one:'밝은 야외용, 곱고 안정적.',color:'채도·계조 안정',grain:'고움',mood:'차분',weather:['맑음','밝은 야외'],scene:['풍경','인물','야외'],warn:'어두운 데선 흔들림 주의.',bar:'linear-gradient(90deg,#8d5b12,#c25a2f)'};
+  if(iso<=200)return {name:'중감도 필름(일반)',one:'낮 범용.',color:'무난',grain:'중간',mood:'범용',weather:['맑음','약한 흐림'],scene:['일상','여행'],warn:'저녁·실내는 부족.',bar:'linear-gradient(90deg,#2d7558,#8d5b12)'};
+  if(iso<=400)return {name:'고감도 필름(일반)',one:'만능, 흐림·실내 커버.',color:'생생',grain:'조금 굵음',mood:'활기',weather:['흐림','실내','저녁'],scene:['이벤트','실내','만능'],warn:'대낮엔 과할 수 있음.',bar:'linear-gradient(90deg,#a8432f,#8d5b12)'};
+  return {name:'초고감도 필름(일반)',one:'저조도·야간.',color:'거침·분위기',grain:'굵음',mood:'무드·야간',weather:['야간','실내 어두움'],scene:['야경','실내 저조도'],warn:'그레인 큼. 낮엔 비추.',bar:'linear-gradient(90deg,#4a4f55,#a8432f)'};}
+function profileFor(name,iso){return findProfile(name)||genericProfile(iso);}
+function availBadge(a){return a==='new'?'<span class="badge b-good">신품 유통</span>':(a==='used'?'<span class="badge b-warm">중고·단종</span>':'');}
+function profileCardHTML(p,extra){
+  var w=(p.weather||[]).map(function(x){return '<span class="chip w">☀ '+esc(x)+'</span>';}).join('');
+  var s=(p.scene||[]).map(function(x){return '<span class="chip s">'+esc(x)+'</span>';}).join('');
+  return '<div class="fcard"><div class="bar" style="background:'+p.bar+'"></div>'+
+    '<div class="hd"><div><div class="nm">'+esc(p.name)+'</div><div class="iso">ISO '+(p.iso||'')+(extra?' · '+extra:'')+'</div></div>'+(p.avail?availBadge(p.avail):'')+'</div>'+
+    '<div class="one">"'+esc(p.one)+'"</div>'+
+    '<div class="grid"><span class="k">색감</span><span>'+esc(p.color)+'</span><span class="k">입자</span><span>'+esc(p.grain)+'</span><span class="k">분위기</span><span>'+esc(p.mood)+'</span></div>'+
+    '<div class="recline"><span class="lab">추천 날씨</span><div style="margin-top:5px">'+w+'</div><span class="lab">추천 상황·피사체</span><div style="margin-top:5px">'+s+'</div></div>'+
+    galleryLine(p)+
+    (p.warn?'<div class="warnline">⚠ '+esc(p.warn)+'</div>':'')+'</div>';}
+function galleryLine(p){var nm=shortName(p.name);
+  var qn=encodeURIComponent(nm+' 필름')+'%20%EC%98%88%EC%8B%9C';
+  var qe=encodeURIComponent(nm.replace(/[^0-9A-Za-z\uAC00-\uD7A3\s]/g,'').trim()+' film');
+  return '<div class="galline"><span class="lab">📷 예시사진 (실제 갤러리 열기)</span><div class="galbtns">'+
+    '<a href="https://www.google.com/search?tbm=isch&q='+qn+'" target="_blank" rel="noopener">구글 이미지</a>'+
+    '<a href="https://www.flickr.com/search/?text='+qe+'&sort=interestingness-desc" target="_blank" rel="noopener">Flickr</a>'+
+    '<a href="https://www.lomography.com/search?q='+qe+'" target="_blank" rel="noopener">Lomography</a>'+
+    '<a href="https://www.instagram.com/explore/tags/'+encodeURIComponent(nm.replace(/[^0-9A-Za-z\uAC00-\uD7A3]/g,''))+'/" target="_blank" rel="noopener">인스타 태그</a>'+
+    '</div></div>';}
+
+/* ================= 구매처 (웹 조사 2026-07-16) ================= */
+var VENDORS=[
+  {name:'필름천국 (이터너블)', type:'국내 전문샵', url:'https://www.filmparadise.co.kr/',
+   films:['코닥 골드200','컬러플러스200','울트라맥스400','엑타100','후지 C200','후지 160NS','로모 레드스케일','시네스틸','롤라이'],
+   note:'롤필름·일회용·악세사리 + 현상·스캔·인화 서비스 함께'},
+  {name:'필름공구 (film09)', type:'국내 전문샵', url:'https://www.film09.com/',
+   films:['코닥 울트라맥스400(1롤·3롤팩)','코닥 골드200','컬러플러스200'],
+   note:'번들포장·유통기한 표기해서 판매'},
+  {name:'엘리카메라 (allycamera)', type:'단골샵 ★', url:'https://www.allycamera.com/',
+   films:['코닥 엑타컬러프로 400·160','후지 수페리아프리미엄400·C100·벨비아100·아크로스100 II','코노(MOJO·BEBOP·OFFBEAT·CINIS)','에스쿠라 헤이세이','어로어 400D·800T','럭키필름','로모 피쉬아이'],
+   note:'명진 단골. 니치·재포장 필름(코노·에스쿠라·어로어·럭키) 강함'},
+  {name:'워터스톤 필름앤카메라', type:'단골샵 ★ · 시네필름', url:'https://smartstore.naver.com/waterstone-film-and-camera',
+   films:['코닥 135·120','비전3 500T·250D','이스트만 더블엑스','트라이엑스','리플렉스랩','시네스틸'],
+   note:'명진 단골. 시네필름(비전3·더블엑스) 리팩 전문. 135/120/16mm/슈퍼8'},
+  {name:'폴카메라 (paulcamera)', type:'단골샵 ★', url:'https://smartstore.naver.com/paulcamera',
+   films:['코닥 포트라160','울트라맥스400','골드200','프로이미지100'],
+   note:'명진 단골. 필름카메라+필름. 코닥 라인 위주(스마트스토어·쿠팡)'},
+  {name:'로모그래피 코리아', type:'브랜드 직영', url:'https://shop.lomography.com/kr/film',
+   films:['로모크롬 클래시컬러200','컬러 ’92 400','메트로폴리스','레드스케일XR','컬러네거100','흑백(포츠담·베를린·얼그레이·레이디그레이)'],
+   note:'개성 강한 실험적 색감 전문. 브랜드 직영몰'},
+  {name:'루트카메라 / 가산카메라', type:'필름카메라 전문점', url:'https://www.root-camera.com/',
+   films:['필름카메라 위주 + 일부 필름·악세사리'],
+   note:'중고 필름카메라 최다보유·교환/매입. 바디 사러 갈 때 함께'},
+  {name:'네이버·쿠팡·11번가·이마트몰', type:'오픈마켓', url:'https://search.shopping.naver.com/search/all?query=35mm%ED%95%84%EB%A6%84',
+   films:['코닥 골드200(최저 ~16,490원)','울트라맥스400','컬러플러스200','후지 컬러필름'],
+   note:'가격비교·빠른배송. 다나와로 최저가 확인 후 구매'},
+  {name:'당근 · 번개장터', type:'중고·빈티지', url:'https://www.daangn.com/search/%ED%95%84%EB%A6%84',
+   films:['만료 코닥골드100','후지 오토오토','단종 아그파·코니카 등'],
+   note:'개당 1만원 이하 노려서. 위 "매물" 탭과 연동'}
+];
+function renderShop(){
+  document.getElementById('shopList').innerHTML=VENDORS.map(function(v){
+    var chips=v.films.map(function(f){return '<span class="chip f">'+esc(f)+'</span>';}).join('');
+    return '<div class="vcard"><div class="vh"><span class="vn">'+esc(v.name)+'</span><span class="badge b-low">'+esc(v.type)+'</span></div>'+
+      '<div style="margin:2px 0 2px">'+chips+'</div>'+
+      '<div class="vnote">'+esc(v.note)+'</div>'+
+      '<a class="go" href="'+v.url+'" target="_blank" rel="noopener">사이트 열기 ↗</a></div>';
+  }).join('');
+}
+
+/* ================= 데모 저장소 ================= */
+var KEY='maydly-film-v1';
+var NOW=2026;
+var db=load();
+function load(){try{var d=JSON.parse(localStorage.getItem(KEY));if(d&&d.stock)return d;}catch(e){}
+  return {stock:[{id:1,name:'코닥 골드 100',iso:100,year:2002,store:'room',qty:6},{id:2,name:'후지 오토오토 400',iso:400,year:2002,store:'room',qty:4}],deals:[],plan:[],seq:100};}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));}
+function resetDemo(){if(confirm('저장한 데이터를 초기화할까요?')){localStorage.removeItem(KEY);db=load();renderAll();}}
+
+/* ===== 만료필름 보정 ===== */
+function stopsByYears(y){ if(y<=2)return 0; if(y<=10)return 1; if(y<=20)return 2; return 3; }
+function calcStops(iso,year,store,type){var y=NOW-year;var s=stopsByYears(y);
+  if(store==='cold')s=Math.max(0,s-1);else if(store==='hot')s=s+1;if(type==='slide')s=Math.max(0,s-1);return {years:y,stops:s};}
+var STD=[3200,1600,800,400,200,100,50,25,12];
+function setIso(boxIso,stops){var t=boxIso/Math.pow(2,stops);if(t<25)return {dial:25,manual:Math.round(Math.log2(25/t))};return {dial:STD.reduce(function(a,b){return Math.abs(b-t)<Math.abs(a-t)?b:a;}),manual:0};}
+function sunnyShutter(iso){var map={12:'1/15',25:'1/30',50:'1/60',100:'1/125',200:'1/250',400:'1/500',800:'1/1000'};var b=STD.reduce(function(a,c){return Math.abs(c-iso)<Math.abs(a-iso)?c:a;});return map[b]||'1/'+iso;}
+function settingText(iso,year,store,type){var c=calcStops(iso,year,store,type);var si=setIso(iso,c.stops);return {years:c.years,stops:c.stops,dial:si.dial,manual:si.manual,label:'ISO '+si.dial+(si.manual>0?(' + 수동 '+si.manual+'스톱'):''),shutter:sunnyShutter(si.dial)};}
+function calcSet(){var iso=+val('cIso'),year=+val('cYear'),store=val('cStore'),type=val('cType');var r=settingText(iso,year,store,type);
+  var rows=[['쨍한 맑음','f/16'],['살짝 흐림','f/11'],['흐림','f/8'],['그늘·해질녘','f/5.6~4']].map(function(x){return '<tr><td>'+x[0]+'</td><td>'+x[1]+'</td><td>'+r.shutter+'</td></tr>';}).join('');
+  document.getElementById('setOut').innerHTML='<div class="setout"><div class="big">📷 카메라 ISO를 '+r.label+' 로 세팅</div><div class="mini">박스 ISO '+iso+' · 만료 '+r.years+'년 · 보정 +'+r.stops+'스톱</div><table style="margin-top:10px"><tr><th>날씨</th><th>조리개</th><th>셔터</th></tr>'+rows+'</table>'+(r.manual>0?'<div class="mini">※ 다이얼 바닥(25). 셔터 한 단 느리게/조리개 한 단 더 열어 수동 +'+r.manual+' 추가.</div>':'')+'</div>';}
+function calcPer(){var p=+val('gPrice'),q=+val('gQty');if(!p||!q){document.getElementById('perOut').innerHTML='<div class="mini">가격·개수를 입력하세요.</div>';return;}var per=Math.round(p/q),ok=per<=10000;
+  document.getElementById('perOut').innerHTML='<div class="setout"><span class="big" style="color:'+(ok?'var(--good)':'var(--bad)')+'">개당 '+per.toLocaleString()+'원 '+(ok?'✓ 통과':'✗ 비쌈')+'</span><div class="mini">'+(ok?'1만원 이하 — 상태 좋으면 담기.':'1만원 초과 — 아주 좋은 상태 아니면 패스. (신품 골드200도 ~1.6만)')+'</div></div>';}
+
+/* ===== 재고 ===== */
+function addStock(){var name=val('sName').trim();if(!name){alert('필름 이름을 넣어주세요');return;}db.stock.push({id:++db.seq,name:name,iso:+val('sIso'),year:+val('sYear'),qty:+val('sQty')||1,store:val('sStore')});document.getElementById('sName').value='';save();renderAll();go('stock');}
+function qty(id,d){var s=db.stock.find(function(x){return x.id===id;});if(!s)return;s.qty=Math.max(0,s.qty+d);if(s.qty===0)db.stock=db.stock.filter(function(x){return x.id!==id;});save();renderAll();}
+function renderStock(){var el=document.getElementById('stockList'),tot=0;
+  el.innerHTML=db.stock.map(function(s){tot+=s.qty;var st=settingText(s.iso,s.year,s.store,'neg');var p=profileFor(s.name,s.iso);var storeK={cold:'냉장',room:'상온',hot:'더운곳'}[s.store];
+    var wtags=(p.weather||[]).slice(0,3).map(function(w){return '<span class="chip w">☀ '+esc(w)+'</span>';}).join('');
+    return '<div class="stock"><div class="swatch" style="background:'+p.bar+'"></div><div class="info"><div class="n">'+esc(s.name)+'</div><div class="d">'+esc(p.color)+' · 세팅 '+st.label+' · '+s.year+' '+storeK+'</div><div class="tags">'+wtags+'</div></div><div class="qbox"><button class="qbtn" onclick="qty('+s.id+',-1)">−</button><span class="qn">'+s.qty+'</span><button class="qbtn" onclick="qty('+s.id+',1)">＋</button></div></div>';
+  }).join('')||'<div class="mini">보유 필름이 없습니다. 아래에서 추가하세요.</div>';
+  document.getElementById('stockTotal').textContent=tot+'롤';}
+function renderRec(){var el=document.getElementById('recList');if(!db.stock.length){el.innerHTML='<div class="mini">재고를 넣으면 필름별 추천이 생깁니다.</div>';return;}
+  el.innerHTML=db.stock.map(function(s){var p=profileFor(s.name,s.iso);var st=settingText(s.iso,s.year,s.store,'neg');return profileCardHTML(p,'보유 '+s.qty+'롤 · 세팅 '+st.label);}).join('');}
+var libSel=-1;
+function shortName(n){return n.replace(/\s*\(.*?\)\s*/g,' ').replace(/\s*\*.*$/,'').trim();}
+function selFilm(i){libSel=i;renderLib();var d=document.getElementById('libDetail');if(d&&d.scrollIntoView)d.scrollIntoView({behavior:'smooth',block:'start'});}
+function libMatch(f,q){return !q||f.name.toLowerCase().replace(/\s/g,'').indexOf(q)>=0||f.key.some(function(k){return k.toLowerCase().replace(/\s/g,'').indexOf(q)>=0;});}
+function renderLib(){var q=(val('libSearch')||'').toLowerCase().replace(/\s/g,'');
+  var cats=['코닥','후지','시네필름','로모','흑백','재포장·니치','단종·중고'];var html='';
+  cats.forEach(function(cat){var idxs=[];FILM_LIB.forEach(function(f,i){if(f.cat===cat&&libMatch(f,q))idxs.push(i);});if(!idxs.length)return;
+    html+='<div class="catlab">'+cat+' <span>('+idxs.length+')</span></div><div class="namewrap">';
+    idxs.forEach(function(i){var f=FILM_LIB[i];html+='<button class="namechip'+(libSel===i?' on':'')+'" onclick="selFilm('+i+')">'+esc(shortName(f.name))+' <span class="iso">'+esc(f.iso)+'</span></button>';});
+    html+='</div>';});
+  document.getElementById('libNames').innerHTML=html||'<div class="mini">검색 결과 없음.</div>';
+  var d=document.getElementById('libDetail');
+  d.innerHTML=(libSel>=0&&FILM_LIB[libSel]&&libMatch(FILM_LIB[libSel],q))?profileCardHTML(FILM_LIB[libSel],''):'<div class="mini">👆 위에서 필름명을 눌러 상세를 확인하세요.</div>';}
+
+/* ===== 매물 ===== */
+function addDeal(){var name=val('dName').trim(),p=+val('dPrice'),q=+val('dQty');if(!name||!p||!q){alert('매물명·가격·개수를 넣어주세요');return;}db.deals.unshift({id:++db.seq,name:name,plat:val('dPlat'),price:p,qty:q,memo:val('dMemo').trim()});['dName','dPrice','dQty','dMemo'].forEach(function(i){document.getElementById(i).value='';});save();renderDeals();}
+function delDeal(id){db.deals=db.deals.filter(function(x){return x.id!==id;});save();renderDeals();}
+function toPlan(id){var d=db.deals.find(function(x){return x.id===id;});if(!d)return;db.plan.unshift({id:++db.seq,name:d.name,plat:d.plat,price:d.price,qty:d.qty,memo:d.memo});save();renderPlan();alert('구매계획에 담았습니다');}
+function renderDeals(){var el=document.getElementById('dealList');
+  el.innerHTML=db.deals.map(function(d){var per=Math.round(d.price/d.qty),ok=per<=10000;var pf=findProfile(d.name);
+    return '<div class="deal"><div class="top"><span><b>'+esc(d.name)+'</b> · '+d.plat+'</span><span class="p">'+d.price.toLocaleString()+'원</span></div><div><span class="per" style="color:'+(ok?'var(--good)':'var(--bad)')+'">개당 '+per.toLocaleString()+'원 '+(ok?'✓ 통과':'✗ 비쌈')+'</span>'+(pf?' · <span class="badge b-low">'+esc(pf.mood)+'</span>':'')+'</div>'+(d.memo?'<div class="memo">'+esc(d.memo)+'</div>':'')+(pf?'<div class="memo">📖 '+esc(pf.one)+'</div>':'')+'<div class="btns"><button class="act sub" style="border:1.5px solid var(--accent)" onclick="toPlan('+d.id+')">구매계획 담기</button><button style="border:1px solid #e6cdc4;background:#fff;color:var(--bad)" onclick="delDeal('+d.id+')">삭제</button></div></div>';
+  }).join('')||'<div class="mini">기록한 매물이 없습니다.</div>';}
+function planToStock(id){var p=db.plan.find(function(x){return x.id===id;});if(!p)return;db.stock.push({id:++db.seq,name:p.name,iso:400,year:2002,qty:p.qty,store:'room'});db.plan=db.plan.filter(function(x){return x.id!==id;});save();renderAll();go('stock');alert('보유 재고로 이동 (ISO·연도는 재고에서 수정)');}
+function delPlan(id){db.plan=db.plan.filter(function(x){return x.id!==id;});save();renderPlan();}
+function renderPlan(){var el=document.getElementById('planList');
+  el.innerHTML=db.plan.map(function(p){var per=Math.round(p.price/p.qty);return '<div class="deal"><div class="top"><span><b>'+esc(p.name)+'</b> · '+p.plat+'</span><span class="p">'+p.price.toLocaleString()+'원</span></div><div><span class="per" style="color:var(--muted)">개당 '+per.toLocaleString()+'원</span></div><div class="btns"><button class="act" style="border:none" onclick="planToStock('+p.id+')">✓ 샀음 → 재고로</button><button style="border:1px solid #e6cdc4;background:#fff;color:var(--bad)" onclick="delPlan('+p.id+')">삭제</button></div></div>';}).join('')||'<div class="mini">담은 필름이 없습니다. 매물에서 담아보세요.</div>';}
+
+/* ===== 유틸 ===== */
+function val(id){return document.getElementById(id).value;}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function fillDatalist(){document.getElementById('filmNames').innerHTML=FILM_LIB.map(function(f){return '<option value="'+esc(f.name)+'">';}).join('');}
+function renderAll(){renderStock();renderRec();renderLib();renderShop();renderDeals();renderPlan();}
+function go(t){document.querySelectorAll('nav.tabs button').forEach(function(b){b.classList.toggle('on',b.dataset.t===t);});document.querySelectorAll('section').forEach(function(s){s.classList.toggle('on',s.id===t);});window.scrollTo(0,0);}
+document.querySelectorAll('nav.tabs button').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.t);});});
+fillDatalist();renderAll();
+</script>
+</body>
+</html>
