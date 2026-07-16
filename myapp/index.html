@@ -1253,7 +1253,8 @@ function sheetComplete(id){
   window._buyId=id;window._ocat='카메라';var cats=['카메라','렌즈','필터','조명','조명효과','스탠드','전원','케이블','컴퓨터','기타'];
   var today=(new Date()).toISOString().slice(0,10);
   document.getElementById('sheet').innerHTML='<h3>구매완료 · '+esc(b.name)+'</h3>'
-    +'<div class="fld"><label>구매 금액</label><input id="c_amt" type="number" inputmode="numeric" placeholder="예: 320000"></div>'
+    +'<div class="fld"><label>내가 산 금액</label><input id="c_amt" type="number" inputmode="numeric" placeholder="예: 320000"></div>'
+    +'<div class="fld"><label>현재 시세 (원, 선택 — 비우면 산 금액과 동일)</label><input id="c_mkt" type="number" inputmode="numeric" placeholder="예: 400000"></div>'
     +'<div class="fld"><label>구매 날짜</label><input id="c_date" type="date" value="'+today+'"></div>'
     +'<div class="fld"><label>보유 분류</label><div class="chips" id="c_cats">'+cats.map(function(c){return '<div class="chip '+(c==='카메라'?'on':'')+'" onclick="pickOcat(this,\''+c+'\')">'+c+'</div>';}).join('')+'</div></div>'
     +'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button><button class="msave" onclick="saveComplete()">완료 → 가계부·보유 반영</button></div>';
@@ -1264,8 +1265,9 @@ function saveComplete(){
   var b=buys.find(function(x){return String(x.id)===String(window._buyId);});if(!b)return;
   var amt=parseInt(document.getElementById('c_amt').value,10);if(!amt||amt<0){toast('구매 금액을 입력하세요');return;}
   var date=document.getElementById('c_date').value;if(!date){toast('날짜를 선택하세요');return;}
+  var mkt=parseInt(document.getElementById('c_mkt').value,10)||amt;
   ledger.push({id:uid(),date:date,desc:b.name+' 구매',cat:'장비·카메라',type:'out',amt:amt,memo:'구매계획 완료'});save(K.led,ledger);pushSoon('ledger');
-  owns.unshift({id:uid(),name:b.name,cat:window._ocat,desc:'구매 '+date,price:amt,status:'구매'});save(K.own,owns);
+  owns.unshift({id:uid(),name:b.name,cat:window._ocat,desc:'구매 '+date,price:mkt,paid:amt,status:'구매'});save(K.own,owns);
   if(b._k!=null&&buyDel.indexOf(b._k)<0)buyDel.push(b._k);
   buys=buys.filter(function(x){return String(x.id)!==String(window._buyId);});saveBuys();pushSoon('buys');pushSoon('owns');
   renderBuy();renderOwn();renderMoney();closeSheet();
@@ -1277,18 +1279,23 @@ function renderOwn(){
   var el=document.getElementById('ownList');
   if(!owns.length){el.innerHTML='<div class="empty">＋ 로 가진 장비를 추가하세요</div>';return;}
   var order=['카메라','렌즈','필터','조명','조명효과','스탠드','전원','케이블','컴퓨터','기타','배경/소품','수리검토'];
-  var groups={},total=0,byCat={};
-  owns.forEach(function(o){var c=o.cat||'기타';(groups[c]=groups[c]||[]).push(o);total+=(+o.price||0);byCat[c]=(byCat[c]||0)+(+o.price||0);});
+  var groups={},total=0,totalPaid=0,byCat={};
+  owns.forEach(function(o){var c=o.cat||'기타';(groups[c]=groups[c]||[]).push(o);total+=(+o.price||0);totalPaid+=(+o.paid||0);byCat[c]=(byCat[c]||0)+(+o.price||0);});
   var keys=Object.keys(groups).sort(function(a,b){var ia=order.indexOf(a),ib=order.indexOf(b);return (ia<0?99:ia)-(ib<0?99:ib);});
   var chips=keys.filter(function(k){return byCat[k]>0;}).map(function(k){return '<span class="cchip">'+esc(k)+' '+wonShort(byCat[k])+'</span>';}).join('');
   var h='<div class="card" style="padding:13px 15px"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:800;color:#5f8b6a">📦 전체 보유가치</span><b style="font-size:18px;color:#5f8b6a">'+won(total)+'</b></div>'
-    +'<div style="font-size:11px;color:#a99e8f;margin-top:2px">'+owns.length+'개 · 대략 시세</div>'
+    +'<div style="font-size:11px;color:#a99e8f;margin-top:2px">'+owns.length+'개 · 대략 시세'+(totalPaid>0?' · 산 금액 합 '+wonShort(totalPaid):'')+'</div>'
     +(chips?'<div class="catline" style="margin-top:8px">'+chips+'</div>':'')+'</div>';
   h+=keys.map(function(k){
     return '<div class="seg">'+esc(k)+' <span style="color:#9a9086;font-weight:600;font-size:11.5px">'+groups[k].length+'개 · '+won(byCat[k])+'</span></div>'+groups[k].map(function(o){
       return '<div class="card"><div class="row"><div class="lt"><div class="own">'+esc(o.name)+' <a class="imgq" href="https://www.google.com/search?tbm=isch&q='+encodeURIComponent(o.name)+'" target="_blank" rel="noreferrer">🔍</a></div>'
         +'<div class="owns">'+(o.desc?esc(o.desc):'')+(o.status?' <span class="stbadge">'+esc(o.status)+'</span>':'')+'</div></div>'
-        +(o.price?'<div class="opr">'+won(o.price)+'</div>':'')
+        +(o.price||o.paid?'<div class="opr" style="text-align:right">'+won(o.price||o.paid)
+          +(o.paid&&o.price&&+o.paid!==+o.price
+            ?'<div style="font-size:10.5px;font-weight:600;color:#97a394">산 금액 '+won(o.paid)+' '+(+o.price>+o.paid
+              ?'<span style="color:#3f8f5f">▲'+wonShort(o.price-o.paid)+'</span>'
+              :'<span style="color:#c2564b">▼'+wonShort(o.paid-o.price)+'</span>')+'</div>'
+            :'')+'</div>':'')
         +'<button class="del" onclick="delItem(\'own\',\''+o.id+'\')">×</button></div></div>';
     }).join('');
   }).join('');
@@ -1828,12 +1835,13 @@ function sheetOwn(){
     +'<div class="fld"><label>분류</label><div class="chips" id="o_cats">'+cats.map(function(c){return '<div class="chip '+(c==='카메라'?'on':'')+'" onclick="pickOcat(this,\''+c+'\')">'+c+'</div>';}).join('')+'</div></div>'
     +'<div class="fld"><label>설명 (선택)</label><input id="o_sub" placeholder="예: 메인 바디"></div>'
     +'<div class="fld"><label>대략 시세 (원, 선택)</label><input id="o_price" type="number" inputmode="numeric" placeholder="예: 2700000"></div>'
+    +'<div class="fld"><label>내가 산 금액 (원, 선택)</label><input id="o_paid" type="number" inputmode="numeric" placeholder="예: 2400000"></div>'
     +'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button><button class="msave" onclick="saveOwn()">추가</button></div>';
 }
 /* 보유추가·구매완료 두 시트가 공유 — 클릭한 칩의 «형제»만 초기화(컨테이너 하드코딩 금지) */
 function pickOcat(el,c){window._ocat=c;var p=el.parentNode;if(p)p.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on');});el.classList.add('on');}
 function saveOwn(){var n=document.getElementById('o_name').value.trim();if(!n){toast('이름을 입력하세요');return;}
-  owns.unshift({id:uid(),name:n,cat:window._ocat,desc:document.getElementById('o_sub').value.trim(),price:parseInt(document.getElementById('o_price').value,10)||0,status:''});save(K.own,owns);pushSoon('owns');renderOwn();closeSheet();}
+  owns.unshift({id:uid(),name:n,cat:window._ocat,desc:document.getElementById('o_sub').value.trim(),price:parseInt(document.getElementById('o_price').value,10)||0,paid:parseInt(document.getElementById('o_paid').value,10)||0,status:''});save(K.own,owns);pushSoon('owns');renderOwn();closeSheet();}
 
 /* 구매해서 보유 추가 (당근·중고 등 수기) — 보유 반영 + 원하면 가계부 지출도 자동 */
 function sheetOwnPurchase(){
@@ -1842,7 +1850,8 @@ function sheetOwnPurchase(){
   document.getElementById('sheet').innerHTML='<h3>🛒 구매해서 보유 추가</h3>'
     +'<div class="fld"><label>이름</label><input id="p_name" placeholder="예: 미놀타 50mm F1.4"></div>'
     +'<div class="fld"><label>분류</label><div class="chips" id="p_cats">'+cats.map(function(c){return '<div class="chip '+(c==='카메라'?'on':'')+'" onclick="pickOcat(this,\''+c+'\')">'+c+'</div>';}).join('')+'</div></div>'
-    +'<div class="fld"><label>구매 금액 (원)</label><input id="p_amt" type="number" inputmode="numeric" placeholder="예: 80000"></div>'
+    +'<div class="fld"><label>내가 산 금액 (원)</label><input id="p_amt" type="number" inputmode="numeric" placeholder="예: 80000"></div>'
+    +'<div class="fld"><label>현재 시세 (원, 선택 — 비우면 산 금액과 동일)</label><input id="p_mkt" type="number" inputmode="numeric" placeholder="예: 120000"></div>'
     +'<div class="fld"><label>구매 날짜</label><input id="p_date" type="date" value="'+today+'"></div>'
     +'<div class="fld"><label>어디서 샀는지 (선택)</label><input id="p_src" placeholder="예: 당근"></div>'
     +'<div class="fld"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="p_led" checked style="width:17px;height:17px;accent-color:#4f9a6a;margin:0"> 가계부에도 지출로 기록</label></div>'
@@ -1853,10 +1862,11 @@ function sheetOwnPurchase(){
 function saveOwnPurchase(){
   var n=document.getElementById('p_name').value.trim();if(!n){toast('이름을 입력하세요');return;}
   var amt=parseInt(document.getElementById('p_amt').value,10)||0;
+  var mkt=parseInt(document.getElementById('p_mkt').value,10)||amt;   // 시세 안 넣으면 산 금액 = 시세
   var date=document.getElementById('p_date').value||(new Date()).toISOString().slice(0,10);
   var src=document.getElementById('p_src').value.trim();
   var toLed=document.getElementById('p_led').checked&&amt>0;
-  owns.unshift({id:uid(),name:n,cat:window._ocat,desc:(src?src+' ':'')+'구매 '+date,price:amt,status:'구매'});save(K.own,owns);pushSoon('owns');
+  owns.unshift({id:uid(),name:n,cat:window._ocat,desc:(src?src+' ':'')+'구매 '+date,price:mkt,paid:amt,status:'구매'});save(K.own,owns);pushSoon('owns');
   if(toLed){ledger.push({id:uid(),date:date,desc:n+' 구매'+(src?'('+src+')':''),cat:'장비·카메라',type:'out',amt:amt,memo:'보유 수기추가'});save(K.led,ledger);pushSoon('ledger');renderMoney();}
   renderOwn();closeSheet();
   toast(esc(n)+' 보유 추가'+(toLed?' + 가계부 지출 기록':'')+'됨');
