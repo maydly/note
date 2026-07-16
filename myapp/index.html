@@ -1283,8 +1283,16 @@ function renderOwn(){
   owns.forEach(function(o){var c=o.cat||'기타';(groups[c]=groups[c]||[]).push(o);total+=(+o.price||0);totalPaid+=(+o.paid||0);byCat[c]=(byCat[c]||0)+(+o.price||0);});
   var keys=Object.keys(groups).sort(function(a,b){var ia=order.indexOf(a),ib=order.indexOf(b);return (ia<0?99:ia)-(ib<0?99:ib);});
   var chips=keys.filter(function(k){return byCat[k]>0;}).map(function(k){return '<span class="cchip">'+esc(k)+' '+wonShort(byCat[k])+'</span>';}).join('');
-  var h='<div class="card" style="padding:13px 15px"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:800;color:#5f8b6a">📦 전체 보유가치</span><b style="font-size:18px;color:#5f8b6a">'+won(total)+'</b></div>'
-    +'<div style="font-size:11px;color:#a99e8f;margin-top:2px">'+owns.length+'개 · 대략 시세'+(totalPaid>0?' · 산 금액 합 '+wonShort(totalPaid):'')+'</div>'
+  var pairMkt=0,paidCount=0;
+  owns.forEach(function(o){if(+o.paid>0){paidCount++;pairMkt+=(+o.price||0);}});
+  var h='<div class="card" style="padding:13px 15px">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:800;color:#5f8b6a">📦 현재 시세 합 (다 팔면)</span><b style="font-size:18px;color:#5f8b6a">'+won(total)+'</b></div>'
+    +(totalPaid>0
+      ?'<div style="display:flex;justify-content:space-between;align-items:center;margin-top:7px;padding-top:7px;border-top:1px dashed #dfeadd"><span style="font-weight:800;color:#b8912f">🧾 내가 산 금액 합</span><b style="font-size:16px;color:#b8912f">'+won(totalPaid)+'</b></div>'
+       +'<div style="font-size:11px;color:#a99e8f;margin-top:3px;text-align:right">산 금액 입력 '+paidCount+'/'+owns.length+'개 · 그 장비들 지금 시세 '+won(pairMkt)+' '
+       +(pairMkt>=totalPaid?'<b style="color:#3f8f5f">▲'+wonShort(pairMkt-totalPaid)+'</b>':'<b style="color:#c2564b">▼'+wonShort(totalPaid-pairMkt)+'</b>')+'</div>'
+      :'')
+    +'<div style="font-size:11px;color:#a99e8f;margin-top:3px">'+owns.length+'개 · 대략 시세 · 장비를 탭하면 산 금액을 넣을 수 있어요</div>'
     +(chips?'<div class="catline" style="margin-top:8px">'+chips+'</div>':'')+'</div>';
   h+=keys.map(function(k){
     return '<div class="seg">'+esc(k)+' <span style="color:#9a9086;font-weight:600;font-size:11.5px">'+groups[k].length+'개 · '+won(byCat[k])+'</span></div>'+groups[k].map(function(o){
