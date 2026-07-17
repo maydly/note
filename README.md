@@ -28,6 +28,6 @@
 
 현재 공개 기준 주소는 아래와 같습니다.
 
-- 메인: `https://bucket0825.github.io/note/`
-- AI 에이전트 운영 체계: `https://bucket0825.github.io/note/03_AI에이전트운영체계/`
-- 장비 비교자료: `https://bucket0825.github.io/note/07_장비비교자료/`
+- 메인: `https://maydly.github.io/note/`
+- AI 에이전트 운영 체계: `https://maydly.github.io/note/03_AI에이전트운영체계/`
+- 장비 비교자료: `https://maydly.github.io/note/07_장비비교자료/`
