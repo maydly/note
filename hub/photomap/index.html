@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>maydly · 대표 사진맵</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#f1eef0;color:#2e2a26;
+  font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:28px 22px;text-align:center}
+.wm{font-size:30px;font-weight:800;letter-spacing:-.7px}
+.wm .d{color:#c98e7f}
+.sub{font-size:13px;color:#8a8178;line-height:1.6;max-width:340px}
+.card{background:#fff;border-radius:16px;padding:22px 20px;box-shadow:0 5px 16px rgba(90,70,50,.1);width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px}
+.card h2{font-size:15px;font-weight:750}
+input{font-size:14px;padding:12px 14px;border:1.5px solid #e2dace;border-radius:12px;outline:none;width:100%}
+input:focus{border-color:#c98e7f}
+button{font-size:15px;font-weight:700;padding:12px;border:none;border-radius:12px;background:#c98e7f;color:#fff;cursor:pointer}
+button:active{opacity:.85}
+.msg{font-size:12.5px;min-height:16px}
+.msg.err{color:#c2564b}
+.msg.load{color:#8a8178}
+.hint{font-size:11.5px;color:#a99e8f;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap" id="gate">
+  <div class="wm">maydly<span class="d">.</span></div>
+  <div class="sub">대표 사진맵 — 명진·수빈 전용. 사진과 목록 전체가 <b>비공개 저장소</b>에 있어, 불러오려면 GitHub 토큰이 필요합니다.</div>
+  <div class="card">
+    <h2>사진 불러오기</h2>
+    <input id="tok" type="password" placeholder="GitHub 토큰 (ghp_… 또는 gho_…)" autocomplete="off" onkeydown="if(event.key==='Enter')go()">
+    <button onclick="go()">불러오기</button>
+    <div class="msg" id="msg"></div>
+    <div class="hint">토큰은 이 기기(브라우저)에만 저장되고 서버로 보내지 않습니다. 예약 캘린더와 같은 토큰을 씁니다.</div>
+  </div>
+</div>
+<script>
+var OWNER='maydly', REPO='maydly-photomap-data', TOKKEY='maydly_gh_token';
+function headers(t){return {Authorization:'Bearer '+t, Accept:'application/vnd.github+json'};}
+function b64utf8(b64){ return decodeURIComponent(escape(atob((b64||'').replace(/\s/g,'')))); }
+function setMsg(t,cls){ var m=document.getElementById('msg'); m.textContent=t||''; m.className='msg '+(cls||''); }
+async function loadApp(t){
+  setMsg('불러오는 중…','load');
+  var rt=await fetch('https://api.github.com/repos/'+OWNER+'/'+REPO+'/git/trees/main?recursive=1',{cache:'no-store',headers:headers(t)});
+  if(rt.status===401||rt.status===403) throw new Error('토큰이 맞지 않거나 이 저장소 접근 권한이 없습니다.');
+  if(!rt.ok) throw new Error('저장소를 읽지 못했습니다 ('+rt.status+')');
+  var jt=await rt.json();
+  var sha=null; (jt.tree||[]).forEach(function(x){ if(x.path==='app.html') sha=x.sha; });
+  if(!sha) throw new Error('app.html을 찾지 못했습니다(아직 업로드 전일 수 있음).');
+  var rb=await fetch('https://api.github.com/repos/'+OWNER+'/'+REPO+'/git/blobs/'+sha,{cache:'no-store',headers:headers(t)});
+  if(!rb.ok) throw new Error('app.html 로드 실패 ('+rb.status+')');
+  var jb=await rb.json();
+  var html=b64utf8(jb.content);
+  localStorage.setItem(TOKKEY,t);
+  document.open(); document.write(html); document.close();
+}
+async function go(){
+  var t=(document.getElementById('tok').value||'').trim() || localStorage.getItem(TOKKEY)||'';
+  if(!t){ setMsg('토큰을 입력해 주세요.','err'); return; }
+  try{ await loadApp(t); }
+  catch(e){ setMsg(e.message,'err'); }
+}
+// 이미 저장된 토큰 있으면 자동 시도
+(function(){ var t=localStorage.getItem(TOKKEY); if(t){ document.getElementById('tok').value=''; loadApp(t).catch(function(e){ setMsg(e.message+' — 토큰을 다시 입력해 주세요.','err'); }); } })();
+</script>
+</body>
+</html>
