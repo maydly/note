@@ -56,7 +56,7 @@
   function add(){
     if(document.getElementById('maydlyHubBtn'))return;
     var a=document.createElement('a');
-    a.id='maydlyHubBtn';a.href='https://bucket0825.github.io/note/hub/';a.setAttribute('aria-label','maydly 허브로');
+    a.id='maydlyHubBtn';a.href='https://maydly.github.io/note/hub/';a.setAttribute('aria-label','maydly 허브로');
     a.style.cssText="position:fixed;left:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:2147483647;display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.94);color:#2e2a26;text-decoration:none;font-family:-apple-system,'Pretendard','Apple SD Gothic Neo',sans-serif;font-size:13px;line-height:1;padding:9px 15px;border-radius:22px;box-shadow:0 3px 14px rgba(0,0,0,.22);border:1px solid rgba(0,0,0,.06)";
     a.innerHTML='<span style="font-weight:800">\u2190 \uD5C8\uBE0C</span><span style="width:1px;height:12px;background:rgba(0,0,0,.16)"></span><span style="font-weight:600;color:#8a8178">장비 비교자료</span>';
     (document.body||document.documentElement).appendChild(a);
