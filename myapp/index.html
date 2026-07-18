@@ -1994,7 +1994,8 @@ function syncGear(){
 
 /* ===== PIN (허브와 동일 0898) ===== */
 var PW_HASH='9923e00231428d5272881c78ed1ffe7340dd73f4792d45ad24b5ab469fcc1a4b';
-function enter(){document.getElementById('gate').style.display='none';document.getElementById('app').style.display='';boot();}
+function enter(){document.getElementById('gate').style.display='none';document.getElementById('app').style.display='';boot();openTabFromURL();}
+function openTabFromURL(){try{var t=new URLSearchParams(location.search).get('tab');if(t){var b=document.querySelector('.tab[data-t="'+t+'"]');if(b)go(t,b);}}catch(e){}}
 function tryPin(){var v=document.getElementById('pin').value.trim();
   if(sha256(v)===PW_HASH){try{localStorage.setItem('mj_session','1');}catch(e){}enter();}
   else{document.getElementById('err').textContent='PIN이 맞지 않습니다.';document.getElementById('pin').value='';document.getElementById('pin').focus();}}
