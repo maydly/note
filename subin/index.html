@@ -2404,8 +2404,8 @@
   const curMonth = () => TODAY_STR.slice(0,7);
   function startShopListeners(){
     unsubWish?.(); unsubBuy?.(); unsubLedger?.(); unsubPlace?.(); unsubReq?.();
-    unsubReq = if(window.siSubscribe)window.siSubscribe();
-      onSnapshot(query(collection(db,'requests'), where('uid','==',subinUid)), s=>{ requests=s.docs.map(d=>({id:d.id,...d.data()})).sort(byCreated); renderShop(); }, e=>showToast('사주세요 불러오기 실패: '+e.message));
+    if(window.siSubscribe)window.siSubscribe();
+    unsubReq = onSnapshot(query(collection(db,'requests'), where('uid','==',subinUid)), s=>{ requests=s.docs.map(d=>({id:d.id,...d.data()})).sort(byCreated); renderShop(); }, e=>showToast('사주세요 불러오기 실패: '+e.message));
     unsubWish = onSnapshot(query(collection(db,'wishlist'), where('uid','==',subinUid)), s=>{ wishlist=s.docs.map(d=>({id:d.id,...d.data()})).sort(byCreated); renderShop(); }, e=>showToast('위시 불러오기 실패: '+e.message));
     unsubBuy = onSnapshot(query(collection(db,'purchases'), where('uid','==',subinUid)), s=>{ purchases=s.docs.map(d=>({id:d.id,...d.data()})).sort(byCreated); renderShop(); }, e=>showToast('구매 불러오기 실패: '+e.message));
     unsubLedger = onSnapshot(query(collection(db,'ledger'), where('uid','==',subinUid)), s=>{ ledger=s.docs.map(d=>({id:d.id,...d.data()})).sort(byCreated); renderShop(); }, e=>showToast('가계부 불러오기 실패: '+e.message));
@@ -2508,8 +2508,8 @@
   function siEsc(s){return esc(s||'');}
   window.siRender=function(){ const box=document.getElementById('shared-info-list'); if(!box) return;
     if(!sharedInfo.length){ box.innerHTML='<div class="shop-empty" style="padding:16px 0"><img class="empty-bear" src="rila/rila_10.png" alt=""><br>아직 공유 정보가 없어</div>'; return; }
-    box.innerHTML=sharedInfo.map(function(x){ var body=siEsc(x.body).replace(/(https?://[^s]+)/g,'<a href="$1" target="_blank" rel="noreferrer">$1</a>');
-      return '<div class="req-card"><button class="req-del" onclick="siDel(''+x.id+'')">✕</button><div class="req-item">'+siEsc(x.title)+(x.from?' <span style="font-size:11px;color:#8a8177">·'+siEsc(x.from)+'</span>':'')+'</div>'+(x.body?'<div class="req-note">'+body+'</div>':'')+'</div>'; }).join(''); };
+    box.innerHTML=sharedInfo.map(function(x){ var body=siEsc(x.body).replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" rel="noreferrer">$1</a>');
+      return '<div class="req-card"><button class="req-del" onclick="siDel(\''+x.id+'\')">✕</button><div class="req-item">'+siEsc(x.title)+(x.from?' <span style="font-size:11px;color:#8a8177">·'+siEsc(x.from)+'</span>':'')+'</div>'+(x.body?'<div class="req-note">'+body+'</div>':'')+'</div>'; }).join(''); };
   window.siAdd=async function(){ const t=(document.getElementById('si-title')||{}).value||''; const b=(document.getElementById('si-body')||{}).value||''; if(!t.trim()){showToast('제목을 적어줘');return;}
     try{ await addDoc(collection(db,'sharedInfo'),{cat:'기타',title:t.trim(),body:b.trim(),from:'수빈',createdAt:serverTimestamp()}); document.getElementById('si-title').value=''; document.getElementById('si-body').value=''; showToast('추가했어 · 명진도 봐 🍀'); }catch(e){showToast('실패: '+e.message);} };
   window.siDel=async function(id){ try{ await deleteDoc(doc(db,'sharedInfo',id)); }catch(e){showToast('삭제 실패: '+e.message);} };
