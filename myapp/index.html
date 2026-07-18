@@ -41,9 +41,9 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .tabfade i{position:absolute;top:50%;transform:translateY(-50%);font-size:14px;color:#4f9a6a;font-style:normal;font-weight:800}
 .tabfade.l i{left:3px}.tabfade.r i{right:3px}
 .tab{flex:0 0 auto;width:58px;border:none;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;cursor:pointer;color:#a3b0a0}
-.tab .ic{font-size:20px}.tab .lb{font-size:10px;font-weight:700;white-space:nowrap}
+.tab .ic{font-size:18px;width:33px;height:33px;display:flex;align-items:center;justify-content:center;background:rgba(79,154,106,.09);border-radius:11px;box-shadow:inset 0 0 0 1px rgba(79,154,106,.08);transition:background .15s,transform .15s}.tab .lb{font-size:10px;font-weight:700;white-space:nowrap}
 .tab.on{color:#4f9a6a}
-.tab.on .ic{transform:scale(1.08)}
+.tab.on .ic{transform:scale(1.05);background:rgba(79,154,106,.2);box-shadow:inset 0 0 0 1px rgba(79,154,106,.22)}
 .add{position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom) + 80px);width:52px;height:52px;border-radius:50%;background:#4f9a6a;color:#fff;border:none;font-size:26px;box-shadow:0 6px 18px rgba(160,110,90,.4);z-index:55;cursor:pointer}
 .add:active{transform:scale(.94)}
 /* 할일 */
