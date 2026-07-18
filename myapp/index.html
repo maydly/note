@@ -519,7 +519,7 @@ function ghPut(c,path,obj,sha){
      body:JSON.stringify({message:'sync '+path,content:b64enc(JSON.stringify(obj)),sha:sha||undefined,branch:c.branch||'main'})})
     .then(function(r){if(!r.ok)return r.text().then(function(t){throw new Error('PUT '+r.status+' '+t.slice(0,120));});return r.json();});
 }
-function syncOn(){var c=syncCfg();return !!(c&&c.token&&c.repo);}
+function syncOn(){return !!(window.sajuData&&window.sajuData.connected);}
 function pathObj(kind){
   if(kind==='ledger')return {path:'ledger.json',obj:ledger};
   if(kind==='shoots')return {path:'shoots.json',obj:shoots};
@@ -552,8 +552,33 @@ function doPush(c,kind,retried){
       throw e;
     });
 }
-function pushSoon(kind){if(!syncOn())return;setSyncBadge('저장중…');clearTimeout(pushTimers[kind]);pushTimers[kind]=setTimeout(function(){cloudPush(kind);},1200);}
+function pushSoon(kind){var po=pathObj(kind);if(!po)return;if(!window._mjFs){return;}setSyncBadge('저장중…');clearTimeout(pushTimers[kind]);pushTimers[kind]=setTimeout(function(){window._mjFs.push(kind,po.obj);},800);}
+/* ── 구글(Firestore) 공유 동기화 브릿지 ── */
+window.mjSyncBadge=function(txt){document.querySelectorAll('.sync[data-sync]').forEach(function(e){e.textContent=(window.sajuData&&window.sajuData.connected)?('☁ '+(txt||'동기화됨')):'☁ 구글 로그인 필요';});};
+window.mjApplyCloud=function(kind,j){
+  if(kind==='ledger'&&Array.isArray(j)){ledger=j;save(K.led,ledger);renderMoney();}
+  else if(kind==='shoots'&&Array.isArray(j)){shoots=j;save(K.shoot,shoots);renderShoot();}
+  else if(kind==='photos'&&j){photos=j.map||j;if(j.base)photoBase=j.base;try{localStorage.setItem('mj_photos',JSON.stringify({map:photos,base:photoBase}));}catch(e){}renderShoot();}
+  else if(kind==='buys'&&j){buys=Array.isArray(j)?j:(j.items||[]);if(j.del)buyDel=j.del;saveBuys();renderBuy();}
+  else if(kind==='owns'&&Array.isArray(j)){owns=j;save(K.own,owns);renderOwn();}
+  else if(kind==='todos'&&Array.isArray(j)){todos=j;save(K.todo,todos);renderTodo();renderToday();}
+  else if(kind==='wishes'&&Array.isArray(j)){wishes=j;save(K.wish,wishes);renderWish();}
+  else if(kind==='chals'&&Array.isArray(j)){chals=j;save(K.chal,chals);renderChal();}
+  else if(kind==='infos'&&Array.isArray(j)){infos=j;save(K.info,infos);if(window.renderInfo)renderInfo();}
+  else if(kind==='moods'&&j&&typeof j==='object'){moods=j;save(K.mood,moods);renderToday();}
+};
+window.mjSeedMissing=function(seen){
+  ['ledger','shoots','photos','buys','owns','todos','wishes','chals','infos','moods'].forEach(function(kind){
+    if(seen.indexOf(kind)>=0)return;var po=pathObj(kind);if(!po||!window._mjFs)return;var o=po.obj,empty=false;
+    if(Array.isArray(o))empty=(o.length===0);
+    else if(o&&Array.isArray(o.items))empty=(o.items.length===0);
+    else if(o&&o.map)empty=(Object.keys(o.map).length===0);
+    else if(o&&typeof o==='object')empty=(Object.keys(o).length===0);
+    if(!empty)window._mjFs.push(kind,po.obj);   // 첫 로그인: 원격에 없는 로컬 데이터를 올려 이관
+  });
+};
 function cloudPull(){
+  return Promise.resolve();   // 구글 동기화로 전환 — 토큰 GitHub 풀 비활성(Firestore 구독이 대체). 아래는 미사용.
   var c=syncCfg();if(!c||!c.token){return Promise.resolve();}
   setSyncBadge('동기화중…');
   return Promise.all([ghGet(c,'ledger.json'),ghGet(c,'shoots.json'),ghGet(c,'photos.json'),ghGet(c,'buys.json'),ghGet(c,'owns.json'),ghGet(c,'todos.json'),ghGet(c,'wishes.json'),ghGet(c,'chals.json'),ghGet(c,'infos.json'),ghGet(c,'moods.json')]).then(function(res){
@@ -585,18 +610,17 @@ function cloudPull(){
     return Promise.all(seed);
   }).then(function(){setSyncBadge('동기화됨');}).catch(function(e){setSyncBadge('오류');toast('동기화 실패: '+e.message);});
 }
-function setSyncBadge(txt){
-  var on=syncOn();
-  document.querySelectorAll('.sync[data-sync]').forEach(function(e){e.textContent=on?('☁ '+(txt||'동기화됨')):'☁ 이 기기 저장';});
+function setSyncBadge(txt){ if(window.mjSyncBadge){window.mjSyncBadge(txt);return;}
+  document.querySelectorAll('.sync[data-sync]').forEach(function(e){e.textContent=(window.sajuData&&window.sajuData.connected)?('☁ '+(txt||'동기화됨')):'☁ 구글 로그인 필요';});
 }
 function sheetSync(){
-  var c=syncCfg()||{};
-  document.getElementById('sheet').innerHTML='<h3>☁ 클라우드 동기화</h3>'
-    +'<div class="phnote">비공개 GitHub 저장소에 <b>가계부·촬영</b>을 저장해 모든 기기(PC·폰)에서 자동 동기화합니다.<br>토큰은 <b>이 기기에만</b> 저장되고 사이트·코드엔 들어가지 않아요. 기기마다 한 번만 연결하면 그 뒤론 자동이에요.</div>'
-    +'<div class="fld"><label>저장소 (owner/repo)</label><input id="sy_repo" value="'+esc(c.repo||'bucket0825/mj-solo')+'" autocapitalize="off" autocorrect="off"></div>'
-    +'<div class="fld"><label>토큰 (github_pat_…)</label><input id="sy_tok" type="password" placeholder="'+(c.token?'●●●●● 저장됨 (바꿀 때만 입력)':'github_pat_...')+'" autocapitalize="off" autocorrect="off"></div>'
-    +'<div class="mact"><button class="mcancel" onclick="closeSheet()">닫기</button><button class="msave" onclick="saveSync()">연결 · 지금 동기화</button></div>'
-    +(c.token?'<div style="text-align:center;margin-top:10px"><span onclick="disconnectSync()" style="font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline">이 기기 연결 해제</span></div>':'');
+  var connected=!!(window.sajuData&&window.sajuData.connected), email=(window.sajuData&&window.sajuData.email)||'', err=(window.sajuData&&window.sajuData.err)||'';
+  document.getElementById('sheet').innerHTML='<h3>☁ 구글 동기화</h3>'
+    +'<div class="phnote"><b>구글 로그인 하나로</b> 명진앱 전체(가계부·촬영·할일·구매 등)를 모든 기기에서 자동 동기화합니다. 명진·수빈이 함께 봅니다. <b>토큰 필요 없어요.</b></div>'
+    +(connected
+       ? '<div class="phnote">연결됨: <b>'+esc(email)+'</b> · 실시간 동기화 중</div><div class="mact"><button class="mcancel" onclick="closeSheet()">닫기</button><button class="msave" onclick="sajuDisconnect();closeSheet()">로그아웃</button></div>'
+       : '<div class="mact"><button class="mcancel" onclick="closeSheet()">닫기</button><button class="msave" onclick="sajuConnect()">구글로 로그인 · 동기화</button></div>')
+    +(err?'<div class="phnote" style="color:#c2564b">'+esc(err)+'</div>':'');
   document.getElementById('mask').classList.add('on');
 }
 function saveSync(){
@@ -2019,11 +2043,11 @@ if(localStorage.getItem('mj_session')==='1')enter();else document.getElementById
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, browserLocalPersistence, setPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc, deleteDoc, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, onSnapshot, doc, setDoc, updateDoc, deleteDoc, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 const cfg={apiKey:"AIzaSyBfyRE7CNENjgSfe25xHAdr87gOllpYtvM",authDomain:"subin-routine.firebaseapp.com",projectId:"subin-routine",appId:"1:102755018689:web:2927e3b73fb5391db17140"};
 window.sajuData={connected:false,email:'',reqs:[],err:'',loading:true};
 window.sharedInfoData={items:[],ready:false};
-function paint(){ if(window.renderSaju) try{window.renderSaju();}catch(e){} if(window.renderInfo) try{window.renderInfo();}catch(e){} }
+function paint(){ if(window.renderSaju) try{window.renderSaju();}catch(e){} if(window.renderInfo) try{window.renderInfo();}catch(e){} if(window.mjSyncBadge) try{window.mjSyncBadge();}catch(e){} }
 try{
   const app=initializeApp(cfg,"saju"); const auth=getAuth(app), db=getFirestore(app);
   setPersistence(auth, browserLocalPersistence).catch(()=>{});   // 기기당 로그인 1회 유지
@@ -2033,6 +2057,25 @@ try{
     window.sajuData.loading=false;
     if(user){
       window.sajuData.connected=true; window.sajuData.email=user.email||''; window.sajuData.err='';
+      // ── 명진앱 데이터 공유 동기화 (mjApp 컬렉션 · 명진·수빈 공용, 토큰 없이 구글로그인) ──
+      window._mjLastJson=window._mjLastJson||{};
+      window._mjFs={ push:async function(kind,obj){
+        try{ var js=JSON.stringify(obj); window._mjLastJson[kind]=js;
+          await setDoc(doc(db,'mjApp',kind),{json:js,by:(auth.currentUser&&auth.currentUser.email)||'',at:serverTimestamp()});
+          if(window.mjSyncBadge)window.mjSyncBadge('저장됨');
+        }catch(e){ if(window.mjSyncBadge)window.mjSyncBadge('오류'); console.warn('mjApp push '+kind,e.code||e.message); } } };
+      if(!window._mjSubbed){ window._mjSubbed=true;
+        onSnapshot(collection(db,'mjApp'),function(snap){
+          var seen=[];
+          snap.forEach(function(dd){ seen.push(dd.id); var d=dd.data(); if(!d||d.json==null)return;
+            if(window._mjLastJson[dd.id]===d.json)return;        // 내가 방금 올린 에코는 무시
+            window._mjLastJson[dd.id]=d.json;
+            try{ if(window.mjApplyCloud)window.mjApplyCloud(dd.id,JSON.parse(d.json)); }catch(e){}
+          });
+          if(!window._mjSeeded){ window._mjSeeded=true; if(window.mjSeedMissing)window.mjSeedMissing(seen); }
+          if(window.mjSyncBadge)window.mjSyncBadge('동기화됨');
+        },function(e){ if(window.mjSyncBadge)window.mjSyncBadge('오류'); console.warn('mjApp sub',e.code||e.message); });
+      }
       try{ subinUid=await findSubinUid(); }catch(e){ window.sajuData.err='수빈 계정 조회 실패: '+(e.code||e.message); paint(); return; }
       if(!subinUid){ window.sajuData.err='수빈 계정을 못 찾았어요(수빈이 앱에 먼저 로그인해야 해요)'; paint(); return; }
       if(unsub)unsub();
