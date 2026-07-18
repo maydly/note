@@ -2070,12 +2070,9 @@ try{
     catch(e){ alert('보내기 실패: '+(e.code||e.message)); return false; }
   };
   window.sajuDelete=async (id)=>{ try{ await deleteDoc(doc(db,'requests',id)); }catch(e){ alert('삭제 실패: '+(e.code||e.message)); } };
-<<<<<<< HEAD
-=======
   // 공유 정보 추가/삭제
   window.infoAdd=async (cat,title,body)=>{ try{ await addDoc(collection(db,'sharedInfo'),{cat:cat||'기타',title:title,body:body||'',from:(auth.currentUser&&auth.currentUser.email==='bucket0825@gmail.com')?'명진':'수빈',createdAt:serverTimestamp()}); }catch(e){ alert('정보 추가 실패: '+(e.code||e.message)); } };
   window.infoDel=async (id)=>{ try{ await deleteDoc(doc(db,'sharedInfo',id)); }catch(e){ alert('삭제 실패: '+(e.code||e.message)); } };
->>>>>>> 6849ce7 (feat(myapp): ③ 정보를 공유 Firestore(sharedInfo)로 — 수빈과 동일 싱크)
 }catch(e){ window.sajuData.err='연동 초기화 실패: '+(e.message||e); }
 paint();
 </script>
