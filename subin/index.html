@@ -3965,7 +3965,7 @@
   if(new URLSearchParams(location.search).get('embed')!=='info') return;
   var h=document.documentElement; h.classList.add('embed-info');
   var css=document.createElement('style');
-  css.textContent='html.embed-info .topbar,html.embed-info .bottom-nav,html.embed-info #login-screen{display:none!important}'
+  css.textContent='html.embed-info .topbar,html.embed-info .bottom-nav,html.embed-info #login-screen,html.embed-info #loading-screen{display:none!important}'
     +'html.embed-info #subin-app{display:block!important;padding:8px 12px 20px!important}'
     +'html.embed-info body{background:#fff}';
   document.head.appendChild(css);
