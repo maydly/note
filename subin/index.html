@@ -3959,5 +3959,23 @@
 })();
 
 </script>
+<!-- 정보 임베드 모드: ?embed=info 로 열면 정보 탭만 표시(명진앱 iframe용). 기존 동작엔 영향 없음. -->
+<script>
+(function(){
+  if(new URLSearchParams(location.search).get('embed')!=='info') return;
+  var h=document.documentElement; h.classList.add('embed-info');
+  var css=document.createElement('style');
+  css.textContent='html.embed-info .topbar,html.embed-info .bottom-nav,html.embed-info #login-screen{display:none!important}'
+    +'html.embed-info #subin-app{display:block!important;padding:8px 12px 20px!important}'
+    +'html.embed-info body{background:#fff}';
+  document.head.appendChild(css);
+  var show=function(){try{
+    var a=document.getElementById('subin-app'); if(a)a.style.display='';
+    var ls=document.getElementById('login-screen'); if(ls)ls.style.display='none';
+    if(window.switchTab)window.switchTab('info');
+  }catch(e){}};
+  show(); setTimeout(show,400); setTimeout(show,1500);
+})();
+</script>
 </body>
 </html>
