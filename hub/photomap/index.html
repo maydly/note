@@ -7,64 +7,51 @@
 <title>maydly · 대표 사진맵</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%;background:#f1eef0;color:#2e2a26;
-  font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased}
+html,body{height:100%;background:#f0f6ef;color:#2a352a;font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
 .wrap{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:28px 22px;text-align:center}
-.wm{font-size:30px;font-weight:800;letter-spacing:-.7px}
-.wm .d{color:#c98e7f}
-.sub{font-size:13px;color:#8a8178;line-height:1.6;max-width:340px}
-.card{background:#fff;border-radius:16px;padding:22px 20px;box-shadow:0 5px 16px rgba(90,70,50,.1);width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px}
-.card h2{font-size:15px;font-weight:750}
-input{font-size:14px;padding:12px 14px;border:1.5px solid #e2dace;border-radius:12px;outline:none;width:100%}
-input:focus{border-color:#c98e7f}
-button{font-size:15px;font-weight:700;padding:12px;border:none;border-radius:12px;background:#c98e7f;color:#fff;cursor:pointer}
-button:active{opacity:.85}
-.msg{font-size:12.5px;min-height:16px}
+.wm{font-size:30px;font-weight:800;letter-spacing:-.6px}
+.wm .d{color:#4f9a6a}
+.sub{font-size:13px;color:#7a8a78;line-height:1.6;max-width:340px}
+.card{background:#fff;border-radius:16px;padding:22px 20px;box-shadow:0 5px 16px rgba(79,120,79,.1);width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px}
+button{font-size:15px;font-weight:700;padding:12px;border:none;border-radius:12px;background:#4f9a6a;color:#fff;cursor:pointer}
+.msg{font-size:12.5px;min-height:16px;color:#7a8a78}
 .msg.err{color:#c2564b}
-.msg.load{color:#8a8178}
-.hint{font-size:11.5px;color:#a99e8f;line-height:1.6}
+.hint{font-size:11.5px;color:#9aa898;line-height:1.6}
 </style>
 </head>
 <body>
 <div class="wrap" id="gate">
   <div class="wm">maydly<span class="d">.</span></div>
-  <div class="sub">대표 사진맵 — 명진·수빈 전용. 사진과 목록 전체가 <b>비공개 저장소</b>에 있어, 불러오려면 GitHub 토큰이 필요합니다.</div>
+  <div class="sub">대표 사진맵 — 명진·수빈 전용. 구글 로그인으로 사진을 불러옵니다.</div>
   <div class="card">
-    <h2>사진 불러오기</h2>
-    <input id="tok" type="password" placeholder="GitHub 토큰 (ghp_… 또는 gho_…)" autocomplete="off" onkeydown="if(event.key==='Enter')go()">
-    <button onclick="go()">불러오기</button>
+    <button onclick="doLogin()">구글로 로그인</button>
     <div class="msg" id="msg"></div>
-    <div class="hint">토큰은 이 기기(브라우저)에만 저장되고 서버로 보내지 않습니다. 예약 캘린더와 같은 토큰을 씁니다.</div>
+    <div class="hint">토큰 필요 없어요. 명진·수빈 구글 계정만.</div>
   </div>
 </div>
-<script>
-var OWNER='maydly', REPO='maydly-photomap-data', TOKKEY='maydly_gh_token';
-function headers(t){return {Authorization:'Bearer '+t, Accept:'application/vnd.github+json'};}
-function b64utf8(b64){ return decodeURIComponent(escape(atob((b64||'').replace(/\s/g,'')))); }
-function setMsg(t,cls){ var m=document.getElementById('msg'); m.textContent=t||''; m.className='msg '+(cls||''); }
-async function loadApp(t){
-  setMsg('불러오는 중…','load');
-  var rt=await fetch('https://api.github.com/repos/'+OWNER+'/'+REPO+'/git/trees/main?recursive=1',{cache:'no-store',headers:headers(t)});
-  if(rt.status===401||rt.status===403) throw new Error('토큰이 맞지 않거나 이 저장소 접근 권한이 없습니다.');
-  if(!rt.ok) throw new Error('저장소를 읽지 못했습니다 ('+rt.status+')');
-  var jt=await rt.json();
-  var sha=null; (jt.tree||[]).forEach(function(x){ if(x.path==='app.html') sha=x.sha; });
-  if(!sha) throw new Error('app.html을 찾지 못했습니다(아직 업로드 전일 수 있음).');
-  var rb=await fetch('https://api.github.com/repos/'+OWNER+'/'+REPO+'/git/blobs/'+sha,{cache:'no-store',headers:headers(t)});
-  if(!rb.ok) throw new Error('app.html 로드 실패 ('+rb.status+')');
-  var jb=await rb.json();
-  var html=b64utf8(jb.content);
-  localStorage.setItem(TOKKEY,t);
-  document.open(); document.write(html); document.close();
-}
-async function go(){
-  var t=(document.getElementById('tok').value||'').trim() || localStorage.getItem(TOKKEY)||'';
-  if(!t){ setMsg('토큰을 입력해 주세요.','err'); return; }
-  try{ await loadApp(t); }
-  catch(e){ setMsg(e.message,'err'); }
-}
-// 이미 저장된 토큰 있으면 자동 시도
-(function(){ var t=localStorage.getItem(TOKKEY); if(t){ document.getElementById('tok').value=''; loadApp(t).catch(function(e){ setMsg(e.message+' — 토큰을 다시 입력해 주세요.','err'); }); } })();
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const cfg={apiKey:"AIzaSyBfyRE7CNENjgSfe25xHAdr87gOllpYtvM",authDomain:"subin-routine.firebaseapp.com",projectId:"subin-routine"};
+const app=initializeApp(cfg,"pmview"), auth=getAuth(app), db=getFirestore(app);
+setPersistence(auth, browserLocalPersistence).catch(()=>{});
+let manifest=null;
+function setMsg(t,cls){ var m=document.getElementById('msg'); if(m){m.textContent=t||''; m.className='msg '+(cls||'');} }
+async function loadManifest(){ if(manifest)return manifest; var d=await getDoc(doc(db,'photomap','_manifest')); if(!d.exists())throw new Error('아직 사진이 올라오지 않았어요'); manifest=d.data(); return manifest; }
+// 앱이 쓸 월별 읽기 (window 전역 — document.write 후에도 유지)
+window.pmReadMonth=async function(mk){ var mf=await loadManifest(); var n=(mf.months||{})[mk]; if(!n)return {}; var parts=[]; for(var i=0;i<n;i++){ var d=await getDoc(doc(db,'photomap',mk+'__'+i)); parts.push((d.exists()&&d.data().d)||''); } return JSON.parse(parts.join('')); };
+async function readApp(){ var mf=await loadManifest(); var n=mf.app||0; var parts=[]; for(var i=0;i<n;i++){ var d=await getDoc(doc(db,'photomap','_app__'+i)); parts.push((d.exists()&&d.data().d)||''); } return parts.join(''); }
+window.doLogin=async function(){ setMsg('로그인 중…'); try{ await signInWithPopup(auth,new GoogleAuthProvider()); }catch(e){
+  if(e.code==='auth/popup-blocked'||e.code==='auth/cancelled-popup-request'){ try{ await signInWithRedirect(auth,new GoogleAuthProvider()); }catch(e2){ setMsg('로그인 실패: '+(e2.code||e2.message),'err'); } }
+  else setMsg(e.code==='auth/unauthorized-domain'?'이 주소가 Firebase 허용목록에 없어요':'로그인 실패: '+(e.code||e.message),'err'); } };
+getRedirectResult(auth).catch(()=>{});
+onAuthStateChanged(auth, async (user)=>{
+  if(!user)return;
+  setMsg('사진맵 불러오는 중…');
+  try{ var html=await readApp(); document.open(); document.write(html); document.close(); }
+  catch(e){ setMsg(e.message||'불러오기 실패','err'); }
+});
 </script>
 </body>
 </html>
