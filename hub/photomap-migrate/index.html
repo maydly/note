@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>사진맵 → 구글 이전 도구</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,sans-serif;background:#f0f6ef;color:#2a352a;line-height:1.6;padding:24px 16px 60px}
+.wrap{max-width:520px;margin:0 auto}
+h1{font-size:20px;font-weight:800;margin-bottom:4px}
+.sub{font-size:12.5px;color:#7a8a78;margin-bottom:18px}
+.card{background:#fff;border-radius:14px;padding:16px 18px;margin-bottom:12px;box-shadow:0 3px 12px rgba(79,120,79,.08)}
+.card h2{font-size:14px;font-weight:750;margin-bottom:8px}
+.step{font-size:11px;font-weight:800;color:#4f9a6a;margin-bottom:2px}
+input{width:100%;font-size:14px;padding:11px 13px;border:1.5px solid #dbe9d9;border-radius:10px;outline:none;margin-bottom:8px}
+input:focus{border-color:#4f9a6a}
+button{width:100%;font-size:15px;font-weight:700;padding:12px;border:none;border-radius:10px;background:#4f9a6a;color:#fff;cursor:pointer}
+button:disabled{background:#b8ccb8;cursor:default}
+button.sec{background:#eef6ec;color:#3a6b45}
+.who{font-size:12.5px;color:#4f9a6a;font-weight:700;margin-bottom:8px}
+.bar{height:9px;background:#eef4ec;border-radius:6px;overflow:hidden;margin:10px 0 6px}
+.bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7fb877,#4f9a6a);transition:width .3s}
+#log{font-family:monospace;font-size:11px;color:#54654f;background:#f6faf5;border-radius:8px;padding:10px;max-height:200px;overflow-y:auto;white-space:pre-wrap;margin-top:8px}
+.done{color:#2f7a3a;font-weight:700}.err{color:#c2503b;font-weight:700}
+.note{font-size:11.5px;color:#8a9887;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>대표 사진맵 · 구글 이전 도구 🍀</h1>
+  <div class="sub">GitHub 토큰으로 사진을 <b>한 번 읽어</b> Firebase(구글)로 옮깁니다. 이후엔 토큰 없이 구글 로그인만으로 사진맵이 열립니다. <b>기존 사진은 안 지웁니다(안전).</b></div>
+
+  <div class="card">
+    <div class="step">1단계 · 구글 로그인</div>
+    <h2>명진 구글 계정으로 로그인</h2>
+    <div class="who" id="who">로그인 안 됨</div>
+    <button id="loginBtn" onclick="doLogin()">구글로 로그인</button>
+  </div>
+
+  <div class="card">
+    <div class="step">2단계 · GitHub 토큰 (마지막 한 번)</div>
+    <h2>사진 읽어올 토큰</h2>
+    <input id="tok" type="password" placeholder="ghp_… / gho_… (지금 쓰던 토큰)" autocomplete="off">
+    <div class="note">이 토큰은 사진을 Firebase로 옮기는 데만 1회 사용됩니다. 이전 끝나면 지우셔도 됩니다.</div>
+  </div>
+
+  <div class="card">
+    <div class="step">3단계 · 이전 실행</div>
+    <h2>사진 → Firebase 옮기기</h2>
+    <button id="goBtn" onclick="startMigrate()" disabled>로그인 후 실행 가능</button>
+    <div class="bar"><i id="barfill"></i></div>
+    <div id="log">대기 중…</div>
+    <div class="note">61MB · 23개월. 와이파이에서 몇 분 걸립니다. 창을 닫지 마세요.</div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const cfg={apiKey:"AIzaSyBfyRE7CNENjgSfe25xHAdr87gOllpYtvM",authDomain:"subin-routine.firebaseapp.com",projectId:"subin-routine"};
+const app=initializeApp(cfg,"pmmig"), auth=getAuth(app), db=getFirestore(app);
+setPersistence(auth, browserLocalPersistence).catch(()=>{});
+const REPO='maydly/maydly-photomap-data', CHUNK=700000;   // 700KB/문서
+let user=null;
+function log(m,cls){ const el=document.getElementById('log'); el.innerHTML+=('\n'+(cls?('<span class="'+cls+'">'+m+'</span>'):m)); el.scrollTop=el.scrollHeight; }
+function prog(p){ document.getElementById('barfill').style.width=(p*100).toFixed(1)+'%'; }
+function b64utf8(b){ return decodeURIComponent(escape(atob((b||'').replace(/\s/g,'')))); }
+onAuthStateChanged(auth,(u)=>{ user=u; document.getElementById('who').textContent=u?('로그인됨: '+u.email):'로그인 안 됨';
+  document.getElementById('goBtn').disabled=!u; document.getElementById('goBtn').textContent=u?'사진 → Firebase 옮기기':'로그인 후 실행 가능'; });
+window.doLogin=async()=>{ try{ await signInWithPopup(auth,new GoogleAuthProvider()); }catch(e){ log('로그인 실패: '+(e.code||e.message),'err'); } };
+
+async function ghHeaders(t){ return {Authorization:'Bearer '+t, Accept:'application/vnd.github+json'}; }
+async function putChunks(base, str){    // str을 CHUNK 단위로 나눠 photomap/{base}__{i} 저장
+  const n=Math.ceil(str.length/CHUNK);
+  for(let i=0;i<n;i++){ await setDoc(doc(db,'photomap',base+'__'+i), {d: str.slice(i*CHUNK,(i+1)*CHUNK)}); }
+  return n;
+}
+window.startMigrate=async()=>{
+  const t=(document.getElementById('tok').value||'').trim();
+  if(!user){ log('먼저 구글 로그인하세요.','err'); return; }
+  if(!t){ log('GitHub 토큰을 입력하세요.','err'); return; }
+  document.getElementById('goBtn').disabled=true;
+  const H=await ghHeaders(t);
+  try{
+    log('저장소 목록 읽는 중…');
+    const tr=await (await fetch('https://api.github.com/repos/'+REPO+'/git/trees/main?recursive=1',{headers:H})).json();
+    if(!tr.tree){ log('토큰 오류 또는 저장소 접근 불가','err'); document.getElementById('goBtn').disabled=false; return; }
+    const shaOf={}; tr.tree.forEach(x=>shaOf[x.path]=x.sha);
+    const bundles = tr.tree.filter(x=>/^bundles\/\d{4}\.json$/.test(x.path)).map(x=>x.path.match(/(\d{4})/)[1]).sort();
+    const total = bundles.length + 1;   // +app.html
+    let done=0; const manifest={app:0, months:{}};
+
+    // app.html
+    log('앱(app.html) 옮기는 중…');
+    const ab=await (await fetch('https://api.github.com/repos/'+REPO+'/git/blobs/'+shaOf['app.html'],{headers:H})).json();
+    manifest.app = await putChunks('_app', b64utf8(ab.content));
+    done++; prog(done/total); log('  app.html 완료 ('+manifest.app+'조각)');
+
+    // 월별 번들
+    for(const mk of bundles){
+      log(mk+'월 옮기는 중…');
+      const bb=await (await fetch('https://api.github.com/repos/'+REPO+'/git/blobs/'+shaOf['bundles/'+mk+'.json'],{headers:H})).json();
+      const jsonStr = b64utf8(bb.content);       // {파일명:base64} JSON 문자열
+      manifest.months[mk] = await putChunks(mk, jsonStr);
+      done++; prog(done/total); log('  '+mk+' 완료 ('+manifest.months[mk]+'조각)');
+    }
+    await setDoc(doc(db,'photomap','_manifest'), {app:manifest.app, months:manifest.months, at:new Date().toISOString()});
+    prog(1);
+    log('\n✅ 이전 완료! 사진 '+bundles.length+'개월 + 앱을 Firebase로 옮겼습니다.','done');
+    log('이제 명진님께 알려주세요 — 사진맵을 구글 로그인 버전으로 바꾸겠습니다.','done');
+  }catch(e){ log('오류: '+(e.message||e),'err'); document.getElementById('goBtn').disabled=false; }
+};
+</script>
+</body>
+</html>
