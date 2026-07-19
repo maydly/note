@@ -68,12 +68,12 @@ window.startMigrate=async()=>{
   const total=MONTHS.length+1; let done=0; const manifest={app:0,months:{}};
   try{
     log('앱(app.html) 옮기는 중…');
-    const appHtml=await (await fetch('./app.html?t='+Date.now())).text();
+    const appHtml=await (await fetch('https://raw.githubusercontent.com/maydly/note/main/hub/photomap-migrate/app.html?t='+Date.now())).text();
     manifest.app=await putChunks('_app',appHtml);
     done++; prog(done/total); log('  app.html 완료 ('+manifest.app+'조각)');
     for(const mk of MONTHS){
       log(mk+'월 옮기는 중…');
-      const jsonStr=await (await fetch('./bundles/'+mk+'.json?t='+Date.now())).text();
+      const jsonStr=await (await fetch('https://raw.githubusercontent.com/maydly/note/main/hub/photomap-migrate/bundles/'+mk+'.json?t='+Date.now())).text();
       manifest.months[mk]=await putChunks(mk,jsonStr);
       done++; prog(done/total); log('  '+mk+' 완료 ('+manifest.months[mk]+'조각)');
     }
