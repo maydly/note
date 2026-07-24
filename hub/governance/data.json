@@ -1,19 +1,19 @@
 {
-  "updated": "2026-07-24T16:55:41.057417",
+  "updated": "2026-07-24T17:17:17.133914",
   "log": [
+    {
+      "id": "biweekly-20260724",
+      "type": "biweekly",
+      "date": "2026-07-24",
+      "status": "ok",
+      "summary": "모두 동기화됨 · 에이전트 26개"
+    },
     {
       "id": "monthly-20260724",
       "type": "monthly",
       "date": "2026-07-24",
       "status": "ok",
       "summary": "이상 없음 · 진행중 업무 15개"
-    },
-    {
-      "id": "biweekly-20260724",
-      "type": "biweekly",
-      "date": "2026-07-24",
-      "status": "warn",
-      "summary": "동기화 이상 5건 · 에이전트 27개"
     },
     {
       "id": "weekly-20260724",
