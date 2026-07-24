@@ -1,6 +1,13 @@
 {
-  "updated": "2026-07-24T17:17:17.133914",
+  "updated": "2026-07-24T17:17:44.735171",
   "log": [
+    {
+      "id": "weekly-20260724",
+      "type": "weekly",
+      "date": "2026-07-24",
+      "status": "ok",
+      "summary": "위반 없음 · 4파일 스캔"
+    },
     {
       "id": "biweekly-20260724",
       "type": "biweekly",
@@ -14,13 +21,6 @@
       "date": "2026-07-24",
       "status": "ok",
       "summary": "이상 없음 · 진행중 업무 15개"
-    },
-    {
-      "id": "weekly-20260724",
-      "type": "weekly",
-      "date": "2026-07-24",
-      "status": "warn",
-      "summary": "위반 13건 · 4파일 스캔"
     }
   ]
 }
