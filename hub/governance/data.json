@@ -1,6 +1,13 @@
 {
-  "updated": "2026-07-24T17:31:37.681823",
+  "updated": "2026-07-24T17:31:42.244372",
   "log": [
+    {
+      "id": "monthly-20260724",
+      "type": "monthly",
+      "date": "2026-07-24",
+      "status": "warn",
+      "summary": "확인 필요 2건 · 승격후보 4건 · 진행중 업무 15개"
+    },
     {
       "id": "biweekly-20260724",
       "type": "biweekly",
@@ -14,13 +21,6 @@
       "date": "2026-07-24",
       "status": "warn",
       "summary": "위반 15건 · 4파일 스캔"
-    },
-    {
-      "id": "monthly-20260724",
-      "type": "monthly",
-      "date": "2026-07-24",
-      "status": "ok",
-      "summary": "이상 없음 · 진행중 업무 15개"
     }
   ]
 }
