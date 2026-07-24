@@ -1,1 +1,12 @@
-{"updated":null,"log":[]}
+{
+  "updated": "2026-07-24T16:54:47.266351",
+  "log": [
+    {
+      "id": "weekly-20260724",
+      "type": "weekly",
+      "date": "2026-07-24",
+      "status": "warn",
+      "summary": "위반 13건 · 4파일 스캔"
+    }
+  ]
+}
