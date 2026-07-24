@@ -1,3 +1,4 @@
+<!-- 관리자 전용 — 일반 공개 금지 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,132 +9,167 @@
 <title>거버넌스 허브 · 작업장 점검</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{background:#f0f6ef url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'112'%20height%3D'112'%3E%3Cg%20fill%3D'%234f9a6a'%20fill-opacity%3D'0.035'%3E%3Cg%20transform%3D'translate(28%2C28)'%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.46)%20rotate(0)'%2F%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.46)%20rotate(90)'%2F%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.46)%20rotate(180)'%2F%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.46)%20rotate(270)'%2F%3E%3C%2Fg%3E%3Cg%20transform%3D'translate(84%2C86)'%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.32)%20rotate(0)'%2F%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.32)%20rotate(90)'%2F%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.32)%20rotate(180)'%2F%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.32)%20rotate(270)'%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+html,body{
+  background:#f0f6ef url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'112'%20height%3D'112'%3E%3Cg%20fill%3D'%234f9a6a'%20fill-opacity%3D'0.035'%3E%3Cg%20transform%3D'translate(28%2C28)'%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.46)%20rotate(0)'%2F%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.46)%20rotate(90)'%2F%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.46)%20rotate(180)'%2F%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.46)%20rotate(270)'%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E");
   color:#2e2a26;font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;
-  min-height:100vh;-webkit-font-smoothing:antialiased}
-body{max-width:480px;margin:0 auto;padding:calc(env(safe-area-inset-top)+48px) 20px calc(env(safe-area-inset-bottom)+40px)}
+  min-height:100vh;-webkit-font-smoothing:antialiased
+}
+body{max-width:480px;margin:0 auto;padding:calc(env(safe-area-inset-top)+44px) 20px calc(env(safe-area-inset-bottom)+48px)}
 
-.head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.back{font-size:13px;color:#4f9a6a;text-decoration:none;font-weight:600;letter-spacing:-.2px}
+.back{font-size:13px;color:#4f9a6a;text-decoration:none;font-weight:600;display:inline-block;margin-bottom:10px}
 .back:active{opacity:.7}
 .title{font-size:26px;font-weight:800;letter-spacing:-.6px;margin-bottom:4px}
 .title .d{color:#4f9a6a}
-.sub{font-size:12px;color:#9e9586;margin-bottom:28px}
+.sub{font-size:12px;color:#9e9586;margin-bottom:22px}
 
-.cycle{background:#fff;border-radius:18px;padding:18px 20px;margin-bottom:14px;
-  box-shadow:0 3px 12px rgba(60,80,60,.08);border:1.5px solid rgba(79,154,106,.12)}
-.cy-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.cy-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:-.1px}
-.cy-badge.w{background:#e4f3ea;color:#2f8050}
-.cy-badge.b{background:#e8e4f5;color:#6040a0}
-.cy-badge.m{background:#fdf0e0;color:#a06020}
-.cy-day{font-size:12px;color:#9e9586;font-weight:500}
-.cy-title{font-size:15px;font-weight:700;color:#2e2a26;letter-spacing:-.3px}
-.cy-desc{font-size:12px;color:#7a7268;line-height:1.6;margin-bottom:14px}
+/* 최신 상태 요약 */
+.summary-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}
+.sum-card{background:#fff;border-radius:14px;padding:11px 8px;text-align:center;
+  box-shadow:0 2px 8px rgba(60,80,60,.07);border:1.5px solid rgba(79,154,106,.12)}
+.sum-card.ok{border-color:#c5e8d0}
+.sum-card.warn{border-color:#f5dda8}
+.sum-card.empty{border-color:#e8e4da}
+.sum-ic{font-size:16px;margin-bottom:2px}
+.sum-lb{font-size:10px;font-weight:700;color:#8a8278;letter-spacing:.2px}
+.sum-st{font-size:10px;font-weight:700;margin-top:2px}
+.sum-st.ok{color:#2f8050}
+.sum-st.warn{color:#a07010}
+.sum-st.empty{color:#b0a898}
+.sum-dt{font-size:9px;color:#b0a898;margin-top:1px}
 
-.status-row{display:flex;align-items:center;justify-content:space-between;
-  background:#f7f5f0;border-radius:12px;padding:12px 14px}
-.status-left{display:flex;flex-direction:column;gap:2px}
-.status-label{font-size:10px;color:#a09688;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
-.status-val{font-size:13px;font-weight:700;color:#5a534a}
-.status-val.pending{color:#b0a090}
-.status-link{font-size:12px;font-weight:600;color:#4f9a6a;text-decoration:none;padding:8px 14px;
-  background:#e4f3ea;border-radius:10px;letter-spacing:-.2px}
-.status-link:active{opacity:.7}
-.status-link.none{color:#c0b8ad;background:#eeebe5;pointer-events:none}
+/* 필터 */
+.filter-row{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+.ftab{font-size:11px;font-weight:700;padding:6px 14px;border-radius:20px;border:1.5px solid #ddd8ce;
+  background:#fff;color:#8a8278;cursor:pointer;white-space:nowrap;flex-shrink:0;border:none;-webkit-appearance:none}
+.ftab.on{background:#4f9a6a;color:#fff}
 
-.divider{height:1px;background:rgba(60,80,60,.07);margin:0 0 14px}
+/* 로그 리스트 */
+.log-entry{display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;
+  padding:12px 14px;margin-bottom:7px;box-shadow:0 2px 6px rgba(60,80,60,.06);
+  border:1.5px solid transparent}
+.log-entry.has-issue{border-color:#f5dda8}
+.log-entry.ok-entry{border-color:rgba(79,154,106,.1)}
+.le-left{display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;width:34px}
+.le-day{font-size:16px;font-weight:800;color:#2e2a26;line-height:1}
+.le-mon{font-size:9px;color:#9e9586;font-weight:600}
+.le-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;white-space:nowrap}
+.le-badge.weekly{background:#e4f3ea;color:#2f8050}
+.le-badge.biweekly{background:#e8e4f5;color:#6040a0}
+.le-badge.monthly{background:#fdf0e0;color:#a06020}
+.le-center{flex:1;min-width:0}
+.le-summary{font-size:13px;font-weight:600;color:#2e2a26;line-height:1.35}
+.le-sub{font-size:11px;color:#9e9586;margin-top:2px}
+.le-ic{flex-shrink:0;font-size:18px}
+.month-div{font-size:11px;font-weight:700;color:#4f9a6a;margin:14px 0 8px;
+  display:flex;align-items:center;gap:8px}
+.month-div::after{content:'';flex:1;height:1px;background:rgba(79,154,106,.2)}
+
+/* 빈 상태 */
+.empty-state{text-align:center;padding:48px 20px;color:#b0a898}
+.empty-ic{font-size:40px;margin-bottom:12px}
+.empty-title{font-size:15px;font-weight:700;color:#7a7268;margin-bottom:6px}
+.empty-desc{font-size:12px;line-height:1.6}
+
+/* 로딩 */
+.loading{text-align:center;padding:40px;color:#9e9586;font-size:13px}
+
 .foot{text-align:center;font-size:11px;color:#b0a898;margin-top:24px;line-height:1.7}
 .foot a{color:#4f9a6a;text-decoration:none}
+.updated{font-size:10px;color:#c0b8ac;text-align:right;margin-bottom:12px}
 </style>
 </head>
 <body>
 
-<div class="head">
-  <a class="back" href="../">← 허브로</a>
-</div>
-
+<a class="back" href="../">← 허브로</a>
 <div class="title">거버넌스<span class="d">.</span></div>
 <div class="sub">작업장 자동 점검 · 주간 / 격주 / 4주</div>
 
-<!-- 주간 -->
-<div class="cycle">
-  <div class="cy-head">
-    <span class="cy-badge w">주간</span>
-    <span class="cy-day">매주 월요일</span>
-  </div>
-  <div class="cy-title">파일명·폴더명 감사</div>
-  <div class="cy-desc">작업장 전체의 파일명·폴더명 규칙 위반을 자동 스캔합니다. 결과 HTML이 자동 생성되고 다음 세션에 확인·처리합니다.</div>
-  <div class="status-row" id="sw">
-    <div class="status-left">
-      <div class="status-label">마지막 실행</div>
-      <div class="status-val pending" id="sw-date">결과 없음</div>
-    </div>
-    <a class="status-link none" id="sw-link" href="#">결과 보기</a>
-  </div>
+<div class="summary-bar" id="summaryBar">
+  <div class="sum-card empty"><div class="sum-ic">—</div><div class="sum-lb">주간</div><div class="sum-st empty">대기 중</div><div class="sum-dt">미실행</div></div>
+  <div class="sum-card empty"><div class="sum-ic">—</div><div class="sum-lb">격주</div><div class="sum-st empty">대기 중</div><div class="sum-dt">미실행</div></div>
+  <div class="sum-card empty"><div class="sum-ic">—</div><div class="sum-lb">4주</div><div class="sum-st empty">대기 중</div><div class="sum-dt">미실행</div></div>
 </div>
 
-<div class="divider"></div>
-
-<!-- 격주 -->
-<div class="cycle">
-  <div class="cy-head">
-    <span class="cy-badge b">격주</span>
-    <span class="cy-day">격주 금요일</span>
-  </div>
-  <div class="cy-title">에이전트·규정 동기화 점검</div>
-  <div class="cy-desc">.claude/agents ↔ .codex/agents 짝 비교, CLAUDE.md / project-rules.md / AGENTS.md 3파일 내용 일치 여부를 자동으로 확인합니다.</div>
-  <div class="status-row" id="sb">
-    <div class="status-left">
-      <div class="status-label">마지막 실행</div>
-      <div class="status-val pending" id="sb-date">결과 없음</div>
-    </div>
-    <a class="status-link none" id="sb-link" href="#">결과 보기</a>
-  </div>
+<div class="filter-row">
+  <button class="ftab on" onclick="setFilter('all',this)">전체</button>
+  <button class="ftab" onclick="setFilter('weekly',this)">주간</button>
+  <button class="ftab" onclick="setFilter('biweekly',this)">격주</button>
+  <button class="ftab" onclick="setFilter('monthly',this)">4주</button>
 </div>
 
-<div class="divider"></div>
+<div id="updatedAt" class="updated"></div>
+<div id="logContainer"><div class="loading">불러오는 중…</div></div>
 
-<!-- 4주 -->
-<div class="cycle">
-  <div class="cy-head">
-    <span class="cy-badge m">4주</span>
-    <span class="cy-day">4주마다 토요일</span>
-  </div>
-  <div class="cy-title">전체 업무현황 점검</div>
-  <div class="cy-desc">전체 업무카드 상태 집계, 현황 대시보드 재생성, 미처리 주간·격주 항목 종합, 보안 점검 체크리스트를 포함합니다.</div>
-  <div class="status-row" id="sm">
-    <div class="status-left">
-      <div class="status-label">마지막 실행</div>
-      <div class="status-val pending" id="sm-date">결과 없음</div>
-    </div>
-    <a class="status-link none" id="sm-link" href="#">결과 보기</a>
-  </div>
-</div>
-
-<div class="foot">
-  작업장 공통 거버넌스 허브<br>
-  <a href="../">← 개인 허브로 돌아가기</a>
-</div>
+<div class="foot">작업장 공통 거버넌스 허브 · <a href="../">← 개인 허브로</a></div>
 
 <script>
-// data.json이 있으면 최신 결과를 로드합니다
+var TYPE_LABEL = {weekly:'주간', biweekly:'격주', monthly:'4주'};
+var curFilter = 'all';
+var allLog = [];
+
+function setFilter(type, el) {
+  curFilter = type;
+  document.querySelectorAll('.ftab').forEach(function(t){t.classList.remove('on');});
+  el.classList.add('on');
+  renderLog();
+}
+
+function renderSummary(log) {
+  var latest = {weekly:null, biweekly:null, monthly:null};
+  log.forEach(function(e) {
+    if (!latest[e.type]) latest[e.type] = e;
+  });
+  var types = ['weekly','biweekly','monthly'];
+  var labels = {weekly:'주간', biweekly:'격주', monthly:'4주'};
+  var html = types.map(function(t) {
+    var e = latest[t];
+    if (!e) return '<div class="sum-card empty"><div class="sum-ic">—</div><div class="sum-lb">'+labels[t]+'</div><div class="sum-st empty">대기 중</div><div class="sum-dt">미실행</div></div>';
+    var ic = e.status==='ok' ? '✅' : '⚠️';
+    var stLb = e.status==='ok' ? '이상 없음' : '확인 필요';
+    var dt = e.date.slice(5).replace('-','-');
+    return '<div class="sum-card '+e.status+'"><div class="sum-ic">'+ic+'</div><div class="sum-lb">'+labels[t]+'</div><div class="sum-st '+e.status+'">'+stLb+'</div><div class="sum-dt">'+dt+' 실행</div></div>';
+  }).join('');
+  document.getElementById('summaryBar').innerHTML = html;
+}
+
+function renderLog() {
+  var list = curFilter === 'all' ? allLog : allLog.filter(function(e){return e.type===curFilter;});
+  if (list.length === 0) {
+    document.getElementById('logContainer').innerHTML =
+      '<div class="empty-state"><div class="empty-ic">🏛️</div><div class="empty-title">아직 점검 기록이 없습니다</div><div class="empty-desc">첫 번째 자동 점검이 실행되면<br>여기에 결과가 쌓입니다.</div></div>';
+    return;
+  }
+  var html = '';
+  var lastMonth = '';
+  list.forEach(function(e) {
+    var d = new Date(e.date);
+    var monthKey = d.getFullYear()+'년 '+(d.getMonth()+1)+'월';
+    if (monthKey !== lastMonth) {
+      html += '<div class="month-div">'+monthKey+'</div>';
+      lastMonth = monthKey;
+    }
+    var day = String(d.getDate()).padStart(2,'0');
+    var mon = String(d.getMonth()+1).padStart(2,'0');
+    var ic = e.status === 'ok' ? '<span style="color:#b5dbc5;font-size:18px">✓</span>' : '<span style="color:#e0b84a;font-size:18px">⚠</span>';
+    html += '<div class="log-entry '+(e.status==='warn'?'has-issue':'ok-entry')+'">';
+    html += '<div class="le-left"><div class="le-day">'+day+'<span style="font-size:9px;font-weight:600;color:#9e9586">일</span></div><div class="le-mon">'+mon+'월</div><div class="le-badge '+(e.type||'weekly')+'">'+（TYPE_LABEL[e.type]||e.type)+'</div></div>';
+    html += '<div class="le-center"><div class="le-summary">'+e.summary+'</div></div>';
+    html += '<div class="le-ic">'+ic+'</div></div>';
+  });
+  document.getElementById('logContainer').innerHTML = html;
+}
+
 fetch('./data.json?t='+Date.now())
   .then(function(r){return r.ok?r.json():null;})
   .then(function(d){
-    if(!d)return;
-    function setCard(prefix, data){
-      if(!data||!data.date)return;
-      var dateEl=document.getElementById(prefix+'-date');
-      var linkEl=document.getElementById(prefix+'-link');
-      if(dateEl){dateEl.textContent=data.date;dateEl.classList.remove('pending');}
-      if(linkEl&&data.url){linkEl.href=data.url;linkEl.classList.remove('none');linkEl.textContent='결과 보기';}
-    }
-    setCard('sw',d.weekly);
-    setCard('sb',d.biweekly);
-    setCard('sm',d.monthly);
+    if (!d) { renderLog(); return; }
+    if (d.updated) document.getElementById('updatedAt').textContent = '마지막 업데이트 ' + d.updated.slice(0,10);
+    allLog = d.log || [];
+    renderSummary(allLog);
+    renderLog();
   })
-  .catch(function(){});
+  .catch(function(){ renderLog(); });
 </script>
 </body>
 </html>
