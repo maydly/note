@@ -98,7 +98,7 @@ var LINKS=[
   {ic:'🚗', g:['#b7c4d6','#95a7c0'], lb:'수빈 차량', sm:'장기렌트 조사·비교 · 🔒', url:'https://maydly.github.io/note/car/'},
   {ic:'🕐', g:['#e3cf9d','#d0b97e'], lb:'페이용캘린더', sm:'페이 촬영 1시간 타임테이블 · 야외 문의', url:'https://maydly.github.io/maydly-cal/pay.html'},
   {ic:'🍀', g:['#a8d3a0','#7fb877'], lb:'협업캘린더', sm:'협업 고객에게 보낼 링크', url:'https://maydly.github.io/maydly-cal/'},
-  {ic:'📅', g:['#e7bcb4','#dda79d'], lb:'예약 캘린더', sm:'촬영 일정 관리(관리자)', url:'https://maydly.github.io/maydly-cal/admin.html'},
+  {ic:'📅', g:['#e7bcb4','#dda79d'], lb:'명진 캘린더', sm:'촬영 일정 관리', url:'https://maydly.github.io/maydly-cal/admin.html'},
   // 3줄
   {ic:'📸', g:['#ecd3ab','#dcbd8d'], lb:'대표 사진맵', sm:'2024–2026 모델 전체 · 구글 🔒', url:'https://maydly.github.io/note/hub/photomap/'},
   {ic:'🎞️', g:['#e0b9a0','#caa080'], lb:'빈티지 필름', sm:'도감·구매처·재고·셋팅', url:'https://maydly.github.io/note/film/'},
@@ -115,6 +115,7 @@ function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp
 function render(){
   document.getElementById('grid').innerHTML=LINKS.map(function(l){
     var g='linear-gradient(150deg,'+l.g[0]+','+l.g[1]+')';
+    var sm=l.sm?sm:'';  // 부제 비면 빈 줄 안 생기게
     if(l.soon){
       return '<a class="tile soon" href="#" onclick="soon(event)" style="background:'+g+'">'
         +'<div class="soonbadge">준비중</div><div class="ic">'+l.ic+'</div>'
