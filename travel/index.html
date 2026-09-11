@@ -41,6 +41,7 @@
 .pmodal.on,.plist-sheet.on{display:flex}
 .pbox,.plbox{background:#fff;width:min(460px,100%);border-radius:18px 18px 0 0;padding:20px}
 .plbox{max-height:75vh;overflow-y:auto}
+.pbox{max-height:88vh;overflow-y:auto}
 .pbox h3,.plbox h3{margin:0 0 14px;font-size:16px;display:flex;justify-content:space-between;align-items:center}
 .pcats{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:13px}
 .pcats button{flex:1 1 21%;min-width:62px;padding:10px 4px;border:1.5px solid var(--line);border-radius:11px;background:#fff;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:650;color:var(--sub)}
@@ -51,6 +52,30 @@
 .pbtns button{flex:1;padding:12px;border:none;border-radius:11px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
 .pbtns .psave{background:var(--clover,#4c8c4a);color:#fff}
 .pbtns .pcancel{background:#eee;color:var(--ink)}
+/* 장소 검색으로 추가 (260911) — 지도에서 좌표를 찍는 대신 이름으로 찾는다 */
+.psearch{display:flex;gap:7px;margin-bottom:9px}
+.psearch input{flex:1;margin-bottom:0!important}
+.psearch button{flex:0 0 auto;padding:0 15px;border:none;border-radius:10px;background:var(--clover,#4c8c4a);color:#fff;font-weight:700;font-size:13.5px;cursor:pointer;font-family:inherit}
+.psearch button:disabled{opacity:.5;cursor:default}
+.psr{max-height:172px;overflow-y:auto;margin-bottom:10px;display:none}
+.psr.on{display:block}
+.psr-item{padding:9px 11px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;cursor:pointer;background:#fff}
+.psr-item:hover{border-color:var(--clover,#4c8c4a);background:var(--clover-soft,#eef4ec)}
+.psr-item b{display:block;font-size:13.5px;color:var(--ink);margin-bottom:2px}
+.psr-item span{display:block;font-size:11.5px;color:var(--sub);line-height:1.45}
+.psr-msg{padding:10px 2px;font-size:12.5px;color:var(--sub)}
+.ploc{font-size:12.5px;padding:9px 12px;border-radius:10px;background:#f4f2ec;color:var(--sub);margin-bottom:11px;line-height:1.5}
+.ploc.set{background:var(--clover-soft,#eef4ec);color:var(--clover-deep,#357a51);font-weight:650}
+.ploc .pmini{display:block;margin-top:5px;font-size:11.5px;color:var(--sub);font-weight:400}
+.ploc-alt{display:block;background:none;border:none;padding:0;margin-top:6px;font-size:11.5px;color:#7a6a55;text-decoration:underline;cursor:pointer;font-family:inherit;text-align:left}
+/* 내 위치 (260911) — 지금 서 있는 자리에서 바로 저장하는 흐름 */
+.locbtn{position:fixed;right:14px;bottom:150px;z-index:650;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:19px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.18);display:none;align-items:center;justify-content:center;padding:0}
+.locbtn.on{display:flex}
+.medot{width:16px;height:16px;border-radius:50%;background:#2f7fd6;border:2.5px solid #fff;box-shadow:0 0 0 1px rgba(47,127,214,.5),0 2px 6px rgba(0,0,0,.3)}
+.mepop{text-align:center;min-width:130px}
+.mepop b{font-size:13.5px}
+.mepop .meacc{display:block;font-size:11px;color:var(--sub);margin:2px 0 7px}
+.mepop button{padding:9px 15px;border:none;border-radius:9px;background:var(--clover,#4c8c4a);color:#fff;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit}
 .plitem{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);align-items:flex-start}
 .plitem .pe{font-size:20px}
 .plitem .pin{flex:1;min-width:0}
@@ -109,11 +134,18 @@
 <div class="myfab">
   <button class="mf-list" onclick="openSync()">🗺️ 지도 연동</button>
   <button class="mf-list" onclick="openPList()">📑 내 장소</button>
-  <button class="mf-add" id="mfAdd" onclick="armAdd()">➕ 장소 추가</button>
+  <button class="mf-add" id="mfAdd" onclick="openAddModal()">➕ 장소 추가</button>
 </div>
+<button class="locbtn" id="locbtn" onclick="goMyLocation()" title="내 위치로 이동">📍</button>
 <div class="mtip" id="mtip">📍 지도에서 저장할 위치를 눌러주세요</div>
 <div class="pmodal" id="pmodal"><div class="pbox">
   <h3 id="pmTitle">📍 내 장소 저장</h3>
+  <div class="psearch" id="psearchRow">
+    <input id="pSearch" autocomplete="off" placeholder="🔍 장소 이름 검색 (예: 성심당 · 안목해변)">
+    <button id="pSearchBtn" onclick="doPlaceSearch()">찾기</button>
+  </div>
+  <div class="psr" id="pSearchResults"></div>
+  <div class="ploc" id="pLoc"></div>
   <div class="pcats" id="pcats">
     <button data-cat="rice" onclick="selCat('rice',this)">🍚 밥</button>
     <button data-cat="cafe" onclick="selCat('cafe',this)">☕ 카페</button>
@@ -203,6 +235,7 @@ function activate(cc){
   document.getElementById('creditLink').href = (cc==='jp') ? '사진출처.html' : '../travel-kr/사진출처.html';
   window.COUNTRY = cc;
   var fab=document.querySelector('.myfab'); if(fab) fab.style.display='none';   // 내 장소 FAB는 '내 지도' 탭에서만
+  var lb=document.getElementById('locbtn'); if(lb) lb.classList.remove('on');
   if(window.renderMyPlaces) renderMyPlaces();
 }
 
@@ -240,6 +273,7 @@ function activateMy(){
   document.querySelectorAll('.ctab').forEach(function(t){ t.classList.toggle('on', t.getAttribute('data-c')==='my'); });
   var s=document.getElementById('citySearch'); if(s) s.placeholder='🔍 내 저장 장소 검색';
   var fab=document.querySelector('.myfab'); if(fab) fab.style.display='flex';
+  var lb=document.getElementById('locbtn'); if(lb) lb.classList.add('on');
   if(window.renderMyPlaces) renderMyPlaces();
   fitMyPlaces();
   if(window.loadMyMaps) loadMyMaps(function(){ renderMyPlaces(); fitMyPlaces(); });   // 구글 My Maps 자동 로드
@@ -272,20 +306,139 @@ var CATS = {
   photo:{e:'📸',l:'촬영지',c:'#3d7fd6'}, studio:{e:'🎬',l:'촬영장',c:'#5a54b0'}, stay:{e:'🏨',l:'숙소',c:'#7d6bb0'}
 };
 function saveMP(){ try{ localStorage.setItem('maydly_travel_places', JSON.stringify(MYPLACES)); }catch(e){} }
+/* 장소 추가 = 「이름으로 찾기」가 기본 (260911 개편).
+   예전엔 지도에서 좌표를 직접 찍어야 했는데, 실제로는 네이버·구글·인스타·지인에게서
+   장소 "이름"을 듣고 저장한다. 지도 찍기는 이름 없는 곳(예쁜 골목·뷰포인트)용 보조로 남긴다. */
+function openAddModal(){ if(_armed) armAdd(); _pendLL=null; openPModal(null); }
 function armAdd(){ _armed=!_armed; document.getElementById('mtip').classList.toggle('on',_armed); document.getElementById('mfAdd').classList.toggle('arm',_armed); document.getElementById('mfAdd').textContent=_armed?'✕ 취소':'➕ 장소 추가'; }
-map.on('click', function(e){ if(_armed){ _pendLL=e.latlng; armAdd(); openPModal(null); } });
+function armFromModal(){ document.getElementById('pmodal').classList.remove('on'); if(!_armed) armAdd(); }
+map.on('click', function(e){ if(_armed){ _pendLL=e.latlng; armAdd(); openPModal(null,true); reverseFill(e.latlng.lat, e.latlng.lng); } });
+
+/* 이름으로 장소 찾기 — OpenStreetMap Nominatim (무료·키 불필요·CORS 허용).
+   현재 보고 있는 지도 영역을 우선순위로 주되(viewbox), 전세계 결과를 막지는 않는다. */
+var _psrBusy=false, _psrList=[];
+function doPlaceSearch(){
+  var q=document.getElementById('pSearch').value.trim();
+  var box=document.getElementById('pSearchResults');
+  if(!q){ document.getElementById('pSearch').focus(); return; }
+  if(_psrBusy) return;
+  _psrBusy=true; document.getElementById('pSearchBtn').disabled=true;
+  box.className='psr on'; box.innerHTML='<div class="psr-msg">찾는 중…</div>';
+  var b=map.getBounds();
+  var url='https://nominatim.openstreetmap.org/search?format=json&limit=8&accept-language=ko'
+    +'&q='+encodeURIComponent(q)
+    +'&viewbox='+b.getWest().toFixed(4)+','+b.getNorth().toFixed(4)+','+b.getEast().toFixed(4)+','+b.getSouth().toFixed(4);
+  fetch(url,{headers:{'Accept':'application/json'}})
+    .then(function(r){ return r.json(); })
+    .then(function(list){ renderSearchResults(list||[]); })
+    .catch(function(){ box.innerHTML='<div class="psr-msg">검색이 안 됐어요. 잠시 뒤 다시 하거나, 아래 「지도에서 직접 찍기」를 쓰세요.</div>'; })
+    .then(function(){ _psrBusy=false; document.getElementById('pSearchBtn').disabled=false; });
+}
+function renderSearchResults(list){
+  var box=document.getElementById('pSearchResults');
+  _psrList=list;
+  if(!list.length){ box.innerHTML='<div class="psr-msg">못 찾았어요. 지역명을 붙여보거나(예: 「어니언 성수」), 「지도에서 직접 찍기」를 쓰세요.</div>'; return; }
+  var h='';
+  list.forEach(function(r,i){
+    var full=String(r.display_name||'');
+    h+='<div class="psr-item" onclick="pickSR('+i+')"><b>'+escHtml(full.split(',')[0])+'</b><span>'+escHtml(full.split(',').slice(1,4).join(',').trim())+'</span></div>';
+  });
+  box.innerHTML=h;
+}
+function pickSR(i){
+  var r=_psrList[i]; if(!r) return;
+  _pendLL={lat:parseFloat(r.lat), lng:parseFloat(r.lon)};
+  var full=String(r.display_name||''), nm=full.split(',')[0];
+  if(!document.getElementById('pName').value.trim()) document.getElementById('pName').value=nm;
+  document.getElementById('pSearchResults').className='psr';
+  paintLoc(nm, full.split(',').slice(1,4).join(',').trim());
+  map.setView([_pendLL.lat,_pendLL.lng], Math.max(map.getZoom(),13));
+}
+function escHtml(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function paintLoc(nm, addr){
+  var el=document.getElementById('pLoc');
+  if(_pendLL){
+    el.className='ploc set';
+    el.innerHTML='📍 '+escHtml(nm||'선택한 위치')
+      +(addr?'<span class="pmini">'+escHtml(addr)+'</span>':'')
+      +'<span class="pmini">'+_pendLL.lat.toFixed(5)+', '+_pendLL.lng.toFixed(5)+'</span>';
+  } else {
+    el.className='ploc';
+    el.innerHTML='아직 위치가 없어요. 아래 방법 중 하나로 정하세요.'
+      +'<button type="button" class="ploc-alt" onclick="saveHere()">📍 지금 내가 서 있는 곳으로</button>'
+      +'<button type="button" class="ploc-alt" onclick="armFromModal()">🗺️ 지도에서 직접 찍기</button>';
+  }
+}
+
+/* ── 내 위치 (260911) ──
+   검색(OSM)은 작은 가게를 잘 못 찾는다. 실제로는 그 자리에 서서 저장하는 일이 많으므로
+   현재 위치를 지도에 띄우고 거기서 바로 저장하는 길을 기본 수단으로 둔다. */
+var _meMarker=null, _meCircle=null, _meLL=null;
+function goMyLocation(cb){
+  var btn=document.getElementById('locbtn');
+  if(!navigator.geolocation){ alert('이 브라우저는 위치 기능을 지원하지 않아요.'); return; }
+  if(btn){ btn.textContent='⏳'; btn.disabled=true; }
+  navigator.geolocation.getCurrentPosition(function(pos){
+    if(btn){ btn.textContent='📍'; btn.disabled=false; }
+    _meLL={lat:pos.coords.latitude, lng:pos.coords.longitude};
+    var acc=Math.round(pos.coords.accuracy||50);
+    if(_meMarker){ map.removeLayer(_meMarker); _meMarker=null; }
+    if(_meCircle){ map.removeLayer(_meCircle); _meCircle=null; }
+    _meCircle=L.circle([_meLL.lat,_meLL.lng],{radius:acc,color:'#2f7fd6',weight:1,fillColor:'#2f7fd6',fillOpacity:.12}).addTo(map);
+    _meMarker=L.marker([_meLL.lat,_meLL.lng],{icon:L.divIcon({className:'',html:'<div class="medot"></div>',iconSize:[16,16],iconAnchor:[8,8]})}).addTo(map);
+    _meMarker.bindPopup('<div class="mepop"><b>내 위치</b><span class="meacc">오차 약 '+acc+'m</span>'
+      +'<button type="button" onclick="saveHere()">여기 저장</button></div>');
+    map.setView([_meLL.lat,_meLL.lng], Math.max(map.getZoom(),16));
+    if(cb) cb(); else _meMarker.openPopup();
+  }, function(err){
+    if(btn){ btn.textContent='📍'; btn.disabled=false; }
+    alert(err && err.code===1
+      ? '위치 권한이 거부돼 있어요.\n주소창 왼쪽 자물쇠 → 위치 → 허용으로 바꾼 뒤 다시 눌러주세요.'
+      : '위치를 가져오지 못했어요. 실외에서 잠시 뒤 다시 시도해주세요.');
+  }, {enableHighAccuracy:true, timeout:12000, maximumAge:30000});
+}
+/* 현재 위치를 저장 대상으로 삼는다 (팝업의 '여기 저장' · 모달의 '지금 서 있는 곳으로') */
+function saveHere(){
+  if(!_meLL){ goMyLocation(function(){ saveHere(); }); return; }
+  map.closePopup();
+  _pendLL={lat:_meLL.lat, lng:_meLL.lng};
+  if(!document.getElementById('pmodal').classList.contains('on')) openPModal(null,true);
+  paintLoc('내 위치','주소 확인 중…');
+  reverseFill(_meLL.lat,_meLL.lng);
+}
+/* 좌표 → 주소·장소명 (Nominatim 역검색, 무료·키 불필요). 이름칸을 미리 채워준다. */
+function reverseFill(lat,lng){
+  fetch('https://nominatim.openstreetmap.org/reverse?format=json&accept-language=ko&zoom=18&lat='+lat+'&lon='+lng)
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var nm=(d&&d.name)? d.name : '';
+      var addr=(d&&d.display_name)? d.display_name.split(',').slice(0,4).join(',').trim() : '';
+      paintLoc(nm||'선택한 위치', addr);
+      var pn=document.getElementById('pName');
+      if(pn && !pn.value.trim() && nm) pn.value=nm;
+    })
+    .catch(function(){ paintLoc('선택한 위치',''); });
+}
 function selCat(cat,btn){ _selCat=cat; document.querySelectorAll('#pcats button').forEach(function(b){ b.classList.toggle('on', b===btn); }); }
-function openPModal(edit){
+function openPModal(edit, fromMap){
   _editId = edit? edit.id : null; _selCat = edit? edit.cat : null;
   document.getElementById('pmTitle').textContent = edit? '✏️ 내 장소 수정' : '📍 내 장소 저장';
   document.getElementById('pName').value = edit? edit.name : '';
   document.getElementById('pMemo').value = edit? (edit.memo||'') : '';
   document.querySelectorAll('#pcats button').forEach(function(b){ b.classList.toggle('on', edit && b.getAttribute('data-cat')===edit.cat); });
+  // 수정 모드는 위치를 바꾸지 않으므로 검색줄·위치칸을 숨긴다
+  document.getElementById('psearchRow').style.display = edit? 'none':'flex';
+  document.getElementById('pLoc').style.display = edit? 'none':'';
+  document.getElementById('pSearch').value='';
+  document.getElementById('pSearchResults').className='psr';
+  document.getElementById('pSearchResults').innerHTML='';
+  if(!edit) paintLoc(fromMap? '지도에서 찍은 위치':'', '');
   document.getElementById('pmodal').classList.add('on');
-  setTimeout(function(){ document.getElementById('pName').focus(); }, 50);
+  setTimeout(function(){ var f=document.getElementById(edit? 'pName':'pSearch'); if(f) f.focus(); }, 50);
 }
 function closePModal(){ document.getElementById('pmodal').classList.remove('on'); _pendLL=null; _editId=null; }
 function savePlace(){
+  if(!_editId && !_pendLL){ alert('먼저 위치를 정해주세요 — 위에서 이름으로 찾거나, 지도에서 직접 찍으면 됩니다'); return; }
   if(!_selCat){ alert('카테고리를 골라주세요 (맛집·촬영지·관광지)'); return; }
   var name=document.getElementById('pName').value.trim();
   if(!name){ alert('장소 이름을 적어주세요'); return; }
