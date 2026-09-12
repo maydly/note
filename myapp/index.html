@@ -440,7 +440,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 <script src="parse.js"></script>
 <script>
 /* ===== 저장소 ===== */
-var K={todo:'mj_todos',buy:'mj_buy',own:'mj_own',led:'mj_ledger',shoot:'mj_shoots',wish:'mj_wish',chal:'mj_chals',info:'mj_infos',mood:'mj_moods'};
+var K={todo:'mj_todos',buy:'mj_buy',own:'mj_own',led:'mj_ledger',shoot:'mj_shoots',wish:'mj_wish',chal:'mj_chals',info:'mj_infos',mood:'mj_moods',alias:'mj_calalias'};
 function load(k,def){try{var v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){toast('저장 공간이 부족해요');}}
 function uid(){return 'x'+Math.random().toString(36).slice(2,9);}
@@ -481,6 +481,7 @@ function migrate(){
 
 /* ===== 데이터 ===== */
 var todos,buys,owns,ledger,shoots,wishes,chals,infos,moods,buyDel=[];
+var calAlias={};   // 입금자명 → 실제 예약자명 (부모님이 대신 입금한 경우 등, 명진이 직접 짝지어 기억시킴)
 var PLANKEY='maydly-purchase-plan-v1';  // 장비비교 구매계획과 동일 저장소(순위·목록 통일)
 function loadBuys(){
   var r=null;try{r=JSON.parse(localStorage.getItem(PLANKEY)||'null');}catch(e){}
@@ -521,7 +522,7 @@ function resetBuysFromGear(){
     else toast(msg+'(이 기기)');
   }).catch(function(){toast('복구 실패 — 네트워크 확인');setSyncBadge('오류');});
 }
-function reloadAll(){todos=load(K.todo,[]);buys=loadBuys();owns=load(K.own,[]);ledger=load(K.led,[]);shoots=load(K.shoot,[]);wishes=load(K.wish,[]);chals=load(K.chal,[]);infos=load(K.info,[]);moods=load(K.mood,{});loadPhotos();}
+function reloadAll(){todos=load(K.todo,[]);buys=loadBuys();owns=load(K.own,[]);ledger=load(K.led,[]);shoots=load(K.shoot,[]);wishes=load(K.wish,[]);chals=load(K.chal,[]);infos=load(K.info,[]);moods=load(K.mood,{});calAlias=load(K.alias,{});loadPhotos();}
 
 /* ===== ☁ 클라우드 동기화 (비공개 GitHub 저장소, 브라우저에서 직접) =====
    토큰은 이 기기 localStorage에만 저장 — 사이트 코드·공개 저장소엔 절대 안 들어간다.
@@ -556,6 +557,7 @@ function pathObj(kind){
   if(kind==='chals')return {path:'chals.json',obj:chals};
   if(kind==='infos')return {path:'infos.json',obj:infos};
   if(kind==='moods')return {path:'moods.json',obj:moods};
+  if(kind==='alias')return {path:'calalias.json',obj:calAlias};
   return null;
 }
 /* GitHub은 같은 repo 동시커밋을 하나만 받으므로 push는 큐로 «한 번에 하나»씩.
@@ -573,9 +575,9 @@ function pushSoon(kind){if(!syncOn())return;setSyncBadge('저장중…');clearTi
 function cloudPull(){
   if(!syncOn()){return Promise.resolve();}
   setSyncBadge('동기화중…');
-  var kinds=['ledger','shoots','photos','buys','owns','todos','wishes','chals','infos','moods'];
+  var kinds=['ledger','shoots','photos','buys','owns','todos','wishes','chals','infos','moods','alias'];
   return Promise.all(kinds.map(function(k){return window.MJAPP.get(k);})).then(function(res){
-    var L=res[0],S=res[1],P=res[2],B=res[3],O=res[4],T=res[5],W=res[6],C=res[7],I=res[8],M=res[9];
+    var L=res[0],S=res[1],P=res[2],B=res[3],O=res[4],T=res[5],W=res[6],C=res[7],I=res[8],M=res[9],AL=res[10];
     if(L&&Array.isArray(L.json)){ledger=L.json;save(K.led,ledger);}
     if(S&&Array.isArray(S.json)){shoots=S.json;save(K.shoot,shoots);}
     if(P&&P.json){photos=P.json.map||P.json;if(P.json.base)photoBase=P.json.base;try{localStorage.setItem('mj_photos',JSON.stringify({map:photos,base:photoBase}));}catch(e){}}
@@ -586,6 +588,7 @@ function cloudPull(){
     if(C&&Array.isArray(C.json)){chals=C.json;save(K.chal,chals);}
     if(I&&Array.isArray(I.json)){infos=I.json;save(K.info,infos);}
     if(M&&M.json&&typeof M.json==='object'){moods=M.json;save(K.mood,moods);}
+    if(AL&&AL.json&&typeof AL.json==='object'){calAlias=AL.json;save(K.alias,calAlias);}
     // 원격에 없는 항목은 로컬을 올려 시드(첫 기기)
     var seed=[];
     if(!L&&ledger.length)seed.push(cloudPush('ledger'));
@@ -598,6 +601,7 @@ function cloudPull(){
     if(!C&&chals.length)seed.push(cloudPush('chals'));
     if(!I&&infos.length)seed.push(cloudPush('infos'));
     if(!M&&Object.keys(moods).length)seed.push(cloudPush('moods'));
+    if(!AL&&Object.keys(calAlias).length)seed.push(cloudPush('alias'));
     renderAll();
     return Promise.all(seed);
   }).then(function(){setSyncBadge('동기화됨');}).catch(function(e){setSyncBadge('오류');toast('동기화 실패: '+e.message);});
@@ -1613,9 +1617,13 @@ function pairPrepaid(){
   toast(plan.length+'쌍 정리했어요 ('+won(tot)+')');
 }
 function calNorm(s){return String(s||'').normalize('NFC').replace(/\s+/g,'').replace(/(님|씨)$/,'').trim();}
-function calNameOf(desc){                       // 입금 적요에서 사람 이름만 뽑는다
+function calRawName(desc){                      // 입금 적요에서 사람 이름 부분만
   var s=calNorm(String(desc||'').replace(/^\d{1,2}월/,'').replace(/\(.*$/,''));
   return /^[가-힣]{2,4}$/.test(s)?s:null;
+}
+function calNameOf(desc){                       // 별칭(부모님 등이 대신 입금)이 있으면 실제 예약자명으로
+  var n=calRawName(desc); if(!n)return null;
+  return calAlias[n]||n;
 }
 function calDay(d){return Math.round(new Date(d+'T00:00:00').getTime()/86400000);}
 function matchCalendar(){
@@ -1643,6 +1651,10 @@ function matchCalendar(){
       if(good.length)R.ok.push({t:t,n:n,near:good[0]});
       else R.bad.push({t:t,n:n,near:inR[0]});
     });
+    window._calEv=ev;                 // 후보 고를 때 다시 쓴다
+    var used={};
+    ['ok','bad','far'].forEach(function(k){R[k].forEach(function(x){if(x.near&&x.near.e)used[x.near.e.id]=1;});});
+    window._calUsed=used;
     showCalResult(R,ev.length);
   });
 }
@@ -1659,10 +1671,15 @@ function showCalResult(R,evN){
       +'<span style="font-weight:700;min-width:74px;text-align:right">'+won(x.t.amt)+'</span>'
       +'<span style="flex:1">'+esc(x.n||x.t.desc)+(extra?' <span style="color:#9aa197">'+esc(extra)+'</span>':'')+'</span></div>';
   };
-  var sec=function(a,title,fmt){
+  var sec=function(a,title,fmt,pick){
     if(!a.length)return '';
     return '<div class="seg" style="margin-top:12px">'+title+' ('+a.length+'건)</div>'
-      +a.slice(0,60).map(function(x){return item(x,fmt?fmt(x):'');}).join('')
+      +a.slice(0,60).map(function(x,i){
+          var body=item(x,fmt?fmt(x):'');
+          if(pick!=='pick')return body;
+          return '<div onclick="pickCalMatch('+i+')" style="cursor:pointer">'
+            +body.slice(0,-6)+'<span style="color:#4f9a6a;font-size:11px;margin-left:4px">짝짓기 ▸</span></div></div>';
+        }).join('')
       +(a.length>60?'<div style="font-size:11.5px;color:#9aa197;padding-top:5px">… 외 '+(a.length-60)+'건 (복사하면 전부 나옵니다)</div>':'');
   };
   var gapTxt=function(x){var g=x.near.gap;return '예약 '+x.near.e.date.slice(5)+' ('+(g===0?'당일':(g>0?'+'+g:g)+'일')+')';};
@@ -1672,7 +1689,7 @@ function showCalResult(R,evN){
       +row(R.ok,'✅','확인됨')+row(R.bad,'🚫','노쇼·취소')+row(R.far,'⚠️','기간 밖')+row(R.none,'❌','이름 없음')+'</div>'
     +'<div style="max-height:46vh;overflow:auto;margin-top:4px">'
       +sec(R.bad,'⚠️ 노쇼·취소 — 예약금은 받은 그대로 (환불 대상 아님)',gapTxt)
-      +sec(R.none,'❌ 캘린더에 이 이름이 없음 — 촬영비가 아닐 수 있음')
+      +sec(R.none,'❌ 캘린더에 이 이름이 없음 — 눌러서 예약과 짝지어 주세요',null,'pick')
       +sec(R.far,'⚠️ 이름은 있는데 2개월 밖 — 동명이인이거나 옛 손님',gapTxt)
       +sec(R.skip,'— 사람 이름이 아니라 건너뜀')
       +sec(R.ok,'✅ 확인됨',gapTxt)
@@ -1682,6 +1699,50 @@ function showCalResult(R,evN){
   window._calR=R;
   document.getElementById('sheet').innerHTML=html;
   document.getElementById('mask').classList.add('on');
+}
+/* 이름이 캘린더에 없는 입금을 «그 무렵 예약»과 짝지어 준다.
+   부모님·지인이 대신 입금하면 입금자명이 예약자와 달라 안 잡히는데,
+   한 번 짝지어 두면 「입금자명 → 실제 예약자명」으로 기억해 다음부터 자동으로 맞춘다. */
+function pickCalMatch(i){
+  var R=window._calR, ev=window._calEv, used=window._calUsed||{};
+  if(!R||!ev)return;
+  var x=R.none[i]; if(!x)return;
+  var d0=calDay(x.t.date);
+  var cand=ev.filter(function(e){
+      if(!e.date||!calNorm(e.client))return false;
+      if(used[e.id])return false;
+      var g=calDay(e.date)-d0; return g>=-CAL_DAYS&&g<=CAL_DAYS;
+    }).map(function(e){return {e:e,gap:calDay(e.date)-d0};})
+    .sort(function(a,b){return Math.abs(a.gap)-Math.abs(b.gap);}).slice(0,40);
+  window._pickIdx=i; window._pickCand=cand;
+  var head='<h3>짝지을 예약 고르기</h3>'
+    +'<div class="mnote">'+esc(x.t.date)+' \u00b7 '+won(x.t.amt)+' \u00b7 \uc785\uae08\uc790 <b>'+esc(x.n)+'</b>'
+    +'<br>\uc774 \ubb34\ub835 \uc608\uc57d \uc911 \uc544\uc9c1 \uc785\uae08\uc774 \uc548 \ub9de\ucdb0\uc9c4 \uac83\ub9cc \ubcf4\uc5ec\ub4dc\ub824\uc694</div>';
+  var body=cand.length
+    ? cand.map(function(c,j){
+        return '<div onclick="doCalMatch('+j+')" style="display:flex;gap:8px;align-items:center;padding:8px 2px;'
+          +'border-bottom:1px solid #f2f0ec;cursor:pointer;font-size:13px">'
+          +'<span style="color:#9aa197;min-width:52px">'+esc(c.e.date.slice(5))+'</span>'
+          +'<span style="flex:1;font-weight:700">'+esc(calNorm(c.e.client))+'</span>'
+          +'<span style="color:#9aa197;font-size:11.5px">'+(c.gap>0?'+':'')+c.gap+'\uc77c \u00b7 '+esc(c.e.status||'')+'</span></div>';
+      }).join('')
+    : '<div class="mnote" style="padding:14px 0">\uc774 \ubb34\ub835\uc5d0 \ub0a8\uc740 \uc608\uc57d\uc774 \uc5c6\uc5b4\uc694. \ucd2c\uc601\ube44\uac00 \uc544\ub2d0 \uc218 \uc788\uc5b4\uc694.</div>';
+  document.getElementById('sheet').innerHTML=head
+    +'<div style="max-height:52vh;overflow:auto;margin-top:6px">'+body+'</div>'
+    +'<div class="mact"><button class="mcancel" onclick="matchCalendar()">\u2190 \ub3cc\uc544\uac00\uae30</button>'
+    +'<button class="msave" style="background:#c2a99e" onclick="doCalMatch(-1)">\ucd2c\uc601\ube44 \uc544\ub2d8</button></div>';
+}
+function doCalMatch(j){
+  var R=window._calR, x=R&&R.none[window._pickIdx];
+  if(!x)return;
+  if(j<0){ calAlias[x.n]='(\ucd2c\uc601 \uc544\ub2d8)'; }
+  else{
+    var c=window._pickCand[j]; if(!c)return;
+    calAlias[x.n]=calNorm(c.e.client);
+  }
+  save(K.alias,calAlias); pushSoon('alias');
+  toast(j<0?('\u300c'+x.n+'\u300d\uc740 \uc55e\uc73c\ub85c \ucd2c\uc601\ube44\ub85c \uc548 \ubd10\uc694'):('\u300c'+x.n+'\u300d \u2192 \u300c'+calAlias[x.n]+'\u300d\ub85c \uae30\uc5b5\ud588\uc5b4\uc694'));
+  matchCalendar();
 }
 function copyCalResult(){
   var R=window._calR;if(!R)return;
