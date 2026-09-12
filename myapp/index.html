@@ -162,6 +162,15 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .skpi{flex:1;background:#fff;border:1px solid #e2ece0;border-radius:14px;padding:11px;text-align:center}
 .skpi .l{font-size:10.5px;color:#97a394;font-weight:600}
 .skpi .v{font-size:15px;font-weight:800;margin-top:3px;font-variant-numeric:tabular-nums}
+/* 분류별 보기 필터 칩 */
+.cchips{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 9px}
+.cchip{display:flex;align-items:center;gap:5px;border:1px solid #e3ece0;background:#fbfdfa;
+ border-radius:20px;padding:5px 11px;font-size:12.5px;color:#5e6b5b;cursor:pointer;
+ user-select:none;-webkit-tap-highlight-color:transparent;transition:.12s}
+.cchip:active{transform:scale(.96)}
+.cchip .cn{font-size:11px;color:#a2a89f;font-variant-numeric:tabular-nums}
+.cchip.on{background:#4f9a6a;border-color:#4f9a6a;color:#fff;font-weight:700}
+.cchip.on .cn{color:#ffffffb0}
 /* 가계부 상세 */
 .led{display:flex;align-items:center;gap:11px}
 .lic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:16px;flex:0 0 auto;background:#eee9e0}
@@ -627,8 +636,40 @@ function sheetSync(){
         +'<div style="text-align:center;margin-top:10px"><span onclick="mjSyncLogout()" style="font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline">로그아웃</span></div></div>'
       : '<div style="text-align:center;padding:12px 0"><button class="impbtn cash" style="font-size:14px;padding:12px 20px" onclick="mjSyncLogin()">🔗 Google로 로그인</button>'
         +'<div style="font-size:11px;color:#a99e8f;margin-top:10px">로그인 전엔 이 기기에만 저장돼요(안전)</div>'
-        +'<div class="mact" style="margin-top:14px"><button class="mcancel" onclick="closeSheet()">닫기</button></div></div>');
+        +'<div class="mact" style="margin-top:14px"><button class="mcancel" onclick="closeSheet()">닫기</button></div></div>')
+    +'<div class="phnote" style="margin-top:14px"><b>백업 / 내보내기</b> — 만약을 위해 전체 데이터를 파일로 저장하거나, 보유목록을 복사해서 클로드에게 줄 수 있어요.</div>'
+    +'<div class="mact" style="margin-top:8px"><button class="mcancel" onclick="exportBackup()">💾 전체 백업(파일)</button><button class="msave" onclick="copyOwnList()">📋 보유목록 복사</button></div>';
   document.getElementById('mask').classList.add('on');
+}
+/* 전체 데이터 백업(모든 저장키) — 파일로 저장. 누락 방지 안전망 */
+function exportBackup(){
+  try{
+    var data={_app:'maydly-myapp',_exportedAt:new Date().toISOString(),_by:(window.MJAPP&&window.MJAPP.user&&window.MJAPP.user.email)||''};
+    Object.keys(K).forEach(function(kk){ data[K[kk]]=load(K[kk],null); });
+    var s=JSON.stringify(data,null,2);
+    var blob=new Blob([s],{type:'application/json'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a'); a.href=url; a.download='maydly_app_backup_'+todayStr()+'.json';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ try{document.body.removeChild(a);URL.revokeObjectURL(url);}catch(e){} },600);
+    toast('전체 백업 파일을 저장했어요');
+  }catch(e){ toast('백업 실패: '+(e&&e.message||e)); }
+}
+/* 보유목록만 복사 — 클로드에게 붙여넣어 09와 대조·병합용 */
+function copyOwnList(){
+  try{
+    var own=load(K.own,[])||[];
+    var s=JSON.stringify(own,null,2);
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(s).then(function(){toast('보유목록 '+own.length+'개 복사됨 — 클로드에 붙여넣기');},function(){fallbackCopyText(s,own.length);});
+    } else { fallbackCopyText(s,own.length); }
+  }catch(e){ toast('복사 실패: '+(e&&e.message||e)); }
+}
+function fallbackCopyText(s,n){
+  var ta=document.createElement('textarea'); ta.value=s; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try{ document.execCommand('copy'); toast('보유목록 '+n+'개 복사됨 — 붙여넣기'); }catch(e){ toast('복사 실패 — 길게 눌러 복사'); }
+  document.body.removeChild(ta);
 }
 function mjSyncLogin(){ if(window.MJAPP&&window.MJAPP.login){ window.MJAPP.login(); toast('구글 로그인 창을 여는 중…'); } }
 function mjSyncLogout(){ if(window.MJAPP&&window.MJAPP.logout){ window.MJAPP.logout(); } closeSheet(); setSyncBadge(); toast('로그아웃했어요 (데이터는 남아있어요)'); }
@@ -1352,6 +1393,29 @@ var CATICON={'식비·편의점·마트':'🍽','차량·주유':'⛽','교통':
 var period='월';           // 월/3개월/6개월/12개월 (달력정렬: 분기/반기/연간)
 var viewYM=null;           // {y,m} 기준점
 var selDay=null;           // 'YYYY-MM-DD'
+/* 분류별 보기 필터 — 비어 있으면 전체. 여러 개 고를 수 있다(토글). */
+var catFilter=[];
+function catChips(base){
+  if(!base.length)return '';
+  var g={};base.forEach(function(t){var c=t.cat||'미분류';(g[c]=g[c]||{n:0,amt:0,type:t.type}).n++;g[c].amt+=t.amt;});
+  var keys=Object.keys(g).sort(function(a,b){return g[b].amt-g[a].amt;});
+  if(keys.length<2)return '';
+  var chips=keys.map(function(c){
+    var on=catFilter.indexOf(c)>=0;
+    return '<div class="cchip'+(on?' on':'')+'" onclick="toggleCat(\''+esc(c).replace(/'/g,"\\'")+'\')">'
+      +(CATICON[c]||(g[c].type==='in'?'📥':'💸'))+' '+esc(c)
+      +'<span class="cn">'+g[c].n+'</span></div>';
+  }).join('');
+  return '<div class="cchips">'
+    +'<div class="cchip'+(catFilter.length?'':' on')+'" onclick="clearCatFilter()">전체<span class="cn">'+base.length+'</span></div>'
+    +chips+'</div>';
+}
+function toggleCat(c){
+  var i=catFilter.indexOf(c);
+  if(i>=0)catFilter.splice(i,1); else catFilter.push(c);
+  renderMoney();
+}
+function clearCatFilter(){ if(!catFilter.length)return; catFilter=[]; renderMoney(); }
 var moneyView='cal';       // cal(달력/막대) | summary(요약)
 var moneyAutoJumped=false;  // 가계부 첫 열람 시, 이번 달이 비었으면 최근 거래월로 1회 자동 이동
 function curYM(){if(viewYM)return viewYM;var d=new Date();return {y:d.getFullYear(),m:d.getMonth()};}
@@ -1381,7 +1445,7 @@ function renderVtabs(){
     '<div class="vt '+(moneyView==='summary'?'on':'')+'" onclick="setMoneyView(\'summary\')">📋 요약</div>';
 }
 function setPeriod(p){period=p;selDay=null;renderMoney();}
-function setMoneyView(v){moneyView=v;renderMoney();}
+function setMoneyView(v){moneyView=v;catFilter=[];renderMoney();}
 
 function periodRange(){
   // 달력 정렬: 월=그 달 / 3개월=분기 / 6개월=반기 / 12개월=그 해 1~12월
@@ -1456,14 +1520,17 @@ function monthView(list){
   }
   h+='</div>';
   // 선택일 상세
+  var base = selDay ? list.filter(function(t){return t.date===selDay;}) : list;
+  var shown = catFilter.length ? base.filter(function(t){return catFilter.indexOf(t.cat)>=0;}) : base;
   if(selDay){
-    var items=list.filter(function(t){return t.date===selDay;});
-    h+='<div class="seg">'+(+selDay.slice(8,10))+'일 내역 · 탭해서 수정'+(items.length?'':' — 없음')+'</div>';
-    h+=items.map(ledCard).join('');
+    h+='<div class="seg">'+(+selDay.slice(8,10))+'일 내역 · 탭해서 수정'+(base.length?'':' — 없음')+'</div>';
   }else{
-    h+='<div class="seg">이 달 전체 내역 ('+list.length+'건) · 탭해서 수정</div>';
-    h+=list.slice().sort(function(a,b){return (a.date+(a.time||''))<(b.date+(b.time||''))?1:-1;}).map(ledCard).join('')||'<div class="empty">이 달 내역이 없어요</div>';
+    h+='<div class="seg">이 달 전체 내역 ('+base.length+'건'
+      +(catFilter.length?' 중 '+shown.length+'건 보는 중':'')+') · 탭해서 수정</div>';
   }
+  h+=catChips(base);
+  h+=shown.slice().sort(function(a,b){return (a.date+(a.time||''))<(b.date+(b.time||''))?1:-1;}).map(ledCard).join('')
+    ||'<div class="empty">'+(catFilter.length?'고른 분류에 해당하는 내역이 없어요':'내역이 없어요')+'</div>';
   return h;
 }
 function barsView(){
@@ -1488,6 +1555,7 @@ function ledCard(t){
     +'</div></div>';
 }
 function navPeriod(dir){
+  catFilter=[];   // 달을 옮기면 분류 필터는 푼다
   var ym=curYM();var cnt=pcnt();
   var base = cnt===1 ? ym.m : cnt===12 ? 0 : Math.floor(ym.m/cnt)*cnt;
   var d=new Date(ym.y,base+dir*cnt,1);
