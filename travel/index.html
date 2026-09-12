@@ -322,7 +322,7 @@ function activateTravel(){
   map.setView(VIEW.tv.c, VIEW.tv.z);
   document.querySelectorAll('.ctab').forEach(function(t){ t.classList.toggle('on', t.getAttribute('data-c')==='tv'); });
   document.getElementById('citySearch').placeholder = PH.tv;
-  var fab=document.querySelector('.myfab'); if(fab) fab.style.display='none';
+  setFab('travel');
   var lb=document.getElementById('locbtn'); if(lb) lb.classList.remove('on');
   if(window.renderMyPlaces) renderMyPlaces();
   if(!JP_LOADED){                       // 일본은 무거우므로 국내를 먼저 보여주고 뒤에서 채운다
@@ -342,7 +342,7 @@ function activate(cc){
   document.getElementById('citySearch').placeholder = PH[cc];
   document.getElementById('creditLink').href = (cc==='kr') ? '../travel-kr/사진출처.html' : '사진출처.html';
   window.COUNTRY = cc;
-  var fab=document.querySelector('.myfab'); if(fab) fab.style.display='none';   // 내 장소 FAB는 '내 지도' 탭에서만
+  setFab('travel');   // 신의눈만 남기고 내 장소 버튼들은 감춘다
   var lb=document.getElementById('locbtn'); if(lb) lb.classList.remove('on');
   if(window.renderMyPlaces) renderMyPlaces();
 }
@@ -582,6 +582,17 @@ function toast3d(msg){
   clearTimeout(_t3); _t3=setTimeout(function(){ el.style.display='none'; },3800);
 }
 
+/* 오른쪽 아래 버튼 묶음 — 신의눈은 모든 탭에서, 나머지는 '내 지도' 탭에서만 (260912) */
+function setFab(mode){
+  var fab=document.querySelector('.myfab'); if(!fab) return;
+  fab.style.display='flex';
+  var bs=fab.querySelectorAll('button');
+  for(var i=0;i<bs.length;i++){
+    var always=bs[i].classList.contains('mf-gev');
+    bs[i].style.display=(mode==='my'||always)? '':'none';
+  }
+}
+
 function mkChip(rowId,label,cnt,g,k,cls){
   var b=document.createElement('button');
   b.className='sc-chip'+(cls? ' '+cls:'');
@@ -811,7 +822,7 @@ function activateMy(){
   window.COUNTRY='my';
   document.body.classList.add('my-on');
   document.querySelectorAll('.ctab').forEach(function(t){ t.classList.toggle('on', t.getAttribute('data-c')==='my'); });
-  var fab=document.querySelector('.myfab'); if(fab) fab.style.display='flex';
+  setFab('my');
   var lb=document.getElementById('locbtn'); if(lb) lb.classList.add('on');
   if(!MY_INIT){ myChips(); MY_INIT=true; }
   if(MY_ST.scene && SC_CL && !map.hasLayer(SC_CL)) map.addLayer(SC_CL);
