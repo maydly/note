@@ -310,7 +310,9 @@ function drawMarkers(){
   (window.ORDER || Object.keys(CITY)).forEach(function(k){
     var pos = COORDS[k], c = CITY[k]; if(!pos||!c) return;
     var icon = L.divIcon({className:'', html:'<div class="lp"><div class="dot"><b>🍀</b></div><div class="lab">'+(c.nm||k)+'</div></div>', iconSize:[0,0], iconAnchor:[0,0]});
-    var m = L.marker(pos,{icon:icon}).addTo(map).on('click', (function(kk){ return function(){ showPreview(kk); }; })(k));
+    var m = L.marker(pos,{icon:icon}).addTo(map).on('click', (function(kk){
+      return function(){ ensureJPDetail(kk, function(){ showPreview(kk); }); };
+    })(k));
     MARKERS.push(m);
   });
 }
@@ -359,24 +361,58 @@ function activate(cc){
   if(window.renderMyPlaces) renderMyPlaces();
 }
 
-function loadJP(done){
-  if(JP_LOADED){ done(); return; }
-  var ld = document.getElementById('maploading'); ld.classList.add('on');
-  var files = ['data/tvimg.js','data/cityimg.js','data/city.js','data/order.js',
-    'data/batch1.js','data/batch2.js','data/batch3.js','data/batch4.js','data/batch5.js','data/batch6.js',
-    'data/photos.js','data/guides.js','data/guides_시코쿠.js','data/guides_북방.js','data/guides_도호쿠.js',
-    'data/guides_주고쿠.js','data/guides_규슈.js','data/guides_간사이.js','data/guides_주부.js','data/guides_간토.js','data/guides_잔여.js'];
-  // 일본 로드 전 현재 CITY/COORDS 비워 일본 데이터만 담기
-  window.CITY = {}; window.COORDS = {};
+/* 일본 데이터는 둘로 나눠 받는다 (260913).
+   국내·일본을 한 지도로 합치면서 11.32MB를 앱 열 때마다 받게 되어 폰에서 아예 안 켜졌다(명진 지적).
+   마커에 필요한 건 city.js+order.js 0.04MB뿐이고, 나머지 11.28MB(사진·가이드)는
+   도시를 눌러 상세를 볼 때만 있으면 된다. */
+// 마커용 0.65MB — 도시 이름(city)·순서(order)·나머지 783개 도시와 좌표(batch1~6)
+var JP_CORE = ['data/city.js','data/order.js',
+  'data/batch1.js','data/batch2.js','data/batch3.js','data/batch4.js','data/batch5.js','data/batch6.js'];
+// 상세용 10.7MB — 도시 사진(cityimg 2.4MB·tvimg 0.8MB)과 권역 가이드
+var JP_REST = ['data/tvimg.js','data/cityimg.js','data/photos.js','data/guides.js',
+  'data/guides_시코쿠.js','data/guides_북방.js','data/guides_도호쿠.js','data/guides_주고쿠.js',
+  'data/guides_규슈.js','data/guides_간사이.js','data/guides_주부.js','data/guides_간토.js',
+  'data/guides_잔여.js'];
+var JP_REST_LOADED = false;
+
+function loadScripts(files, done){
   var i = 0;
   (function next(){
-    if(i >= files.length){
-      window.CITY_JP = CITY; window.COORDS_JP = COORDS; window.ORDER_JP = window.ORDER || null;
-      JP_LOADED = true; ld.classList.remove('on'); done(); return;
-    }
+    if(i >= files.length){ done(); return; }
     var s = document.createElement('script'); s.src = files[i++] + "?v=3";
     s.onload = next; s.onerror = next; document.head.appendChild(s);
   })();
+}
+
+/* 마커용만 — 가볍다(0.04MB) */
+function loadJP(done){
+  if(JP_LOADED){ done(); return; }
+  var ld = document.getElementById('maploading');
+  if(ld){ ld.textContent='일본 도시 불러오는 중…'; ld.classList.add('on'); }
+  window.CITY = {}; window.COORDS = {};      // 일본 로드 전 비워 일본 것만 담는다
+  loadScripts(JP_CORE, function(){
+    window.CITY_JP = CITY; window.COORDS_JP = COORDS; window.ORDER_JP = window.ORDER || null;
+    JP_LOADED = true;
+    if(ld) ld.classList.remove('on');
+    done();
+  });
+}
+
+/* 상세(사진·가이드)는 일본 도시를 처음 누를 때만 — 11.28MB */
+function ensureJPDetail(cityKey, done){
+  if(JP_REST_LOADED || !(window.CITY_JP && window.CITY_JP[cityKey])){ done(); return; }
+  var ld = document.getElementById('maploading');
+  if(ld){ ld.textContent='도시 사진·가이드 불러오는 중… (처음 한 번)'; ld.classList.add('on'); }
+  var keep = window.CITY, keepC = window.COORDS;
+  loadScripts(JP_REST, function(){
+    // 상세 파일들이 CITY에 덧붙므로, 합쳐둔 목록을 다시 세운다
+    window.CITY_JP = window.CITY; window.COORDS_JP = window.COORDS || keepC;
+    JP_REST_LOADED = true;
+    if(typeof mergeCities === 'function' && window.COUNTRY === 'tv') mergeCities();
+    else { window.CITY = keep; window.COORDS = keepC; }
+    if(ld) ld.classList.remove('on');
+    done();
+  });
 }
 
 function renderCountry(cc){
