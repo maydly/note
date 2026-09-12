@@ -163,14 +163,26 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .skpi .l{font-size:10.5px;color:#97a394;font-weight:600}
 .skpi .v{font-size:15px;font-weight:800;margin-top:3px;font-variant-numeric:tabular-nums}
 /* 분류별 보기 필터 칩 */
-.fchips{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 9px}
-.fchip{display:flex;align-items:center;gap:5px;border:1px solid #e3ece0;background:#fbfdfa;
- border-radius:20px;padding:5px 11px;font-size:12.5px;color:#5e6b5b;cursor:pointer;
- user-select:none;-webkit-tap-highlight-color:transparent;transition:.12s}
-.fchip:active{transform:scale(.96)}
-.fchip .cn{font-size:11px;color:#a2a89f;font-variant-numeric:tabular-nums}
-.fchip.on{background:#4f9a6a;border-color:#4f9a6a;color:#fff;font-weight:700}
-.fchip.on .cn{color:#ffffffb0}
+.fpanel{margin-top:12px;border:1px solid #e3ece0;border-radius:13px;background:#fff;overflow:hidden}
+.fhead{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;
+ font-size:13px;font-weight:700;color:#5e6b5b;cursor:pointer;user-select:none;
+ -webkit-tap-highlight-color:transparent}
+.fhead .fsum{font-weight:400;font-size:12px;color:#9aa197;display:flex;align-items:center;gap:6px}
+.fhead .fsum i{font-style:normal;font-size:11px}
+.fbody{border-top:1px solid #eef3ec;padding:4px 0}
+.frow{display:flex;align-items:center;gap:9px;padding:9px 14px;cursor:pointer;
+ user-select:none;-webkit-tap-highlight-color:transparent}
+.frow:active{background:#f7faf6}
+.frow .fic{width:19px;text-align:center;font-size:14px}
+.frow .fnm{flex:1;font-size:13.5px;color:#3a3a38}
+.frow .fct{font-size:11.5px;color:#a2a89f;font-variant-numeric:tabular-nums}
+.sw{width:38px;height:22px;border-radius:22px;background:#dfe4dc;position:relative;transition:.16s;flex:none}
+.sw i{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;
+ transition:.16s;box-shadow:0 1px 3px #0002}
+.sw.on{background:#4f9a6a}
+.sw.on i{left:18px}
+.fall{display:flex;gap:16px;justify-content:center;padding:10px 0 8px;border-top:1px dashed #eef3ec;margin-top:4px}
+.fall span{font-size:12px;color:#7d8a7c;cursor:pointer;text-decoration:underline}
 /* 가계부 상세 */
 .led{display:flex;align-items:center;gap:11px}
 .lic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:16px;flex:0 0 auto;background:#eee9e0}
@@ -1393,29 +1405,48 @@ var CATICON={'식비·편의점·마트':'🍽','차량·주유':'⛽','교통':
 var period='월';           // 월/3개월/6개월/12개월 (달력정렬: 분기/반기/연간)
 var viewYM=null;           // {y,m} 기준점
 var selDay=null;           // 'YYYY-MM-DD'
-/* 분류별 보기 필터 — 비어 있으면 전체. 여러 개 고를 수 있다(토글). */
-var catFilter=[];
-function catChips(base){
+/* 분류별 보기 필터 — 목록 «아래»에 분류마다 켜고 끄는 토글을 둔다.
+   기본은 전부 켜짐(다 보임). 끈 분류는 catOff에 들어가고 목록에서 빠진다. */
+var catOff=[], catPanelOpen=false;
+function catPanel(base){
   if(!base.length)return '';
   var g={};base.forEach(function(t){var c=t.cat||'미분류';(g[c]=g[c]||{n:0,amt:0,type:t.type}).n++;g[c].amt+=t.amt;});
   var keys=Object.keys(g).sort(function(a,b){return g[b].amt-g[a].amt;});
   if(keys.length<2)return '';
-  var chips=keys.map(function(c){
-    var on=catFilter.indexOf(c)>=0;
-    return '<div class="fchip'+(on?' on':'')+'" onclick="toggleCat(\''+esc(c).replace(/'/g,"\\'")+'\')">'
-      +(CATICON[c]||(g[c].type==='in'?'📥':'💸'))+' '+esc(c)
-      +'<span class="cn">'+g[c].n+'</span></div>';
+  var offN=keys.filter(function(c){return catOff.indexOf(c)>=0;}).length;
+  var head='<div class="fhead" onclick="catPanelToggle()">'
+    +'<span>⚙ 분류별 보기</span>'
+    +'<span class="fsum">'+(offN?keys.length-offN+' / '+keys.length+' 켜짐':'전부 켜짐')
+    +'<i>'+(catPanelOpen?'▴':'▾')+'</i></span></div>';
+  if(!catPanelOpen)return '<div class="fpanel">'+head+'</div>';
+  var rows=keys.map(function(c){
+    var on=catOff.indexOf(c)<0;
+    return '<div class="frow" onclick="toggleCat(\''+esc(c).replace(/'/g,"\\'")+'\')">'
+      +'<span class="fic">'+(CATICON[c]||(g[c].type==='in'?'📥':'💸'))+'</span>'
+      +'<span class="fnm">'+esc(c)+'</span>'
+      +'<span class="fct">'+g[c].n+'건</span>'
+      +'<span class="sw'+(on?' on':'')+'"><i></i></span></div>';
   }).join('');
-  return '<div class="fchips">'
-    +'<div class="fchip'+(catFilter.length?'':' on')+'" onclick="clearCatFilter()">전체<span class="cn">'+base.length+'</span></div>'
-    +chips+'</div>';
+  return '<div class="fpanel">'+head
+    +'<div class="fbody">'+rows
+    +'<div class="fall"><span onclick="catAll(1)">전부 켜기</span><span onclick="catAll(0)">전부 끄기</span></div>'
+    +'</div></div>';
 }
+function catPanelToggle(){ catPanelOpen=!catPanelOpen; renderMoney(); }
 function toggleCat(c){
-  var i=catFilter.indexOf(c);
-  if(i>=0)catFilter.splice(i,1); else catFilter.push(c);
+  var i=catOff.indexOf(c);
+  if(i>=0)catOff.splice(i,1); else catOff.push(c);
   renderMoney();
 }
-function clearCatFilter(){ if(!catFilter.length)return; catFilter=[]; renderMoney(); }
+function catAll(on){
+  if(on){catOff=[];}
+  else{
+    var base=selDay?txInPeriod().filter(function(t){return t.date===selDay;}):txInPeriod();
+    catOff=[];base.forEach(function(t){var c=t.cat||'미분류';if(catOff.indexOf(c)<0)catOff.push(c);});
+  }
+  renderMoney();
+}
+function clearCatFilter(){ if(!catOff.length)return; catOff=[]; renderMoney(); }
 var moneyView='cal';       // cal(달력/막대) | summary(요약)
 var moneyAutoJumped=false;  // 가계부 첫 열람 시, 이번 달이 비었으면 최근 거래월로 1회 자동 이동
 function curYM(){if(viewYM)return viewYM;var d=new Date();return {y:d.getFullYear(),m:d.getMonth()};}
@@ -1445,7 +1476,7 @@ function renderVtabs(){
     '<div class="vt '+(moneyView==='summary'?'on':'')+'" onclick="setMoneyView(\'summary\')">📋 요약</div>';
 }
 function setPeriod(p){period=p;selDay=null;renderMoney();}
-function setMoneyView(v){moneyView=v;catFilter=[];renderMoney();}
+function setMoneyView(v){moneyView=v;catOff=[];renderMoney();}
 
 function periodRange(){
   // 달력 정렬: 월=그 달 / 3개월=분기 / 6개월=반기 / 12개월=그 해 1~12월
@@ -1521,16 +1552,16 @@ function monthView(list){
   h+='</div>';
   // 선택일 상세
   var base = selDay ? list.filter(function(t){return t.date===selDay;}) : list;
-  var shown = catFilter.length ? base.filter(function(t){return catFilter.indexOf(t.cat)>=0;}) : base;
+  var shown = catOff.length ? base.filter(function(t){return catOff.indexOf(t.cat||'미분류')<0;}) : base;
   if(selDay){
     h+='<div class="seg">'+(+selDay.slice(8,10))+'일 내역 · 탭해서 수정'+(base.length?'':' — 없음')+'</div>';
   }else{
     h+='<div class="seg">이 달 전체 내역 ('+base.length+'건'
-      +(catFilter.length?' 중 '+shown.length+'건 보는 중':'')+') · 탭해서 수정</div>';
+      +(catOff.length?' 중 '+shown.length+'건 보는 중':'')+') · 탭해서 수정</div>';
   }
-  h+=catChips(base);
   h+=shown.slice().sort(function(a,b){return (a.date+(a.time||''))<(b.date+(b.time||''))?1:-1;}).map(ledCard).join('')
-    ||'<div class="empty">'+(catFilter.length?'고른 분류에 해당하는 내역이 없어요':'내역이 없어요')+'</div>';
+    ||'<div class="empty">'+(catOff.length?'켜둔 분류에 해당하는 내역이 없어요':'내역이 없어요')+'</div>';
+  h+=catPanel(base);          // 필터는 목록 «아래»
   return h;
 }
 function barsView(){
@@ -1555,7 +1586,7 @@ function ledCard(t){
     +'</div></div>';
 }
 function navPeriod(dir){
-  catFilter=[];   // 달을 옮기면 분류 필터는 푼다
+  catOff=[];   // 달을 옮기면 분류 필터는 푼다
   var ym=curYM();var cnt=pcnt();
   var base = cnt===1 ? ym.m : cnt===12 ? 0 : Math.floor(ym.m/cnt)*cnt;
   var d=new Date(ym.y,base+dir*cnt,1);
