@@ -163,14 +163,14 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .skpi .l{font-size:10.5px;color:#97a394;font-weight:600}
 .skpi .v{font-size:15px;font-weight:800;margin-top:3px;font-variant-numeric:tabular-nums}
 /* 분류별 보기 필터 칩 */
-.cchips{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 9px}
-.cchip{display:flex;align-items:center;gap:5px;border:1px solid #e3ece0;background:#fbfdfa;
+.fchips{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 9px}
+.fchip{display:flex;align-items:center;gap:5px;border:1px solid #e3ece0;background:#fbfdfa;
  border-radius:20px;padding:5px 11px;font-size:12.5px;color:#5e6b5b;cursor:pointer;
  user-select:none;-webkit-tap-highlight-color:transparent;transition:.12s}
-.cchip:active{transform:scale(.96)}
-.cchip .cn{font-size:11px;color:#a2a89f;font-variant-numeric:tabular-nums}
-.cchip.on{background:#4f9a6a;border-color:#4f9a6a;color:#fff;font-weight:700}
-.cchip.on .cn{color:#ffffffb0}
+.fchip:active{transform:scale(.96)}
+.fchip .cn{font-size:11px;color:#a2a89f;font-variant-numeric:tabular-nums}
+.fchip.on{background:#4f9a6a;border-color:#4f9a6a;color:#fff;font-weight:700}
+.fchip.on .cn{color:#ffffffb0}
 /* 가계부 상세 */
 .led{display:flex;align-items:center;gap:11px}
 .lic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:16px;flex:0 0 auto;background:#eee9e0}
@@ -1402,12 +1402,12 @@ function catChips(base){
   if(keys.length<2)return '';
   var chips=keys.map(function(c){
     var on=catFilter.indexOf(c)>=0;
-    return '<div class="cchip'+(on?' on':'')+'" onclick="toggleCat(\''+esc(c).replace(/'/g,"\\'")+'\')">'
+    return '<div class="fchip'+(on?' on':'')+'" onclick="toggleCat(\''+esc(c).replace(/'/g,"\\'")+'\')">'
       +(CATICON[c]||(g[c].type==='in'?'📥':'💸'))+' '+esc(c)
       +'<span class="cn">'+g[c].n+'</span></div>';
   }).join('');
-  return '<div class="cchips">'
-    +'<div class="cchip'+(catFilter.length?'':' on')+'" onclick="clearCatFilter()">전체<span class="cn">'+base.length+'</span></div>'
+  return '<div class="fchips">'
+    +'<div class="fchip'+(catFilter.length?'':' on')+'" onclick="clearCatFilter()">전체<span class="cn">'+base.length+'</span></div>'
     +chips+'</div>';
 }
 function toggleCat(c){
