@@ -327,6 +327,7 @@ function activateTravel(){
   myOff();
   if(window.hidePreview) hidePreview(); if(window.closeDetail) closeDetail();
   window.COUNTRY='tv';
+  setFab('travel');            // 신의눈 링크만 남긴다(260912 — 여기가 빠져 초기 진입 때 안 보였다)
   mergeCities();
   drawMarkers();
   if(!_searchReady){ try{ setupSearch(map); }catch(e){} _searchReady=true; }
