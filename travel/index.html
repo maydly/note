@@ -283,6 +283,15 @@ body.my-on .search-box{display:none !important}
 </div></div>
 
 
+<script>
+/* 한 번 받은 데이터를 기기에 두고 쓴다 (260913 — "열 때마다 다운받으면 무겁다")
+   촬영지 4.2MB·추천지 4.9MB·도시사진 2.4MB를 여행지에서 다시 받지 않게 한다. */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){ /* 안 되면 그냥 평소대로 */ });
+  });
+}
+</script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <!-- 국내 데이터 먼저(가벼움) → 백업 → 리셋 -->
 <script src="data/city_kr.js?v=3"></script>
