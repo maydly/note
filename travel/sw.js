@@ -9,7 +9,7 @@
  *   그 사이 뒤에서 새로 받아 캐시를 갈아둔다. 데이터를 갱신해도 다음 방문에 자동 반영된다.
  *   같은 출처 파일만 다룬다(CDN 라이브러리는 건드리지 않는다).
  */
-const CACHE = 'maydly-travel-v1';
+const CACHE = 'maydly-travel-v2';   // 갱신 감지 추가(260913)
 const CACHEABLE = /\.(js|json|css|html|png|jpg|jpeg|webp|svg)$/i;
 
 self.addEventListener('install', (e) => {
@@ -26,6 +26,14 @@ self.addEventListener('activate', (e) => {
   })());
 });
 
+/* 자료가 실제로 바뀌었을 때만 화면에 알린다 — 명진: "변동이 있는지 없는지는 어떻게 확인하는데?" */
+const WATCH = /\/data\/(scenes_kr|scenes_jp|spots|myplaces)\.js$/;
+
+async function notifyUpdated(path) {
+  const clients = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
+  clients.forEach((c) => c.postMessage({ type: 'maydly-data-updated', path }));
+}
+
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
@@ -39,8 +47,16 @@ self.addEventListener('fetch', (e) => {
     const cache = await caches.open(CACHE);
     // ?v=3 · ?nc=… 같은 꼬리표가 달라도 같은 파일로 본다
     const hit = await cache.match(req, { ignoreSearch: true });
-    const fresh = fetch(req).then((res) => {
-      if (res && res.ok) cache.put(req, res.clone()).catch(() => {});
+    const fresh = fetch(req).then(async (res) => {
+      if (res && res.ok) {
+        // 바뀐 자료인지 태그(etag)·길이로 견주어 본다
+        if (hit && WATCH.test(url.pathname)) {
+          const a = hit.headers.get('etag') || hit.headers.get('content-length');
+          const b = res.headers.get('etag') || res.headers.get('content-length');
+          if (a && b && a !== b) notifyUpdated(url.pathname);
+        }
+        cache.put(req, res.clone()).catch(() => {});
+      }
       return res;
     }).catch(() => null);
 

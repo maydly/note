@@ -290,6 +290,23 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', function(){
     navigator.serviceWorker.register('sw.js').catch(function(){ /* 안 되면 그냥 평소대로 */ });
   });
+  // 자료가 바뀌면 알려주고, 누르면 바로 최신으로 다시 연다
+  navigator.serviceWorker.addEventListener('message', function(ev){
+    if(!ev.data || ev.data.type!=='maydly-data-updated') return;
+    var el=document.getElementById('dataUpdated');
+    if(!el){
+      el=document.createElement('div'); el.id='dataUpdated';
+      el.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:1300;'
+        +'background:#2c332e;color:#fff;font-size:12.5px;padding:10px 14px;border-radius:999px;'
+        +'box-shadow:0 4px 16px rgba(0,0,0,.3);display:flex;gap:10px;align-items:center;'
+        +'font-family:inherit;max-width:90vw';
+      el.innerHTML='<span>새 자료가 있습니다</span>'
+        +'<button style="border:none;border-radius:999px;background:#7fb877;color:#1d2a1f;'
+        +'font-weight:800;font-size:12px;padding:6px 12px;cursor:pointer;font-family:inherit">지금 받기</button>';
+      el.querySelector('button').onclick=function(){ location.reload(); };
+      document.body.appendChild(el);
+    }
+  });
 }
 </script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
