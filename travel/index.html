@@ -34,6 +34,7 @@
 .myfab .mf-add{background:var(--clover,#4c8c4a);color:#fff}
 .myfab .mf-add.arm{background:#e0663c}
 .myfab .mf-list{background:#fff;color:var(--ink);font-size:12.5px;padding:9px 14px}
+.myfab .mf-gev{background:#1f6f8b;color:#fff;font-weight:750}
 .mtip{position:fixed;top:120px;left:50%;transform:translateX(-50%);z-index:660;background:rgba(224,102,60,.96);color:#fff;padding:8px 16px;border-radius:999px;font-size:13px;font-weight:650;display:none;box-shadow:0 4px 14px rgba(0,0,0,.2);white-space:nowrap}
 .mtip.on{display:block}
 .mypin{width:26px;height:26px;border-radius:50% 50% 50% 2px;transform:rotate(45deg);display:grid;place-items:center;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35);font-size:12px}
@@ -70,7 +71,7 @@
 .ploc .pmini{display:block;margin-top:5px;font-size:11.5px;color:var(--sub);font-weight:400}
 .ploc-alt{display:block;background:none;border:none;padding:0;margin-top:6px;font-size:11.5px;color:#7a6a55;text-decoration:underline;cursor:pointer;font-family:inherit;text-align:left}
 /* 내 위치 (260911) — 지금 서 있는 자리에서 바로 저장하는 흐름 */
-.locbtn{position:fixed;right:14px;bottom:150px;z-index:650;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:19px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.18);display:none;align-items:center;justify-content:center;padding:0}
+.locbtn{position:fixed;right:14px;bottom:216px;z-index:650;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:19px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.18);display:none;align-items:center;justify-content:center;padding:0}
 .locbtn.on{display:flex}
 .medot{width:16px;height:16px;border-radius:50%;background:#2f7fd6;border:2.5px solid #fff;box-shadow:0 0 0 1px rgba(47,127,214,.5),0 2px 6px rgba(0,0,0,.3)}
 .mepop{text-align:center;min-width:130px}
@@ -125,7 +126,16 @@ body.my-on .search-box{display:none !important}
 .sc-chip.src{font-size:12.5px;padding:7px 13px}
 .sc-chip.src.on{border-color:#4a4f57;background:#4a4f57;color:#fff}
 .sc-chip.src.mine.on{border-color:var(--clover,#4c8c4a);background:var(--clover,#4c8c4a);color:#fff}
-.sc-rowlabel{font-size:10.5px;font-weight:800;color:#a8a49a;padding:6px 2px 3px;letter-spacing:.2px}
+.sc-rowlabel{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-size:10.5px;font-weight:800;color:#a8a49a;padding:7px 2px 4px;letter-spacing:.2px}
+.sc-allbtn{flex:0 0 auto;border:1px solid var(--line,#e8e2d5);background:#fff;border-radius:7px;
+  font-size:10px;font-weight:800;color:#8a9089;cursor:pointer;padding:3px 8px;font-family:inherit}
+.sc-allbtn:active{background:#f1efe8}
+.mf-detail .sc-row{flex-wrap:wrap;overflow:visible;padding-bottom:2px}   /* 펼쳤을 땐 줄바꿈해서 다 보이게 */
+.sc-chip.preset{border-color:#c9a227;background:#fdf8e8;color:#8a6d12;font-weight:800}
+.sc-chip.preset:active{background:#f6ecd0}
+.sc-chip.reset{border-color:var(--line,#e8e2d5);background:#fff;color:#9a9384}
+#btnDetail .n{background:#e0663c;color:#fff;border-radius:999px;padding:1px 6px;margin-left:5px;font-size:10px;opacity:1}
 .sc-srch{width:100%;box-sizing:border-box;border:1px solid var(--line,#e8e2d5);border-radius:9px;padding:8px 11px;
   font-size:13px;font-family:inherit;color:var(--ink,#2c332e);margin-bottom:7px}
 .sc-row{display:flex;gap:5px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
@@ -161,6 +171,8 @@ body.my-on .search-box{display:none !important}
   font-family:inherit;cursor:pointer;color:#fff;white-space:nowrap}
 .sp-btns .sb-nv{background:#03c75a} .sp-btns .sb-gg{background:#4285f4} .sp-btns .sb-kp{background:#4c8c4a}
 .sp-btns .sb-wk{background:#6b7280}
+.sp-btns .sb-gev{background:#1f6f8b}
+.pp-btns .sb-gev{background:#1f6f8b;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit}
 .sc-credit{font-size:10.5px;color:#9aa0a6;text-align:center;padding:6px 2px 0;line-height:1.4}
 /* markercluster 기본 CSS가 나중에(탭 누를 때) 로드되므로 !important로 눌러쓴다 */
 .marker-cluster-small{background:rgba(74,79,87,.28)!important} .marker-cluster-small div{background:rgba(74,79,87,.82)!important;color:#fff!important}
@@ -181,6 +193,7 @@ body.my-on .search-box{display:none !important}
 <div class="sc-filters" id="myFilters">
   <div class="sc-row" id="myRow0"></div>
   <div class="mf-detail" id="myDetail">
+    <div class="sc-row" id="myRowPre"></div>
     <input class="sc-srch" id="scQ" autocomplete="off" placeholder="🔍 촬영지에서 작품·장소 검색 (예: 도깨비)">
     <div class="sc-row" id="myRowCat"></div>
     <div class="sc-row" id="scRowC"></div>
@@ -200,6 +213,7 @@ body.my-on .search-box{display:none !important}
 <button id="fixedBack" class="fixed-back" onclick="closeDetail()">‹ 지도로</button>
 <!-- 내 장소 -->
 <div class="myfab">
+  <button class="mf-list mf-gev" onclick="gevHere()">🌍 신의눈 연결</button>
   <button class="mf-list" onclick="openSync()">🗺️ 지도 연동</button>
   <button class="mf-list" onclick="openPList()">📑 내 장소</button>
   <button class="mf-add" id="mfAdd" onclick="openAddModal()">➕ 장소 추가</button>
@@ -415,6 +429,184 @@ function toggleScene(btn){
   });
 }
 
+/* ───── 필터 조작 편의 (260912 명진 요청) ─────
+   칩을 등록해두고 상태를 한 곳에서 되비춘다. 그래야 「모두」·프리셋으로 여러 칩을
+   한꺼번에 바꿔도 화면이 어긋나지 않는다. */
+var CHIPS=[];
+/* ───── 신의눈(God's Eye View) 연결 ─────
+   신의눈은 명진 맥에서만 도는 프로그램(localhost)이라 공개 사이트에 버튼을 늘 띄우면
+   다른 사람에겐 열리지 않는다. 그래서 명진이 켤 때만 버튼이 생기고, 그 선택은 이 기기에만 남는다. */
+var GEV_URL='https://maydly.github.io/gev/';
+/* 지금 지도에서 보고 있는 것과 같은 레이어를 3D에서도 켜준다
+   (촬영지=1, 내 장소=p — 신의눈 쪽 레이어 토큰) */
+function gevLayers(){
+  var l=[];
+  if(MY_ST.scene) l.push('1');
+  if(MY_ST.mine) l.push('p');
+  return l.length? l.join('.') : 'p';
+}
+/* 그 자리를 신의눈 3D 지구본에서 연다 */
+function gevOpen(lat,lng,alt){
+  var u=GEV_URL+'#v=2&l='+gevLayers()+'&lat='+(+lat).toFixed(5)+'&lon='+(+lng).toFixed(5)
+      +'&alt='+(alt||1200)+'&heading=0&pitch=-35';
+  var w=window.open(u,'_blank','noopener');
+  if(!w) alert('창이 막혔습니다. 팝업 허용 후 다시 눌러주세요.');
+}
+/* 지금 화면 그대로 3D로 건너가기 — 줌 단계를 고도로 바꿔 넘긴다 */
+function gevHere(){
+  var c=map.getCenter(), z=map.getZoom();
+  var alt=Math.round(40000000/Math.pow(2,z));
+  gevOpen(c.lat,c.lng,Math.max(600,Math.min(alt,12000000)));
+}
+function gevBtn(lat,lng){
+  return '<button class="sb-gev" onclick="gevOpen('+lat+','+lng+')">🌍 3D</button>';
+}
+function chipGet(g,k){
+  if(g==='cat')     return MY_ST.cats[k]!==false;
+  if(g==='country') return !!SC_ST.country[k];
+  if(g==='jsrc')    return !!SC_ST.jsrc[k];
+  if(g==='media')   return !!SC_ST.media[k];
+  if(g==='type')    return !!SC_ST.type[k];
+  if(g==='outdoor') return !!SC_ST.outdoor;
+  if(g==='mine')    return !!MY_ST.mine;
+  if(g==='scene')   return !!MY_ST.scene;
+  return true;
+}
+function chipSet(g,k,v){
+  if(g==='cat') MY_ST.cats[k]=v;
+  else if(g==='country') SC_ST.country[k]=v;
+  else if(g==='jsrc') SC_ST.jsrc[k]=v;
+  else if(g==='media') SC_ST.media[k]=v;
+  else if(g==='type') SC_ST.type[k]=v;
+  else if(g==='outdoor') SC_ST.outdoor=v;
+  else if(g==='mine') MY_ST.mine=v;
+}
+function syncChips(){
+  var off=0;
+  CHIPS.forEach(function(c){
+    var on=chipGet(c.g,c.k);
+    c.el.classList.toggle('on', on);
+    if(!on && c.g!=='scene') off++;
+  });
+  var bd=document.getElementById('btnDetail');
+  if(bd) bd.innerHTML='⚙︎ 필터'+(off? '<span class="n">'+off+'</span>':'');
+}
+/* 필터를 바꾼 뒤 지도·통계·칩을 한 번에 맞춘다 */
+function applyFilters(){
+  renderMyPlaces();
+  if(MY_ST.scene) scRender(); else myStat();
+  syncChips();
+}
+/* 촬영지 데이터가 아직 없으면 받아온 뒤 이어서 한다 */
+function needScene(after){
+  if(MY_ST.scene){ after(); return; }
+  var btn=document.querySelector('#myRow0 .sc-chip.src:not(.mine)');
+  loadScenes(function(){
+    MY_ST.scene=true;
+    if(!SC_CL) SC_CL=L.markerClusterGroup({ chunkedLoading:true, maxClusterRadius:52,
+      spiderfyOnMaxZoom:true, disableClusteringAtZoom:17, showCoverageOnHover:false });
+    if(!map.hasLayer(SC_CL)) map.addLayer(SC_CL);
+    if(!SC_INIT){ scChips(); SC_INIT=true; }
+    if(btn){ btn.classList.add('on'); btn.innerHTML='🎞 촬영지<span class="n">'+SC_P.length.toLocaleString()+'</span>'; }
+    after(); fitFilterHeight();
+  });
+}
+function setGroup(g, keys, v){ keys.forEach(function(k){ chipSet(g,k,v); }); }
+function allKeys(g){
+  if(g==='cat') return Object.keys(CATS);
+  if(g==='country') return ['kr','jp'];
+  if(g==='jsrc') return ['loc','anime','miki'];
+  if(g==='media') return Object.keys(SC_MEDIA);
+  if(g==='type') return Object.keys(SC_TYPE);
+  return [];
+}
+/* 자주 쓰는 조합 — 한 번에 맞춰준다 */
+var PRESETS=[
+  { l:'📸 촬영 갈 곳', f:function(){
+      MY_ST.mine=true;
+      setGroup('cat', allKeys('cat'), false); chipSet('cat','photo',true); chipSet('cat','studio',true);
+      setGroup('country',['kr','jp'],true); setGroup('jsrc',['loc','anime','miki'],true);
+      setGroup('media', allKeys('media'), true); chipSet('media','artist',false);
+      setGroup('type', allKeys('type'), false); chipSet('type','playground',true); chipSet('type','station',true);
+      SC_ST.outdoor=true;
+  }},
+  { l:'🎌 애니 성지', f:function(){
+      MY_ST.mine=false;
+      setGroup('country',['kr','jp'],false); chipSet('country','jp',true);
+      setGroup('jsrc',['loc','anime','miki'],false); chipSet('jsrc','anime',true);
+  }},
+  { l:'🎬 미키 타카히로', f:function(){
+      MY_ST.mine=false;
+      setGroup('country',['kr','jp'],false); chipSet('country','jp',true);
+      setGroup('jsrc',['loc','anime','miki'],false); chipSet('jsrc','miki',true);
+  }},
+  { l:'🍚 먹고 마실 곳', f:function(){
+      MY_ST.mine=true;
+      setGroup('cat', allKeys('cat'), false);
+      ['rice','cafe','drink'].forEach(function(k){ chipSet('cat',k,true); });
+      SC_ST.outdoor=false;
+      setGroup('country',['kr','jp'],true); setGroup('jsrc',['loc','anime','miki'],true);
+      setGroup('media', allKeys('media'), true); chipSet('media','artist',false);
+      setGroup('type', allKeys('type'), false);
+      ['restaurant','cafe'].forEach(function(k){ chipSet('type',k,true); });
+  }},
+  { l:'📌 내 장소만', f:function(){
+      MY_ST.mine=true;
+      setGroup('cat', allKeys('cat'), true);
+      MY_ST.scene=false;
+      if(SC_CL && map.hasLayer(SC_CL)) map.removeLayer(SC_CL);
+      var b=document.querySelector('#myRow0 .sc-chip.src:not(.mine)'); if(b) b.classList.remove('on');
+  }},
+  { l:'↺ 처음으로', reset:true, f:function(){
+      MY_ST.mine=true;
+      setGroup('cat', allKeys('cat'), true);
+      setGroup('country',['kr','jp'],true); setGroup('jsrc',['loc','anime','miki'],true);
+      setGroup('media', allKeys('media'), true); chipSet('media','artist',false);
+      setGroup('type', allKeys('type'), true);
+      SC_ST.outdoor=true; SC_ST.q='';
+      var q=document.getElementById('scQ'); if(q) q.value='';
+  }},
+];
+
+var _t3;
+function toast3d(msg){
+  var el=document.getElementById('gevNote');
+  if(!el){
+    el=document.createElement('div'); el.id='gevNote';
+    el.style.cssText='position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:1200;'
+      +'background:rgba(44,51,46,.94);color:#fff;font-size:12px;padding:9px 16px;border-radius:999px;'
+      +'box-shadow:0 4px 14px rgba(0,0,0,.28);max-width:88vw;text-align:center;line-height:1.45';
+    document.body.appendChild(el);
+  }
+  el.textContent=msg; el.style.display='block';
+  clearTimeout(_t3); _t3=setTimeout(function(){ el.style.display='none'; },3800);
+}
+
+function mkChip(rowId,label,cnt,g,k,cls){
+  var b=document.createElement('button');
+  b.className='sc-chip'+(cls? ' '+cls:'');
+  b.innerHTML=label+(cnt!=null? '<span class="n">'+cnt.toLocaleString()+'</span>':'');
+  b.onclick=function(){ chipSet(g,k,!chipGet(g,k)); applyFilters(); };
+  document.getElementById(rowId).appendChild(b);
+  CHIPS.push({el:b,g:g,k:k});
+  return b;
+}
+/* 줄 제목 + 그 줄 전체를 켜고 끄는 「모두」 버튼 */
+function mkLabel(rowId,text,g){
+  var row=document.getElementById(rowId);
+  var lab=document.createElement('div'); lab.className='sc-rowlabel';
+  var sp=document.createElement('span'); sp.textContent=text; lab.appendChild(sp);
+  if(g){
+    var btn=document.createElement('button'); btn.className='sc-allbtn'; btn.textContent='모두';
+    btn.onclick=function(){
+      var keys=allKeys(g), allOn=keys.every(function(k){ return chipGet(g,k); });
+      setGroup(g, keys, !allOn); applyFilters();
+    };
+    lab.appendChild(btn);
+  }
+  row.parentNode.insertBefore(lab,row);
+}
+
 function myChips(){
   Object.keys(CATS).forEach(function(k){ if(MY_ST.cats[k]===undefined) MY_ST.cats[k]=true; });
   var r0=document.getElementById('myRow0');
@@ -441,17 +633,22 @@ function myChips(){
   };
   r0.appendChild(bD);
 
-  var rc=document.getElementById('myRowCat');
-  var lab=document.createElement('div'); lab.className='sc-rowlabel'; lab.textContent='내 장소 카테고리';
-  rc.parentNode.insertBefore(lab, rc);
-  Object.keys(CATS).forEach(function(k){
+  // 자주 쓰는 조합 — 한 번 누르면 필요한 필터가 한꺼번에 맞춰진다
+  PRESETS.forEach(function(ps){
     var b=document.createElement('button');
-    b.className='sc-chip on';
-    b.innerHTML=CATS[k].e+' '+CATS[k].l;
-    b.onclick=function(){ MY_ST.cats[k]=!MY_ST.cats[k]; b.classList.toggle('on',MY_ST.cats[k]); renderMyPlaces(); myStat(); };
-    rc.appendChild(b);
+    b.className='sc-chip '+(ps.reset? 'reset':'preset');
+    b.textContent=ps.l;
+    b.onclick=function(){
+      var run=function(){ ps.f(); applyFilters(); if(MY_ST.scene) scRender(); fitFilterHeight(); };
+      if(ps.reset || ps.l.indexOf('내 장소만')>=0) run(); else needScene(run);
+    };
+    document.getElementById('myRowPre').appendChild(b);
   });
-  myStat();
+  mkLabel('myRowCat','내 장소 카테고리','cat');
+  Object.keys(CATS).forEach(function(k){ mkChip('myRowCat', CATS[k].e+' '+CATS[k].l, null, 'cat', k); });
+  CHIPS.push({el:bMine,g:'mine',k:'mine'});
+  CHIPS.push({el:bSc,g:'scene',k:'scene'});
+  syncChips(); myStat();
 }
 var SC_MEDIA={ movie:{l:'영화',e:'🎬'}, drama:{l:'드라마',e:'📺'}, show:{l:'예능',e:'🎤'}, artist:{l:'아티스트',e:'🎵'} };
 var SC_TYPE={ playground:{l:'야외·명소',out:true}, restaurant:{l:'식당',out:false}, cafe:{l:'카페',out:false},
@@ -531,6 +728,7 @@ function scPopup(idx, works){
    + (jp? '' : '<button class="sb-nv" onclick="scNv('+idx+')">네이버지도</button>')
    + '<button class="sb-gg" onclick="scGg('+idx+')">구글맵</button>'
    + (jp && p.u? '<button class="sb-wk" onclick="scWiki('+idx+')">위키백과</button>' : '')
+   + gevBtn(p.la,p.ln)
    + '<button class="sb-kp" onclick="scKeep('+idx+')">📌 내 장소로</button>'
    + '</div>';
   if(jp) h+='<div class="sc-credit" style="text-align:left;padding-top:7px">출처: 일본어 위키백과 (CC BY-SA 4.0)</div>';
@@ -580,48 +778,22 @@ function scChips(){
     var t=SC_TYPE[p.t]? p.t:'etc'; tc[t]=(tc[t]||0)+1;
     p.w.forEach(function(w){ mc[w.m]=(mc[w.m]||0)+1; });
   });
-  function chip(row,label,cnt,on,cls,fn){
-    var b=document.createElement('button');
-    b.className='sc-chip'+(cls? ' '+cls:'')+(on? ' on':'');
-    b.innerHTML=label+(cnt!=null? '<span class="n">'+cnt.toLocaleString()+'</span>':'');
-    b.onclick=function(){ fn(b); };
-    document.getElementById(row).appendChild(b);
-  }
-  var rc0=document.getElementById('scRowC');
-  var l0=document.createElement('div'); l0.className='sc-rowlabel'; l0.textContent='촬영지 — 나라';
-  rc0.parentNode.insertBefore(l0, rc0);
-  [['kr','🇰🇷 한국', krCnt],['jp','🇯🇵 일본', jpCnt]].forEach(function(a){
-    chip('scRowC', a[1], a[2], true, null, function(b){
-      SC_ST.country[a[0]]=!SC_ST.country[a[0]]; b.classList.toggle('on',SC_ST.country[a[0]]); scRender();
-    });
-  });
-  var rj=document.getElementById('scRowJ');
-  var lj=document.createElement('div'); lj.className='sc-rowlabel'; lj.textContent='촬영지 — 성격 (일본)';
-  rj.parentNode.insertBefore(lj, rj);
-  ['loc','anime','miki'].forEach(function(k){
-    chip('scRowJ', JSRC[k].l, jsrcCnt[k]||0, true, null, function(b){
-      SC_ST.jsrc[k]=!SC_ST.jsrc[k]; b.classList.toggle('on',SC_ST.jsrc[k]); scRender();
-    });
-  });
-  var r1=document.getElementById('scRow1');
-  var l1=document.createElement('div'); l1.className='sc-rowlabel'; l1.textContent='촬영지 — 매체 (한국)';
-  r1.parentNode.insertBefore(l1, r1);
-  var r2=document.getElementById('scRow2');
-  var l2=document.createElement('div'); l2.className='sc-rowlabel'; l2.textContent='촬영지 — 장소 종류 (한국)';
-  r2.parentNode.insertBefore(l2, r2);
-  chip('scRow1','📸 야외만',null,true,'pre',function(b){
-    SC_ST.outdoor=!SC_ST.outdoor; b.classList.toggle('on',SC_ST.outdoor); scRender();
-  });
+  mkLabel('scRowC','촬영지 — 나라','country');
+  mkChip('scRowC','🇰🇷 한국', krCnt, 'country','kr');
+  mkChip('scRowC','🇯🇵 일본', jpCnt, 'country','jp');
+
+  mkLabel('scRowJ','촬영지 — 성격 (일본)','jsrc');
+  ['loc','anime','miki'].forEach(function(k){ mkChip('scRowJ', JSRC[k].l, jsrcCnt[k]||0, 'jsrc', k); });
+
+  mkLabel('scRow1','촬영지 — 매체 (한국)','media');
+  mkLabel('scRow2','촬영지 — 장소 종류 (한국)','type');
+  mkChip('scRow1','📸 야외만', null, 'outdoor','outdoor','pre');
   Object.keys(SC_MEDIA).forEach(function(k){
-    chip('scRow1',SC_MEDIA[k].e+' '+SC_MEDIA[k].l,mc[k]||0,SC_ST.media[k],null,function(b){
-      SC_ST.media[k]=!SC_ST.media[k]; b.classList.toggle('on',SC_ST.media[k]); scRender();
-    });
+    mkChip('scRow1', SC_MEDIA[k].e+' '+SC_MEDIA[k].l, mc[k]||0, 'media', k);
   });
   Object.keys(SC_TYPE).forEach(function(k){
     if(!tc[k]) return;
-    chip('scRow2',SC_TYPE[k].l,tc[k],true,null,function(b){
-      SC_ST.type[k]=!SC_ST.type[k]; b.classList.toggle('on',SC_ST.type[k]); scRender();
-    });
+    mkChip('scRow2', SC_TYPE[k].l, tc[k], 'type', k);
   });
   var qt, qi=document.getElementById('scQ');
   if(qi) qi.addEventListener('input',function(e){
@@ -629,6 +801,7 @@ function scChips(){
     var v=e.target.value.trim().toLowerCase();
     qt=setTimeout(function(){ SC_ST.q=v; scRender(); },300);
   });
+  syncChips();
 }
 
 /* '내 지도' 탭 — 나라 구분 없이 전세계 저장 장소만 */
@@ -851,6 +1024,7 @@ function pinPopupHTML(p){
   var isKR=(p.lat>=33 && p.lat<=38.8 && p.lng>=124.5 && p.lng<=130.0);   // 한국 본토·제주 범위(해외는 네이버 제외)
   if(isKR) h+='<button class="pp-nv" onclick="openNaver('+p.lat+','+p.lng+',\''+escJs(p.name)+'\')">네이버지도에서 열기</button>';
   h+='<button class="pp-gg" onclick="openGoogle('+p.lat+','+p.lng+',\''+escJs(p.name)+'\')">구글맵에서 열기</button>';
+  h+='<button class="sb-gev" onclick="gevOpen('+p.lat+','+p.lng+')">🌍 3D 지구본으로 보기</button>';
   if(!p.live && p.id) h+='<button class="pp-ed" onclick="editPin(\''+p.id+'\')">✏️ 수정</button>';
   else if(p.live && p.mid) h+='<button class="pp-ed" onclick="openMyMapsEdit(\''+escJs(p.mid)+'\')">🗺️ My Maps에서 수정</button>';
   h+='</div></div>';
