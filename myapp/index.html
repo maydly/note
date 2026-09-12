@@ -373,6 +373,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <input type="file" id="impFile" style="display:none" onchange="importLedger(this)">
   <button class="impbtn" onclick="reclassify()">🔄 다시 분류하기 (분류 규칙이 바뀐 뒤 한 번 · 손으로 고친 건 그대로)</button>
   <button class="impbtn" onclick="matchCalendar()">📅 캘린더와 대조 (입금이 진짜 촬영 수입인지 확인)</button>
+  <button class="impbtn" onclick="sheetMyRules()">⚙ 내 분류 규칙 (직접 만든 규칙 보기·지우기)</button>
   <button class="impbtn" onclick="importGear()">📦 장비 구매 자동 등록 (「이름(○○구매)」 이체 → 보유 탭)</button>
   <button class="impbtn" onclick="pairPrepaid()">⇄ 들어오고 나간 짝 정리 (주유소 선결제·고객 환불처럼 서로 상쇄되는 건)</button>
   <details class="covwrap"><summary>📅 가져온 범위 · 기록</summary><div id="covBox"></div></details>
@@ -441,7 +442,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 <script src="parse.js"></script>
 <script>
 /* ===== 저장소 ===== */
-var K={todo:'mj_todos',buy:'mj_buy',own:'mj_own',led:'mj_ledger',shoot:'mj_shoots',wish:'mj_wish',chal:'mj_chals',info:'mj_infos',mood:'mj_moods',alias:'mj_calalias'};
+var K={todo:'mj_todos',buy:'mj_buy',own:'mj_own',led:'mj_ledger',shoot:'mj_shoots',wish:'mj_wish',chal:'mj_chals',info:'mj_infos',mood:'mj_moods',alias:'mj_calalias',rules:'mj_myrules'};
 function load(k,def){try{var v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){toast('저장 공간이 부족해요');}}
 function uid(){return 'x'+Math.random().toString(36).slice(2,9);}
@@ -483,6 +484,7 @@ function migrate(){
 /* ===== 데이터 ===== */
 var todos,buys,owns,ledger,shoots,wishes,chals,infos,moods,buyDel=[];
 var calAlias={};   // 입금자명 → 실제 예약자명 (부모님이 대신 입금한 경우 등, 명진이 직접 짝지어 기억시킴)
+var myRules=[];    // 명진이 앱에서 직접 만든 분류 규칙 [{kw,cat,type,at}] — 코드 규칙보다 먼저 본다
 var PLANKEY='maydly-purchase-plan-v1';  // 장비비교 구매계획과 동일 저장소(순위·목록 통일)
 function loadBuys(){
   var r=null;try{r=JSON.parse(localStorage.getItem(PLANKEY)||'null');}catch(e){}
@@ -523,7 +525,7 @@ function resetBuysFromGear(){
     else toast(msg+'(이 기기)');
   }).catch(function(){toast('복구 실패 — 네트워크 확인');setSyncBadge('오류');});
 }
-function reloadAll(){todos=load(K.todo,[]);buys=loadBuys();owns=load(K.own,[]);ledger=load(K.led,[]);shoots=load(K.shoot,[]);wishes=load(K.wish,[]);chals=load(K.chal,[]);infos=load(K.info,[]);moods=load(K.mood,{});calAlias=load(K.alias,{});loadPhotos();}
+function reloadAll(){todos=load(K.todo,[]);buys=loadBuys();owns=load(K.own,[]);ledger=load(K.led,[]);shoots=load(K.shoot,[]);wishes=load(K.wish,[]);chals=load(K.chal,[]);infos=load(K.info,[]);moods=load(K.mood,{});calAlias=load(K.alias,{});myRules=load(K.rules,[]);loadPhotos();}
 
 /* ===== ☁ 클라우드 동기화 (비공개 GitHub 저장소, 브라우저에서 직접) =====
    토큰은 이 기기 localStorage에만 저장 — 사이트 코드·공개 저장소엔 절대 안 들어간다.
@@ -559,6 +561,7 @@ function pathObj(kind){
   if(kind==='infos')return {path:'infos.json',obj:infos};
   if(kind==='moods')return {path:'moods.json',obj:moods};
   if(kind==='alias')return {path:'calalias.json',obj:calAlias};
+  if(kind==='rules')return {path:'myrules.json',obj:myRules};
   return null;
 }
 /* GitHub은 같은 repo 동시커밋을 하나만 받으므로 push는 큐로 «한 번에 하나»씩.
@@ -576,9 +579,9 @@ function pushSoon(kind){if(!syncOn())return;setSyncBadge('저장중…');clearTi
 function cloudPull(){
   if(!syncOn()){return Promise.resolve();}
   setSyncBadge('동기화중…');
-  var kinds=['ledger','shoots','photos','buys','owns','todos','wishes','chals','infos','moods','alias'];
+  var kinds=['ledger','shoots','photos','buys','owns','todos','wishes','chals','infos','moods','alias','rules'];
   return Promise.all(kinds.map(function(k){return window.MJAPP.get(k);})).then(function(res){
-    var L=res[0],S=res[1],P=res[2],B=res[3],O=res[4],T=res[5],W=res[6],C=res[7],I=res[8],M=res[9],AL=res[10];
+    var L=res[0],S=res[1],P=res[2],B=res[3],O=res[4],T=res[5],W=res[6],C=res[7],I=res[8],M=res[9],AL=res[10],MR=res[11];
     if(L&&Array.isArray(L.json)){ledger=L.json;save(K.led,ledger);}
     if(S&&Array.isArray(S.json)){shoots=S.json;save(K.shoot,shoots);}
     if(P&&P.json){photos=P.json.map||P.json;if(P.json.base)photoBase=P.json.base;try{localStorage.setItem('mj_photos',JSON.stringify({map:photos,base:photoBase}));}catch(e){}}
@@ -590,6 +593,7 @@ function cloudPull(){
     if(I&&Array.isArray(I.json)){infos=I.json;save(K.info,infos);}
     if(M&&M.json&&typeof M.json==='object'){moods=M.json;save(K.mood,moods);}
     if(AL&&AL.json&&typeof AL.json==='object'){calAlias=AL.json;save(K.alias,calAlias);}
+    if(MR&&Array.isArray(MR.json)){myRules=MR.json;save(K.rules,myRules);}
     // 원격에 없는 항목은 로컬을 올려 시드(첫 기기)
     var seed=[];
     if(!L&&ledger.length)seed.push(cloudPush('ledger'));
@@ -603,6 +607,7 @@ function cloudPull(){
     if(!I&&infos.length)seed.push(cloudPush('infos'));
     if(!M&&Object.keys(moods).length)seed.push(cloudPush('moods'));
     if(!AL&&Object.keys(calAlias).length)seed.push(cloudPush('alias'));
+    if(!MR&&myRules.length)seed.push(cloudPush('rules'));
     renderAll();
     return Promise.all(seed);
   }).then(function(){setSyncBadge('동기화됨');}).catch(function(e){setSyncBadge('오류');toast('동기화 실패: '+e.message);});
@@ -1545,6 +1550,7 @@ function importLedger(inp){
         mapped=MJParse.parseWorkbook(wb).map(function(t){return {id:uid(),date:t.date,time:t.time||'',desc:t.desc,cat:t.cat,type:t.type,amt:t.amt,acct:t.acct||'',memo:''};});
       }
       if(!mapped.length){toast('불러올 내역이 없어요 (은행 엑셀·JSON 형식 확인)');return;}
+      mapped.forEach(function(t){var c=myRuleFor(t);if(c)t.cat=c;});   // 내가 만든 규칙 먼저 적용
       // 병합(누적): 날짜+시간+계좌+구분+금액+내용으로 진짜 중복만 제거(같은날 반복거래는 시간으로 구분해 살림)
       var key=function(t){return t.date+'|'+(t.time||'')+'|'+(t.acct||'')+'|'+t.type+'|'+t.amt+'|'+(t.desc||'').slice(0,20);};
       var seen={};ledger.forEach(function(t){seen[key(t)]=1;});
@@ -1817,6 +1823,70 @@ function copyCalResult(){
   document.body.removeChild(ta);
 }
 
+/* ===== 내 분류 규칙 =====
+   명진이 앱에서 직접 만든 규칙. 코드에 박힌 규칙보다 «먼저» 본다.
+   내역을 수정할 때 「앞으로 이 단어가 보이면 항상 이 분류로」를 켜면 여기 쌓인다.
+   기기에 저장되고 클라우드로 공유되므로 폰에서도 똑같이 적용된다. */
+function ruleKwGuess(d){
+  return String(d||'').replace(/^\(주\)|\(주\)$/g,'').replace(/[0-9]+$/,'')
+    .replace(/(DT)?점$/,'').replace(/[_(].*$/,'').trim().slice(0,12);
+}
+function myRuleFor(t){
+  var d=String(t.desc||'');
+  for(var i=0;i<myRules.length;i++){
+    var r=myRules[i];
+    if(!r||!r.kw)continue;
+    if(r.type&&r.type!==t.type)continue;
+    if(d.indexOf(r.kw)>=0)return r.cat;
+  }
+  return null;
+}
+function addMyRule(kw,cat,type){
+  kw=String(kw||'').trim(); if(!kw||!cat)return false;
+  var i=myRules.findIndex(function(r){return r.kw===kw&&(r.type||'')===(type||'');});
+  var rec={kw:kw,cat:cat,type:type||'',at:(new Date()).toISOString().slice(0,10)};
+  if(i>=0)myRules[i]=rec; else myRules.unshift(rec);
+  save(K.rules,myRules); pushSoon('rules');
+  return true;
+}
+/* 규칙을 만들기 전에 «지금 있는 내역 중 몇 건이 바뀌는지» 보여준다.
+   오늘 「이보배」·「하나카드환급」처럼 엉뚱한 걸 가로채는 사고를 미리 잡기 위함. */
+function previewMyRule(kw,cat,type,skipId){
+  var hit=[],taken=[];
+  ledger.forEach(function(t){
+    if(t.id===skipId)return;
+    if(type&&type!==t.type)return;
+    if(String(t.desc||'').indexOf(kw)<0)return;
+    hit.push(t);
+    if(t.cat&&t.cat!==cat&&!/미분류/.test(t.cat))taken.push(t);
+  });
+  return {hit:hit,taken:taken};
+}
+function sheetMyRules(){
+  var body=myRules.length
+    ? myRules.map(function(r,i){
+        return '<div style="display:flex;gap:8px;align-items:center;padding:8px 2px;border-bottom:1px solid #f2f0ec;font-size:13px">'
+          +'<span style="flex:1"><b>'+esc(r.kw)+'</b>'
+          +'<span style="color:#9aa197"> → </span>'+esc(r.cat)
+          +(r.type?'<span style="color:#9aa197;font-size:11px"> ('+(r.type==='in'?'수입만':'지출만')+')</span>':'')
+          +'</span>'
+          +'<span onclick="delMyRule('+i+')" style="color:#c2a99e;cursor:pointer;font-size:11.5px">지우기</span></div>';
+      }).join('')
+    : '<div class="mnote" style="padding:16px 0">아직 만든 규칙이 없어요.<br>가계부에서 내역을 눌러 분류를 고칠 때 '
+      +'「앞으로 이 단어가 보이면 항상 이 분류로」를 켜면 여기 쌓여요.</div>';
+  document.getElementById('sheet').innerHTML='<h3>⚙ 내 분류 규칙 ('+myRules.length+')</h3>'
+    +'<div class="mnote">여기 있는 규칙이 앱에 원래 있던 규칙보다 먼저 적용돼요</div>'
+    +'<div style="max-height:56vh;overflow:auto;margin-top:6px">'+body+'</div>'
+    +'<div class="mact"><button class="mcancel" onclick="closeSheet()">닫기</button>'
+    +'<button class="msave" onclick="reclassify()">이 규칙으로 다시 분류</button></div>';
+  document.getElementById('mask').classList.add('on');
+}
+function delMyRule(i){
+  var r=myRules[i]; if(!r)return;
+  if(!confirm('「'+r.kw+' → '+r.cat+'」 규칙을 지울까요?\n(이미 분류된 내역은 그대로 남아요)'))return;
+  myRules.splice(i,1); save(K.rules,myRules); pushSoon('rules'); sheetMyRules();
+}
+
 /* 다시 분류하기 — 이미 들어있는 내역을 최신 분류규칙으로 다시 매긴다.
    규칙을 고친 뒤 «다시 가져오기»를 하면 중복으로 걸러져 분류가 갱신되지 않으므로 이 버튼이 필요하다.
    안전장치 3가지:
@@ -1834,8 +1904,8 @@ function reclassify(){
   ledger.forEach(function(t){
     if(!BANK[t.acct]){skipHand++;return;}
     if(t.manual){skipManual++;return;}
-    var c;
-    try{c=MJParse.classify({desc:t.desc||'',sub:'',acct:t.acct||'',isIn:t.type==='in'});}catch(e){return;}
+    var c=myRuleFor(t);            // 내가 만든 규칙이 먼저
+    if(!c){try{c=MJParse.classify({desc:t.desc||'',sub:'',acct:t.acct||'',isIn:t.type==='in'});}catch(e){return;}}
     if(!c||/미분류/.test(c)){keptUnknown++;return;}
     if(c===t.cat)return;
     plan.push({t:t,from:t.cat,to:c});
@@ -2255,6 +2325,12 @@ function editLedger(id){
     +'<div class="fld"><label>분류</label><select id="m_cat"></select></div>'
     +'<div class="fld"><label>날짜</label><input id="m_date" type="date" value="'+t.date+'"></div>'
     +'<div class="fld"><label>내용</label><input id="m_desc" value="'+esc(t.desc||'')+'"></div>'
+    +'<div class="fld" style="background:#f3f8f2;border-radius:10px;padding:10px 12px;margin-top:10px">'
+      +'<label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0">'
+      +'<input type="checkbox" id="m_rule" style="width:17px;height:17px;accent-color:#4f9a6a;margin:0">'
+      +'<span style="font-size:13px">앞으로 이 단어가 보이면 <b>항상 이 분류로</b></span></label>'
+      +'<input id="m_rulekw" value="'+esc(ruleKwGuess(t.desc))+'" placeholder="예: 투썸" style="margin-top:7px">'
+      +'<div style="font-size:11.5px;color:#8a9186;margin-top:5px">다음에 가져올 때부터 자동으로 분류돼요</div></div>'
     +'<div class="mact"><button class="mcancel" style="background:#f6e3df;color:#b5564b" onclick="if(confirm(\'이 내역을 삭제할까요?\')){delItem(\'led\',\''+id+'\');closeSheet();}">삭제</button><button class="msave" onclick="saveEdit()">저장</button></div>';
   fillCats();
   var s=document.getElementById('m_cat');var found=false;
@@ -2267,6 +2343,24 @@ function saveEdit(){
   var amt=parseInt(document.getElementById('m_amt').value,10);if(!amt||amt<0){toast('금액을 확인하세요');return;}
   t.type=window._mtype;t.amt=amt;t.cat=document.getElementById('m_cat').value;t.date=document.getElementById('m_date').value;t.desc=document.getElementById('m_desc').value.trim();
   t.manual=true;   // 손으로 고친 내역 — 「다시 분류하기」가 덮어쓰지 않는다
+  var rc=document.getElementById('m_rule');
+  if(rc&&rc.checked){
+    var kw=(document.getElementById('m_rulekw')||{}).value||'';
+    kw=String(kw).trim();
+    if(!kw){toast('규칙으로 쓸 단어를 적어주세요');return;}
+    var pv=previewMyRule(kw,t.cat,'',t.id);
+    var msg='「'+kw+'」이 보이면 항상 「'+t.cat+'」로 분류할게요.\n\n'
+      +'지금 있는 내역 중 '+pv.hit.length+'건이 이 단어를 갖고 있어요.';
+    if(pv.taken.length){
+      var g={};pv.taken.forEach(function(x){g[x.cat]=(g[x.cat]||0)+1;});
+      msg+='\n\n⚠ 그중 '+pv.taken.length+'건은 이미 다른 분류예요:\n'
+        +Object.keys(g).slice(0,6).map(function(k){return '· '+k+' '+g[k]+'건';}).join('\n')
+        +'\n\n단어를 더 자세히 적으면 이런 걸 피할 수 있어요.';
+    }
+    msg+='\n\n만들까요?';
+    if(!confirm(msg))return;
+    addMyRule(kw,t.cat,'');
+  }
   save(K.led,ledger);pushSoon('ledger');renderMoney();closeSheet();toast('수정됐어요');
 }
 
