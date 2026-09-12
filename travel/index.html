@@ -160,6 +160,7 @@ body.my-on .search-box{display:none !important}
 .sp-btns button{flex:1 1 0;min-width:0;border:none;border-radius:8px;padding:9px 2px;font-size:11px;font-weight:750;
   font-family:inherit;cursor:pointer;color:#fff;white-space:nowrap}
 .sp-btns .sb-nv{background:#03c75a} .sp-btns .sb-gg{background:#4285f4} .sp-btns .sb-kp{background:#4c8c4a}
+.sp-btns .sb-wk{background:#6b7280}
 .sc-credit{font-size:10.5px;color:#9aa0a6;text-align:center;padding:6px 2px 0;line-height:1.4}
 /* markercluster 기본 CSS가 나중에(탭 누를 때) 로드되므로 !important로 눌러쓴다 */
 .marker-cluster-small{background:rgba(74,79,87,.28)!important} .marker-cluster-small div{background:rgba(74,79,87,.82)!important;color:#fff!important}
@@ -171,10 +172,10 @@ body.my-on .search-box{display:none !important}
 <body>
 <div class="topbar"><div class="mark">🍀</div><div class="t">여행지도<small>maydly · 일본 &amp; 국내</small></div>
   <div class="badge">검색·핀</div>
-  <a id="creditLink" href="사진출처.html" style="margin-left:8px;font-size:.72rem;color:#4c8c4a;text-decoration:none;white-space:nowrap;align-self:center">사진 출처 →</a></div>
+  <a id="creditLink" href="사진출처.html" style="margin-left:8px;font-size:.72rem;color:#4c8c4a;text-decoration:none;white-space:nowrap;align-self:center">사진 출처</a>
+  <a href="../travel-kr/사진출처.html" style="margin-left:5px;font-size:.72rem;color:#9a9384;text-decoration:none;white-space:nowrap;align-self:center">(국내)</a></div>
 <div class="ctabs">
-  <button class="ctab on" data-c="kr" onclick="renderCountry('kr')">🇰🇷 국내</button>
-  <button class="ctab" data-c="jp" onclick="renderCountry('jp')">🗾 일본</button>
+  <button class="ctab on" data-c="tv" onclick="renderCountry('tv')">🗺 여행지도</button>
   <button class="ctab" data-c="my" onclick="renderCountry('my')">🔖 내 지도</button>
 </div>
 <div class="sc-filters" id="myFilters">
@@ -182,6 +183,8 @@ body.my-on .search-box{display:none !important}
   <div class="mf-detail" id="myDetail">
     <input class="sc-srch" id="scQ" autocomplete="off" placeholder="🔍 촬영지에서 작품·장소 검색 (예: 도깨비)">
     <div class="sc-row" id="myRowCat"></div>
+    <div class="sc-row" id="scRowC"></div>
+    <div class="sc-row" id="scRowJ"></div>
     <div class="sc-row" id="scRow1"></div>
     <div class="sc-row" id="scRow2"></div>
   </div>
@@ -274,8 +277,8 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
 
 var MARKERS = [];
 var JP_LOADED = false;
-var VIEW = { kr:{c:[36.4,127.9], z:7}, jp:{c:[37.6,137.2], z:5} };
-var PH = { kr:'🔍 도시 검색 (예: 경주 · 여수 · 강릉 · 남해)', jp:'🔍 도시 검색 (예: 이마바리 · 고치 · 나루토)' };
+var VIEW = { kr:{c:[36.4,127.9], z:7}, jp:{c:[37.6,137.2], z:5}, tv:{c:[36.6,133.0], z:5} };
+var PH = { kr:'🔍 도시 검색 (예: 경주 · 여수 · 강릉 · 남해)', jp:'🔍 도시 검색 (예: 이마바리 · 고치 · 나루토)', tv:'🔍 도시 검색 (국내·일본 · 예: 경주 · 오타루)' };
 
 function drawMarkers(){
   MARKERS.forEach(function(m){ map.removeLayer(m); }); MARKERS = [];
@@ -288,6 +291,31 @@ function drawMarkers(){
 }
 var _searchReady = false;
 
+/* 국내·일본을 한 지도에 (260912 명진 요청 — 탭을 오가지 않게) */
+function mergeCities(){
+  var c={}, o={};
+  Object.keys(window.CITY_JP||{}).forEach(function(k){ c[k]=window.CITY_JP[k]; o[k]=(window.COORDS_JP||{})[k]; });
+  Object.keys(window.CITY_KR||{}).forEach(function(k){ c[k]=window.CITY_KR[k]; o[k]=(window.COORDS_KR||{})[k]; });
+  window.CITY=c; window.COORDS=o; window.ORDER=null;
+}
+function activateTravel(){
+  myOff();
+  if(window.hidePreview) hidePreview(); if(window.closeDetail) closeDetail();
+  window.COUNTRY='tv';
+  mergeCities();
+  drawMarkers();
+  if(!_searchReady){ try{ setupSearch(map); }catch(e){} _searchReady=true; }
+  map.setView(VIEW.tv.c, VIEW.tv.z);
+  document.querySelectorAll('.ctab').forEach(function(t){ t.classList.toggle('on', t.getAttribute('data-c')==='tv'); });
+  document.getElementById('citySearch').placeholder = PH.tv;
+  var fab=document.querySelector('.myfab'); if(fab) fab.style.display='none';
+  var lb=document.getElementById('locbtn'); if(lb) lb.classList.remove('on');
+  if(window.renderMyPlaces) renderMyPlaces();
+  if(!JP_LOADED){                       // 일본은 무거우므로 국내를 먼저 보여주고 뒤에서 채운다
+    loadJP(function(){ if(window.COUNTRY==='tv'){ mergeCities(); drawMarkers(); } });
+  }
+}
+
 function activate(cc){
   myOff();
   window.CITY   = (cc==='jp') ? window.CITY_JP   : window.CITY_KR;
@@ -298,7 +326,7 @@ function activate(cc){
   map.setView(VIEW[cc].c, VIEW[cc].z);
   document.querySelectorAll('.ctab').forEach(function(t){ t.classList.toggle('on', t.getAttribute('data-c')===cc); });
   document.getElementById('citySearch').placeholder = PH[cc];
-  document.getElementById('creditLink').href = (cc==='jp') ? '사진출처.html' : '../travel-kr/사진출처.html';
+  document.getElementById('creditLink').href = (cc==='kr') ? '../travel-kr/사진출처.html' : '사진출처.html';
   window.COUNTRY = cc;
   var fab=document.querySelector('.myfab'); if(fab) fab.style.display='none';   // 내 장소 FAB는 '내 지도' 탭에서만
   var lb=document.getElementById('locbtn'); if(lb) lb.classList.remove('on');
@@ -326,16 +354,16 @@ function loadJP(done){
 }
 
 function renderCountry(cc){
-  if(cc==='jp'){ loadJP(function(){ activate('jp'); }); }
-  else if(cc==='my'){ activateMy(); }
-  else { activate('kr'); }
+  if(cc==='my'){ activateMy(); }
+  else if(cc==='jp'){ loadJP(function(){ activate('jp'); }); }   // 예전 링크 호환
+  else { activateTravel(); }
 }
 
 /* ═══════════ 촬영지 탭 (260911) ═══════════
    드라마·영화가 실제로 찍힌 자리 8,614곳.
    출처: 한국문화정보원 미디어콘텐츠 영상 촬영지 데이터(공공데이터포털, 이용허락범위 제한 없음)
    데이터가 3.4MB라 탭을 처음 누를 때만 받는다(일본 데이터와 같은 방식). */
-var SC_LOADED=false, SC_P=[], SC_CL=null, SC_INIT=false, SC_SHOWN=0, SC_WORKS=0;
+var SC_LOADED=false, SC_P=[], SC_CL=null, SC_INIT=false, SC_SHOWN=0, SC_WORKS=0, SC_KR=0, SC_JP=0;
 /* 내 지도 = 내 저장장소 + 영화촬영지를 한 지도에서 필터로 보는 화면 (260911 명진 확정).
    탭을 나누면 왔다 갔다 해야 해서, 하나로 합치고 켜고 끄는 방식으로 바꿨다. */
 var MY_ST = { mine:true, scene:false, cats:{}, detail:false };
@@ -350,8 +378,9 @@ function myStat(){
   var h = '📌 내 장소 <b>'+mine.toLocaleString()+'</b>곳';
   if(MY_ST.scene){
     h += ' · 🎞 촬영지 <b>'+SC_SHOWN.toLocaleString()+'</b>곳'
-       + (SC_ST.outdoor? ' <span style="color:#8a6d12">(야외만)</span>' : '');
-    h += '<div class="sc-credit">촬영지 출처: 한국문화정보원 미디어콘텐츠 영상 촬영지 데이터</div>';
+       + ' <span style="opacity:.7">(🇰🇷'+SC_KR.toLocaleString()+' · 🇯🇵'+SC_JP.toLocaleString()+')</span>'
+       + (SC_ST.outdoor? ' <span style="color:#8a6d12">한국은 야외만</span>' : '');
+    h += '<div class="sc-credit">촬영지 출처: 한국문화정보원 미디어콘텐츠 영상 촬영지 데이터 · 일본어 위키백과(CC BY-SA)</div>';
   }
   el.innerHTML = h;
   var cm=document.getElementById('cntMine'); if(cm) cm.textContent=myMineList().length.toLocaleString();
@@ -373,6 +402,7 @@ function toggleScene(btn){
   }
   loadScenes(function(){
     MY_ST.scene=true; btn.classList.add('on');
+    btn.innerHTML='🎞 촬영지<span class="n">'+SC_P.length.toLocaleString()+'</span>';
     if(!SC_CL){
       SC_CL=L.markerClusterGroup({ chunkedLoading:true, maxClusterRadius:52, spiderfyOnMaxZoom:true,
         disableClusteringAtZoom:17, showCoverageOnHover:false });
@@ -397,7 +427,7 @@ function myChips(){
 
   var bSc=document.createElement('button');
   bSc.className='sc-chip src';
-  bSc.innerHTML='🎞 촬영지<span class="n">8,614</span>';
+  bSc.innerHTML='🎞 촬영지' + (SC_LOADED? '<span class="n">'+SC_P.length.toLocaleString()+'</span>' : '');
   bSc.onclick=function(){ toggleScene(bSc); };
   r0.appendChild(bSc);
 
@@ -426,22 +456,27 @@ function myChips(){
 var SC_MEDIA={ movie:{l:'영화',e:'🎬'}, drama:{l:'드라마',e:'📺'}, show:{l:'예능',e:'🎤'}, artist:{l:'아티스트',e:'🎵'} };
 var SC_TYPE={ playground:{l:'야외·명소',out:true}, restaurant:{l:'식당',out:false}, cafe:{l:'카페',out:false},
               stay:{l:'숙소',out:false}, station:{l:'역',out:true}, store:{l:'상점',out:false}, etc:{l:'기타',out:true} };
-var SC_ST={ media:{movie:true,drama:true,show:true,artist:false}, type:{}, outdoor:true, q:'' };
+var SC_ST={ media:{movie:true,drama:true,show:true,artist:false}, type:{}, outdoor:true, q:'',
+            country:{kr:true,jp:true}, jsrc:{loc:true,anime:true,miki:true} };
+var JSRC={ loc:{l:'🎞 실사 촬영지'}, anime:{l:'🎌 애니 무대'}, miki:{l:'🎬 미키 타카히로'} };
 Object.keys(SC_TYPE).forEach(function(k){ SC_ST.type[k]=true; });
 
 function loadScenes(cb){
   if(SC_LOADED){ cb(); return; }
   var ld=document.getElementById('maploading');
-  if(ld){ ld.textContent='촬영지 8,614곳 불러오는 중…'; ld.classList.add('on'); }
+  if(ld){ ld.textContent='촬영지 불러오는 중…'; ld.classList.add('on'); }
   ['https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css',
    'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css'].forEach(function(h){
     var l=document.createElement('link'); l.rel='stylesheet'; l.href=h; document.head.appendChild(l);
   });
-  var files=['https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js','data/scenes_kr.js?v=1'];
+  var files=['https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js',
+             'data/scenes_kr.js?v=1','data/scenes_jp.js?v=1'];
   var i=0;
   (function next(){
     if(i>=files.length){
-      SC_P=window.KR_SCENES||[];
+      var kr=(window.KR_SCENES||[]).map(function(x){ x.c='kr'; return x; });
+      var jp=(window.JP_SCENES||[]).map(function(x){ x.c='jp'; return x; });
+      SC_P=kr.concat(jp);
       SC_LOADED=true;
       if(ld) ld.classList.remove('on');
       cb(); return;
@@ -459,39 +494,49 @@ function scEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ re
 function scWorks(p){
   var q=SC_ST.q;
   return p.w.filter(function(w){
-    if(!SC_ST.media[w.m]) return false;
+    if(w.m!=='jp' && !SC_ST.media[w.m]) return false;   // 일본은 매체 구분이 없다 → 나라 칩으로 제어
     if(q && (p.n+' '+w.ti).toLowerCase().indexOf(q)<0) return false;
     return true;
   });
 }
 function scPass(p){
-  var t=SC_TYPE[p.t]? p.t : 'etc';
-  if(!SC_ST.type[t]) return null;
-  if(SC_ST.outdoor && !SC_TYPE[t].out) return null;
+  if(!SC_ST.country[p.c||'kr']) return null;
+  if((p.c||'kr')==='jp' && !SC_ST.jsrc[p.s||'loc']) return null;
+  if((p.c||'kr')!=='jp'){          // 장소 종류·야외 필터는 한국 데이터에만 있다
+    var t=SC_TYPE[p.t]? p.t : 'etc';
+    if(!SC_ST.type[t]) return null;
+    if(SC_ST.outdoor && !SC_TYPE[t].out) return null;
+  }
   var w=scWorks(p);
   return w.length? w : null;
 }
 
 function scPopup(idx, works){
-  var p=SC_P[idx], t=SC_TYPE[p.t]||SC_TYPE.etc;
+  var p=SC_P[idx], jp=(p.c==='jp');
+  var t=jp? {l:'🇯🇵 '+((JSRC[p.s]||JSRC.loc).l)} : (SC_TYPE[p.t]||SC_TYPE.etc);
   var h='<span class="sp-type">'+scEsc(t.l)+'</span>'
       + '<div class="sp-name">'+scEsc(p.n)+'</div>'
-      + (p.a? '<div class="sp-addr">'+scEsc(p.a)+'</div>':'');
+      + (jp && p.jn? '<div class="sp-addr">'+scEsc(p.jn)+'</div>' : (p.a? '<div class="sp-addr">'+scEsc(p.a)+'</div>':''));
   if(p.h) h+='<div class="sp-hours">🕒 '+scEsc(p.h)+'</div>';
   h+='<div class="sp-works">';
   works.slice(0,6).forEach(function(w){
     var m=SC_MEDIA[w.m]||{e:'🎞'};
-    h+='<div class="sp-w"><b>'+m.e+' '+scEsc(w.ti)+'</b>'+(w.d? '<span>'+scEsc(w.d)+'</span>':'')+'</div>';
+    h+='<div class="sp-w"><b>'+m.e+' '+scEsc(w.ti)+'</b>'
+     + (w.jt? '<span>'+scEsc(w.jt)+'</span>' : '')
+     + (w.d? '<span>'+scEsc(w.d)+'</span>':'')+'</div>';
   });
   h+='</div>';
   if(works.length>6) h+='<div class="sp-more">외 '+(works.length-6)+'편이 이곳에서 촬영됐습니다</div>';
   h+='<div class="sp-btns">'
-   + '<button class="sb-nv" onclick="scNv('+idx+')">네이버지도</button>'
+   + (jp? '' : '<button class="sb-nv" onclick="scNv('+idx+')">네이버지도</button>')
    + '<button class="sb-gg" onclick="scGg('+idx+')">구글맵</button>'
+   + (jp && p.u? '<button class="sb-wk" onclick="scWiki('+idx+')">위키백과</button>' : '')
    + '<button class="sb-kp" onclick="scKeep('+idx+')">📌 내 장소로</button>'
    + '</div>';
+  if(jp) h+='<div class="sc-credit" style="text-align:left;padding-top:7px">출처: 일본어 위키백과 (CC BY-SA 4.0)</div>';
   return h;
 }
+function scWiki(i){ var p=SC_P[i]; if(p&&p.u) window.open(p.u,'_blank','noopener'); }
 function scNv(i){ var p=SC_P[i]; if(p) window.open('https://map.naver.com/p/search/'+encodeURIComponent(p.n),'_blank','noopener'); }
 function scGg(i){ var p=SC_P[i]; if(p) window.open('https://www.google.com/maps/search/'+encodeURIComponent(p.n)+'/@'+p.la+','+p.ln+',17z','_blank','noopener'); }
 /* 촬영지 → 내 장소로 담기: '내 지도' 탭으로 건너가 저장 모달을 이름·좌표까지 채운 채로 연다 */
@@ -509,11 +554,12 @@ function scKeep(i){
 function scRender(){
   if(!SC_CL) return;
   SC_CL.clearLayers();
-  var ms=[], shown=0, works=0;
+  var ms=[], shown=0, works=0, kr=0, jp=0;
   for(var i=0;i<SC_P.length;i++){
     var w=scPass(SC_P[i]);
     if(!w) continue;
     shown++; works+=w.length;
+    if((SC_P[i].c||'kr')==='jp') jp++; else kr++;
     var multi=w.length>1;
     var icon=L.divIcon({ className:'', iconSize:[23,17], iconAnchor:[11,9],
       html:'<div class="spin'+(multi?' multi':'')+'">'+(multi? '<b>'+(w.length>9?'9+':w.length)+'</b>':'')+'</div>' });
@@ -522,13 +568,15 @@ function scRender(){
     ms.push(m);
   }
   SC_CL.addLayers(ms);
-  SC_SHOWN=shown; SC_WORKS=works;
+  SC_SHOWN=shown; SC_WORKS=works; SC_KR=kr; SC_JP=jp;
   myStat();
 }
 
 function scChips(){
-  var mc={}, tc={};
+  var mc={}, tc={}, krCnt=0, jpCnt=0, jsrcCnt={};
   SC_P.forEach(function(p){
+    if((p.c||'kr')==='jp'){ jpCnt++; var s=p.s||'loc'; jsrcCnt[s]=(jsrcCnt[s]||0)+1; return; }
+    krCnt++;
     var t=SC_TYPE[p.t]? p.t:'etc'; tc[t]=(tc[t]||0)+1;
     p.w.forEach(function(w){ mc[w.m]=(mc[w.m]||0)+1; });
   });
@@ -539,11 +587,27 @@ function scChips(){
     b.onclick=function(){ fn(b); };
     document.getElementById(row).appendChild(b);
   }
+  var rc0=document.getElementById('scRowC');
+  var l0=document.createElement('div'); l0.className='sc-rowlabel'; l0.textContent='촬영지 — 나라';
+  rc0.parentNode.insertBefore(l0, rc0);
+  [['kr','🇰🇷 한국', krCnt],['jp','🇯🇵 일본', jpCnt]].forEach(function(a){
+    chip('scRowC', a[1], a[2], true, null, function(b){
+      SC_ST.country[a[0]]=!SC_ST.country[a[0]]; b.classList.toggle('on',SC_ST.country[a[0]]); scRender();
+    });
+  });
+  var rj=document.getElementById('scRowJ');
+  var lj=document.createElement('div'); lj.className='sc-rowlabel'; lj.textContent='촬영지 — 성격 (일본)';
+  rj.parentNode.insertBefore(lj, rj);
+  ['loc','anime','miki'].forEach(function(k){
+    chip('scRowJ', JSRC[k].l, jsrcCnt[k]||0, true, null, function(b){
+      SC_ST.jsrc[k]=!SC_ST.jsrc[k]; b.classList.toggle('on',SC_ST.jsrc[k]); scRender();
+    });
+  });
   var r1=document.getElementById('scRow1');
-  var l1=document.createElement('div'); l1.className='sc-rowlabel'; l1.textContent='촬영지 — 매체';
+  var l1=document.createElement('div'); l1.className='sc-rowlabel'; l1.textContent='촬영지 — 매체 (한국)';
   r1.parentNode.insertBefore(l1, r1);
   var r2=document.getElementById('scRow2');
-  var l2=document.createElement('div'); l2.className='sc-rowlabel'; l2.textContent='촬영지 — 장소 종류';
+  var l2=document.createElement('div'); l2.className='sc-rowlabel'; l2.textContent='촬영지 — 장소 종류 (한국)';
   r2.parentNode.insertBefore(l2, r2);
   chip('scRow1','📸 야외만',null,true,'pre',function(b){
     SC_ST.outdoor=!SC_ST.outdoor; b.classList.toggle('on',SC_ST.outdoor); scRender();
@@ -599,9 +663,10 @@ function fitMyPlaces(){
   } else { map.setView([30,128],3); }
 }
 
-// 초기 국가: URL ?c=jp 면 일본, 아니면 국내 (딥링크 지원)
-var _initC = (new URLSearchParams(location.search).get('c')==='jp') ? 'jp' : 'kr';
-renderCountry(_initC);
+// 국내·일본은 한 지도다(260912). 옛 ?c=jp 링크는 일본 쪽으로 시점만 옮겨준다.
+var _initQ = new URLSearchParams(location.search).get('c');
+renderCountry(_initQ==='my' ? 'my' : 'tv');
+if(_initQ==='jp') setTimeout(function(){ map.setView(VIEW.jp.c, VIEW.jp.z); }, 400);
 </script>
 <script>
 /* ===== 내 장소 저장 (localStorage · 추후 구글 동기화로 교체) ===== */
