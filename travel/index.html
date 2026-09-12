@@ -116,10 +116,16 @@
 /* ═══ 촬영지 탭 (260911) — 드라마·영화가 실제로 찍힌 자리 ═══
    출처: 한국문화정보원 미디어콘텐츠 영상 촬영지 데이터(공공데이터포털, 이용허락범위 제한 없음) */
 .sc-filters{position:fixed;top:108px;left:0;right:0;z-index:645;background:#fff;border-bottom:1px solid var(--line,#e8e2d5);
-  padding:8px 12px 7px;display:none}
-body.sc-on .sc-filters{display:block}
-body.sc-on #map{top:236px !important}
-body.sc-on .search-box{display:none !important}
+  padding:8px 12px 7px;display:none;max-height:56vh;overflow-y:auto}
+body.my-on .sc-filters{display:block}
+body.my-on #map{top:var(--mtop,176px) !important}
+body.my-on .search-box{display:none !important}
+.mf-detail{display:none;margin-top:7px;padding-top:8px;border-top:1px dashed var(--line,#e8e2d5)}
+.mf-detail.on{display:block}
+.sc-chip.src{font-size:12.5px;padding:7px 13px}
+.sc-chip.src.on{border-color:#4a4f57;background:#4a4f57;color:#fff}
+.sc-chip.src.mine.on{border-color:var(--clover,#4c8c4a);background:var(--clover,#4c8c4a);color:#fff}
+.sc-rowlabel{font-size:10.5px;font-weight:800;color:#a8a49a;padding:6px 2px 3px;letter-spacing:.2px}
 .sc-srch{width:100%;box-sizing:border-box;border:1px solid var(--line,#e8e2d5);border-radius:9px;padding:8px 11px;
   font-size:13px;font-family:inherit;color:var(--ink,#2c332e);margin-bottom:7px}
 .sc-row{display:flex;gap:5px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
@@ -170,13 +176,16 @@ body.sc-on .search-box{display:none !important}
   <button class="ctab on" data-c="kr" onclick="renderCountry('kr')">🇰🇷 국내</button>
   <button class="ctab" data-c="jp" onclick="renderCountry('jp')">🗾 일본</button>
   <button class="ctab" data-c="my" onclick="renderCountry('my')">🔖 내 지도</button>
-  <button class="ctab" data-c="sc" onclick="renderCountry('sc')">🎞 촬영지</button>
 </div>
-<div class="sc-filters" id="scFilters">
-  <input class="sc-srch" id="scQ" autocomplete="off" placeholder="🔍 작품 이름 또는 장소 (예: 도깨비 · 서강대교)">
-  <div class="sc-row" id="scRow1"></div>
-  <div class="sc-row" id="scRow2"></div>
-  <div class="sc-stat" id="scStat">불러오는 중…</div>
+<div class="sc-filters" id="myFilters">
+  <div class="sc-row" id="myRow0"></div>
+  <div class="mf-detail" id="myDetail">
+    <input class="sc-srch" id="scQ" autocomplete="off" placeholder="🔍 촬영지에서 작품·장소 검색 (예: 도깨비)">
+    <div class="sc-row" id="myRowCat"></div>
+    <div class="sc-row" id="scRow1"></div>
+    <div class="sc-row" id="scRow2"></div>
+  </div>
+  <div class="sc-stat" id="scStat"></div>
 </div>
 <div class="search-box">
   <input id="citySearch" type="text" autocomplete="off" placeholder="🔍 도시 검색 (예: 경주 · 여수 · 강릉 · 남해)">
@@ -280,7 +289,7 @@ function drawMarkers(){
 var _searchReady = false;
 
 function activate(cc){
-  scenesOff();
+  myOff();
   window.CITY   = (cc==='jp') ? window.CITY_JP   : window.CITY_KR;
   window.COORDS = (cc==='jp') ? window.COORDS_JP : window.COORDS_KR;
   window.ORDER  = (cc==='jp') ? window.ORDER_JP  : null;
@@ -319,7 +328,6 @@ function loadJP(done){
 function renderCountry(cc){
   if(cc==='jp'){ loadJP(function(){ activate('jp'); }); }
   else if(cc==='my'){ activateMy(); }
-  else if(cc==='sc'){ loadScenes(function(){ activateScenes(); }); }
   else { activate('kr'); }
 }
 
@@ -327,7 +335,94 @@ function renderCountry(cc){
    드라마·영화가 실제로 찍힌 자리 8,614곳.
    출처: 한국문화정보원 미디어콘텐츠 영상 촬영지 데이터(공공데이터포털, 이용허락범위 제한 없음)
    데이터가 3.4MB라 탭을 처음 누를 때만 받는다(일본 데이터와 같은 방식). */
-var SC_LOADED=false, SC_P=[], SC_CL=null, SC_INIT=false;
+var SC_LOADED=false, SC_P=[], SC_CL=null, SC_INIT=false, SC_SHOWN=0, SC_WORKS=0;
+/* 내 지도 = 내 저장장소 + 영화촬영지를 한 지도에서 필터로 보는 화면 (260911 명진 확정).
+   탭을 나누면 왔다 갔다 해야 해서, 하나로 합치고 켜고 끄는 방식으로 바꿨다. */
+var MY_ST = { mine:true, scene:false, cats:{}, detail:false };
+var MY_INIT = false;
+
+function myMineList(){ return (window.MYPLACES||[]).concat(window.LIVEPLACES||[]); }
+function myMineShown(){ return myMineList().filter(function(p){ return MY_ST.cats[p.cat]!==false; }).length; }
+
+function myStat(){
+  var el=document.getElementById('scStat'); if(!el) return;
+  var mine = MY_ST.mine ? myMineShown() : 0;
+  var h = '📌 내 장소 <b>'+mine.toLocaleString()+'</b>곳';
+  if(MY_ST.scene){
+    h += ' · 🎞 촬영지 <b>'+SC_SHOWN.toLocaleString()+'</b>곳'
+       + (SC_ST.outdoor? ' <span style="color:#8a6d12">(야외만)</span>' : '');
+    h += '<div class="sc-credit">촬영지 출처: 한국문화정보원 미디어콘텐츠 영상 촬영지 데이터</div>';
+  }
+  el.innerHTML = h;
+  var cm=document.getElementById('cntMine'); if(cm) cm.textContent=myMineList().length.toLocaleString();
+}
+
+/* 필터바 높이가 열고 닫힘에 따라 바뀌므로 지도 시작 위치를 맞춰준다 */
+function fitFilterHeight(){
+  var f=document.getElementById('myFilters'); if(!f) return;
+  var hh=Math.round(f.getBoundingClientRect().height);
+  document.documentElement.style.setProperty('--mtop',(108+hh)+'px');
+  setTimeout(function(){ map.invalidateSize(); },60);
+}
+
+function toggleScene(btn){
+  if(MY_ST.scene){
+    MY_ST.scene=false; btn.classList.remove('on');
+    if(SC_CL && map.hasLayer(SC_CL)) map.removeLayer(SC_CL);
+    myStat(); fitFilterHeight(); return;
+  }
+  loadScenes(function(){
+    MY_ST.scene=true; btn.classList.add('on');
+    if(!SC_CL){
+      SC_CL=L.markerClusterGroup({ chunkedLoading:true, maxClusterRadius:52, spiderfyOnMaxZoom:true,
+        disableClusteringAtZoom:17, showCoverageOnHover:false });
+    }
+    if(!map.hasLayer(SC_CL)) map.addLayer(SC_CL);
+    if(!SC_INIT){ scChips(); SC_INIT=true; }
+    scRender();
+    myStat();
+    fitFilterHeight();
+  });
+}
+
+function myChips(){
+  Object.keys(CATS).forEach(function(k){ if(MY_ST.cats[k]===undefined) MY_ST.cats[k]=true; });
+  var r0=document.getElementById('myRow0');
+
+  var bMine=document.createElement('button');
+  bMine.className='sc-chip src mine on';
+  bMine.innerHTML='📌 내 장소<span class="n" id="cntMine"></span>';
+  bMine.onclick=function(){ MY_ST.mine=!MY_ST.mine; bMine.classList.toggle('on',MY_ST.mine); renderMyPlaces(); myStat(); };
+  r0.appendChild(bMine);
+
+  var bSc=document.createElement('button');
+  bSc.className='sc-chip src';
+  bSc.innerHTML='🎞 촬영지<span class="n">8,614</span>';
+  bSc.onclick=function(){ toggleScene(bSc); };
+  r0.appendChild(bSc);
+
+  var bD=document.createElement('button');
+  bD.className='sc-chip'; bD.id='btnDetail'; bD.textContent='⚙︎ 필터';
+  bD.onclick=function(){
+    MY_ST.detail=!MY_ST.detail;
+    document.getElementById('myDetail').classList.toggle('on',MY_ST.detail);
+    bD.classList.toggle('on',MY_ST.detail);
+    fitFilterHeight();
+  };
+  r0.appendChild(bD);
+
+  var rc=document.getElementById('myRowCat');
+  var lab=document.createElement('div'); lab.className='sc-rowlabel'; lab.textContent='내 장소 카테고리';
+  rc.parentNode.insertBefore(lab, rc);
+  Object.keys(CATS).forEach(function(k){
+    var b=document.createElement('button');
+    b.className='sc-chip on';
+    b.innerHTML=CATS[k].e+' '+CATS[k].l;
+    b.onclick=function(){ MY_ST.cats[k]=!MY_ST.cats[k]; b.classList.toggle('on',MY_ST.cats[k]); renderMyPlaces(); myStat(); };
+    rc.appendChild(b);
+  });
+  myStat();
+}
 var SC_MEDIA={ movie:{l:'영화',e:'🎬'}, drama:{l:'드라마',e:'📺'}, show:{l:'예능',e:'🎤'}, artist:{l:'아티스트',e:'🎵'} };
 var SC_TYPE={ playground:{l:'야외·명소',out:true}, restaurant:{l:'식당',out:false}, cafe:{l:'카페',out:false},
               stay:{l:'숙소',out:false}, station:{l:'역',out:true}, store:{l:'상점',out:false}, etc:{l:'기타',out:true} };
@@ -356,31 +451,6 @@ function loadScenes(cb){
   })();
 }
 
-function activateScenes(){
-  MARKERS.forEach(function(m){ map.removeLayer(m); }); MARKERS=[];
-  if(window.hidePreview) hidePreview(); if(window.closeDetail) closeDetail();
-  window.COUNTRY='sc';
-  document.body.classList.add('sc-on');
-  document.querySelectorAll('.ctab').forEach(function(t){ t.classList.toggle('on', t.getAttribute('data-c')==='sc'); });
-  var fab=document.querySelector('.myfab'); if(fab) fab.style.display='none';
-  var lb=document.getElementById('locbtn'); if(lb) lb.classList.remove('on');
-  if(window.renderMyPlaces) renderMyPlaces();   // COUNTRY가 'my'가 아니라 내 장소 마커는 걷힌다
-  if(!SC_CL){
-    SC_CL=L.markerClusterGroup({ chunkedLoading:true, maxClusterRadius:52, spiderfyOnMaxZoom:true,
-      disableClusteringAtZoom:17, showCoverageOnHover:false });
-  }
-  if(!map.hasLayer(SC_CL)) map.addLayer(SC_CL);
-  if(!SC_INIT){ scChips(); SC_INIT=true; }
-  scRender();
-  map.setView([36.4,127.9],7);
-  setTimeout(function(){ map.invalidateSize(); },40);
-}
-function scenesOff(){
-  if(!document.body.classList.contains('sc-on')) return;
-  document.body.classList.remove('sc-on');
-  if(SC_CL && map.hasLayer(SC_CL)) map.removeLayer(SC_CL);
-  setTimeout(function(){ map.invalidateSize(); },40);
-}
 
 /* 팝업 너비: 폰에서 화면 밖으로 나가지 않게 화면 폭에 맞춘다 */
 function scPopWidth(){ return Math.max(210, Math.min(300, (window.innerWidth||360) - 76)); }
@@ -428,16 +498,12 @@ function scGg(i){ var p=SC_P[i]; if(p) window.open('https://www.google.com/maps/
 function scKeep(i){
   var p=SC_P[i]; if(!p) return;
   map.closePopup();
-  renderCountry('my');
-  setTimeout(function(){
-    window._pendLL={lat:p.la, lng:p.ln};
-    openPModal(null, true);
-    var nm=document.getElementById('pName'); if(nm) nm.value=p.n;
-    var mm=document.getElementById('pMemo');
-    if(mm && p.w[0]) mm.value=p.w[0].ti+(p.w[0].d? ' — '+p.w[0].d : '');
-    if(window.paintLoc) paintLoc(p.n, p.a||'');
-    map.setView([p.la,p.ln], 15);
-  }, 320);
+  window._pendLL={lat:p.la, lng:p.ln};
+  openPModal(null, true);
+  var nm=document.getElementById('pName'); if(nm) nm.value=p.n;
+  var mm=document.getElementById('pMemo');
+  if(mm && p.w[0]) mm.value=p.w[0].ti+(p.w[0].d? ' — '+p.w[0].d : '');
+  if(window.paintLoc) paintLoc(p.n, p.a||'');
 }
 
 function scRender(){
@@ -456,10 +522,8 @@ function scRender(){
     ms.push(m);
   }
   SC_CL.addLayers(ms);
-  var el=document.getElementById('scStat');
-  if(el) el.innerHTML='지도에 <b>'+shown.toLocaleString()+'</b>곳 · 작품 <b>'+works.toLocaleString()+'</b>편'
-    + (SC_ST.outdoor? ' <span style="color:#8a6d12">· 야외만 보는 중</span>':'')
-    + '<div class="sc-credit">출처: 한국문화정보원 미디어콘텐츠 영상 촬영지 데이터</div>';
+  SC_SHOWN=shown; SC_WORKS=works;
+  myStat();
 }
 
 function scChips(){
@@ -475,6 +539,12 @@ function scChips(){
     b.onclick=function(){ fn(b); };
     document.getElementById(row).appendChild(b);
   }
+  var r1=document.getElementById('scRow1');
+  var l1=document.createElement('div'); l1.className='sc-rowlabel'; l1.textContent='촬영지 — 매체';
+  r1.parentNode.insertBefore(l1, r1);
+  var r2=document.getElementById('scRow2');
+  var l2=document.createElement('div'); l2.className='sc-rowlabel'; l2.textContent='촬영지 — 장소 종류';
+  r2.parentNode.insertBefore(l2, r2);
   chip('scRow1','📸 야외만',null,true,'pre',function(b){
     SC_ST.outdoor=!SC_ST.outdoor; b.classList.toggle('on',SC_ST.outdoor); scRender();
   });
@@ -499,17 +569,27 @@ function scChips(){
 
 /* '내 지도' 탭 — 나라 구분 없이 전세계 저장 장소만 */
 function activateMy(){
-  scenesOff();
   MARKERS.forEach(function(m){ map.removeLayer(m); }); MARKERS=[];
   if(window.hidePreview) hidePreview(); if(window.closeDetail) closeDetail();
   window.COUNTRY='my';
+  document.body.classList.add('my-on');
   document.querySelectorAll('.ctab').forEach(function(t){ t.classList.toggle('on', t.getAttribute('data-c')==='my'); });
-  var s=document.getElementById('citySearch'); if(s) s.placeholder='🔍 내 저장 장소 검색';
   var fab=document.querySelector('.myfab'); if(fab) fab.style.display='flex';
   var lb=document.getElementById('locbtn'); if(lb) lb.classList.add('on');
-  if(window.renderMyPlaces) renderMyPlaces();
+  if(!MY_INIT){ myChips(); MY_INIT=true; }
+  if(MY_ST.scene && SC_CL && !map.hasLayer(SC_CL)) map.addLayer(SC_CL);
+  renderMyPlaces();
+  if(MY_ST.scene) scRender();
+  myStat(); fitFilterHeight();
   fitMyPlaces();
-  if(window.loadMyMaps) loadMyMaps(function(){ renderMyPlaces(); fitMyPlaces(); });   // 구글 My Maps 자동 로드
+  if(window.loadMyMaps) loadMyMaps(function(){ renderMyPlaces(); myStat(); fitMyPlaces(); });   // 구글 My Maps 자동 로드
+}
+/* 다른 탭으로 나갈 때 — 촬영지 레이어와 필터바를 걷는다 */
+function myOff(){
+  if(!document.body.classList.contains('my-on')) return;
+  document.body.classList.remove('my-on');
+  if(SC_CL && map.hasLayer(SC_CL)) map.removeLayer(SC_CL);
+  setTimeout(function(){ map.invalidateSize(); },40);
 }
 function fitMyPlaces(){
   var all=(window.MYPLACES||[]).concat(window.LIVEPLACES||[]);
@@ -683,7 +763,9 @@ function savePlace(){
 function renderMyPlaces(){
   MYMARKERS.forEach(function(m){ map.removeLayer(m); }); MYMARKERS=[];
   if((window.COUNTRY||'kr')!=='my') return;   // 내 장소는 '내 지도' 탭에서만(전세계)
+  if(!MY_ST.mine) return;                     // 「📌 내 장소」를 꺼두면 촬영지만 본다
   MYPLACES.concat(LIVEPLACES).forEach(function(p){
+    if(MY_ST.cats[p.cat]===false) return;     // 카테고리 필터
     var cat=CATS[p.cat]||CATS.photo;
     var icon=L.divIcon({className:'', html:'<div class="mypin'+(p.live?' live':'')+'" style="background:'+cat.c+'"><b>'+cat.e+'</b></div>', iconSize:[26,26], iconAnchor:[13,26]});
     var m=L.marker([p.lat,p.lng],{icon:icon,zIndexOffset:1000}).addTo(map);
