@@ -34,7 +34,12 @@
 .myfab .mf-add{background:var(--clover,#4c8c4a);color:#fff}
 .myfab .mf-add.arm{background:#e0663c}
 .myfab .mf-list{background:#fff;color:var(--ink);font-size:12.5px;padding:9px 14px}
-.myfab .mf-gev{background:#1f6f8b;color:#fff;font-weight:750}
+.myfab .mf-gev{background:#1f6f8b;color:#fff;font-weight:750;text-decoration:none;text-align:center;
+  border-radius:999px;box-shadow:0 4px 14px rgba(50,70,55,.28);font-size:13.5px;padding:11px 16px;display:block}
+.sp-btns a.sb-gev{display:flex;align-items:center;justify-content:center;text-decoration:none;
+  flex:1 1 0;min-width:0;border-radius:8px;padding:9px 2px;font-size:11px;font-weight:750;color:#fff;white-space:nowrap}
+.pp-btns a.sb-gev{display:block;text-align:center;text-decoration:none;border-radius:8px;padding:10px;
+  font-size:13px;font-weight:700;color:#fff}
 .mtip{position:fixed;top:120px;left:50%;transform:translateX(-50%);z-index:660;background:rgba(224,102,60,.96);color:#fff;padding:8px 16px;border-radius:999px;font-size:13px;font-weight:650;display:none;box-shadow:0 4px 14px rgba(0,0,0,.2);white-space:nowrap}
 .mtip.on{display:block}
 .mypin{width:26px;height:26px;border-radius:50% 50% 50% 2px;transform:rotate(45deg);display:grid;place-items:center;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35);font-size:12px}
@@ -156,6 +161,11 @@ body.my-on .search-box{display:none !important}
 .spin:before{left:1.5px} .spin:after{right:1.5px}
 .spin b{font-size:8.5px;color:#fff;font-weight:800;line-height:1}
 .spin.multi{background:#8a4b2a}
+/* 추천지 핀은 마름모 — 동그라미(내 장소)·네모(촬영지)와 모양으로 구분한다 */
+.sppin{width:15px;height:15px;background:#c98a2e;border:1.5px solid #fff;transform:rotate(45deg);
+  box-shadow:0 2px 5px rgba(0,0,0,.3);border-radius:3px}
+.sppin.fam{background:#b5651d;width:17px;height:17px}
+.sp-kind{display:inline-block;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:999px;background:#f6ecd5;color:#8a6d12}
 .sp-type{display:inline-block;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:999px;background:#eceef0;color:#5a6169}
 .sp-name{font-size:15px;font-weight:800;margin:7px 0 3px;line-height:1.3}
 .sp-addr{font-size:11.5px;color:var(--sub,#7d7566);line-height:1.45}
@@ -198,6 +208,7 @@ body.my-on .search-box{display:none !important}
     <div class="sc-row" id="myRowCat"></div>
     <div class="sc-row" id="scRowC"></div>
     <div class="sc-row" id="scRowJ"></div>
+    <div class="sc-row" id="spRowK"></div>
     <div class="sc-row" id="scRow1"></div>
     <div class="sc-row" id="scRow2"></div>
   </div>
@@ -213,7 +224,7 @@ body.my-on .search-box{display:none !important}
 <button id="fixedBack" class="fixed-back" onclick="closeDetail()">‹ 지도로</button>
 <!-- 내 장소 -->
 <div class="myfab">
-  <button class="mf-list mf-gev" onclick="gevHere()">🌍 신의눈 연결</button>
+  <a class="mf-list mf-gev" id="gevFab" href="https://maydly.github.io/gev/" target="_blank" rel="noopener">🌍 신의눈 연결</a>
   <button class="mf-list" onclick="openSync()">🗺️ 지도 연동</button>
   <button class="mf-list" onclick="openPList()">📑 내 장소</button>
   <button class="mf-add" id="mfAdd" onclick="openAddModal()">➕ 장소 추가</button>
@@ -380,7 +391,7 @@ function renderCountry(cc){
 var SC_LOADED=false, SC_P=[], SC_CL=null, SC_INIT=false, SC_SHOWN=0, SC_WORKS=0, SC_KR=0, SC_JP=0;
 /* 내 지도 = 내 저장장소 + 영화촬영지를 한 지도에서 필터로 보는 화면 (260911 명진 확정).
    탭을 나누면 왔다 갔다 해야 해서, 하나로 합치고 켜고 끄는 방식으로 바꿨다. */
-var MY_ST = { mine:true, scene:false, cats:{}, detail:false };
+var MY_ST = { mine:true, scene:false, spots:false, cats:{}, detail:false };
 var MY_INIT = false;
 
 function myMineList(){ return (window.MYPLACES||[]).concat(window.LIVEPLACES||[]); }
@@ -390,12 +401,14 @@ function myStat(){
   var el=document.getElementById('scStat'); if(!el) return;
   var mine = MY_ST.mine ? myMineShown() : 0;
   var h = '📌 내 장소 <b>'+mine.toLocaleString()+'</b>곳';
+  if(MY_ST.spots) h += ' · 🏛 추천지 <b>'+SP_SHOWN.toLocaleString()+'</b>곳';
   if(MY_ST.scene){
     h += ' · 🎞 촬영지 <b>'+SC_SHOWN.toLocaleString()+'</b>곳'
        + ' <span style="opacity:.7">(🇰🇷'+SC_KR.toLocaleString()+' · 🇯🇵'+SC_JP.toLocaleString()+')</span>'
        + (SC_ST.outdoor? ' <span style="color:#8a6d12">한국은 야외만</span>' : '');
     h += '<div class="sc-credit">촬영지 출처: 한국문화정보원 미디어콘텐츠 영상 촬영지 데이터 · 일본어 위키백과(CC BY-SA)</div>';
   }
+  if(MY_ST.spots) h += '<div class="sc-credit">추천지 출처: © OpenStreetMap 기여자 (ODbL)</div>';
   el.innerHTML = h;
   var cm=document.getElementById('cntMine'); if(cm) cm.textContent=myMineList().length.toLocaleString();
 }
@@ -445,21 +458,25 @@ function gevLayers(){
   if(MY_ST.mine) l.push('p');
   return l.length? l.join('.') : 'p';
 }
-/* 그 자리를 신의눈 3D 지구본에서 연다 */
-function gevOpen(lat,lng,alt){
-  var u=GEV_URL+'#v=2&l='+gevLayers()+'&lat='+(+lat).toFixed(5)+'&lon='+(+lng).toFixed(5)
-      +'&alt='+(alt||1200)+'&heading=0&pitch=-35';
-  var w=window.open(u,'_blank','noopener');
-  if(!w) alert('창이 막혔습니다. 팝업 허용 후 다시 눌러주세요.');
+/* 그 자리를 신의눈 3D 지구본에서 여는 주소.
+   window.open()은 팝업 차단에 걸려 아예 열리지 않았다(260912 명진). 그래서 진짜 링크(a 태그)로 바꿨다. */
+function gevHref(lat,lng,alt){
+  return GEV_URL+'#v=2&l='+gevLayers()+'&lat='+(+lat).toFixed(5)+'&lon='+(+lng).toFixed(5)
+       + '&alt='+(alt||1200)+'&heading=0&pitch=-35';
 }
-/* 지금 화면 그대로 3D로 건너가기 — 줌 단계를 고도로 바꿔 넘긴다 */
-function gevHere(){
+/* 지금 화면 그대로 — 줌 단계를 고도로 바꿔 넘긴다 */
+function gevHereHref(){
   var c=map.getCenter(), z=map.getZoom();
-  var alt=Math.round(40000000/Math.pow(2,z));
-  gevOpen(c.lat,c.lng,Math.max(600,Math.min(alt,12000000)));
+  var alt=Math.max(600, Math.min(Math.round(40000000/Math.pow(2,z)), 12000000));
+  return gevHref(c.lat, c.lng, alt);
+}
+/* 오른쪽 아래 신의눈 링크는 지도를 움직일 때마다 목적지를 갱신한다 */
+function gevSyncFab(){
+  var a=document.getElementById('gevFab');
+  if(a) a.href=gevHereHref();
 }
 function gevBtn(lat,lng){
-  return '<button class="sb-gev" onclick="gevOpen('+lat+','+lng+')">🌍 3D</button>';
+  return '<a class="sb-gev" href="'+gevHref(lat,lng,1200)+'" target="_blank" rel="noopener">🌍 3D</a>';
 }
 function chipGet(g,k){
   if(g==='cat')     return MY_ST.cats[k]!==false;
@@ -470,6 +487,9 @@ function chipGet(g,k){
   if(g==='outdoor') return !!SC_ST.outdoor;
   if(g==='mine')    return !!MY_ST.mine;
   if(g==='scene')   return !!MY_ST.scene;
+  if(g==='spotsrc') return !!MY_ST.spots;
+  if(g==='spkind')  return !!SP_ST.kind[k];
+  if(g==='spfam')   return !!SP_ST.famousOnly;
   return true;
 }
 function chipSet(g,k,v){
@@ -480,6 +500,8 @@ function chipSet(g,k,v){
   else if(g==='type') SC_ST.type[k]=v;
   else if(g==='outdoor') SC_ST.outdoor=v;
   else if(g==='mine') MY_ST.mine=v;
+  else if(g==='spkind') SP_ST.kind[k]=v;
+  else if(g==='spfam') SP_ST.famousOnly=v;
 }
 function syncChips(){
   var off=0;
@@ -494,6 +516,7 @@ function syncChips(){
 /* 필터를 바꾼 뒤 지도·통계·칩을 한 번에 맞춘다 */
 function applyFilters(){
   renderMyPlaces();
+  if(MY_ST.spots) spRender();
   if(MY_ST.scene) scRender(); else myStat();
   syncChips();
 }
@@ -518,6 +541,7 @@ function allKeys(g){
   if(g==='jsrc') return ['loc','anime','miki'];
   if(g==='media') return Object.keys(SC_MEDIA);
   if(g==='type') return Object.keys(SC_TYPE);
+  if(g==='spkind') return Object.keys(SP_KIND);
   return [];
 }
 /* 자주 쓰는 조합 — 한 번에 맞춰준다 */
@@ -634,6 +658,12 @@ function myChips(){
   bSc.onclick=function(){ toggleScene(bSc); };
   r0.appendChild(bSc);
 
+  var bSp=document.createElement('button');
+  bSp.className='sc-chip src';
+  bSp.innerHTML='🏛 추천지' + (SP_LOADED? '<span class="n">'+SP_P.length.toLocaleString()+'</span>' : '');
+  bSp.onclick=function(){ toggleSpots(bSp); };
+  r0.appendChild(bSp);
+
   var bD=document.createElement('button');
   bD.className='sc-chip'; bD.id='btnDetail'; bD.textContent='⚙︎ 필터';
   bD.onclick=function(){
@@ -659,6 +689,7 @@ function myChips(){
   Object.keys(CATS).forEach(function(k){ mkChip('myRowCat', CATS[k].e+' '+CATS[k].l, null, 'cat', k); });
   CHIPS.push({el:bMine,g:'mine',k:'mine'});
   CHIPS.push({el:bSc,g:'scene',k:'scene'});
+  CHIPS.push({el:bSp,g:'spotsrc',k:'spots'});
   syncChips(); myStat();
 }
 var SC_MEDIA={ movie:{l:'영화',e:'🎬'}, drama:{l:'드라마',e:'📺'}, show:{l:'예능',e:'🎤'}, artist:{l:'아티스트',e:'🎵'} };
@@ -696,6 +727,117 @@ function loadScenes(cb){
 
 
 /* 팝업 너비: 폰에서 화면 밖으로 나가지 않게 화면 폭에 맞춘다 */
+/* ═══════════ 추천지 (260912) ═══════════
+   OpenStreetMap의 관광 명소 48,564곳(한국 6,456 · 일본 42,108).
+   명진: "요나고 가면 요괴마을·돗토리사구·코난집… 추천한다 싶은 곳은 다 넣어줘"
+   기존 도시가이드에는 좌표가 없어 핀으로 찍을 수 없었다. 출처 © OpenStreetMap (ODbL). */
+var SP_LOADED=false, SP_P=[], SP_CL=null, SP_INIT=false, SP_SHOWN=0;
+var SP_KIND={
+  see:{l:'👀 명소',on:true}, play:{l:'🎡 테마파크',on:true}, view:{l:'🔭 전망대',on:true},
+  onsen:{l:'♨️ 온천',on:true}, castle:{l:'🏯 성·유적',on:true}, nature:{l:'🏞 자연',on:true},
+  museum:{l:'🖼 박물관',on:false}, temple:{l:'⛩ 절·신사',on:false},
+  park:{l:'🌳 공원',on:false}, mon:{l:'🗿 기념물',on:false}
+};
+var SP_ST={ kind:{}, famousOnly:false, q:'' };
+Object.keys(SP_KIND).forEach(function(k){ SP_ST.kind[k]=SP_KIND[k].on; });
+
+function loadSpots(cb){
+  if(SP_LOADED){ cb(); return; }
+  var ld=document.getElementById('maploading');
+  if(ld){ ld.textContent='추천지 48,564곳 불러오는 중…'; ld.classList.add('on'); }
+  function afterCluster(){
+    var s=document.createElement('script'); s.src='data/spots.js?v=1';
+    s.onload=function(){ SP_P=window.SPOTS||[]; SP_LOADED=true; if(ld) ld.classList.remove('on'); cb(); };
+    s.onerror=function(){ if(ld) ld.classList.remove('on'); cb(); };
+    document.head.appendChild(s);
+  }
+  if(window.L && L.markerClusterGroup) { afterCluster(); return; }
+  ['https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css',
+   'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css'].forEach(function(u){
+    var l=document.createElement('link'); l.rel='stylesheet'; l.href=u; document.head.appendChild(l);
+  });
+  var c=document.createElement('script');
+  c.src='https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js';
+  c.onload=afterCluster; c.onerror=afterCluster; document.head.appendChild(c);
+}
+
+function spPass(p){
+  if(!SP_ST.kind[p.k]) return false;
+  if(SP_ST.famousOnly && !p.f) return false;
+  if(!SC_ST.country[p.c]) return false;              // 나라 필터는 촬영지와 함께 쓴다
+  if(SP_ST.q && (p.n+' '+(p.o||'')).toLowerCase().indexOf(SP_ST.q)<0) return false;
+  return true;
+}
+function spPopup(i){
+  var p=SP_P[i]; if(!p) return '';
+  var k=SP_KIND[p.k]||{l:'명소'};
+  var h='<span class="sp-kind">'+scEsc(k.l)+(p.f? ' ★':'')+'</span>'
+      + '<div class="sp-name">'+scEsc(p.n)+'</div>'
+      + (p.o? '<div class="sp-addr">'+scEsc(p.o)+'</div>':'');
+  h+='<div class="sp-btns">'
+   + (p.c==='kr'? '<button class="sb-nv" onclick="spNv('+i+')">네이버지도</button>':'')
+   + '<button class="sb-gg" onclick="spGg('+i+')">구글맵</button>'
+   + '<a class="sb-gev" href="'+gevHref(p.la,p.ln,1200)+'" target="_blank" rel="noopener">🌍 3D</a>'
+   + '<button class="sb-kp" onclick="spKeep('+i+')">📌 내 장소로</button>'
+   + '</div>'
+   + '<div class="sc-credit" style="text-align:left;padding-top:7px">출처: © OpenStreetMap 기여자 (ODbL)</div>';
+  return h;
+}
+function spNv(i){ var p=SP_P[i]; if(p) window.open('https://map.naver.com/p/search/'+encodeURIComponent(p.n),'_blank','noopener'); }
+function spGg(i){ var p=SP_P[i]; if(p) window.open('https://www.google.com/maps/search/'+encodeURIComponent(p.o||p.n)+'/@'+p.la+','+p.ln+',17z','_blank','noopener'); }
+function spKeep(i){
+  var p=SP_P[i]; if(!p) return;
+  map.closePopup();
+  window._pendLL={lat:p.la,lng:p.ln};
+  openPModal(null,true);
+  var nm=document.getElementById('pName'); if(nm) nm.value=p.n;
+  if(window.paintLoc) paintLoc(p.n, p.o||'');
+}
+function spRender(){
+  if(!SP_CL) return;
+  SP_CL.clearLayers();
+  var ms=[], n=0;
+  for(var i=0;i<SP_P.length;i++){
+    var p=SP_P[i];
+    if(!spPass(p)) continue;
+    n++;
+    var icon=L.divIcon({ className:'', iconSize:[15,15], iconAnchor:[8,8],
+      html:'<div class="sppin'+(p.f?' fam':'')+'"></div>' });
+    var m=L.marker([p.la,p.ln],{icon:icon});
+    (function(idx){ m.bindPopup(function(){ return spPopup(idx); },{maxWidth:scPopWidth()}); })(i);
+    ms.push(m);
+  }
+  SP_CL.addLayers(ms);
+  SP_SHOWN=n;
+  myStat();
+}
+function toggleSpots(btn){
+  if(MY_ST.spots){
+    MY_ST.spots=false; btn.classList.remove('on');
+    if(SP_CL && map.hasLayer(SP_CL)) map.removeLayer(SP_CL);
+    myStat(); fitFilterHeight(); return;
+  }
+  loadSpots(function(){
+    MY_ST.spots=true; btn.classList.add('on');
+    btn.innerHTML='🏛 추천지<span class="n">'+SP_P.length.toLocaleString()+'</span>';
+    if(!SP_CL) SP_CL=L.markerClusterGroup({ chunkedLoading:true, maxClusterRadius:60,
+      spiderfyOnMaxZoom:true, disableClusteringAtZoom:17, showCoverageOnHover:false });
+    if(!map.hasLayer(SP_CL)) map.addLayer(SP_CL);
+    if(!SP_INIT){ spChips(); SP_INIT=true; }
+    spRender(); fitFilterHeight();
+  });
+}
+function spChips(){
+  var kc={};
+  SP_P.forEach(function(p){ kc[p.k]=(kc[p.k]||0)+1; });
+  mkLabel('spRowK','추천지 — 갈래','spkind');
+  Object.keys(SP_KIND).forEach(function(k){
+    if(!kc[k]) return;
+    mkChip('spRowK', SP_KIND[k].l, kc[k], 'spkind', k);
+  });
+  mkChip('spRowK','★ 이름난 곳만', null, 'spfam','spfam','pre');
+}
+
 function scPopWidth(){ return Math.max(210, Math.min(300, (window.innerWidth||360) - 76)); }
 function scEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
 
@@ -810,7 +952,7 @@ function scChips(){
   if(qi) qi.addEventListener('input',function(e){
     clearTimeout(qt);
     var v=e.target.value.trim().toLowerCase();
-    qt=setTimeout(function(){ SC_ST.q=v; scRender(); },300);
+    qt=setTimeout(function(){ SC_ST.q=v; SP_ST.q=v; scRender(); if(MY_ST.spots) spRender(); },300);
   });
   syncChips();
 }
@@ -826,7 +968,9 @@ function activateMy(){
   var lb=document.getElementById('locbtn'); if(lb) lb.classList.add('on');
   if(!MY_INIT){ myChips(); MY_INIT=true; }
   if(MY_ST.scene && SC_CL && !map.hasLayer(SC_CL)) map.addLayer(SC_CL);
+  if(MY_ST.spots && SP_CL && !map.hasLayer(SP_CL)) map.addLayer(SP_CL);
   renderMyPlaces();
+  if(MY_ST.spots) spRender();
   if(MY_ST.scene) scRender();
   myStat(); fitFilterHeight();
   fitMyPlaces();
@@ -837,6 +981,7 @@ function myOff(){
   if(!document.body.classList.contains('my-on')) return;
   document.body.classList.remove('my-on');
   if(SC_CL && map.hasLayer(SC_CL)) map.removeLayer(SC_CL);
+  if(SP_CL && map.hasLayer(SP_CL)) map.removeLayer(SP_CL);
   setTimeout(function(){ map.invalidateSize(); },40);
 }
 function fitMyPlaces(){
@@ -874,6 +1019,7 @@ function saveMP(){ try{ localStorage.setItem('maydly_travel_places', JSON.string
 function openAddModal(){ if(_armed) armAdd(); _pendLL=null; openPModal(null); }
 function armAdd(){ _armed=!_armed; document.getElementById('mtip').classList.toggle('on',_armed); document.getElementById('mfAdd').classList.toggle('arm',_armed); document.getElementById('mfAdd').textContent=_armed?'✕ 취소':'➕ 장소 추가'; }
 function armFromModal(){ document.getElementById('pmodal').classList.remove('on'); if(!_armed) armAdd(); }
+map.on('moveend zoomend', function(){ gevSyncFab(); });
 map.on('click', function(e){ if(_armed){ _pendLL=e.latlng; armAdd(); openPModal(null,true); reverseFill(e.latlng.lat, e.latlng.lng); } });
 
 /* 이름으로 장소 찾기 — OpenStreetMap Nominatim (무료·키 불필요·CORS 허용).
@@ -1035,7 +1181,7 @@ function pinPopupHTML(p){
   var isKR=(p.lat>=33 && p.lat<=38.8 && p.lng>=124.5 && p.lng<=130.0);   // 한국 본토·제주 범위(해외는 네이버 제외)
   if(isKR) h+='<button class="pp-nv" onclick="openNaver('+p.lat+','+p.lng+',\''+escJs(p.name)+'\')">네이버지도에서 열기</button>';
   h+='<button class="pp-gg" onclick="openGoogle('+p.lat+','+p.lng+',\''+escJs(p.name)+'\')">구글맵에서 열기</button>';
-  h+='<button class="sb-gev" onclick="gevOpen('+p.lat+','+p.lng+')">🌍 3D 지구본으로 보기</button>';
+  h+='<a class="sb-gev" href="'+gevHref(p.lat,p.lng,1200)+'" target="_blank" rel="noopener">🌍 3D 지구본으로 보기</a>';
   if(!p.live && p.id) h+='<button class="pp-ed" onclick="editPin(\''+p.id+'\')">✏️ 수정</button>';
   else if(p.live && p.mid) h+='<button class="pp-ed" onclick="openMyMapsEdit(\''+escJs(p.mid)+'\')">🗺️ My Maps에서 수정</button>';
   h+='</div></div>';
