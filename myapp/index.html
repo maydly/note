@@ -373,6 +373,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <input type="file" id="impFile" style="display:none" onchange="importLedger(this)">
   <button class="impbtn" onclick="reclassify()">🔄 다시 분류하기 (분류 규칙이 바뀐 뒤 한 번 · 손으로 고친 건 그대로)</button>
   <button class="impbtn" onclick="matchCalendar()">📅 캘린더와 대조 (입금이 진짜 촬영 수입인지 확인)</button>
+  <button class="impbtn" onclick="importGear()">📦 장비 구매 자동 등록 (「이름(○○구매)」 이체 → 보유 탭)</button>
   <button class="impbtn" onclick="pairPrepaid()">⇄ 들어오고 나간 짝 정리 (주유소 선결제·고객 환불처럼 서로 상쇄되는 건)</button>
   <details class="covwrap"><summary>📅 가져온 범위 · 기록</summary><div id="covBox"></div></details>
   <div style="text-align:center;margin-top:8px"><span onclick="clearLedger()" style="font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline">가계부 전체 비우기</span></div>
@@ -1574,6 +1575,51 @@ function importLedger(inp){
 var CAL_DAYS=60;
 // 캘린더와 대조할 입금 분류 — 촬영 수입이거나 아직 분류가 안 된 것만.
 var CAL_TARGET=/수입·촬영|미분류/;
+/* ===== 장비 구매 자동 등록 =====
+   중고로 산 장비는 「이정행(테크아트구매)」처럼 «사람이름(품목구매)» 꼴로 이체된다.
+   이걸 찾아 보유 탭에 넣고, 가계부 분류도 장비·카메라로 바꾼다.
+   한 번 넣은 건은 ledger에 표시를 남겨 두 번 들어가지 않게 한다. */
+var GEAR_RE=/^(.+?)\(([^)]*구매[^)]*)\)$/;
+function gearCatOf(n){
+  if(/조명|라이트|고독스|스트로보|플래시|led/i.test(n))return '조명';
+  if(/배터리|충전|파워|전원/.test(n))return '전원';
+  if(/렌즈|lens/i.test(n))return '렌즈';
+  if(/카메라|바디|캠코더/.test(n))return '카메라';
+  if(/하드|ssd|hdd|메모리|컴퓨터|맥북|아이패드/i.test(n))return '컴퓨터';
+  if(/케이블|릴선|연장선|테더/.test(n))return '케이블';
+  if(/삼각대|스탠드|그립|짐벌|리그|케이지|암/.test(n))return '스탠드';
+  if(/배경|봉|소품|천/.test(n))return '배경/소품';
+  if(/필터|미스트|nd|cpl/i.test(n))return '필터';
+  if(/엄브렐러|반사판|소프트박스|디퓨/.test(n))return '조명효과';
+  return '기타';
+}
+function importGear(){
+  var found=[];
+  ledger.forEach(function(t){
+    if(t.type!=='out'||t.gearAdded||!t.desc)return;
+    var m=String(t.desc).trim().match(GEAR_RE); if(!m)return;
+    var item=m[2].replace(/구매/g,'').trim(); if(!item)return;
+    found.push({t:t, from:m[1].trim(), name:item, cat:gearCatOf(item)});
+  });
+  if(!found.length){toast('새로 등록할 장비 구매가 없어요');return;}
+  var msg='이체 내역에서 장비 구매 '+found.length+'건을 찾았어요.\n'
+    +'보유 탭에 넣고 가계부 분류도 「장비·카메라」로 바꿔요.\n\n'
+    +found.slice(0,15).map(function(f){
+        return '· '+f.name+'  '+won(f.t.amt)+'  ('+f.cat+', '+f.t.date.slice(2)+' '+f.from+')';
+      }).join('\n')
+    +(found.length>15?'\n· 그 외 '+(found.length-15)+'건':'')
+    +'\n\n합계 '+won(found.reduce(function(a,f){return a+f.t.amt;},0))+'\n\n넣을까요?';
+  if(!confirm(msg))return;
+  found.forEach(function(f){
+    owns.unshift({id:uid(),name:f.name,cat:f.cat,desc:'중고구매 '+f.t.date+' ('+f.from+')',
+                  price:f.t.amt,paid:f.t.amt,status:'구매'});
+    f.t.cat='장비·카메라'; f.t.gearAdded=1;
+  });
+  save(K.own,owns); save(K.led,ledger); pushSoon('owns'); pushSoon('ledger');
+  renderOwn(); renderMoney();
+  toast(found.length+'건 보유에 등록했어요');
+}
+
 /* ===== 선결제·환불 짝 정리 =====
    주유소에서 15만원을 먼저 잡아두고, 실제 주유액만 결제된 뒤 나머지가 환불되는 식.
    그러면 같은 가맹점에 «나간 돈»과 «들어온 돈»이 같은 금액으로 짝지어진다.
