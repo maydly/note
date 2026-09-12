@@ -6,6 +6,8 @@
 <title>여행지도 · 일본 & 국내 (maydly)</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
 <link rel="stylesheet" href="common.css?v=3">
 <style>
 /* 실지도 전용 핀 */
@@ -310,6 +312,7 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <!-- 국내 데이터 먼저(가벼움) → 백업 → 리셋 -->
 <script src="data/city_kr.js?v=3"></script>
 <script src="data/guides_kr.js?v=3"></script>
@@ -465,6 +468,7 @@ function myStat(){
   var mine = MY_ST.mine ? myMineShown() : 0;
   var h = '📌 내 장소 <b>'+mine.toLocaleString()+'</b>곳';
   if(MY_ST.spots) h += ' · 🏛 추천지 <b>'+SP_SHOWN.toLocaleString()+'</b>곳';
+  if(MY_ST.scene || MY_ST.spots) h += ' <span style="opacity:.65">(이 화면)</span>';
   if(MY_ST.scene){
     h += ' · 🎞 촬영지 <b>'+SC_SHOWN.toLocaleString()+'</b>곳'
        + ' <span style="opacity:.7">(🇰🇷'+SC_KR.toLocaleString()+' · 🇯🇵'+SC_JP.toLocaleString()+')</span>'
@@ -488,21 +492,16 @@ function toggleScene(btn){
   if(MY_ST.scene){
     MY_ST.scene=false; btn.classList.remove('on');
     if(SC_CL && map.hasLayer(SC_CL)) map.removeLayer(SC_CL);
-    myStat(); fitFilterHeight(); return;
+    myStat(); fitFilterHeight(); refreshTiles(); return;
   }
-  loadScenes(function(){
-    MY_ST.scene=true; btn.classList.add('on');
-    btn.innerHTML='🎞 촬영지<span class="n">'+SC_P.length.toLocaleString()+'</span>';
-    if(!SC_CL){
-      SC_CL=L.markerClusterGroup({ chunkedLoading:true, maxClusterRadius:52, spiderfyOnMaxZoom:true,
-        disableClusteringAtZoom:17, showCoverageOnHover:false });
-    }
-    if(!map.hasLayer(SC_CL)) map.addLayer(SC_CL);
-    if(!SC_INIT){ scChips(); SC_INIT=true; }
-    scRender();
-    myStat();
-    fitFilterHeight();
-  });
+  MY_ST.scene=true; btn.classList.add('on');
+  if(!SC_CL){
+    SC_CL=L.markerClusterGroup({ chunkedLoading:true, maxClusterRadius:52, spiderfyOnMaxZoom:true,
+      disableClusteringAtZoom:17, showCoverageOnHover:false });
+  }
+  if(!map.hasLayer(SC_CL)) map.addLayer(SC_CL);
+  if(!SC_INIT){ scChips(); SC_INIT=true; }
+  refreshTiles(); fitFilterHeight();
 }
 
 /* ───── 필터 조작 편의 (260912 명진 요청) ─────
@@ -580,7 +579,8 @@ function syncChips(){
 function applyFilters(){
   renderMyPlaces();
   if(MY_ST.spots) spRender();
-  if(MY_ST.scene) scRender(); else myStat();
+  if(MY_ST.scene) scRender();
+  myStat();
   syncChips();
 }
 /* 촬영지 데이터가 아직 없으면 받아온 뒤 이어서 한다 */
@@ -717,13 +717,13 @@ function myChips(){
 
   var bSc=document.createElement('button');
   bSc.className='sc-chip src';
-  bSc.innerHTML='🎞 촬영지' + (SC_LOADED? '<span class="n">'+SC_P.length.toLocaleString()+'</span>' : '');
+  bSc.innerHTML='🎞 촬영지<span class="n">10,997</span>';
   bSc.onclick=function(){ toggleScene(bSc); };
   r0.appendChild(bSc);
 
   var bSp=document.createElement('button');
   bSp.className='sc-chip src';
-  bSp.innerHTML='🏛 추천지' + (SP_LOADED? '<span class="n">'+SP_P.length.toLocaleString()+'</span>' : '');
+  bSp.innerHTML='🏛 추천지<span class="n">48,564</span>';
   bSp.onclick=function(){ toggleSpots(bSp); };
   r0.appendChild(bSp);
 
@@ -878,27 +878,119 @@ function toggleSpots(btn){
   if(MY_ST.spots){
     MY_ST.spots=false; btn.classList.remove('on');
     if(SP_CL && map.hasLayer(SP_CL)) map.removeLayer(SP_CL);
-    myStat(); fitFilterHeight(); return;
+    myStat(); fitFilterHeight(); refreshTiles(); return;
   }
-  loadSpots(function(){
-    MY_ST.spots=true; btn.classList.add('on');
-    btn.innerHTML='🏛 추천지<span class="n">'+SP_P.length.toLocaleString()+'</span>';
-    if(!SP_CL) SP_CL=L.markerClusterGroup({ chunkedLoading:true, maxClusterRadius:60,
-      spiderfyOnMaxZoom:true, disableClusteringAtZoom:17, showCoverageOnHover:false });
-    if(!map.hasLayer(SP_CL)) map.addLayer(SP_CL);
-    if(!SP_INIT){ spChips(); SP_INIT=true; }
-    spRender(); fitFilterHeight();
-  });
+  MY_ST.spots=true; btn.classList.add('on');
+  if(!SP_CL) SP_CL=L.markerClusterGroup({ chunkedLoading:true, maxClusterRadius:60,
+    spiderfyOnMaxZoom:true, disableClusteringAtZoom:17, showCoverageOnHover:false });
+  if(!map.hasLayer(SP_CL)) map.addLayer(SP_CL);
+  if(!SP_INIT){ spChips(); SP_INIT=true; }
+  refreshTiles(); fitFilterHeight();
 }
 function spChips(){
-  var kc={};
-  SP_P.forEach(function(p){ kc[p.k]=(kc[p.k]||0)+1; });
+  var kc=SP_TOTAL;
   mkLabel('spRowK','추천지 — 갈래','spkind');
   Object.keys(SP_KIND).forEach(function(k){
-    if(!kc[k]) return;
-    mkChip('spRowK', SP_KIND[k].l, kc[k], 'spkind', k);
+    mkChip('spRowK', SP_KIND[k].l, kc[k]||0, 'spkind', k);
   });
   mkChip('spRowK','★ 이름난 곳만', null, 'spfam','spfam','pre');
+}
+
+/* ═══════════ 보이는 곳만 받는 격자 방식 (260913) ═══════════
+   명진 지적: "구글이나 네이버는 왜 안 느린데? 만들고 구동하는 방식의 문제 같은데" — 맞았다.
+   전국 59,561곳(9.1MB)을 통째로 받아 들고 있던 것을 0.1도(약 11km) 격자로 쪼개고,
+   화면에 걸린 격자 파일만 받는다. 지도 이미지 타일과 같은 원리다. */
+var TILE={ scale:10, cells:null, got:{}, data:{}, pend:0 };
+var TILE_MIN_ZOOM=11;          // 이보다 줌아웃하면 표시하지 않는다(구글맵도 그렇게 한다)
+
+function tileIndex(cb){
+  if(TILE.cells){ cb(); return; }
+  fetch('data/tiles/index.json?v=1').then(function(r){ return r.json(); })
+    .then(function(j){ TILE.scale=j.scale||10; TILE.cells=j.cells||{}; cb(); })
+    .catch(function(){ TILE.cells={}; cb(); });
+}
+function visibleTileKeys(){
+  var b=map.getBounds(), s=TILE.scale;
+  var y0=Math.floor(b.getSouth()*s), y1=Math.floor(b.getNorth()*s);
+  var x0=Math.floor(b.getWest()*s), x1=Math.floor(b.getEast()*s);
+  if((y1-y0+1)*(x1-x0+1) > 600) return null;          // 화면이 너무 넓다
+  var out=[];
+  for(var y=y0;y<=y1;y++) for(var x=x0;x<=x1;x++){
+    var k=y+'_'+x;
+    if(TILE.cells[k]) out.push(k);
+  }
+  return out;
+}
+function ensureTiles(keys, cb){
+  var need=[];
+  for(var i=0;i<keys.length;i++) if(!TILE.got[keys[i]]) need.push(keys[i]);
+  if(!need.length){ cb(); return; }
+  var ld=document.getElementById('maploading');
+  if(ld && need.length>2){ ld.textContent='이 지역 자료 불러오는 중…'; ld.classList.add('on'); }
+  var left=need.length;
+  need.forEach(function(k){
+    TILE.got[k]='loading';
+    fetch('data/tiles/'+k+'.json?v=1')
+      .then(function(r){ return r.json(); })
+      .then(function(rows){ TILE.data[k]=rows||[]; })
+      .catch(function(){ TILE.data[k]=[]; })
+      .then(function(){
+        TILE.got[k]=true;
+        if(--left===0){ if(ld) ld.classList.remove('on'); cb(); }
+      });
+  });
+}
+function tileRows(keys){
+  var out=[];
+  for(var i=0;i<keys.length;i++){ var d=TILE.data[keys[i]]; if(d && d.length) out=out.concat(d); }
+  return out;
+}
+function zoomHint(on){
+  var el=document.getElementById('zoomHint');
+  if(!el){
+    el=document.createElement('div'); el.id='zoomHint';
+    el.style.cssText='position:fixed;left:50%;top:var(--mtop,180px);transform:translateX(-50%);z-index:660;'
+      +'background:rgba(44,51,46,.92);color:#fff;font-size:12px;padding:7px 14px;border-radius:999px;'
+      +'box-shadow:0 3px 12px rgba(0,0,0,.25);white-space:nowrap;display:none;font-family:inherit';
+    el.textContent='지도를 확대하면 촬영지·추천지가 보입니다';
+    document.body.appendChild(el);
+  }
+  el.style.display=on? 'block':'none';
+}
+/* 지도를 움직이거나 줌을 바꿀 때마다 — 보이는 격자만 받아 그린다 */
+function refreshTiles(){
+  if(window.COUNTRY!=='my' || !(MY_ST.scene || MY_ST.spots)){
+    zoomHint(false);
+    if(SC_CL) SC_CL.clearLayers();
+    if(SP_CL) SP_CL.clearLayers();
+    return;
+  }
+  if(map.getZoom() < TILE_MIN_ZOOM){
+    zoomHint(true);
+    if(SC_CL) SC_CL.clearLayers();
+    if(SP_CL) SP_CL.clearLayers();
+    SC_SHOWN=0; SP_SHOWN=0; myStat();
+    return;
+  }
+  zoomHint(false);
+  tileIndex(function(){
+    var keys=visibleTileKeys();
+    if(!keys){ zoomHint(true); return; }
+    ensureTiles(keys, function(){
+      var rows=tileRows(keys);
+      SC_P=[]; SP_P=[];
+      for(var i=0;i<rows.length;i++){
+        var r=rows[i];
+        if(r.k==='sc') SC_P.push(r);
+        else if(r.k==='sp'){
+          SP_P.push({ n:r.n, o:r.o, la:r.la, ln:r.ln, c:r.c, k:r.sk||'see', f:r.f||0 });
+        }
+      }
+      if(MY_ST.scene) scRender();
+      if(MY_ST.spots) spRender();
+      myStat();
+    });
+  });
 }
 
 function scPopWidth(){ return Math.max(210, Math.min(300, (window.innerWidth||360) - 76)); }
@@ -986,14 +1078,15 @@ function scRender(){
   myStat();
 }
 
+/* 전체 개수(수집 시 확정값) — 격자 방식에선 화면에 있는 것만 들고 있어 세면 틀린다 */
+var SC_TOTAL={ kr:8614, jp:2383,
+  media:{movie:273,drama:7339,show:5460,artist:1962},
+  type:{playground:2176,restaurant:5021,cafe:888,stay:266,station:128,store:135},
+  jsrc:{loc:951,anime:147,miki:16} };
+var SP_TOTAL={ see:8549, museum:8729, view:4637, play:1255, castle:5963,
+               nature:4294, park:2201, mon:268, onsen:191, temple:12477 };
 function scChips(){
-  var mc={}, tc={}, krCnt=0, jpCnt=0, jsrcCnt={};
-  SC_P.forEach(function(p){
-    if((p.c||'kr')==='jp'){ jpCnt++; var s=p.s||'loc'; jsrcCnt[s]=(jsrcCnt[s]||0)+1; return; }
-    krCnt++;
-    var t=SC_TYPE[p.t]? p.t:'etc'; tc[t]=(tc[t]||0)+1;
-    p.w.forEach(function(w){ mc[w.m]=(mc[w.m]||0)+1; });
-  });
+  var mc=SC_TOTAL.media, tc=SC_TOTAL.type, krCnt=SC_TOTAL.kr, jpCnt=SC_TOTAL.jp, jsrcCnt=SC_TOTAL.jsrc;
   mkLabel('scRowC','촬영지 — 나라','country');
   mkChip('scRowC','🇰🇷 한국', krCnt, 'country','kr');
   mkChip('scRowC','🇯🇵 일본', jpCnt, 'country','jp');
@@ -1033,8 +1126,7 @@ function activateMy(){
   if(MY_ST.scene && SC_CL && !map.hasLayer(SC_CL)) map.addLayer(SC_CL);
   if(MY_ST.spots && SP_CL && !map.hasLayer(SP_CL)) map.addLayer(SP_CL);
   renderMyPlaces();
-  if(MY_ST.spots) spRender();
-  if(MY_ST.scene) scRender();
+  refreshTiles();
   myStat(); fitFilterHeight();
   fitMyPlaces();
   if(window.loadMyMaps) loadMyMaps(function(){ renderMyPlaces(); myStat(); fitMyPlaces(); });   // 구글 My Maps 자동 로드
@@ -1082,7 +1174,7 @@ function saveMP(){ try{ localStorage.setItem('maydly_travel_places', JSON.string
 function openAddModal(){ if(_armed) armAdd(); _pendLL=null; openPModal(null); }
 function armAdd(){ _armed=!_armed; document.getElementById('mtip').classList.toggle('on',_armed); document.getElementById('mfAdd').classList.toggle('arm',_armed); document.getElementById('mfAdd').textContent=_armed?'✕ 취소':'➕ 장소 추가'; }
 function armFromModal(){ document.getElementById('pmodal').classList.remove('on'); if(!_armed) armAdd(); }
-map.on('moveend zoomend', function(){ gevSyncFab(); });
+map.on('moveend zoomend', function(){ gevSyncFab(); refreshTiles(); });
 map.on('click', function(e){ if(_armed){ _pendLL=e.latlng; armAdd(); openPModal(null,true); reverseFill(e.latlng.lat, e.latlng.lng); } });
 
 /* 이름으로 장소 찾기 — OpenStreetMap Nominatim (무료·키 불필요·CORS 허용).
