@@ -1572,6 +1572,8 @@ function importLedger(inp){
    촬영을 먼저 하고 돈을 나중에 받는 경우가 많아 «이후»만 보면 대부분 놓친다.
    캘린더는 읽기만 한다 — 예약 기록은 건드리지 않는다. */
 var CAL_DAYS=60;
+// 캘린더와 대조할 입금 분류 — 촬영 수입이거나 아직 분류가 안 된 것만.
+var CAL_TARGET=/수입·촬영|미분류/;
 /* ===== 선결제·환불 짝 정리 =====
    주유소에서 15만원을 먼저 잡아두고, 실제 주유액만 결제된 뒤 나머지가 환불되는 식.
    그러면 같은 가맹점에 «나간 돈»과 «들어온 돈»이 같은 금액으로 짝지어진다.
@@ -1628,8 +1630,12 @@ function calNameOf(desc){                       // 별칭(부모님 등이 대�
 function calDay(d){return Math.round(new Date(d+'T00:00:00').getTime()/86400000);}
 function matchCalendar(){
   if(!(window.MJAPP&&window.MJAPP.user)){toast('구글 로그인을 먼저 해주세요 (☁ 버튼)');return;}
-  var ins=ledger.filter(function(t){return t.type==='in';});
-  if(!ins.length){toast('입금 내역이 없어요');return;}
+  // 촬영 수입일 «가능성이 있는» 입금만 본다.
+  // 급여·일급·PA·본인계좌 이동·중고판매·이자 같은 건 이미 분류가 말해주므로 대조하지 않는다.
+  var all=ledger.filter(function(t){return t.type==='in';});
+  var ins=all.filter(function(t){return CAL_TARGET.test(t.cat||'');});
+  var offTarget=all.length-ins.length;
+  if(!ins.length){toast('대조할 촬영 입금이 없어요');return;}
   toast('캘린더를 불러오는 중…');
   window.MJAPP.getCal().then(function(ev){
     if(!ev||ev.error){toast('캘린더를 못 읽었어요: '+((ev&&ev.error)||'알 수 없음'));return;}
@@ -1655,10 +1661,10 @@ function matchCalendar(){
     var used={};
     ['ok','bad','far'].forEach(function(k){R[k].forEach(function(x){if(x.near&&x.near.e)used[x.near.e.id]=1;});});
     window._calUsed=used;
-    showCalResult(R,ev.length);
+    showCalResult(R,ev.length,offTarget);
   });
 }
-function showCalResult(R,evN){
+function showCalResult(R,evN,offTarget){
   var sum=function(a){return a.reduce(function(s,x){return s+x.t.amt;},0);};
   var row=function(a,ic,label){
     return '<div class="mbox" style="flex:1;min-width:0"><div class="l">'+ic+' '+label+'</div>'
@@ -1684,7 +1690,8 @@ function showCalResult(R,evN){
   };
   var gapTxt=function(x){var g=x.near.gap;return '예약 '+x.near.e.date.slice(5)+' ('+(g===0?'당일':(g>0?'+'+g:g)+'일')+')';};
   var html='<h3>📅 캘린더와 대조</h3>'
-    +'<div class="mnote">입금일 앞뒤 2개월 안에 같은 이름 예약이 있는지 봤어요 · 예약 '+evN+'건 기준</div>'
+    +'<div class="mnote">입금일 앞뒤 2개월 안에 같은 이름 예약이 있는지 봤어요 · 예약 '+evN+'건 기준'
+      +(offTarget?'<br>급여·일급·PA·계좌이동·중고판매·이자 등 '+offTarget+'건은 촬영과 무관해 대조하지 않았어요':'')+'</div>'
     +'<div class="money" style="margin-top:10px;flex-wrap:wrap">'
       +row(R.ok,'✅','확인됨')+row(R.bad,'🚫','노쇼·취소')+row(R.far,'⚠️','기간 밖')+row(R.none,'❌','이름 없음')+'</div>'
     +'<div style="max-height:46vh;overflow:auto;margin-top:4px">'
