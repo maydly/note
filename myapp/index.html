@@ -372,6 +372,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <button class="impbtn" onclick="document.getElementById('impFile').click()">＋ 은행 엑셀 가져오기 (하나·카카오뱅크·카카오페이 · 매달 누적)</button>
   <input type="file" id="impFile" style="display:none" onchange="importLedger(this)">
   <button class="impbtn" onclick="reclassify()">🔄 다시 분류하기 (분류 규칙이 바뀐 뒤 한 번 · 손으로 고친 건 그대로)</button>
+  <button class="impbtn" onclick="matchCalendar()">📅 캘린더와 대조 (입금이 진짜 촬영 수입인지 확인)</button>
   <details class="covwrap"><summary>📅 가져온 범위 · 기록</summary><div id="covBox"></div></details>
   <div style="text-align:center;margin-top:8px"><span onclick="clearLedger()" style="font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline">가계부 전체 비우기</span></div>
 </div>
@@ -1560,6 +1561,103 @@ function importLedger(inp){
   r.readAsArrayBuffer(f);
   inp.value='';
 }
+/* ===== 캘린더와 대조 =====
+   입금이 진짜 촬영 수입인지 예약 기록과 맞춰본다.
+   기준(명진 확정 260912): 입금일 «앞뒤» 2개월 안에 같은 이름의 예약이 있는가.
+   촬영을 먼저 하고 돈을 나중에 받는 경우가 많아 «이후»만 보면 대부분 놓친다.
+   캘린더는 읽기만 한다 — 예약 기록은 건드리지 않는다. */
+var CAL_DAYS=60;
+function calNorm(s){return String(s||'').normalize('NFC').replace(/\s+/g,'').replace(/(님|씨)$/,'').trim();}
+function calNameOf(desc){                       // 입금 적요에서 사람 이름만 뽑는다
+  var s=calNorm(String(desc||'').replace(/^\d{1,2}월/,'').replace(/\(.*$/,''));
+  return /^[가-힣]{2,4}$/.test(s)?s:null;
+}
+function calDay(d){return Math.round(new Date(d+'T00:00:00').getTime()/86400000);}
+function matchCalendar(){
+  if(!(window.MJAPP&&window.MJAPP.user)){toast('구글 로그인을 먼저 해주세요 (☁ 버튼)');return;}
+  var ins=ledger.filter(function(t){return t.type==='in';});
+  if(!ins.length){toast('입금 내역이 없어요');return;}
+  toast('캘린더를 불러오는 중…');
+  window.MJAPP.getCal().then(function(ev){
+    if(!ev||ev.error){toast('캘린더를 못 읽었어요: '+((ev&&ev.error)||'알 수 없음'));return;}
+    if(!ev.length){toast('캘린더에 예약이 없어요');return;}
+    var byName={};
+    ev.forEach(function(e){var n=calNorm(e.client);if(n&&e.date)(byName[n]=byName[n]||[]).push(e);});
+    var R={ok:[],bad:[],far:[],none:[],skip:[]};
+    ins.forEach(function(t){
+      var n=calNameOf(t.desc);
+      if(!n){R.skip.push({t:t});return;}
+      var L=byName[n];
+      if(!L){R.none.push({t:t,n:n});return;}
+      var d0=calDay(t.date);
+      var near=L.map(function(e){return {e:e,gap:calDay(e.date)-d0};})
+                .sort(function(a,b){return Math.abs(a.gap)-Math.abs(b.gap);});
+      var inR=near.filter(function(x){return Math.abs(x.gap)<=CAL_DAYS;});
+      if(!inR.length){R.far.push({t:t,n:n,near:near[0]});return;}
+      var good=inR.filter(function(x){return !/nosh|cancel/.test(x.e.status||'');});
+      if(good.length)R.ok.push({t:t,n:n,near:good[0]});
+      else R.bad.push({t:t,n:n,near:inR[0]});
+    });
+    showCalResult(R,ev.length);
+  });
+}
+function showCalResult(R,evN){
+  var sum=function(a){return a.reduce(function(s,x){return s+x.t.amt;},0);};
+  var row=function(a,ic,label){
+    return '<div class="mbox" style="flex:1;min-width:0"><div class="l">'+ic+' '+label+'</div>'
+      +'<div class="v" style="font-size:15px">'+a.length+'건</div>'
+      +'<div class="l" style="font-size:10.5px">'+won(sum(a))+'</div></div>';
+  };
+  var item=function(x,extra){
+    return '<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid #f2f0ec;font-size:12.5px">'
+      +'<span style="color:#9aa197;min-width:44px">'+esc(x.t.date.slice(5))+'</span>'
+      +'<span style="font-weight:700;min-width:74px;text-align:right">'+won(x.t.amt)+'</span>'
+      +'<span style="flex:1">'+esc(x.n||x.t.desc)+(extra?' <span style="color:#9aa197">'+esc(extra)+'</span>':'')+'</span></div>';
+  };
+  var sec=function(a,title,fmt){
+    if(!a.length)return '';
+    return '<div class="seg" style="margin-top:12px">'+title+' ('+a.length+'건)</div>'
+      +a.slice(0,60).map(function(x){return item(x,fmt?fmt(x):'');}).join('')
+      +(a.length>60?'<div style="font-size:11.5px;color:#9aa197;padding-top:5px">… 외 '+(a.length-60)+'건 (복사하면 전부 나옵니다)</div>':'');
+  };
+  var gapTxt=function(x){var g=x.near.gap;return '예약 '+x.near.e.date.slice(5)+' ('+(g===0?'당일':(g>0?'+'+g:g)+'일')+')';};
+  var html='<h3>📅 캘린더와 대조</h3>'
+    +'<div class="mnote">입금일 앞뒤 2개월 안에 같은 이름 예약이 있는지 봤어요 · 예약 '+evN+'건 기준</div>'
+    +'<div class="money" style="margin-top:10px;flex-wrap:wrap">'
+      +row(R.ok,'✅','확인됨')+row(R.bad,'⚠️','취소·노쇼')+row(R.far,'⚠️','기간 밖')+row(R.none,'❌','이름 없음')+'</div>'
+    +'<div style="max-height:46vh;overflow:auto;margin-top:4px">'
+      +sec(R.bad,'⚠️ 취소·노쇼인데 입금이 있음 — 환불 빠졌는지 확인',gapTxt)
+      +sec(R.none,'❌ 캘린더에 이 이름이 없음 — 촬영비가 아닐 수 있음')
+      +sec(R.far,'⚠️ 이름은 있는데 2개월 밖 — 동명이인이거나 옛 손님',gapTxt)
+      +sec(R.skip,'— 사람 이름이 아니라 건너뜀')
+      +sec(R.ok,'✅ 확인됨',gapTxt)
+    +'</div>'
+    +'<div class="mact"><button class="mcancel" onclick="closeSheet()">닫기</button>'
+      +'<button class="msave" onclick="copyCalResult()">결과 복사</button></div>';
+  window._calR=R;
+  document.getElementById('sheet').innerHTML=html;
+  document.getElementById('mask').classList.add('on');
+}
+function copyCalResult(){
+  var R=window._calR;if(!R)return;
+  var L=['## 가계부 ↔ 캘린더 대조 ('+nowStr()+')','## 기준: 입금일 앞뒤 2개월 안에 같은 이름 예약',''];
+  var put=function(a,title,g){
+    if(!a.length)return;
+    L.push('### '+title+' '+a.length+'건 / '+won(a.reduce(function(s,x){return s+x.t.amt;},0)));
+    a.forEach(function(x){
+      L.push(x.t.date+'  '+x.t.amt+'  '+(x.n||x.t.desc)
+        +(g&&x.near?'  → 예약 '+x.near.e.date+' ('+x.near.gap+'일) ['+(x.near.e.status||'')+']':''));
+    });
+    L.push('');
+  };
+  put(R.bad,'⚠️ 취소·노쇼',1);put(R.none,'❌ 캘린더에 이름 없음');put(R.far,'⚠️ 2개월 밖',1);
+  put(R.skip,'— 건너뜀');put(R.ok,'✅ 확인됨',1);
+  var ta=document.createElement('textarea');ta.value=L.join('\n');
+  ta.style.cssText='position:fixed;left:-9999px';document.body.appendChild(ta);
+  ta.select();try{document.execCommand('copy');toast('복사했어요 — 붙여넣으시면 돼요');}catch(e){toast('복사 실패');}
+  document.body.removeChild(ta);
+}
+
 /* 다시 분류하기 — 이미 들어있는 내역을 최신 분류규칙으로 다시 매긴다.
    규칙을 고친 뒤 «다시 가져오기»를 하면 중복으로 걸러져 분류가 갱신되지 않으므로 이 버튼이 필요하다.
    안전장치 3가지:
@@ -2155,7 +2253,12 @@ try{
     login:()=>{ try{ return (window.sajuConnect&&window.sajuConnect()); }catch(e){} },
     logout:()=>{ try{ return (window.sajuDisconnect&&window.sajuDisconnect()); }catch(e){} },
     async get(kind){ try{ const s=await getDoc(doc(db,MJ_COL,kind)); if(!s.exists())return null; const j=s.data().json; return j?{json:JSON.parse(j)}:null; }catch(e){ return null; } },
-    async put(kind,obj){ await setDoc(doc(db,MJ_COL,kind),{ json:JSON.stringify(obj), at:serverTimestamp(), by:(auth.currentUser&&auth.currentUser.email)||'' }); }
+    async put(kind,obj){ await setDoc(doc(db,MJ_COL,kind),{ json:JSON.stringify(obj), at:serverTimestamp(), by:(auth.currentUser&&auth.currentUser.email)||'' }); },
+    // 예약캘린더 «읽기 전용» — 관리자 캘린더가 쓰는 문서 mj_cal/events ({blob:JSON문자열})
+    // 가계부 입금이 진짜 촬영 수입인지 대조할 때만 본다. 캘린더에 쓰지 않는다.
+    async getCal(){ try{ const s=await getDoc(doc(db,'mj_cal','events')); if(!s.exists())return {error:'캘린더 데이터가 없어요'};
+      const b=s.data().blob; if(!b)return {error:'캘린더 내용이 비어 있어요'};
+      const j=JSON.parse(b); return j.events||j; }catch(e){ return {error:(e&&(e.code||e.message))||'읽기 실패'}; } }
   };
   let subinUid=null, unsub=null;
   async function findSubinUid(){ const s=await getDocs(query(collection(db,'users'),where('role','==','user'))); return s.empty?null:s.docs[0].id; }
