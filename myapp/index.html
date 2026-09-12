@@ -371,6 +371,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
   <button class="impbtn" onclick="sheetSync()">☁ 클라우드 동기화 연결 (모든 기기 자동 · 추천)</button>
   <button class="impbtn" onclick="document.getElementById('impFile').click()">＋ 은행 엑셀 가져오기 (하나·카카오뱅크·카카오페이 · 매달 누적)</button>
   <input type="file" id="impFile" style="display:none" onchange="importLedger(this)">
+  <button class="impbtn" onclick="reclassify()">🔄 다시 분류하기 (분류 규칙이 바뀐 뒤 한 번 · 손으로 고친 건 그대로)</button>
   <details class="covwrap"><summary>📅 가져온 범위 · 기록</summary><div id="covBox"></div></details>
   <div style="text-align:center;margin-top:8px"><span onclick="clearLedger()" style="font-size:11.5px;color:#c2a99e;cursor:pointer;text-decoration:underline">가계부 전체 비우기</span></div>
 </div>
@@ -1333,9 +1334,9 @@ function delItem(kind,id){
 
 /* ===== 가계부 ===== */
 var MOVE=/이체|충전|ATM|현금·ATM/;
-var CATS_OUT=['식비·편의점·마트','차량·주유','교통','쇼핑·생활','의료·약국','구독·디지털','통신','여가·문화·여행','미용','기호품','공과금','세금·공과','장비·카메라','사업지출','오락·게임','경조·지인','생활지출','대출상환','지인·가족송금','간편결제·페이','간편결제충전','이체·송금','기타'];
-var CATS_IN=['수입·촬영/사업','수입·급여/사업','수입·중고판매','수입·이자/환급','수입·기타','이체·입금','기타'];
-var CATICON={'식비·편의점·마트':'🍽','차량·주유':'⛽','교통':'🚕','쇼핑·생활':'🛍','의료·약국':'💊','구독·디지털':'💳','통신':'📱','여가·문화·여행':'🎬','미용':'💇','기호품':'🚬','공과금':'🧾','세금·공과':'🏛','장비·카메라':'📷','사업지출':'💼','오락·게임':'🎮','경조·지인':'🎁','생활지출':'🏠','대출상환':'🏦','지인·가족송금':'💸','간편결제·페이':'📲','간편결제충전':'🔄','이체·송금':'↔','이체·본인계좌':'↔','수입·촬영/사업':'📸','수입·급여/사업':'💼','수입·중고판매':'🏷','수입·이자/환급':'💰','수입·기타':'💵','이체·입금':'↔'};
+var CATS_OUT=['식비·편의점·마트','차량·주유','교통','쇼핑·생활','의료·약국','구독·디지털','통신','여가·문화·여행','미용','기호품','공과금','세금·공과','장비·카메라','사업지출','오락·게임','경조·지인','생활지출','대출상환','지인·가족송금','환불·취소','간편결제·페이','간편결제충전','이체·송금','이체·본인계좌','기타'];
+var CATS_IN=['수입·촬영/사업','수입·급여/사업','수입·중고판매','수입·이자/환급','수입·기타','환불·취소','이체·입금','기타'];
+var CATICON={'식비·편의점·마트':'🍽','차량·주유':'⛽','교통':'🚕','쇼핑·생활':'🛍','의료·약국':'💊','구독·디지털':'💳','통신':'📱','여가·문화·여행':'🎬','미용':'💇','기호품':'🚬','공과금':'🧾','세금·공과':'🏛','장비·카메라':'📷','사업지출':'💼','오락·게임':'🎮','경조·지인':'🎁','생활지출':'🏠','대출상환':'🏦','지인·가족송금':'💸','간편결제·페이':'📲','간편결제충전':'🔄','이체·송금':'↔','이체·본인계좌':'↔','환불·취소':'↩','미분류·지출':'❓','미분류·입금':'❓','미분류':'❓','수입·촬영/사업':'📸','수입·급여/사업':'💼','수입·중고판매':'🏷','수입·이자/환급':'💰','수입·기타':'💵','이체·입금':'↔'};
 var period='월';           // 월/3개월/6개월/12개월 (달력정렬: 분기/반기/연간)
 var viewYM=null;           // {y,m} 기준점
 var selDay=null;           // 'YYYY-MM-DD'
@@ -1558,6 +1559,46 @@ function importLedger(inp){
   };
   r.readAsArrayBuffer(f);
   inp.value='';
+}
+/* 다시 분류하기 — 이미 들어있는 내역을 최신 분류규칙으로 다시 매긴다.
+   규칙을 고친 뒤 «다시 가져오기»를 하면 중복으로 걸러져 분류가 갱신되지 않으므로 이 버튼이 필요하다.
+   안전장치 3가지:
+    ① 손으로 고친 내역(manual)은 건드리지 않는다
+    ② 규칙이 분류를 못 찾으면(미분류) 원래 분류를 그대로 둔다 — 더 나은 답이 있을 때만 바꾼다
+    ③ 바꾸기 전에 «무엇이 무엇으로» 몇 건 바뀌는지 보여주고 확인받는다
+   금액·날짜·내용·계좌는 절대 건드리지 않는다. 바꾸는 건 분류(cat) 하나뿐. */
+function reclassify(){
+  if(!ledger.length){toast('가계부가 비어 있어요');return;}
+  if(typeof MJParse==='undefined'){toast('분류 모듈 로딩 중 — 새로고침 후 다시 시도');return;}
+  // 분류규칙은 «은행 엑셀의 적요»를 보고 만들어진 것이라, 은행에서 들어온 내역에만 쓴다.
+  // 직접 입력·수기 파일(MAY계좌·현금 등)은 사람이 정한 분류라 규칙으로 덮으면 오히려 망가진다.
+  var BANK={'하나은행':1,'카카오뱅크':1,'카카오페이':1};
+  var plan=[],skipManual=0,keptUnknown=0,skipHand=0;
+  ledger.forEach(function(t){
+    if(!BANK[t.acct]){skipHand++;return;}
+    if(t.manual){skipManual++;return;}
+    var c;
+    try{c=MJParse.classify({desc:t.desc||'',sub:'',acct:t.acct||'',isIn:t.type==='in'});}catch(e){return;}
+    if(!c||/미분류/.test(c)){keptUnknown++;return;}
+    if(c===t.cat)return;
+    plan.push({t:t,from:t.cat,to:c});
+  });
+  if(!plan.length){
+    toast('바뀔 내역이 없어요'+(skipManual?' (손으로 고친 '+skipManual+'건 제외)':''));return;}
+  var g={};plan.forEach(function(p){var k=p.from+' → '+p.to;g[k]=(g[k]||0)+1;});
+  var keys=Object.keys(g).sort(function(a,b){return g[b]-g[a];});
+  var lines=keys.slice(0,12).map(function(k){return '· '+k+'   '+g[k]+'건';});
+  var more=keys.length-lines.length;
+  var msg='내역 '+plan.length+'건의 «분류»를 바꿉니다.\n(금액·날짜·내용은 그대로)\n\n'
+    +lines.join('\n')+(more>0?'\n· 그 외 '+more+'가지':'')+'\n';
+  if(skipManual)msg+='\n손으로 고친 '+skipManual+'건은 그대로 둡니다.';
+  if(keptUnknown)msg+='\n규칙이 못 찾은 '+keptUnknown+'건도 원래대로 둡니다.';
+  if(skipHand)msg+='\n은행 엑셀이 아닌 '+skipHand+'건(직접 입력 등)은 대상이 아닙니다.';
+  msg+='\n\n진행할까요?';
+  if(!confirm(msg))return;
+  plan.forEach(function(p){p.t.cat=p.to;});
+  save(K.led,ledger);pushSoon('ledger');selDay=null;renderMoney();
+  toast(plan.length+'건 다시 분류했어요');
 }
 function clearLedger(){
   if(!ledger.length){toast('이미 비어 있어요');return;}
@@ -1968,6 +2009,7 @@ function saveEdit(){
   var t=ledger.find(function(x){return x.id===window._editId;});if(!t)return;
   var amt=parseInt(document.getElementById('m_amt').value,10);if(!amt||amt<0){toast('금액을 확인하세요');return;}
   t.type=window._mtype;t.amt=amt;t.cat=document.getElementById('m_cat').value;t.date=document.getElementById('m_date').value;t.desc=document.getElementById('m_desc').value.trim();
+  t.manual=true;   // 손으로 고친 내역 — 「다시 분류하기」가 덮어쓰지 않는다
   save(K.led,ledger);pushSoon('ledger');renderMoney();closeSheet();toast('수정됐어요');
 }
 
