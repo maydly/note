@@ -163,7 +163,7 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .skpi .l{font-size:10.5px;color:#97a394;font-weight:600}
 .skpi .v{font-size:15px;font-weight:800;margin-top:3px;font-variant-numeric:tabular-nums}
 /* 분류별 보기 필터 칩 */
-.fpanel{margin-top:12px;border:1px solid #e3ece0;border-radius:13px;background:#fff;overflow:hidden}
+.fpanel{margin:2px 0 10px;border:1px solid #e3ece0;border-radius:13px;background:#fff;overflow:hidden}
 .fhead{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;
  font-size:13px;font-weight:700;color:#5e6b5b;cursor:pointer;user-select:none;
  -webkit-tap-highlight-color:transparent}
@@ -1559,9 +1559,9 @@ function monthView(list){
     h+='<div class="seg">이 달 전체 내역 ('+base.length+'건'
       +(catOff.length?' 중 '+shown.length+'건 보는 중':'')+') · 탭해서 수정</div>';
   }
+  h+=catPanel(base);          // 필터는 목록 «위»
   h+=shown.slice().sort(function(a,b){return (a.date+(a.time||''))<(b.date+(b.time||''))?1:-1;}).map(ledCard).join('')
     ||'<div class="empty">'+(catOff.length?'켜둔 분류에 해당하는 내역이 없어요':'내역이 없어요')+'</div>';
-  h+=catPanel(base);          // 필터는 목록 «아래»
   return h;
 }
 function barsView(){
