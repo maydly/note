@@ -9,7 +9,7 @@
  *   그 사이 뒤에서 새로 받아 캐시를 갈아둔다. 데이터를 갱신해도 다음 방문에 자동 반영된다.
  *   같은 출처 파일만 다룬다(CDN 라이브러리는 건드리지 않는다).
  */
-const CACHE = 'maydly-travel-v2';   // 갱신 감지 추가(260913)
+const CACHE = 'maydly-travel-v3';   // 일본어 이름·전남 누락·회사 성지 고침(260913)
 const CACHEABLE = /\.(js|json|css|html|png|jpg|jpeg|webp|svg)$/i;
 
 self.addEventListener('install', (e) => {

@@ -583,19 +583,20 @@ function applyFilters(){
   myStat();
   syncChips();
 }
-/* 촬영지 데이터가 아직 없으면 받아온 뒤 이어서 한다 */
+/* 촬영지 레이어를 켜고 이어서 한다 (프리셋에서 부른다)
+   ⚠️ 260913: 예전엔 여기서 loadScenes()로 4MB를 통째로 받았다. 격자 방식으로 바꾼 뒤에도
+   이 경로가 남아 프리셋을 누르면 전국 자료를 다시 받았다. 이제 켜기만 하고,
+   보이는 곳의 자료는 refreshTiles()가 격자에서 가져온다. */
 function needScene(after){
   if(MY_ST.scene){ after(); return; }
   var btn=document.querySelector('#myRow0 .sc-chip.src:not(.mine)');
-  loadScenes(function(){
-    MY_ST.scene=true;
-    if(!SC_CL) SC_CL=L.markerClusterGroup({ chunkedLoading:true, maxClusterRadius:52,
-      spiderfyOnMaxZoom:true, disableClusteringAtZoom:17, showCoverageOnHover:false });
-    if(!map.hasLayer(SC_CL)) map.addLayer(SC_CL);
-    if(!SC_INIT){ scChips(); SC_INIT=true; }
-    if(btn){ btn.classList.add('on'); btn.innerHTML='🎞 촬영지<span class="n">'+SC_P.length.toLocaleString()+'</span>'; }
-    after(); fitFilterHeight();
-  });
+  MY_ST.scene=true;
+  if(!SC_CL) SC_CL=L.markerClusterGroup({ chunkedLoading:true, maxClusterRadius:52,
+    spiderfyOnMaxZoom:true, disableClusteringAtZoom:17, showCoverageOnHover:false });
+  if(!map.hasLayer(SC_CL)) map.addLayer(SC_CL);
+  if(!SC_INIT){ scChips(); SC_INIT=true; }
+  if(btn) btn.classList.add('on');
+  after(); fitFilterHeight();
 }
 function setGroup(g, keys, v){ keys.forEach(function(k){ chipSet(g,k,v); }); }
 function allKeys(g){
@@ -717,13 +718,13 @@ function myChips(){
 
   var bSc=document.createElement('button');
   bSc.className='sc-chip src';
-  bSc.innerHTML='🎞 촬영지<span class="n">10,997</span>';
+  bSc.innerHTML='🎞 촬영지<span class="n">'+(SC_TOTAL.kr+SC_TOTAL.jp).toLocaleString()+'</span>';
   bSc.onclick=function(){ toggleScene(bSc); };
   r0.appendChild(bSc);
 
   var bSp=document.createElement('button');
   bSp.className='sc-chip src';
-  bSp.innerHTML='🏛 추천지<span class="n">48,564</span>';
+  bSp.innerHTML='🏛 추천지<span class="n">'+SP_ALL().toLocaleString()+'</span>';
   bSp.onclick=function(){ toggleSpots(bSp); };
   r0.appendChild(bSp);
 
@@ -791,7 +792,7 @@ function loadScenes(cb){
 
 /* 팝업 너비: 폰에서 화면 밖으로 나가지 않게 화면 폭에 맞춘다 */
 /* ═══════════ 추천지 (260912) ═══════════
-   OpenStreetMap의 관광 명소 48,564곳(한국 6,456 · 일본 42,108).
+   OpenStreetMap의 관광 명소 49,115곳(한국 7,007 · 일본 42,108). 실제 수는 SP_TOTAL에 있다.
    명진: "요나고 가면 요괴마을·돗토리사구·코난집… 추천한다 싶은 곳은 다 넣어줘"
    기존 도시가이드에는 좌표가 없어 핀으로 찍을 수 없었다. 출처 © OpenStreetMap (ODbL). */
 var SP_LOADED=false, SP_P=[], SP_CL=null, SP_INIT=false, SP_SHOWN=0;
@@ -807,7 +808,7 @@ Object.keys(SP_KIND).forEach(function(k){ SP_ST.kind[k]=SP_KIND[k].on; });
 function loadSpots(cb){
   if(SP_LOADED){ cb(); return; }
   var ld=document.getElementById('maploading');
-  if(ld){ ld.textContent='추천지 48,564곳 불러오는 중…'; ld.classList.add('on'); }
+  if(ld){ ld.textContent='추천지 '+SP_ALL().toLocaleString()+'곳 불러오는 중…'; ld.classList.add('on'); }
   function afterCluster(){
     var s=document.createElement('script'); s.src='data/spots.js?v=1';
     s.onload=function(){ SP_P=window.SPOTS||[]; SP_LOADED=true; if(ld) ld.classList.remove('on'); cb(); };
@@ -1079,12 +1080,16 @@ function scRender(){
 }
 
 /* 전체 개수(수집 시 확정값) — 격자 방식에선 화면에 있는 것만 들고 있어 세면 틀린다 */
-var SC_TOTAL={ kr:8614, jp:2383,
+var SC_TOTAL={ kr:8614, jp:1911,
   media:{movie:273,drama:7339,show:5460,artist:1962},
   type:{playground:2176,restaurant:5021,cafe:888,stay:266,station:128,store:135},
-  jsrc:{loc:951,anime:147,miki:16} };
-var SP_TOTAL={ see:8549, museum:8729, view:4637, play:1255, castle:5963,
-               nature:4294, park:2201, mon:268, onsen:191, temple:12477 };
+  jsrc:{loc:1155,anime:733,miki:23} };
+var SP_TOTAL={ see:8623, museum:8868, view:4762, play:1278, castle:6038,
+               nature:4392, park:2210, mon:268, onsen:191, temple:12485 };
+/* 칩·안내문에 쓰는 합계 — 수를 여기 한 곳에서만 세면 자료를 갱신해도 어긋나지 않는다
+   (260913: 「10,997」·「48,564」가 본문에 박혀 있어 자료를 바꿔도 옛 수가 보였다) */
+function SP_ALL(){ var n=0; for(var k in SP_TOTAL) n+=SP_TOTAL[k]; return n; }
+function SC_ALL(){ return SC_TOTAL.kr + SC_TOTAL.jp; }
 function scChips(){
   var mc=SC_TOTAL.media, tc=SC_TOTAL.type, krCnt=SC_TOTAL.kr, jpCnt=SC_TOTAL.jp, jsrcCnt=SC_TOTAL.jsrc;
   mkLabel('scRowC','촬영지 — 나라','country');
