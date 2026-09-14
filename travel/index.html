@@ -77,6 +77,21 @@
 .ploc.set{background:var(--clover-soft,#eef4ec);color:var(--clover-deep,#357a51);font-weight:650}
 .ploc .pmini{display:block;margin-top:5px;font-size:11.5px;color:var(--sub);font-weight:400}
 .ploc-alt{display:block;background:none;border:none;padding:0;margin-top:6px;font-size:11.5px;color:#7a6a55;text-decoration:underline;cursor:pointer;font-family:inherit;text-align:left}
+/* ── 길찾기 (260913) ── */
+.rt-card{position:fixed;left:10px;right:10px;bottom:10px;z-index:900;background:#fff;border:1px solid var(--line);
+  border-radius:14px;box-shadow:0 6px 26px rgba(0,0,0,.22);padding:12px 14px;display:none;font-size:13px}
+.rt-card.on{display:block}
+.rt-head{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.rt-head b{font-size:14px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rt-x{border:none;background:#eef1f5;border-radius:8px;width:28px;height:28px;font-size:15px;cursor:pointer;flex:none}
+.rt-sum{color:#4a4f57;line-height:1.6;margin-bottom:9px}
+.rt-sum .rt-n{font-weight:800;color:#1f6f8b}
+.rt-btns{display:flex;gap:5px;flex-wrap:wrap}
+.rt-btns a,.rt-btns button{flex:1 1 30%;min-width:96px;text-align:center;text-decoration:none;border:none;
+  border-radius:9px;padding:10px 4px;font-size:12px;font-weight:750;color:#fff;cursor:pointer;font-family:inherit}
+.rt-nv{background:#03c75a} .rt-gg{background:#4285f4} .rt-kk{background:#f7d00b;color:#3c1e1e !important}
+.rt-note{color:#8b9098;font-size:11.5px;margin-top:8px;line-height:1.5}
+
 /* 내 위치 (260911) — 지금 서 있는 자리에서 바로 저장하는 흐름 */
 .locbtn{position:fixed;right:14px;bottom:216px;z-index:650;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:19px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.18);display:none;align-items:center;justify-content:center;padding:0}
 .locbtn.on{display:flex}
@@ -183,6 +198,7 @@ body.my-on .search-box{display:none !important}
   font-family:inherit;cursor:pointer;color:#fff;white-space:nowrap}
 .sp-btns .sb-nv{background:#03c75a} .sp-btns .sb-gg{background:#4285f4} .sp-btns .sb-kp{background:#4c8c4a}
 .sp-btns .sb-wk{background:#6b7280}
+.sp-btns .sb-rt{background:#1f6f8b} .pp-btns .pp-rt{background:#1f6f8b}
 .sp-btns .sb-gev{background:#1f6f8b}
 .pp-btns .sb-gev{background:#1f6f8b;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit}
 .sc-credit{font-size:10.5px;color:#9aa0a6;text-align:center;padding:6px 2px 0;line-height:1.4}
@@ -232,6 +248,15 @@ body.my-on .search-box{display:none !important}
   <button class="mf-add" id="mfAdd" onclick="openAddModal()">➕ 장소 추가</button>
 </div>
 <button class="locbtn" id="locbtn" onclick="goMyLocation()" title="내 위치로 이동">📍</button>
+<!-- 「다닌 길」 파일 고르기 — 자료를 저장소에 올리지 않으므로 기기에서 직접 읽는다 -->
+<input type="file" id="trFile" accept=".json,application/json" style="display:none">
+<!-- 길찾기 안내판 (260913 명진 요청) -->
+<div class="rt-card" id="rtCard">
+  <div class="rt-head"><b id="rtTitle">길찾기</b><button class="rt-x" onclick="rtClear()">×</button></div>
+  <div class="rt-sum" id="rtSum">경로를 그리는 중…</div>
+  <div class="rt-btns" id="rtBtns"></div>
+  <div class="rt-note" id="rtNote"></div>
+</div>
 <div class="mtip" id="mtip">📍 지도에서 저장할 위치를 눌러주세요</div>
 <div class="pmodal" id="pmodal"><div class="pbox">
   <h3 id="pmTitle">📍 내 장소 저장</h3>
@@ -468,7 +493,9 @@ function myStat(){
   var mine = MY_ST.mine ? myMineShown() : 0;
   var h = '📌 내 장소 <b>'+mine.toLocaleString()+'</b>곳';
   if(MY_ST.spots) h += ' · 🏛 추천지 <b>'+SP_SHOWN.toLocaleString()+'</b>곳';
-  if(MY_ST.scene || MY_ST.spots) h += ' <span style="opacity:.65">(이 화면)</span>';
+  if(window.TR && TR.on) h += ' · 🛣 다닌 길 <b>'+TR_SHOWN.toLocaleString()+'</b>구간'
+    + (TR_CUT? ' <span style="color:#c2557a">／'+TR_ALL.toLocaleString()+'구간 중 일부만 — 확대하면 다 보입니다</span>' : '');
+  if(MY_ST.scene || MY_ST.spots || (window.TR && TR.on)) h += ' <span style="opacity:.65">(이 화면)</span>';
   if(MY_ST.scene){
     h += ' · 🎞 촬영지 <b>'+SC_SHOWN.toLocaleString()+'</b>곳'
        + ' <span style="opacity:.7">(🇰🇷'+SC_KR.toLocaleString()+' · 🇯🇵'+SC_JP.toLocaleString()+')</span>'
@@ -728,6 +755,12 @@ function myChips(){
   bSp.onclick=function(){ toggleSpots(bSp); };
   r0.appendChild(bSp);
 
+  var bTr=document.createElement('button');
+  bTr.className='sc-chip src';
+  bTr.innerHTML='🛣 다닌 길';
+  bTr.onclick=function(){ toggleTrips(bTr); };
+  r0.appendChild(bTr);
+
   var bD=document.createElement('button');
   bD.className='sc-chip'; bD.id='btnDetail'; bD.textContent='⚙︎ 필터';
   bD.onclick=function(){
@@ -842,6 +875,7 @@ function spPopup(i){
    + (p.c==='kr'? '<button class="sb-nv" onclick="spNv('+i+')">네이버지도</button>':'')
    + '<button class="sb-gg" onclick="spGg('+i+')">구글맵</button>'
    + '<a class="sb-gev" href="'+gevHref(p.la,p.ln,1200)+'" target="_blank" rel="noopener">🌍 3D</a>'
+   + '<button class="sb-rt" onclick="spRoute('+i+')">🧭 길찾기</button>'
    + '<button class="sb-kp" onclick="spKeep('+i+')">📌 내 장소로</button>'
    + '</div>'
    + '<div class="sc-credit" style="text-align:left;padding-top:7px">출처: © OpenStreetMap 기여자 (ODbL)</div>';
@@ -1038,6 +1072,7 @@ function scPopup(idx, works){
    + '<button class="sb-gg" onclick="scGg('+idx+')">구글맵</button>'
    + (jp && p.u? '<button class="sb-wk" onclick="scWiki('+idx+')">위키백과</button>' : '')
    + gevBtn(p.la,p.ln)
+   + '<button class="sb-rt" onclick="scRoute('+idx+')">🧭 길찾기</button>'
    + '<button class="sb-kp" onclick="scKeep('+idx+')">📌 내 장소로</button>'
    + '</div>';
   if(jp) h+='<div class="sc-credit" style="text-align:left;padding-top:7px">출처: 일본어 위키백과 (CC BY-SA 4.0)</div>';
@@ -1179,7 +1214,7 @@ function saveMP(){ try{ localStorage.setItem('maydly_travel_places', JSON.string
 function openAddModal(){ if(_armed) armAdd(); _pendLL=null; openPModal(null); }
 function armAdd(){ _armed=!_armed; document.getElementById('mtip').classList.toggle('on',_armed); document.getElementById('mfAdd').classList.toggle('arm',_armed); document.getElementById('mfAdd').textContent=_armed?'✕ 취소':'➕ 장소 추가'; }
 function armFromModal(){ document.getElementById('pmodal').classList.remove('on'); if(!_armed) armAdd(); }
-map.on('moveend zoomend', function(){ gevSyncFab(); refreshTiles(); });
+map.on('moveend zoomend', function(){ gevSyncFab(); refreshTiles(); refreshTrips(); });
 map.on('click', function(e){ if(_armed){ _pendLL=e.latlng; armAdd(); openPModal(null,true); reverseFill(e.latlng.lat, e.latlng.lng); } });
 
 /* 이름으로 장소 찾기 — OpenStreetMap Nominatim (무료·키 불필요·CORS 허용).
@@ -1265,6 +1300,248 @@ function goMyLocation(cb){
       : '위치를 가져오지 못했어요. 실외에서 잠시 뒤 다시 시도해주세요.');
   }, {enableHighAccuracy:true, timeout:12000, maximumAge:30000});
 }
+/* ═══════════ 내가 다닌 길 (260913 명진 요청) ═══════════
+   구글 타임라인 기록에서 뽑은 **실제로 지나간 길**. 교통수단이 자료에 적혀 있어
+   버스·지하철·기차를 색으로 갈라 그린다. 내 자료라 열쇠도 서버도 필요 없다.
+   자료는 `11_이동경로/내가다닌길_타임라인_추출도구.py`로 만든다.
+
+   격자와 같은 방침: **보이는 구간만 그린다.** 2,900개를 한꺼번에 그리면 폰이 버티지 못한다. */
+var TR={ on:false, data:null, layer:null, loading:false };
+var TR_KIND={
+  car:   {c:'#6b7280', l:'🚗 자동차'},
+  walk:  {c:'#22a06b', l:'🚶 도보'},
+  bike:  {c:'#d08700', l:'🚲 자전거'},
+  bus:   {c:'#2f7fd6', l:'🚌 버스'},
+  subway:{c:'#7c3aed', l:'🚇 지하철'},
+  train: {c:'#dc2626', l:'🚆 기차'},
+  ferry: {c:'#0891b2', l:'⛴ 배'},
+  fly:   {c:'#94a3b8', l:'✈️ 비행기'}
+};
+var TR_MAX=900;   // 한 화면에 그릴 구간 수 상한 — 넘으면 "확대하세요"
+
+/* 자료를 **저장소에 올리지 않는다**(260913 명진 확정).
+   2년치 이동기록이라 공개 저장소에 두면 생활 반경·일터·다니는 시간대가 그대로 드러난다.
+   대신 기기 안(IndexedDB)에만 둔다. 한 번 불러오면 그 기기에서는 계속 보인다.
+
+   note(여행지도)와 gev(신의눈)는 주소가 둘 다 maydly.github.io라 **같은 곳간을 쓴다.**
+   그래서 한쪽에서 한 번 불러오면 신의눈에서도 바로 보인다. */
+var TRDB={ name:'maydly', store:'blobs', key:'trips' };
+function trDB(){
+  return new Promise(function(ok,no){
+    var q=indexedDB.open(TRDB.name, 1);
+    q.onupgradeneeded=function(){ q.result.createObjectStore(TRDB.store); };
+    q.onsuccess=function(){ ok(q.result); };
+    q.onerror=function(){ no(q.error); };
+  });
+}
+function trGet(){
+  return trDB().then(function(db){
+    return new Promise(function(ok){
+      var r=db.transaction(TRDB.store,'readonly').objectStore(TRDB.store).get(TRDB.key);
+      r.onsuccess=function(){ ok(r.result||null); };
+      r.onerror=function(){ ok(null); };
+    });
+  }).catch(function(){ return null; });
+}
+function trPut(v){
+  return trDB().then(function(db){
+    return new Promise(function(ok,no){
+      var t=db.transaction(TRDB.store,'readwrite');
+      t.objectStore(TRDB.store).put(v, TRDB.key);
+      t.oncomplete=function(){ ok(true); };
+      t.onerror=function(){ no(t.error); };
+    });
+  });
+}
+function trUse(d){
+  TR.data=(d && d.segments)||[];
+  // 구간마다 둘레상자를 미리 재 둔다 — 지도를 움직일 때마다 다시 세지 않게
+  TR.data.forEach(function(s){
+    var la1=90,la2=-90,ln1=180,ln2=-180;
+    for(var i=0;i<s.p.length;i++){
+      var p=s.p[i];
+      if(p[0]<la1)la1=p[0]; if(p[0]>la2)la2=p[0];
+      if(p[1]<ln1)ln1=p[1]; if(p[1]>ln2)ln2=p[1];
+    }
+    s.bb=[la1,ln1,la2,ln2];
+  });
+  refreshTrips(); fitFilterHeight();
+}
+function trPick(){
+  var inp=document.getElementById('trFile');
+  inp.onchange=function(){
+    var f=inp.files && inp.files[0]; if(!f) return;
+    var fr=new FileReader();
+    fr.onload=function(){
+      var d;
+      try { d=JSON.parse(fr.result); } catch(e){ alert('읽을 수 없는 파일입니다.'); return; }
+      if(!d || !d.segments){ alert('「내가 다닌 길」 파일이 아닙니다.\n(내가다닌길_타임라인_추출도구.py 로 만든 파일)'); return; }
+      trPut(d).catch(function(){});
+      trUse(d);
+      alert('불러왔습니다 — 구간 '+(d.segments.length).toLocaleString()+'개.\n'
+           +'이 기기에 저장돼 다음부터는 바로 보이고, 신의눈에서도 보입니다.');
+    };
+    fr.readAsText(f);
+    inp.value='';
+  };
+  inp.click();
+}
+
+function toggleTrips(btn){
+  if(TR.on){
+    TR.on=false; btn.classList.remove('on');
+    if(TR.layer && map.hasLayer(TR.layer)) map.removeLayer(TR.layer);
+    myStat(); fitFilterHeight(); return;
+  }
+  TR.on=true; btn.classList.add('on');
+  if(!TR.layer) TR.layer=L.layerGroup();
+  if(!map.hasLayer(TR.layer)) map.addLayer(TR.layer);
+  if(TR.data){ refreshTrips(); fitFilterHeight(); return; }
+  if(TR.loading) return;
+  TR.loading=true;
+  var ld=document.getElementById('maploading');
+  if(ld){ ld.textContent='다닌 길 찾는 중…'; ld.classList.add('on'); }
+  trGet().then(function(d){
+    TR.loading=false;
+    if(ld) ld.classList.remove('on');
+    if(d && d.segments){ trUse(d); return; }
+    // 이 기기에 아직 없다 — 파일에서 한 번 불러오면 그 뒤로는 바로 보인다
+    if(confirm('이 기기에 「다닌 길」 자료가 아직 없습니다.\n\n'
+             + '개인 이동기록이라 인터넷에 올리지 않고 기기에만 둡니다.\n'
+             + '파일을 한 번 불러오면 다음부터는 바로 보이고, 신의눈에서도 보입니다.\n\n'
+             + '지금 파일을 고를까요?')){
+      trPick();
+    } else {
+      TR.on=false; btn.classList.remove('on');
+      if(TR.layer && map.hasLayer(TR.layer)) map.removeLayer(TR.layer);
+    }
+  });
+}
+function refreshTrips(){
+  /* 지도 초기화 때 moveend가 먼저 튈 수 있어 TR이 아직 없을 수 있다 */
+  if(!window.TR || !TR.on || !TR.data || !TR.layer) return;
+  TR.layer.clearLayers();
+  var b=map.getBounds(), s=b.getSouth(), n=b.getNorth(), w=b.getWest(), e=b.getEast();
+  var 보임=[], k;
+  for(var i=0;i<TR.data.length;i++){
+    var g=TR.data[i], bb=g.bb;
+    if(bb[2]<s || bb[0]>n || bb[3]<w || bb[1]>e) continue;   // 화면 밖
+    보임.push(g);
+  }
+  /* 너무 많으면 **아무것도 안 그리는 게 아니라** 앞에서부터 잘라서 그리고 그 사실을 알린다.
+     처음엔 0구간만 보여줬는데, 그러면 고장인지 많아서인지 알 수가 없다(260913 검증에서 잡음). */
+  TR_ALL=보임.length;
+  TR_CUT = 보임.length > TR_MAX;
+  if(TR_CUT) 보임=보임.slice(0, TR_MAX);
+  보임.forEach(function(g){
+    k=TR_KIND[g.k]||TR_KIND.car;
+    L.polyline(g.p, {color:k.c, weight:(g.k==='walk'?3:4), opacity:.8,
+      lineCap:'round', lineJoin:'round'})
+      .bindPopup('<div class="pin-pop"><b>'+k.l+'</b><br>'
+        +'<span style="color:#6b7280;font-size:12px">'+(g.d||'')+'</span></div>')
+      .addTo(TR.layer);
+  });
+  TR_SHOWN=보임.length;
+  myStat();
+}
+var TR_SHOWN=0, TR_ALL=0, TR_CUT=false;
+
+/* ═══════════ 길찾기 (260913 명진 요청) ═══════════
+   "내가 어디서 어디 갈 때 이동경로와 대중교통 정보"
+
+   무엇을 어디까지 하는가 — 솔직하게 갈라 둔다:
+   · **지도에 경로선을 그리는 것**은 OSRM 공개 서버로 한다. 열쇠가 필요 없고 CORS가 열려 있다.
+     다만 이 서버는 **자동차 경로만** 준다(profile을 foot로 바꿔도 같은 답이 온다). 그래서
+     화면에도 '자동차 기준'이라고 적는다. 없는 기능을 있는 척하지 않는다.
+   · **대중교통 길찾기는 앱 안에서 계산할 수 없다.** 네이버·카카오·ODsay 모두 열쇠를 요구하고,
+     명진은 열쇠 방식을 쓰지 않는다(작업장 규정). 그래서 **네이버지도·구글맵으로 넘겨서 연다.**
+     한국은 네이버가, 일본·해외는 구글맵 대중교통이 잘 나온다.
+   · 출발지는 내 위치를 쓰고, 위치를 못 잡으면 지금 보고 있는 지도 한가운데를 쓴다. */
+var _rtLine=null, _rtTo=null;
+
+function rtClear(){
+  if(_rtLine){ map.removeLayer(_rtLine); _rtLine=null; }
+  _rtTo=null;
+  var c=document.getElementById('rtCard'); if(c) c.classList.remove('on');
+}
+function rtKm(a,b){   // 두 점 사이 직선거리(km) — 경로를 못 받아도 이건 늘 보여준다
+  var R=6371, d1=(b.lat-a.lat)*Math.PI/180, d2=(b.lng-a.lng)*Math.PI/180;
+  var s=Math.sin(d1/2)*Math.sin(d1/2)
+      + Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(d2/2)*Math.sin(d2/2);
+  return R*2*Math.atan2(Math.sqrt(s), Math.sqrt(1-s));
+}
+function routeTo(lat,lng,name){
+  var to={lat:+lat, lng:+lng, name:name||'목적지'};
+  _rtTo=to;
+  var card=document.getElementById('rtCard');
+  document.getElementById('rtTitle').textContent='🧭 '+to.name+' 까지';
+  document.getElementById('rtSum').textContent='출발지를 찾는 중…';
+  document.getElementById('rtBtns').innerHTML='';
+  document.getElementById('rtNote').textContent='';
+  card.classList.add('on');
+
+  function go(from, 출발설명){ rtDraw(from, to, 출발설명); }
+  if(_meLL){ go(_meLL, '내 위치'); return; }
+  if(!navigator.geolocation){ go(map.getCenter(), '지도 한가운데'); return; }
+  navigator.geolocation.getCurrentPosition(
+    function(p){ _meLL={lat:p.coords.latitude, lng:p.coords.longitude}; go(_meLL, '내 위치'); },
+    function(){ go(map.getCenter(), '지도 한가운데(위치를 못 잡음)'); },
+    {enableHighAccuracy:true, timeout:8000, maximumAge:60000});
+}
+function rtDraw(from, to, 출발설명){
+  var sum=document.getElementById('rtSum');
+  var 직선=rtKm(from, to);
+  sum.innerHTML='출발 <b>'+esc(출발설명)+'</b> · 직선 <span class="rt-n">'+직선.toFixed(1)+'km</span> · 경로를 받는 중…';
+  rtLinks(from, to, 직선);
+
+  if(_rtLine){ map.removeLayer(_rtLine); _rtLine=null; }
+  // 너무 멀면(비행 거리) 도로 경로가 의미 없다 — 직선만 보여준다
+  if(직선 > 700){
+    sum.innerHTML='출발 <b>'+esc(출발설명)+'</b> · 직선 <span class="rt-n">'+Math.round(직선)+'km</span>'
+      +'<br><span style="color:#8b9098">너무 멀어 도로 경로는 그리지 않습니다(비행기 거리).</span>';
+    return;
+  }
+  fetch('https://router.project-osrm.org/route/v1/driving/'+from.lng+','+from.lat+';'+to.lng+','+to.lat
+        +'?overview=full&geometries=geojson')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d || d.code!=='Ok' || !d.routes || !d.routes.length) throw 0;
+      var r=d.routes[0];
+      var pts=r.geometry.coordinates.map(function(c){ return [c[1], c[0]]; });
+      _rtLine=L.polyline(pts, {color:'#1f6f8b', weight:5, opacity:.85}).addTo(map);
+      map.fitBounds(_rtLine.getBounds(), {padding:[40,120]});
+      sum.innerHTML='출발 <b>'+esc(출발설명)+'</b><br>'
+        +'🚗 자동차 <span class="rt-n">'+(r.distance/1000).toFixed(1)+'km · 약 '
+        +Math.round(r.duration/60)+'분</span> · 직선 '+직선.toFixed(1)+'km';
+    })
+    .catch(function(){
+      sum.innerHTML='출발 <b>'+esc(출발설명)+'</b> · 직선 <span class="rt-n">'+직선.toFixed(1)+'km</span>'
+        +'<br><span style="color:#8b9098">도로 경로를 받지 못했습니다. 아래 버튼으로 열어보세요.</span>';
+    });
+}
+function rtLinks(from, to, 직선){
+  var 한국 = (to.lat>=33 && to.lat<=38.8 && to.lng>=124.5 && to.lng<=130.0);
+  var s=from.lng+','+from.lat, e=to.lng+','+to.lat;
+  var h='';
+  if(한국){
+    h+='<a class="rt-nv" target="_blank" rel="noopener" href="https://map.naver.com/p/directions/'
+      + s + ',' + encodeURIComponent('출발지') + ',,/'
+      + e + ',' + encodeURIComponent(to.name) + ',,/-/transit">🚇 네이버 대중교통</a>';
+    h+='<a class="rt-kk" target="_blank" rel="noopener" href="https://map.kakao.com/link/to/'
+      + encodeURIComponent(to.name) + ',' + to.lat + ',' + to.lng + '">🗺 카카오맵</a>';
+  }
+  h+='<a class="rt-gg" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&origin='
+    + from.lat + ',' + from.lng + '&destination=' + to.lat + ',' + to.lng + '&travelmode=transit">🚈 구글맵 대중교통</a>';
+  document.getElementById('rtBtns').innerHTML=h;
+  document.getElementById('rtNote').textContent = 한국
+    ? '대중교통 시간표는 앱 안에서 계산할 수 없어(열쇠가 필요한 서비스뿐) 네이버·구글로 넘겨 엽니다.'
+    : '일본·해외는 구글맵 대중교통이 잘 나옵니다.';
+}
+/* 팝업에서 부르는 창구 — 종류마다 자료 모양이 달라 각각 둔다 */
+function spRoute(i){ var p=SP_P[i]; if(p) routeTo(p.la, p.ln, p.n); }
+function scRoute(i){ var p=SC_P[i]; if(p) routeTo(p.la, p.ln, p.n); }
+function ppRoute(lat,lng,name){ routeTo(lat,lng,name); }
+
 /* 현재 위치를 저장 대상으로 삼는다 (팝업의 '여기 저장' · 모달의 '지금 서 있는 곳으로') */
 function saveHere(){
   if(!_meLL){ goMyLocation(function(){ saveHere(); }); return; }
@@ -1341,6 +1618,7 @@ function pinPopupHTML(p){
   var isKR=(p.lat>=33 && p.lat<=38.8 && p.lng>=124.5 && p.lng<=130.0);   // 한국 본토·제주 범위(해외는 네이버 제외)
   if(isKR) h+='<button class="pp-nv" onclick="openNaver('+p.lat+','+p.lng+',\''+escJs(p.name)+'\')">네이버지도에서 열기</button>';
   h+='<button class="pp-gg" onclick="openGoogle('+p.lat+','+p.lng+',\''+escJs(p.name)+'\')">구글맵에서 열기</button>';
+  h+='<button class="pp-rt" onclick="ppRoute('+p.lat+','+p.lng+',\''+escJs(p.name||'내 장소')+'\')">🧭 여기로 가기 (길찾기)</button>';
   h+='<a class="sb-gev" href="'+gevHref(p.lat,p.lng,1200)+'" target="_blank" rel="noopener">🌍 3D 지구본으로 보기</a>';
   if(!p.live && p.id) h+='<button class="pp-ed" onclick="editPin(\''+p.id+'\')">✏️ 수정</button>';
   else if(p.live && p.mid) h+='<button class="pp-ed" onclick="openMyMapsEdit(\''+escJs(p.mid)+'\')">🗺️ My Maps에서 수정</button>';
