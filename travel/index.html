@@ -91,6 +91,18 @@
   border-radius:9px;padding:10px 4px;font-size:12px;font-weight:750;color:#fff;cursor:pointer;font-family:inherit}
 .rt-nv{background:#03c75a} .rt-gg{background:#4285f4} .rt-kk{background:#f7d00b;color:#3c1e1e !important}
 .rt-note{color:#8b9098;font-size:11.5px;margin-top:8px;line-height:1.5}
+.rt-tabs{display:flex;gap:4px;margin-bottom:8px}
+.rt-tabs .rt-tab{flex:1 1 0;min-width:0;border:1px solid var(--line);background:#fff;color:#4a4f57;
+  border-radius:8px;padding:7px 2px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rt-tabs .rt-tab.on{background:#1f6f8b;border-color:#1f6f8b;color:#fff}
+.rt-legs{margin-top:8px;border-top:1px solid var(--line);padding-top:7px;max-height:172px;overflow-y:auto}
+.rt-leg{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:12.5px}
+.rt-leg i{width:4px;align-self:stretch;min-height:15px;border-radius:2px;flex:none}
+.rt-leg .rt-lm{flex:none;color:#2b2f36}
+.rt-leg .rt-lt{color:#8b9098;flex:none;font-size:11.5px}
+.rt-leg .rt-ld{color:#6b7280;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right}
+.rt-alt{color:#8b9098;font-size:11.5px;margin-top:5px}
 
 /* 내 위치 (260911) — 지금 서 있는 자리에서 바로 저장하는 흐름 */
 .locbtn{position:fixed;right:14px;bottom:216px;z-index:650;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:19px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.18);display:none;align-items:center;justify-content:center;padding:0}
@@ -253,6 +265,7 @@ body.my-on .search-box{display:none !important}
 <!-- 길찾기 안내판 (260913 명진 요청) -->
 <div class="rt-card" id="rtCard">
   <div class="rt-head"><b id="rtTitle">길찾기</b><button class="rt-x" onclick="rtClear()">×</button></div>
+  <div class="rt-tabs" id="rtTabs"></div>
   <div class="rt-sum" id="rtSum">경로를 그리는 중…</div>
   <div class="rt-btns" id="rtBtns"></div>
   <div class="rt-note" id="rtNote"></div>
@@ -1446,21 +1459,44 @@ function refreshTrips(){
 }
 var TR_SHOWN=0, TR_ALL=0, TR_CUT=false;
 
-/* ═══════════ 길찾기 (260913 명진 요청) ═══════════
-   "내가 어디서 어디 갈 때 이동경로와 대중교통 정보"
+/* ═══════════ 길찾기 (260913 시작 → 260915 다시 만듦) ═══════════
+   명진: "티맵·카카오내비처럼, 네이버지도처럼 쓸 수도 있는데 그건 구현이 되냐?"
 
-   무엇을 어디까지 하는가 — 솔직하게 갈라 둔다:
-   · **지도에 경로선을 그리는 것**은 OSRM 공개 서버로 한다. 열쇠가 필요 없고 CORS가 열려 있다.
-     다만 이 서버는 **자동차 경로만** 준다(profile을 foot로 바꿔도 같은 답이 온다). 그래서
-     화면에도 '자동차 기준'이라고 적는다. 없는 기능을 있는 척하지 않는다.
-   · **대중교통 길찾기는 앱 안에서 계산할 수 없다.** 네이버·카카오·ODsay 모두 열쇠를 요구하고,
-     명진은 열쇠 방식을 쓰지 않는다(작업장 규정). 그래서 **네이버지도·구글맵으로 넘겨서 연다.**
-     한국은 네이버가, 일본·해외는 구글맵 대중교통이 잘 나온다.
-   · 출발지는 내 위치를 쓰고, 위치를 못 잡으면 지금 보고 있는 지도 한가운데를 쓴다. */
-var _rtLine=null, _rtTo=null;
+   ⚠️ 260913에 내가 「대중교통은 앱 안에서 계산할 수 없다」고 했는데 **틀렸다.**
+      네이버·카카오·ODsay 같은 **상용 API만** 보고 단정했다. 열쇠 없이 CORS가 열린
+      공개 대중교통 라우팅이 있었고, **한국·일본 둘 다 잘 나온다.**
+      같은 이유로 도보 경로도 「안 된다」고 했는데, 서버를 하나만 보고 내린 판단이었다.
+
+   지금 쓰는 것 (둘 다 열쇠 없음 · CORS 열림):
+   · 대중교통 = **transitous**(MOTIS). 환승·소요시간·노선명(서울1호선)·행선지까지 준다.
+     자료는 **시간표 기준**이고 실시간이 아니다(realTime=false). 화면에도 그렇게 적는다.
+   · 자동차·도보·자전거 = **FOSSGIS OSRM**. 갈래마다 서버가 따로 있고 턴바이턴 안내도 준다.
+     (project-osrm.org 데모 서버는 무엇을 물어도 자동차 답만 준다 — 그래서 여기로 옮겼다)
+
+   못 하는 것 — 화면에도 적어 둔다. 있는 척하지 않는다:
+   · **실시간 교통정보**(막힘·정체) — 티맵의 핵심. 열쇠와 중계 서버가 있어야 한다
+   · **버스 도착 몇 분 전** — 국토부·서울시 실시간 API는 열쇠 + 중계 서버가 필요하다
+   · **음성 안내·화면 꺼도 계속 주행** — 웹페이지는 화면이 꺼지면 멈춘다. 그건 앱의 몫이다
+   → 그래서 네이버지도·티맵·구글맵으로 넘기는 버튼도 함께 둔다. */
+var _rtLine=null, _rtLegs=[], _rtTo=null, _rtFrom=null, _rtMode='transit';
+
+var RT_MODE={
+  transit:{e:'🚇', l:'🚇 대중교통', c:'#2f7fd6'},
+  car:    {e:'🚗', l:'🚗 자동차',   c:'#1f6f8b', osrm:'routed-car'},
+  foot:   {e:'🚶', l:'🚶 도보',     c:'#22a06b', osrm:'routed-foot'},
+  bike:   {e:'🚲', l:'🚲 자전거',   c:'#d08700', osrm:'routed-bike'}
+};
+/* 탈것 갈래별 색 — 다닌 길(TR_KIND)과 눈에 익게 맞춰 둔다 */
+var RT_LEG={ WALK:'#22a06b', SUBWAY:'#7c3aed', METRO:'#7c3aed', BUS:'#2f7fd6',
+  TRAM:'#0891b2', RAIL:'#dc2626', REGIONAL_RAIL:'#dc2626', HIGHSPEED_RAIL:'#dc2626',
+  LONG_DISTANCE:'#dc2626', NIGHT_RAIL:'#dc2626', FERRY:'#0891b2', COACH:'#2f7fd6' };
+var RT_LEGNAME={ WALK:'도보', SUBWAY:'지하철', METRO:'지하철', BUS:'버스', TRAM:'트램',
+  RAIL:'기차', REGIONAL_RAIL:'전철', HIGHSPEED_RAIL:'고속철', LONG_DISTANCE:'기차',
+  NIGHT_RAIL:'야간열차', FERRY:'배', COACH:'시외버스' };
 
 function rtClear(){
   if(_rtLine){ map.removeLayer(_rtLine); _rtLine=null; }
+  _rtLegs.forEach(function(l){ map.removeLayer(l); }); _rtLegs=[];
   _rtTo=null;
   var c=document.getElementById('rtCard'); if(c) c.classList.remove('on');
 }
@@ -1470,17 +1506,36 @@ function rtKm(a,b){   // 두 점 사이 직선거리(km) — 경로를 못 받�
       + Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(d2/2)*Math.sin(d2/2);
   return R*2*Math.atan2(Math.sqrt(s), Math.sqrt(1-s));
 }
+/* 접힌 좌표열 풀기. transitous는 정밀도 7을 쓴다(5로 풀면 엉뚱한 자리가 나온다) */
+function rtPoly(str, prec){
+  var f=Math.pow(10, prec||7), out=[], i=0, lat=0, lng=0;
+  while(i<str.length){
+    for(var k=0;k<2;k++){
+      var shift=0, result=0, b;
+      do { b=str.charCodeAt(i++)-63; result|=(b&0x1f)<<shift; shift+=5; } while(b>=0x20);
+      var dd=(result&1)? ~(result>>1) : (result>>1);
+      if(k===0) lat+=dd; else lng+=dd;
+    }
+    out.push([lat/f, lng/f]);
+  }
+  return out;
+}
+function rtMin(s){ return Math.max(1, Math.round(s/60)); }
+function rtHm(iso){
+  try{ var d=new Date(iso); return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2); }
+  catch(e){ return ''; }
+}
+
 function routeTo(lat,lng,name){
-  var to={lat:+lat, lng:+lng, name:name||'목적지'};
-  _rtTo=to;
+  _rtTo={lat:+lat, lng:+lng, name:name||'목적지'};
   var card=document.getElementById('rtCard');
-  document.getElementById('rtTitle').textContent='🧭 '+to.name+' 까지';
+  document.getElementById('rtTitle').textContent='🧭 '+_rtTo.name+' 까지';
   document.getElementById('rtSum').textContent='출발지를 찾는 중…';
   document.getElementById('rtBtns').innerHTML='';
   document.getElementById('rtNote').textContent='';
   card.classList.add('on');
 
-  function go(from, 출발설명){ rtDraw(from, to, 출발설명); }
+  function go(from, 설명){ _rtFrom=from; _rtFrom.설명=설명; rtRun(); }
   if(_meLL){ go(_meLL, '내 위치'); return; }
   if(!navigator.geolocation){ go(map.getCenter(), '지도 한가운데'); return; }
   navigator.geolocation.getCurrentPosition(
@@ -1488,54 +1543,170 @@ function routeTo(lat,lng,name){
     function(){ go(map.getCenter(), '지도 한가운데(위치를 못 잡음)'); },
     {enableHighAccuracy:true, timeout:8000, maximumAge:60000});
 }
-function rtDraw(from, to, 출발설명){
+function rtSetMode(m){ _rtMode=m; rtRun(); }
+
+function rtRun(){
+  if(!_rtFrom || !_rtTo) return;
+  var from=_rtFrom, to=_rtTo, 직선=rtKm(from,to);
   var sum=document.getElementById('rtSum');
-  var 직선=rtKm(from, to);
-  sum.innerHTML='출발 <b>'+esc(출발설명)+'</b> · 직선 <span class="rt-n">'+직선.toFixed(1)+'km</span> · 경로를 받는 중…';
+  rtTabs();
+  if(_rtLine){ map.removeLayer(_rtLine); _rtLine=null; }
+  _rtLegs.forEach(function(l){ map.removeLayer(l); }); _rtLegs=[];
   rtLinks(from, to, 직선);
 
-  if(_rtLine){ map.removeLayer(_rtLine); _rtLine=null; }
-  // 너무 멀면(비행 거리) 도로 경로가 의미 없다 — 직선만 보여준다
   if(직선 > 700){
-    sum.innerHTML='출발 <b>'+esc(출발설명)+'</b> · 직선 <span class="rt-n">'+Math.round(직선)+'km</span>'
-      +'<br><span style="color:#8b9098">너무 멀어 도로 경로는 그리지 않습니다(비행기 거리).</span>';
+    sum.innerHTML='출발 <b>'+esc(from.설명)+'</b> · 직선 <span class="rt-n">'+Math.round(직선)+'km</span>'
+      +'<br><span style="color:#8b9098">너무 멀어 길찾기를 하지 않습니다(비행기 거리).</span>';
     return;
   }
-  fetch('https://router.project-osrm.org/route/v1/driving/'+from.lng+','+from.lat+';'+to.lng+','+to.lat
-        +'?overview=full&geometries=geojson')
+  sum.innerHTML='출발 <b>'+esc(from.설명)+'</b> · 직선 '+직선.toFixed(1)+'km · 경로를 받는 중…';
+  if(_rtMode==='transit') rtTransit(from, to, 직선);
+  else rtRoad(from, to, 직선);
+}
+function rtTabs(){
+  var h='';
+  Object.keys(RT_MODE).forEach(function(m){
+    h+='<button class="rt-tab'+(m===_rtMode?' on':'')+'" onclick="rtSetMode(\''+m+'\')">'+RT_MODE[m].l+'</button>';
+  });
+  document.getElementById('rtTabs').innerHTML=h;
+}
+
+/* ── 대중교통 (transitous · 열쇠 없음) ── */
+function rtTransit(from, to, 직선){
+  var sum=document.getElementById('rtSum');
+  var u='https://api.transitous.org/api/v1/plan?fromPlace='+from.lat+','+from.lng
+      + '&toPlace='+to.lat+','+to.lng
+      + '&time='+encodeURIComponent(new Date().toISOString())
+      + '&numItineraries=3';
+  fetch(u).then(function(r){ return r.json(); }).then(function(d){
+    var its=(d && d.itineraries)||[];
+    if(!its.length) throw 0;
+    // 걷기만 하는 답은 뒤로 미룬다 — 대중교통을 물었으니 탈것이 있는 쪽이 먼저다
+    its.sort(function(a,b){
+      var ta=a.legs.some(function(l){return l.mode!=='WALK';}) ? 0:1;
+      var tb=b.legs.some(function(l){return l.mode!=='WALK';}) ? 0:1;
+      return (ta-tb) || (a.duration-b.duration);
+    });
+    var it=its[0];
+    rtDrawLegs(it.legs, (to.lat>=33 && to.lat<=38.8 && to.lng>=124.5 && to.lng<=130.0));
+    var h='출발 <b>'+esc(from.설명)+'</b><br>'
+        + '🚇 <span class="rt-n">'+rtMin(it.duration)+'분</span>'
+        + ' · 환승 '+(it.transfers||0)+'회 · 직선 '+직선.toFixed(1)+'km'
+        + '<div class="rt-legs">';
+    var 한국 = (to.lat>=33 && to.lat<=38.8 && to.lng>=124.5 && to.lng<=130.0);
+    it.legs.forEach(function(l){
+      var mode=l.mode;
+      /* 한국 자료(KTDB)는 시내버스를 GTFS에서 TRAM으로 적어 놨다. 그대로 두면
+         「트램 472」처럼 나오는데 서울에 트램은 없다 — 472·01B·04는 전부 버스다. */
+      if(한국 && mode==='TRAM') mode='BUS';
+      var c=RT_LEG[mode]||'#6b7280', nm=RT_LEGNAME[mode]||mode;
+      var 노선=l.routeShortName||l.routeLongName||'';
+      /* 숫자만 대여섯 자리인 것은 노선 이름이 아니라 내부 번호다(일본 자료에 흔하다) */
+      if(/^[0-9]{5,}$/.test(노선)) 노선='';
+      var 끝=(l.to&&l.to.name)||'';
+      h+='<div class="rt-leg"><i style="background:'+c+'"></i>'
+       + '<span class="rt-lm">'+esc(nm)+(노선? ' <b>'+esc(노선)+'</b>':'')+'</span>'
+       + '<span class="rt-lt">'+rtMin(l.duration)+'분</span>'
+       + (mode!=='WALK'&&끝? '<span class="rt-ld">→ '+esc(끝)+'</span>':'')
+       + '</div>';
+    });
+    h+='</div>';
+    if(its.length>1){
+      h+='<div class="rt-alt">다른 길: '+its.slice(1,3).map(function(x){
+        return rtMin(x.duration)+'분(환승 '+(x.transfers||0)+')'; }).join(' · ')+'</div>';
+    }
+    sum.innerHTML=h;
+    document.getElementById('rtNote').textContent=
+      '시간표 기준입니다(실시간 도착·지연 아님). 실제 출발 전에는 아래 지도 앱으로 한 번 확인하세요.';
+  }).catch(function(){
+    sum.innerHTML='출발 <b>'+esc(from.설명)+'</b> · 직선 <span class="rt-n">'+직선.toFixed(1)+'km</span>'
+      +'<br><span style="color:#8b9098">이 구간의 대중교통 길을 찾지 못했습니다. 아래 지도 앱으로 열어보세요.</span>';
+  });
+}
+function rtDrawLegs(legs, 한국){
+  legs.forEach(function(l){
+    var g=l.legGeometry && l.legGeometry.points;
+    if(!g) return;
+    var pts=rtPoly(g, 7);
+    if(pts.length<2) return;
+    var mode=(한국 && l.mode==='TRAM') ? 'BUS' : l.mode;
+    var c=RT_LEG[mode]||'#6b7280';
+    var line=L.polyline(pts, {color:c, weight:(mode==='WALK'?3:5), opacity:.85,
+      dashArray:(mode==='WALK'?'5,6':null), lineCap:'round'}).addTo(map);
+    _rtLegs.push(line);
+  });
+  if(_rtLegs.length){
+    var b=_rtLegs[0].getBounds();
+    _rtLegs.forEach(function(l){ b.extend(l.getBounds()); });
+    map.fitBounds(b, {padding:[40,150]});
+  }
+}
+
+/* ── 자동차·도보·자전거 (FOSSGIS OSRM · 열쇠 없음) ── */
+function rtRoad(from, to, 직선){
+  var sum=document.getElementById('rtSum');
+  var prof=RT_MODE[_rtMode].osrm;
+  fetch('https://routing.openstreetmap.de/'+prof+'/route/v1/driving/'
+        +from.lng+','+from.lat+';'+to.lng+','+to.lat+'?overview=full&geometries=geojson&steps=true')
     .then(function(r){ return r.json(); })
     .then(function(d){
       if(!d || d.code!=='Ok' || !d.routes || !d.routes.length) throw 0;
       var r=d.routes[0];
       var pts=r.geometry.coordinates.map(function(c){ return [c[1], c[0]]; });
-      _rtLine=L.polyline(pts, {color:'#1f6f8b', weight:5, opacity:.85}).addTo(map);
-      map.fitBounds(_rtLine.getBounds(), {padding:[40,120]});
-      sum.innerHTML='출발 <b>'+esc(출발설명)+'</b><br>'
-        +'🚗 자동차 <span class="rt-n">'+(r.distance/1000).toFixed(1)+'km · 약 '
-        +Math.round(r.duration/60)+'분</span> · 직선 '+직선.toFixed(1)+'km';
+      _rtLine=L.polyline(pts, {color:RT_MODE[_rtMode].c, weight:5, opacity:.85, lineCap:'round'}).addTo(map);
+      map.fitBounds(_rtLine.getBounds(), {padding:[40,150]});
+      var steps=(r.legs[0]&&r.legs[0].steps)||[];
+      var h='출발 <b>'+esc(from.설명)+'</b><br>'+RT_MODE[_rtMode].e
+          + ' <span class="rt-n">'+(r.distance/1000).toFixed(1)+'km · '+rtMin(r.duration)+'분</span>'
+          + ' · 직선 '+직선.toFixed(1)+'km';
+      if(steps.length){
+        h+='<div class="rt-legs">';
+        steps.slice(0,6).forEach(function(st){
+          var nm=(st.name||'').trim();
+          h+='<div class="rt-leg"><i style="background:'+RT_MODE[_rtMode].c+'"></i>'
+           + '<span class="rt-lm">'+esc(rtStep(st))+(nm? ' <b>'+esc(nm)+'</b>':'')+'</span>'
+           + '<span class="rt-lt">'+(st.distance>=1000? (st.distance/1000).toFixed(1)+'km' : Math.round(st.distance)+'m')+'</span>'
+           + '</div>';
+        });
+        if(steps.length>6) h+='<div class="rt-alt">외 '+(steps.length-6)+'단계</div>';
+        h+='</div>';
+      }
+      sum.innerHTML=h;
+      document.getElementById('rtNote').textContent = (_rtMode==='car')
+        ? '길 모양과 예상 시간입니다. 실시간 막힘은 반영되지 않습니다 — 운전은 티맵·네이버로 여세요.'
+        : '길 모양과 예상 시간입니다(OpenStreetMap 기준).';
     })
     .catch(function(){
-      sum.innerHTML='출발 <b>'+esc(출발설명)+'</b> · 직선 <span class="rt-n">'+직선.toFixed(1)+'km</span>'
-        +'<br><span style="color:#8b9098">도로 경로를 받지 못했습니다. 아래 버튼으로 열어보세요.</span>';
+      sum.innerHTML='출발 <b>'+esc(from.설명)+'</b> · 직선 <span class="rt-n">'+직선.toFixed(1)+'km</span>'
+        +'<br><span style="color:#8b9098">경로를 받지 못했습니다. 아래 지도 앱으로 열어보세요.</span>';
     });
 }
+/* OSRM 안내말을 우리말로 — 자주 나오는 것만 옮긴다 */
+var RT_TURN={ 'turn-left':'좌회전','turn-right':'우회전','turn-slight left':'왼쪽으로','turn-slight right':'오른쪽으로',
+  'turn-sharp left':'크게 좌회전','turn-sharp right':'크게 우회전','turn-straight':'직진','turn-uturn':'유턴',
+  'depart':'출발','arrive':'도착','merge':'합류','fork':'갈림길','roundabout':'회전교차로','rotary':'로터리',
+  'continue':'계속','new name':'계속','on ramp':'진입로','off ramp':'빠져나가기','end of road':'길 끝에서' };
+function rtStep(st){
+  var m=st.maneuver||{}, key=m.type+(m.modifier? '-'+m.modifier : '');
+  return RT_TURN[key] || RT_TURN[m.type] || m.type || '이동';
+}
+
 function rtLinks(from, to, 직선){
   var 한국 = (to.lat>=33 && to.lat<=38.8 && to.lng>=124.5 && to.lng<=130.0);
   var s=from.lng+','+from.lat, e=to.lng+','+to.lat;
+  var 모드 = (_rtMode==='transit') ? 'transit' : (_rtMode==='car' ? 'car' : 'walk');
   var h='';
   if(한국){
     h+='<a class="rt-nv" target="_blank" rel="noopener" href="https://map.naver.com/p/directions/'
       + s + ',' + encodeURIComponent('출발지') + ',,/'
-      + e + ',' + encodeURIComponent(to.name) + ',,/-/transit">🚇 네이버 대중교통</a>';
+      + e + ',' + encodeURIComponent(to.name) + ',,/-/' + 모드 + '">네이버지도</a>';
     h+='<a class="rt-kk" target="_blank" rel="noopener" href="https://map.kakao.com/link/to/'
-      + encodeURIComponent(to.name) + ',' + to.lat + ',' + to.lng + '">🗺 카카오맵</a>';
+      + encodeURIComponent(to.name) + ',' + to.lat + ',' + to.lng + '">카카오맵</a>';
   }
+  var gm = (_rtMode==='transit')? 'transit' : (_rtMode==='car'? 'driving' : (_rtMode==='bike'? 'bicycling':'walking'));
   h+='<a class="rt-gg" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&origin='
-    + from.lat + ',' + from.lng + '&destination=' + to.lat + ',' + to.lng + '&travelmode=transit">🚈 구글맵 대중교통</a>';
+    + from.lat + ',' + from.lng + '&destination=' + to.lat + ',' + to.lng + '&travelmode=' + gm + '">구글맵</a>';
   document.getElementById('rtBtns').innerHTML=h;
-  document.getElementById('rtNote').textContent = 한국
-    ? '대중교통 시간표는 앱 안에서 계산할 수 없어(열쇠가 필요한 서비스뿐) 네이버·구글로 넘겨 엽니다.'
-    : '일본·해외는 구글맵 대중교통이 잘 나옵니다.';
 }
 /* 팝업에서 부르는 창구 — 종류마다 자료 모양이 달라 각각 둔다 */
 function spRoute(i){ var p=SP_P[i]; if(p) routeTo(p.la, p.ln, p.n); }
