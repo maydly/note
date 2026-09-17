@@ -162,6 +162,24 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .skpi{flex:1;background:#fff;border:1px solid #e2ece0;border-radius:14px;padding:11px;text-align:center}
 .skpi .l{font-size:10.5px;color:#97a394;font-weight:600}
 .skpi .v{font-size:15px;font-weight:800;margin-top:3px;font-variant-numeric:tabular-nums}
+/* 여러 건 고르기 */
+.pkstart{border:1px dashed #cfe0ca;border-radius:11px;padding:9px;text-align:center;font-size:12.5px;
+ color:#4f9a6a;cursor:pointer;margin-bottom:9px;background:#fbfdfa;-webkit-tap-highlight-color:transparent}
+.pkstart:active{background:#f1f8f0}
+.pkbar{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:8px;background:#4f9a6a;
+ color:#fff;border-radius:11px;padding:8px 11px;margin-bottom:9px;font-size:12.5px;
+ box-shadow:0 2px 10px #4f9a6a40}
+.pkn{font-weight:800}
+.pka{margin-left:auto;font-size:11.5px;color:#ffffffcc;cursor:pointer;text-decoration:underline;white-space:nowrap}
+.pka+.pka{margin-left:0}
+.pkgo{border:none;background:#fff;color:#2f6a45;border-radius:8px;padding:6px 11px;font-size:12px;
+ font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
+.pkgo:disabled{opacity:.45;cursor:default}
+.pkc{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pkc.on{background:#eef6ec;border-color:#bcd9c2}
+.pkb{width:20px;height:20px;border:1.5px solid #cfd8cc;border-radius:6px;flex:none;margin-right:9px;
+ display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;background:#fff}
+.pkb.on{background:#4f9a6a;border-color:#4f9a6a}
 /* 가계부 검색 */
 .msearch{position:relative;margin:2px 0 8px}
 .msearch input{width:100%;border:1px solid #dfe8dc;border-radius:11px;padding:9px 34px 9px 12px;
@@ -1418,6 +1436,68 @@ var CATICON={'식비·편의점·마트':'🍽','차량·주유':'⛽','교통':
 var period='월';           // 월/3개월/6개월/12개월 (달력정렬: 분기/반기/연간)
 var viewYM=null;           // {y,m} 기준점
 var selDay=null;           // 'YYYY-MM-DD'
+/* ===== 여러 건 한 번에 분류 바꾸기 =====
+   미분류가 잔뜩 나왔을 때 하나씩 고치지 않게 한다.
+   검색·분류필터로 걸러낸 «지금 보이는 것»을 그대로 대상으로 삼는 게 핵심 —
+   「주유」로 찾아 전부 고르고 차량·주유로 한 번에 바꾸는 식. */
+var pickMode=false, pickIds=[];
+function pickStart(){ pickMode=true; pickIds=[]; renderMoney(); }
+function pickEnd(){ pickMode=false; pickIds=[]; renderMoney(); }
+function pickTog(id){
+  var i=pickIds.indexOf(id);
+  if(i>=0)pickIds.splice(i,1); else pickIds.push(id);
+  renderMoney();
+}
+function pickAll(ids){
+  var every=ids.every(function(i){return pickIds.indexOf(i)>=0;});
+  pickIds = every ? [] : ids.slice();
+  renderMoney();
+}
+function pickBar(ids){
+  if(!pickMode)
+    return ids.length>1 ? '<div class="pkstart" onclick="pickStart()">☑ 여러 건 고르기 ('+ids.length+'건)</div>' : '';
+  var every=ids.length&&ids.every(function(i){return pickIds.indexOf(i)>=0;});
+  return '<div class="pkbar">'
+    +'<span class="pkn">'+pickIds.length+'건 고름</span>'
+    +'<span class="pka" onclick="pickAll('+JSON.stringify(ids).replace(/"/g,"&quot;")+')">'+(every?'전부 해제':'보이는 것 전부')+'</span>'
+    +'<span class="pka" onclick="pickEnd()">그만</span>'
+    +'<button class="pkgo"'+(pickIds.length?'':' disabled')+' onclick="sheetPickCat()">분류 바꾸기</button>'
+    +'</div>';
+}
+function sheetPickCat(){
+  if(!pickIds.length){toast('고른 게 없어요');return;}
+  var picked=ledger.filter(function(t){return pickIds.indexOf(t.id)>=0;});
+  var ins=picked.filter(function(t){return t.type==='in';}).length;
+  var outs=picked.length-ins;
+  var arr=(outs>=ins)?CATS_OUT:CATS_IN;
+  var was={};picked.forEach(function(t){var c=t.cat||'미분류';was[c]=(was[c]||0)+1;});
+  var sum=picked.reduce(function(a,t){return a+t.amt;},0);
+  document.getElementById('sheet').innerHTML='<h3>'+pickIds.length+'건 분류 바꾸기</h3>'
+    +'<div class="mnote">합계 '+won(sum)+(ins&&outs?' · 수입 '+ins+'건 + 지출 '+outs+'건이 섞여 있어요':'')+'<br>'
+    +'지금 분류: '+Object.keys(was).slice(0,4).map(function(k){return esc(k)+' '+was[k]+'건';}).join(' · ')+'</div>'
+    +'<div class="fld" style="margin-top:10px"><label>바꿀 분류</label><select id="pk_cat">'
+      +arr.map(function(c){return '<option>'+esc(c)+'</option>';}).join('')+'</select></div>'
+    +'<div class="fld"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0">'
+      +'<input type="checkbox" id="pk_manual" checked style="width:17px;height:17px;accent-color:#4f9a6a;margin:0">'
+      +'<span style="font-size:13px">손으로 고친 것으로 표시 <span style="color:#a2a89f">(다시 분류하기가 안 건드림)</span></span></label></div>'
+    +'<div class="mact"><button class="mcancel" onclick="closeSheet()">취소</button>'
+      +'<button class="msave" onclick="applyPickCat()">'+pickIds.length+'건 바꾸기</button></div>';
+  document.getElementById('mask').classList.add('on');
+}
+function applyPickCat(){
+  var c=document.getElementById('pk_cat').value;
+  var mk=document.getElementById('pk_manual').checked;
+  var n=0;
+  ledger.forEach(function(t){
+    if(pickIds.indexOf(t.id)<0)return;
+    t.cat=c; if(mk)t.manual=true; n++;
+  });
+  save(K.led,ledger);pushSoon('ledger');
+  pickMode=false;pickIds=[];
+  renderMoney();closeSheet();
+  toast(n+'건을 「'+c+'」로 바꿨어요');
+}
+
 /* ===== 가계부 검색 =====
    기간에 갇히지 않게 «전체 기간»에서 찾는다. 이름·가게·분류·메모·금액 어디든 걸리면 나온다.
    검색 중에는 달력·요약 대신 결과 목록만 보여준다(찾는 게 목적이므로). */
@@ -1457,6 +1537,7 @@ function searchView(){
     +'<br><span style="color:#7d9a86;font-size:11.5px">'+d[0]+' ~ '+d[d.length-1]+' · 전체 기간에서 찾았어요</span></div>';
   h+=catPanel(hits);
   var shown=catOff.length?hits.filter(function(t){return catOff.indexOf(t.cat||'미분류')<0;}):hits;
+  h+=pickBar(shown.slice(0,300).map(function(t){return t.id;}));
   h+=shown.slice(0,300).map(ledCard).join('');
   if(shown.length>300)h+='<div style="font-size:11.5px;color:#9aa197;text-align:center;padding:8px">… 외 '+(shown.length-300)+'건</div>';
   return h;
@@ -1637,7 +1718,9 @@ function monthView(list){
       +(catOff.length?' 중 '+shown.length+'건 보는 중':'')+') · 탭해서 수정</div>';
   }
   h+=catPanel(base);          // 필터는 목록 «위»
-  h+=shown.slice().sort(function(a,b){return (a.date+(a.time||''))<(b.date+(b.time||''))?1:-1;}).map(ledCard).join('')
+  var sorted=shown.slice().sort(function(a,b){return (a.date+(a.time||''))<(b.date+(b.time||''))?1:-1;});
+  h+=pickBar(sorted.map(function(t){return t.id;}));
+  h+=sorted.map(ledCard).join('')
     ||'<div class="empty">'+(catOff.length?'켜둔 분류에 해당하는 내역이 없어요':'내역이 없어요')+'</div>';
   return h;
 }
@@ -1655,6 +1738,15 @@ function barsView(){
 }
 function ledCard(t){
   var ic=CATICON[t.cat]||(t.type==='in'?'📥':'💸');
+  if(pickMode){                       // 고르기 중 — 탭하면 선택/해제, 수정창은 안 뜬다
+    var on=pickIds.indexOf(t.id)>=0;
+    return '<div class="card pkc'+(on?' on':'')+'" onclick="pickTog(\''+t.id+'\')"><div class="led">'
+      +'<div class="pkb'+(on?' on':'')+'">'+(on?'✓':'')+'</div>'
+      +'<div class="lt"><div class="ln">'+esc(t.desc||t.cat)+'</div>'
+      +'<div class="ld">'+t.date.slice(5).replace('-','/')+' · '+esc(t.cat)+'</div></div>'
+      +'<div class="la '+(t.type==='in'?'in':'out')+'">'+(t.type==='in'?'+':'-')+won(t.amt).slice(1)+'</div>'
+      +'</div></div>';
+  }
   return '<div class="card" onclick="editLedger(\''+t.id+'\')" style="cursor:pointer"><div class="led"><div class="lic">'+ic+'</div>'
     +'<div class="lt"><div class="ln">'+esc(t.desc||t.cat)+'</div>'
     +'<div class="ld">'+t.date.slice(5).replace('-','/')+' · '+esc(t.cat)+(t.memo?' · '+esc(t.memo):'')+'</div></div>'
@@ -2744,5 +2836,21 @@ try{
   window.infoDel=async (id)=>{ try{ await deleteDoc(doc(db,'sharedInfo',id)); }catch(e){ alert('삭제 실패: '+(e.code||e.message)); } };
 }catch(e){ window.sajuData.err='연동 초기화 실패: '+(e.message||e); }
 paint();
+</script>
+<!-- ?embed=1 로 열면 홈 대시보드에 끼워 넣기용 화면(탭바·플로팅버튼·워터마크 숨김). 파라미터가 없으면 기존 동작 그대로. -->
+<script>
+(function(){
+  try{
+    if(new URLSearchParams(location.search).get('embed')!=='1') return;
+    document.documentElement.classList.add('embed-mj');
+    var css=document.createElement('style');
+    css.textContent=
+      'html.embed-mj .tabs,html.embed-mj .tabwrap,html.embed-mj #fab{display:none!important}'
+     +'html.embed-mj .scr{padding:14px 15px 20px!important}'
+     +'html.embed-mj .hd{display:none!important}'
+     +'html.embed-mj body{background:#fff}';
+    document.head.appendChild(css);
+  }catch(e){}
+})();
 </script>
 </body></html>
