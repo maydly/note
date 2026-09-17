@@ -162,6 +162,15 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .skpi{flex:1;background:#fff;border:1px solid #e2ece0;border-radius:14px;padding:11px;text-align:center}
 .skpi .l{font-size:10.5px;color:#97a394;font-weight:600}
 .skpi .v{font-size:15px;font-weight:800;margin-top:3px;font-variant-numeric:tabular-nums}
+/* 가계부 검색 */
+.msearch{position:relative;margin:2px 0 8px}
+.msearch input{width:100%;border:1px solid #dfe8dc;border-radius:11px;padding:9px 34px 9px 12px;
+ font-size:13.5px;background:#fbfdfa;font-family:inherit;color:#26302a}
+.msearch input:focus{outline:none;border-color:#4f9a6a;background:#fff}
+.mqx{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:#a2a89f;font-size:13px;
+ cursor:pointer;padding:3px 5px;-webkit-tap-highlight-color:transparent}
+.srsum{background:#f1f8f0;border:1px solid #d6e8d2;border-radius:11px;padding:10px 13px;margin-bottom:9px;font-size:12.5px;color:#3f7a52}
+.srsum b{font-size:14px}
 /* 분류별 보기 필터 칩 */
 .fpanel{margin:2px 0 10px;border:1px solid #e3ece0;border-radius:13px;background:#fff;overflow:hidden}
 .fhead{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;
@@ -379,6 +388,10 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 <div class="scr" id="s-money">
   <div class="hd"><div class="wm"><span class="wmk"><svg viewBox="0 0 100 100" width="15" height="15" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="wm" x1="0" y1="0" x2="0.35" y2="1"><stop offset="0" stop-color="#86d2a0"/><stop offset="0.55" stop-color="#4f9a6a"/><stop offset="1" stop-color="#357a51"/></linearGradient><linearGradient id="wms" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f9a6a"/><stop offset="1" stop-color="#2f6a45"/></linearGradient></defs><g transform="translate(50,53)" fill="url(#wm)" ><path d="M0 0 C-2.4,-10.5 -17,-15.5 -17,-27.5 C-17,-36.5 -8,-40.5 0,-32.5 C8,-40.5 17,-36.5 17,-27.5 C17,-15.5 2.4,-10.5 0,0 Z"/><path d="M0 0 C-2.4,-10.5 -17,-15.5 -17,-27.5 C-17,-36.5 -8,-40.5 0,-32.5 C8,-40.5 17,-36.5 17,-27.5 C17,-15.5 2.4,-10.5 0,0 Z" transform="rotate(90)"/><path d="M0 0 C-2.4,-10.5 -17,-15.5 -17,-27.5 C-17,-36.5 -8,-40.5 0,-32.5 C8,-40.5 17,-36.5 17,-27.5 C17,-15.5 2.4,-10.5 0,0 Z" transform="rotate(180)"/><path d="M0 0 C-2.4,-10.5 -17,-15.5 -17,-27.5 C-17,-36.5 -8,-40.5 0,-32.5 C8,-40.5 17,-36.5 17,-27.5 C17,-15.5 2.4,-10.5 0,0 Z" transform="rotate(270)"/><circle cx="0" cy="0" r="2.6" fill="#357a51" opacity="0.5"/><path d="M-6,-20 C-9,-26 -6,-31 -1,-31" stroke="#fff" stroke-opacity="0.35" stroke-width="2" fill="none" stroke-linecap="round"/></g></svg></span>maydly · 명진앱</div><div style="display:flex;align-items:center;gap:8px"><a href="https://maydly.github.io/note/hub/" style="text-decoration:none;font-size:11px;font-weight:700;color:#4f9a6a;background:#e9f2e7;border:1px solid #d8e5d6;padding:4px 10px;border-radius:14px;white-space:nowrap">← 허브</a><div class="sync" data-sync onclick="sheetSync()" style="cursor:pointer">☁ 이 기기 저장</div></div></div>
   <div class="h1">가계부</div><div class="sub">수입·지출 기록 (이체·충전 제외한 실거래 기준)</div>
+  <div class="msearch">
+    <input id="mq" placeholder="🔍 이름·가게·분류로 찾기 (전체 기간)" oninput="onSearch(this.value)" autocomplete="off">
+    <span id="mqx" class="mqx" onclick="clearSearch()" style="display:none">✕</span>
+  </div>
   <div class="ptabs" id="ptabs"></div>
   <div class="vtabs" id="vtabs"></div>
   <div class="money">
@@ -1405,6 +1418,50 @@ var CATICON={'식비·편의점·마트':'🍽','차량·주유':'⛽','교통':
 var period='월';           // 월/3개월/6개월/12개월 (달력정렬: 분기/반기/연간)
 var viewYM=null;           // {y,m} 기준점
 var selDay=null;           // 'YYYY-MM-DD'
+/* ===== 가계부 검색 =====
+   기간에 갇히지 않게 «전체 기간»에서 찾는다. 이름·가게·분류·메모·금액 어디든 걸리면 나온다.
+   검색 중에는 달력·요약 대신 결과 목록만 보여준다(찾는 게 목적이므로). */
+var mQuery='';
+function onSearch(v){
+  mQuery=String(v||'').trim();
+  var x=document.getElementById('mqx'); if(x)x.style.display=mQuery?'':'none';
+  renderMoney();
+}
+function clearSearch(){
+  mQuery=''; var i=document.getElementById('mq'); if(i)i.value='';
+  var x=document.getElementById('mqx'); if(x)x.style.display='none';
+  renderMoney();
+}
+function searchHits(){
+  var q=mQuery.toLowerCase().normalize('NFC');
+  var num=q.replace(/[,\s원]/g,'');
+  var isNum=/^\d+$/.test(num);
+  return ledger.filter(function(t){
+    var hay=((t.desc||'')+' '+(t.cat||'')+' '+(t.acct||'')+' '+(t.memo||'')).toLowerCase().normalize('NFC');
+    if(hay.indexOf(q)>=0)return true;
+    if(isNum&&String(t.amt).indexOf(num)>=0)return true;
+    return false;
+  }).sort(function(a,b){return (a.date+(a.time||''))<(b.date+(b.time||''))?1:-1;});
+}
+function searchView(){
+  var hits=searchHits();
+  if(!hits.length)
+    return '<div class="srsum">「'+esc(mQuery)+'」로 찾은 게 없어요</div>';
+  var ins=hits.filter(function(t){return t.type==='in';});
+  var outs=hits.filter(function(t){return t.type==='out';});
+  var S=function(a){return a.reduce(function(s,t){return s+t.amt;},0);};
+  var d=hits.map(function(t){return t.date;}).sort();
+  var h='<div class="srsum">「<b>'+esc(mQuery)+'</b>」 <b>'+hits.length+'건</b>'
+    +(ins.length?' · 받은 돈 '+won(S(ins)):'')
+    +(outs.length?' · 쓴 돈 '+won(S(outs)):'')
+    +'<br><span style="color:#7d9a86;font-size:11.5px">'+d[0]+' ~ '+d[d.length-1]+' · 전체 기간에서 찾았어요</span></div>';
+  h+=catPanel(hits);
+  var shown=catOff.length?hits.filter(function(t){return catOff.indexOf(t.cat||'미분류')<0;}):hits;
+  h+=shown.slice(0,300).map(ledCard).join('');
+  if(shown.length>300)h+='<div style="font-size:11.5px;color:#9aa197;text-align:center;padding:8px">… 외 '+(shown.length-300)+'건</div>';
+  return h;
+}
+
 /* 분류별 보기 필터 — 목록 «아래»에 분류마다 켜고 끄는 토글을 둔다.
    기본은 전부 켜짐(다 보임). 끈 분류는 catOff에 들어가고 목록에서 빠진다. */
 var catOff=[], catPanelOpen=false;
@@ -1431,6 +1488,16 @@ function catPanel(base){
     +'<div class="fbody">'+rows
     +'<div class="fall"><span onclick="catAll(1)">전부 켜기</span><span onclick="catAll(0)">전부 끄기</span></div>'
     +'</div></div>';
+}
+/* 요약에서 분류 막대를 누르면 «그 분류만» 목록으로 본다(드릴다운).
+   달력 보기로 바꾸고 나머지 분류를 전부 꺼서 그것만 남긴다. */
+function drillCat(c){
+  var base=txInPeriod();
+  var all={};base.forEach(function(t){var k=t.cat||'미분류';all[k]=1;});
+  catOff=Object.keys(all).filter(function(k){return k!==c;});
+  catPanelOpen=false; moneyView='cal'; selDay=null;
+  renderMoney();
+  toast('「'+c+'」만 보는 중 — 필터에서 «전부 켜기»로 되돌려요');
 }
 function catPanelToggle(){ catPanelOpen=!catPanelOpen; renderMoney(); }
 function toggleCat(c){
@@ -1512,7 +1579,17 @@ function renderMoney(){
   document.getElementById('mNote').textContent='통장 증감 = 실제 늘고 준 돈(모든 입출금) · 수입/지출(분류)은 이체·충전 제외라 합계가 다를 수 있어요'+(ledger.length?'':' · 은행 엑셀을 가져오세요');
   var nav='<div class="mnav"><button onclick="navPeriod(-1)">‹</button><div class="ml">'+periodLabel()+'</div><button onclick="navPeriod(1)">›</button></div>';
   var body;
-  if(moneyView==='summary')body=summaryView(list);
+  if(mQuery){                          // 검색 중 — 달력·요약 대신 결과만, 기간 이동도 숨긴다
+    nav='';
+    body=searchView();
+    var hits=searchHits(), hs=sumReal(hits);
+    document.getElementById('mIn').textContent=won(hs.i);
+    document.getElementById('mOut').textContent=won(hs.o);
+    var mn2=document.getElementById('mNet');var hn=netChange(hits);
+    mn2.textContent=won(hn);mn2.style.color=hn>=0?'#5f8b6a':'#b5564b';
+    document.getElementById('mNote').textContent='「'+mQuery+'」 검색 결과 기준 합계 · 위 금액도 검색 결과예요';
+  }
+  else if(moneyView==='summary')body=summaryView(list);
   else body=(period==='월')?monthView(list):barsView();
   document.getElementById('moneyBody').innerHTML=nav+body;
   renderCoverage();
@@ -1607,7 +1684,8 @@ function summaryView(list){
   var maxO=Math.max.apply(null,exp.map(function(c){return byCat[c].out;}).concat([1]));
   h+='<div class="seg">지출 분류 (많은 순)</div>';
   exp.forEach(function(c){var v=byCat[c].out;
-    h+='<div class="catrow"><div class="catic">'+(CATICON[c]||'💸')+'</div><div class="catbd">'
+    h+='<div class="catrow" onclick="drillCat(\''+esc(c).replace(/'/g,"\\'")+'\')" style="cursor:pointer">'
+        +'<div class="catic">'+(CATICON[c]||'💸')+'</div><div class="catbd">'
       +'<div class="catname"><span>'+esc(c)+'</span><span class="catamt">'+won(v)+'</span></div>'
       +'<div class="catbar"><div class="catbarf" style="width:'+(v/maxO*100).toFixed(1)+'%"></div></div></div></div>';
   });
@@ -1615,7 +1693,8 @@ function summaryView(list){
     var maxI=Math.max.apply(null,inc.map(function(c){return byCat[c].in;}).concat([1]));
     h+='<div class="seg">수입 구성</div>';
     inc.forEach(function(c){var v=byCat[c].in;
-      h+='<div class="catrow"><div class="catic">'+(CATICON[c]||'📥')+'</div><div class="catbd">'
+      h+='<div class="catrow" onclick="drillCat(\''+esc(c).replace(/'/g,"\\'")+'\')" style="cursor:pointer">'
+        +'<div class="catic">'+(CATICON[c]||'📥')+'</div><div class="catbd">'
         +'<div class="catname"><span>'+esc(c)+'</span><span class="catamt" style="color:#5f8b6a">'+won(v)+'</span></div>'
         +'<div class="catbar"><div class="catbarf in" style="width:'+(v/maxI*100).toFixed(1)+'%"></div></div></div></div>';
     });
