@@ -365,7 +365,7 @@ if ('serviceWorker' in navigator) {
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <!-- 국내 데이터 먼저(가벼움) → 백업 → 리셋 -->
 <script src="data/city_kr.js?v=3"></script>
-<script src="data/guides_kr.js?v=3"></script>
+<!-- data/guides_kr.js(1.4MB)는 도시를 누를 때 받는다 — ensureKRDetail (260917) -->
 <script>
   window.CITY_KR = CITY; window.COORDS_KR = COORDS;
   window.CITY = {}; window.COORDS = {};   // 일본 로드가 국내를 오염시키지 않게 리셋
@@ -390,7 +390,7 @@ function drawMarkers(){
     var pos = COORDS[k], c = CITY[k]; if(!pos||!c) return;
     var icon = L.divIcon({className:'', html:'<div class="lp"><div class="dot"><b>🍀</b></div><div class="lab">'+(c.nm||k)+'</div></div>', iconSize:[0,0], iconAnchor:[0,0]});
     var m = L.marker(pos,{icon:icon}).addTo(map).on('click', (function(kk){
-      return function(){ ensureJPDetail(kk, function(){ showPreview(kk); }); };
+      return function(){ ensureJPDetail(kk, function(){ ensureKRDetail(kk, function(){ showPreview(kk); }); }); };
     })(k));
     MARKERS.push(m);
   });
@@ -489,6 +489,30 @@ function ensureJPDetail(cityKey, done){
     JP_REST_LOADED = true;
     if(typeof mergeCities === 'function' && window.COUNTRY === 'tv') mergeCities();
     else { window.CITY = keep; window.COORDS = keepC; }
+    if(ld) ld.classList.remove('on');
+    done();
+  });
+}
+
+/* 국내 도시 상세(사진·설명·팁)는 도시를 처음 누를 때만 — 1.4MB (260917)
+   전에는 머리에서 통째로 받았다. 지도를 열기만 해도 1.4MB를 기다렸는데,
+   정작 이 내용은 **도시를 눌러야** 보인다. 일본 것(ensureJPDetail)과 같은 방식으로 미룬다.
+
+   ⚠️ guides_kr.js는 `Object.assign(CITY, …)`로 **CITY의 값을 통째로 갈아끼운다.**
+      mergeCities가 만든 새 객체에 붙이면 CITY_KR에는 안 붙어서, 다음 mergeCities 때
+      옛 내용으로 되돌아간다. 그래서 붙이기 전에 CITY를 CITY_KR로 가리켜 둔다. */
+var KR_GUIDE_LOADED=false;
+function ensureKRDetail(cityKey, done){
+  if(KR_GUIDE_LOADED || !(window.CITY_KR && window.CITY_KR[cityKey])){ done(); return; }
+  var ld=document.getElementById('maploading');
+  if(ld){ ld.textContent='도시 사진·가이드 불러오는 중… (처음 한 번)'; ld.classList.add('on'); }
+  var keep=window.CITY, keepC=window.COORDS;
+  window.CITY=window.CITY_KR;
+  loadScripts(['data/guides_kr.js'], function(){
+    window.CITY_KR=window.CITY;
+    KR_GUIDE_LOADED=true;
+    if(typeof mergeCities==='function' && window.COUNTRY==='tv') mergeCities();
+    else { window.CITY=keep; window.COORDS=keepC; }
     if(ld) ld.classList.remove('on');
     done();
   });
@@ -960,14 +984,14 @@ function spChips(){
    명진 지적: "구글이나 네이버는 왜 안 느린데? 만들고 구동하는 방식의 문제 같은데" — 맞았다.
    전국 59,561곳(9.1MB)을 통째로 받아 들고 있던 것을 0.1도(약 11km) 격자로 쪼개고,
    화면에 걸린 격자 파일만 받는다. 지도 이미지 타일과 같은 원리다. */
-var TILE={ scale:10, cells:null, got:{}, data:{}, pend:0 };
+var TILE={ scale:10, cells:null, split:{}, got:{}, data:{}, pend:0 };
 var TILE_MIN_ZOOM=11;          // 이보다 줌아웃하면 표시하지 않는다(구글맵도 그렇게 한다)
 
 function tileIndex(cb){
   if(TILE.cells){ cb(); return; }
   fetch('data/tiles/index.json?v=1').then(function(r){ return r.json(); })
-    .then(function(j){ TILE.scale=j.scale||10; TILE.cells=j.cells||{}; cb(); })
-    .catch(function(){ TILE.cells={}; cb(); });
+    .then(function(j){ TILE.scale=j.scale||10; TILE.cells=j.cells||{}; TILE.split=j.split||{}; cb(); })
+    .catch(function(){ TILE.cells={}; TILE.split={}; cb(); });
 }
 function visibleTileKeys(){
   var b=map.getBounds(), s=TILE.scale;
@@ -977,7 +1001,18 @@ function visibleTileKeys(){
   var out=[];
   for(var y=y0;y<=y1;y++) for(var x=x0;x<=x1;x++){
     var k=y+'_'+x;
-    if(TILE.cells[k]) out.push(k);
+    if(!TILE.cells[k]) continue;
+    var n=TILE.split[k];
+    if(!n){ out.push(k); continue; }
+    /* 자료가 많아 더 잘게 나눈 칸(서울 도심 등) — 화면에 걸린 조각만 받는다.
+       통짜 파일은 만들지 않으므로 여기서 조각 이름을 만들어야 한다(260917) */
+    var cy0=y/s, cx0=x/s, st=1/(s*n);
+    for(var sy=0;sy<n;sy++) for(var sx=0;sx<n;sx++){
+      var la0=cy0+sy*st, ln0=cx0+sx*st;
+      if(la0+st < b.getSouth() || la0 > b.getNorth()) continue;
+      if(ln0+st < b.getWest()  || ln0 > b.getEast())  continue;
+      out.push(k+'__'+sy+'_'+sx);
+    }
   }
   return out;
 }
