@@ -311,6 +311,7 @@ body.my-on .search-box{display:none !important}
 </div></div>
 <div class="plist-sheet" id="sync"><div class="plbox">
   <h3><span>🗺️ 지도 연동</span><button class="xbtn" onclick="closeSync()">×</button></h3>
+  <div style="margin:0 0 12px;padding:10px 11px;background:#f6f8fa;border:1px solid var(--line);border-radius:10px"><div style="font-weight:700;font-size:13px;margin-bottom:4px">🚏 실시간 버스 도착</div><div style="font-size:12px;color:#6b7280;line-height:1.55;margin-bottom:8px">공공데이터포털 무료 키를 한 번 넣으면 「473번 3분 뒤」가 보입니다.<br>키는 인터넷에 올라가지 않고 <b>이 기기에만</b> 저장됩니다.</div><button onclick="pdAsk()" style="border:none;border-radius:8px;padding:9px 14px;background:#1f6f8b;color:#fff;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit">키 넣기 / 바꾸기</button><button onclick="pdTest()" style="margin-left:6px;border:1px solid var(--line);border-radius:8px;padding:9px 14px;background:#fff;color:#4a4f57;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit">되는지 확인</button></div>
   <div class="sync-intro">구글 <b>My Maps(내 지도)</b> 공유링크를 넣으면, 그 지도에 장소를 저장할 때마다 여기에 <b>자동 반영</b>됩니다.<br><span style="color:#b06a3c">※ 구글맵 ⭐별표저장은 구글이 막아 불가 — My Maps를 쓰세요.</span></div>
   <div id="syncList"></div>
   <div class="sync-add">
@@ -1566,6 +1567,7 @@ function rtRun(){
   _rtLegs.forEach(function(l){ map.removeLayer(l); }); _rtLegs=[];
   rtLinks(from, to, 직선);
   navButton();
+  var _l2=document.getElementById('rtLive2'); if(_l2) _l2.remove();
 
   if(직선 > 700){
     sum.innerHTML='출발 <b>'+esc(from.설명)+'</b> · 직선 <span class="rt-n">'+Math.round(직선)+'km</span>'
@@ -1643,7 +1645,18 @@ function rtTransit(from, to, 직선){
     document.getElementById('rtNote').innerHTML = 실시간
       ? (지연>0 ? '<span class="rt-delay">실시간 — 지연 '+지연+'분</span> · 나머지는 시간표 기준입니다.'
                : '<span class="rt-ontime">실시간 — 정시 운행</span> · 나머지는 시간표 기준입니다.')
-      : '시간표 기준입니다(한국 대중교통은 실시간 자료가 없습니다). 나가기 전 지도 앱으로 한 번 확인하세요.';
+      : '위 시간은 시간표 기준입니다.';
+    /* 한국이고 버스를 타는 길이면 「몇 분 뒤 오는지」를 붙일 수 있다(열쇠가 있을 때만) */
+    var 버스 = 한국 && it.legs.filter(function(l){ return l.mode==='BUS' || l.mode==='TRAM'; })[0];
+    var el2=document.getElementById('rtLive2'); if(el2) el2.remove();
+    if(버스){
+      if(pdKey()){
+        pdShow((버스.from||{}).lat, (버스.from||{}).lon, 버스.routeShortName);
+      } else {
+        document.getElementById('rtNav').innerHTML +=
+          '<button class="rt-go" onclick="pdAsk()">🚏 실시간 도착 켜기 (무료 키 한 번 등록)</button>';
+      }
+    }
   }).catch(function(){
     sum.innerHTML='출발 <b>'+esc(from.설명)+'</b> · 직선 <span class="rt-n">'+직선.toFixed(1)+'km</span>'
       +'<br><span style="color:#8b9098">이 구간의 대중교통 길을 찾지 못했습니다. 아래 지도 앱으로 열어보세요.</span>';
@@ -1723,6 +1736,112 @@ var RT_TURN={ 'turn-left':'좌회전','turn-right':'우회전','turn-slight left
 function rtStep(st){
   var m=st.maneuver||{}, key=m.type+(m.modifier? '-'+m.modifier : '');
   return RT_TURN[key] || RT_TURN[m.type] || m.type || '이동';
+}
+
+/* ═══════════ 실시간 버스 도착 (260917) ═══════════
+   명진이 「③까지 — 무료 키 하나 발급」을 골랐다.
+
+   왜 키가 필요한가: 대중교통 길찾기(transitous)는 **시간표**만 준다. 한국 자료(KTDB)에는
+   실시간 피드가 없다. "473번 3분 뒤"를 보려면 국토교통부 TAGO를 불러야 하고 여기는 열쇠가 있어야 한다.
+   ✅ 확인함: 이 API는 **CORS가 열려 있다**(Access-Control-Allow-Origin에 우리 주소를 그대로 돌려준다)
+      → 중계 서버가 필요 없다. 브라우저가 바로 부른다. 열쇠만 있으면 된다.
+
+   🔒 열쇠는 **소스에 넣지 않는다.** note 저장소는 공개라 넣는 순간 남이 쓴다.
+      명진 기기의 localStorage에만 둔다(작업장 규정: "부득이한 토큰은 소스 하드코딩 금지,
+      명진 기기 localStorage에만"). 기기마다 한 번씩 넣어야 한다. */
+var PK='maydly_pdata_key';
+function pdKey(){ try{ return localStorage.getItem(PK)||''; }catch(e){ return ''; } }
+function pdAsk(){
+  var 지금=pdKey();
+  var v=prompt(
+    '공공데이터포털 인증키(Decoding 키)를 붙여넣으세요.\n\n'
+   +'· data.go.kr 로그인 → 「국토교통부 버스도착정보」 활용신청 → 즉시 승인\n'
+   +'· 무료이고 카드·사업자등록이 필요 없습니다\n'
+   +'· 이 키는 인터넷에 올라가지 않고 이 기기에만 저장됩니다\n'
+   +'· 비우고 확인을 누르면 지웁니다',
+    지금);
+  if(v===null) return;
+  try{
+    v=v.trim();
+    if(v) localStorage.setItem(PK, v); else localStorage.removeItem(PK);
+  }catch(e){ alert('이 브라우저에 저장할 수 없습니다.'); return; }
+  if(v) pdTest(); else alert('키를 지웠습니다.');
+}
+/* 키가 되는지 바로 확인해 준다 — 3D 때 배운 방식(진행 상황을 글로 보여 주기) */
+function pdTest(){
+  var k=pdKey();
+  if(!k){ alert('키가 없습니다.'); return; }
+  pdStops(37.5665,126.9780).then(function(list){
+    if(!list.length){ alert('키는 받아들여졌는데 서울시청 주변 정류장이 안 나옵니다.\n지역에 따라 자료가 없을 수 있습니다 — 다른 곳에서도 눌러보세요.'); return; }
+    alert('됩니다 ✅\n서울시청 주변 정류장 '+list.length+'곳을 찾았습니다.\n예: '+list[0].nodenm);
+  }).catch(function(e){
+    alert('안 됩니다 ❌\n'+e+'\n\n키를 새로 만든 직후면 1시간쯤 뒤에 됩니다(포털 반영 시간).');
+  });
+}
+var PD_BASE='https://apis.data.go.kr/1613000/';
+function pdGet(path, params){
+  var k=pdKey();
+  if(!k) return Promise.reject('키가 없습니다');
+  var q=Object.keys(params).map(function(n){ return n+'='+encodeURIComponent(params[n]); }).join('&');
+  return fetch(PD_BASE+path+'?serviceKey='+encodeURIComponent(k)+'&_type=json&'+q)
+    .then(function(r){ return r.text(); })
+    .then(function(t){
+      var d;
+      try{ d=JSON.parse(t); }
+      catch(e){
+        // 열쇠가 틀리면 XML로 사유가 온다
+        var m=t.match(/<returnAuthMsg>([^<]*)</) || t.match(/<errMsg>([^<]*)</);
+        throw (m? m[1] : '응답을 읽지 못했습니다');
+      }
+      /* 열쇠가 틀리면 **다른 자리**로 온다 — 여기를 안 보면 "정류장 0곳"으로만 보여
+         키가 잘못된 건지 자료가 없는 건지 알 수가 없다(260917 검증에서 잡음) */
+      var er=d.OpenAPI_ServiceResponse && d.OpenAPI_ServiceResponse.cmmMsgHeader;
+      if(er) throw (er.returnAuthMsg || er.errMsg || '키가 거절됐습니다');
+      var hd=d.response&&d.response.header;
+      if(hd && hd.resultCode!=='00' && hd.resultCode!=='0') throw (hd.resultMsg||hd.resultCode);
+      var items=d.response&&d.response.body&&d.response.body.items;
+      if(!items||!items.item) return [];
+      return [].concat(items.item);
+    });
+}
+/* 정류장 ID를 맞출 방법이 없다(transitous는 KTDB 번호, 정부 API는 자기 번호를 쓴다)
+   → **좌표로 근처 정류장을 찾는다.** 그러면 번호를 맞출 필요가 없다. */
+function pdStops(lat,lng){
+  return pdGet('BusSttnInfoInqireService/getCrdntPrxmtSttnList',
+    {gpsLati:lat, gpsLong:lng, numOfRows:5, pageNo:1});
+}
+function pdArrivals(cityCode, nodeId){
+  return pdGet('ArvlInfoInqireService/getSttnAcctoArvlPrearngeInfoList',
+    {cityCode:cityCode, nodeId:nodeId, numOfRows:20, pageNo:1});
+}
+/* 대중교통 결과에서 「첫 번째 타는 정류장」의 실시간 도착을 붙여 준다 */
+function pdShow(lat, lng, 노선){
+  var box=document.getElementById('rtLive2');
+  if(!box){
+    box=document.createElement('div'); box.className='rt-live'; box.id='rtLive2';
+    document.getElementById('rtNav').appendChild(box);
+  }
+  box.innerHTML='<div class="rt-left">실시간 도착을 확인하는 중…</div>';
+  pdStops(lat,lng).then(function(stops){
+    if(!stops.length) throw '근처 정류장을 찾지 못했습니다';
+    var st=stops[0];
+    return pdArrivals(st.citycode, st.nodeid).then(function(arr){
+      if(!arr.length){ box.innerHTML='<div class="rt-left">'+esc(st.nodenm)+' — 지금 들어오는 차가 없습니다</div>'; return; }
+      arr.sort(function(a,b){ return (a.arrtime||0)-(b.arrtime||0); });
+      var 맞는것=arr.filter(function(a){ return 노선 && String(a.routeno)===String(노선); });
+      var 쓸것=(맞는것.length? 맞는것 : arr).slice(0,4);
+      var h='<div class="rt-next">🚏 '+esc(st.nodenm)+'</div>';
+      쓸것.forEach(function(a){
+        var 분=Math.round((a.arrtime||0)/60);
+        h+='<div class="rt-left"><b>'+esc(a.routeno)+'</b>번 · '
+         + (분<=1? '곧 도착' : 분+'분 뒤')
+         + (a.arrprevstationcnt!=null? ' · '+a.arrprevstationcnt+'정거장 전':'')+'</div>';
+      });
+      box.innerHTML=h;
+    });
+  }).catch(function(e){
+    box.innerHTML='<div class="rt-off">실시간 도착: '+esc(String(e))+'</div>';
+  });
 }
 
 /* ═══════════ 따라가기 (260917) ═══════════
