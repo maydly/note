@@ -1,6 +1,13 @@
 {
-  "updated": "2026-09-07T00:20:36.327947",
+  "updated": "2026-09-19T00:10:05.310657",
   "log": [
+    {
+      "id": "monthly-20260919",
+      "type": "monthly",
+      "date": "2026-09-19",
+      "status": "warn",
+      "summary": "확인 필요 3건 · 진행중 업무 3개"
+    },
     {
       "id": "weekly-20260907",
       "type": "weekly",
