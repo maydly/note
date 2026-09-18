@@ -2,15 +2,12 @@
    데이터: window.TVIMG(이미지), CITY(도시), ORDER(순서) 는 data/*.js 에서 로드됨 */
 
 // 20개 도시 좌표 [위도, 경도]
-var COORDS = {
-  sapporo:[43.062,141.354], tokyo:[35.6762,139.6503], ibaraki:[36.37,140.47],
-  shizuoka:[34.976,138.383], osaka:[34.6937,135.5023], nagoya:[35.1815,136.9066],
-  komatsu:[36.5613,136.6562], hiroshima:[34.3853,132.4553], okayama:[34.6551,133.9195],
-  yonago:[35.4281,133.3310], takamatsu:[34.3401,134.0434], matsuyama:[33.8416,132.7657],
-  fukuoka:[33.5904,130.4017], kitakyushu:[33.8835,130.8752], saga:[33.2494,130.2988],
-  oita:[33.2382,131.6126], kumamoto:[32.8032,130.7079], nagasaki:[32.7503,129.8777],
-  kagoshima:[31.5602,130.5581], okinawa:[26.2124,127.6809]
-};
+/* ⚠️ 260918 — 여기 있던 일본 도시 좌표 20곳을 지웠다.
+   이 파일은 일본 지도의 common.js를 복사해 온 것이라 `var COORDS = {tokyo:…}`가 남아 있었는데,
+   index.html이 data/city_kr.js(국내 162곳) **다음에** 이 파일을 부르므로 국내 좌표를 통째로 덮어썼다.
+   → 마커 loop의 `COORDS[k]`가 전부 undefined가 되어 **국내 전용 페이지에 도시 마커가 하나도 안 보였다.**
+   통합본 travel/index.html은 두 스크립트 사이에서 COORDS를 COORDS_KR로 먼저 담아 두기 때문에 멀쩡하다.
+   국내 전용 페이지에 일본 좌표는 필요 없으므로 블록째 제거한다. */
 
 function img(key){ if(key && /^https?:\/\//.test(key)) return key; return (window.TVIMG && window.TVIMG[key]) || (window.CITYIMG && window.CITYIMG[key]) || ''; }
 function hasImg(key){ return !!img(key); }
