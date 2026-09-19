@@ -162,6 +162,21 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .skpi{flex:1;background:#fff;border:1px solid #e2ece0;border-radius:14px;padding:11px;text-align:center}
 .skpi .l{font-size:10.5px;color:#97a394;font-weight:600}
 .skpi .v{font-size:15px;font-weight:800;margin-top:3px;font-variant-numeric:tabular-nums}
+
+/* 촬영 수익 보기 */
+.bzrow{display:flex;align-items:center;gap:8px;padding:5px 2px;font-size:11.5px}
+.bzm{width:38px;color:#8a9186;font-variant-numeric:tabular-nums}
+.bzbar{flex:1;height:9px;background:#f0efeb;border-radius:6px;overflow:hidden;min-width:40px}
+.bzbar i{display:block;height:100%;background:linear-gradient(90deg,#8fbf9f,#6aa77f)}
+.bzv{width:74px;text-align:right;font-weight:700;color:#4f8b62;font-variant-numeric:tabular-nums}
+.bzn{width:96px;text-align:right;color:#a2a89f;font-size:10.5px;white-space:nowrap}
+.bzrow2{display:flex;align-items:center;gap:9px;padding:8px 6px;border-bottom:1px solid #f4f2ee;
+ font-size:12.5px;cursor:pointer;border-radius:7px;-webkit-tap-highlight-color:transparent}
+.bzrow2:active{background:#f3f8f2}
+.bzname{flex:1;font-weight:600}
+.bzcnt{font-size:10.5px;background:#e9f2e7;color:#3f7a52;border-radius:10px;padding:2px 8px;font-weight:700}
+.bzsum{width:82px;text-align:right;color:#4f8b62;font-weight:700;font-variant-numeric:tabular-nums}
+.fc b{font-weight:800;margin-left:3px}
 /* 기간 비교 — 직전 같은 기간 대비 증감 */
 .dlt{display:inline-block;margin-left:6px;font-size:10.5px;font-weight:700;border-radius:20px;
  padding:1px 7px;vertical-align:middle;white-space:nowrap}
@@ -1508,6 +1523,70 @@ function applyPickCat(){
   toast(n+'건을 「'+c+'」로 바꿨어요');
 }
 
+/* ===== 촬영 수익 보기 =====
+   「얼마 벌었나」가 아니라 「몇 명에게 얼마씩 받았고, 단가가 오르고 있나」를 본다.
+   가계부에 들어온 촬영 입금만 대상 — 급여·이자·계좌이동은 뺀다. */
+function bizTx(){ return ledger.filter(function(t){return t.type==='in'&&/수입·촬영/.test(t.cat||'');}); }
+function bizView(){
+  var all=bizTx();
+  if(!all.length)return '<div class="empty">촬영 수입으로 분류된 내역이 없어요<br>「🔄 다시 분류하기」를 먼저 눌러보세요</div>';
+  var set={};periodRange().months.forEach(function(m){set[m]=1;});
+  var cur=all.filter(function(t){return set[keyOf(t.date)];});
+  var pset={};prevRange().months.forEach(function(m){pset[m]=1;});
+  var pv=all.filter(function(t){return pset[keyOf(t.date)];});
+  var S=function(a){return a.reduce(function(x,t){return x+t.amt;},0);};
+  var avg=function(a){return a.length?Math.round(S(a)/a.length):0;};
+
+  var h='<div class="sumkpi">'
+    +'<div class="skpi"><div class="l">촬영 매출</div><div class="v" style="color:#5f8b6a">'+won(S(cur))+'</div>'
+      +(pv.length?deltaChip(S(cur),S(pv),false):'')+'</div>'
+    +'<div class="skpi"><div class="l">촬영 건수</div><div class="v">'+cur.length+'건</div>'
+      +(pv.length?deltaChipN(cur.length,pv.length):'')+'</div>'
+    +'<div class="skpi"><div class="l">평균 단가</div><div class="v">'+won(avg(cur))+'</div>'
+      +(pv.length?deltaChip(avg(cur),avg(pv),false):'')+'</div></div>'
+    +'<div class="cmpnote">'+esc(periodLabel())+' 기준'
+      +(pv.length?' · '+esc(prevLabel())+'은 '+pv.length+'건 '+won(S(pv))+' (평균 '+won(avg(pv))+')':'')+'</div>';
+
+  // 월별 흐름 — 건수와 평균 단가를 같이 본다
+  var byM={};all.forEach(function(t){var m=keyOf(t.date);(byM[m]=byM[m]||{n:0,s:0});byM[m].n++;byM[m].s+=t.amt;});
+  var ms=Object.keys(byM).sort().slice(-12);
+  var mx=Math.max.apply(null,ms.map(function(m){return byM[m].s;}).concat([1]));
+  h+='<div class="seg">월별 촬영 매출 <span style="font-weight:400;color:#a2a89f">최근 '+ms.length+'개월</span></div>';
+  ms.forEach(function(m){
+    var v=byM[m], a2=Math.round(v.s/v.n);
+    h+='<div class="bzrow"><span class="bzm">'+m.slice(2)+'</span>'
+      +'<span class="bzbar"><i style="width:'+(v.s/mx*100).toFixed(1)+'%"></i></span>'
+      +'<span class="bzv">'+won(v.s)+'</span>'
+      +'<span class="bzn">'+v.n+'건 · 평균 '+won(a2).slice(1)+'</span></div>';
+  });
+
+  // 단가 분포 — 가격을 올렸는지 한눈에
+  var byA={};all.forEach(function(t){byA[t.amt]=(byA[t.amt]||0)+1;});
+  var amts=Object.keys(byA).map(Number).sort(function(a,b){return byA[b]-byA[a];}).slice(0,8);
+  h+='<div class="seg">받은 금액대 <span style="font-weight:400;color:#a2a89f">많은 순</span></div><div class="fchips" style="margin-bottom:12px">';
+  amts.forEach(function(a3){h+='<span class="fc" onclick="onSearch(\''+a3+'\');document.getElementById(\'mq\').value=\''+a3+'\'">'+won(a3)+' <b>'+byA[a3]+'건</b></span>';});
+  h+='</div>';
+
+  // 재방문 — 여러 번 온 사람
+  var byN={};all.forEach(function(t){var n=(t.desc||'').trim();if(!n)return;(byN[n]=byN[n]||{n:0,s:0});byN[n].n++;byN[n].s+=t.amt;});
+  var re=Object.keys(byN).filter(function(n){return byN[n].n>1;}).sort(function(a,b){return byN[b].n-byN[a].n||byN[b].s-byN[a].s;});
+  h+='<div class="seg">여러 번 온 분 <span style="font-weight:400;color:#a2a89f">'+re.length+'명</span></div>';
+  if(!re.length)h+='<div class="mnote" style="padding:8px 0">아직 없어요</div>';
+  else re.slice(0,20).forEach(function(n){
+    h+='<div class="bzrow2" onclick="onSearch(\''+esc(n).replace(/\'/g,"\\'")+'\');document.getElementById(\'mq\').value=\''+esc(n)+'\'">'
+      +'<span class="bzname">'+esc(n)+'</span><span class="bzcnt">'+byN[n].n+'회</span>'
+      +'<span class="bzsum">'+won(byN[n].s)+'</span></div>';
+  });
+  h+='<div class="mnote" style="margin-top:10px">금액대나 이름을 누르면 그 내역만 찾아봐요 · 촬영 수입으로 분류된 것만 셉니다</div>';
+  return h;
+}
+/* 건수는 원 단위가 아니라 «건»으로 표시 */
+function deltaChipN(now,prev){
+  if(!prev)return '';
+  var d=now-prev; if(!d)return '<span class="dlt same">그대로</span>';
+  return '<span class="dlt '+(d>0?'good':'bad')+'">'+(d>0?'▲':'▼')+' '+Math.abs(d)+'건</span>';
+}
+
 /* ===== 가계부 검색 =====
    기간에 갇히지 않게 «전체 기간»에서 찾는다. 이름·가게·분류·메모·금액 어디든 걸리면 나온다.
    검색 중에는 달력·요약 대신 결과 목록만 보여준다(찾는 게 목적이므로). */
@@ -1631,7 +1710,8 @@ function renderPtabs(){
 function renderVtabs(){
   document.getElementById('vtabs').innerHTML=
     '<div class="vt '+(moneyView==='cal'?'on':'')+'" onclick="setMoneyView(\'cal\')">'+(period==='월'?'📅 달력':'📊 월별')+'</div>'+
-    '<div class="vt '+(moneyView==='summary'?'on':'')+'" onclick="setMoneyView(\'summary\')">📋 요약</div>';
+    '<div class="vt '+(moneyView==='summary'?'on':'')+'" onclick="setMoneyView(\'summary\')">📋 요약</div>'+
+    '<div class="vt '+(moneyView==='biz'?'on':'')+'" onclick="setMoneyView(\'biz\')">📊 수익</div>';
 }
 function setPeriod(p){period=p;selDay=null;renderMoney();}
 function setMoneyView(v){moneyView=v;catOff=[];renderMoney();}
@@ -1710,6 +1790,7 @@ function renderMoney(){
     mn2.textContent=won(hn);mn2.style.color=hn>=0?'#5f8b6a':'#b5564b';
     document.getElementById('mNote').textContent='「'+mQuery+'」 검색 결과 기준 합계 · 위 금액도 검색 결과예요';
   }
+  else if(moneyView==='biz')body=bizView();
   else if(moneyView==='summary')body=summaryView(list);
   else body=(period==='월')?monthView(list):barsView();
   document.getElementById('moneyBody').innerHTML=nav+body;
