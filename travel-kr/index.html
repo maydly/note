@@ -1,56 +1,38 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>국내 여행지도 · 실지도 (프로토타입)</title>
-<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<link rel="stylesheet" href="common.css?v=3">
-<style>
-/* 실지도 전용 핀 */
-.lp{display:flex;flex-direction:column;align-items:center;transform:translate(-50%,-100%);cursor:pointer}
-.lp .dot{width:30px;height:30px;border-radius:50% 50% 50% 2px;background:var(--clover);transform:rotate(45deg);
-  box-shadow:0 3px 8px rgba(60,90,60,.4);display:grid;place-items:center;border:2px solid #fff}
-.lp .dot b{transform:rotate(-45deg);font-size:14px;line-height:1}
-.lp .lab{margin-top:5px;background:rgba(255,255,255,.94);padding:2px 8px;border-radius:999px;font-size:11.5px;
-  font-weight:700;color:var(--ink);white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.12)}
-.lp:hover .dot{background:var(--clover-deep)}
-.leaflet-container{background:#dcebf2;font-family:inherit}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="0; url=../travel/">
+  <title>여행지도로 이동합니다</title>
+  <!--
+    260919 명진 확정 — 이 주소는 통합 여행지도로 넘긴다.
+
+    왜: 여기는 국내만 담던 옛 지도다. 260912에 국내·일본을 한 지도로 합치면서
+    허브 링크를 통합본(../travel/)으로 옮겼고, 이 주소는 링크가 끊긴 채 남아 있었다.
+    옛 북마크·공유 링크가 있을 수 있어 지우지 않고 넘겨보낸다.
+
+    원본 페이지는 git 이력에 있다(직전 커밋). 되돌리려면 그걸 꺼내면 된다.
+    common.js·common.css·data/ 는 건드리지 않고 그대로 뒀다.
+  -->
+  <style>
+    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+      background:#f7f6f1;color:#2f3b33;
+      font-family:'Pretendard',system-ui,-apple-system,sans-serif;text-align:center;padding:24px}
+    .box{max-width:420px}
+    .clover{font-size:30px;margin-bottom:10px}
+    h1{font-size:17px;font-weight:800;margin:0 0 8px}
+    p{font-size:14px;line-height:1.7;color:#6b7a6f;margin:0 0 18px}
+    a{display:inline-block;background:#5a9a5f;color:#fff;text-decoration:none;
+      padding:11px 20px;border-radius:10px;font-weight:700;font-size:14px}
+  </style>
 </head>
 <body>
-<div class="topbar"><div class="mark">🍀</div><div class="t">국내 여행지도<small>maydly · 실지도</small></div>
-  <div class="badge">검색·핀</div>
-  <a href="사진출처.html" style="margin-left:8px;font-size:.72rem;color:#4c8c4a;text-decoration:none;white-space:nowrap;align-self:center">사진 출처 →</a></div>
-<div class="search-box">
-  <input id="citySearch" type="text" autocomplete="off" placeholder="🔍 도시 검색 (예: 경주 · 여수 · 강릉 · 남해)">
-  <div class="search-results" id="searchResults"></div>
-</div>
-<div id="map"></div>
-<div class="preview" id="preview"></div>
-<div class="detail" id="detail"></div>
-<button id="fixedBack" class="fixed-back" onclick="closeDetail()">‹ 지도로</button>
-
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="data/city_kr.js?v=3"></script>
-<script src="common.js?v=3"></script>
-<script src="data/guides_kr.js?v=3"></script>
-<script>
-var map = L.map('map',{zoomControl:true,attributionControl:true}).setView([36.4,127.9],7);
-// 무료 타일 (OpenStreetMap 공식 · 키 불필요) — CARTO는 키 요구로 워터마크가 떠서 교체(260904)
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
-  maxZoom:19, minZoom:6,
-  attribution:'© OpenStreetMap'
-}).addTo(map);
-
-(window.ORDER||Object.keys(CITY)).forEach(function(k){
-  var pos = COORDS[k]; var c = CITY[k]; if(!pos||!c) return;
-  var icon = L.divIcon({className:'', html:'<div class="lp"><div class="dot"><b>🍀</b></div><div class="lab">'+ (c.nm||k) +'</div></div>', iconSize:[0,0], iconAnchor:[0,0]});
-  L.marker(pos,{icon:icon}).addTo(map).on('click',function(){ showPreview(k); });
-});
-setupSearch(map);
-</script>
+  <div class="box">
+    <div class="clover">🍀</div>
+    <h1>여행지도가 한 곳으로 합쳐졌습니다</h1>
+    <p>국내 지도와 일본 지도를 하나로 모았습니다.<br>잠시 뒤 새 지도로 이동합니다.</p>
+    <a href="../travel/">지금 열기</a>
+  </div>
 </body>
 </html>
