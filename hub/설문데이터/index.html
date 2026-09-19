@@ -269,5 +269,21 @@
   function tile(k,v,d,today){ return '<div class="stat'+(today?' today':'')+'"><div class="k">'+k+'</div><div class="v">'+v+'</div><div class="d">'+d+'</div></div>'; }
   function fbtn(key,label,n){ return '<span class="fbtn'+(activeFilter===key?' on':'')+'" onclick="setFilter(\''+key+'\')">'+label+' '+n+'</span>'; }
 </script>
+<!-- ?embed=1 로 열면 홈 대시보드에 끼워 넣기용 화면(제목줄·안내문 숨김). 파라미터가 없으면 기존 동작 그대로. -->
+<script>
+(function(){
+  try{
+    if(new URLSearchParams(location.search).get('embed')!=='1') return;
+    document.documentElement.classList.add('embed-sv');
+    var css=document.createElement('style');
+    css.textContent=
+      'html.embed-sv header,html.embed-sv .startline,html.embed-sv .note,html.embed-sv .hint{display:none!important}'
+     +'html.embed-sv .wrap{padding:12px 13px 18px!important;max-width:none!important}'
+     +'html.embed-sv .panel{padding:13px!important;margin-bottom:11px!important}'
+     +'html.embed-sv body{background:#fff}';
+    document.head.appendChild(css);
+  }catch(e){}
+})();
+</script>
 </body>
 </html>
