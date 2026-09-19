@@ -476,8 +476,8 @@ details.vault .vbody{padding:0 10px 12px}
 
     <div class="top">
       <div>
-        <div class="hi">좋은 오후예요, <span>명진</span>님</div>
-        <div class="dt">2026년 9월 17일 목요일 · 오늘 촬영 2건 · 다음 14:00</div>
+        <div class="hi"><span id="greet">안녕하세요</span>, <span>명진</span>님</div>
+        <div class="dt"><span id="today-line">불러오는 중…</span></div>
       </div>
       <div class="switch">
         <a class="sw on" href="#">📊 대시보드</a>
@@ -564,21 +564,9 @@ details.vault .vbody{padding:0 10px 12px}
           <div class="gbar"><i style="width:50%;background:linear-gradient(90deg,#e6c9a8,#d4ad82)"></i></div></div>
         <div style="margin-top:15px;padding-top:14px;border-top:1px solid #f1f4ef">
           <div style="font-size:11.5px;font-weight:800;color:#5d7059;margin-bottom:9px">앞으로 7일</div>
-          <div class="w7">
-            <div class="d7 today"><div class="dw">목</div><div class="dd">17</div>
-              <div class="dm"><i style="background:#4f9a6a"></i><i style="background:#b79bd4"></i></div></div>
-            <div class="d7"><div class="dw">금</div><div class="dd">18</div><div class="dm"></div></div>
-            <div class="d7 busy"><div class="dw">토</div><div class="dd">19</div>
-              <div class="dm"><i style="background:#4f9a6a"></i><i style="background:#4f9a6a"></i></div></div>
-            <div class="d7"><div class="dw">일</div><div class="dd">20</div><div class="dm"></div></div>
-            <div class="d7 busy"><div class="dw">월</div><div class="dd">21</div>
-              <div class="dm"><i style="background:#4f9a6a"></i><i style="background:#e0857a"></i></div></div>
-            <div class="d7"><div class="dw">화</div><div class="dd">22</div><div class="dm"></div></div>
-            <div class="d7"><div class="dw">수</div><div class="dd">23</div>
-              <div class="dm"><i style="background:#e0857a"></i></div></div>
-          </div>
+          <div class="w7" id="w7"></div>
           <div style="margin-top:10px;font-size:11.5px;color:var(--mute);font-weight:650;line-height:1.6">
-            토요일에 촬영 2건이 몰려 있고, 목·금은 비어 있습니다.<br>
+            <span id="w7-note">로그인하면 예약이 표시됩니다.</span><br>
             <span style="color:#4f9a6a">●</span> 촬영 &nbsp;<span style="color:#e0857a">●</span> 납품 마감 &nbsp;<span style="color:#b79bd4">●</span> 보정
           </div>
         </div>
@@ -1136,6 +1124,29 @@ async function paintCloud(){
     D.todayShoots(), D.ledgerThisMonth(), D.inquiries(), D.owns(), D.todos()
   ]);
 
+  // 앞으로 7일 점 + 날짜줄 보강
+  const evs = await D.calEvents();
+  if(evs) paintWeek(evs);
+  if(td) {
+    const base = $('today-line');
+    if(base) base.textContent += td.count ? ` · 오늘 촬영 ${td.count}건` : ' · 오늘 촬영 없음';
+  }
+  if(evs){
+    const base = new Date(); base.setHours(0,0,0,0);
+    let busiest = null, empty = [];
+    for(let i=0;i<7;i++){
+      const d = new Date(base); d.setDate(base.getDate()+i);
+      const iso = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      const n = evs.filter(e => e && e.date === iso && e.status !== 'cancel' && e.status !== 'nosh').length;
+      if(!busiest || n > busiest.n) busiest = { n, wd: WD[d.getDay()] };
+      if(n === 0) empty.push(WD[d.getDay()]);
+    }
+    const parts = [];
+    if(busiest && busiest.n > 0) parts.push(`${busiest.wd}요일이 ${busiest.n}건으로 가장 바쁩니다`);
+    if(empty.length) parts.push(`${empty.join('·')}요일은 비어 있습니다`);
+    set('w7-note', parts.length ? parts.join(' · ') : '앞으로 7일 예약이 없습니다');
+  }
+
   // 다음 촬영
   if(td && td.list.length){
     const n = td.list.find(e => !e.allDay) || td.list[0];
@@ -1182,6 +1193,36 @@ if(chipBtn) chipBtn.onclick = () => {
   if(u) D.logout(); else D.login().catch(e => alert('로그인 실패: ' + (e.code || e.message)));
 };
 
+// ── 날짜는 고정값이 아니라 «오늘»을 쓴다 (틀린 날짜를 보여주면 안 된다) ──
+const WD = ['일','월','화','수','목','금','토'];
+function paintDate(){
+  const d = new Date();
+  const h = d.getHours();
+  set('greet', h < 5 ? '늦은 밤이에요' : h < 12 ? '좋은 아침이에요'
+            : h < 18 ? '좋은 오후예요' : '좋은 저녁이에요');
+  set('today-line', `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 ${WD[d.getDay()]}요일`);
+}
+
+// 앞으로 7일 — 오늘부터. 점(촬영/납품/보정)은 로그인 후 예약 데이터로 채운다.
+function paintWeek(events){
+  const box = $('w7'); if(!box) return;
+  const base = new Date(); base.setHours(0,0,0,0);
+  let html = '';
+  for(let i=0;i<7;i++){
+    const d = new Date(base); d.setDate(base.getDate()+i);
+    const iso = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const day = events ? events.filter(e => e && e.date === iso
+                        && e.status !== 'cancel' && e.status !== 'nosh') : null;
+    const dots = day ? day.slice(0,3).map(() => '<i style="background:#4f9a6a"></i>').join('') : '';
+    const cls = 'd7' + (i===0 ? ' today' : '') + (day && day.length>=2 ? ' busy' : '');
+    html += `<div class="${cls}"><div class="dw">${WD[d.getDay()]}</div>`
+          + `<div class="dd">${d.getDate()}</div><div class="dm">${dots}</div></div>`;
+  }
+  box.innerHTML = html;
+}
+
+paintDate();
+paintWeek(null);
 paintLocal();
 paintStatic();
 
