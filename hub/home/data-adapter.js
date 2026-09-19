@@ -14,8 +14,8 @@
 // ─────────────────────────────────────────────────────────────
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged,
-         setPersistence, browserLocalPersistence }
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
+         signOut, onAuthStateChanged, setPersistence, browserLocalPersistence }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, collection, getDocs, query, orderBy, limit }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -34,7 +34,27 @@ try { setPersistence(auth, browserLocalPersistence); } catch (e) {}
 
 // ── 로그인 ────────────────────────────────────────────────────
 export function onUser(cb) { return onAuthStateChanged(auth, cb); }
-export function login()  { return signInWithPopup(auth, new GoogleAuthProvider()); }
+
+// 리다이렉트로 로그인하고 돌아온 경우를 먼저 받아준다(폰에서 이 경로를 탄다)
+getRedirectResult(auth).catch(() => {});
+
+/**
+ * 구글 로그인.
+ * 폰(특히 사파리·인앱 브라우저)은 팝업을 막는 경우가 많다.
+ * 팝업이 막히면 전체화면 리다이렉트로 자동 전환한다. (설문데이터 페이지와 같은 방식)
+ */
+export async function login() {
+  const provider = new GoogleAuthProvider();
+  try {
+    return await signInWithPopup(auth, provider);
+  } catch (e) {
+    try {
+      return await signInWithRedirect(auth, provider);
+    } catch (e2) {
+      throw new Error('로그인에 실패했어요. 주소창 옆 쿠키 설정에서 이 사이트를 허용하거나 사파리로 열어보세요.');
+    }
+  }
+}
 export function logout() { return signOut(auth); }
 export function currentUser() { return auth.currentUser; }
 

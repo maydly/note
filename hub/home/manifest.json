@@ -1,0 +1,17 @@
+{
+  "name": "maydly 홈 대시보드",
+  "short_name": "maydly 홈",
+  "description": "촬영·돈·장비·기록을 한 화면에서 보는 개인 홈",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f2f6f0",
+  "theme_color": "#f2f6f0",
+  "icons": [
+    { "src": "../icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "../icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "../icon-mask-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
