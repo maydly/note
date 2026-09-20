@@ -87,6 +87,38 @@
   .note b{color:var(--green);}
   .hint{font-size:11px;color:var(--sub-l);margin:2px 0 0 2px;}
   @media(max-width:760px){ .stats{grid-template-columns:repeat(2,1fr);} .day .cnt{font-size:9.5px;} .day .dl{font-size:8.5px;} }
+
+  /* ── 탭 ── */
+  .tabs{display:flex;gap:8px;margin:0 0 16px;position:relative;z-index:1;flex-wrap:wrap}
+  .tb{padding:9px 20px;border:1px solid var(--line);border-radius:22px;background:var(--card);
+    font-size:14px;font-weight:600;color:var(--sub);cursor:pointer}
+  .tb.on{background:var(--green);border-color:var(--green);color:#fff}
+  .tabpane[hidden]{display:none}
+  /* ── 시안 읽힘 ── */
+  .vrow{display:grid;grid-template-columns:104px 1fr 80px;gap:12px;align-items:center;padding:7px 0;font-size:13px}
+  .vrow .nm{color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .vrow .bar{height:11px;background:var(--line);border-radius:6px;overflow:hidden}
+  .vrow .bar i{display:block;height:100%;width:0;background:#7DAB5A;border-radius:6px;transition:width .9s ease}
+  .vrow .bar i.warm{background:#B98A3C}
+  .vrow .bar i.deep{background:var(--green)}
+  .vrow .vl{text-align:right;font-weight:700;font-size:12.5px}
+  .vrow .vl span{color:var(--sub);font-weight:400;font-size:11.5px}
+  .vrow.dim{opacity:.55}
+  .vhint{margin-top:14px;padding-top:13px;border-top:1px solid var(--line);font-size:12.5px;color:var(--sub);line-height:1.85}
+  .vhint b{color:#B98A3C}
+  .vfunnel{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;text-align:center}
+  .vfn{background:#EAF2DC;border-radius:12px;padding:15px 10px}
+  .vfn .n{font-size:20px;font-weight:800;color:var(--green)}
+  .vfn .t{margin-top:4px;font-size:12px;color:var(--sub)}
+  .vfn .p{margin-top:2px;font-size:11px;color:var(--sub)}
+  .vempty{padding:32px;text-align:center;color:var(--sub);font-size:13.5px;line-height:1.9}
+  .vrange{display:flex;gap:7px;margin:0 0 14px;flex-wrap:wrap;align-items:center}
+  .vrg{padding:6px 14px;border:1px solid var(--line);border-radius:17px;background:var(--card);
+    font-size:13px;color:var(--sub);cursor:pointer}
+  .vrg.on{background:var(--green);border-color:var(--green);color:#fff;font-weight:600}
+  .vlead{font-size:12.5px;color:var(--sub);margin:-4px 0 12px;line-height:1.75}
+  @media (max-width:720px){ .vfunnel{grid-template-columns:repeat(2,1fr)}
+    .vrow{grid-template-columns:82px 1fr 68px;gap:9px;font-size:12.5px} }
 </style>
 </head>
 <body>
@@ -108,6 +140,12 @@
       <div class="title"><span class="clv">🍀</span><h1>설문데이터</h1><span class="tag">고객 문의 DB · 개인 자료용</span></div>
       <div class="whoami">🔒 <span class="dot"></span> <span id="who">명진</span> <span class="out" id="logoutBtn">로그아웃</span></div>
     </header>
+    <div class="tabs" id="tabs">
+      <span class="tb on" data-t="inq">문의 데이터</span>
+      <span class="tb" data-t="views">시안 읽힘</span>
+    </div>
+
+    <div class="tabpane" id="pane-inq">
     <div class="startline">🧪 <b>검증 모드</b> (테스트 컬렉션) · 실가동 데이터 수집 시작: <b>2026-08-01</b></div>
     <div class="stats" id="stats"></div>
     <div class="panel"><h2 id="daily-h">일별 문의 추이</h2><div class="daily" id="daily"></div></div>
@@ -123,6 +161,34 @@
       </table></div>
       <div class="hint">· 상태 배지를 <b>누르면</b> 신규 → 상담중 → 예약 → 완료 순으로 바뀌어요. · 맨 오른쪽 <b>🗑</b>로 테스트·불필요한 문의를 삭제할 수 있어요.</div>
     </div>
+    </div>
+
+    <div class="tabpane" id="pane-views" hidden>
+      <div class="startline">📖 고객들이 <b>시안 페이지</b>의 어디를 많이 보고, 어디를 건너뛰고, 어디서 멈추는지예요 ·
+        <b>개인은 식별하지 않아요</b></div>
+      <div class="vrange" id="vrange">
+        <span class="vrg on" data-d="7">최근 7일</span>
+        <span class="vrg" data-d="30">최근 30일</span>
+        <span class="vrg" data-d="0">전체</span>
+      </div>
+      <div class="stats" id="vstats"></div>
+      <div class="panel"><h2>어디까지 봤나</h2>
+        <div class="vlead">각 대목까지 내려온 비율. 막대가 뚝 떨어지는 곳이 그만 보는 지점이에요.</div>
+        <div id="vreach"></div><div class="vhint" id="vreachHint"></div></div>
+      <div class="panel"><h2>어디서 오래 머물렀나</h2>
+        <div class="vlead">그 대목을 본 사람들의 평균 체류 시간이에요.</div>
+        <div id="vdwell"></div></div>
+      <div class="panel"><h2>어디서 멈췄나</h2>
+        <div class="vlead">마지막으로 도달한 대목. 여기 몰린 곳이 이탈 지점이에요.</div>
+        <div id="vexit"></div></div>
+      <div class="panel"><h2>펼쳐본 항목</h2>
+        <div class="vlead">접힌 설명을 실제로 열어본 비율. 낮으면 아무도 안 읽고 있다는 뜻이에요.</div>
+        <div id="vacc"></div></div>
+      <div class="panel"><h2>문의까지 가는 길</h2>
+        <div class="vfunnel" id="vfunnel"></div><div class="vhint" id="vfunnelHint"></div></div>
+      <div class="panel"><h2>어떻게 보나</h2><div id="vmisc"></div></div>
+    </div>
+
     <div class="note">🍀 <b>개인 자료용</b> · 고객이 시안 폼을 작성하면 여기에 <b>자동으로</b> 쌓여요(bucket0825 구글 로그인만 열람). 통계·일별건수는 자동 계산.</div>
   </div>
 
@@ -268,6 +334,129 @@
   }
   function tile(k,v,d,today){ return '<div class="stat'+(today?' today':'')+'"><div class="k">'+k+'</div><div class="v">'+v+'</div><div class="d">'+d+'</div></div>'; }
   function fbtn(key,label,n){ return '<span class="fbtn'+(activeFilter===key?' on':'')+'" onclick="setFilter(\''+key+'\')">'+label+' '+n+'</span>'; }
+
+/* ── 시안 읽힘 (maydly_views) ─────────────────────────────────────
+   시안 페이지에서 어디를 보고 어디서 멈추는지. 개인은 식별하지 않는다. */
+const V_SECTIONS = [
+  ['direction','촬영 방향'], ['core','핵심 안내'],   ['concept','시안 방향'],
+  ['structure','촬영 구성'], ['guide','준비 참고'],  ['behind','비하인드'],
+  ['process','진행 흐름'],   ['studio','촬영 공간'], ['notice','필독 공지'],
+  ['cta','문의하기']
+];
+let V_ROWS = [], V_DAYS = 7, V_LOADED = false;
+const vq   = id => document.getElementById(id);
+const vpct = (a,b) => b ? Math.round(a/b*100) : 0;
+const vsec = s => s >= 60 ? Math.floor(s/60)+'분 '+(s%60)+'초' : s+'초';
+
+vq('tabs').onclick = e => {
+  const el = e.target.closest('.tb'); if(!el) return;
+  document.querySelectorAll('.tb').forEach(x => x.classList.toggle('on', x===el));
+  const t = el.dataset.t;
+  vq('pane-inq').hidden   = (t !== 'inq');
+  vq('pane-views').hidden = (t !== 'views');
+  if(t === 'views'){ V_LOADED ? renderViews() : loadViews(); }
+};
+vq('vrange').onclick = e => {
+  const el = e.target.closest('.vrg'); if(!el) return;
+  document.querySelectorAll('.vrg').forEach(x => x.classList.remove('on'));
+  el.classList.add('on'); V_DAYS = +el.dataset.d; renderViews();
+};
+
+async function loadViews(){
+  V_LOADED = true;
+  try{
+    const snap = await getDocs(query(collection(db,'maydly_views'), orderBy('ts','desc')));
+    V_ROWS = snap.docs.map(d => d.data()).filter(r => r && r.ts);
+  }catch(e){ V_ROWS = []; }
+  renderViews();
+}
+function vInRange(r){
+  if(!V_DAYS) return true;
+  const t = r.ts.toDate ? r.ts.toDate() : new Date(r.ts);
+  return (Date.now() - t.getTime()) <= V_DAYS*86400000;
+}
+function vbar(name, value, max, label, cls, dim){
+  return '<div class="vrow'+(dim?' dim':'')+'"><span class="nm">'+name+'</span>'
+    + '<span class="bar"><i class="'+(cls||'')+'" data-w="'+(max?Math.round(value/max*100):0)+'"></i></span>'
+    + '<span class="vl">'+label+'</span></div>';
+}
+/* 막대 채우기를 rAF 에 걸면 배경 탭에서 멈춰 0 으로 남는다 */
+function vanimate(){
+  document.querySelectorAll('.vrow .bar i[data-w]').forEach(i => { void i.offsetWidth; i.style.width = i.dataset.w+'%'; });
+}
+
+function renderViews(){
+  const rows = V_ROWS.filter(vInRange), n = rows.length;
+  if(!n){
+    vq('vstats').innerHTML = '';
+    ['vreach','vdwell','vexit','vacc','vmisc'].forEach(id => vq(id).innerHTML =
+      '<div class="vempty">아직 쌓인 기록이 없어요.<br>시안 페이지를 10초 이상 보고 <b>탭을 닫거나 다른 탭으로 옮기면</b> 그때 한 건 쌓여요.</div>');
+    vq('vfunnel').innerHTML=''; vq('vreachHint').textContent=''; vq('vfunnelHint').textContent='';
+    return;
+  }
+  const avg  = Math.round(rows.reduce((a,r)=>a+(r.dur||0),0)/n);
+  const rev  = rows.filter(r=>(r.visit||1)>1).length;
+  const done = rows.filter(r=>r.form==='submitted').length;
+  vq('vstats').innerHTML =
+    '<div class="stat"><div class="k">본 횟수</div><div class="v">'+n+'</div></div>'
+   +'<div class="stat"><div class="k">평균 머문 시간</div><div class="v">'+Math.floor(avg/60)+'분 '+(avg%60)+'초</div></div>'
+   +'<div class="stat"><div class="k">다시 들어옴</div><div class="v">'+vpct(rev,n)+'%</div></div>'
+   +'<div class="stat"><div class="k">문의까지</div><div class="v">'+vpct(done,n)+'%</div></div>'
+   +'<div class="stat"><div class="k">폰으로</div><div class="v">'+vpct(rows.filter(r=>r.dev==='mobile').length,n)+'%</div></div>';
+
+  let html='', prev=null, dropAt=null, dropGap=0;
+  V_SECTIONS.forEach(([id,nm],i)=>{
+    const c = rows.filter(r=>(r.deep||0)>=i).length, p = vpct(c,n);
+    if(prev!==null && prev-p > dropGap){ dropGap = prev-p; dropAt = nm; }
+    prev = p;
+    html += vbar(nm, p, 100, p+'%<span> '+c+'명</span>', p>=70?'deep':(p>=35?'':'warm'), p<35);
+  });
+  vq('vreach').innerHTML = html;
+  vq('vreachHint').innerHTML = dropAt
+    ? '가장 많이 떨어져 나가는 구간은 <b>'+dropAt+' 직전</b>이에요('+dropGap+'%p 감소). 그 앞 대목이 길거나 어렵지 않은지 살펴보면 좋아요.' : '';
+
+  const maxAvg = Math.max.apply(null, V_SECTIONS.map(([id])=>{
+    const v = rows.filter(r=>r.secs && r.secs[id]);
+    return v.length ? v.reduce((a,r)=>a+r.secs[id],0)/v.length : 0;
+  }).concat([1]));
+  vq('vdwell').innerHTML = V_SECTIONS.map(([id,nm])=>{
+    const v = rows.filter(r=>r.secs && r.secs[id]);
+    const a = v.length ? Math.round(v.reduce((x,r)=>x+r.secs[id],0)/v.length) : 0;
+    return vbar(nm, a, maxAvg, vsec(a), a>=maxAvg*0.6?'deep':'', !a);
+  }).join('');
+
+  const ex = V_SECTIONS.map(([id,nm],i)=>[nm, rows.filter(r=>(r.deep||0)===i).length]);
+  const mx = Math.max.apply(null, ex.map(e=>e[1]).concat([1]));
+  vq('vexit').innerHTML = ex.map(([nm,c])=>vbar(nm,c,mx,c+'명<span> '+vpct(c,n)+'%</span>',(c===mx&&c>0)?'warm':'',!c)).join('');
+
+  const names={};
+  rows.forEach(r => (r.opened||[]).forEach(t => names[t]=(names[t]||0)+1));
+  const ks = Object.keys(names).sort((a,b)=>names[b]-names[a]);
+  vq('vacc').innerHTML = ks.length
+    ? ks.map(k=>vbar(k,names[k],n,vpct(names[k],n)+'%<span> '+names[k]+'명</span>',
+        vpct(names[k],n)>=50?'deep':(vpct(names[k],n)>=20?'':'warm'), vpct(names[k],n)<20)).join('')
+    : '<div class="vempty">아직 펼쳐본 기록이 없어요.</div>';
+
+  const reach = rows.filter(r=>['reached','typed','submitted'].indexOf(r.form)>=0).length;
+  const typed = rows.filter(r=>['typed','submitted'].indexOf(r.form)>=0).length;
+  vq('vfunnel').innerHTML = [['들어옴',n],['문의까지 내려옴',reach],['쓰기 시작',typed],['실제로 냄',done]]
+    .map(([t,c])=>'<div class="vfn"><div class="n">'+c+'</div><div class="t">'+t+'</div><div class="p">'+vpct(c,n)+'%</div></div>').join('');
+  vq('vfunnelHint').innerHTML = (reach && typed < reach*0.4)
+    ? '문의까지 내려온 사람 중 <b>'+vpct(reach-typed,reach)+'%가 쓰지 않고 떠났어요.</b> 폼이 부담스럽지 않은지 볼 만해요.'
+    : (typed && done < typed*0.6) ? '쓰기 시작한 사람 중 <b>'+vpct(typed-done,typed)+'%가 끝내지 못했어요.</b>' : '';
+
+  const long = rows.filter(r=>(r.dur||0)>=300).length, quick = rows.filter(r=>(r.dur||0)<30).length;
+  vq('vmisc').innerHTML =
+    vbar('5분 이상', long, n, vpct(long,n)+'%<span> '+long+'명</span>','deep')
+  + vbar('30초 미만', quick, n, vpct(quick,n)+'%<span> '+quick+'명</span>','warm');
+  vanimate();
+}
+
+if(location.hash === '#views'){
+  const el = document.querySelector('.tb[data-t="views"]');
+  if(el) setTimeout(()=>el.click(), 0);
+}
+
 </script>
 <!-- ?embed=1 로 열면 홈 대시보드에 끼워 넣기용 화면(제목줄·안내문 숨김). 파라미터가 없으면 기존 동작 그대로. -->
 <script>
