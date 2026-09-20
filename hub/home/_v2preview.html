@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#f2f6f0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="maydly 홈">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="../icon-180.png">
+<title>maydly · 홈 대시보드</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --g:#4f9a6a; --g2:#7fb877; --gl:#eaf3e7;
+  --ink:#1c2620; --sub:#5d6b5f; --mute:#95a396;
+  --bg:#f3f6f2; --card:#ffffff; --soft:#f7faf6;
+  --warn:#c9705f; --warnbg:#fdf4f1;
+  --r:24px; --r2:18px; --r3:13px;
+  --sh:0 1px 2px rgba(28,38,32,.035), 0 10px 30px rgba(28,38,32,.055);
+  --shx:0 2px 6px rgba(28,38,32,.05), 0 18px 46px rgba(28,38,32,.09);
+  --rail:74px;
+}
+html,body{background:var(--bg);color:var(--ink);
+  font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;
+  -webkit-font-smoothing:antialiased;line-height:1.6;min-height:100vh;letter-spacing:-.2px}
+
+.mockbar{background:#fdf6e9;color:#8a6a34;padding:9px 20px;font-size:11.5px;
+  font-weight:650;text-align:center;letter-spacing:-.1px}
+
+/* ══ 틀 ══ */
+.shell{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);align-items:start;min-height:0}
+
+/* ══ 아이콘 레일 ══ */
+.side{position:sticky;top:0;height:100vh;background:transparent;border:none;
+  display:flex;flex-direction:column;align-items:center;gap:3px;padding:18px 0 22px;overflow:visible}
+.side .brand{padding:0 0 16px;font-size:0;display:flex;align-items:center;justify-content:center}
+.side .brand .d{display:none}
+.side .brand svg{width:26px;height:26px;margin:0!important}
+.navsec,details.grp>summary{display:none!important}
+details.grp{display:contents}
+.nav{width:46px;height:46px;border-radius:15px;display:flex;align-items:center;justify-content:center;
+  gap:0;padding:0;font-size:0;color:var(--sub);text-decoration:none;position:relative;flex:0 0 auto;
+  transition:background .15s,transform .15s}
+.nav .e{font-size:19px;width:auto}
+.nav:hover{background:#fff;box-shadow:var(--sh);transform:translateY(-1px)}
+.nav.on{background:var(--g);box-shadow:0 6px 18px rgba(79,154,106,.32)}
+.nav .bdg{position:absolute;top:2px;right:2px;margin:0;min-width:16px;height:16px;
+  font-size:9.5px;border-radius:8px;background:var(--warn);color:#fff;display:flex;
+  align-items:center;justify-content:center;padding:0 4px;font-weight:800;box-shadow:0 0 0 2px var(--bg)}
+.nav .bdg.soft{background:#c6d4c3;color:#3f5642}
+/* 레일엔 상위 10개만, 나머지는 ⋯ 로 */
+.side details.grp:nth-of-type(n+4) .nav{display:none}
+.side .allbtn{margin-top:auto;width:46px;height:46px;border-radius:15px;border:none;
+  background:#fff;box-shadow:var(--sh);font-size:0;display:flex;align-items:center;
+  justify-content:center;color:var(--sub);text-decoration:none;cursor:pointer}
+.side .allbtn::before{content:'⋯';font-size:21px;font-weight:800;line-height:1}
+/* 전체 앱 서랍 */
+body.apps-open .side{width:260px}
+body.apps-open .shell{grid-template-columns:260px minmax(0,1fr)}
+body.apps-open .side{align-items:stretch;padding:18px 14px 22px;overflow-y:auto}
+body.apps-open .side .brand{font-size:22px;font-weight:800;padding:0 8px 16px;justify-content:flex-start}
+body.apps-open .side .brand .d{display:inline;color:var(--g)}
+body.apps-open .navsec,body.apps-open details.grp>summary{display:flex!important}
+body.apps-open details.grp{display:block}
+body.apps-open .side details.grp .nav{display:flex}
+body.apps-open .nav{width:auto;height:auto;padding:9px 11px;font-size:13px;gap:10px;
+  justify-content:flex-start;border-radius:12px;font-weight:650}
+body.apps-open .nav .bdg{position:static;margin-left:auto;box-shadow:none}
+details.grp>summary{list-style:none;cursor:pointer;align-items:center;gap:7px;
+  font-size:10px;font-weight:800;color:#a9b6a7;letter-spacing:.4px;padding:11px 10px 5px}
+details.grp>summary::-webkit-details-marker{display:none}
+details.grp>summary .ar{font-size:8px;color:#c6d1c3}
+details.grp[open]>summary .ar{transform:rotate(90deg)}
+details.grp>summary .n{margin-left:auto;font-size:10px;color:#bcc7b9;font-weight:800}
+
+/* ══ 본문 ══ */
+.main{padding:26px 30px 70px;min-width:0}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:22px}
+.hi{font-size:30px;font-weight:800;letter-spacing:-1.1px;line-height:1.25}
+.hi span{color:var(--g)}
+.dt{font-size:13px;color:var(--mute);font-weight:600;margin-top:5px}
+.switch{display:flex;gap:7px}
+.sw{background:#fff;border:none;box-shadow:var(--sh);border-radius:14px;padding:10px 17px;
+  font-size:12.5px;font-weight:750;color:var(--sub);text-decoration:none;white-space:nowrap}
+.sw.on{background:var(--g);color:#fff;box-shadow:0 6px 18px rgba(79,154,106,.3)}
+
+/* 상태줄 */
+.statusbar{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;align-items:center}
+.stchip{display:flex;align-items:center;gap:6px;background:#fff;border:none;box-shadow:var(--sh);
+  border-radius:20px;padding:7px 13px;font-size:11px;font-weight:700;color:var(--sub)}
+.stchip i{width:6px;height:6px;border-radius:50%;flex:0 0 auto}
+.stchip.btn{cursor:pointer}
+body.privacy .stchip.btn{background:var(--g);color:#fff}
+.mask{transition:filter .15s}
+body.privacy .mask{filter:blur(6px);user-select:none}
+
+/* ══ 벤토 ══ */
+.brief,.grid2,.grid2b,.grid3,.embgrid,.wgrid,.shots,.pipe,.w7,.th4,.apps{
+  display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px;margin-bottom:14px}
+.brief>*{grid-column:span 3}
+.brief>*:first-child{grid-column:span 6}          /* 다음 촬영을 크게 */
+.grid2>*{grid-column:span 6}
+.grid2>*:first-child{grid-column:span 8}
+.grid2>*:last-child{grid-column:span 4}
+.grid2b>*:first-child{grid-column:span 5}
+.grid2b>*:last-child{grid-column:span 7}
+.grid3>*{grid-column:span 4}
+.embgrid>*{grid-column:span 6}
+.pipe{gap:11px}.pipe>*{grid-column:span 3}
+.w7{gap:8px}.w7>*{grid-column:span 1}
+.th4>*,.shots>*{grid-column:span 3}
+.apps{gap:11px}.apps>*{grid-column:span 1}
+
+/* 카드 */
+.card{background:var(--card);border:none;border-radius:var(--r);padding:22px 24px;min-width:0;
+  box-shadow:var(--sh);transition:box-shadow .18s,transform .18s}
+.card:hover{box-shadow:var(--shx)}
+.ch{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;gap:10px}
+.ct{font-size:14px;font-weight:800;letter-spacing:-.4px}
+.cs{font-size:11px;color:var(--mute);font-weight:650}
+.more{font-size:11px;color:var(--g);font-weight:750;text-decoration:none}
+
+/* 브리핑 — 숫자를 크게 */
+.bf{background:var(--card);border:none;border-radius:var(--r);padding:20px 22px;
+  text-decoration:none;color:inherit;display:block;box-shadow:var(--sh);
+  position:relative;overflow:hidden;transition:transform .18s,box-shadow .18s}
+.bf:hover{transform:translateY(-2px);box-shadow:var(--shx)}
+.bf::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:#e3ebdf}
+.bf.urgent::before{background:var(--warn)}
+.bf.today::before{background:var(--g)}
+.bf .bl{font-size:11px;color:var(--mute);font-weight:750;letter-spacing:.1px}
+.bf .bv{font-size:27px;font-weight:800;letter-spacing:-1.2px;margin-top:8px;line-height:1.15}
+.bf .bs{font-size:11.5px;color:var(--mute);margin-top:8px;font-weight:600;line-height:1.55}
+.bf.urgent .bv{color:var(--warn)}
+
+/* 지금 처리할 것 */
+.nowgrp{margin-bottom:16px}
+.nowgrp:last-child{margin-bottom:0}
+.nowlb{font-size:10px;font-weight:800;letter-spacing:.5px;margin-bottom:8px;text-transform:uppercase}
+.nowlb.u{color:var(--warn)}.nowlb.t{color:var(--g)}.nowlb.w{color:var(--mute)}
+.nowit{display:flex;align-items:center;gap:13px;padding:12px 14px;border-radius:var(--r3);
+  background:var(--soft);border:none;margin-bottom:7px;text-decoration:none;color:inherit;
+  transition:background .14s,transform .14s}
+.nowit:hover{background:#eef4ec;transform:translateX(2px)}
+.nowit:last-child{margin-bottom:0}
+.nowit.u{background:var(--warnbg)}
+.nowit .ni{font-size:15px;width:24px;text-align:center;flex:0 0 auto}
+.nowit .nb{flex:1;min-width:0}
+.nowit .n1{font-size:13px;font-weight:750}
+.nowit .n2{font-size:11px;color:var(--mute);margin-top:3px}
+.nowit .nr{font-size:10.5px;font-weight:750;color:var(--mute);white-space:nowrap}
+.nowit .nr.hot{color:var(--warn)}
+
+/* 타임라인 */
+.tl{position:relative}
+.tlrow{display:flex;gap:15px;padding:11px 0;position:relative}
+.tlrow .tm{font-size:12.5px;font-weight:750;color:var(--mute);min-width:52px;padding-top:2px}
+.tlrow .dot{width:10px;height:10px;border-radius:50%;border:2.5px solid #e2e9de;background:#fff;
+  margin-top:5px;flex:0 0 auto;position:relative;z-index:1}
+.tlrow.done .dot{background:var(--g2);border-color:var(--g2)}
+.tlrow.now .dot{background:var(--g);border-color:#cfe6d2;box-shadow:0 0 0 5px var(--gl)}
+.tlrow .bar{position:absolute;left:70px;top:0;bottom:0;width:2px;background:#eef3ec;z-index:0}
+.tlrow:first-child .bar{top:16px}
+.tlrow:last-child .bar{bottom:calc(100% - 16px)}
+.tlrow .bd{flex:1;min-width:0}
+.tlrow .t1{font-size:13.5px;font-weight:700}
+.tlrow .t2{font-size:11.5px;color:var(--mute);margin-top:3px}
+.tlrow.done .t1{color:#9aa79b;text-decoration:line-through;text-decoration-color:#d3dcd2}
+.pill{font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;white-space:nowrap;align-self:center}
+.pill.pay{background:var(--gl);color:#3f7a4d}
+.pill.col{background:#f2eef6;color:#6f5685}
+.pill.warn{background:var(--warnbg);color:var(--warn)}
+
+/* 진행 바 */
+.goal{margin-bottom:16px}
+.goal:last-child{margin-bottom:0}
+.gl{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.gn{font-size:12.5px;font-weight:700}
+.gv{font-size:11.5px;color:var(--mute);font-weight:750}
+.gbar{height:7px;background:#eef3ec;border-radius:5px;overflow:hidden}
+.gbar i{display:block;height:100%;border-radius:5px}
+
+/* 7일 */
+.d7{background:var(--soft);border:none;border-radius:var(--r3);padding:12px 6px;text-align:center;min-width:0}
+.d7.busy{background:var(--gl)}
+.d7.today{background:var(--g)}
+.d7.today .dw,.d7.today .dd{color:#fff}
+.d7 .dw{font-size:10px;color:var(--mute);font-weight:750}
+.d7 .dd{font-size:15px;font-weight:800;margin-top:3px;letter-spacing:-.5px}
+.d7 .dm{display:flex;justify-content:center;gap:3px;margin-top:8px;min-height:7px}
+.d7 .dm i{width:5px;height:5px;border-radius:50%;display:block}
+
+/* 층 제목 */
+.tier{margin:36px 0 15px;display:flex;align-items:baseline;gap:12px}
+.tier h2{font-size:21px;font-weight:800;letter-spacing:-.8px}
+.tier .ts{font-size:11.5px;color:var(--mute);font-weight:650}
+.sechd{display:flex;align-items:center;gap:9px;margin:20px 0 11px}
+.sechd h2{font-size:13px;font-weight:800;color:var(--sub);letter-spacing:-.2px}
+.sechd .sn{font-size:11px;color:var(--mute);font-weight:600}
+.vopen{display:contents}
+
+/* 칸반 */
+.kcol{background:var(--soft);border:none;border-radius:var(--r2);padding:14px 13px;min-height:140px}
+.colh{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.colt{font-size:11px;font-weight:800;color:var(--sub)}
+.coln{font-size:10px;font-weight:800;color:#fff;background:#c2cfbf;border-radius:9px;padding:2px 8px}
+.item{background:#fff;border:none;border-radius:var(--r3);padding:11px 13px;margin-bottom:8px;
+  box-shadow:0 1px 2px rgba(28,38,32,.05)}
+.item .i1{font-size:12.5px;font-weight:750}
+.item .i2{font-size:10.5px;color:var(--mute);margin-top:3px}
+.item.hot{background:var(--warnbg)}
+
+/* 목록·표 */
+.lst{display:flex;flex-direction:column}
+.li{display:flex;align-items:center;gap:13px;padding:11px 0;border-top:1px solid #f1f5f0}
+.li:first-child{border-top:none}
+.li .ii{width:32px;height:32px;border-radius:11px;display:flex;align-items:center;
+  justify-content:center;font-size:15px;flex:0 0 auto;background:var(--soft)}
+.li .lb1{font-size:12.5px;font-weight:750}
+.li .lb2{font-size:11px;color:var(--mute);margin-top:3px}
+.li .bd2{flex:1;min-width:0}
+.li .rt{font-size:11px;color:var(--mute);font-weight:750;white-space:nowrap}
+.li .rt.hot{color:var(--warn)}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:6px 0}
+th{font-size:10.5px;color:var(--mute);font-weight:750;text-align:left;padding:0 7px 9px;border-bottom:1px solid #eef3ec}
+td{padding:9px 7px;border-bottom:1px solid #f4f7f3;font-weight:650}
+td:first-child{font-weight:750}
+.tbl .ok{color:var(--g);font-weight:800}
+.hg{width:100%;border-collapse:collapse;font-size:11.5px}
+.hg th{font-size:10px;padding:0 0 8px;text-align:center;border:none}
+.hg th:first-child{text-align:left;width:38%}
+.hg td{padding:6px 0;text-align:center;border:none}
+.hg td:first-child{text-align:left;font-weight:750;font-size:12px}
+.dotc{width:20px;height:20px;border-radius:7px;display:inline-block;background:#eef3ec}
+.dotc.y{background:var(--g2)}.dotc.n{background:#f3e4e0}
+.streak{margin-top:12px;display:inline-block;background:var(--gl);color:#3f7a4d;
+  font-size:11px;font-weight:800;padding:5px 13px;border-radius:20px}
+
+/* 칩 */
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{background:var(--soft);border:none;border-radius:20px;padding:6px 13px;
+  font-size:11.5px;font-weight:700;color:var(--sub)}
+.chip.on{background:var(--gl);color:#33633f}
+
+/* 카테고리 막대 */
+.cat{margin-bottom:13px}
+.cat:last-child{margin-bottom:0}
+.catl{display:flex;justify-content:space-between;font-size:11.5px;font-weight:750;margin-bottom:6px}
+.catl b{color:var(--mute)}
+.catb{height:6px;background:#eef3ec;border-radius:4px;overflow:hidden}
+.catb i{display:block;height:100%;border-radius:4px}
+
+/* 사진·시안 */
+.shot,.th4 .t{aspect-ratio:3/4;border-radius:var(--r2);display:flex;align-items:flex-end;padding:11px;overflow:hidden}
+.shot span,.th4 .t span{font-size:10px;font-weight:800;color:#fff;text-shadow:0 1px 5px rgba(0,0,0,.4)}
+
+/* 지도·사주 */
+.mmap{background:var(--soft);border-radius:var(--r2);padding:8px}
+.mmap svg{max-width:340px;margin:0 auto;display:block}
+.saju{background:linear-gradient(140deg,#f0e8f4,#e4d8ec);border-radius:var(--r2);padding:18px 20px}
+.saju .sj1{font-size:11px;font-weight:800;color:#7a6088}
+.saju .sj2{font-size:18px;font-weight:800;letter-spacing:-.6px;color:#43354f;margin-top:5px}
+.saju .sj3{font-size:11.5px;color:#7d6b88;margin-top:8px;line-height:1.6}
+
+/* 점검 */
+.chk{display:flex;align-items:center;gap:13px;padding:11px 0;border-top:1px solid #f1f5f0}
+.chk:first-of-type{border-top:none}
+.chk .st{width:7px;height:7px;border-radius:50%;flex:0 0 auto}
+.chk .c1{font-size:12.5px;font-weight:700;flex:1;min-width:0}
+.chk .c2{font-size:11px;color:var(--mute);font-weight:650;white-space:nowrap}
+
+/* 임베드 */
+.frame{position:relative;border:none;border-radius:var(--r2);overflow:hidden;background:var(--soft)}
+.frame iframe{width:100%;height:430px;border:0;display:block;background:#fff}
+.frame.tall iframe{height:540px}
+.frame.short iframe{height:300px}
+.frame .badge{position:absolute;top:10px;right:11px;background:rgba(255,255,255,.94);
+  border-radius:20px;padding:4px 11px;font-size:10px;font-weight:800;color:var(--sub);
+  pointer-events:none;z-index:2;box-shadow:var(--sh)}
+.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  height:300px;cursor:pointer;text-align:center;padding:22px}
+.ph .pi{font-size:32px}
+.ph .pt{font-size:13px;font-weight:800;color:var(--sub)}
+.ph .ps{font-size:11.5px;color:var(--mute);font-weight:600;line-height:1.55}
+.ph:hover{background:#eef4ec}
+.embnote{background:#fdf6e9;border:none;border-radius:var(--r2);padding:14px 17px;
+  font-size:11.5px;color:#8a6a34;font-weight:650;line-height:1.7;margin-bottom:13px}
+
+.nd{color:#c3cebf;font-weight:800}
+.dash{color:#c3cebf}
+.foot{text-align:center;margin-top:34px;font-size:11px;color:#b6c0b4;line-height:1.9}
+code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
+  font-family:'SF Mono',ui-monospace,Menlo,monospace;color:#3d6b47}
+
+/* 등장 — fill-mode 를 쓰지 않는다.
+   'both' 를 쓰면 애니메이션이 돌지 않는 환경(동작 줄이기·헤드리스)에서
+   opacity:0 상태로 굳어 화면이 통째로 안 보인다. */
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.card,.bf{animation:up .4s ease}
+@media(prefers-reduced-motion:reduce){ .card,.bf{animation:none} }
+
+/* ══ 폰 ══ */
+@media(max-width:900px){
+  .shell,body.apps-open .shell{grid-template-columns:minmax(0,1fr)}
+  .side,body.apps-open .side{position:static;height:auto;width:auto;flex-direction:row;
+    overflow-x:auto;gap:8px;padding:12px 14px;align-items:center;background:transparent}
+  .side .brand{padding:0 6px 0 0;flex:0 0 auto}
+  body.apps-open .side{flex-wrap:wrap}
+  .side details.grp:nth-of-type(n+4) .nav{display:flex}
+  .nav,body.apps-open .nav{width:42px;height:42px;padding:0;font-size:0;justify-content:center;border-radius:13px;background:#fff;box-shadow:var(--sh)}
+  body.apps-open .nav .bdg{position:absolute;top:2px;right:2px;margin:0}
+  .side .allbtn{margin-top:0;flex:0 0 auto}
+  .main{padding:18px 15px 50px}
+  .hi{font-size:23px}
+  .brief>*,.grid2>*,.grid2b>*,.grid3>*,.embgrid>*,.shots>*,.th4>*{grid-column:span 12}
+  .pipe>*{grid-column:span 6}
+  .w7>*{grid-column:span 12/span 12}
+  .w7{grid-template-columns:repeat(7,minmax(0,1fr))}
+  .w7>*{grid-column:span 1}
+  .apps{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .apps>*{grid-column:span 1}
+  .card{padding:18px 18px;border-radius:20px}
+  .frame iframe{height:360px}
+  .frame.tall iframe{height:420px}
+  .tier h2{font-size:18px}
+  .mockbar{font-size:11px;line-height:1.55}
+}
+@media(hover:none){.card:hover,.bf:hover,.nowit:hover{transform:none;box-shadow:var(--sh)}}
+
+</style>
+</head>
+<body>
+
+<div class="mockbar" id="demobar">🍀 새 레이아웃 미리보기 (v2.0 벤토) · 표시된 값은 실제 데이터 · 그래프·칸반·타임라인은 아직 예시 · 못 읽은 값은 —</div>
+
+<div class="shell">
+
+  <!-- 사이드바 = 앱 내비 -->
+  <aside class="side">
+    <div class="brand">maydly<span class="d">.</span>
+      <svg width="19" height="19" viewBox="0 0 40 40" style="margin-left:4px"><g fill="#4f9a6a"><path d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(90 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(180 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(270 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/></g></svg>
+    </div>
+
+    <a class="nav on" href="#"><span class="e">🏠</span>홈 대시보드</a>
+
+    <details class="grp" open><summary><span class="ar">▶</span>촬영 · 고객<span class="n">7</span></summary>
+      <a class="nav" href="#"><span class="e">📅</span>명진 캘린더<span class="bdg">2</span></a>
+      <a class="nav" href="#"><span class="e">🍀</span>협업 캘린더</a>
+      <a class="nav" href="#"><span class="e">🕐</span>페이용 캘린더</a>
+      <a class="nav" href="#"><span class="e">📋</span>설문 데이터<span class="bdg">1</span></a>
+      <a class="nav" href="#"><span class="e">🖼️</span>촬영 시안<span class="bdg soft">4</span></a>
+      <a class="nav" href="#"><span class="e">📸</span>대표 사진맵</a>
+      <a class="nav" href="#"><span class="e">✨</span>maydly 시안(고객용)</a>
+    </details>
+
+    <details class="grp" open><summary><span class="ar">▶</span>명진앱<span class="n">7</span></summary>
+      <a class="nav" href="#"><span class="e">✅</span>할 일<span class="bdg soft"><span id="nv-todo">5</span></span></a>
+      <a class="nav" href="#"><span class="e">💰</span>가계부<span class="bdg"><span id="nv-unc">21</span></span></a>
+      <a class="nav" href="#"><span class="e">🛒</span>구매<span class="bdg soft">4</span></a>
+      <a class="nav" href="#"><span class="e">📦</span>보유 장비</a>
+      <a class="nav" href="#"><span class="e">🗓️</span>촬영 기록</a>
+      <a class="nav" href="#"><span class="e">🌇</span>사진</a>
+      <a class="nav" href="#"><span class="e">ℹ️</span>정보(수빈앱 임베드)</a>
+    </details>
+
+    <details class="grp"><summary><span class="ar">▶</span>장비 자료<span class="n">16</span></summary>
+      <a class="nav" href="#"><span class="e">📑</span>장비비교 목차</a>
+      <a class="nav" href="#"><span class="e">📷</span>카메라 비교표</a>
+      <a class="nav" href="#"><span class="e">🎥</span>카메라 바디 비교표</a>
+      <a class="nav" href="#"><span class="e">🔍</span>렌즈 비교표</a>
+      <a class="nav" href="#"><span class="e">🌟</span>렌즈 필터 비교표</a>
+      <a class="nav" href="#"><span class="e">🔵</span>필터 비교표</a>
+      <a class="nav" href="#"><span class="e">💡</span>조명 비교표</a>
+      <a class="nav" href="#"><span class="e">🔦</span>조명 비교표(04)</a>
+      <a class="nav" href="#"><span class="e">🧰</span>악세사리 비교표</a>
+      <a class="nav" href="#"><span class="e">🧱</span>촬영지원장비 비교표</a>
+      <a class="nav" href="#"><span class="e">🖨️</span>포토프린터 비교표</a>
+      <a class="nav" href="#"><span class="e">🇯🇵</span>일본 빈티지렌즈 가이드</a>
+      <a class="nav" href="#"><span class="e">📦</span>보유장비 현황</a>
+      <a class="nav" href="#"><span class="e">🧾</span>구매계획 리스트</a>
+      <a class="nav" href="#"><span class="e">💡</span>조명 셋업 짜기<span class="bdg soft">8/13</span></a>
+      <a class="nav" href="#"><span class="e">📘</span>조명 악세사리 원리</a>
+    </details>
+
+    <details class="grp"><summary><span class="ar">▶</span>필름<span class="n">1</span></summary>
+      <a class="nav" href="#"><span class="e">🎞️</span>빈티지 필름<span class="bdg soft">6롤</span></a>
+    </details>
+
+    <details class="grp"><summary><span class="ar">▶</span>여행 · 지도<span class="n">3</span></summary>
+      <a class="nav" href="#"><span class="e">🗺️</span>여행지도<span class="bdg soft">564</span></a>
+      <a class="nav" href="#"><span class="e">🇰🇷</span>여행지도 한국</a>
+      <a class="nav" href="#"><span class="e">🌏</span>신의눈 3D</a>
+    </details>
+
+    <details class="grp"><summary><span class="ar">▶</span>기록 · 학습<span class="n">3</span></summary>
+      <a class="nav" href="#"><span class="e">📖</span>note 아카이브<span class="bdg soft">20</span></a>
+      <a class="nav" href="#"><span class="e">🤖</span>AI 에이전트 운영체계</a>
+      <a class="nav" href="#"><span class="e">🌿</span>단어 여정</a>
+    </details>
+
+    <details class="grp" open><summary><span class="ar">▶</span>점검<span class="n">2</span></summary>
+      <a class="nav" href="#"><span class="e">🏛️</span>거버넌스<span class="bdg">37</span></a>
+      <a class="nav" href="#"><span class="e">🧭</span>독립 준비 점검표</a>
+    </details>
+
+    <details class="grp"><summary><span class="ar">▶</span>수빈<span class="n">3</span></summary>
+      <a class="nav" href="#"><span class="e">🌱</span>수빈 앱(루틴)</a>
+      <a class="nav" href="#"><span class="e">🔮</span>수빈 사주</a>
+      <a class="nav" href="#"><span class="e">⭐</span>루틴앱 전용본</a>
+    </details>
+
+    <a class="allbtn" href="#" onclick="event.preventDefault();document.body.classList.toggle('apps-open')" title="앱 전체 보기"></a>
+  </aside>
+
+  <!-- 본문 -->
+  <main class="main">
+
+    <div class="top">
+      <div>
+        <div class="hi"><span id="greet">안녕하세요</span>, <span>명진</span>님</div>
+        <div class="dt"><span id="today-line">불러오는 중…</span></div>
+      </div>
+      <div class="switch">
+        <a class="sw on" href="#">📊 대시보드</a>
+        <a class="sw" href="#">▦ 타일 독바</a>
+      </div>
+    </div>
+
+
+    <div class="tier"><h2>오늘</h2><div class="ts">지금 판단해야 할 것</div></div>
+    <div class="statusbar">
+      <span class="stchip"><i style="background:#4f9a6a"></i>Firebase 연결됨 · 명진 계정</span>
+      <span class="stchip"><i style="background:#8cc0d8"></i>로컬 데이터 · 이 기기 기준</span>
+      <span class="stchip"><i style="background:#e0b08c"></i>정적 자료 · 9/13 갱신</span>
+      <span class="stchip btn" id="loginChip" style="margin-left:auto">🔑 구글 로그인</span>
+      <span class="stchip btn" style="margin-left:8px" onclick="document.body.classList.toggle('privacy')">🕶 현장 모드</span>
+    </div>
+
+    <!-- 브리핑 -->
+    <div class="brief">
+      <a class="bf today" href="#"><div class="bl">다음 촬영</div>
+        <div class="bv"><span id="b-next">14:00 · <span class="mask">ㅇㅇㅇ 님</span></span></div>
+        <div class="bs"><span id="b-next-sub">야외 1시간 · 입금 확인됨 · 4시간 뒤</span></div></a>
+      <a class="bf urgent" href="#"><div class="bl">처리할 예외</div>
+        <div class="bv"><span id="b-exc">2건</span></div>
+        <div class="bs">문의 26시간 경과 · 짝 없는 입금 1건</div></a>
+      <a class="bf" href="#"><div class="bl">오늘 할 일</div>
+        <div class="bv"><span id="b-todo">2건 남음</span></div>
+        <div class="bs"><span id="b-todo-sub">전체 5건 중 3건 완료 · 기한 지남 1</span></div></a>
+      <a class="bf urgent" href="#"><div class="bl">납품 마감</div>
+        <div class="bv">2건</div>
+        <div class="bs">셀렉 3일째 · 보정 12/30장</div></a>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div class="ch"><div class="ct">지금 처리할 것</div><div class="cs">문의 · 입금 · 납품을 한곳에</div></div>
+      <div class="nowgrp"><div class="nowlb u">긴급</div>
+        <a class="nowit u" href="#"><div class="ni">📨</div><div class="nb">
+          <div class="n1"><span class="mask">ㅅㅅㅅ 님</span> 문의에 답장 안 함</div>
+          <div class="n2">새내기 시안 · 접수 후 26시간</div></div><div class="nr hot">설문 데이터 →</div></a>
+        <a class="nowit u" href="#"><div class="ni">💳</div><div class="nb">
+          <div class="n1">예약과 짝이 없는 입금 <span class="mask">180,000원</span></div>
+          <div class="n2">9/09 · 예약자 이름과 다름</div></div><div class="nr hot">가계부 →</div></a></div>
+      <div class="nowgrp"><div class="nowlb t">오늘</div>
+        <a class="nowit" href="#"><div class="ni">⚠️</div><div class="nb">
+          <div class="n1">17:30 <span class="mask">ㅁㅁㅁ 님</span> · 노쇼 이력 1회</div>
+          <div class="n2">촬영 전 확인 여부 판단</div></div><div class="nr">캘린더 →</div></a>
+        <a class="nowit" href="#"><div class="ni">🖼️</div><div class="nb">
+          <div class="n1"><span class="mask">ㅌㅌㅌ 님</span> 셀렉 대기 3일째</div>
+          <div class="n2">납품 예정일 <span class="nd">—</span> · 원본에 필드 없음</div></div><div class="nr">명진앱 →</div></a></div>
+      <div class="nowgrp"><div class="nowlb w">이번 주</div>
+        <a class="nowit" href="#"><div class="ni">📒</div><div class="nb">
+          <div class="n1">미분류 내역 21건</div>
+          <div class="n2">직접 분류가 필요합니다</div></div><div class="nr">가계부 →</div></a></div>
+    </div>
+
+    <!-- 오늘 + 링 -->
+    <div class="grid2">
+      <div class="card">
+        <div class="ch"><div class="ct">오늘</div><a class="more" href="#">캘린더에서 보기 →</a></div>
+        <div class="tl">
+          <div class="tlrow done"><div class="bar"></div><div class="tm">08:30</div><div class="dot"></div>
+            <div class="bd"><div class="t1">장비 점검 · 배터리 충전</div><div class="t2">완료</div></div></div>
+          <div class="tlrow done"><div class="bar"></div><div class="tm">11:00</div><div class="dot"></div>
+            <div class="bd"><div class="t1"><span class="mask">ㅇㅇㅇ 님</span> 준비물 안내 발송</div><div class="t2">완료</div></div></div>
+          <div class="tlrow now"><div class="bar"></div><div class="tm">14:00</div><div class="dot"></div>
+            <div class="bd"><div class="t1"><span class="mask">ㅇㅇㅇ 님</span> 촬영</div><div class="t2">야외 · 1시간 · 입금 확인됨</div></div>
+            <div class="pill pay">페이</div></div>
+          <div class="tlrow"><div class="bar"></div><div class="tm">17:30</div><div class="dot"></div>
+            <div class="bd"><div class="t1"><span class="mask">ㅁㅁㅁ 님</span> 촬영</div><div class="t2">한강 · 노을 · 노쇼 이력 1회</div></div>
+            <div class="pill warn">주의</div></div>
+          <div class="tlrow"><div class="bar"></div><div class="tm">21:00</div><div class="dot"></div>
+            <div class="bd"><div class="t1">보정 · 1차 셀렉</div><div class="t2">지난 촬영 2건 대기 중</div></div>
+            <div class="pill col">보정</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div class="ct">진행 상황</div><div class="cs">기간이 달라 따로 봅니다</div></div>
+        <div class="goal"><div class="gl"><div class="gn">오늘 할 일</div><div class="gv"><span id="g-todo">3 / 5 · 일간</span></div></div>
+          <div class="gbar"><i style="width:60%;background:linear-gradient(90deg,#7fb877,#4f9a6a)"></i></div></div>
+        <div class="goal"><div class="gl"><div class="gn">이번주 촬영</div><div class="gv">2 / 3 · 주간</div></div>
+          <div class="gbar"><i style="width:67%;background:linear-gradient(90deg,#a6c8e2,#6fa9c4)"></i></div></div>
+        <div class="goal"><div class="gl"><div class="gn">이번달 목표 수입</div><div class="gv">50% · 월간</div></div>
+          <div class="gbar"><i style="width:50%;background:linear-gradient(90deg,#e6c9a8,#d4ad82)"></i></div></div>
+        <div style="margin-top:15px;padding-top:14px;border-top:1px solid #f1f4ef">
+          <div style="font-size:11.5px;font-weight:800;color:#5d7059;margin-bottom:9px">앞으로 7일</div>
+          <div class="w7" id="w7"></div>
+          <div style="margin-top:10px;font-size:11.5px;color:var(--mute);font-weight:650;line-height:1.6">
+            <span id="w7-note">로그인하면 예약이 표시됩니다.</span><br>
+            <span style="color:#4f9a6a">●</span> 촬영 &nbsp;<span style="color:#e0857a">●</span> 납품 마감 &nbsp;<span style="color:#b79bd4">●</span> 보정
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 수입지출 + 도넛 -->
+    <div class="grid2">
+      <div class="card">
+        <div class="ch"><div class="ct">수입 · 지출</div><div class="cs">최근 6개월</div></div>
+        <svg class="linechart" viewBox="0 0 640 210" style="width:100%;height:auto;display:block">
+          <defs>
+            <linearGradient id="inc" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#7fb877" stop-opacity=".32"/><stop offset="1" stop-color="#7fb877" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <g stroke="#f0f3ee" stroke-width="1">
+            <line x1="40" y1="20" x2="620" y2="20"/><line x1="40" y1="60" x2="620" y2="60"/>
+            <line x1="40" y1="100" x2="620" y2="100"/><line x1="40" y1="140" x2="620" y2="140"/>
+            <line x1="40" y1="176" x2="620" y2="176"/>
+          </g>
+          <g font-size="10" fill="#b3bdaf" font-family="Pretendard">
+            <text x="0" y="24">150만</text><text x="0" y="104">100만</text><text x="10" y="180">0</text>
+          </g>
+          <path d="M76,150 L184,128 L292,138 L400,96 L508,104 L616,60 L616,176 L76,176 Z" fill="url(#inc)"/>
+          <polyline points="76,150 184,128 292,138 400,96 508,104 616,60" fill="none" stroke="#4f9a6a" stroke-width="2.6" stroke-linejoin="round"/>
+          <polyline points="76,164 184,150 292,158 400,132 508,146 616,118" fill="none" stroke="#dda79d" stroke-width="2.6"
+            stroke-dasharray="6 5" stroke-linejoin="round"/>
+          <g fill="#4f9a6a"><circle cx="616" cy="60" r="4.5"/></g>
+          <g fill="#dda79d"><circle cx="616" cy="118" r="4.5"/></g>
+          <g font-size="10.5" fill="#a7b1a4" font-family="Pretendard" text-anchor="middle">
+            <text x="76" y="199">4월</text><text x="184" y="199">5월</text><text x="292" y="199">6월</text>
+            <text x="400" y="199">7월</text><text x="508" y="199">8월</text><text x="616" y="199">9월</text>
+          </g>
+        </svg>
+        <div style="display:flex;gap:16px;margin-top:10px;font-size:11.5px;font-weight:700;color:#6b7a67">
+          <span style="display:flex;align-items:center;gap:6px"><i style="width:14px;height:3px;background:#4f9a6a;border-radius:2px;display:block"></i>수입</span>
+          <span style="display:flex;align-items:center;gap:6px"><i style="width:14px;height:3px;background:#dda79d;border-radius:2px;display:block"></i>지출</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div class="ct">이번달 지출</div><div class="cs">830,000원</div></div>
+        <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+          <div style="position:relative;width:132px;height:132px;flex:0 0 auto">
+            <svg width="132" height="132" viewBox="0 0 132 132" style="transform:rotate(-90deg)">
+              <circle cx="66" cy="66" r="52" fill="none" stroke="#c9a9d6" stroke-width="20" stroke-dasharray="327" stroke-dashoffset="0"/>
+              <circle cx="66" cy="66" r="52" fill="none" stroke="#8cc0d8" stroke-width="20" stroke-dasharray="327" stroke-dashoffset="118"/>
+              <circle cx="66" cy="66" r="52" fill="none" stroke="#e6c9a8" stroke-width="20" stroke-dasharray="327" stroke-dashoffset="216"/>
+              <circle cx="66" cy="66" r="52" fill="none" stroke="#a8d3a0" stroke-width="20" stroke-dasharray="327" stroke-dashoffset="281"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+              <div style="font-size:19px;font-weight:800;letter-spacing:-.7px">83만</div>
+              <div style="font-size:10px;color:var(--mute);font-weight:700">9월</div>
+            </div>
+          </div>
+          <div class="rleg" style="flex:1;min-width:140px">
+            <div><i style="background:#c9a9d6"></i>장비<b>36%</b></div>
+            <div><i style="background:#8cc0d8"></i>교통<b>30%</b></div>
+            <div><i style="background:#e6c9a8"></i>필름·현상<b>20%</b></div>
+            <div><i style="background:#a8d3a0"></i>기타<b>14%</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="tier"><h2>사업</h2><div class="ts">촬영 흐름 · 돈 · 고객</div></div>
+    <!-- 촬영 진행 파이프라인 -->
+    <div class="card" style="margin-bottom:14px">
+      <div class="ch"><div class="ct">촬영 진행</div><div class="cs">문의부터 납품까지</div></div>
+      <div class="pipe">
+        <div class="kcol">
+          <div class="colh"><div class="colt">문의 접수</div><div class="coln">1</div></div>
+          <div class="item hot"><div class="i1"><span class="mask">ㅅㅅㅅ 님</span></div><div class="i2">어제 · 답장 안 함</div></div>
+        </div>
+        <div class="kcol">
+          <div class="colh"><div class="colt">일정 조율</div><div class="coln">2</div></div>
+          <div class="item"><div class="i1"><span class="mask">ㅈㅈㅈ 님</span></div><div class="i2">9/20 · 장소 미정</div></div>
+          <div class="item"><div class="i1"><span class="mask">ㅊㅊㅊ 님</span></div><div class="i2">9/27 · 협업 제안</div></div>
+        </div>
+        <div class="kcol">
+          <div class="colh"><div class="colt">촬영 확정</div><div class="coln">2</div></div>
+          <div class="item"><div class="i1"><span class="mask">ㅇㅇㅇ 님</span></div><div class="i2">오늘 14:00 · 입금됨</div></div>
+          <div class="item"><div class="i1"><span class="mask">ㅁㅁㅁ 님</span></div><div class="i2">오늘 17:30 · 노쇼 이력</div></div>
+        </div>
+        <div class="kcol">
+          <div class="colh"><div class="colt">보정 · 납품</div><div class="coln">2</div></div>
+          <div class="item"><div class="i1"><span class="mask">ㅌㅌㅌ 님</span></div><div class="i2">셀렉 대기 · 3일째</div></div>
+          <div class="item"><div class="i1"><span class="mask">ㅍㅍㅍ 님</span></div><div class="i2">보정 중 · 12/30장</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 목표 + 사진 -->
+    <div class="grid2b">
+      <div class="card">
+        <div class="ch"><div class="ct">진행 중인 목표</div><a class="more" href="#">전체 →</a></div>
+        <div class="goal">
+          <div class="gl"><div class="gn">조명 셋업 결정</div><div class="gv"><span id="g-light">8 / 13</span></div></div>
+          <div class="gbar"><i style="width:62%;background:linear-gradient(90deg,#8cc0d8,#6fa9c4)"></i></div>
+        </div>
+        <div class="goal">
+          <div class="gl"><div class="gn">이번달 목표 수입 250만</div><div class="gv">50%</div></div>
+          <div class="gbar"><i style="width:50%;background:linear-gradient(90deg,#7fb877,#4f9a6a)"></i></div>
+        </div>
+        <div class="goal">
+          <div class="gl"><div class="gn">독립 준비 6개 기둥</div><div class="gv">문서 미업로드</div></div>
+          <div class="gbar"><i style="width:0%;background:#d9e0d6"></i></div>
+        </div>
+        <div class="goal">
+          <div class="gl"><div class="gn">수빈 오늘 루틴</div><div class="gv">3 / 5 · 연속 12일</div></div>
+          <div class="gbar"><i style="width:60%;background:linear-gradient(90deg,#e6c9a8,#d4ad82)"></i></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div class="ct">최근 촬영</div><a class="more" href="#">대표 사진맵 →</a></div>
+        <div class="shots">
+          <div class="shot" style="background:linear-gradient(155deg,#d9b8c4,#a98292)"><span>9/07 ㅎㅎㅎ</span></div>
+          <div class="shot" style="background:linear-gradient(155deg,#a6c8e2,#6f93b3)"><span>9/05 ㅅㅅㅅ</span></div>
+          <div class="shot" style="background:linear-gradient(155deg,#e6c9a8,#b99671)"><span>8/30 ㅈㅈㅈ</span></div>
+          <div class="shot" style="background:linear-gradient(155deg,#bcd0ac,#87a077)"><span>8/24 ㅊㅊㅊ</span></div>
+        </div>
+        <div style="margin-top:13px;font-size:11.5px;color:var(--mute);font-weight:650">
+          2024–2026 모델 42명 · 사진 318장
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ 돈 ══════ -->
+    <div class="sechd"><h2>돈</h2><div class="sn">가계부 · 입금 대조 · 미수금</div></div>
+    <div class="grid3">
+      <div class="card">
+        <div class="ch"><div class="ct">미분류 내역</div><a class="more" href="#">가계부에서 보기 &rarr;</a></div>
+        <div class="lst">
+          <div class="li"><div class="ii">&#128179;</div><div class="bd2"><div class="lb1">토스 &middot; 42,000원</div>
+            <div class="lb2">9/11 &middot; 이름 없음</div></div><div class="rt hot">분류 필요</div></div>
+          <div class="li"><div class="ii">&#127974;</div><div class="bd2"><div class="lb1">KB &middot; 180,000원 입금</div>
+            <div class="lb2">9/09 &middot; 「ㅈㅈㅈ」</div></div><div class="rt">촬영 수입?</div></div>
+          <div class="li"><div class="ii">&#128722;</div><div class="bd2"><div class="lb1">네이버페이 &middot; 23,900원</div>
+            <div class="lb2">9/08 &middot; 필름 구매 추정</div></div><div class="rt">필름&middot;현상?</div></div>
+        </div>
+        <div style="margin-top:12px;font-size:11.5px;color:#8a6a34;background:#fdf6ea;border:1px solid #eee0c6;
+          border-radius:11px;padding:9px 13px;font-weight:650">남은 미분류 <span id="m-unc">18</span>건 &middot; 직접 분류가 필요합니다</div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div class="ct">캘린더 대조</div><div class="cs">입금 &harr; 예약</div></div>
+        <div class="lst">
+          <div class="li"><div class="ii" style="background:#eaf3ea">&#10004;</div><div class="bd2">
+            <div class="lb1"><span class="mask">ㅇㅇㅇ 님</span></div><div class="lb2">9/13 촬영 &middot; 80,000원 확인</div></div>
+            <div class="rt" style="color:#3f8a55">짝 맞음</div></div>
+          <div class="li"><div class="ii" style="background:#fdf2f0">?</div><div class="bd2">
+            <div class="lb1">「김OO」 입금</div><div class="lb2">9/09 &middot; 예약자 이름과 다름</div></div>
+            <div class="rt hot">짝 없음</div></div>
+          <div class="li"><div class="ii" style="background:#fdf6ea">&#9888;</div><div class="bd2">
+            <div class="lb1"><span class="mask">ㅁㅁㅁ 님</span></div><div class="lb2">8/30 노쇼 &middot; 입금은 있음</div></div>
+            <div class="rt">수입 처리</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct">미수금 · 예정 수입</div><div class="cs">9월</div></div>
+        <div class="goal"><div class="gl"><div class="gn">확인된 수입</div><div class="gv"><span class="mask"><span id="m-in">1,240,000원</span></span></div></div>
+          <div class="gbar"><i style="width:71%;background:linear-gradient(90deg,#7fb877,#4f9a6a)"></i></div></div>
+        <div class="goal"><div class="gl"><div class="gn">입금 미확인</div><div class="gv"><span class="mask">180,000원</span></div></div>
+          <div class="gbar"><i style="width:10%;background:#e0a89c"></i></div></div>
+        <div class="goal"><div class="gl"><div class="gn">예정 촬영금</div><div class="gv"><span class="mask">320,000원</span></div></div>
+          <div class="gbar"><i style="width:19%;background:#d9d3c4"></i></div></div>
+        <div style="margin-top:13px;font-size:11.5px;color:var(--mute);font-weight:650;line-height:1.55">
+          이름·금액이 확실히 안 맞으면 자동 확정하지 않고 <strong>대조 필요</strong>로 둡니다</div>
+      </div>
+    </div>
+
+    <!-- ══════ 촬영 · 고객 ══════ -->
+    <div class="sechd"><h2>촬영 &middot; 고객</h2><div class="sn">문의 &middot; 시안 &middot; 사진맵</div></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="ch"><div class="ct">최근 문의</div><a class="more" href="#">설문 데이터 &rarr;</a></div>
+        <div class="lst">
+          <div class="li"><div class="ii" style="background:#fdf2f0">&#128236;</div><div class="bd2">
+            <div class="lb1"><span class="mask">ㅅㅅㅅ 님</span> &middot; 새내기 시안</div>
+            <div class="lb2"><span class="mask">&ldquo;10월 초 야외로 가능할까요? 2인입니다&rdquo;</span></div></div>
+            <div class="rt hot">답장 안 함</div></div>
+          <div class="li"><div class="ii">&#128236;</div><div class="bd2">
+            <div class="lb1"><span class="mask">ㅈㅈㅈ 님</span> &middot; 바다 시안</div>
+            <div class="lb2"><span class="mask">&ldquo;9/20 오후 가능 시간대 알려주세요&rdquo;</span></div></div>
+            <div class="rt">답장함</div></div>
+          <div class="li"><div class="ii">&#128236;</div><div class="bd2">
+            <div class="lb1"><span class="mask">ㅊㅊㅊ 님</span> &middot; 협업 제안</div>
+            <div class="lb2"><span class="mask">&ldquo;의상 브랜드 협업 문의드립니다&rdquo;</span></div></div>
+            <div class="rt">검토 중</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div class="ct">촬영 시안</div><a class="more" href="#">시안 원본 보기 &rarr;</a></div>
+        <div class="th4">
+          <div class="t" style="background:linear-gradient(155deg,#b8c4cf,#8a97a6)"><span>우중</span></div>
+          <div class="t" style="background:linear-gradient(155deg,#a6c8e2,#7b9fc0)"><span>바다</span></div>
+          <div class="t" style="background:linear-gradient(155deg,#e0b9c6,#bd8e9f)"><span>바다커플</span></div>
+          <div class="t" style="background:linear-gradient(155deg,#cdd9b0,#a0b585)"><span>새내기</span></div>
+        </div>
+        <div style="margin-top:12px" class="chips">
+          <span class="chip on">가장 많이 보낸 것 &middot; 바다</span>
+          <span class="chip">이번달 발송 5회</span>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="tier"><h2>앱 창</h2><div class="ts">진짜 앱을 그대로 끼워 넣음 — 여기서 직접 조작합니다</div></div>
+
+    <div class="embnote">
+      🍀 아래는 <strong>그림이 아니라 실제 라이브 앱</strong>입니다. 스크롤·클릭이 그대로 됩니다.<br>
+      같은 주소(<code>maydly.github.io</code>)라서 홈에서 구글 로그인을 한 번 하면 <strong>끼워진 앱들도 이미 로그인된 상태</strong>가 됩니다.<br>
+      실제로 만들 때는 각 앱에 <code>?embed=</code> 모드를 넣어 앱의 상단바·하단 메뉴를 숨깁니다 (수빈앱이 이미 쓰는 방식).
+    </div>
+
+    <div class="embgrid">
+      <div class="card emb">
+        <div class="ch"><div class="ct">명진 캘린더</div>
+          <a class="more" href="https://maydly.github.io/maydly-cal/admin.html" target="_blank" rel="noopener">새 탭에서 열기 ↗</a></div>
+        <div class="frame tall"><div class="badge">실제 앱</div>
+          <iframe src="https://maydly.github.io/maydly-cal/admin.html?embed=1" loading="lazy" title="명진 캘린더"></iframe></div>
+      </div>
+
+      <div class="card emb">
+        <div class="ch"><div class="ct">명진앱</div>
+          <a class="more" href="https://maydly.github.io/note/myapp/" target="_blank" rel="noopener">새 탭에서 열기 ↗</a></div>
+        <div class="frame tall"><div class="badge">실제 앱</div>
+          <iframe src="https://maydly.github.io/note/myapp/?embed=1&tab=today" loading="lazy" title="명진앱"></iframe></div>
+      </div>
+
+      <div class="card emb">
+        <div class="ch"><div class="ct">여행지도</div>
+          <a class="more" href="https://maydly.github.io/note/travel/" target="_blank" rel="noopener">새 탭에서 열기 ↗</a></div>
+        <div class="frame"><div class="badge">실제 앱</div>
+          <iframe src="https://maydly.github.io/note/travel/" loading="lazy" title="여행지도"></iframe></div>
+      </div>
+
+      <div class="card emb">
+        <div class="ch"><div class="ct">조명 셋업 짜기</div>
+          <a class="more" href="https://maydly.github.io/note/07_장비비교자료/11_조명셋업짜기_latest.html" target="_blank" rel="noopener">새 탭에서 열기 ↗</a></div>
+        <div class="frame"><div class="badge">실제 앱</div>
+          <iframe src="https://maydly.github.io/note/07_장비비교자료/11_조명셋업짜기_latest.html" loading="lazy" title="조명 셋업"></iframe></div>
+      </div>
+
+      <div class="card emb">
+        <div class="ch"><div class="ct">시안 문의 데이터</div>
+          <a class="more" href="https://maydly.github.io/note/hub/설문데이터/" target="_blank" rel="noopener">새 탭에서 열기 ↗</a></div>
+        <div class="frame short"><div class="badge">실제 앱</div>
+          <iframe src="https://maydly.github.io/note/hub/설문데이터/?embed=1" loading="lazy" title="설문 데이터"></iframe></div>
+      </div>
+
+      <div class="card emb">
+        <div class="ch"><div class="ct">빈티지 필름</div>
+          <a class="more" href="https://maydly.github.io/note/film/" target="_blank" rel="noopener">새 탭에서 열기 ↗</a></div>
+        <div class="frame short"><div class="badge">실제 앱</div>
+          <iframe src="https://maydly.github.io/note/film/" loading="lazy" title="빈티지 필름"></iframe></div>
+      </div>
+
+      <div class="card emb">
+        <div class="ch"><div class="ct">신의눈 3D</div>
+          <a class="more" href="https://maydly.github.io/gev/" target="_blank" rel="noopener">새 탭에서 열기 ↗</a></div>
+        <div class="frame"><div class="ph" onclick="this.parentNode.innerHTML='&lt;iframe src=&quot;https://maydly.github.io/gev/&quot; title=&quot;신의눈 3D&quot;&gt;&lt;/iframe&gt;'">
+          <div class="pi">🌏</div><div class="pt">눌러서 불러오기</div>
+          <div class="ps">3D 지구본은 무거워서 자동으로 켜지 않습니다<br>홈이 느려지지 않게 하려는 것</div></div></div>
+      </div>
+
+      <div class="card emb">
+        <div class="ch"><div class="ct">수빈 앱</div>
+          <a class="more" href="https://maydly.github.io/note/subin/" target="_blank" rel="noopener">새 탭에서 열기 ↗</a></div>
+        <div class="frame"><div class="ph" onclick="this.parentNode.innerHTML='&lt;iframe src=&quot;https://maydly.github.io/note/subin/&quot; title=&quot;수빈 앱&quot;&gt;&lt;/iframe&gt;'">
+          <div class="pi">🌱</div><div class="pt">눌러서 불러오기</div>
+          <div class="ps">수빈 개인 기록이라 기본은 꺼둡니다<br>현장 모드에서도 가려지는 영역</div></div></div>
+      </div>
+    </div>
+
+
+    <div class="tier"><h2>자료실</h2><div class="ts">장비 · 필름 · 여행 · 기록 — 전부 펼침</div></div>
+    <div class="vopen">
+    <!-- ══════ 장비 ══════ -->
+    <div class="sechd"><h2>장비</h2><div class="sn">보유 &middot; 구매계획 &middot; 조명 셋업 &middot; 비교표</div></div>
+    <div class="grid3">
+      <div class="card">
+        <div class="ch"><div class="ct">보유 장비</div><div class="cs"><span id="r-owns">23개</span></div></div>
+        <div class="cat"><div class="catl"><span>렌즈</span><b>7</b></div>
+          <div class="catb"><i style="width:70%;background:#b79bd4"></i></div></div>
+        <div class="cat"><div class="catl"><span>조명</span><b>4</b></div>
+          <div class="catb"><i style="width:40%;background:#e6c9a8"></i></div></div>
+        <div class="cat"><div class="catl"><span>바디</span><b>3</b></div>
+          <div class="catb"><i style="width:30%;background:#8cc0d8"></i></div></div>
+        <div class="cat"><div class="catl"><span>악세사리</span><b>9</b></div>
+          <div class="catb"><i style="width:90%;background:#a8d3a0"></i></div></div>
+        <div style="margin-top:12px;font-size:11.5px;color:var(--mute);font-weight:650">
+          09 보유장비현황 &harr; 명진앱 보유탭 동기화 중</div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div class="ct">다음 결정</div><a class="more" href="#">조명 셋업 &rarr;</a></div>
+        <div style="background:#f4f8f3;border:1px solid #e4ece0;border-radius:14px;padding:14px 15px">
+          <div style="font-size:11px;color:var(--mute);font-weight:750">결정 8 / 13</div>
+          <div style="font-size:14.5px;font-weight:800;letter-spacing:-.3px;margin-top:5px">
+            소프트박스 크기를 정할 차례</div>
+          <div style="font-size:11.5px;color:var(--mute);margin-top:6px;line-height:1.55">
+            60cm 옥타 &middot; 90cm 옥타 &middot; 스트립 &mdash; 인물 반신 기준</div>
+        </div>
+        <div class="gbar" style="margin-top:12px"><i style="width:62%;background:linear-gradient(90deg,#8cc0d8,#6fa9c4)"></i></div>
+        <div style="margin-top:9px;font-size:11.5px;color:var(--mute);font-weight:650">
+          남은 결정 5개 &rarr; 끝나면 구매계획 자동 생성</div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div class="ct">구매계획</div><a class="more" href="#">전체 &rarr;</a></div>
+        <div class="lst">
+          <div class="li"><div class="ii">&#128247;</div><div class="bd2"><div class="lb1">시그마 35mm F1.4</div>
+            <div class="lb2">가격 확인 완료</div></div><div class="rt">890,000</div></div>
+          <div class="li"><div class="ii">&#128161;</div><div class="bd2"><div class="lb1">고독스 AD200 Pro</div>
+            <div class="lb2">조명 셋업 결정 대기</div></div><div class="rt">520,000</div></div>
+          <div class="li"><div class="ii">&#129525;</div><div class="bd2"><div class="lb1">C스탠드 2대</div>
+            <div class="lb2">중고 탐색 중</div></div><div class="rt">180,000</div></div>
+        </div>
+        <div style="margin-top:11px;display:flex;justify-content:space-between;font-size:12px;font-weight:800">
+          <span>합계</span><span>1,590,000원</span></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div class="ch"><div class="ct">장비 비교표</div><div class="cs">16종 &middot; 최근 본 것</div></div>
+      <table class="tbl">
+        <tr><th>항목</th><th>내 것</th><th>후보 A</th><th>후보 B</th><th>메모</th></tr>
+        <tr><td>조명 출력</td><td>200Ws</td><td class="ok">300Ws</td><td>400Ws</td><td>야외 역광 기준</td></tr>
+        <tr><td>소프트박스</td><td>60cm</td><td class="ok">90cm 옥타</td><td>스트립</td><td>반신 인물</td></tr>
+        <tr><td>렌즈 화각</td><td>50mm</td><td class="ok">35mm</td><td>85mm</td><td>좁은 골목 촬영</td></tr>
+      </table>
+      <div class="chips" style="margin-top:13px">
+        <span class="chip">카메라 바디</span><span class="chip">렌즈</span><span class="chip">필터</span>
+        <span class="chip on">조명</span><span class="chip">악세사리</span><span class="chip">촬영지원</span>
+        <span class="chip">포토프린터</span><span class="chip">일본 빈티지렌즈</span>
+      </div>
+    </div>
+
+    <!-- ══════ 필름 ══════ -->
+    <div class="sechd"><h2>필름</h2><div class="sn">재고 &middot; 도감 &middot; 셋팅</div></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="ch"><div class="ct">필름 재고</div><span id="r-film-anchor"></span><a class="more" href="#">빈티지 필름 &rarr;</a></div>
+        <div class="lst">
+          <div class="li"><div class="ii" style="background:#fdf2f0">&#127902;</div><div class="bd2">
+            <div class="lb1">코닥 골드 200</div><div class="lb2">36컷 &middot; 2롤</div></div>
+            <div class="rt hot">만료 2026-11</div></div>
+          <div class="li"><div class="ii">&#127902;</div><div class="bd2">
+            <div class="lb1">후지 C200</div><div class="lb2">36컷 &middot; 2롤</div></div><div class="rt">만료 2027-04</div></div>
+          <div class="li"><div class="ii">&#127902;</div><div class="bd2">
+            <div class="lb1">일포드 HP5 (흑백)</div><div class="lb2">36컷 &middot; 2롤</div></div><div class="rt">만료 2027-09</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div class="ct">촬영 셋팅 메모</div><div class="cs">FM10</div></div>
+        <table class="tbl">
+          <tr><th>상황</th><th>ISO</th><th>조리개</th><th>셔터</th></tr>
+          <tr><td>맑은 야외</td><td>200</td><td>f/8</td><td>1/250</td></tr>
+          <tr><td>그늘</td><td>200</td><td>f/4</td><td>1/125</td></tr>
+          <tr><td>실내 창가</td><td>400</td><td>f/2.8</td><td>1/60</td></tr>
+        </table>
+        <div class="chips" style="margin-top:12px">
+          <span class="chip">도감</span><span class="chip">구매처</span><span class="chip on">셋팅</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ 여행 · 지도 ══════ -->
+    <div class="sechd"><h2>여행 &middot; 지도</h2><div class="sn">내 장소 &middot; 촬영지 &middot; 3D</div></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="ch"><div class="ct">내 장소 분포</div><a class="more" href="#">여행지도 &rarr;</a></div>
+        <div class="mmap">
+          <svg viewBox="0 0 300 200" style="width:100%;height:auto;display:block">
+            <path d="M118,26 L150,20 L176,34 L186,58 L178,84 L188,104 L180,132 L160,156 L140,170 L120,162 L104,138 L96,110 L100,80 L106,50 Z"
+              fill="#e4eee1" stroke="#cfe0ca" stroke-width="1.5"/>
+            <circle cx="138" cy="62" r="9" fill="#4f9a6a" fill-opacity=".22"/>
+            <circle cx="138" cy="62" r="4" fill="#4f9a6a"/>
+            <circle cx="150" cy="140" r="7" fill="#4f9a6a" fill-opacity=".18"/><circle cx="150" cy="140" r="3.4" fill="#4f9a6a"/>
+            <circle cx="120" cy="96" r="5" fill="#4f9a6a" fill-opacity=".18"/><circle cx="120" cy="96" r="2.6" fill="#4f9a6a"/>
+            <circle cx="166" cy="90" r="4" fill="#8cc0d8" fill-opacity=".3"/><circle cx="166" cy="90" r="2.4" fill="#8cc0d8"/>
+            <circle cx="132" cy="120" r="4" fill="#8cc0d8" fill-opacity=".3"/><circle cx="132" cy="120" r="2.4" fill="#8cc0d8"/>
+            <circle cx="158" cy="44" r="3.4" fill="#e0b08c"/><circle cx="112" cy="70" r="3" fill="#e0b08c"/>
+            <text x="152" y="58" font-size="9" fill="#5d7059" font-weight="700" font-family="Pretendard">서울 214</text>
+            <text x="160" y="152" font-size="9" fill="#5d7059" font-weight="700" font-family="Pretendard">부산 61</text>
+          </svg>
+        </div>
+        <div class="chips" style="margin-top:11px">
+          <span class="chip on">내 장소 <span id="r-places">564</span></span><span class="chip">촬영지 10,525</span><span class="chip">추천지 49,115</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div class="ct">최근 저장한 장소</div><div class="cs">네이버에서 가져옴</div></div>
+        <div class="lst">
+          <div class="li"><div class="ii">&#128205;</div><div class="bd2"><div class="lb1">성수 골목 &middot; 벽돌 담장</div>
+            <div class="lb2">9/11 &middot; 오후 역광 좋음</div></div><div class="rt">서울</div></div>
+          <div class="li"><div class="ii">&#128205;</div><div class="bd2"><div class="lb1">한강 잠원 &middot; 억새</div>
+            <div class="lb2">9/09 &middot; 노을 30분 전</div></div><div class="rt">서울</div></div>
+          <div class="li"><div class="ii">&#127759;</div><div class="bd2"><div class="lb1">신의눈 3D로 보기</div>
+            <div class="lb2">촬영지 + 내 장소를 지구본에서</div></div><div class="rt">열기 &rarr;</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ 기록 · 학습 ══════ -->
+    <div class="sechd"><h2>기록 &middot; 학습</h2><div class="sn">note &middot; 단어 여정 &middot; 에이전트</div></div>
+    <div class="grid3">
+      <div class="card">
+        <div class="ch"><div class="ct">note 아카이브</div><div class="cs">20편</div></div>
+        <div class="lst">
+          <div class="li"><div class="ii">&#128214;</div><div class="bd2"><div class="lb1">정적 앱 클라우드 동기화</div>
+            <div class="lb2">최근 수정</div></div></div>
+          <div class="li"><div class="ii">&#128214;</div><div class="bd2"><div class="lb1">모바일 우선 웹앱</div>
+            <div class="lb2">&nbsp;</div></div></div>
+          <div class="li"><div class="ii">&#128214;</div><div class="bd2"><div class="lb1">폴더 명명 &middot; 버전 관리</div>
+            <div class="lb2">&nbsp;</div></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div class="ct">단어 여정</div><a class="more" href="#">단어 여정 열기 &rarr;</a></div>
+        <div style="font-size:11.5px;color:var(--mute);font-weight:650;margin-bottom:10px">
+          촬영 전, 오늘의 나 다섯 단어</div>
+        <div class="chips">
+          <span class="chip on">고요</span><span class="chip on">설렘</span><span class="chip on">여백</span>
+          <span class="chip">&nbsp;+2&nbsp;</span>
+        </div>
+        <div style="margin-top:13px;font-size:11.5px;color:var(--mute);font-weight:650">
+          11회 기록 &middot; 가장 많이 고른 단어 &ldquo;여백&rdquo;</div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div class="ct">AI 에이전트</div><div class="cs">16개</div></div>
+        <div class="lst">
+          <div class="li"><div class="ii" style="background:#eaf3ea">&#10004;</div><div class="bd2">
+            <div class="lb1">클로드 &harr; 코덱스 동기화</div><div class="lb2">16 / 16</div></div></div>
+          <div class="li"><div class="ii" style="background:#fdf6ea">&#9888;</div><div class="bd2">
+            <div class="lb1">동기화 이상</div><div class="lb2">8/28 격주 감사</div></div><div class="rt hot">1건</div></div>
+        </div>
+      </div>
+    </div>
+
+      </div>
+
+    <div class="tier"><h2>개인</h2><div class="ts">수빈 루틴 · 사주 — 현장 모드에서 가려짐</div></div>
+    <div class="vopen">
+    <!-- ══════ 수빈 ══════ -->
+    <div class="sechd"><h2>수빈</h2><div class="sn">루틴 &middot; 사주</div></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="ch"><div class="ct">이번주 루틴</div><a class="more" href="#">수빈 앱 &rarr;</a></div>
+        <table class="hg">
+          <tr><th>루틴</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th><th>일</th></tr>
+          <tr><td>물 마시기</td><td><i class="dotc y"></i></td><td><i class="dotc y"></i></td><td><i class="dotc y"></i></td>
+            <td><i class="dotc y"></i></td><td><i class="dotc y"></i></td><td><i class="dotc y"></i></td><td><i class="dotc"></i></td></tr>
+          <tr><td>스트레칭</td><td><i class="dotc y"></i></td><td><i class="dotc y"></i></td><td><i class="dotc n"></i></td>
+            <td><i class="dotc y"></i></td><td><i class="dotc y"></i></td><td><i class="dotc y"></i></td><td><i class="dotc"></i></td></tr>
+          <tr><td>일기</td><td><i class="dotc y"></i></td><td><i class="dotc n"></i></td><td><i class="dotc y"></i></td>
+            <td><i class="dotc y"></i></td><td><i class="dotc n"></i></td><td><i class="dotc"></i></td><td><i class="dotc"></i></td></tr>
+        </table>
+        <span class="streak">연속 12일째</span>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div class="ct">수빈 사주</div><a class="more" href="#">사주 앱 &rarr;</a></div>
+        <div class="saju">
+          <div class="sj1">&#128302; 오늘의 흐름</div>
+          <div class="sj2">무난한 날 &middot; 말수를 줄이면 좋음</div>
+          <div class="sj3">사주 &middot; 별자리 &middot; MBTI를 합쳐 하루 한 줄로 보여줍니다.<br>
+            지금은 Firebase 주소에만 있어 허브 타일에서 빠져 있었습니다.</div>
+        </div>
+      </div>
+    </div>
+
+      </div>
+
+    <div class="tier"><h2>시스템</h2><div class="ts">이상 항목만</div></div>
+    <!-- 점검 -->
+    <div class="card">
+      <div class="ch"><div class="ct">점검 · 재고</div><a class="more" href="#">거버넌스 →</a></div>
+      <div class="chk"><div class="st" style="background:#e7605a"></div>
+        <div class="c1">주간 구조·파일명 감사 — 위반 <span id="s-gov">37</span>건</div><div class="c2">9/07 · 실제 값</div></div>
+      <div class="chk"><div class="st" style="background:#e0a54a"></div>
+        <div class="c1">격주 감사 — 동기화 이상 1건</div><div class="c2">8/28</div></div>
+      <div class="chk"><div class="st" style="background:#e0a54a"></div>
+        <div class="c1">4주 감사 — 확인 필요 3건 · 진행중 업무 24개</div><div class="c2">8/22</div></div>
+      <div class="chk"><div class="st" style="background:#7fb877"></div>
+        <div class="c1">필름 재고 6롤 — FM10 2 · 컬러 4</div><div class="c2">만료 임박 1</div></div>
+      <div class="chk"><div class="st" style="background:#7fb877"></div>
+        <div class="c1">보유 장비 23개 · 저장한 장소 564곳</div><div class="c2">최근 추가 12곳</div></div>
+    </div>
+
+    <div class="foot">
+      목업 v1.0 · 2026-09-17 · 앱 임베드 · 웹·폰 같은 화면<br>
+      못 읽는 칸은 0이 아니라 — 로 표시됩니다
+    </div>
+
+  </main>
+</div>
+<script type="module">
+// 홈 대시보드 — 실데이터 연결 (읽기 전용). 어댑터는 data-adapter.js 한 곳에 모아 둔다.
+import * as D from './data-adapter.js';
+
+const $ = (id) => document.getElementById(id);
+const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+const dash = '—';
+
+// 상태줄 칩 갱신
+function chip(idx, ok, text){
+  const c = document.querySelectorAll('.statusbar .stchip')[idx];
+  if(!c) return;
+  const dot = c.querySelector('i');
+  if(dot) dot.style.background = ok ? '#4f9a6a' : '#c0705f';
+  c.childNodes[c.childNodes.length-1].textContent = ' ' + text;
+}
+
+// ── 로그인 없이 읽히는 것 (같은 출처 localStorage · 정적 JSON) ──
+function paintLocal(){
+  const f = D.film();
+  const a = $('r-film-anchor');
+  if(a) a.textContent = f ? ` · ${f.rolls}롤 / ${f.kinds}종` : ` · ${dash}`;
+
+  const pl = D.travelPlaces();
+  set('r-places', pl ? pl.count.toLocaleString() : dash);
+
+  const ls = D.lightSetup();
+  set('g-light', ls ? `${ls.picked} / ${ls.total}` : dash);
+
+  chip(1, !!(f || pl || ls), '로컬 데이터 · 이 기기 기준');
+}
+
+async function paintStatic(){
+  const g = await D.governance();
+  if(g && g.log.length){
+    const w = g.log.find(x => /위반\s*(\d+)/.test(x.summary || ''));
+    const m = w && /위반\s*(\d+)/.exec(w.summary);
+    set('s-gov', m ? m[1] : dash);
+    chip(2, true, '정적 자료 · ' + (g.updated ? String(g.updated).slice(0,10) : '갱신일 미상'));
+  } else {
+    set('s-gov', dash);
+    chip(2, false, '정적 자료 · 못 읽음');
+  }
+}
+
+// ── 로그인해야 읽히는 것 (Firestore) ──
+async function paintCloud(){
+  const [td, lg, iq, ow, tod] = await Promise.all([
+    D.todayShoots(), D.ledgerThisMonth(), D.inquiries(), D.owns(), D.todos()
+  ]);
+
+  // 앞으로 7일 점 + 날짜줄 보강
+  const evs = await D.calEvents();
+  if(evs) paintWeek(evs);
+  if(td) {
+    const base = $('today-line');
+    if(base) base.textContent += td.count ? ` · 오늘 촬영 ${td.count}건` : ' · 오늘 촬영 없음';
+  }
+  if(evs){
+    const base = new Date(); base.setHours(0,0,0,0);
+    let busiest = null, empty = [];
+    for(let i=0;i<7;i++){
+      const d = new Date(base); d.setDate(base.getDate()+i);
+      const iso = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      const n = evs.filter(e => e && e.date === iso && e.status !== 'cancel' && e.status !== 'nosh').length;
+      if(!busiest || n > busiest.n) busiest = { n, wd: WD[d.getDay()] };
+      if(n === 0) empty.push(WD[d.getDay()]);
+    }
+    const parts = [];
+    if(busiest && busiest.n > 0) parts.push(`${busiest.wd}요일이 ${busiest.n}건으로 가장 바쁩니다`);
+    if(empty.length) parts.push(`${empty.join('·')}요일은 비어 있습니다`);
+    set('w7-note', parts.length ? parts.join(' · ') : '앞으로 7일 예약이 없습니다');
+  }
+
+  // 다음 촬영
+  if(td && td.list.length){
+    const n = td.list.find(e => !e.allDay) || td.list[0];
+    set('b-next', `${n.time || '시간 미정'} · ${n.client || '이름 없음'}`);
+    set('b-next-sub', `${n.label || '라벨 없음'} · 오늘 ${td.count}건`);
+  } else if(td){
+    set('b-next', '오늘 촬영 없음');
+    set('b-next-sub', '예약된 일정이 없습니다');
+  } else { set('b-next', dash); set('b-next-sub', '캘린더를 못 읽었습니다'); }
+
+  // 할 일
+  if(tod){
+    set('b-todo', `${tod.open}건 남음`);
+    set('b-todo-sub', `전체 ${tod.total}건 · 오늘까지 ${tod.dueToday} · 기한 지남 ${tod.overdue}`);
+    set('g-todo', `${tod.total - tod.open} / ${tod.total} · 일간`);
+    set('nv-todo', tod.open);
+  } else { set('b-todo', dash); set('b-todo-sub', '할 일을 못 읽었습니다'); set('g-todo', dash); }
+
+  // 가계부
+  if(lg){
+    set('m-in', D.won(lg.income));
+    set('m-unc', lg.unclassified);
+    set('nv-unc', lg.unclassified);
+  } else { set('m-in', dash); set('m-unc', dash); }
+
+  // 문의 + 예외 건수
+  const excParts = [];
+  if(iq && iq.fresh) excParts.push(`새 문의 ${iq.fresh}`);
+  if(lg && lg.unclassified) excParts.push(`미분류 ${lg.unclassified}`);
+  set('b-exc', excParts.length ? `${excParts.length}건` : (iq || lg ? '0건' : dash));
+  const sub = document.querySelector('.bf.urgent .bs');
+  if(sub && excParts.length) sub.textContent = excParts.join(' · ');
+
+  // 보유 장비
+  set('r-owns', ow ? `${ow.count}개` : dash);
+
+  chip(0, !!(td || lg || tod), 'Firebase 연결됨 · ' + ((D.currentUser() && D.currentUser().email) || ''));
+}
+
+// ── 로그인 상태 ──
+const chipBtn = $('loginChip');
+if(chipBtn) chipBtn.onclick = () => {
+  const u = D.currentUser();
+  if(u) D.logout(); else D.login().catch(e => alert('로그인 실패: ' + (e.code || e.message)));
+};
+
+// ── 날짜는 고정값이 아니라 «오늘»을 쓴다 (틀린 날짜를 보여주면 안 된다) ──
+const WD = ['일','월','화','수','목','금','토'];
+function paintDate(){
+  const d = new Date();
+  const h = d.getHours();
+  set('greet', h < 5 ? '늦은 밤이에요' : h < 12 ? '좋은 아침이에요'
+            : h < 18 ? '좋은 오후예요' : '좋은 저녁이에요');
+  set('today-line', `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 ${WD[d.getDay()]}요일`);
+}
+
+// 앞으로 7일 — 오늘부터. 점(촬영/납품/보정)은 로그인 후 예약 데이터로 채운다.
+function paintWeek(events){
+  const box = $('w7'); if(!box) return;
+  const base = new Date(); base.setHours(0,0,0,0);
+  let html = '';
+  for(let i=0;i<7;i++){
+    const d = new Date(base); d.setDate(base.getDate()+i);
+    const iso = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const day = events ? events.filter(e => e && e.date === iso
+                        && e.status !== 'cancel' && e.status !== 'nosh') : null;
+    const dots = day ? day.slice(0,3).map(() => '<i style="background:#4f9a6a"></i>').join('') : '';
+    const cls = 'd7' + (i===0 ? ' today' : '') + (day && day.length>=2 ? ' busy' : '');
+    html += `<div class="${cls}"><div class="dw">${WD[d.getDay()]}</div>`
+          + `<div class="dd">${d.getDate()}</div><div class="dm">${dots}</div></div>`;
+  }
+  box.innerHTML = html;
+}
+
+paintDate();
+paintWeek(null);
+paintLocal();
+paintStatic();
+
+D.onUser(u => {
+  if(chipBtn) chipBtn.textContent = u ? ('👤 ' + (u.email || '').split('@')[0]) : '🔑 구글 로그인';
+  if(u){ paintCloud(); }
+  else {
+    ['b-next','b-todo','m-in','m-unc','r-owns','b-exc','g-todo'].forEach(id => set(id, dash));
+    set('b-next-sub', '구글 로그인이 필요합니다');
+    chip(0, false, 'Firebase · 로그인 필요');
+  }
+});
+</script>
+</body>
+</html>
