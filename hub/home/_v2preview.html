@@ -341,6 +341,22 @@ code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
 .emb .ch{margin-bottom:12px}
 /* 폰에서 선그래프가 납작해지지 않게 */
 @media(max-width:900px){ .linechart{min-height:172px} }
+
+/* ── 폰 보정 (v2.0) ── */
+@media(max-width:900px){
+  /* 레일이 2열로 뭉치지 않게 — 한 줄로 가로 스크롤 */
+  .side,body.apps-open .side{flex-wrap:nowrap!important;overflow-x:auto;overflow-y:hidden;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .side::-webkit-scrollbar{display:none}
+  .side .brand{position:sticky;left:0;background:var(--bg);z-index:2;padding-right:8px}
+  /* 브리핑은 2열 — 한 칸이 화면을 다 먹지 않게 */
+  .brief>*{grid-column:span 6}
+  .brief>*:first-child{grid-column:span 12}
+  .bf{padding:16px 17px}
+  .bf .bv{font-size:23px;margin-top:6px}
+  /* 이름이 «명/진님» 으로 쪼개지지 않게 */
+  .hi{word-break:keep-all;font-size:22px;line-height:1.3}
+}
 </style>
 </head>
 <body>
