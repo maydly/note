@@ -362,14 +362,21 @@ vq('vrange').onclick = e => {
   el.classList.add('on'); V_DAYS = +el.dataset.d; renderViews();
 };
 
+let V_ERR = '';
 async function loadViews(){
-  V_LOADED = true;
+  V_LOADED = true; V_ERR = '';
   try{
     const snap = await getDocs(query(collection(db,'maydly_views'), orderBy('ts','desc')));
     V_ROWS = snap.docs.map(d => d.data()).filter(r => r && r.ts);
-  }catch(e){ V_ROWS = []; }
+    V_RAW  = snap.size;
+  }catch(e){
+    /* 오류를 삼키면 '데이터 없음'과 구분이 안 된다. 그대로 보여준다. */
+    V_ROWS = []; V_RAW = -1;
+    V_ERR  = (e && (e.code || e.message)) ? (e.code || e.message) : String(e);
+  }
   renderViews();
 }
+let V_RAW = 0;
 function vInRange(r){
   if(!V_DAYS) return true;
   const t = r.ts.toDate ? r.ts.toDate() : new Date(r.ts);
@@ -389,9 +396,24 @@ function renderViews(){
   const rows = V_ROWS.filter(vInRange), n = rows.length;
   if(!n){
     vq('vstats').innerHTML = '';
-    ['vreach','vdwell','vexit','vacc','vmisc'].forEach(id => vq(id).innerHTML =
-      '<div class="vempty">아직 쌓인 기록이 없어요.<br>시안 페이지를 10초 이상 보고 <b>탭을 닫거나 다른 탭으로 옮기면</b> 그때 한 건 쌓여요.</div>');
+    let msg;
+    if(V_ERR){
+      msg = '<div class="vempty" style="color:#B0453C">불러오지 못했어요 — <b>'+V_ERR+'</b><br>'
+          + '권한 문제면 bucket0825 계정으로 로그인했는지 확인해주세요.'
+          + '<br><span class="vrg" id="vretry" style="display:inline-block;margin-top:12px">다시 불러오기</span></div>';
+    }else if(V_RAW > 0){
+      msg = '<div class="vempty">전체로는 <b>'+V_RAW+'건</b>이 있는데, 고른 기간 안에는 없어요.<br>'
+          + '위에서 <b>전체</b>를 눌러보세요.</div>';
+    }else{
+      msg = '<div class="vempty">아직 쌓인 기록이 없어요.<br>'
+          + '시안 페이지를 10초 이상 보고 <b>탭을 닫거나 다른 탭으로 옮기면</b> 그때 한 건 쌓여요.'
+          + '<br><span class="vrg" id="vretry" style="display:inline-block;margin-top:12px">다시 불러오기</span></div>';
+    }
+    vq('vreach').innerHTML = msg;
+    ['vdwell','vexit','vacc','vmisc'].forEach(id => vq(id).innerHTML = '');
     vq('vfunnel').innerHTML=''; vq('vreachHint').textContent=''; vq('vfunnelHint').textContent='';
+    const rt = vq('vretry');
+    if(rt) rt.onclick = () => { V_LOADED = false; loadViews(); };
     return;
   }
   const avg  = Math.round(rows.reduce((a,r)=>a+(r.dur||0),0)/n);
