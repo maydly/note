@@ -331,6 +331,16 @@ code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
 }
 @media(hover:none){.card:hover,.bf:hover,.nowit:hover{transform:none;box-shadow:var(--sh)}}
 
+
+/* 범례 — 라벨과 값 사이를 벌린다 (v1에서 빠뜨렸던 규칙) */
+.rleg{display:flex;flex-direction:column;gap:9px;width:100%}
+.rleg div{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700;color:var(--sub)}
+.rleg i{width:9px;height:9px;border-radius:3px;flex:0 0 auto}
+.rleg b{margin-left:auto;font-weight:800;letter-spacing:-.3px;color:var(--ink)}
+/* 임베드 카드 머리 간격 */
+.emb .ch{margin-bottom:12px}
+/* 폰에서 선그래프가 납작해지지 않게 */
+@media(max-width:900px){ .linechart{min-height:172px} }
 </style>
 </head>
 <body>
