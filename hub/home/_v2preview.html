@@ -100,8 +100,9 @@ body.privacy .mask{filter:blur(6px);user-select:none}
 /* ══ 벤토 ══ */
 .brief,.grid2,.grid2b,.grid3,.embgrid,.wgrid,.shots,.pipe,.w7,.th4,.apps{
   display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px;margin-bottom:14px}
-.brief>*{grid-column:span 3}
-.brief>*:first-child{grid-column:span 6}          /* 다음 촬영을 크게 */
+/* 다음 촬영을 넓게, 나머지 셋은 한 줄에 나란히 — 6+2+2+2 = 12 */
+.brief>*{grid-column:span 2}
+.brief>*:first-child{grid-column:span 6}
 .grid2>*{grid-column:span 6}
 .grid2>*:first-child{grid-column:span 8}
 .grid2>*:last-child{grid-column:span 4}
