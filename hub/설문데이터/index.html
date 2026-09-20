@@ -175,9 +175,20 @@
       <div class="panel"><h2>어디까지 봤나</h2>
         <div class="vlead">각 대목까지 내려온 비율. 막대가 뚝 떨어지는 곳이 그만 보는 지점이에요.</div>
         <div id="vreach"></div><div class="vhint" id="vreachHint"></div></div>
-      <div class="panel"><h2>어디서 오래 머물렀나</h2>
-        <div class="vlead">그 대목을 본 사람들의 평균 체류 시간이에요.</div>
+      <div class="panel"><h2>어디에 시간을 많이 썼나</h2>
+        <div class="vlead">사람마다 읽는 속도가 다르니, <b>그 사람이 쓴 전체 시간 중 이 대목이 차지한 비율</b>로 봅니다.
+          속독하는 분도 유독 멈칫한 곳이 잡혀요.</div>
         <div id="vdwell"></div></div>
+
+      <div class="panel"><h2>다들 휙 넘기는 곳</h2>
+        <div class="vlead">지나가긴 했는데 <b>거의 시간을 안 쓴</b> 대목이에요.
+          여기가 <b>덜어내도 되는 곳</b>일 수 있어요.</div>
+        <div id="vskim"></div></div>
+
+      <div class="panel"><h2>되돌아와서 다시 본 곳</h2>
+        <div class="vlead">지나갔다가 <b>다시 올라와 본</b> 대목이에요.
+          어렵거나 중요했다는 뜻이라, <b>체류 시간보다 확실한 신호</b>입니다.</div>
+        <div id="vback"></div></div>
       <div class="panel"><h2>어디서 멈췄나</h2>
         <div class="vlead">마지막으로 도달한 대목. 여기 몰린 곳이 이탈 지점이에요.</div>
         <div id="vexit"></div></div>
@@ -410,7 +421,7 @@ function renderViews(){
           + '<br><span class="vrg" id="vretry" style="display:inline-block;margin-top:12px">다시 불러오기</span></div>';
     }
     vq('vreach').innerHTML = msg;
-    ['vdwell','vexit','vacc','vmisc'].forEach(id => vq(id).innerHTML = '');
+    ['vdwell','vskim','vback','vexit','vacc','vmisc'].forEach(id => vq(id).innerHTML = '');
     vq('vfunnel').innerHTML=''; vq('vreachHint').textContent=''; vq('vfunnelHint').textContent='';
     const rt = vq('vretry');
     if(rt) rt.onclick = () => { V_LOADED = false; loadViews(); };
@@ -421,7 +432,7 @@ function renderViews(){
   const done = rows.filter(r=>r.form==='submitted').length;
   vq('vstats').innerHTML =
     '<div class="stat"><div class="k">본 횟수</div><div class="v">'+n+'</div></div>'
-   +'<div class="stat"><div class="k">평균 머문 시간</div><div class="v">'+Math.floor(avg/60)+'분 '+(avg%60)+'초</div></div>'
+   +'<div class="stat"><div class="k">평균 머문 시간</div><div class="v">'+Math.floor(avg/60)+'분 '+(avg%60)+'초</div><div class="k" style="margin-top:2px;opacity:.7">읽는 속도는 제각각</div></div>'
    +'<div class="stat"><div class="k">다시 들어옴</div><div class="v">'+vpct(rev,n)+'%</div></div>'
    +'<div class="stat"><div class="k">문의까지</div><div class="v">'+vpct(done,n)+'%</div></div>'
    +'<div class="stat"><div class="k">폰으로</div><div class="v">'+vpct(rows.filter(r=>r.dev==='mobile').length,n)+'%</div></div>';
@@ -437,15 +448,47 @@ function renderViews(){
   vq('vreachHint').innerHTML = dropAt
     ? '가장 많이 떨어져 나가는 구간은 <b>'+dropAt+' 직전</b>이에요('+dropGap+'%p 감소). 그 앞 대목이 길거나 어렵지 않은지 살펴보면 좋아요.' : '';
 
-  const maxAvg = Math.max.apply(null, V_SECTIONS.map(([id])=>{
-    const v = rows.filter(r=>r.secs && r.secs[id]);
-    return v.length ? v.reduce((a,r)=>a+r.secs[id],0)/v.length : 0;
-  }).concat([1]));
+  /* 시간 비중 — 사람마다 읽는 속도가 달라 절대 초는 의미가 없다.
+     각자의 전체 체류 중 그 대목이 차지한 비율을 평균낸다. */
+  const share = {};
+  V_SECTIONS.forEach(([id])=>{
+    const v = rows.filter(r => r.secs && r.secs[id] && r.dur > 0);
+    share[id] = v.length ? v.reduce((a,r)=>a + r.secs[id]/r.dur, 0)/v.length : 0;
+  });
+  const maxShare = Math.max.apply(null, V_SECTIONS.map(([id])=>share[id]).concat([0.01]));
   vq('vdwell').innerHTML = V_SECTIONS.map(([id,nm])=>{
-    const v = rows.filter(r=>r.secs && r.secs[id]);
-    const a = v.length ? Math.round(v.reduce((x,r)=>x+r.secs[id],0)/v.length) : 0;
-    return vbar(nm, a, maxAvg, vsec(a), a>=maxAvg*0.6?'deep':'', !a);
+    const p = Math.round(share[id]*100);
+    const reached = rows.filter(r=>(r.deep||0) >= V_SECTIONS.findIndex(s=>s[0]===id)).length;
+    return vbar(nm, share[id], maxShare, p+'%<span> 시간</span>',
+      share[id] >= maxShare*0.65 ? 'deep' : '', !reached);
   }).join('');
+
+  /* 휙 넘긴 곳 — 도달은 했는데 시간 비중이 바닥인 대목 */
+  const skim = V_SECTIONS.map(([id,nm],i)=>{
+    const reached = rows.filter(r=>(r.deep||0) >= i).length;
+    return { nm, reached, share: share[id] };
+  }).filter(x => x.reached >= Math.max(2, n*0.15))
+    .sort((a,b)=> a.share - b.share).slice(0,5);
+  vq('vskim').innerHTML = skim.length
+    ? skim.map(x => vbar(x.nm, 1, 1,
+        Math.round(x.share*100)+'%<span> ' + x.reached + '명 지나감</span>', 'warm')).join('')
+      + '<div class="vhint">위쪽일수록 <b>다들 그냥 지나친 곳</b>이에요. 내용이 길거나 굳이 없어도 되는지 한 번 보세요.</div>'
+    : '<div class="vempty">아직 판단할 만큼 쌓이지 않았어요.</div>';
+
+  /* 되돌아본 곳 */
+  const backs = V_SECTIONS.map(([id,nm],i)=>{
+    const reached = rows.filter(r=>(r.deep||0) >= i).length;
+    const who = rows.filter(r => r.back && r.back[id]).length;
+    return { nm, who, reached, rate: reached ? who/reached : 0 };
+  });
+  const maxBack = Math.max.apply(null, backs.map(b=>b.rate).concat([0.01]));
+  const anyBack = backs.some(b=>b.who>0);
+  vq('vback').innerHTML = anyBack
+    ? backs.map(b => vbar(b.nm, b.rate, maxBack,
+        Math.round(b.rate*100)+'%<span> '+b.who+'명</span>',
+        b.rate >= maxBack*0.6 ? 'warm' : '', !b.who)).join('')
+      + '<div class="vhint">되돌아본 비율이 높은 곳은 <b>한 번에 이해되지 않았다</b>는 뜻일 수 있어요. 문장을 풀거나 순서를 바꿔볼 만합니다.</div>'
+    : '<div class="vempty">아직 되돌아본 기록이 없어요.<br>이 항목은 <b>오늘 23시 이후 방문</b>부터 쌓입니다.</div>';
 
   const ex = V_SECTIONS.map(([id,nm],i)=>[nm, rows.filter(r=>(r.deep||0)===i).length]);
   const mx = Math.max.apply(null, ex.map(e=>e[1]).concat([1]));
