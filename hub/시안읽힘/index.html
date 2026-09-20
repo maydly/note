@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>시안 페이지 읽힘 · maydly</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{
+  --bg:#F5F7EF; --card:#FFFFFF; --line:#E4EAD6; --line2:#EEF2E6;
+  --green:#4A7A35; --green-l:#7DAB5A; --mint:#EAF2DC;
+  --ink:#2A3820; --sub:#6A8055; --sub-l:#9CB183; --warn:#B98A3C;
+  --ease:cubic-bezier(.22,.9,.3,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard Variable',Pretendard,-apple-system,system-ui,sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.7;letter-spacing:-.01em;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:900px;margin:0 auto;padding:34px 20px 80px}
+
+h1{font-size:25px;font-weight:700;letter-spacing:-.025em}
+.lead{margin-top:9px;font-size:14px;color:var(--sub);line-height:1.8}
+.note{margin-top:14px;background:var(--mint);border-radius:11px;padding:13px 17px;
+  font-size:13px;color:var(--sub);line-height:1.8}
+.note b{color:var(--green)}
+
+/* 로그인 게이트 */
+.gate{margin-top:40px;background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:34px 28px;text-align:center}
+.gate .lock{font-size:13.5px;color:var(--sub);margin-bottom:16px}
+.btn{display:inline-block;padding:12px 26px;border-radius:11px;border:1px solid var(--green);
+  background:var(--green);color:#fff;font-size:14.5px;font-weight:600;cursor:pointer;
+  transition:transform .2s var(--ease),opacity .2s var(--ease)}
+.btn:hover{transform:translateY(-2px)}
+.btn.ghost{background:var(--card);color:var(--green)}
+.err{margin-top:13px;font-size:13px;color:#B0453C;line-height:1.7}
+
+main[hidden]{display:none}
+
+/* 기간 */
+.range{display:flex;gap:7px;margin:24px 0 18px;flex-wrap:wrap;align-items:center}
+.range .lb{font-size:12px;color:var(--sub-l);margin-right:3px}
+.rg{padding:6px 14px;border:1px solid var(--line);border-radius:17px;background:var(--card);
+  font-size:13px;color:var(--sub);cursor:pointer;transition:all .22s var(--ease)}
+.rg.on{background:var(--green);border-color:var(--green);color:#fff;font-weight:600}
+.reload{margin-left:auto;font-size:12.5px;color:var(--sub-l);cursor:pointer}
+
+/* 요약 */
+.sum{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+.s{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:17px 16px}
+.s .k{font-size:11.5px;color:var(--sub-l)}
+.s .v{margin-top:5px;font-size:23px;font-weight:700;color:var(--green);letter-spacing:-.02em}
+.s .u{font-size:12.5px;font-weight:500;color:var(--sub);margin-left:2px}
+
+/* 카드 */
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:22px 24px;margin-top:16px}
+.card h2{font-size:16.5px;font-weight:700}
+.card .d{margin-top:5px;margin-bottom:17px;font-size:12.5px;color:var(--sub-l);line-height:1.75}
+
+/* 막대 행 */
+.row{display:grid;grid-template-columns:104px 1fr 78px;gap:12px;align-items:center;
+  padding:7px 0;font-size:13px}
+.row .nm{color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .bar{height:11px;background:var(--line2);border-radius:6px;overflow:hidden}
+.row .bar i{display:block;height:100%;width:0;background:var(--green-l);border-radius:6px;
+  transition:width .9s var(--ease)}
+.row .bar i.warm{background:var(--warn)}
+.row .bar i.deep{background:var(--green)}
+.row .vl{text-align:right;color:var(--ink);font-weight:600;font-size:12.5px}
+.row .vl span{color:var(--sub-l);font-weight:400;font-size:11.5px}
+.row.dim .nm,.row.dim .vl{color:var(--sub-l)}
+
+.hint{margin-top:15px;padding-top:14px;border-top:1px solid var(--line2);
+  font-size:12.5px;color:var(--sub);line-height:1.85}
+.hint b{color:var(--warn)}
+
+/* 깔때기 */
+.funnel{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;text-align:center}
+.fn{background:var(--mint);border-radius:12px;padding:15px 10px}
+.fn .n{font-size:20px;font-weight:700;color:var(--green)}
+.fn .t{margin-top:4px;font-size:12px;color:var(--sub)}
+.fn .p{margin-top:2px;font-size:11px;color:var(--sub-l)}
+
+.empty{padding:34px;text-align:center;color:var(--sub-l);font-size:13.5px;line-height:1.9}
+
+footer{margin-top:34px;text-align:center;font-size:11.5px;color:var(--sub-l);line-height:1.9}
+
+@media (max-width:720px){
+  .sum{grid-template-columns:repeat(2,1fr)}
+  .funnel{grid-template-columns:repeat(2,1fr)}
+  .row{grid-template-columns:82px 1fr 66px;gap:9px;font-size:12.5px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>시안 페이지 읽힘</h1>
+<p class="lead">고객들이 시안 페이지의 <b>어디를 많이 보고, 어디를 건너뛰고, 어디서 멈추는지</b>를 모아둔 곳이에요.</p>
+<div class="note">🍀 <b>개인은 식별하지 않아요.</b> 누가 봤는지는 기록하지 않고, 머문 시간·도달한 곳·펼쳐본 항목만 모읍니다.
+  개별 고객을 보려는 게 아니라 <b>페이지에서 고칠 곳을 찾기 위한</b> 자료예요.</div>
+
+<div class="gate" id="gate">
+  <div class="lock">bucket0825@gmail.com 계정만 열람할 수 있어요</div>
+  <span class="btn" id="login">구글로 로그인</span>
+  <div class="err" id="err" hidden></div>
+</div>
+
+<main id="main" hidden>
+  <div class="range" id="range">
+    <span class="lb">기간</span>
+    <span class="rg on" data-d="7">최근 7일</span>
+    <span class="rg" data-d="30">최근 30일</span>
+    <span class="rg" data-d="0">전체</span>
+    <span class="reload" id="out">로그아웃</span>
+  </div>
+
+  <div class="sum" id="sum"></div>
+
+  <div class="card">
+    <h2>어디까지 봤나</h2>
+    <p class="d">각 대목까지 내려온 사람의 비율이에요. 막대가 뚝 떨어지는 곳이 <b>사람들이 그만 보는 지점</b>입니다.</p>
+    <div id="reach"></div>
+    <div class="hint" id="reachHint"></div>
+  </div>
+
+  <div class="card">
+    <h2>어디서 오래 머물렀나</h2>
+    <p class="d">그 대목을 본 사람들이 평균 몇 초나 머물렀는지예요.
+      짧으면 빨리 넘긴 것이고, 길면 공들여 읽었거나 <b>이해가 어려웠다는</b> 뜻일 수도 있어요.</p>
+    <div id="dwell"></div>
+  </div>
+
+  <div class="card">
+    <h2>어디서 멈췄나</h2>
+    <p class="d">마지막으로 도달한 대목이에요. 여기 몰린 곳이 <b>이탈 지점</b>입니다.</p>
+    <div id="exit"></div>
+  </div>
+
+  <div class="card">
+    <h2>펼쳐본 항목</h2>
+    <p class="d">접혀 있는 설명을 실제로 열어본 비율이에요. 낮으면 <b>아무도 안 읽고 있다는</b> 뜻이에요.</p>
+    <div id="acc"></div>
+  </div>
+
+  <div class="card">
+    <h2>문의까지 가는 길</h2>
+    <p class="d">문의 영역에 닿고, 쓰기 시작하고, 실제로 낸 사람의 수예요.</p>
+    <div class="funnel" id="funnel"></div>
+    <div class="hint" id="funnelHint"></div>
+  </div>
+
+  <div class="card">
+    <h2>어떻게 보나</h2>
+    <div id="misc"></div>
+  </div>
+</main>
+
+<footer>
+  maydly · 기능-001 파생 — 시안 페이지 조회 집계<br>
+  개인 식별 정보를 담지 않습니다
+</footer>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged,
+         setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, query, orderBy }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const cfg = { apiKey:"AIzaSyBfyRE7CNENjgSfe25xHAdr87gOllpYtvM",
+              authDomain:"subin-routine.firebaseapp.com", projectId:"subin-routine" };
+const ALLOWED   = "bucket0825@gmail.com";
+const COLLECTION= "maydly_views";
+const SECTIONS  = [
+  ['direction','촬영 방향'], ['core','핵심 안내'],   ['concept','시안 방향'],
+  ['structure','촬영 구성'], ['guide','준비 참고'],  ['behind','비하인드'],
+  ['process','진행 흐름'],   ['studio','촬영 공간'], ['notice','필독 공지'],
+  ['cta','문의하기']
+];
+
+const app  = initializeApp(cfg);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const $ = id => document.getElementById(id);
+
+let ROWS = [], DAYS = 7;
+
+$('login').onclick = async () => {
+  try{
+    await setPersistence(auth, browserLocalPersistence);
+    await signInWithPopup(auth, new GoogleAuthProvider());
+  }catch(e){ showErr('로그인이 취소됐거나 실패했어요.'); }
+};
+$('out').onclick = () => signOut(auth);
+function showErr(m){ $('err').textContent = m; $('err').hidden = false; }
+
+onAuthStateChanged(auth, async user => {
+  if(user && user.email === ALLOWED){
+    $('gate').hidden = true; $('main').hidden = false;
+    await load();
+  }else{
+    $('gate').hidden = false; $('main').hidden = true;
+    if(user) showErr('이 계정(' + user.email + ')은 열람 권한이 없어요. ' + ALLOWED + '으로 로그인해주세요.');
+  }
+});
+
+$('range').onclick = e => {
+  const el = e.target.closest('.rg'); if(!el) return;
+  [...$('range').querySelectorAll('.rg')].forEach(x => x.classList.remove('on'));
+  el.classList.add('on'); DAYS = +el.dataset.d; render();
+};
+
+async function load(){
+  try{
+    const snap = await getDocs(query(collection(db, COLLECTION), orderBy('ts','desc')));
+    ROWS = snap.docs.map(d => d.data()).filter(r => r && r.ts);
+  }catch(e){ ROWS = []; }
+  render();
+}
+
+const pct = (a,b) => b ? Math.round(a / b * 100) : 0;
+const secTxt = s => s >= 60 ? Math.floor(s/60) + '분 ' + (s%60) + '초' : s + '초';
+
+function inRange(r){
+  if(!DAYS) return true;
+  const t = r.ts.toDate ? r.ts.toDate() : new Date(r.ts);
+  return (Date.now() - t.getTime()) <= DAYS * 86400000;
+}
+
+function bar(name, value, max, label, cls, dim){
+  return `<div class="row${dim?' dim':''}">
+    <span class="nm">${name}</span>
+    <span class="bar"><i class="${cls||''}" data-w="${max ? Math.round(value/max*100) : 0}"></i></span>
+    <span class="vl">${label}</span></div>`;
+}
+/* 막대 채우기 — requestAnimationFrame 에 걸면 백그라운드 탭에서 멈춰
+   막대가 0인 채로 남는다. 강제 리플로우로 전환을 시동한다. */
+function animate(){
+  document.querySelectorAll('.bar i[data-w]').forEach(i => {
+    void i.offsetWidth;
+    i.style.width = i.dataset.w + '%';
+  });
+}
+
+function render(){
+  const rows = ROWS.filter(inRange);
+  const n = rows.length;
+
+  if(!n){
+    $('sum').innerHTML = '';
+    ['reach','dwell','exit','acc','misc'].forEach(id =>
+      $(id).innerHTML = '<div class="empty">아직 쌓인 기록이 없어요.<br>시안 페이지에 조회 기록 스크립트를 넣고 며칠 기다려보세요.</div>');
+    $('funnel').innerHTML = ''; $('reachHint').textContent = ''; $('funnelHint').textContent = '';
+    return;
+  }
+
+  /* 요약 */
+  const avgDur = Math.round(rows.reduce((a,r)=>a+(r.dur||0),0)/n);
+  const revisit= rows.filter(r=>(r.visit||1) > 1).length;
+  const done   = rows.filter(r=>r.form === 'submitted').length;
+  $('sum').innerHTML =
+    `<div class="s"><div class="k">본 횟수</div><div class="v">${n}<span class="u">번</span></div></div>
+     <div class="s"><div class="k">평균 머문 시간</div><div class="v">${Math.floor(avgDur/60)}<span class="u">분 ${avgDur%60}초</span></div></div>
+     <div class="s"><div class="k">다시 들어온 비율</div><div class="v">${pct(revisit,n)}<span class="u">%</span></div></div>
+     <div class="s"><div class="k">문의까지</div><div class="v">${pct(done,n)}<span class="u">%</span></div></div>`;
+
+  /* 어디까지 봤나 — 도달률 */
+  let html = '', prev = null, dropAt = null, dropGap = 0;
+  SECTIONS.forEach(([id,nm], i) => {
+    const c = rows.filter(r => (r.deep||0) >= i).length;
+    const p = pct(c, n);
+    if(prev !== null && prev - p > dropGap){ dropGap = prev - p; dropAt = nm; }
+    prev = p;
+    html += bar(nm, p, 100, p + '%<span> ' + c + '명</span>', p >= 70 ? 'deep' : (p >= 35 ? '' : 'warm'), p < 35);
+  });
+  $('reach').innerHTML = html;
+  $('reachHint').innerHTML = dropAt
+    ? `가장 많이 떨어져 나가는 구간은 <b>${dropAt} 직전</b>이에요(${dropGap}%p 감소). 그 앞 대목이 길거나 어렵지 않은지 살펴보면 좋아요.`
+    : '';
+
+  /* 어디서 오래 머물렀나 */
+  const maxAvg = Math.max(...SECTIONS.map(([id]) => {
+    const v = rows.filter(r => r.secs && r.secs[id]);
+    return v.length ? v.reduce((a,r)=>a+r.secs[id],0)/v.length : 0;
+  }), 1);
+  $('dwell').innerHTML = SECTIONS.map(([id,nm]) => {
+    const v = rows.filter(r => r.secs && r.secs[id]);
+    const avg = v.length ? Math.round(v.reduce((a,r)=>a+r.secs[id],0)/v.length) : 0;
+    return bar(nm, avg, maxAvg, secTxt(avg), avg >= maxAvg*0.6 ? 'deep' : '', !avg);
+  }).join('');
+
+  /* 어디서 멈췄나 */
+  const exits = SECTIONS.map(([id,nm],i) => [nm, rows.filter(r => (r.deep||0) === i).length]);
+  const maxExit = Math.max(...exits.map(e=>e[1]), 1);
+  $('exit').innerHTML = exits.map(([nm,c]) =>
+    bar(nm, c, maxExit, c + '명<span> ' + pct(c,n) + '%</span>',
+        c === maxExit && c > 0 ? 'warm' : '', !c)).join('');
+
+  /* 펼쳐본 항목 */
+  const names = {};
+  rows.forEach(r => (r.opened||[]).forEach(t => names[t] = (names[t]||0) + 1));
+  const keys = Object.keys(names).sort((a,b)=>names[b]-names[a]);
+  $('acc').innerHTML = keys.length
+    ? keys.map(k => bar(k, names[k], n, pct(names[k],n) + '%<span> ' + names[k] + '명</span>',
+        pct(names[k],n) >= 50 ? 'deep' : (pct(names[k],n) >= 20 ? '' : 'warm'),
+        pct(names[k],n) < 20)).join('')
+    : '<div class="empty">아직 펼쳐본 기록이 없어요.</div>';
+
+  /* 문의 깔때기 */
+  const reach = rows.filter(r => ['reached','typed','submitted'].includes(r.form)).length;
+  const typed = rows.filter(r => ['typed','submitted'].includes(r.form)).length;
+  $('funnel').innerHTML =
+    [['들어옴', n], ['문의까지 내려옴', reach], ['쓰기 시작', typed], ['실제로 냄', done]]
+    .map(([t,c]) => `<div class="fn"><div class="n">${c}</div><div class="t">${t}</div>
+      <div class="p">${pct(c,n)}%</div></div>`).join('');
+  $('funnelHint').innerHTML = (reach && typed < reach*0.4)
+    ? `문의까지 내려온 사람 중 <b>${pct(reach-typed,reach)}%가 쓰지 않고 떠났어요.</b> 폼이 부담스럽거나 무엇을 써야 할지 애매하지 않은지 볼 만해요.`
+    : (typed && done < typed*0.6)
+    ? `쓰기 시작한 사람 중 <b>${pct(typed-done,typed)}%가 끝내지 못했어요.</b>`
+    : '';
+
+  /* 어떻게 보나 */
+  const mob = rows.filter(r => r.dev === 'mobile').length;
+  const long = rows.filter(r => (r.dur||0) >= 300).length;
+  const quick= rows.filter(r => (r.dur||0) < 30).length;
+  $('misc').innerHTML =
+    bar('폰으로', mob, n, pct(mob,n) + '%<span> ' + mob + '명</span>', 'deep') +
+    bar('5분 이상', long, n, pct(long,n) + '%<span> ' + long + '명</span>', '') +
+    bar('30초 미만', quick, n, pct(quick,n) + '%<span> ' + quick + '명</span>', 'warm');
+
+  animate();
+}
+</script>
+</body>
+</html>
