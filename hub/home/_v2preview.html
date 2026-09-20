@@ -377,6 +377,16 @@ code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
     display:flex!important; flex-direction:row!important; flex-wrap:nowrap!important;
     gap:8px!important; flex:0 0 auto!important; align-items:center!important}
 }
+
+/* ── 폰: 아이콘 레일을 감춘다 (v2.0 최종 판단)
+   <details> 안에 nav 가 들어 있어 가로 한 줄로 펴는 게 계속 실패했다.
+   폰에서 레일은 값이 낮다 — 앱 이동은 위쪽 「타일 독바」 버튼과
+   본문 앱 창으로 충분하다. 화면 맨 위가 깔끔해지는 이득이 더 크다. ── */
+@media(max-width:900px){
+  .side{display:none!important}
+  .shell,body.apps-open .shell{grid-template-columns:minmax(0,1fr)!important}
+  .main{padding-top:20px}
+}
 </style>
 </head>
 <body>
