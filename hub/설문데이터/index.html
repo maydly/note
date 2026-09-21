@@ -104,6 +104,21 @@
   .vrow .vl{text-align:right;font-weight:700;font-size:12.5px}
   .vrow .vl span{color:var(--sub);font-weight:400;font-size:11.5px}
   .vrow.dim{opacity:.55}
+  /* 분량 대비 읽힘 — 글자 수에 견줘 얼마나 머물렀나 */
+  .vread{padding:12px 0;border-bottom:1px solid var(--line2)}
+  .vread:last-child{border-bottom:0}
+  .vrh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px}
+  .vrh .nm{font-size:13.5px;font-weight:700;color:var(--ink)}
+  .vj{font-size:12px;font-weight:700;white-space:nowrap}
+  .vj.ok{color:var(--green)} .vj.mid{color:var(--warn)} .vj.bad{color:#B0453C}
+  .vread .bar{display:block;height:11px;background:var(--line);border-radius:6px;overflow:hidden}
+  .vread .bar i{display:block;height:100%;width:0;background:var(--green-l);border-radius:6px;transition:width .9s ease}
+  .vread .bar i.mid{background:var(--warn)} .vread .bar i.bad{background:#C4675C}
+  .vrd{margin-top:8px;font-size:11.5px;color:var(--sub);line-height:1.75}
+  .vrd b{color:var(--ink);font-weight:700}
+  .vsum{background:var(--mint);border-radius:10px;padding:14px 16px;margin:-2px 0 16px;
+        font-size:13px;line-height:1.85;color:var(--ink)}
+  .vsum b{color:var(--green)}
   .vhint{margin-top:14px;padding-top:13px;border-top:1px solid var(--line);font-size:12.5px;color:var(--sub);line-height:1.85}
   .vhint b{color:#B98A3C}
   .vfunnel{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;text-align:center}
@@ -181,14 +196,19 @@
       <div class="panel"><h2>어디까지 봤나</h2>
         <div class="vlead">각 대목까지 내려온 비율. 막대가 뚝 떨어지는 곳이 그만 보는 지점이에요.</div>
         <div id="vreach"></div><div class="vhint" id="vreachHint"></div></div>
-      <div class="panel"><h2>어디에 시간을 많이 썼나</h2>
-        <div class="vlead">사람마다 읽는 속도가 다르니, <b>그 사람이 쓴 전체 시간 중 이 대목이 차지한 비율</b>로 봅니다.
-          속독하는 분도 유독 멈칫한 곳이 잡혀요.</div>
-        <div id="vdwell"></div></div>
+      <div class="panel"><h2>분량에 견줘 얼마나 읽혔나</h2>
+        <div class="vlead">대목마다 <b>글자 수가 다릅니다.</b> 그래서 시간을 그냥 견주면
+          짧은 대목이 억울하게 «안 읽음»으로 잡혀요.
+          여기서는 <b>«이만큼 긴데 이만큼 머물렀다»</b>로 봅니다.</div>
+        <div class="vsum" id="vreadsum"></div>
+        <div id="vdwell"></div>
+        <div class="vhint">글자 수는 <b>2026년 9월 21일</b> 시안 페이지 기준으로 잰 값이에요.
+          페이지 글을 크게 고치면 다시 재야 맞습니다.
+          «다 읽으려면»은 <b>1분에 450자</b> 읽는다고 봤을 때입니다.</div></div>
 
-      <div class="panel"><h2>다들 휙 넘기는 곳</h2>
-        <div class="vlead">지나가긴 했는데 <b>거의 시간을 안 쓴</b> 대목이에요.
-          여기가 <b>덜어내도 되는 곳</b>일 수 있어요.</div>
+      <div class="panel"><h2>분량에 비해 가장 안 읽힌 곳</h2>
+        <div class="vlead">지나가긴 했는데, <b>그 분량이면 당연히 더 걸렸어야 할 만큼</b>
+          시간을 안 쓴 대목이에요. <b>줄이거나 뒤로 미뤄도 되는 곳</b>일 수 있어요.</div>
         <div id="vskim"></div></div>
 
       <div class="panel"><h2>되돌아와서 다시 본 곳</h2>
@@ -360,6 +380,32 @@ const V_SECTIONS = [
   ['process','진행 흐름'],   ['studio','촬영 공간'], ['notice','필독 공지'],
   ['cta','문의하기']
 ];
+/* 시안 페이지 각 대목의 «보이는» 글자 수 — 2026-09-21 브라우저에서 실측.
+   접혀 있어 안 보이는 글자는 빼고 쟀다(innerText 기준).
+   페이지 글을 크게 고치면 이 숫자도 다시 재야 판정이 맞는다. */
+const V_LEN = { direction:526, core:339, concept:3312, structure:345, guide:815,
+                behind:269, process:183, studio:357, notice:1860, cta:920 };
+const V_CPS = 7.5;                       /* 1분에 450자 = 초당 7.5자 */
+const vneed = id => V_LEN[id] ? V_LEN[id] / V_CPS : 0;
+function vtime(s){
+  s = Math.round(s);
+  if(s < 60) return s + '초';
+  const m = Math.floor(s/60), r = s % 60;
+  return m + '분' + (r ? ' ' + r + '초' : '');
+}
+/* 머문 시간 ÷ 그 분량을 읽는 데 필요한 시간 → 말로 된 판정 */
+const V_JUDGE = [[0.80,'ok','끝까지 읽음'], [0.45,'ok','절반쯤 읽음'],
+                 [0.20,'mid','훑고 지나감'], [0.08,'bad','거의 안 봄'], [0,'bad','그냥 지나침']];
+const vjudge = r => V_JUDGE.find(j => r >= j[0]) || V_JUDGE[V_JUDGE.length-1];
+function vreadRow(nm, len, avg, need, cnt){
+  const ratio = need ? avg/need : 0, j = vjudge(ratio);
+  const w = Math.max(2, Math.min(100, Math.round(ratio*100)));
+  return '<div class="vread">'
+    + '<div class="vrh"><span class="nm">'+nm+'</span><span class="vj '+j[1]+'">'+j[2]+'</span></div>'
+    + '<span class="bar"><i class="'+(j[1]==='ok' ? '' : j[1])+'" data-w="'+w+'"></i></span>'
+    + '<div class="vrd"><b>'+len.toLocaleString()+'자</b> · 평균 <b>'+vtime(avg)+'</b> 머묾'
+    + ' — 다 읽으려면 '+vtime(need)+' · '+cnt+'명 도달</div></div>';
+}
 let V_ROWS = [], V_DAYS = 7, V_WHO = 'all', V_LOADED = false;
 const vq   = id => document.getElementById(id);
 const vpct = (a,b) => b ? Math.round(a/b*100) : 0;
@@ -418,7 +464,7 @@ function vbar(name, value, max, label, cls, dim){
 }
 /* 막대 채우기를 rAF 에 걸면 배경 탭에서 멈춰 0 으로 남는다 */
 function vanimate(){
-  document.querySelectorAll('.vrow .bar i[data-w]').forEach(i => { void i.offsetWidth; i.style.width = i.dataset.w+'%'; });
+  document.querySelectorAll('.bar i[data-w]').forEach(i => { void i.offsetWidth; i.style.width = i.dataset.w+'%'; });
 }
 
 function renderViews(){
@@ -456,7 +502,7 @@ function renderViews(){
           + '<br><span class="vrg" id="vretry" style="display:inline-block;margin-top:12px">다시 불러오기</span></div>';
     }
     vq('vreach').innerHTML = msg;
-    ['vdwell','vskim','vback','vexit','vacc','vmisc'].forEach(id => vq(id).innerHTML = '');
+    ['vdwell','vskim','vback','vexit','vacc','vmisc','vreadsum'].forEach(id => vq(id).innerHTML = '');
     vq('vfunnel').innerHTML=''; vq('vreachHint').textContent=''; vq('vfunnelHint').textContent='';
     const rt = vq('vretry');
     if(rt) rt.onclick = () => { V_LOADED = false; loadViews(); };
@@ -485,29 +531,36 @@ function renderViews(){
 
   /* 시간 비중 — 사람마다 읽는 속도가 달라 절대 초는 의미가 없다.
      각자의 전체 체류 중 그 대목이 차지한 비율을 평균낸다. */
-  const share = {};
-  V_SECTIONS.forEach(([id])=>{
-    const v = rows.filter(r => r.secs && r.secs[id] && r.dur > 0);
-    share[id] = v.length ? v.reduce((a,r)=>a + r.secs[id]/r.dur, 0)/v.length : 0;
+  /* 분량 대비 읽힘 — 대목별 평균 머문 초를 «그 분량을 읽는 데 필요한 초»와 견준다.
+     분모를 «거기까지 내려온 사람»으로 두어, 아예 못 본 사람이 평균을 끌어내리지 않게 한다. */
+  const avgSec = {}, cntSec = {}, ratio = {};
+  V_SECTIONS.forEach(([id], i) => {
+    const seen = rows.filter(r => (r.deep||0) >= i);
+    cntSec[id] = seen.length;
+    avgSec[id] = seen.length
+      ? seen.reduce((a,r) => a + ((r.secs && r.secs[id]) || 0), 0) / seen.length : 0;
+    ratio[id] = vneed(id) ? avgSec[id] / vneed(id) : 0;
   });
-  const maxShare = Math.max.apply(null, V_SECTIONS.map(([id])=>share[id]).concat([0.01]));
-  vq('vdwell').innerHTML = V_SECTIONS.map(([id,nm])=>{
-    const p = Math.round(share[id]*100);
-    const reached = rows.filter(r=>(r.deep||0) >= V_SECTIONS.findIndex(s=>s[0]===id)).length;
-    return vbar(nm, share[id], maxShare, p+'%<span> 시간</span>',
-      share[id] >= maxShare*0.65 ? 'deep' : '', !reached);
-  }).join('');
+  vq('vdwell').innerHTML = V_SECTIONS.map(([id,nm]) =>
+    vreadRow(nm, V_LEN[id]||0, avgSec[id], vneed(id), cntSec[id])).join('');
 
-  /* 휙 넘긴 곳 — 도달은 했는데 시간 비중이 바닥인 대목 */
-  const skim = V_SECTIONS.map(([id,nm],i)=>{
-    const reached = rows.filter(r=>(r.deep||0) >= i).length;
-    return { nm, reached, share: share[id] };
-  }).filter(x => x.reached >= Math.max(2, n*0.15))
-    .sort((a,b)=> a.share - b.share).slice(0,5);
+  const totLen  = V_SECTIONS.reduce((a,[id]) => a + (V_LEN[id]||0), 0);
+  const totNeed = totLen / V_CPS;
+  const avgDur  = rows.reduce((a,r) => a + (r.dur||0), 0) / n;
+  vq('vreadsum').innerHTML =
+      '시안 페이지는 전부 <b>'+totLen.toLocaleString()+'자</b>. 다 읽으면 <b>'+vtime(totNeed)+'</b> 걸려요.<br>'
+    + '실제로는 평균 <b>'+vtime(avgDur)+'</b> 봅니다 — 분량의 <b>'+Math.round(avgDur/totNeed*100)+'%</b>.<br>'
+    + '<span style="opacity:.8">전부 낮게 나오는 게 정상이에요 — 아무도 '+totLen.toLocaleString()+'자를 다 읽지 않아요. '
+    + '<b>대목끼리 견주어</b> 어디가 유독 낮은지를 보세요.</span>';
+
+  /* 분량에 비해 가장 안 읽힌 곳 — 비율이 낮은 순 */
+  const skim = V_SECTIONS.map(([id,nm]) => ({ id, nm, r: ratio[id], cnt: cntSec[id] }))
+    .filter(x => x.cnt >= Math.max(2, n*0.15) && V_LEN[x.id])
+    .sort((a,b) => a.r - b.r).slice(0,5);
   vq('vskim').innerHTML = skim.length
-    ? skim.map(x => vbar(x.nm, 1, 1,
-        Math.round(x.share*100)+'%<span> ' + x.reached + '명 지나감</span>', 'warm')).join('')
-      + '<div class="vhint">위쪽일수록 <b>다들 그냥 지나친 곳</b>이에요. 내용이 길거나 굳이 없어도 되는지 한 번 보세요.</div>'
+    ? skim.map(x => vreadRow(x.nm, V_LEN[x.id], avgSec[x.id], vneed(x.id), x.cnt)).join('')
+      + '<div class="vhint">위쪽일수록 <b>분량에 비해 안 읽힌 곳</b>이에요. '
+      + '중요한 내용이 여기 있다면 <b>짧게 줄이거나 앞으로 당기는</b> 걸 생각해볼 만합니다.</div>'
     : '<div class="vempty">아직 판단할 만큼 쌓이지 않았어요.</div>';
 
   /* 되돌아본 곳 */
