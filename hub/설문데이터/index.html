@@ -104,13 +104,28 @@
   .vrow .vl{text-align:right;font-weight:700;font-size:12.5px}
   .vrow .vl span{color:var(--sub);font-weight:400;font-size:11.5px}
   .vrow.dim{opacity:.55}
+  /* 한눈에 — 색으로 세 무리를 갈라 보여준다 */
+  .vglance{display:grid;gap:9px;margin:0 0 16px}
+  .vgr{display:grid;grid-template-columns:122px 1fr;gap:12px;align-items:start;
+       padding:12px 14px;border-radius:10px;font-size:12.5px;line-height:1.75}
+  .vgr .k{font-weight:700;white-space:nowrap}
+  .vgr .n{color:var(--ink);font-weight:600}
+  .vgr .w{display:block;margin-top:3px;font-size:11.5px;opacity:.85;font-weight:400}
+  .vgr.ok{background:#F1F8E8;color:var(--green)}
+  .vgr.mid{background:#FBF4E6;color:#8A6520}
+  .vgr.bad{background:#FBEDEB;color:#B0453C}
+
   /* 분량 대비 읽힘 — 글자 수에 견줘 얼마나 머물렀나 */
-  .vread{padding:12px 0;border-bottom:1px solid var(--line2)}
+  .vread{padding:12px 0 12px 13px;border-bottom:1px solid var(--line2);
+         border-left:4px solid var(--line);border-radius:3px;margin-bottom:2px}
+  .vread.ok{border-left-color:var(--green-l);background:linear-gradient(90deg,#F1F8E8,transparent 55%)}
+  .vread.mid{border-left-color:var(--warn);background:linear-gradient(90deg,#FBF4E6,transparent 55%)}
+  .vread.bad{border-left-color:#C4675C;background:linear-gradient(90deg,#FBEDEB,transparent 55%)}
   .vread:last-child{border-bottom:0}
   .vrh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px}
   .vrh .nm{font-size:13.5px;font-weight:700;color:var(--ink)}
   .vj{font-size:12px;font-weight:700;white-space:nowrap}
-  .vj.ok{color:var(--green)} .vj.mid{color:var(--warn)} .vj.bad{color:#B0453C}
+  .vj.ok{color:var(--green)} .vj.mid{color:#8A6520} .vj.bad{color:#B0453C}
   .vread .bar{display:block;height:11px;background:var(--line);border-radius:6px;overflow:hidden}
   .vread .bar i{display:block;height:100%;width:0;background:var(--green-l);border-radius:6px;transition:width .9s ease}
   .vread .bar i.mid{background:var(--warn)} .vread .bar i.bad{background:#C4675C}
@@ -200,6 +215,7 @@
         <div class="vlead">대목마다 <b>글자 수가 다릅니다.</b> 그래서 시간을 그냥 견주면
           짧은 대목이 억울하게 «안 읽음»으로 잡혀요.
           여기서는 <b>«이만큼 긴데 이만큼 머물렀다»</b>로 봅니다.</div>
+        <div class="vglance" id="vglance"></div>
         <div class="vsum" id="vreadsum"></div>
         <div id="vdwell"></div>
         <div class="vhint">글자 수는 <b>2026년 9월 21일</b> 시안 페이지 기준으로 잰 값이에요.
@@ -393,16 +409,16 @@ function vtime(s){
   const m = Math.floor(s/60), r = s % 60;
   return m + '분' + (r ? ' ' + r + '초' : '');
 }
-/* 머문 시간 ÷ 그 분량을 읽는 데 필요한 시간 → 말로 된 판정 */
-const V_JUDGE = [[0.80,'ok','끝까지 읽음'], [0.45,'ok','절반쯤 읽음'],
-                 [0.20,'mid','훑고 지나감'], [0.08,'bad','거의 안 봄'], [0,'bad','그냥 지나침']];
-const vjudge = r => V_JUDGE.find(j => r >= j[0]) || V_JUDGE[V_JUDGE.length-1];
-function vreadRow(nm, len, avg, need, cnt){
-  const ratio = need ? avg/need : 0, j = vjudge(ratio);
+/* 색 이름표. 절대값(분량의 몇 %)으로 색을 주면 전부 빨강이 된다 —
+   이 페이지는 다 읽는 데 20분인데 다들 3분을 보기 때문에 모든 대목이 10~30%에 몰린다.
+   그래서 색은 «이 페이지 안에서 서로 견준 순위»로 준다. 숫자는 사실 그대로 둔다. */
+const V_GRADE = { ok:'잘 보는 편', mid:'보통', bad:'안 보는 편' };
+function vreadRow(nm, len, avg, need, cnt, g){
+  const ratio = need ? avg/need : 0;
   const w = Math.max(2, Math.min(100, Math.round(ratio*100)));
-  return '<div class="vread">'
-    + '<div class="vrh"><span class="nm">'+nm+'</span><span class="vj '+j[1]+'">'+j[2]+'</span></div>'
-    + '<span class="bar"><i class="'+(j[1]==='ok' ? '' : j[1])+'" data-w="'+w+'"></i></span>'
+  return '<div class="vread '+g+'">'
+    + '<div class="vrh"><span class="nm">'+nm+'</span><span class="vj '+g+'">'+V_GRADE[g]+'</span></div>'
+    + '<span class="bar"><i class="'+(g==='ok' ? '' : g)+'" data-w="'+w+'"></i></span>'
     + '<div class="vrd"><b>'+len.toLocaleString()+'자</b> · 평균 <b>'+vtime(avg)+'</b> 머묾'
     + ' — 다 읽으려면 '+vtime(need)+' · '+cnt+'명 도달</div></div>';
 }
@@ -502,7 +518,7 @@ function renderViews(){
           + '<br><span class="vrg" id="vretry" style="display:inline-block;margin-top:12px">다시 불러오기</span></div>';
     }
     vq('vreach').innerHTML = msg;
-    ['vdwell','vskim','vback','vexit','vacc','vmisc','vreadsum'].forEach(id => vq(id).innerHTML = '');
+    ['vdwell','vskim','vback','vexit','vacc','vmisc','vreadsum','vglance'].forEach(id => vq(id).innerHTML = '');
     vq('vfunnel').innerHTML=''; vq('vreachHint').textContent=''; vq('vfunnelHint').textContent='';
     const rt = vq('vretry');
     if(rt) rt.onclick = () => { V_LOADED = false; loadViews(); };
@@ -541,8 +557,35 @@ function renderViews(){
       ? seen.reduce((a,r) => a + ((r.secs && r.secs[id]) || 0), 0) / seen.length : 0;
     ratio[id] = vneed(id) ? avgSec[id] / vneed(id) : 0;
   });
+  /* 순위를 매겨 위 1/3 초록, 아래 1/3 빨강, 나머지 노랑.
+     기록이 3건도 안 되면 순위가 흔들리니 전부 노랑으로 둔다. */
+  const ranked = V_SECTIONS.map(([id,nm]) => ({ id, nm, r: ratio[id] }))
+    .filter(x => V_LEN[x.id]).sort((a,b) => b.r - a.r);
+  const third = Math.max(1, Math.round(ranked.length/3));
+  const grade = {};
+  ranked.forEach((x,i) => {
+    grade[x.id] = n < 3 ? 'mid'
+                : i < third ? 'ok'
+                : i >= ranked.length - third ? 'bad' : 'mid';
+  });
+
+  vq('vglance').innerHTML = [
+    ['ok',  '잘 보는 편', '여기는 잘 되고 있어요.'],
+    ['mid', '보통',       ''],
+    ['bad', '안 보는 편', '<b>없앨지 고칠지</b> 생각해볼 곳이에요. 꼭 읽혀야 하는 내용이 여기 있다면 짧게 줄이거나 앞으로 당겨보세요.']
+  ].map(([g,label,note]) => {
+    const list = ranked.filter(x => grade[x.id] === g).map(x => x.nm);
+    if(!list.length) return '';
+    const dot = g === 'ok' ? '🟢' : g === 'mid' ? '🟡' : '🔴';
+    return '<div class="vgr '+g+'"><span class="k">'+dot+' '+label+'</span>'
+         + '<span><span class="n">'+list.join(' · ')+'</span>'
+         + (note ? '<span class="w">'+note+'</span>' : '') + '</span></div>';
+  }).join('') + (n < 3
+    ? '<div class="vgr mid"><span class="k">아직 판단 전</span><span>기록이 <b>3건</b>은 쌓여야 색으로 갈라드려요.</span></div>'
+    : '');
+
   vq('vdwell').innerHTML = V_SECTIONS.map(([id,nm]) =>
-    vreadRow(nm, V_LEN[id]||0, avgSec[id], vneed(id), cntSec[id])).join('');
+    vreadRow(nm, V_LEN[id]||0, avgSec[id], vneed(id), cntSec[id], grade[id]||'mid')).join('');
 
   const totLen  = V_SECTIONS.reduce((a,[id]) => a + (V_LEN[id]||0), 0);
   const totNeed = totLen / V_CPS;
@@ -558,7 +601,7 @@ function renderViews(){
     .filter(x => x.cnt >= Math.max(2, n*0.15) && V_LEN[x.id])
     .sort((a,b) => a.r - b.r).slice(0,5);
   vq('vskim').innerHTML = skim.length
-    ? skim.map(x => vreadRow(x.nm, V_LEN[x.id], avgSec[x.id], vneed(x.id), x.cnt)).join('')
+    ? skim.map(x => vreadRow(x.nm, V_LEN[x.id], avgSec[x.id], vneed(x.id), x.cnt, grade[x.id]||'bad')).join('')
       + '<div class="vhint">위쪽일수록 <b>분량에 비해 안 읽힌 곳</b>이에요. '
       + '중요한 내용이 여기 있다면 <b>짧게 줄이거나 앞으로 당기는</b> 걸 생각해볼 만합니다.</div>'
     : '<div class="vempty">아직 판단할 만큼 쌓이지 않았어요.</div>';
