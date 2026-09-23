@@ -227,6 +227,12 @@
           시간을 안 쓴 대목이에요. <b>줄이거나 뒤로 미뤄도 되는 곳</b>일 수 있어요.</div>
         <div id="vskim"></div></div>
 
+      <div class="panel"><h2>밖으로 나갔다 오는 곳</h2>
+        <div class="vlead">링크를 타고 <b>다른 탭·앱으로 나간</b> 대목이에요.
+          시안 방향에는 <b>핀터레스트 시안 링크</b>가 있어 나가는 게 정상이고,
+          <b>돌아와서 마저 보는지</b>가 중요합니다.</div>
+        <div id="vout"></div></div>
+
       <div class="panel"><h2>되돌아와서 다시 본 곳</h2>
         <div class="vlead">지나갔다가 <b>다시 올라와 본</b> 대목이에요.
           어렵거나 중요했다는 뜻이라, <b>체류 시간보다 확실한 신호</b>입니다.</div>
@@ -451,8 +457,8 @@ async function loadViews(){
   V_LOADED = true; V_ERR = '';
   try{
     const snap = await getDocs(query(collection(db,'maydly_views'), orderBy('ts','desc')));
-    V_ROWS = snap.docs.map(d => d.data()).filter(r => r && r.ts);
-    V_RAW  = snap.size;
+    V_ROWS = vMerge(snap.docs.map(d => ({ _id:d.id, ...d.data() })).filter(r => r && r.ts));
+    V_RAW  = V_ROWS.length;
   }catch(e){
     /* 오류를 삼키면 '데이터 없음'과 구분이 안 된다. 그대로 보여준다. */
     V_ROWS = []; V_RAW = -1;
@@ -461,6 +467,26 @@ async function loadViews(){
   renderViews();
 }
 let V_RAW = 0;
+
+/* 한 사람의 한 번 방문이 «조각» 여러 개로 저장된다 (260923~).
+   시안 방향에 핀터레스트 링크가 있어 고객이 밖으로 나갔다 돌아오기 때문이다.
+   나갈 때마다 한 조각을 남기므로, 같은 sid 끼리 묶어 seq 가 가장 큰 것만 쓴다.
+   (seq 가 큰 조각이 그때까지의 누적이라 가장 완전하다)
+   sid 가 없는 옛 기록은 저마다 하나의 방문으로 둔다. */
+function vMerge(rows){
+  const best = new Map();
+  rows.forEach(r => {
+    const key = r.sid || ('_' + r._id);
+    const cur = best.get(key);
+    if(!cur || (r.seq||0) > (cur.seq||0)) best.set(key, r);
+  });
+  return [...best.values()].sort((a,b) => {
+    const ta = a.ts.toDate ? a.ts.toDate() : new Date(a.ts);
+    const tb = b.ts.toDate ? b.ts.toDate() : new Date(b.ts);
+    return tb - ta;
+  });
+}
+
 function vInRange(r){
   /* 다시 온 사람 = 같은 브라우저로 두 번째 이상 들어온 기록.
      기기를 바꾸거나 시크릿으로 보면 매번 '처음'으로 잡힌다. */
@@ -518,7 +544,7 @@ function renderViews(){
           + '<br><span class="vrg" id="vretry" style="display:inline-block;margin-top:12px">다시 불러오기</span></div>';
     }
     vq('vreach').innerHTML = msg;
-    ['vdwell','vskim','vback','vexit','vacc','vmisc','vreadsum','vglance'].forEach(id => vq(id).innerHTML = '');
+    ['vdwell','vskim','vback','vexit','vacc','vmisc','vreadsum','vglance','vout'].forEach(id => vq(id).innerHTML = '');
     vq('vfunnel').innerHTML=''; vq('vreachHint').textContent=''; vq('vfunnelHint').textContent='';
     const rt = vq('vretry');
     if(rt) rt.onclick = () => { V_LOADED = false; loadViews(); };
@@ -605,6 +631,29 @@ function renderViews(){
       + '<div class="vhint">위쪽일수록 <b>분량에 비해 안 읽힌 곳</b>이에요. '
       + '중요한 내용이 여기 있다면 <b>짧게 줄이거나 앞으로 당기는</b> 걸 생각해볼 만합니다.</div>'
     : '<div class="vempty">아직 판단할 만큼 쌓이지 않았어요.</div>';
+
+  /* 밖으로 나갔다 오는 곳 — 260923부터 쌓인다 */
+  const outRows = rows.filter(r => (r.outs||0) > 0);
+  if(!outRows.length){
+    vq('vout').innerHTML = '<div class="vempty">아직 나갔다 온 기록이 없어요.<br>'
+      + '이 항목은 <b>9월 23일 이후 방문</b>부터 쌓입니다.</div>';
+  }else{
+    const goneAt = {};
+    rows.forEach(r => { for(const k in (r.left||{})) goneAt[k] = (goneAt[k]||0) + 1; });
+    const maxGone = Math.max.apply(null, V_SECTIONS.map(([id]) => goneAt[id]||0).concat([1]));
+    const backRate = vpct(outRows.filter(r => (r.rets||0) > 0).length, outRows.length);
+    const awayAvg  = outRows.reduce((a,r) => a + (r.away||0), 0) / outRows.length;
+    vq('vout').innerHTML =
+        '<div class="vsum">' + outRows.length + '명이 보다가 <b>밖으로 나갔어요.</b><br>'
+      + '그중 <b>' + backRate + '%</b>가 <b>돌아와서 마저 봤어요</b> — 밖에 머문 시간은 평균 '
+      + vtime(awayAvg) + '.<br><span style="opacity:.8">돌아오는 비율이 높으면 '
+      + '«나가는 게 문제가 아니라 원래 그렇게 보는 흐름»이라는 뜻이에요.</span></div>'
+      + V_SECTIONS.map(([id,nm]) => vbar(nm, goneAt[id]||0, maxGone,
+          (goneAt[id]||0) + '명<span> 나감</span>',
+          (goneAt[id]||0) === maxGone && goneAt[id] ? 'warm' : '', !goneAt[id])).join('')
+      + '<div class="vhint">여기서 나간 뒤의 시간은 <b>머문 시간에 넣지 않습니다.</b> '
+      + '밖에 있던 동안은 시안을 안 보고 있으니까요.</div>';
+  }
 
   /* 되돌아본 곳 */
   const backs = V_SECTIONS.map(([id,nm],i)=>{
