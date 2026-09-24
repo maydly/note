@@ -1,6 +1,13 @@
 {
-  "updated": "2026-09-19T00:10:05.310657",
+  "updated": "2026-09-25T00:10:06.644321",
   "log": [
+    {
+      "id": "biweekly-20260925",
+      "type": "biweekly",
+      "date": "2026-09-25",
+      "status": "warn",
+      "summary": "동기화 이상 1건 · 에이전트 16개"
+    },
     {
       "id": "monthly-20260919",
       "type": "monthly",
