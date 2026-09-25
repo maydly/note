@@ -25,7 +25,8 @@
 }
 html,body{background:var(--bg);color:var(--ink);
   font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;
-  -webkit-font-smoothing:antialiased;line-height:1.6;min-height:100vh;letter-spacing:-.2px}
+  -webkit-font-smoothing:antialiased;line-height:1.6;min-height:100vh;letter-spacing:-.2px;
+  word-break:keep-all;overflow-wrap:break-word}
 
 .mockbar{background:#fdf6e9;color:#8a6a34;padding:9px 20px;font-size:11.5px;
   font-weight:650;text-align:center;letter-spacing:-.1px}
@@ -387,11 +388,55 @@ code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
   .shell,body.apps-open .shell{grid-template-columns:minmax(0,1fr)!important}
   .main{padding-top:20px}
 }
+
+/* ── v2.1 실데이터 연결 ── */
+.nav .bdg:empty{display:none}
+.gbar i{transition:width .45s ease}
+.catb i{transition:width .45s ease}
+.emptyln{font-size:12px;color:var(--mute);font-weight:650;padding:10px 2px;line-height:1.6}
+.emptyln.nd{color:#aab6a7}
+.nowit .n1,.li .lb1,.item .i1,.tlrow .t1{word-break:keep-all;overflow-wrap:anywhere}
+.item.more{background:transparent;box-shadow:none;padding:4px 6px;font-size:10.5px;color:var(--mute);font-weight:750}
+.kcol .emptyln{padding:6px 2px;font-size:11px}
+.dotc.f{background:transparent;border:1.5px dashed #dfe6dc}
+.dotc.t{background:#fff;border:1.5px solid #cfdccb}
+.hgleg{margin-top:11px;display:flex;flex-wrap:wrap;gap:12px;font-size:10.5px;color:var(--mute);font-weight:700}
+.hgleg i{width:10px;height:10px;border-radius:4px;display:inline-block;vertical-align:-1px;margin-right:4px}
+.srcnote{margin-top:10px;font-size:10.5px;color:#a6b1a3;font-weight:600;line-height:1.6}
+.th4 a.t{text-decoration:none;flex-direction:column;justify-content:flex-end;gap:2px}
+.th4 a.t small{font-size:9.5px;font-weight:700;color:rgba(255,255,255,.9);text-shadow:0 1px 4px rgba(0,0,0,.35)}
+.shot{position:relative;flex-direction:column;justify-content:flex-end;align-items:flex-start;gap:2px}
+.shot .ini{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:800;color:rgba(255,255,255,.85);letter-spacing:-1px;text-shadow:none}
+.shot small{font-size:9.5px;font-weight:700;color:rgba(255,255,255,.92);text-shadow:0 1px 4px rgba(0,0,0,.35);position:relative}
+.shot span{position:relative}
+a.chip{text-decoration:none}
+a.chip:hover{background:#eef4ec}
+.lcmsg{font-size:12px;font-weight:700;fill:#9aa79b}
+/* 폰: 두 칸 카드도 한 줄에 하나씩 — :first-child/:last-child 규칙(8+4, 5+7)이
+   위쪽 폰 규칙(span 12)보다 강해서 폰에서도 옆으로 붙어 좁아지던 것 (v2.0부터 있던 문제) */
+@media(max-width:900px){
+  .grid2>*:first-child,.grid2>*:last-child,.grid2b>*:first-child,.grid2b>*:last-child{grid-column:span 12}
+  /* 카드가 넓어져서, 사진·시안 타일 4개는 한 줄에 둘씩(2×2) — 한 장이 화면을 다 먹지 않게 */
+  .shots>*,.th4>*{grid-column:span 6}
+}
+/* 앞으로 7일 — 웹에서도 7칸. 12칸 격자에 7개만 들어가 칸이 좁아지고 오늘 날짜(26)가 초록 칸 밖으로 넘치던 것 */
+.w7{grid-template-columns:repeat(7,minmax(0,1fr))}
+/* 그래프·지도 글자 — font-family="Pretendard" 만 적혀 있어 Pretendard 가 없는 기기에서 명조(세리프)로 나오던 것 → 본문 글꼴을 따른다 */
+#lc *,#map-svg *{font-family:inherit}
+/* 웹 레일 — 화면 높이가 낮으면(약 840px 이하) 맨 아래 ⋯(앱 전체 보기)가 화면 밖으로 밀려 누를 수 없던 것 → 레일 안에서 스크롤 */
+@media(min-width:901px){
+  .side{overflow-y:auto;scrollbar-width:none}
+  .side::-webkit-scrollbar{display:none}
+  .side .allbtn{flex:0 0 auto}
+}
+/* 폰: 수입·지출 그래프 글자가 화면 폭에 맞춰 줄어 5px 정도로 읽을 수 없던 것 */
+@media(max-width:900px){ #lc text{font-size:20px} }
 </style>
 </head>
 <body>
 
-<div class="mockbar" id="demobar">🍀 <strong>데모</strong> — 표시된 값은 <strong>실제 데이터</strong>입니다. 그래프·칸반·타임라인은 아직 예시입니다. 못 읽은 값은 <b>—</b> 로 표시됩니다.</div>
+<div class="mockbar" id="demobar">🍀 모든 칸이 <strong>실제 데이터</strong>로 채워집니다 (예시 값 없음). 저장하는 앱이 없는 항목(단어 여정 기록·수빈 사주·시안 발송 횟수)은 <b>데이터 없음</b>으로 적고, 못 읽은 값은 0이 아니라 <b>—</b> 로 표시합니다.</div>
 
 <div class="shell">
 
@@ -401,72 +446,72 @@ code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
       <svg width="19" height="19" viewBox="0 0 40 40" style="margin-left:4px"><g fill="#4f9a6a"><path d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(90 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(180 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(270 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/></g></svg>
     </div>
 
-    <a class="nav on" href="#"><span class="e">🏠</span>홈 대시보드</a>
+    <a class="nav on" href="./"><span class="e">🏠</span>홈 대시보드</a>
 
     <details class="grp" open><summary><span class="ar">▶</span>촬영 · 고객<span class="n">7</span></summary>
-      <a class="nav" href="#"><span class="e">📅</span>명진 캘린더<span class="bdg">2</span></a>
-      <a class="nav" href="#"><span class="e">🍀</span>협업 캘린더</a>
-      <a class="nav" href="#"><span class="e">🕐</span>페이용 캘린더</a>
-      <a class="nav" href="#"><span class="e">📋</span>설문 데이터<span class="bdg">1</span></a>
-      <a class="nav" href="#"><span class="e">🖼️</span>촬영 시안<span class="bdg soft">4</span></a>
-      <a class="nav" href="#"><span class="e">📸</span>대표 사진맵</a>
-      <a class="nav" href="#"><span class="e">✨</span>maydly 시안(고객용)</a>
+      <a class="nav" href="https://maydly.github.io/maydly-cal/admin.html" title="명진 캘린더 — 급한 일"><span class="e">📅</span>명진 캘린더<span class="bdg" id="nv-cal"></span></a>
+      <a class="nav" href="https://maydly.github.io/maydly-cal/"><span class="e">🍀</span>협업 캘린더</a>
+      <a class="nav" href="https://maydly.github.io/maydly-cal/pay.html"><span class="e">🕐</span>페이용 캘린더</a>
+      <a class="nav" href="https://maydly.github.io/note/hub/설문데이터/" title="설문 데이터 — 신규 문의"><span class="e">📋</span>설문 데이터<span class="bdg" id="nv-inq"></span></a>
+      <a class="nav" href="https://maydly.github.io/note/hub/시안/" title="촬영 시안 4종"><span class="e">🖼️</span>촬영 시안<span class="bdg soft">4</span></a>
+      <a class="nav" href="https://maydly.github.io/note/hub/photomap/"><span class="e">📸</span>대표 사진맵</a>
+      <a class="nav" href="https://maydly.github.io/"><span class="e">✨</span>maydly 시안(고객용)</a>
     </details>
 
     <details class="grp" open><summary><span class="ar">▶</span>명진앱<span class="n">7</span></summary>
-      <a class="nav" href="#"><span class="e">✅</span>할 일<span class="bdg soft"><span id="nv-todo">5</span></span></a>
-      <a class="nav" href="#"><span class="e">💰</span>가계부<span class="bdg"><span id="nv-unc">21</span></span></a>
-      <a class="nav" href="#"><span class="e">🛒</span>구매<span class="bdg soft">4</span></a>
-      <a class="nav" href="#"><span class="e">📦</span>보유 장비</a>
-      <a class="nav" href="#"><span class="e">🗓️</span>촬영 기록</a>
-      <a class="nav" href="#"><span class="e">🌇</span>사진</a>
-      <a class="nav" href="#"><span class="e">ℹ️</span>정보(수빈앱 임베드)</a>
+      <a class="nav" href="https://maydly.github.io/note/myapp/?tab=todo" title="할 일 — 오늘 남은 것"><span class="e">✅</span>할 일<span class="bdg soft" id="nv-todo"></span></a>
+      <a class="nav" href="https://maydly.github.io/note/myapp/?tab=money" title="가계부 — 미분류"><span class="e">💰</span>가계부<span class="bdg" id="nv-unc"></span></a>
+      <a class="nav" href="https://maydly.github.io/note/myapp/?tab=buy" title="구매계획"><span class="e">🛒</span>구매<span class="bdg soft" id="nv-buy"></span></a>
+      <a class="nav" href="https://maydly.github.io/note/myapp/?tab=own"><span class="e">📦</span>보유 장비</a>
+      <a class="nav" href="https://maydly.github.io/note/myapp/?tab=shoot"><span class="e">🗓️</span>촬영 기록</a>
+      <a class="nav" href="https://maydly.github.io/note/myapp/?tab=shoot"><span class="e">🌇</span>사진</a>
+      <a class="nav" href="https://maydly.github.io/note/myapp/?tab=info"><span class="e">ℹ️</span>정보(수빈앱 임베드)</a>
     </details>
 
     <details class="grp"><summary><span class="ar">▶</span>장비 자료<span class="n">16</span></summary>
-      <a class="nav" href="#"><span class="e">📑</span>장비비교 목차</a>
-      <a class="nav" href="#"><span class="e">📷</span>카메라 비교표</a>
-      <a class="nav" href="#"><span class="e">🎥</span>카메라 바디 비교표</a>
-      <a class="nav" href="#"><span class="e">🔍</span>렌즈 비교표</a>
-      <a class="nav" href="#"><span class="e">🌟</span>렌즈 필터 비교표</a>
-      <a class="nav" href="#"><span class="e">🔵</span>필터 비교표</a>
-      <a class="nav" href="#"><span class="e">💡</span>조명 비교표</a>
-      <a class="nav" href="#"><span class="e">🔦</span>조명 비교표(04)</a>
-      <a class="nav" href="#"><span class="e">🧰</span>악세사리 비교표</a>
-      <a class="nav" href="#"><span class="e">🧱</span>촬영지원장비 비교표</a>
-      <a class="nav" href="#"><span class="e">🖨️</span>포토프린터 비교표</a>
-      <a class="nav" href="#"><span class="e">🇯🇵</span>일본 빈티지렌즈 가이드</a>
-      <a class="nav" href="#"><span class="e">📦</span>보유장비 현황</a>
-      <a class="nav" href="#"><span class="e">🧾</span>구매계획 리스트</a>
-      <a class="nav" href="#"><span class="e">💡</span>조명 셋업 짜기<span class="bdg soft">8/13</span></a>
-      <a class="nav" href="#"><span class="e">📘</span>조명 악세사리 원리</a>
+      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/00_장비비교_목차_latest.html"><span class="e">📑</span>장비비교 목차</a>
+      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/01_카메라_비교표_latest.html"><span class="e">📷</span>카메라 비교표</a>
+      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/02_카메라_바디_비교표_latest.html"><span class="e">🎥</span>카메라 바디 비교표</a>
+      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/02_렌즈_비교표_latest.html"><span class="e">🔍</span>렌즈 비교표</a>
+      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/03_렌즈_필터_비교표_latest.html"><span class="e">🌟</span>렌즈 필터 비교표</a>
+      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/03_필터_비교표_latest.html"><span class="e">🔵</span>필터 비교표</a>
+      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/01_조명_비교표_latest.html"><span class="e">💡</span>조명 비교표</a>
+      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/04_조명_비교표_latest.html"><span class="e">🔦</span>조명 비교표(04)</a>
+      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/05_악세사리_비교표_latest.html"><span class="e">🧰</span>악세사리 비교표</a>
+      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/06_촬영지원장비_비교표_latest.html"><span class="e">🧱</span>촬영지원장비 비교표</a>
+      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/07_포토프린터_비교표_latest.html"><span class="e">🖨️</span>포토프린터 비교표</a>
+      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/08_일본빈티지렌즈_쇼핑가이드_latest.html"><span class="e">🇯🇵</span>일본 빈티지렌즈 가이드</a>
+      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/09_보유장비현황_latest.html"><span class="e">📦</span>보유장비 현황</a>
+      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/10_구매계획리스트_latest.html"><span class="e">🧾</span>구매계획 리스트</a>
+      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/11_조명셋업짜기_latest.html" title="조명 셋업 — 고른 결정 수"><span class="e">💡</span>조명 셋업 짜기<span class="bdg soft" id="nv-light"></span></a>
+      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/12_조명악세사리_원리비교가이드_latest.html"><span class="e">📘</span>조명 악세사리 원리</a>
     </details>
 
     <details class="grp"><summary><span class="ar">▶</span>필름<span class="n">1</span></summary>
-      <a class="nav" href="#"><span class="e">🎞️</span>빈티지 필름<span class="bdg soft">6롤</span></a>
+      <a class="nav" href="https://maydly.github.io/note/film/" title="빈티지 필름 — 재고"><span class="e">🎞️</span>빈티지 필름<span class="bdg soft" id="nv-film"></span></a>
     </details>
 
     <details class="grp"><summary><span class="ar">▶</span>여행 · 지도<span class="n">3</span></summary>
-      <a class="nav" href="#"><span class="e">🗺️</span>여행지도<span class="bdg soft">564</span></a>
-      <a class="nav" href="#"><span class="e">🇰🇷</span>여행지도 한국</a>
-      <a class="nav" href="#"><span class="e">🌏</span>신의눈 3D</a>
+      <a class="nav" href="https://maydly.github.io/note/travel/" title="여행지도 — 내 장소"><span class="e">🗺️</span>여행지도<span class="bdg soft" id="nv-travel"></span></a>
+      <a class="nav" href="https://maydly.github.io/note/travel-kr/"><span class="e">🇰🇷</span>여행지도 한국</a>
+      <a class="nav" href="https://maydly.github.io/gev/"><span class="e">🌏</span>신의눈 3D</a>
     </details>
 
     <details class="grp"><summary><span class="ar">▶</span>기록 · 학습<span class="n">3</span></summary>
-      <a class="nav" href="#"><span class="e">📖</span>note 아카이브<span class="bdg soft">20</span></a>
-      <a class="nav" href="#"><span class="e">🤖</span>AI 에이전트 운영체계</a>
-      <a class="nav" href="#"><span class="e">🌿</span>단어 여정</a>
+      <a class="nav" href="https://maydly.github.io/note/" title="note 아카이브 — 노트 수"><span class="e">📖</span>note 아카이브<span class="bdg soft" id="nv-note"></span></a>
+      <a class="nav" href="https://maydly.github.io/note/03_AI에이전트운영체계/"><span class="e">🤖</span>AI 에이전트 운영체계</a>
+      <a class="nav" href="https://maydly.github.io/maydly-hub/word-journey/"><span class="e">🌿</span>단어 여정</a>
     </details>
 
     <details class="grp" open><summary><span class="ar">▶</span>점검<span class="n">2</span></summary>
-      <a class="nav" href="#"><span class="e">🏛️</span>거버넌스<span class="bdg">37</span></a>
-      <a class="nav" href="#"><span class="e">🧭</span>독립 준비 점검표</a>
+      <a class="nav" href="https://maydly.github.io/note/hub/governance/" title="거버넌스 — 주간 감사 위반"><span class="e">🏛️</span>거버넌스<span class="bdg" id="nv-gov"></span></a>
+      <a class="nav" href="https://maydly.github.io/note/prep/"><span class="e">🧭</span>독립 준비 점검표</a>
     </details>
 
     <details class="grp"><summary><span class="ar">▶</span>수빈<span class="n">3</span></summary>
-      <a class="nav" href="#"><span class="e">🌱</span>수빈 앱(루틴)</a>
-      <a class="nav" href="#"><span class="e">🔮</span>수빈 사주</a>
-      <a class="nav" href="#"><span class="e">⭐</span>루틴앱 전용본</a>
+      <a class="nav" href="https://maydly.github.io/note/subin/"><span class="e">🌱</span>수빈 앱(루틴)</a>
+      <a class="nav" href="https://subin-routine.web.app/saju/"><span class="e">🔮</span>수빈 사주</a>
+      <a class="nav" href="https://maydly.github.io/subin-routine/"><span class="e">⭐</span>루틴앱 전용본</a>
     </details>
 
     <a class="allbtn" href="#" onclick="event.preventDefault();document.body.classList.toggle('apps-open')" title="앱 전체 보기"></a>
@@ -478,97 +523,71 @@ code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
     <div class="top">
       <div>
         <div class="hi"><span id="greet">안녕하세요</span>, <span>명진</span>님</div>
-        <div class="dt"><span id="today-line">불러오는 중…</span></div>
+        <div class="dt"><span id="today-line">불러오는 중…</span><span id="today-extra"></span></div>
       </div>
       <div class="switch">
-        <a class="sw on" href="#">📊 대시보드</a>
-        <a class="sw" href="#">▦ 타일 독바</a>
+        <a class="sw on" href="./">📊 대시보드</a>
+        <a class="sw" href="../">▦ 타일 독바</a>
       </div>
     </div>
 
 
     <div class="tier"><h2>오늘</h2><div class="ts">지금 판단해야 할 것</div></div>
     <div class="statusbar">
-      <span class="stchip"><i style="background:#4f9a6a"></i>Firebase 연결됨 · 명진 계정</span>
-      <span class="stchip"><i style="background:#8cc0d8"></i>로컬 데이터 · 이 기기 기준</span>
-      <span class="stchip"><i style="background:#e0b08c"></i>정적 자료 · 9/13 갱신</span>
+      <span class="stchip"><i style="background:#c3cebf"></i>Firebase · 확인 중</span>
+      <span class="stchip"><i style="background:#c3cebf"></i>로컬 데이터 · 확인 중</span>
+      <span class="stchip"><i style="background:#c3cebf"></i>정적 자료 · 확인 중</span>
       <span class="stchip btn" id="loginChip" style="margin-left:auto">🔑 구글 로그인</span>
       <span class="stchip btn" style="margin-left:8px" onclick="document.body.classList.toggle('privacy')">🕶 현장 모드</span>
     </div>
 
     <!-- 브리핑 -->
     <div class="brief">
-      <a class="bf today" href="#"><div class="bl">다음 촬영</div>
-        <div class="bv"><span id="b-next">14:00 · <span class="mask">ㅇㅇㅇ 님</span></span></div>
-        <div class="bs"><span id="b-next-sub">야외 1시간 · 입금 확인됨 · 4시간 뒤</span></div></a>
-      <a class="bf urgent" href="#"><div class="bl">처리할 예외</div>
-        <div class="bv"><span id="b-exc">2건</span></div>
-        <div class="bs">문의 26시간 경과 · 짝 없는 입금 1건</div></a>
-      <a class="bf" href="#"><div class="bl">오늘 할 일</div>
-        <div class="bv"><span id="b-todo">2건 남음</span></div>
-        <div class="bs"><span id="b-todo-sub">전체 5건 중 3건 완료 · 기한 지남 1</span></div></a>
-      <a class="bf urgent" href="#"><div class="bl">납품 마감</div>
-        <div class="bv">2건</div>
-        <div class="bs">셀렉 3일째 · 보정 12/30장</div></a>
+      <a class="bf today" href="https://maydly.github.io/maydly-cal/admin.html"><div class="bl">다음 촬영</div>
+        <div class="bv"><span id="b-next">—</span></div>
+        <div class="bs"><span id="b-next-sub">불러오는 중…</span></div></a>
+      <a class="bf urgent" href="#now"><div class="bl">처리할 예외</div>
+        <div class="bv"><span id="b-exc">—</span></div>
+        <div class="bs"><span id="b-exc-sub">불러오는 중…</span></div></a>
+      <a class="bf" href="https://maydly.github.io/note/myapp/?tab=today"><div class="bl">오늘 할 일</div>
+        <div class="bv"><span id="b-todo">—</span></div>
+        <div class="bs"><span id="b-todo-sub">불러오는 중…</span></div></a>
+      <a class="bf urgent" href="https://maydly.github.io/maydly-cal/admin.html"><div class="bl">납품 마감</div>
+        <div class="bv"><span id="b-dlv">—</span></div>
+        <div class="bs"><span id="b-dlv-sub">불러오는 중…</span></div></a>
     </div>
 
-    <div class="card" style="margin-bottom:14px">
+    <div class="card" id="now" style="margin-bottom:14px">
       <div class="ch"><div class="ct">지금 처리할 것</div><div class="cs">문의 · 입금 · 납품을 한곳에</div></div>
       <div class="nowgrp"><div class="nowlb u">긴급</div>
-        <a class="nowit u" href="#"><div class="ni">📨</div><div class="nb">
-          <div class="n1"><span class="mask">ㅅㅅㅅ 님</span> 문의에 답장 안 함</div>
-          <div class="n2">새내기 시안 · 접수 후 26시간</div></div><div class="nr hot">설문 데이터 →</div></a>
-        <a class="nowit u" href="#"><div class="ni">💳</div><div class="nb">
-          <div class="n1">예약과 짝이 없는 입금 <span class="mask">180,000원</span></div>
-          <div class="n2">9/09 · 예약자 이름과 다름</div></div><div class="nr hot">가계부 →</div></a></div>
+        <div id="now-u"><div class="emptyln">불러오는 중…</div></div></div>
       <div class="nowgrp"><div class="nowlb t">오늘</div>
-        <a class="nowit" href="#"><div class="ni">⚠️</div><div class="nb">
-          <div class="n1">17:30 <span class="mask">ㅁㅁㅁ 님</span> · 노쇼 이력 1회</div>
-          <div class="n2">촬영 전 확인 여부 판단</div></div><div class="nr">캘린더 →</div></a>
-        <a class="nowit" href="#"><div class="ni">🖼️</div><div class="nb">
-          <div class="n1"><span class="mask">ㅌㅌㅌ 님</span> 셀렉 대기 3일째</div>
-          <div class="n2">납품 예정일 <span class="nd">—</span> · 원본에 필드 없음</div></div><div class="nr">명진앱 →</div></a></div>
+        <div id="now-t"><div class="emptyln">불러오는 중…</div></div></div>
       <div class="nowgrp"><div class="nowlb w">이번 주</div>
-        <a class="nowit" href="#"><div class="ni">📒</div><div class="nb">
-          <div class="n1">미분류 내역 21건</div>
-          <div class="n2">직접 분류가 필요합니다</div></div><div class="nr">가계부 →</div></a></div>
+        <div id="now-w"><div class="emptyln">불러오는 중…</div></div></div>
     </div>
 
-    <!-- 오늘 + 링 -->
+    <!-- 오늘 + 진행 상황 -->
     <div class="grid2">
       <div class="card">
-        <div class="ch"><div class="ct">오늘</div><a class="more" href="#">캘린더에서 보기 →</a></div>
-        <div class="tl">
-          <div class="tlrow done"><div class="bar"></div><div class="tm">08:30</div><div class="dot"></div>
-            <div class="bd"><div class="t1">장비 점검 · 배터리 충전</div><div class="t2">완료</div></div></div>
-          <div class="tlrow done"><div class="bar"></div><div class="tm">11:00</div><div class="dot"></div>
-            <div class="bd"><div class="t1"><span class="mask">ㅇㅇㅇ 님</span> 준비물 안내 발송</div><div class="t2">완료</div></div></div>
-          <div class="tlrow now"><div class="bar"></div><div class="tm">14:00</div><div class="dot"></div>
-            <div class="bd"><div class="t1"><span class="mask">ㅇㅇㅇ 님</span> 촬영</div><div class="t2">야외 · 1시간 · 입금 확인됨</div></div>
-            <div class="pill pay">페이</div></div>
-          <div class="tlrow"><div class="bar"></div><div class="tm">17:30</div><div class="dot"></div>
-            <div class="bd"><div class="t1"><span class="mask">ㅁㅁㅁ 님</span> 촬영</div><div class="t2">한강 · 노을 · 노쇼 이력 1회</div></div>
-            <div class="pill warn">주의</div></div>
-          <div class="tlrow"><div class="bar"></div><div class="tm">21:00</div><div class="dot"></div>
-            <div class="bd"><div class="t1">보정 · 1차 셀렉</div><div class="t2">지난 촬영 2건 대기 중</div></div>
-            <div class="pill col">보정</div></div>
-        </div>
+        <div class="ch"><div class="ct">오늘</div><a class="more" href="https://maydly.github.io/maydly-cal/admin.html">캘린더에서 보기 →</a></div>
+        <div class="tl" id="tl"><div class="emptyln">불러오는 중…</div></div>
       </div>
 
       <div class="card">
         <div class="ch"><div class="ct">진행 상황</div><div class="cs">기간이 달라 따로 봅니다</div></div>
-        <div class="goal"><div class="gl"><div class="gn">오늘 할 일</div><div class="gv"><span id="g-todo">3 / 5 · 일간</span></div></div>
-          <div class="gbar"><i style="width:60%;background:linear-gradient(90deg,#7fb877,#4f9a6a)"></i></div></div>
-        <div class="goal"><div class="gl"><div class="gn">이번주 촬영</div><div class="gv">2 / 3 · 주간</div></div>
-          <div class="gbar"><i style="width:67%;background:linear-gradient(90deg,#a6c8e2,#6fa9c4)"></i></div></div>
-        <div class="goal"><div class="gl"><div class="gn">이번달 목표 수입</div><div class="gv">50% · 월간</div></div>
-          <div class="gbar"><i style="width:50%;background:linear-gradient(90deg,#e6c9a8,#d4ad82)"></i></div></div>
+        <div class="goal"><div class="gl"><div class="gn">오늘 할 일</div><div class="gv"><span id="g-todo">—</span></div></div>
+          <div class="gbar"><i id="g-todo-bar" style="width:0%;background:linear-gradient(90deg,#7fb877,#4f9a6a)"></i></div></div>
+        <div class="goal"><div class="gl"><div class="gn">이번주 촬영 <span style="color:var(--mute);font-weight:650">(일~토 · 목표 10명)</span></div><div class="gv"><span id="g-week">—</span></div></div>
+          <div class="gbar"><i id="g-week-bar" style="width:0%;background:linear-gradient(90deg,#a6c8e2,#6fa9c4)"></i></div></div>
+        <div class="goal"><div class="gl"><div class="gn">이번달 목표 수입 <span style="color:var(--mute);font-weight:650">(320만 · 캘린더 금액 기준)</span></div><div class="gv"><span id="g-month" class="mask">—</span></div></div>
+          <div class="gbar"><i id="g-month-bar" style="width:0%;background:linear-gradient(90deg,#e6c9a8,#d4ad82)"></i></div></div>
         <div style="margin-top:15px;padding-top:14px;border-top:1px solid #f1f4ef">
           <div style="font-size:11.5px;font-weight:800;color:#5d7059;margin-bottom:9px">앞으로 7일</div>
           <div class="w7" id="w7"></div>
           <div style="margin-top:10px;font-size:11.5px;color:var(--mute);font-weight:650;line-height:1.6">
             <span id="w7-note">로그인하면 예약이 표시됩니다.</span><br>
-            <span style="color:#4f9a6a">●</span> 촬영 &nbsp;<span style="color:#e0857a">●</span> 납품 마감 &nbsp;<span style="color:#b79bd4">●</span> 보정
+            <span style="color:#4f9a6a">●</span> 촬영 &nbsp;<span style="color:#e0857a">●</span> 납품 마감(보정본 전달 기한)
           </div>
         </div>
       </div>
@@ -577,60 +596,32 @@ code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
     <!-- 수입지출 + 도넛 -->
     <div class="grid2">
       <div class="card">
-        <div class="ch"><div class="ct">수입 · 지출</div><div class="cs">최근 6개월</div></div>
-        <svg class="linechart" viewBox="0 0 640 210" style="width:100%;height:auto;display:block">
-          <defs>
-            <linearGradient id="inc" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#7fb877" stop-opacity=".32"/><stop offset="1" stop-color="#7fb877" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <g stroke="#f0f3ee" stroke-width="1">
-            <line x1="40" y1="20" x2="620" y2="20"/><line x1="40" y1="60" x2="620" y2="60"/>
-            <line x1="40" y1="100" x2="620" y2="100"/><line x1="40" y1="140" x2="620" y2="140"/>
-            <line x1="40" y1="176" x2="620" y2="176"/>
-          </g>
-          <g font-size="10" fill="#b3bdaf" font-family="Pretendard">
-            <text x="0" y="24">150만</text><text x="0" y="104">100만</text><text x="10" y="180">0</text>
-          </g>
-          <path d="M76,150 L184,128 L292,138 L400,96 L508,104 L616,60 L616,176 L76,176 Z" fill="url(#inc)"/>
-          <polyline points="76,150 184,128 292,138 400,96 508,104 616,60" fill="none" stroke="#4f9a6a" stroke-width="2.6" stroke-linejoin="round"/>
-          <polyline points="76,164 184,150 292,158 400,132 508,146 616,118" fill="none" stroke="#dda79d" stroke-width="2.6"
-            stroke-dasharray="6 5" stroke-linejoin="round"/>
-          <g fill="#4f9a6a"><circle cx="616" cy="60" r="4.5"/></g>
-          <g fill="#dda79d"><circle cx="616" cy="118" r="4.5"/></g>
-          <g font-size="10.5" fill="#a7b1a4" font-family="Pretendard" text-anchor="middle">
-            <text x="76" y="199">4월</text><text x="184" y="199">5월</text><text x="292" y="199">6월</text>
-            <text x="400" y="199">7월</text><text x="508" y="199">8월</text><text x="616" y="199">9월</text>
-          </g>
+        <div class="ch"><div class="ct">수입 · 지출</div><div class="cs">최근 6개월 · 이체·충전 제외</div></div>
+        <svg class="linechart" id="lc" viewBox="0 0 640 210" style="width:100%;height:auto;display:block" role="img" aria-label="최근 6개월 수입과 지출">
+          <text x="330" y="100" text-anchor="middle" class="lcmsg">불러오는 중…</text>
         </svg>
-        <div style="display:flex;gap:16px;margin-top:10px;font-size:11.5px;font-weight:700;color:#6b7a67">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:11.5px;font-weight:700;color:#6b7a67">
           <span style="display:flex;align-items:center;gap:6px"><i style="width:14px;height:3px;background:#4f9a6a;border-radius:2px;display:block"></i>수입</span>
-          <span style="display:flex;align-items:center;gap:6px"><i style="width:14px;height:3px;background:#dda79d;border-radius:2px;display:block"></i>지출</span>
+          <span style="display:flex;align-items:center;gap:6px"><i style="width:14px;height:0;border-top:3px dashed #dda79d;display:block"></i>지출</span>
+          <span id="lc-note" style="margin-left:auto;color:var(--mute);font-weight:650"></span>
         </div>
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">이번달 지출</div><div class="cs">830,000원</div></div>
+        <div class="ch"><div class="ct">이번달 지출</div><div class="cs"><span class="mask" id="dn-total">—</span></div></div>
         <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
           <div style="position:relative;width:132px;height:132px;flex:0 0 auto">
-            <svg width="132" height="132" viewBox="0 0 132 132" style="transform:rotate(-90deg)">
-              <circle cx="66" cy="66" r="52" fill="none" stroke="#c9a9d6" stroke-width="20" stroke-dasharray="327" stroke-dashoffset="0"/>
-              <circle cx="66" cy="66" r="52" fill="none" stroke="#8cc0d8" stroke-width="20" stroke-dasharray="327" stroke-dashoffset="118"/>
-              <circle cx="66" cy="66" r="52" fill="none" stroke="#e6c9a8" stroke-width="20" stroke-dasharray="327" stroke-dashoffset="216"/>
-              <circle cx="66" cy="66" r="52" fill="none" stroke="#a8d3a0" stroke-width="20" stroke-dasharray="327" stroke-dashoffset="281"/>
+            <svg width="132" height="132" viewBox="0 0 132 132" style="transform:rotate(-90deg)" id="dn-svg">
+              <circle cx="66" cy="66" r="52" fill="none" stroke="#eef3ec" stroke-width="20"/>
             </svg>
             <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
-              <div style="font-size:19px;font-weight:800;letter-spacing:-.7px">83만</div>
-              <div style="font-size:10px;color:var(--mute);font-weight:700">9월</div>
+              <div style="font-size:19px;font-weight:800;letter-spacing:-.7px" class="mask" id="dn-mid">—</div>
+              <div style="font-size:10px;color:var(--mute);font-weight:700" id="dn-month">이번 달</div>
             </div>
           </div>
-          <div class="rleg" style="flex:1;min-width:140px">
-            <div><i style="background:#c9a9d6"></i>장비<b>36%</b></div>
-            <div><i style="background:#8cc0d8"></i>교통<b>30%</b></div>
-            <div><i style="background:#e6c9a8"></i>필름·현상<b>20%</b></div>
-            <div><i style="background:#a8d3a0"></i>기타<b>14%</b></div>
-          </div>
+          <div class="rleg" style="flex:1;min-width:140px" id="dn-leg"><div class="emptyln">불러오는 중…</div></div>
         </div>
+        <div class="srcnote" id="dn-note">분류는 명진앱 가계부 기준 · 이체·충전은 지출에서 뺍니다</div>
       </div>
     </div>
 
@@ -641,59 +632,57 @@ code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
       <div class="ch"><div class="ct">촬영 진행</div><div class="cs">문의부터 납품까지</div></div>
       <div class="pipe">
         <div class="kcol">
-          <div class="colh"><div class="colt">문의 접수</div><div class="coln">1</div></div>
-          <div class="item hot"><div class="i1"><span class="mask">ㅅㅅㅅ 님</span></div><div class="i2">어제 · 답장 안 함</div></div>
+          <div class="colh"><div class="colt">문의 접수 <span style="font-weight:650;color:var(--mute)">· 신규</span></div><div class="coln" id="k-inq-n">—</div></div>
+          <div id="k-inq"><div class="emptyln">불러오는 중…</div></div>
         </div>
         <div class="kcol">
-          <div class="colh"><div class="colt">일정 조율</div><div class="coln">2</div></div>
-          <div class="item"><div class="i1"><span class="mask">ㅈㅈㅈ 님</span></div><div class="i2">9/20 · 장소 미정</div></div>
-          <div class="item"><div class="i1"><span class="mask">ㅊㅊㅊ 님</span></div><div class="i2">9/27 · 협업 제안</div></div>
+          <div class="colh"><div class="colt">일정 조율 <span style="font-weight:650;color:var(--mute)">· 상담중·예약대기</span></div><div class="coln" id="k-adj-n">—</div></div>
+          <div id="k-adj"><div class="emptyln">불러오는 중…</div></div>
         </div>
         <div class="kcol">
-          <div class="colh"><div class="colt">촬영 확정</div><div class="coln">2</div></div>
-          <div class="item"><div class="i1"><span class="mask">ㅇㅇㅇ 님</span></div><div class="i2">오늘 14:00 · 입금됨</div></div>
-          <div class="item"><div class="i1"><span class="mask">ㅁㅁㅁ 님</span></div><div class="i2">오늘 17:30 · 노쇼 이력</div></div>
+          <div class="colh"><div class="colt">촬영 확정 <span style="font-weight:650;color:var(--mute)">· 오늘부터</span></div><div class="coln" id="k-conf-n">—</div></div>
+          <div id="k-conf"><div class="emptyln">불러오는 중…</div></div>
         </div>
         <div class="kcol">
-          <div class="colh"><div class="colt">보정 · 납품</div><div class="coln">2</div></div>
-          <div class="item"><div class="i1"><span class="mask">ㅌㅌㅌ 님</span></div><div class="i2">셀렉 대기 · 3일째</div></div>
-          <div class="item"><div class="i1"><span class="mask">ㅍㅍㅍ 님</span></div><div class="i2">보정 중 · 12/30장</div></div>
+          <div class="colh"><div class="colt">보정 · 납품 <span style="font-weight:650;color:var(--mute)">· 전달 대기</span></div><div class="coln" id="k-dlv-n">—</div></div>
+          <div id="k-dlv"><div class="emptyln">불러오는 중…</div></div>
         </div>
       </div>
+      <div class="srcnote">문의(설문 데이터)와 예약(명진 캘린더)은 서로 잇는 칸이 없어 따로 셉니다 · 납품은 관리자 캘린더의 보정본 전달 기한 기준</div>
     </div>
 
     <!-- 목표 + 사진 -->
     <div class="grid2b">
       <div class="card">
-        <div class="ch"><div class="ct">진행 중인 목표</div><a class="more" href="#">전체 →</a></div>
+        <div class="ch"><div class="ct">진행 중인 목표</div><a class="more" href="https://maydly.github.io/note/prep/">독립 준비 →</a></div>
         <div class="goal">
-          <div class="gl"><div class="gn">조명 셋업 결정</div><div class="gv"><span id="g-light">8 / 13</span></div></div>
-          <div class="gbar"><i style="width:62%;background:linear-gradient(90deg,#8cc0d8,#6fa9c4)"></i></div>
+          <div class="gl"><div class="gn">조명 셋업 결정 <span style="color:var(--mute);font-weight:650">(이 기기)</span></div><div class="gv"><span id="g-light">—</span></div></div>
+          <div class="gbar"><i id="g-light-bar" style="width:0%;background:linear-gradient(90deg,#8cc0d8,#6fa9c4)"></i></div>
         </div>
         <div class="goal">
-          <div class="gl"><div class="gn">이번달 목표 수입 250만</div><div class="gv">50%</div></div>
-          <div class="gbar"><i style="width:50%;background:linear-gradient(90deg,#7fb877,#4f9a6a)"></i></div>
+          <div class="gl"><div class="gn">이번달 목표 수입 320만</div><div class="gv"><span id="g-month2" class="mask">—</span></div></div>
+          <div class="gbar"><i id="g-month2-bar" style="width:0%;background:linear-gradient(90deg,#7fb877,#4f9a6a)"></i></div>
         </div>
         <div class="goal">
-          <div class="gl"><div class="gn">독립 준비 6개 기둥</div><div class="gv">문서 미업로드</div></div>
-          <div class="gbar"><i style="width:0%;background:#d9e0d6"></i></div>
+          <div class="gl"><div class="gn">독립 준비 점검표 <span style="color:var(--mute);font-weight:650">(체크는 이 기기)</span></div><div class="gv"><span id="g-prep">—</span></div></div>
+          <div class="gbar"><i id="g-prep-bar" style="width:0%;background:linear-gradient(90deg,#b7c9b0,#94ae8c)"></i></div>
         </div>
         <div class="goal">
-          <div class="gl"><div class="gn">수빈 오늘 루틴</div><div class="gv">3 / 5 · 연속 12일</div></div>
-          <div class="gbar"><i style="width:60%;background:linear-gradient(90deg,#e6c9a8,#d4ad82)"></i></div>
+          <div class="gl"><div class="gn">수빈 오늘 루틴 <span style="color:var(--mute);font-weight:650">(매일 목표)</span></div><div class="gv"><span id="g-subin">—</span></div></div>
+          <div class="gbar"><i id="g-subin-bar" style="width:0%;background:linear-gradient(90deg,#e6c9a8,#d4ad82)"></i></div>
         </div>
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">최근 촬영</div><a class="more" href="#">대표 사진맵 →</a></div>
-        <div class="shots">
-          <div class="shot" style="background:linear-gradient(155deg,#d9b8c4,#a98292)"><span>9/07 ㅎㅎㅎ</span></div>
-          <div class="shot" style="background:linear-gradient(155deg,#a6c8e2,#6f93b3)"><span>9/05 ㅅㅅㅅ</span></div>
-          <div class="shot" style="background:linear-gradient(155deg,#e6c9a8,#b99671)"><span>8/30 ㅈㅈㅈ</span></div>
-          <div class="shot" style="background:linear-gradient(155deg,#bcd0ac,#87a077)"><span>8/24 ㅊㅊㅊ</span></div>
+        <div class="ch"><div class="ct">최근 촬영</div><a class="more" href="https://maydly.github.io/note/myapp/?tab=shoot">촬영 기록 →</a></div>
+        <div class="shots" id="shots">
+          <div class="shot" style="background:linear-gradient(155deg,#e4ebe1,#cfdacb)"><span>—</span></div>
+          <div class="shot" style="background:linear-gradient(155deg,#e4ebe1,#cfdacb)"><span>—</span></div>
+          <div class="shot" style="background:linear-gradient(155deg,#e4ebe1,#cfdacb)"><span>—</span></div>
+          <div class="shot" style="background:linear-gradient(155deg,#e4ebe1,#cfdacb)"><span>—</span></div>
         </div>
-        <div style="margin-top:13px;font-size:11.5px;color:var(--mute);font-weight:650">
-          2024–2026 모델 42명 · 사진 318장
+        <div style="margin-top:13px;font-size:11.5px;color:var(--mute);font-weight:650" id="shots-note">
+          불러오는 중…
         </div>
       </div>
     </div>
@@ -702,42 +691,26 @@ code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
     <div class="sechd"><h2>돈</h2><div class="sn">가계부 · 입금 대조 · 미수금</div></div>
     <div class="grid3">
       <div class="card">
-        <div class="ch"><div class="ct">미분류 내역</div><a class="more" href="#">가계부에서 보기 &rarr;</a></div>
-        <div class="lst">
-          <div class="li"><div class="ii">&#128179;</div><div class="bd2"><div class="lb1">토스 &middot; 42,000원</div>
-            <div class="lb2">9/11 &middot; 이름 없음</div></div><div class="rt hot">분류 필요</div></div>
-          <div class="li"><div class="ii">&#127974;</div><div class="bd2"><div class="lb1">KB &middot; 180,000원 입금</div>
-            <div class="lb2">9/09 &middot; 「ㅈㅈㅈ」</div></div><div class="rt">촬영 수입?</div></div>
-          <div class="li"><div class="ii">&#128722;</div><div class="bd2"><div class="lb1">네이버페이 &middot; 23,900원</div>
-            <div class="lb2">9/08 &middot; 필름 구매 추정</div></div><div class="rt">필름&middot;현상?</div></div>
-        </div>
+        <div class="ch"><div class="ct">미분류 내역</div><a class="more" href="https://maydly.github.io/note/myapp/?tab=money">가계부에서 보기 &rarr;</a></div>
+        <div class="lst" id="unc-list"><div class="emptyln">불러오는 중…</div></div>
         <div style="margin-top:12px;font-size:11.5px;color:#8a6a34;background:#fdf6ea;border:1px solid #eee0c6;
-          border-radius:11px;padding:9px 13px;font-weight:650">남은 미분류 <span id="m-unc">18</span>건 &middot; 직접 분류가 필요합니다</div>
+          border-radius:11px;padding:9px 13px;font-weight:650">남은 미분류 <span id="m-unc">—</span>건 &middot; 직접 분류가 필요합니다</div>
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">캘린더 대조</div><div class="cs">입금 &harr; 예약</div></div>
-        <div class="lst">
-          <div class="li"><div class="ii" style="background:#eaf3ea">&#10004;</div><div class="bd2">
-            <div class="lb1"><span class="mask">ㅇㅇㅇ 님</span></div><div class="lb2">9/13 촬영 &middot; 80,000원 확인</div></div>
-            <div class="rt" style="color:#3f8a55">짝 맞음</div></div>
-          <div class="li"><div class="ii" style="background:#fdf2f0">?</div><div class="bd2">
-            <div class="lb1">「김OO」 입금</div><div class="lb2">9/09 &middot; 예약자 이름과 다름</div></div>
-            <div class="rt hot">짝 없음</div></div>
-          <div class="li"><div class="ii" style="background:#fdf6ea">&#9888;</div><div class="bd2">
-            <div class="lb1"><span class="mask">ㅁㅁㅁ 님</span></div><div class="lb2">8/30 노쇼 &middot; 입금은 있음</div></div>
-            <div class="rt">수입 처리</div></div>
-        </div>
+        <div class="ch"><div class="ct">캘린더 대조</div><div class="cs">이번 달 입금 &harr; 예약</div></div>
+        <div class="lst" id="cm-list"><div class="emptyln">불러오는 중…</div></div>
+        <div class="srcnote" id="cm-note">명진앱 「캘린더와 대조」와 같은 기준 — 입금자 이름과 같은 예약이 앞뒤 60일 안에 있는지</div>
       </div>
       <div class="card">
-        <div class="ch"><div class="ct">미수금 · 예정 수입</div><div class="cs">9월</div></div>
-        <div class="goal"><div class="gl"><div class="gn">확인된 수입</div><div class="gv"><span class="mask"><span id="m-in">1,240,000원</span></span></div></div>
-          <div class="gbar"><i style="width:71%;background:linear-gradient(90deg,#7fb877,#4f9a6a)"></i></div></div>
-        <div class="goal"><div class="gl"><div class="gn">입금 미확인</div><div class="gv"><span class="mask">180,000원</span></div></div>
-          <div class="gbar"><i style="width:10%;background:#e0a89c"></i></div></div>
-        <div class="goal"><div class="gl"><div class="gn">예정 촬영금</div><div class="gv"><span class="mask">320,000원</span></div></div>
-          <div class="gbar"><i style="width:19%;background:#d9d3c4"></i></div></div>
-        <div style="margin-top:13px;font-size:11.5px;color:var(--mute);font-weight:650;line-height:1.55">
+        <div class="ch"><div class="ct">미수금 · 예정 수입</div><div class="cs" id="m-month">이번 달</div></div>
+        <div class="goal"><div class="gl"><div class="gn">확인된 수입 <span style="color:var(--mute);font-weight:650">(가계부)</span></div><div class="gv"><span class="mask"><span id="m-in">—</span></span></div></div>
+          <div class="gbar"><i id="m-in-bar" style="width:0%;background:linear-gradient(90deg,#7fb877,#4f9a6a)"></i></div></div>
+        <div class="goal"><div class="gl"><div class="gn">입금 미확인 <span style="color:var(--mute);font-weight:650">(지난 촬영)</span></div><div class="gv"><span class="mask"><span id="m-unconf">—</span></span></div></div>
+          <div class="gbar"><i id="m-unconf-bar" style="width:0%;background:#e0a89c"></i></div></div>
+        <div class="goal"><div class="gl"><div class="gn">예정 촬영금 <span style="color:var(--mute);font-weight:650">(남은 촬영)</span></div><div class="gv"><span class="mask"><span id="m-plan">—</span></span></div></div>
+          <div class="gbar"><i id="m-plan-bar" style="width:0%;background:#d9d3c4"></i></div></div>
+        <div style="margin-top:13px;font-size:11.5px;color:var(--mute);font-weight:650;line-height:1.55" id="m-note">
           이름·금액이 확실히 안 맞으면 자동 확정하지 않고 <strong>대조 필요</strong>로 둡니다</div>
       </div>
     </div>
@@ -746,35 +719,23 @@ code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
     <div class="sechd"><h2>촬영 &middot; 고객</h2><div class="sn">문의 &middot; 시안 &middot; 사진맵</div></div>
     <div class="grid2">
       <div class="card">
-        <div class="ch"><div class="ct">최근 문의</div><a class="more" href="#">설문 데이터 &rarr;</a></div>
-        <div class="lst">
-          <div class="li"><div class="ii" style="background:#fdf2f0">&#128236;</div><div class="bd2">
-            <div class="lb1"><span class="mask">ㅅㅅㅅ 님</span> &middot; 새내기 시안</div>
-            <div class="lb2"><span class="mask">&ldquo;10월 초 야외로 가능할까요? 2인입니다&rdquo;</span></div></div>
-            <div class="rt hot">답장 안 함</div></div>
-          <div class="li"><div class="ii">&#128236;</div><div class="bd2">
-            <div class="lb1"><span class="mask">ㅈㅈㅈ 님</span> &middot; 바다 시안</div>
-            <div class="lb2"><span class="mask">&ldquo;9/20 오후 가능 시간대 알려주세요&rdquo;</span></div></div>
-            <div class="rt">답장함</div></div>
-          <div class="li"><div class="ii">&#128236;</div><div class="bd2">
-            <div class="lb1"><span class="mask">ㅊㅊㅊ 님</span> &middot; 협업 제안</div>
-            <div class="lb2"><span class="mask">&ldquo;의상 브랜드 협업 문의드립니다&rdquo;</span></div></div>
-            <div class="rt">검토 중</div></div>
-        </div>
+        <div class="ch"><div class="ct">최근 문의 <span class="cs" id="iq-count" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/hub/설문데이터/">설문 데이터 &rarr;</a></div>
+        <div class="lst" id="iq-list"><div class="emptyln">불러오는 중…</div></div>
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">촬영 시안</div><a class="more" href="#">시안 원본 보기 &rarr;</a></div>
+        <div class="ch"><div class="ct">촬영 시안</div><a class="more" href="https://maydly.github.io/note/hub/시안/">시안 원본 보기 &rarr;</a></div>
         <div class="th4">
-          <div class="t" style="background:linear-gradient(155deg,#b8c4cf,#8a97a6)"><span>우중</span></div>
-          <div class="t" style="background:linear-gradient(155deg,#a6c8e2,#7b9fc0)"><span>바다</span></div>
-          <div class="t" style="background:linear-gradient(155deg,#e0b9c6,#bd8e9f)"><span>바다커플</span></div>
-          <div class="t" style="background:linear-gradient(155deg,#cdd9b0,#a0b585)"><span>새내기</span></div>
+          <a class="t" href="https://maydly.github.io/note/hub/시안/우중시안_촬영컨셉시안.html" style="background:linear-gradient(155deg,#b8c4cf,#8a97a6)"><span>우중</span><small>13컷</small></a>
+          <a class="t" href="https://maydly.github.io/note/hub/시안/바다시안_촬영컨셉시안.html" style="background:linear-gradient(155deg,#a6c8e2,#7b9fc0)"><span>바다</span><small>23컷</small></a>
+          <a class="t" href="https://maydly.github.io/note/hub/시안/바다커플시안_촬영컨셉시안.html" style="background:linear-gradient(155deg,#e0b9c6,#bd8e9f)"><span>바다커플</span><small>14컷</small></a>
+          <a class="t" href="https://maydly.github.io/note/hub/시안/새내기시안_촬영컨셉시안.html" style="background:linear-gradient(155deg,#cdd9b0,#a0b585)"><span>새내기</span><small>18컷</small></a>
         </div>
         <div style="margin-top:12px" class="chips">
-          <span class="chip on">가장 많이 보낸 것 &middot; 바다</span>
-          <span class="chip">이번달 발송 5회</span>
+          <span class="chip on">시안 4종 · 68컷</span>
+          <a class="chip" href="https://maydly.github.io/note/hub/시안읽힘/">시안 읽힘(어디까지 봤나) &rarr;</a>
         </div>
+        <div class="srcnote">시안을 «보낸» 기록은 저장하는 앱이 없어 발송 횟수는 데이터 없음으로 둡니다. 썸네일은 시안 파일이 무거워(1.6~2.6MB) 색으로 대신합니다.</div>
       </div>
     </div>
 
@@ -782,9 +743,8 @@ code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
     <div class="tier"><h2>앱 창</h2><div class="ts">진짜 앱을 그대로 끼워 넣음 — 여기서 직접 조작합니다</div></div>
 
     <div class="embnote">
-      🍀 아래는 <strong>그림이 아니라 실제 라이브 앱</strong>입니다. 스크롤·클릭이 그대로 됩니다.<br>
-      같은 주소(<code>maydly.github.io</code>)라서 홈에서 구글 로그인을 한 번 하면 <strong>끼워진 앱들도 이미 로그인된 상태</strong>가 됩니다.<br>
-      실제로 만들 때는 각 앱에 <code>?embed=</code> 모드를 넣어 앱의 상단바·하단 메뉴를 숨깁니다 (수빈앱이 이미 쓰는 방식).
+      🍀 아래는 <strong>그림이 아니라 실제 라이브 앱</strong>입니다. 스크롤·클릭·입력이 그대로 되고, <strong>여기서 고친 내용은 그 앱에 실제로 저장</strong>됩니다(홈 자체는 읽기만 합니다).<br>
+      각 앱은 상단바·하단 메뉴를 숨긴 끼워넣기 모드(<code>?embed=1</code>)로 열립니다. 로그인이 필요한 앱은 그 창 안에서 한 번 로그인해야 할 수 있습니다.
     </div>
 
     <div class="embgrid">
@@ -854,89 +814,69 @@ code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
     <div class="sechd"><h2>장비</h2><div class="sn">보유 &middot; 구매계획 &middot; 조명 셋업 &middot; 비교표</div></div>
     <div class="grid3">
       <div class="card">
-        <div class="ch"><div class="ct">보유 장비</div><div class="cs"><span id="r-owns">23개</span></div></div>
-        <div class="cat"><div class="catl"><span>렌즈</span><b>7</b></div>
-          <div class="catb"><i style="width:70%;background:#b79bd4"></i></div></div>
-        <div class="cat"><div class="catl"><span>조명</span><b>4</b></div>
-          <div class="catb"><i style="width:40%;background:#e6c9a8"></i></div></div>
-        <div class="cat"><div class="catl"><span>바디</span><b>3</b></div>
-          <div class="catb"><i style="width:30%;background:#8cc0d8"></i></div></div>
-        <div class="cat"><div class="catl"><span>악세사리</span><b>9</b></div>
-          <div class="catb"><i style="width:90%;background:#a8d3a0"></i></div></div>
-        <div style="margin-top:12px;font-size:11.5px;color:var(--mute);font-weight:650">
+        <div class="ch"><div class="ct">보유 장비</div><div class="cs"><span id="r-owns">—</span></div></div>
+        <div id="own-cats"><div class="emptyln">불러오는 중…</div></div>
+        <div style="margin-top:12px;font-size:11.5px;color:var(--mute);font-weight:650" id="own-note">
           09 보유장비현황 &harr; 명진앱 보유탭 동기화 중</div>
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">다음 결정</div><a class="more" href="#">조명 셋업 &rarr;</a></div>
+        <div class="ch"><div class="ct">다음 결정</div><a class="more" href="https://maydly.github.io/note/07_장비비교자료/11_조명셋업짜기_latest.html">조명 셋업 &rarr;</a></div>
         <div style="background:#f4f8f3;border:1px solid #e4ece0;border-radius:14px;padding:14px 15px">
-          <div style="font-size:11px;color:var(--mute);font-weight:750">결정 8 / 13</div>
-          <div style="font-size:14.5px;font-weight:800;letter-spacing:-.3px;margin-top:5px">
-            소프트박스 크기를 정할 차례</div>
-          <div style="font-size:11.5px;color:var(--mute);margin-top:6px;line-height:1.55">
-            60cm 옥타 &middot; 90cm 옥타 &middot; 스트립 &mdash; 인물 반신 기준</div>
+          <div style="font-size:11px;color:var(--mute);font-weight:750" id="nd-count">결정 — / 13</div>
+          <div style="font-size:14.5px;font-weight:800;letter-spacing:-.3px;margin-top:5px" id="nd-title">불러오는 중…</div>
+          <div style="font-size:11.5px;color:var(--mute);margin-top:6px;line-height:1.55" id="nd-opts">&nbsp;</div>
         </div>
-        <div class="gbar" style="margin-top:12px"><i style="width:62%;background:linear-gradient(90deg,#8cc0d8,#6fa9c4)"></i></div>
-        <div style="margin-top:9px;font-size:11.5px;color:var(--mute);font-weight:650">
-          남은 결정 5개 &rarr; 끝나면 구매계획 자동 생성</div>
+        <div class="gbar" style="margin-top:12px"><i id="nd-bar" style="width:0%;background:linear-gradient(90deg,#8cc0d8,#6fa9c4)"></i></div>
+        <div style="margin-top:9px;font-size:11.5px;color:var(--mute);font-weight:650" id="nd-note">&nbsp;</div>
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">구매계획</div><a class="more" href="#">전체 &rarr;</a></div>
-        <div class="lst">
-          <div class="li"><div class="ii">&#128247;</div><div class="bd2"><div class="lb1">시그마 35mm F1.4</div>
-            <div class="lb2">가격 확인 완료</div></div><div class="rt">890,000</div></div>
-          <div class="li"><div class="ii">&#128161;</div><div class="bd2"><div class="lb1">고독스 AD200 Pro</div>
-            <div class="lb2">조명 셋업 결정 대기</div></div><div class="rt">520,000</div></div>
-          <div class="li"><div class="ii">&#129525;</div><div class="bd2"><div class="lb1">C스탠드 2대</div>
-            <div class="lb2">중고 탐색 중</div></div><div class="rt">180,000</div></div>
-        </div>
+        <div class="ch"><div class="ct">구매계획 <span class="cs" id="buy-count" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/myapp/?tab=buy">전체 &rarr;</a></div>
+        <div class="lst" id="buy-list"><div class="emptyln">불러오는 중…</div></div>
         <div style="margin-top:11px;display:flex;justify-content:space-between;font-size:12px;font-weight:800">
-          <span>합계</span><span>1,590,000원</span></div>
+          <span>평균가 합계</span><span id="buy-sum">—</span></div>
+        <div class="srcnote" id="buy-note">가격은 명진앱 구매계획 기준(만원 단위로 저장)</div>
       </div>
     </div>
 
     <div class="card" style="margin-bottom:14px">
-      <div class="ch"><div class="ct">장비 비교표</div><div class="cs">16종 &middot; 최근 본 것</div></div>
-      <table class="tbl">
-        <tr><th>항목</th><th>내 것</th><th>후보 A</th><th>후보 B</th><th>메모</th></tr>
-        <tr><td>조명 출력</td><td>200Ws</td><td class="ok">300Ws</td><td>400Ws</td><td>야외 역광 기준</td></tr>
-        <tr><td>소프트박스</td><td>60cm</td><td class="ok">90cm 옥타</td><td>스트립</td><td>반신 인물</td></tr>
-        <tr><td>렌즈 화각</td><td>50mm</td><td class="ok">35mm</td><td>85mm</td><td>좁은 골목 촬영</td></tr>
-      </table>
+      <div class="ch"><div class="ct">장비 비교표</div><div class="cs">16종 · 조명 셋업에서 고른 장비</div></div>
+      <div id="pick-tbl"><div class="emptyln">불러오는 중…</div></div>
       <div class="chips" style="margin-top:13px">
-        <span class="chip">카메라 바디</span><span class="chip">렌즈</span><span class="chip">필터</span>
-        <span class="chip on">조명</span><span class="chip">악세사리</span><span class="chip">촬영지원</span>
-        <span class="chip">포토프린터</span><span class="chip">일본 빈티지렌즈</span>
+        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/00_장비비교_목차_latest.html">목차</a>
+        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/01_카메라_비교표_latest.html">카메라</a>
+        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/02_카메라_바디_비교표_latest.html">카메라 바디</a>
+        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/02_렌즈_비교표_latest.html">렌즈</a>
+        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/03_렌즈_필터_비교표_latest.html">렌즈 필터</a>
+        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/03_필터_비교표_latest.html">필터</a>
+        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/01_조명_비교표_latest.html">조명</a>
+        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/04_조명_비교표_latest.html">조명(04)</a>
+        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/05_악세사리_비교표_latest.html">악세사리</a>
+        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/06_촬영지원장비_비교표_latest.html">촬영지원</a>
+        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/07_포토프린터_비교표_latest.html">포토프린터</a>
+        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/08_일본빈티지렌즈_쇼핑가이드_latest.html">일본 빈티지렌즈</a>
+        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/09_보유장비현황_latest.html">보유장비 현황</a>
+        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/10_구매계획리스트_latest.html">구매계획 리스트</a>
+        <a class="chip on" href="https://maydly.github.io/note/07_장비비교자료/11_조명셋업짜기_latest.html">조명 셋업 짜기</a>
+        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/12_조명악세사리_원리비교가이드_latest.html">조명 악세사리 원리</a>
       </div>
+      <div class="srcnote">비교표에서 «최근 본 것»·후보 비교 값은 저장하는 앱이 없어, 실제로 고른 기록(조명 셋업)만 표로 보여줍니다.</div>
     </div>
 
     <!-- ══════ 필름 ══════ -->
-    <div class="sechd"><h2>필름</h2><div class="sn">재고 &middot; 도감 &middot; 셋팅</div></div>
+    <div class="sechd"><h2>필름</h2><div class="sn">재고 &middot; 도감 &middot; 셋팅 — 이 기기 기준</div></div>
     <div class="grid2">
       <div class="card">
-        <div class="ch"><div class="ct">필름 재고</div><span id="r-film-anchor"></span><a class="more" href="#">빈티지 필름 &rarr;</a></div>
-        <div class="lst">
-          <div class="li"><div class="ii" style="background:#fdf2f0">&#127902;</div><div class="bd2">
-            <div class="lb1">코닥 골드 200</div><div class="lb2">36컷 &middot; 2롤</div></div>
-            <div class="rt hot">만료 2026-11</div></div>
-          <div class="li"><div class="ii">&#127902;</div><div class="bd2">
-            <div class="lb1">후지 C200</div><div class="lb2">36컷 &middot; 2롤</div></div><div class="rt">만료 2027-04</div></div>
-          <div class="li"><div class="ii">&#127902;</div><div class="bd2">
-            <div class="lb1">일포드 HP5 (흑백)</div><div class="lb2">36컷 &middot; 2롤</div></div><div class="rt">만료 2027-09</div></div>
-        </div>
+        <div class="ch"><div class="ct">필름 재고<span id="r-film-anchor" class="cs" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/film/">빈티지 필름 &rarr;</a></div>
+        <div class="lst" id="film-list"><div class="emptyln">불러오는 중…</div></div>
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">촬영 셋팅 메모</div><div class="cs">FM10</div></div>
-        <table class="tbl">
-          <tr><th>상황</th><th>ISO</th><th>조리개</th><th>셔터</th></tr>
-          <tr><td>맑은 야외</td><td>200</td><td>f/8</td><td>1/250</td></tr>
-          <tr><td>그늘</td><td>200</td><td>f/4</td><td>1/125</td></tr>
-          <tr><td>실내 창가</td><td>400</td><td>f/2.8</td><td>1/60</td></tr>
-        </table>
+        <div class="ch"><div class="ct">촬영 셋팅 메모</div><div class="cs" id="film-set-cs">필름 앱 계산식</div></div>
+        <div id="film-set"><div class="emptyln">불러오는 중…</div></div>
         <div class="chips" style="margin-top:12px">
-          <span class="chip">도감</span><span class="chip">구매처</span><span class="chip on">셋팅</span>
+          <a class="chip" href="https://maydly.github.io/note/film/">도감</a><a class="chip" href="https://maydly.github.io/note/film/">구매처</a><a class="chip on" href="https://maydly.github.io/note/film/">셋팅 계산기</a>
         </div>
       </div>
     </div>
@@ -945,36 +885,27 @@ code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
     <div class="sechd"><h2>여행 &middot; 지도</h2><div class="sn">내 장소 &middot; 촬영지 &middot; 3D</div></div>
     <div class="grid2">
       <div class="card">
-        <div class="ch"><div class="ct">내 장소 분포</div><a class="more" href="#">여행지도 &rarr;</a></div>
+        <div class="ch"><div class="ct">내 장소 분포</div><a class="more" href="https://maydly.github.io/note/travel/">여행지도 &rarr;</a></div>
         <div class="mmap">
-          <svg viewBox="0 0 300 200" style="width:100%;height:auto;display:block">
-            <path d="M118,26 L150,20 L176,34 L186,58 L178,84 L188,104 L180,132 L160,156 L140,170 L120,162 L104,138 L96,110 L100,80 L106,50 Z"
-              fill="#e4eee1" stroke="#cfe0ca" stroke-width="1.5"/>
-            <circle cx="138" cy="62" r="9" fill="#4f9a6a" fill-opacity=".22"/>
-            <circle cx="138" cy="62" r="4" fill="#4f9a6a"/>
-            <circle cx="150" cy="140" r="7" fill="#4f9a6a" fill-opacity=".18"/><circle cx="150" cy="140" r="3.4" fill="#4f9a6a"/>
-            <circle cx="120" cy="96" r="5" fill="#4f9a6a" fill-opacity=".18"/><circle cx="120" cy="96" r="2.6" fill="#4f9a6a"/>
-            <circle cx="166" cy="90" r="4" fill="#8cc0d8" fill-opacity=".3"/><circle cx="166" cy="90" r="2.4" fill="#8cc0d8"/>
-            <circle cx="132" cy="120" r="4" fill="#8cc0d8" fill-opacity=".3"/><circle cx="132" cy="120" r="2.4" fill="#8cc0d8"/>
-            <circle cx="158" cy="44" r="3.4" fill="#e0b08c"/><circle cx="112" cy="70" r="3" fill="#e0b08c"/>
-            <text x="152" y="58" font-size="9" fill="#5d7059" font-weight="700" font-family="Pretendard">서울 214</text>
-            <text x="160" y="152" font-size="9" fill="#5d7059" font-weight="700" font-family="Pretendard">부산 61</text>
+          <svg viewBox="0 0 300 200" style="width:100%;height:auto;display:block" id="map-svg" role="img" aria-label="한국 안 내 장소 분포">
+            <text x="150" y="104" text-anchor="middle" font-size="11" fill="#9aa79b" font-weight="700" font-family="Pretendard">불러오는 중…</text>
           </svg>
         </div>
-        <div class="chips" style="margin-top:11px">
-          <span class="chip on">내 장소 <span id="r-places">564</span></span><span class="chip">촬영지 10,525</span><span class="chip">추천지 49,115</span>
+        <div class="chips" style="margin-top:11px" id="map-chips">
+          <span class="chip on">내 장소 <span id="r-places">—</span></span>
         </div>
+        <div class="chips" style="margin-top:7px">
+          <span class="chip">촬영지 10,525</span><span class="chip">추천지 49,115</span>
+        </div>
+        <div class="srcnote" id="map-note">촬영지·추천지 수는 여행지도 자료 파일(9MB) 기준 9/13 값 — 홈에서 매번 세지 않습니다.</div>
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">최근 저장한 장소</div><div class="cs">네이버에서 가져옴</div></div>
+        <div class="ch"><div class="ct">최근 저장한 장소</div><div class="cs" id="pl-src">—</div></div>
+        <div class="lst" id="pl-list"><div class="emptyln">불러오는 중…</div></div>
         <div class="lst">
-          <div class="li"><div class="ii">&#128205;</div><div class="bd2"><div class="lb1">성수 골목 &middot; 벽돌 담장</div>
-            <div class="lb2">9/11 &middot; 오후 역광 좋음</div></div><div class="rt">서울</div></div>
-          <div class="li"><div class="ii">&#128205;</div><div class="bd2"><div class="lb1">한강 잠원 &middot; 억새</div>
-            <div class="lb2">9/09 &middot; 노을 30분 전</div></div><div class="rt">서울</div></div>
-          <div class="li"><div class="ii">&#127759;</div><div class="bd2"><div class="lb1">신의눈 3D로 보기</div>
-            <div class="lb2">촬영지 + 내 장소를 지구본에서</div></div><div class="rt">열기 &rarr;</div></div>
+          <a class="li" href="https://maydly.github.io/gev/" style="text-decoration:none;color:inherit"><div class="ii">&#127759;</div><div class="bd2"><div class="lb1">신의눈 3D로 보기</div>
+            <div class="lb2">촬영지 + 내 장소를 지구본에서</div></div><div class="rt">열기 &rarr;</div></a>
         </div>
       </div>
     </div>
@@ -983,37 +914,22 @@ code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
     <div class="sechd"><h2>기록 &middot; 학습</h2><div class="sn">note &middot; 단어 여정 &middot; 에이전트</div></div>
     <div class="grid3">
       <div class="card">
-        <div class="ch"><div class="ct">note 아카이브</div><div class="cs">20편</div></div>
-        <div class="lst">
-          <div class="li"><div class="ii">&#128214;</div><div class="bd2"><div class="lb1">정적 앱 클라우드 동기화</div>
-            <div class="lb2">최근 수정</div></div></div>
-          <div class="li"><div class="ii">&#128214;</div><div class="bd2"><div class="lb1">모바일 우선 웹앱</div>
-            <div class="lb2">&nbsp;</div></div></div>
-          <div class="li"><div class="ii">&#128214;</div><div class="bd2"><div class="lb1">폴더 명명 &middot; 버전 관리</div>
-            <div class="lb2">&nbsp;</div></div></div>
-        </div>
+        <div class="ch"><div class="ct">note 아카이브</div><div class="cs" id="note-count">—</div></div>
+        <div class="lst" id="note-list"><div class="emptyln">불러오는 중…</div></div>
+        <div class="srcnote" id="note-note">목록 끝 3편 · 노트에는 수정 날짜가 없습니다</div>
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">단어 여정</div><a class="more" href="#">단어 여정 열기 &rarr;</a></div>
+        <div class="ch"><div class="ct">단어 여정</div><a class="more" href="https://maydly.github.io/maydly-hub/word-journey/">단어 여정 열기 &rarr;</a></div>
         <div style="font-size:11.5px;color:var(--mute);font-weight:650;margin-bottom:10px">
           촬영 전, 오늘의 나 다섯 단어</div>
-        <div class="chips">
-          <span class="chip on">고요</span><span class="chip on">설렘</span><span class="chip on">여백</span>
-          <span class="chip">&nbsp;+2&nbsp;</span>
-        </div>
-        <div style="margin-top:13px;font-size:11.5px;color:var(--mute);font-weight:650">
-          11회 기록 &middot; 가장 많이 고른 단어 &ldquo;여백&rdquo;</div>
+        <div class="emptyln nd" style="padding:4px 0">기록 데이터 없음 — 지금 앱은 체험판(데모)이라 고른 단어를 저장하지 않습니다.</div>
+        <div class="srcnote">저장 기능이 생기면 여기서 고른 단어·횟수를 보여줄 수 있습니다.</div>
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">AI 에이전트</div><div class="cs">16개</div></div>
-        <div class="lst">
-          <div class="li"><div class="ii" style="background:#eaf3ea">&#10004;</div><div class="bd2">
-            <div class="lb1">클로드 &harr; 코덱스 동기화</div><div class="lb2">16 / 16</div></div></div>
-          <div class="li"><div class="ii" style="background:#fdf6ea">&#9888;</div><div class="bd2">
-            <div class="lb1">동기화 이상</div><div class="lb2">8/28 격주 감사</div></div><div class="rt hot">1건</div></div>
-        </div>
+        <div class="ch"><div class="ct">AI 에이전트</div><div class="cs" id="ag-count">—</div></div>
+        <div class="lst" id="ag-list"><div class="emptyln">불러오는 중…</div></div>
       </div>
     </div>
 
@@ -1025,217 +941,859 @@ code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
     <div class="sechd"><h2>수빈</h2><div class="sn">루틴 &middot; 사주</div></div>
     <div class="grid2">
       <div class="card">
-        <div class="ch"><div class="ct">이번주 루틴</div><a class="more" href="#">수빈 앱 &rarr;</a></div>
-        <table class="hg">
-          <tr><th>루틴</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th><th>일</th></tr>
-          <tr><td>물 마시기</td><td><i class="dotc y"></i></td><td><i class="dotc y"></i></td><td><i class="dotc y"></i></td>
-            <td><i class="dotc y"></i></td><td><i class="dotc y"></i></td><td><i class="dotc y"></i></td><td><i class="dotc"></i></td></tr>
-          <tr><td>스트레칭</td><td><i class="dotc y"></i></td><td><i class="dotc y"></i></td><td><i class="dotc n"></i></td>
-            <td><i class="dotc y"></i></td><td><i class="dotc y"></i></td><td><i class="dotc y"></i></td><td><i class="dotc"></i></td></tr>
-          <tr><td>일기</td><td><i class="dotc y"></i></td><td><i class="dotc n"></i></td><td><i class="dotc y"></i></td>
-            <td><i class="dotc y"></i></td><td><i class="dotc n"></i></td><td><i class="dotc"></i></td><td><i class="dotc"></i></td></tr>
-        </table>
-        <span class="streak">연속 12일째</span>
+        <div class="ch"><div class="ct">이번주 루틴 <span class="cs" id="sb-week" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/subin/">수빈 앱 &rarr;</a></div>
+        <div id="sb-tbl"><div class="emptyln">불러오는 중…</div></div>
+        <div class="hgleg"><span><i style="background:var(--g2)"></i>목표 채움</span><span><i style="background:#f3e4e0"></i>못 채움</span>
+          <span><i style="background:#fff;border:1.5px solid #cfdccb"></i>오늘 아직</span><span><i style="border:1.5px dashed #dfe6dc"></i>앞으로</span></div>
+        <div class="srcnote">수빈 앱의 «매일» 목표 기준 · 주는 월요일부터 · 연속 일수는 수빈 앱에 없는 개념이라 표시하지 않습니다.</div>
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">수빈 사주</div><a class="more" href="#">사주 앱 &rarr;</a></div>
+        <div class="ch"><div class="ct">수빈 사주</div><a class="more" href="https://subin-routine.web.app/saju/">사주 앱 &rarr;</a></div>
         <div class="saju">
           <div class="sj1">&#128302; 오늘의 흐름</div>
-          <div class="sj2">무난한 날 &middot; 말수를 줄이면 좋음</div>
-          <div class="sj3">사주 &middot; 별자리 &middot; MBTI를 합쳐 하루 한 줄로 보여줍니다.<br>
-            지금은 Firebase 주소에만 있어 허브 타일에서 빠져 있었습니다.</div>
+          <div class="sj2" style="font-size:15px">홈에서 읽을 수 있는 저장 데이터 없음</div>
+          <div class="sj3">사주 &middot; 별자리 &middot; MBTI를 합쳐 하루 한 줄로 보여주는 앱입니다.<br>
+            생년월일을 그때그때 입력해 계산하고 결과를 저장하지 않아서, 홈에는 가져올 값이 없습니다. 사주 앱에서 직접 보세요.</div>
         </div>
       </div>
     </div>
 
       </div>
 
-    <div class="tier"><h2>시스템</h2><div class="ts">이상 항목만</div></div>
+    <div class="tier"><h2>시스템</h2><div class="ts">점검 · 재고</div></div>
     <!-- 점검 -->
     <div class="card">
-      <div class="ch"><div class="ct">점검 · 재고</div><a class="more" href="#">거버넌스 →</a></div>
-      <div class="chk"><div class="st" style="background:#e7605a"></div>
-        <div class="c1">주간 구조·파일명 감사 — 위반 <span id="s-gov">37</span>건</div><div class="c2">9/07 · 실제 값</div></div>
-      <div class="chk"><div class="st" style="background:#e0a54a"></div>
-        <div class="c1">격주 감사 — 동기화 이상 1건</div><div class="c2">8/28</div></div>
-      <div class="chk"><div class="st" style="background:#e0a54a"></div>
-        <div class="c1">4주 감사 — 확인 필요 3건 · 진행중 업무 24개</div><div class="c2">8/22</div></div>
-      <div class="chk"><div class="st" style="background:#7fb877"></div>
-        <div class="c1">필름 재고 6롤 — FM10 2 · 컬러 4</div><div class="c2">만료 임박 1</div></div>
-      <div class="chk"><div class="st" style="background:#7fb877"></div>
-        <div class="c1">보유 장비 23개 · 저장한 장소 564곳</div><div class="c2">최근 추가 12곳</div></div>
+      <div class="ch"><div class="ct">점검 · 재고</div><a class="more" href="https://maydly.github.io/note/hub/governance/">거버넌스 →</a></div>
+      <div class="chk"><div class="st" id="s-w-dot" style="background:#c3cebf"></div>
+        <div class="c1">주간 구조·파일명 감사 — <span id="s-gov">—</span></div><div class="c2" id="s-w-date">—</div></div>
+      <div class="chk"><div class="st" id="s-b-dot" style="background:#c3cebf"></div>
+        <div class="c1">격주 감사 — <span id="s-bi">—</span></div><div class="c2" id="s-b-date">—</div></div>
+      <div class="chk"><div class="st" id="s-m-dot" style="background:#c3cebf"></div>
+        <div class="c1">4주 감사 — <span id="s-mo">—</span></div><div class="c2" id="s-m-date">—</div></div>
+      <div class="chk"><div class="st" id="s-f-dot" style="background:#c3cebf"></div>
+        <div class="c1">필름 재고 <span id="s-film">—</span> <span style="color:var(--mute);font-weight:650">(이 기기)</span></div><div class="c2" id="s-film-r">—</div></div>
+      <div class="chk"><div class="st" id="s-o-dot" style="background:#c3cebf"></div>
+        <div class="c1">보유 장비 <span id="s-owns">—</span> · 저장한 장소 <span id="s-places">—</span></div><div class="c2" id="s-places-r">—</div></div>
     </div>
 
     <div class="foot">
-      목업 v1.0 · 2026-09-17 · 앱 임베드 · 웹·폰 같은 화면<br>
-      못 읽는 칸은 0이 아니라 — 로 표시됩니다
+      v2.1 · 2026-09-25 · 실데이터 연결 · 웹·폰 같은 화면<br>
+      못 읽는 칸은 0이 아니라 — 로 표시됩니다 · 홈 화면 자체는 읽기만 합니다 (「앱 창」은 진짜 앱이라 열리면 각 앱이 평소처럼 동기화·저장합니다)
     </div>
 
   </main>
 </div>
 <script type="module">
-// 홈 대시보드 — 실데이터 연결 (읽기 전용). 어댑터는 data-adapter.js 한 곳에 모아 둔다.
+// 홈 대시보드 — 실데이터 연결 (읽기 전용, v2.1).
+// 데이터 읽기·계산은 전부 data-adapter.js 에 있다. 여기는 «그리기»만 한다.
+// 원칙: 못 읽은 값은 0이 아니라 '—'. 로그인 전에는 '로그인 필요'. 아무것도 저장하지 않는다.
 import * as D from './data-adapter.js';
+window.__homeModuleOk = true;   // 아래 비상 스크립트가 '모듈이 떴는지' 보는 표시
 
 const $ = (id) => document.getElementById(id);
 const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+const put = (id, h) => { const el = $(id); if (el) el.innerHTML = h; };
 const dash = '—';
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const mask = (s) => `<span class="mask">${esc(s)}</span>`;
+const WD = ['일', '월', '화', '수', '목', '금', '토'];
+const md = (ds) => { const a = String(ds || '').split('-'); return a.length === 3 ? (+a[1]) + '/' + (+a[2]) : String(ds || ''); };
+const mdw = (ds) => md(ds) + ' ' + WD[D.parseDS(ds).getDay()];
+const pct = (a, b) => (b > 0 ? Math.max(0, Math.min(100, Math.round(a / b * 100))) : 0);
+const bar = (id, p) => { const el = $(id); if (el) el.style.width = Math.max(0, Math.min(100, p || 0)) + '%'; };
+const emptyLn = (t, nd) => `<div class="emptyln${nd ? ' nd' : ''}">${esc(t)}</div>`;
+const nmCal = (s) => { s = String(s || '').trim(); return s || '이름 없음'; };            // 캘린더 이름엔 이미 「님」이 붙어 있다
+const nmIq = (s) => { s = String(s || '').trim(); if (!s) return '이름 없음'; return /님$/.test(s) ? s : s + ' 님'; };
+const clip = (s, n) => { s = String(s || ''); return s.length > n ? s.slice(0, n) + '…' : s; };
+const ago = (ms) => { if (!ms) return '시간 모름'; const h = (Date.now() - ms) / 3600000; if (h < 1) return '방금'; if (h < 24) return Math.floor(h) + '시간 전'; return Math.floor(h / 24) + '일 전'; };
+const badge = (id, v) => { const el = $(id); if (el) el.textContent = (v === null || v === undefined || v === 0 || v === '') ? '' : String(v); };
+const LOGIN = '구글 로그인이 필요합니다';
+const CAL = 'https://maydly.github.io/maydly-cal/admin.html';
+const MY = 'https://maydly.github.io/note/myapp/';
+const INQ = 'https://maydly.github.io/note/hub/설문데이터/';
+const TIME = (e) => (e.time && !e.allDay ? e.time : '');
 
-// 상태줄 칩 갱신
-function chip(idx, ok, text){
+// 상태줄 칩 갱신 (0 Firebase · 1 로컬 · 2 정적)
+function chip(idx, state, text) {
   const c = document.querySelectorAll('.statusbar .stchip')[idx];
-  if(!c) return;
+  if (!c) return;
   const dot = c.querySelector('i');
-  if(dot) dot.style.background = ok ? '#4f9a6a' : '#c0705f';
-  c.childNodes[c.childNodes.length-1].textContent = ' ' + text;
+  if (dot) dot.style.background = state === true ? '#4f9a6a' : state === false ? '#c0705f' : '#c3cebf';
+  c.childNodes[c.childNodes.length - 1].textContent = ' ' + text;
 }
 
-// ── 로그인 없이 읽히는 것 (같은 출처 localStorage · 정적 JSON) ──
-function paintLocal(){
-  const f = D.film();
-  const a = $('r-film-anchor');
-  if(a) a.textContent = f ? ` · ${f.rolls}롤 / ${f.kinds}종` : ` · ${dash}`;
-
-  const pl = D.travelPlaces();
-  set('r-places', pl ? pl.count.toLocaleString() : dash);
-
-  const ls = D.lightSetup();
-  set('g-light', ls ? `${ls.picked} / ${ls.total}` : dash);
-
-  chip(1, !!(f || pl || ls), '로컬 데이터 · 이 기기 기준');
+// 목록 한 줄 (지금 처리할 것)
+function nowItem(o) {
+  return `<a class="nowit${o.u ? ' u' : ''}" href="${esc(o.href || '#')}"><div class="ni">${o.ic}</div><div class="nb">`
+       + `<div class="n1">${o.n1}</div><div class="n2">${o.n2 || ''}</div></div><div class="nr${o.hot ? ' hot' : ''}">${esc(o.nr || '')}</div></a>`;
+}
+// 목록 끝: 너무 많으면 몇 개만 보이고 «외 N건»을 적는다(앱에서 전체 보기)
+function capList(arr, n, render, moreText, href) {
+  let h = arr.slice(0, n).map(render).join('');
+  if (arr.length > n) h += `<a class="nowit" href="${esc(href)}" style="background:transparent;padding:6px 14px"><div class="nb"><div class="n2">${esc(moreText.replace('N', arr.length - n))}</div></div></a>`;
+  return h;
 }
 
-async function paintStatic(){
-  const g = await D.governance();
-  if(g && g.log.length){
-    const w = g.log.find(x => /위반\s*(\d+)/.test(x.summary || ''));
-    const m = w && /위반\s*(\d+)/.exec(w.summary);
-    set('s-gov', m ? m[1] : dash);
-    chip(2, true, '정적 자료 · ' + (g.updated ? String(g.updated).slice(0,10) : '갱신일 미상'));
-  } else {
-    set('s-gov', dash);
-    chip(2, false, '정적 자료 · 못 읽음');
-  }
-}
-
-// ── 로그인해야 읽히는 것 (Firestore) ──
-async function paintCloud(){
-  const [td, lg, iq, ow, tod] = await Promise.all([
-    D.todayShoots(), D.ledgerThisMonth(), D.inquiries(), D.owns(), D.todos()
-  ]);
-
-  // 앞으로 7일 점 + 날짜줄 보강
-  const evs = await D.calEvents();
-  if(evs) paintWeek(evs);
-  if(td) {
-    const base = $('today-line');
-    if(base) base.textContent += td.count ? ` · 오늘 촬영 ${td.count}건` : ' · 오늘 촬영 없음';
-  }
-  if(evs){
-    const base = new Date(); base.setHours(0,0,0,0);
-    let busiest = null, empty = [];
-    for(let i=0;i<7;i++){
-      const d = new Date(base); d.setDate(base.getDate()+i);
-      const iso = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-      const n = evs.filter(e => e && e.date === iso && e.status !== 'cancel' && e.status !== 'nosh').length;
-      if(!busiest || n > busiest.n) busiest = { n, wd: WD[d.getDay()] };
-      if(n === 0) empty.push(WD[d.getDay()]);
-    }
-    const parts = [];
-    if(busiest && busiest.n > 0) parts.push(`${busiest.wd}요일이 ${busiest.n}건으로 가장 바쁩니다`);
-    if(empty.length) parts.push(`${empty.join('·')}요일은 비어 있습니다`);
-    set('w7-note', parts.length ? parts.join(' · ') : '앞으로 7일 예약이 없습니다');
-  }
-
-  // 다음 촬영
-  if(td && td.list.length){
-    const n = td.list.find(e => !e.allDay) || td.list[0];
-    set('b-next', `${n.time || '시간 미정'} · ${n.client || '이름 없음'}`);
-    set('b-next-sub', `${n.label || '라벨 없음'} · 오늘 ${td.count}건`);
-  } else if(td){
-    set('b-next', '오늘 촬영 없음');
-    set('b-next-sub', '예약된 일정이 없습니다');
-  } else { set('b-next', dash); set('b-next-sub', '캘린더를 못 읽었습니다'); }
-
-  // 할 일
-  if(tod){
-    set('b-todo', `${tod.open}건 남음`);
-    set('b-todo-sub', `전체 ${tod.total}건 · 오늘까지 ${tod.dueToday} · 기한 지남 ${tod.overdue}`);
-    set('g-todo', `${tod.total - tod.open} / ${tod.total} · 일간`);
-    set('nv-todo', tod.open);
-  } else { set('b-todo', dash); set('b-todo-sub', '할 일을 못 읽었습니다'); set('g-todo', dash); }
-
-  // 가계부
-  if(lg){
-    set('m-in', D.won(lg.income));
-    set('m-unc', lg.unclassified);
-    set('nv-unc', lg.unclassified);
-  } else { set('m-in', dash); set('m-unc', dash); }
-
-  // 문의 + 예외 건수
-  const excParts = [];
-  if(iq && iq.fresh) excParts.push(`새 문의 ${iq.fresh}`);
-  if(lg && lg.unclassified) excParts.push(`미분류 ${lg.unclassified}`);
-  set('b-exc', excParts.length ? `${excParts.length}건` : (iq || lg ? '0건' : dash));
-  const sub = document.querySelector('.bf.urgent .bs');
-  if(sub && excParts.length) sub.textContent = excParts.join(' · ');
-
-  // 보유 장비
-  set('r-owns', ow ? `${ow.count}개` : dash);
-
-  chip(0, !!(td || lg || tod), 'Firebase 연결됨 · ' + ((D.currentUser() && D.currentUser().email) || ''));
-}
-
-// ── 로그인 상태 ──
-const chipBtn = $('loginChip');
-if(chipBtn) chipBtn.onclick = () => {
-  const u = D.currentUser();
-  if(u) D.logout(); else D.login().catch(e => alert('로그인 실패: ' + (e.code || e.message)));
-};
-
-// ── 날짜는 고정값이 아니라 «오늘»을 쓴다 (틀린 날짜를 보여주면 안 된다) ──
-const WD = ['일','월','화','수','목','금','토'];
-function paintDate(){
+// ══ 날짜 (기기 시계) ══
+function paintDate() {
   const d = new Date();
   const h = d.getHours();
-  set('greet', h < 5 ? '늦은 밤이에요' : h < 12 ? '좋은 아침이에요'
-            : h < 18 ? '좋은 오후예요' : '좋은 저녁이에요');
-  set('today-line', `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 ${WD[d.getDay()]}요일`);
+  set('greet', h < 5 ? '늦은 밤이에요' : h < 12 ? '좋은 아침이에요' : h < 18 ? '좋은 오후예요' : '좋은 저녁이에요');
+  set('today-line', `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 ${WD[d.getDay()]}요일`);
 }
 
-// 앞으로 7일 — 오늘부터. 점(촬영/납품/보정)은 로그인 후 예약 데이터로 채운다.
-function paintWeek(events){
-  const box = $('w7'); if(!box) return;
-  const base = new Date(); base.setHours(0,0,0,0);
+// ══ 앞으로 7일 ══ — 초록 = 촬영(관리자 대시보드와 같은 기준), 빨강 = 그날이 기한인 보정본 전달(기본·구매분)
+function paintWeek(evs, alerts) {
+  const box = $('w7'); if (!box) return;
+  const base = new Date(); base.setHours(0, 0, 0, 0);
   let html = '';
-  for(let i=0;i<7;i++){
-    const d = new Date(base); d.setDate(base.getDate()+i);
-    const iso = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-    const day = events ? events.filter(e => e && e.date === iso
-                        && e.status !== 'cancel' && e.status !== 'nosh') : null;
-    const dots = day ? day.slice(0,3).map(() => '<i style="background:#4f9a6a"></i>').join('') : '';
-    const cls = 'd7' + (i===0 ? ' today' : '') + (day && day.length>=2 ? ' busy' : '');
-    html += `<div class="${cls}"><div class="dw">${WD[d.getDay()]}</div>`
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(base); d.setDate(base.getDate() + i);
+    const iso = D.fd(d);
+    const shoots = evs ? evs.filter((e) => D.isShootEv(e) && e.date === iso) : [];
+    const dues = alerts ? alerts.filter((a) => (a.kind === 'basic' || a.kind === 'buy') && a.due === iso) : [];
+    // 오늘 칸은 배경이 초록(#4f9a6a)이라 초록 점이 안 보인다 → 오늘만 흰 점(글자색과 같게)
+    const dots = shoots.slice(0, 3).map(() => `<i style="background:${i === 0 ? '#fff' : '#4f9a6a'}"></i>`).join('')
+               + dues.slice(0, 2).map(() => '<i style="background:#e0857a"></i>').join('');
+    const cls = 'd7' + (i === 0 ? ' today' : '') + (shoots.length >= 2 ? ' busy' : '');
+    const tip = evs ? `촬영 ${shoots.length}건 · 전달 기한 ${dues.length}건` : '';
+    html += `<div class="${cls}" title="${esc(tip)}"><div class="dw">${WD[d.getDay()]}</div>`
           + `<div class="dd">${d.getDate()}</div><div class="dm">${dots}</div></div>`;
   }
   box.innerHTML = html;
 }
 
+// ══ 로그인 없이 읽히는 것 — 이 기기 localStorage ══
+function paintFilm(f) {
+  set('r-film-anchor', f ? ` · ${f.rolls}롤 / ${f.kinds}종` : ` · ${dash}`);
+  badge('nv-film', f && f.rolls ? f.rolls + '롤' : '');
+  if (!f) {
+    put('film-list', emptyLn('— 이 기기에 필름 재고 기록이 없습니다 (빈티지 필름 앱에서 넣은 재고만 보입니다)', true));
+    put('film-set', emptyLn('— 재고가 없어 계산할 필름이 없습니다 · 필름 앱 계산기에서 직접 계산', true));
+    set('s-film', dash); set('s-film-r', '이 기기에 기록 없음');
+    const dt = $('s-f-dot'); if (dt) dt.style.background = '#c3cebf';
+    return;
+  }
+  if (!f.kinds) {
+    put('film-list', emptyLn('재고 없음'));
+    put('film-set', emptyLn('재고 없음 — 필름 앱 계산기에서'));
+  } else {
+    put('film-list', f.stock.map((s) => {
+      const yrs = s.setting.years;
+      return `<div class="li"><div class="ii"${yrs > 10 ? ' style="background:#fdf2f0"' : ''}>&#127902;</div><div class="bd2">`
+        + `<div class="lb1">${esc(s.name || '이름 없음')}</div>`
+        + `<div class="lb2">ISO ${esc(s.iso)} · ${s.qty}롤${s.storeKo ? ' · ' + esc(s.storeKo) : ''} · 세팅 ${esc(s.setting.label)}</div></div>`
+        + `<div class="rt${yrs > 10 ? ' hot' : ''}">${s.year ? (yrs >= 0 ? `만료 ${yrs}년 경과` : `만료까지 ${-yrs}년`) : '연도 없음'}</div></div>`;
+    }).join(''));
+    const top = f.stock[0];
+    const rows = f.stock.map((s) => `<tr><td>${esc(clip(s.name, 16))}</td><td>${esc(s.setting.label)}</td><td>+${s.setting.stops}스톱</td><td>${esc(s.setting.shutter)}</td></tr>`).join('');
+    const wx = D.FILM_WEATHER.map((w) => `<tr><td>${w[0]}</td><td>ISO ${top.setting.dial}</td><td>${w[1]}</td><td>${esc(top.setting.shutter)}</td></tr>`).join('');
+    put('film-set', `<table class="tbl"><tr><th>필름</th><th>카메라 ISO</th><th>보정</th><th>맑은 날 셔터</th></tr>${rows}</table>`
+      + `<div style="font-size:11px;color:var(--mute);font-weight:750;margin:12px 0 2px">가장 많은 필름(${esc(top.name)}) 기준 날씨표</div>`
+      + `<table class="tbl"><tr><th>상황</th><th>ISO</th><th>조리개</th><th>셔터</th></tr>${wx}</table>`);
+  }
+  set('film-set-cs', `FM10 · 필름 앱 계산식(${f.nowYear}년 기준)`);
+  set('s-film', `${f.rolls}롤 · ${f.kinds}종`);
+  set('s-film-r', f.oldest ? (f.nowYear - f.oldest.year >= 0 ? `가장 오래된 필름 ${f.nowYear - f.oldest.year}년 경과` : `가장 이른 만료까지 ${f.oldest.year - f.nowYear}년`) : (f.kinds ? '연도 기록 없음' : '재고 없음'));
+  const dt = $('s-f-dot'); if (dt) dt.style.background = '#7fb877';
+}
+
+// 한국 지도 (대략적인 윤곽 — 점 위치를 보려는 용도)
+const PX = (lng) => 98 + (lng - 125.8) * 26.7;
+const PY = (lat) => 8 + (38.7 - lat) * 33;
+const KR_OUTLINE = [[126.1,37.75],[126.5,37.78],[126.7,37.95],[127.1,38.3],[127.6,38.33],[128.1,38.33],[128.37,38.62],[128.6,38.2],[128.9,37.8],[129.1,37.45],[129.35,37.0],[129.45,36.4],[129.58,36.0],[129.45,35.5],[129.25,35.15],[128.95,35.05],[128.6,34.85],[128.0,34.8],[127.5,34.6],[127.0,34.45],[126.5,34.3],[126.3,34.6],[126.4,35.0],[126.45,35.6],[126.7,36.0],[126.5,36.4],[126.15,36.8],[126.6,37.0],[126.65,37.4],[126.5,37.6]];
+function paintTravel(pl) {
+  const svg = $('map-svg');
+  if (!pl) {
+    set('r-places', dash); badge('nv-travel', '');
+    if (svg) svg.innerHTML = '<text x="150" y="104" text-anchor="middle" font-size="11" fill="#9aa79b" font-weight="700" font-family="Pretendard">— 장소 목록을 못 읽었습니다</text>';
+    put('pl-list', emptyLn('— 장소 목록을 못 읽었습니다', true));
+    set('pl-src', dash); set('s-places', dash); set('s-places-r', dash);
+    return;
+  }
+  const st = D.placeStats(pl.list);
+  set('r-places', st.count.toLocaleString());
+  badge('nv-travel', st.count);
+  // 지도 — 0.3도 칸마다 묶어 점 크기로
+  const cells = {};
+  st.korea.forEach((p) => {
+    const k = Math.round(p.lat / 0.3) + ':' + Math.round(p.lng / 0.3);
+    const c = cells[k] || (cells[k] = { lat: 0, lng: 0, n: 0 });
+    c.lat += +p.lat; c.lng += +p.lng; c.n++;
+  });
+  let dots = '';
+  Object.keys(cells).map((k) => cells[k]).sort((a, b) => b.n - a.n).forEach((c) => {
+    const x = PX(c.lng / c.n), y = PY(c.lat / c.n), r = Math.min(11, 2.2 + Math.sqrt(c.n) * 1.1);
+    dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(r * 1.9).toFixed(1)}" fill="#4f9a6a" fill-opacity=".14"/>`
+          + `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="#4f9a6a" fill-opacity=".85"><title>${c.n}곳</title></circle>`;
+  });
+  // 상위 지역 3곳 — 점 위에 쓰면 서울·인천처럼 붙은 곳이 겹쳐서, 지도 오른쪽 아래에 범례로 적는다
+  const krRegions = st.regions.filter((r) => r.name !== '일본' && r.name !== '해외' && r.name !== '한국(주소 없음)').slice(0, 3);
+  let labels = '';
+  krRegions.forEach((r, i) => {
+    const y = 132 + i * 17;
+    labels += `<circle cx="226" cy="${y - 3.5}" r="3" fill="#4f9a6a"/>`
+      + `<text x="233" y="${y}" font-size="10" fill="#3f5642" font-weight="800" font-family="Pretendard">${esc(r.name)} ${r.n}</text>`;
+  });
+  const poly = KR_OUTLINE.map((p) => PX(p[0]).toFixed(1) + ',' + PY(p[1]).toFixed(1)).join(' ');
+  if (svg) svg.innerHTML = `<polygon points="${poly}" fill="#e4eee1" stroke="#cfe0ca" stroke-width="1.5" stroke-linejoin="round"/>`
+    + `<ellipse cx="${PX(126.55).toFixed(1)}" cy="${PY(33.38).toFixed(1)}" rx="8.8" ry="4.6" fill="#e4eee1" stroke="#cfe0ca" stroke-width="1.5"/>`
+    + dots + labels
+    + `<text x="296" y="194" text-anchor="end" font-size="9" fill="#a6b1a3" font-weight="700" font-family="Pretendard">한국 안 ${st.korea.length}곳</text>`;
+  // 지역 칩 — 전부
+  const chips = [`<span class="chip on">내 장소 <span id="r-places">${st.count.toLocaleString()}</span></span>`]
+    .concat(st.regions.map((r) => `<span class="chip">${esc(r.name)} ${r.n}</span>`));
+  put('map-chips', chips.join(''));
+  const nv = st.count ? Math.round(st.naver / st.count * 100) : 0;
+  set('pl-src', (pl.source === 'seed' ? '기본 목록' : '이 기기 목록') + ` · 네이버에서 가져옴 ${nv}%`);
+  set('map-note', (pl.source === 'seed' ? '이 기기에 저장한 장소가 없어 여행지도 앱과 같은 기본 목록을 보여줍니다. ' : '')
+    + '지역은 주소 첫 낱말 기준(대략) · 촬영지·추천지 수는 여행지도 자료 파일(9MB) 기준 9/13 값이라 홈에서 매번 세지 않습니다.');
+  // 최근 저장한 장소 — 날짜 있는 것 먼저, 없으면 목록 끝
+  const recent = st.withTs.length ? st.withTs.slice(0, 3) : pl.list.slice(-3).reverse();
+  put('pl-list', recent.map((p) => {
+    const cat = D.PLACE_CATS[p.cat] || '📍 장소';
+    const when = p.ts ? md(D.fd(new Date(p.ts))) : '날짜 없음';
+    return `<div class="li"><div class="ii">${esc(cat.split(' ')[0])}</div><div class="bd2"><div class="lb1">${esc(p.name || '이름 없음')}</div>`
+      + `<div class="lb2">${esc(when)} · ${esc(clip(p.memo || cat.split(' ')[1] || '', 34))}</div></div><div class="rt">${esc(D.placeRegion(p))}</div></div>`;
+  }).join('') || emptyLn('저장한 장소 없음'));
+  set('s-places', st.count.toLocaleString() + '곳');
+  set('s-places-r', st.withTs.length ? (st.recent30 ? `최근 30일 추가 ${st.recent30}곳` : '최근 30일 추가 없음') : '추가 날짜 기록 없음(기본 목록)');
+}
+
+function paintLight(ls) {
+  if (!ls || !ls.hasSel) {
+    set('g-light', dash); bar('g-light-bar', 0); badge('nv-light', '');
+    set('nd-count', `결정 — / ${ls ? ls.total : 13}`);
+    set('nd-title', '— 이 기기에 조명 셋업 기록이 없습니다');
+    set('nd-opts', '조명 셋업 짜기에서 고르면 이 기기에 저장되고, 여기서 다음 결정을 보여줍니다.');
+    bar('nd-bar', 0); set('nd-note', ls && !ls.decOk ? '결정표 파일도 못 읽었습니다' : ' ');
+    put('pick-tbl', emptyLn('— 이 기기에 조명 셋업 기록이 없습니다', true));
+    return;
+  }
+  const { picked, total } = ls;
+  set('g-light', `${picked} / ${total}`); bar('g-light-bar', pct(picked, total));
+  badge('nv-light', `${picked}/${total}`);
+  set('nd-count', `결정 ${picked} / ${total}`);
+  bar('nd-bar', pct(picked, total));
+  if (!ls.decOk) {
+    set('nd-title', '결정표 파일을 못 읽어 고른 결정 수만 보여줍니다');
+    set('nd-opts', ' '); set('nd-note', `남은 결정 ${total - picked}개`);
+    put('pick-tbl', emptyLn('— 결정표를 못 읽었습니다', true));
+    return;
+  }
+  if (ls.next) {
+    set('nd-title', `${ls.next.num}. ${ls.next.title}`);
+    set('nd-opts', ls.next.opts.map((o) => o.name + (o.sold ? '(품절)' : '')).join(' · ')
+      + (ls.next.mode === 'many' ? ' — 여러 개 고를 수 있음' : ' — 하나 고르기'));
+  } else {
+    set('nd-title', `${total}개 결정을 모두 골랐습니다`);
+    set('nd-opts', '조명 셋업 짜기에서 구매 목록으로 넘길 차례');
+  }
+  const sum = ls.lo === ls.hi ? D.won(ls.lo) : `${D.won(ls.lo)}~${D.won(ls.hi)}`;
+  // 조명 셋업 앱의 「고른 것 N개」는 0원 선택지를 빼고 센다 (11_조명셋업짜기 flat(): o.lo!==0).
+  // 0원 선택지는 전부 「나중에·건너뛰기」(예: 그리드 없이 간다, 랜턴은 나중에)이지 보유 장비가 아니다.
+  const skipN = ls.chosen.filter((c) => c.lo === 0).length;
+  set('nd-note', `남은 결정 ${total - picked}개 · 고른 것 ${ls.chosen.length - skipN}개 합계 ${sum}` + (skipN ? ` · 건너뛴 결정 ${skipN}개` : '') + (ls.unk ? ` · 가격 미확인 ${ls.unk}건 제외` : ''));
+  if (!ls.chosen.length) { put('pick-tbl', emptyLn('아직 고른 장비가 없습니다')); return; }
+  put('pick-tbl', '<table class="tbl"><tr><th>결정</th><th>고른 장비</th><th>수량</th><th>가격</th></tr>'
+    + ls.chosen.map((c) => {
+      const pr = c.lo == null ? '가격 확인 필요' : c.lo === 0 ? '0원(건너뜀)' : (c.lo === c.hi || c.hi == null ? D.won(c.lo * c.qty) : `${D.won(c.lo * c.qty)}~${D.won(c.hi * c.qty)}`);
+      return `<tr><td>${esc(c.num)}. ${esc(clip(String(c.dec).split(' — ')[0], 14))}</td><td>${esc(c.name)}${c.stock === 'soldout' ? ' <span style="color:var(--warn)">(품절)</span>' : ''}</td><td>${c.qty}</td><td>${esc(pr)}</td></tr>`;
+    }).join('') + '</table>');
+}
+
+async function paintLocal() {
+  const f = D.film();
+  paintFilm(f);
+  const [pl, ls] = await Promise.all([D.travelPlaces(), D.lightSetup()]);
+  paintTravel(pl);
+  paintLight(ls);
+  const have = [f ? '필름' : null, pl && pl.source === 'device' ? '장소' : null, ls && ls.hasSel ? '조명' : null].filter(Boolean);
+  chip(1, have.length ? true : null, have.length ? `로컬 데이터 · 이 기기 (${have.join('·')})` : '로컬 데이터 · 이 기기에 기록 없음');
+}
+
+// ══ 정적 자료 — 거버넌스 · note ══
+const GOV_DOT = { warn: '#e0a54a', ok: '#7fb877', err: '#e7605a', fail: '#e7605a' };
+async function paintStatic() {
+  const [g, nt] = await Promise.all([D.governance(), D.noteArchive()]);
+  const row = (x, id, dateId, dotId) => {
+    set(id, x ? (x.summary || dash) : dash);
+    set(dateId, x ? md(x.date) : dash);
+    const dt = $(dotId); if (dt) dt.style.background = x ? (GOV_DOT[x.status] || '#c3cebf') : '#c3cebf';
+  };
+  if (g) {
+    row(g.weekly, 's-gov', 's-w-date', 's-w-dot');
+    row(g.biweekly, 's-bi', 's-b-date', 's-b-dot');
+    row(g.monthly, 's-mo', 's-m-date', 's-m-dot');
+    const vm = g.weekly && /위반\s*(\d+)/.exec(g.weekly.summary || '');
+    badge('nv-gov', vm ? Number(vm[1]) : '');
+    chip(2, true, '정적 자료 · ' + (g.updated ? md(String(g.updated).slice(0, 10)) + ' 갱신' : '갱신일 미상'));
+    // AI 에이전트 — 격주 감사 요약에서 («동기화 이상 N건 · 에이전트 M개»)
+    const b = g.biweekly;
+    const ag = b && /에이전트\s*(\d+)\s*개/.exec(b.summary || '');
+    const sy = b && /동기화 이상\s*(\d+)\s*건/.exec(b.summary || '');
+    set('ag-count', ag ? ag[1] + '개' : dash);
+    put('ag-list', b
+      ? `<div class="li"><div class="ii" style="background:#eaf3ea">&#129302;</div><div class="bd2"><div class="lb1">클로드 · 코덱스 에이전트</div><div class="lb2">${esc(md(b.date))} 격주 감사 기준</div></div><div class="rt">${ag ? esc(ag[1]) + '개' : dash}</div></div>`
+      + `<div class="li"><div class="ii" style="background:${sy && +sy[1] ? '#fdf6ea' : '#eaf3ea'}">${sy && +sy[1] ? '&#9888;' : '&#10004;'}</div><div class="bd2"><div class="lb1">클로드 &harr; 코덱스 동기화 이상</div><div class="lb2">${esc(md(b.date))} 격주 감사</div></div><div class="rt${sy && +sy[1] ? ' hot' : ''}">${sy ? esc(sy[1]) + '건' : dash}</div></div>`
+      : emptyLn('— 격주 감사 기록이 없습니다', true));
+  } else {
+    ['s-gov', 's-bi', 's-mo', 's-w-date', 's-b-date', 's-m-date', 'ag-count'].forEach((id) => set(id, dash));
+    badge('nv-gov', '');
+    put('ag-list', emptyLn('— 거버넌스 자료를 못 읽었습니다', true));
+    chip(2, false, '정적 자료 · 못 읽음');
+  }
+  if (nt) {
+    set('note-count', nt.count + '편'); badge('nv-note', nt.count);
+    const last = nt.items.slice(-3).reverse();
+    put('note-list', last.map((x) => `<a class="li" href="${esc(x.href)}" style="text-decoration:none;color:inherit"><div class="ii">&#128214;</div><div class="bd2"><div class="lb1">${esc(x.title)}</div><div class="lb2">${esc(x.tag || '노트')}</div></div><div class="rt">열기 &rarr;</div></a>`).join('') || emptyLn('노트 없음'));
+    set('note-note', `목록 끝 3편${nt.count > 3 ? ` · 그 외 ${nt.count - 3}편은 note 아카이브에서` : ''} · 노트에는 수정 날짜가 없습니다`);
+  } else {
+    set('note-count', dash); badge('nv-note', '');
+    put('note-list', emptyLn('— note 목록을 못 읽었습니다', true));
+  }
+}
+
+// ══ 로그인 전·로그아웃 — 클라우드 칸을 전부 비운다(예시 값이 남지 않게) ══
+function paintLoggedOut() {
+  ['b-next', 'b-exc', 'b-todo', 'b-dlv', 'g-todo', 'g-week', 'g-month', 'g-month2', 'g-prep', 'g-subin',
+   'm-in', 'm-unconf', 'm-plan', 'm-unc', 'r-owns', 'dn-total', 'dn-mid', 'buy-sum', 's-owns',
+   'k-inq-n', 'k-adj-n', 'k-conf-n', 'k-dlv-n'].forEach((id) => set(id, dash));
+  ['b-next-sub', 'b-exc-sub', 'b-todo-sub', 'b-dlv-sub'].forEach((id) => set(id, LOGIN));
+  ['g-todo-bar', 'g-week-bar', 'g-month-bar', 'g-month2-bar', 'g-prep-bar', 'g-subin-bar', 'm-in-bar', 'm-unconf-bar', 'm-plan-bar'].forEach((id) => bar(id, 0));
+  ['nv-cal', 'nv-inq', 'nv-todo', 'nv-unc', 'nv-buy'].forEach((id) => badge(id, ''));
+  ['now-u', 'now-t', 'now-w', 'tl', 'k-inq', 'k-adj', 'k-conf', 'k-dlv', 'unc-list', 'cm-list', 'iq-list',
+   'own-cats', 'buy-list', 'sb-tbl'].forEach((id) => put(id, emptyLn(LOGIN)));
+  put('dn-leg', emptyLn(LOGIN));
+  put('dn-svg', '<circle cx="66" cy="66" r="52" fill="none" stroke="#eef3ec" stroke-width="20"/>');
+  set('dn-month', '이번 달');
+  set('today-extra', '');
+  ['iq-count', 'buy-count', 'sb-week', 'lc-note'].forEach((id) => set(id, ''));
+  set('w7-note', '로그인하면 예약이 표시됩니다.');
+  paintWeek(null, null);
+  paintLineChart(undefined);
+  paintShots(undefined, undefined);
+  set('m-month', '이번 달');
+  set('m-note', '이름·금액이 확실히 안 맞으면 자동 확정하지 않고 대조 필요로 둡니다');
+  // 로그인 중에 채워지는 설명줄도 처음 문구로 되돌린다(구매 합계·입금 건수가 남지 않게)
+  set('dn-note', '분류는 명진앱 가계부 기준 · 이체·충전은 지출에서 뺍니다');
+  set('cm-note', '명진앱 「캘린더와 대조」와 같은 기준 — 입금자 이름과 같은 예약이 앞뒤 60일 안에 있는지');
+  set('buy-note', '가격은 명진앱 구매계획 기준(만원 단위로 저장)');
+  const od = $('s-o-dot'); if (od) od.style.background = '#c3cebf';
+  chip(0, null, 'Firebase · 로그인 필요');
+}
+
+// ══ 수입·지출 선그래프 (최근 6개월) ══
+// led: undefined = 로그인 전, null = 못 읽음, 배열 = 가계부
+function paintLineChart(led) {
+  const svg = $('lc'); if (!svg) return;
+  const X = (i) => 76 + i * 108;
+  const now = new Date();
+  const mk = D.monthPrefix();
+  const months = Array.isArray(led) ? D.ledgerMonthly(led, 6, mk) : Array.from({ length: 6 }, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - 5 + i, 1); return { month: d.getMonth() + 1, in: null, out: null, count: 0 };
+  });
+  const vals = [];
+  months.forEach((m) => { if (m.in != null) vals.push(m.in); if (m.out != null) vals.push(m.out); });
+  const max = vals.length ? Math.max(...vals) : 0;
+  let top = 1000000;
+  if (max > 0) { const mag = Math.pow(10, Math.floor(Math.log10(max))); top = Math.ceil(max / mag * 2) / 2 * mag; }
+  const Y = (v) => 176 - v / top * 156;
+  let h = '<defs><linearGradient id="inc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fb877" stop-opacity=".32"/><stop offset="1" stop-color="#7fb877" stop-opacity="0"/></linearGradient></defs>';
+  h += '<g stroke="#f0f3ee" stroke-width="1">' + [20, 59, 98, 137, 176].map((y) => `<line x1="40" y1="${y}" x2="620" y2="${y}"/>`).join('') + '</g>';
+  const hasData = vals.length > 0;
+  if (hasData) {
+    h += `<g font-size="10" fill="#b3bdaf" font-family="Pretendard" class="mask"><text x="0" y="24">${esc(D.manwon(top))}</text><text x="0" y="102">${esc(D.manwon(top / 2))}</text><text x="10" y="180">0</text></g>`;
+    // 끊긴 구간(그 달 내역 없음)은 선을 잇지 않는다
+    const runs = (key) => { const out = []; let cur = []; months.forEach((m, i) => { if (m[key] != null) cur.push([X(i), Y(m[key]), m, i]); else if (cur.length) { out.push(cur); cur = []; } }); if (cur.length) out.push(cur); return out; };
+    runs('in').forEach((r) => {
+      if (r.length > 1) {
+        h += `<path d="M${r[0][0]},${r[0][1].toFixed(1)} ${r.slice(1).map((p) => `L${p[0]},${p[1].toFixed(1)}`).join(' ')} L${r[r.length - 1][0]},176 L${r[0][0]},176 Z" fill="url(#inc)"/>`;
+        h += `<polyline points="${r.map((p) => p[0] + ',' + p[1].toFixed(1)).join(' ')}" fill="none" stroke="#4f9a6a" stroke-width="2.6" stroke-linejoin="round"/>`;
+      }
+    });
+    runs('out').forEach((r) => {
+      if (r.length > 1) h += `<polyline points="${r.map((p) => p[0] + ',' + p[1].toFixed(1)).join(' ')}" fill="none" stroke="#dda79d" stroke-width="2.6" stroke-dasharray="6 5" stroke-linejoin="round"/>`;
+    });
+    months.forEach((m, i) => {
+      if (m.in != null) h += `<circle cx="${X(i)}" cy="${Y(m.in).toFixed(1)}" r="${i === 5 ? 4.5 : 3.4}" fill="#4f9a6a" stroke="#fff" stroke-width="2"><title>${m.month}월 수입 ${D.won(m.in)}</title></circle>`;
+      if (m.out != null) h += `<circle cx="${X(i)}" cy="${Y(m.out).toFixed(1)}" r="${i === 5 ? 4.5 : 3.4}" fill="#dda79d" stroke="#fff" stroke-width="2"><title>${m.month}월 지출 ${D.won(m.out)}</title></circle>`;
+      if (m.in == null) h += `<text x="${X(i)}" y="170" text-anchor="middle" font-size="11" fill="#c3cebf" font-weight="800">—</text>`;
+      // 넓은 투명 칸 — 마우스를 올리면 그 달 값이 뜬다
+      h += `<rect x="${X(i) - 54}" y="14" width="108" height="168" fill="transparent"><title>${m.month}월 · ${m.in == null ? '내역 없음(가져오기 전일 수 있음)' : `수입 ${D.won(m.in)} · 지출 ${D.won(m.out)} · 거래 ${m.count}건`}</title></rect>`;
+    });
+  } else {
+    const msg = led === undefined ? LOGIN : led === null ? '— 가계부를 못 읽었습니다' : '— 최근 6개월 가계부 내역이 없습니다 (가져오기 전일 수 있음)';
+    h += `<text x="330" y="100" text-anchor="middle" class="lcmsg">${esc(msg)}</text>`;
+  }
+  h += '<g font-size="10.5" fill="#a7b1a4" font-family="Pretendard" text-anchor="middle">'
+     + months.map((m, i) => `<text x="${X(i)}" y="199">${m.month}월</text>`).join('') + '</g>';
+  svg.innerHTML = h;
+  const cur = months[5];
+  set('lc-note', Array.isArray(led) ? (cur.in == null ? `${cur.month}월 내역 없음` : `${cur.month}월 수입 ${D.manwon(cur.in)} · 지출 ${D.manwon(cur.out)}`) : '');
+  const ln = $('lc-note'); if (ln) ln.classList.add('mask');
+}
+
+// ══ 이번달 지출 도넛 ══ — 상위 3개 분류 + 기타 + 미분류(따로 한 칸). 색은 순서 고정.
+const DN_COLORS = ['#4a86c8', '#e07b4f', '#9a63b0'];
+function paintDonut(led) {
+  const svgEl = $('dn-svg');
+  const reset = () => { if (svgEl) svgEl.innerHTML = '<circle cx="66" cy="66" r="52" fill="none" stroke="#eef3ec" stroke-width="20"/>'; };
+  if (!Array.isArray(led)) { reset(); set('dn-total', dash); set('dn-mid', dash); put('dn-leg', emptyLn('— 가계부를 못 읽었습니다', true)); return; }
+  const mk = D.monthPrefix();
+  const ex = D.expenseByCat(led, mk);
+  const monthTx = D.ledgerThisMonth(led, mk).count;
+  set('dn-month', Number(mk.slice(5)) + '월');
+  if (!monthTx) { reset(); set('dn-total', dash); set('dn-mid', dash); put('dn-leg', emptyLn('— 이번 달 가계부 내역이 아직 없습니다 (가져오기 전일 수 있음)', true)); return; }
+  set('dn-total', D.won(ex.total));
+  set('dn-mid', D.manwon(ex.total));
+  if (!ex.total) { reset(); put('dn-leg', emptyLn('이번 달 지출 0원 (이체·충전 제외)')); return; }
+  const unc = ex.cats.filter((c) => c.cat.indexOf('미분류') === 0);
+  const rest = ex.cats.filter((c) => c.cat.indexOf('미분류') !== 0);
+  const segs = rest.slice(0, 3).map((c, i) => ({ label: c.cat, amt: c.amt, color: DN_COLORS[i] }));
+  const etc = rest.slice(3);
+  if (etc.length) segs.push({ label: `기타 ${etc.length}개 분류`, amt: etc.reduce((a, c) => a + c.amt, 0), color: '#b3bdb0', tip: etc.map((c) => c.cat).join(', ') });
+  if (unc.length) segs.push({ label: '미분류', amt: unc.reduce((a, c) => a + c.amt, 0), color: '#c99a2e' });
+  const C = 2 * Math.PI * 52;
+  let acc = 0, circles = '';
+  segs.forEach((s) => {
+    const len = s.amt / ex.total * C;
+    circles += `<circle cx="66" cy="66" r="52" fill="none" stroke="${s.color}" stroke-width="20" stroke-dasharray="${Math.max(len - 2, 0.6).toFixed(2)} ${C.toFixed(2)}" stroke-dashoffset="${(-acc).toFixed(2)}"><title>${esc(s.label)} ${D.won(s.amt)}</title></circle>`;
+    acc += len;
+  });
+  if (svgEl) svgEl.innerHTML = circles;
+  put('dn-leg', segs.map((s) => `<div title="${esc(s.tip || '')}"><i style="background:${s.color}"></i>${esc(s.label)}<b>${pct(s.amt, ex.total)}% <span class="mask" style="color:var(--mute);font-weight:700;font-size:11px">${esc(D.manwon(s.amt))}</span></b></div>`).join(''));
+  set('dn-note', `지출 ${ex.count}건 · 분류 ${ex.cats.length}개 · 이체·충전은 빼고 셉니다 (명진앱 가계부와 같은 규칙)`);
+}
+
+// ══ 최근 촬영 ══ — 사진 대신 색+이니셜 (사진맵 형식은 홈에서 확인 못 해 쓰지 않는다)
+const SHOT_BG = ['linear-gradient(155deg,#d9b8c4,#a98292)', 'linear-gradient(155deg,#a6c8e2,#6f93b3)', 'linear-gradient(155deg,#e6c9a8,#b99671)', 'linear-gradient(155deg,#bcd0ac,#87a077)'];
+function paintShots(sr, ph) {
+  const box = $('shots'); if (!box) return;
+  const blank = '<div class="shot" style="background:linear-gradient(155deg,#e4ebe1,#cfdacb)"><span>—</span></div>';
+  if (!sr) {
+    box.innerHTML = blank.repeat(4);
+    set('shots-note', sr === undefined ? LOGIN : '— 촬영 기록을 못 읽었습니다');
+    return;
+  }
+  let h = sr.recent.map((s, i) => {
+    const n = String(s.name || '').trim();
+    return `<div class="shot" style="background:${SHOT_BG[i % 4]}" title="${esc(s.place || '')}"><div class="ini mask">${esc(n.slice(0, 2) || '?')}</div>`
+      + `<span>${esc(md(s.date))}</span><small class="mask">${esc(n || '이름 없음')}${s.place ? ' · ' + esc(clip(s.place, 8)) : ''}</small></div>`;
+  }).join('');
+  for (let i = sr.recent.length; i < 4; i++) h += blank;
+  box.innerHTML = h;
+  const yr = sr.fromYear ? (sr.fromYear === sr.toYear ? sr.fromYear : `${sr.fromYear}–${sr.toYear}`) : '기간 미상';
+  set('shots-note', `${yr} · 모델 ${sr.models}명 · 촬영 ${sr.count}건 · 사진 ${ph ? ph.photos.toLocaleString() + '장' : dash}`
+    + (sr.recent.length ? '' : ' · 지난 촬영 기록 없음'));
+}
+
+// ══ 로그인해야 읽히는 것 (Firestore) ══
+let _seq = 0;
+async function paintCloud() {
+  const seq = ++_seq;
+  chip(0, null, 'Firebase · 불러오는 중…');
+  const [evs, led, alias, iq, tod, by, ow, sr, ph, sb, prep] = await Promise.all([
+    D.calEvents(), D.ledgerAll(), D.calAlias(), D.inquiries(), D.todos(), D.buys(), D.owns(),
+    D.shootRecords(), D.photoIndex(), D.subinRoutine(), D.prepProgress()
+  ]);
+  if (seq !== _seq || !D.currentUser()) return;       // 그사이 로그아웃·다시 그리기면 버린다
+
+  const now = new Date(), today = D.todayISO(), mk = D.monthPrefix();
+  const alerts = evs ? D.buildAlerts(evs, today) : null;
+  const dl = alerts ? alerts.filter(D.isDelivery) : null;
+  const nosh = evs ? D.noshHistory(evs) : null;
+  const st = evs ? D.calStats(evs, now) : null;
+  const ns = evs ? D.nextShoot(evs, now) : null;
+  const lg = led ? D.ledgerThisMonth(led, mk) : null;
+  const match = (led && evs) ? D.matchLedgerCal(led, evs, alias || {}) : null;
+  const inMonth = (x) => String(x.t.date).slice(0, 7) === mk;
+  const noshOf = (e) => (nosh && e && nosh[D.personKey(e.client)]) || null;
+
+  // 날짜줄 · 레일 배지
+  set('today-extra', ns ? (ns.todayCount ? ` · 오늘 촬영 ${ns.todayCount}건` : ' · 오늘 촬영 없음') : '');
+  badge('nv-cal', alerts ? alerts.filter((a) => a.urgent).length : '');
+  badge('nv-inq', iq ? iq.fresh.length : '');
+  badge('nv-todo', tod ? tod.todayLeft : '');
+  badge('nv-unc', lg ? lg.unclassified : '');
+  badge('nv-buy', by ? by.count : '');
+
+  // ── 브리핑 · 다음 촬영
+  if (!evs) { set('b-next', dash); set('b-next-sub', '캘린더를 못 읽었습니다'); }
+  else if (!ns.next) { set('b-next', '예정 촬영 없음'); set('b-next-sub', '앞으로 14일 안에 촬영 일정이 없습니다'); }
+  else {
+    const e = ns.next;
+    const when = (e.date === today ? '' : mdw(e.date) + ' ') + (TIME(e) || '시간 미정');
+    put('b-next', `${esc(when)} · ${mask(nmCal(e.client))}`);
+    const startMs = D.evStartMs(e), diff = startMs - now.getTime();
+    const rel = diff <= 0 ? '진행 중' : diff < 3600000 ? Math.max(1, Math.round(diff / 60000)) + '분 뒤'
+              : e.date === today ? Math.round(diff / 3600000) + '시간 뒤' : D.dDiff(today, e.date) + '일 뒤';
+    const amt = D.evAmount(e);
+    const parts = [esc(D.labelName(e.label))];
+    if (TIME(e) && e.dur) parts.push(esc(e.dur) + '시간');
+    parts.push(amt == null ? '금액 미입력' : mask(D.won(amt)));
+    parts.push(esc(rel));
+    const nh = noshOf(e); if (nh) parts.push(`<span style="color:var(--warn)">노쇼 이력 ${nh.cnt}회</span>`);
+    put('b-next-sub', parts.join(' · '));
+  }
+
+  // ── 처리할 예외 = 신규 문의 + 이번 달 짝 없는 입금 + 기한 지난 납품
+  const freshN = iq ? iq.fresh.length : null;
+  const noneMonth = match ? match.R.none.filter(inMonth) : null;
+  const lateDl = dl ? dl.filter((a) => a.left < 0) : null;
+  {
+    const parts = [], miss = [];
+    let sum = 0;
+    if (freshN == null) miss.push('문의'); else { sum += freshN; if (freshN) parts.push(`새 문의 ${freshN}`); }
+    if (noneMonth == null) miss.push('입금 대조'); else { sum += noneMonth.length; if (noneMonth.length) parts.push(`짝 없는 입금 ${noneMonth.length}`); }
+    if (lateDl == null) miss.push('납품'); else { sum += lateDl.length; if (lateDl.length) parts.push(`기한 지난 납품 ${lateDl.length}`); }
+    if (miss.length === 3) { set('b-exc', dash); set('b-exc-sub', '못 읽었습니다'); }
+    else {
+      set('b-exc', miss.length ? (sum ? `${sum}건 이상` : dash) : `${sum}건`);
+      set('b-exc-sub', (parts.length ? parts.join(' · ') : '없음') + (miss.length ? ` · ${miss.join('·')} 못 읽음` : ''));
+    }
+  }
+
+  // ── 오늘 할 일 (명진앱 정의: 오늘 마감 + 날짜 없는 미완)
+  if (tod) {
+    set('b-todo', `${tod.todayLeft}건 남음`);
+    set('b-todo-sub', `오늘 마감 ${tod.dueToday.length} · 날짜 없음 ${tod.noDue.length} · 오늘 완료 ${tod.doneToday} · 기한 지남 ${tod.overdue.length}`);
+    const den = tod.doneToday + tod.todayLeft;
+    set('g-todo', den ? `${tod.doneToday} / ${den} · 일간` : '할 일 없음');
+    bar('g-todo-bar', pct(tod.doneToday, den));
+  } else { set('b-todo', dash); set('b-todo-sub', '할 일을 못 읽었습니다'); set('g-todo', dash); bar('g-todo-bar', 0); }
+
+  // ── 납품 마감 (보정본 전달 — 기한 3일 안 또는 지남)
+  if (!dl) { set('b-dlv', dash); set('b-dlv-sub', '캘린더를 못 읽었습니다'); }
+  else {
+    const urg = dl.filter((a) => a.urgent);
+    set('b-dlv', `${urg.length}건`);
+    if (!dl.length) set('b-dlv-sub', '전달 대기 없음');
+    else {
+      const a = dl[0];
+      put('b-dlv-sub', `${mask(nmCal(a.e.client))} · ${esc(a.title)} · ${esc(D.dueText(a.left))}`
+        + (lateDl.length ? ` · <span style="color:var(--warn)">기한 지남 ${lateDl.length}</span>` : '') + ` · 대기 ${dl.length}건`);
+    }
+  }
+
+  // ── 지금 처리할 것
+  {
+    // 긴급
+    let u = '';
+    if (iq) u += capList(iq.fresh, 5, (x) => nowItem({ u: true, ic: '📨', href: INQ,
+      n1: `${mask(nmIq(x.name))} 문의 · 답장 전(신규)`, n2: `접수 ${esc(ago(x.ms))}${x.insta ? ' · ' + mask('@' + x.insta) : ''}`,
+      nr: '설문 데이터 →', hot: x.ms && Date.now() - x.ms > 86400000 }), '신규 문의 외 N건 — 설문 데이터에서', INQ);
+    else u += emptyLn('— 문의를 못 읽었습니다', true);
+    if (noneMonth) u += capList(noneMonth, 4, (x) => nowItem({ u: true, ic: '💳', href: MY + '?tab=money',
+      n1: `예약과 짝이 없는 입금 ${mask(D.won(x.t.amt))}`, n2: `${esc(md(x.t.date))} · 입금자 「${mask(x.n)}」 — 캘린더에 같은 이름 없음`,
+      nr: '가계부 →', hot: true }), '짝 없는 입금 외 N건 — 가계부 「캘린더와 대조」에서', MY + '?tab=money');
+    else u += emptyLn('— 입금 대조를 못 했습니다 (가계부나 캘린더를 못 읽음)', true);
+    if (lateDl) u += capList(lateDl, 4, (a) => nowItem({ u: true, ic: '⏰', href: CAL,
+      n1: `${mask(nmCal(a.e.client))} ${esc(a.title)} 전달 기한 지남`, n2: `촬영 ${esc(md(a.e.date))} · 기한 ${esc(md(a.due))} · ${esc(D.dueText(a.left))}`,
+      nr: '캘린더 →', hot: true }), '기한 지난 납품 외 N건 — 캘린더 알림에서', CAL);
+    else u += emptyLn('— 납품 기한을 못 읽었습니다', true);
+    const uAny = (iq && iq.fresh.length) || (noneMonth && noneMonth.length) || (lateDl && lateDl.length);
+    put('now-u', uAny ? u : (u.indexOf('emptyln nd') >= 0 ? u : emptyLn('없음')));
+
+    // 오늘
+    let t = '';
+    if (evs) {
+      const todays = evs.filter((e) => D.isShootEv(e) && e.date === today).sort((a, b) => D.evStartMs(a) - D.evStartMs(b));
+      todays.forEach((e) => {
+        const nh = noshOf(e); if (!nh) return;
+        t += nowItem({ ic: '⚠️', href: CAL, n1: `${esc(TIME(e) || '시간 미정')} ${mask(nmCal(e.client))} · 노쇼 이력 ${nh.cnt}회`,
+          n2: `사유: ${esc(nh.reasons[0] || '사유 없음')} · 마지막 ${esc(md(nh.last))} — 촬영 전 확인 여부 판단`, nr: '캘린더 →' });
+      });
+      alerts.filter((a) => a.kind === 'outfit' && a.left <= 1).forEach((a) => {
+        t += nowItem({ ic: '👗', href: CAL, n1: `${mask(nmCal(a.e.client))} 의상확인`,
+          n2: `${a.left === 0 ? '오늘' : '내일'} ${esc(TIME(a.e) || '')} 촬영 · 아직 의상 공유 전(예약완료)`, nr: '캘린더 →' });
+      });
+      dl.filter((a) => a.left >= 0 && a.left <= 1).forEach((a) => {
+        t += nowItem({ ic: '🖼️', href: CAL, n1: `${mask(nmCal(a.e.client))} ${esc(a.title)}`,
+          n2: `촬영 ${esc(md(a.e.date))} · 전달 기한 ${esc(D.dueText(a.left))}`, nr: '캘린더 →', hot: a.left === 0 });
+      });
+      put('now-t', t || emptyLn('없음 — 오늘 촬영 고객 중 노쇼 이력 없음 · 오늘·내일 기한 없음'));
+    } else put('now-t', emptyLn('— 캘린더를 못 읽었습니다', true));
+
+    // 이번 주
+    let w = '';
+    if (lg) { if (lg.unclassified) w += nowItem({ ic: '📒', href: MY + '?tab=money', n1: `미분류 내역 ${lg.unclassified}건`, n2: '직접 분류가 필요합니다', nr: '가계부 →' }); }
+    else w += emptyLn('— 가계부를 못 읽었습니다', true);
+    if (evs) {
+      alerts.filter((a) => a.kind === 'outfit' && a.left >= 2).forEach((a) => {
+        w += nowItem({ ic: '👗', href: CAL, n1: `${mask(nmCal(a.e.client))} 의상확인`, n2: `${esc(mdw(a.e.date))} ${esc(TIME(a.e))} 촬영 · 아직 의상 공유 전`, nr: '캘린더 →' });
+      });
+      w += capList(dl.filter((a) => a.left >= 2 && a.left <= 7), 5, (a) => nowItem({ ic: '🖼️', href: CAL,
+        n1: `${mask(nmCal(a.e.client))} ${esc(a.title)}`, n2: `기한 ${esc(md(a.due))} · ${esc(D.dueText(a.left))}`, nr: '캘린더 →' }), '외 N건 — 캘린더 알림에서', CAL);
+    } else w += emptyLn('— 캘린더를 못 읽었습니다', true);
+    if (tod && tod.overdue.length) w += nowItem({ ic: '✅', href: MY + '?tab=todo', n1: `기한 지난 할 일 ${tod.overdue.length}건`,
+      n2: esc(tod.overdue.slice(0, 3).map((x) => clip(x.text, 14)).join(' · ')), nr: '할 일 →' });
+    put('now-w', w || emptyLn('없음'));
+  }
+
+  // ── 오늘 타임라인 (캘린더 일정 전부 + 오늘 마감 할 일 + 오늘 기한 전달)
+  if (!evs) put('tl', emptyLn('— 캘린더를 못 읽었습니다', true));
+  else {
+    const nowMs = now.getTime();
+    const rows = [];
+    // 어제 이전에 시작해 오늘까지 이어지는 여러 날 일정(예: 2일 휴무·PA촬영)도 오늘 일정이다 (관리자 캘린더 daySlots 와 같은 뜻)
+    const dayStartMs = D.parseDS(today).getTime();
+    evs.filter((e) => e.status !== 'cancel' && (e.date === today || (e.date < today && D.evEndMs(e) > dayStartMs))).forEach((e) => {
+      const timed = !!TIME(e);
+      const isShoot = D.isShootEv(e);
+      const nh = noshOf(e);
+      const cls = e.status === 'nosh' ? 'done' : (nowMs >= D.evEndMs(e) ? 'done' : (nowMs >= D.evStartMs(e) ? 'now' : ''));
+      const t1 = e.client ? `${mask(nmCal(e.client))} ${isShoot ? '촬영' : ''}` : esc(D.labelName(e.label));
+      // t2 는 HTML 조각 배열 — 글자는 esc, 금액은 mask(현장 모드에서 가려짐)
+      const t2 = e.client ? [esc(D.labelName(e.label))] : [];   // 이름 없는 일정은 제목이 곧 라벨 — 두 번 쓰지 않는다('휴무 휴무')
+      if (timed && e.dur) t2.push(esc(e.dur) + '시간');
+      if (isShoot) { const a = D.evAmount(e); t2.push(a == null ? '금액 미입력' : mask(D.won(a))); }
+      if (e.status === 'nosh') t2.push(esc('노쇼' + (e.noshReason ? ' — ' + String(e.noshReason).split(' — ')[0] : '')));
+      if (nh && e.status !== 'nosh') t2.push(`노쇼 이력 ${nh.cnt}회`);
+      let pill = '';
+      if (e.status === 'nosh') pill = '<div class="pill warn">노쇼</div>';
+      else if (nh) pill = '<div class="pill warn">주의</div>';
+      else if (D.isPayLabel(e.label)) pill = '<div class="pill pay">페이</div>';
+      rows.push({ order: timed ? D.evStartMs(e) : 0, tm: e.date !== today ? md(e.date) + '부터' : timed ? e.time : '종일', cls, t1, t2: t2.join(' · '), pill });
+    });
+    if (dl) dl.filter((a) => a.left === 0).forEach((a) => {
+      rows.push({ order: 9e15, tm: '오늘까지', cls: '', t1: `${mask(nmCal(a.e.client))} ${esc(a.title)} 전달`, t2: esc(`촬영 ${md(a.e.date)}`), pill: '<div class="pill col">보정</div>' });
+    });
+    if (tod) tod.dueToday.concat([]).forEach((x) => {
+      rows.push({ order: 9.5e15, tm: '시간 미정', cls: '', t1: esc(x.text || '할 일'), t2: '할 일 · 오늘 마감', pill: '' });
+    });
+    rows.sort((a, b) => a.order - b.order);
+    put('tl', rows.length ? rows.map((r) => `<div class="tlrow ${r.cls}"><div class="bar"></div><div class="tm">${esc(r.tm)}</div><div class="dot"></div>`
+      + `<div class="bd"><div class="t1">${r.t1}</div><div class="t2">${r.t2}</div></div>${r.pill}</div>`).join('')
+      + (tod ? '' : emptyLn('— 할 일은 못 읽었습니다', true))
+      : emptyLn('오늘 일정 없음' + (tod ? '' : ' · 할 일은 못 읽었습니다')));
+  }
+
+  // ── 진행 상황 · 목표 수입 (관리자 캘린더 대시보드와 같은 숫자)
+  if (st) {
+    set('g-week', `${st.weekCount} / ${st.weekTarget} · 주간`); bar('g-week-bar', pct(st.weekCount, st.weekTarget));
+    const p = pct(st.monthSum, st.monthTarget);
+    const txt = `${p}% · ${D.manwon(st.monthSum)}` + (st.monthNoAmt ? ` · 미입력 ${st.monthNoAmt}건` : '');
+    set('g-month', txt + ' · 월간'); bar('g-month-bar', p);
+    set('g-month2', txt); bar('g-month2-bar', p);
+  } else {
+    ['g-week', 'g-month', 'g-month2'].forEach((id) => set(id, dash));
+    ['g-week-bar', 'g-month-bar', 'g-month2-bar'].forEach((id) => bar(id, 0));
+  }
+
+  // ── 앞으로 7일
+  paintWeek(evs, alerts);
+  if (evs) {
+    const base = new Date(); base.setHours(0, 0, 0, 0);
+    let busiest = null; const empty = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(base); d.setDate(base.getDate() + i);
+      const iso = D.fd(d);
+      const n = evs.filter((e) => D.isShootEv(e) && e.date === iso).length;
+      if (!busiest || n > busiest.n) busiest = { n, wd: WD[d.getDay()] };
+      if (n === 0) empty.push(WD[d.getDay()]);
+    }
+    const parts = [];
+    if (busiest && busiest.n > 0) parts.push(`${busiest.wd}요일이 ${busiest.n}건으로 가장 바쁩니다`);
+    if (empty.length) parts.push(`${empty.join('·')}요일은 촬영이 없습니다`);
+    set('w7-note', parts.length ? parts.join(' · ') : '앞으로 7일 촬영이 없습니다');
+  } else set('w7-note', '— 캘린더를 못 읽었습니다');
+
+  // ── 수입·지출 · 도넛
+  paintLineChart(led);
+  paintDonut(led);
+
+  // ── 칸반
+  {
+    const card = (i1, i2, hot) => `<div class="item${hot ? ' hot' : ''}"><div class="i1">${i1}</div><div class="i2">${i2}</div></div>`;
+    const col = (id, list, render) => {
+      set(id + '-n', list ? list.length : dash);
+      if (!list) return;
+      put(id, list.length ? list.slice(0, 3).map(render).join('') + (list.length > 3 ? `<div class="item more">+${list.length - 3}건 더</div>` : '') : emptyLn('없음'));
+    };
+    if (iq) col('k-inq', iq.fresh, (x) => card(mask(nmIq(x.name)), `${esc(ago(x.ms))} · 답장 전`, x.ms && Date.now() - x.ms > 86400000));
+    else { set('k-inq-n', dash); put('k-inq', emptyLn('— 문의를 못 읽었습니다', true)); }
+    const pend = evs ? evs.filter((e) => D.isShootEv(e) && e.status === 'pending' && e.date >= today).sort((a, b) => D.evStartMs(a) - D.evStartMs(b)) : null;
+    const adj = [];
+    if (iq) iq.talking.forEach((x) => adj.push({ i1: mask(nmIq(x.name)), i2: `문의 상담중 · ${esc(ago(x.ms))}`, ms: x.ms }));
+    if (pend) pend.forEach((e) => adj.push({ i1: mask(nmCal(e.client)), i2: `${esc(mdw(e.date))} ${esc(TIME(e))} · 예약대기`, ms: 0 }));
+    if (!iq && !pend) { set('k-adj-n', dash); put('k-adj', emptyLn('— 못 읽었습니다', true)); }
+    else {
+      col('k-adj', adj, (x) => card(x.i1, x.i2));
+      if (!iq || !pend) { const el = $('k-adj'); if (el) el.insertAdjacentHTML('beforeend', emptyLn(!iq ? '— 문의는 못 읽음' : '— 캘린더는 못 읽음', true)); }
+    }
+    if (evs) {
+      const conf = evs.filter((e) => D.isShootEv(e) && e.status !== 'pending' && e.date >= today && D.evEndMs(e) > now.getTime()).sort((a, b) => D.evStartMs(a) - D.evStartMs(b));
+      col('k-conf', conf, (e) => { const nh = noshOf(e); return card(mask(nmCal(e.client)), `${e.date === today ? '오늘' : esc(mdw(e.date))} ${esc(TIME(e))} · ${esc(D.labelName(e.label))}${nh ? ' · 노쇼 이력' : ''}`, !!nh); });
+      col('k-dlv', dl, (a) => card(mask(nmCal(a.e.client)), `${esc(a.title)} · ${esc(D.dueText(a.left))}`, a.left < 0));
+    } else {
+      ['k-conf', 'k-dlv'].forEach((id) => { set(id + '-n', dash); put(id, emptyLn('— 캘린더를 못 읽었습니다', true)); });
+    }
+  }
+
+  // ── 진행 중인 목표 · 독립 준비 · 수빈 오늘
+  if (!prep) { set('g-prep', dash); bar('g-prep-bar', 0); }
+  else if (!prep.uploaded) { set('g-prep', '문서 미업로드'); bar('g-prep-bar', 0); }
+  else if (!prep.total) { set('g-prep', '체크 항목 없음'); bar('g-prep-bar', 0); }
+  else { set('g-prep', `${prep.done} / ${prep.total}${prep.at ? ' · 문서 ' + md(prep.at) : ''}`); bar('g-prep-bar', pct(prep.done, prep.total)); }
+  if (!sb) { set('g-subin', dash); bar('g-subin-bar', 0); }
+  else if (!sb.uid) { set('g-subin', '수빈 계정 없음'); bar('g-subin-bar', 0); }
+  else if (!sb.dailyTotal) { set('g-subin', '매일 목표 없음'); bar('g-subin-bar', 0); }
+  else { set('g-subin', `${sb.doneToday} / ${sb.dailyTotal}`); bar('g-subin-bar', pct(sb.doneToday, sb.dailyTotal)); }
+
+  // ── 최근 촬영
+  paintShots(sr, ph);
+
+  // ── 돈 · 미분류
+  if (lg) {
+    set('m-unc', lg.unclassified);
+    const ul = D.unclassifiedList(led);
+    put('unc-list', ul.length ? ul.slice(0, 5).map((t) => {
+      const isIn = t.type === 'in';
+      const person = isIn && D.calRawName(t.desc);
+      // 명진이 명진앱 「캘린더와 대조」에서 「촬영비 아님」으로 지정한 입금자면 촬영 수입으로 추측하지 않는다
+      const notShoot = person && alias && alias[person] === '(촬영 아님)';
+      return `<div class="li"><div class="ii">${isIn ? '&#127974;' : '&#128179;'}</div><div class="bd2">`
+        + `<div class="lb1">${esc(t.acct || '계좌 미상')} · ${mask(D.won(t.amt))} ${isIn ? '입금' : '출금'}</div>`
+        + `<div class="lb2">${esc(md(t.date))} · ${mask(t.desc ? '「' + t.desc + '」' : '내용 없음')}</div></div>`
+        + `<div class="rt${person && !notShoot ? '' : ' hot'}">${notShoot ? '촬영비 아님(명진 지정) — 분류 필요' : person ? '사람 이름 — 촬영 수입?' : '분류 필요'}</div></div>`;
+    }).join('') + (ul.length > 5 ? emptyLn(`외 ${ul.length - 5}건 — 가계부에서`) : '') : emptyLn('미분류 없음'));
+  } else { set('m-unc', dash); put('unc-list', emptyLn('— 가계부를 못 읽었습니다', true)); }
+
+  // ── 캘린더 대조 (이번 달 입금)
+  if (!match) put('cm-list', emptyLn(!led ? '— 가계부를 못 읽었습니다' : '— 캘린더를 못 읽었습니다', true));
+  else {
+    const R = match.R;
+    const m = { ok: R.ok.filter(inMonth), bad: R.bad.filter(inMonth), far: R.far.filter(inMonth), none: R.none.filter(inMonth), skip: R.skip.filter(inMonth), notShoot: (R.notShoot || []).filter(inMonth) };
+    const tot = m.ok.length + m.bad.length + m.far.length + m.none.length + m.skip.length + m.notShoot.length;
+    const rowOf = (x, kind) => {
+      const e = x.near && x.near.e;
+      const S = {
+        none: ['#fdf2f0', '?', '캘린더에 같은 이름 없음', '짝 없음', ' hot'],
+        bad: ['#fdf6ea', '&#9888;', e ? `${md(e.date)} 예약은 ${e.status === 'nosh' ? '노쇼' : '취소'} — 예약금은 수입 유지` : '노쇼·취소', '수입 유지', ''],
+        far: ['#fdf6ea', '&#8596;', e ? `가장 가까운 예약 ${md(e.date)} — 60일 밖` : '60일 밖', '60일 밖', ''],
+        ok: ['#eaf3ea', '&#10004;', e ? `${md(e.date)} ${D.labelName(e.label)} 촬영과 짝` : '짝 맞음', '짝 맞음', '']
+      }[kind];
+      return `<div class="li"><div class="ii" style="background:${S[0]}">${S[1]}</div><div class="bd2">`
+        + `<div class="lb1">${mask('「' + x.n + '」')} 입금 ${mask(D.won(x.t.amt))}</div>`
+        + `<div class="lb2">${esc(md(x.t.date))} 입금 · ${esc(S[2])}</div></div>`
+        + `<div class="rt${S[4]}"${kind === 'ok' ? ' style="color:#3f8a55"' : ''}>${S[3]}</div></div>`;
+    };
+    const rows = m.none.map((x) => rowOf(x, 'none')).concat(m.bad.map((x) => rowOf(x, 'bad')), m.far.map((x) => rowOf(x, 'far')), m.ok.map((x) => rowOf(x, 'ok')));
+    put('cm-list', rows.length ? rows.slice(0, 5).join('') + (rows.length > 5 ? emptyLn(`외 ${rows.length - 5}건 — 가계부 「캘린더와 대조」에서`) : '')
+      : emptyLn(lg && lg.count ? '이번 달 대조할 입금 없음' : '— 이번 달 가계부 내역이 아직 없습니다 (가져오기 전일 수 있음)', !(lg && lg.count)));
+    set('cm-note', `이번 달 촬영·미분류 입금 ${tot}건 — 짝 맞음 ${m.ok.length} · 노쇼·취소 ${m.bad.length} · 60일 밖 ${m.far.length} · 짝 없음 ${m.none.length} · 이름 아님 ${m.skip.length}` + (m.notShoot.length ? ` · 촬영비 아님(명진 지정) ${m.notShoot.length}` : ''));
+  }
+
+  // ── 미수금 · 예정 수입
+  set('m-month', Number(mk.slice(5)) + '월');
+  const inc = lg ? (lg.count ? lg.income : null) : null;
+  set('m-in', lg ? (lg.count ? D.won(lg.income) : '이번 달 내역 없음') : dash);
+  let unconfSum = 0;
+  if (match && st) {
+    // 지난 촬영 = 이번 달 중 이미 시작한 촬영 (오늘 저녁 촬영은 '예정 촬영금' 쪽 — calStats 의 isLaterShoot 과 같은 경계)
+    const past = evs.filter((e) => D.isShootEv(e) && String(e.date).slice(0, 7) === mk && !D.isLaterShoot(e, now));
+    const withAmt = past.filter((e) => D.evAmount(e) != null);
+    const un = withAmt.filter((e) => !match.used[e.id]);
+    unconfSum = un.reduce((a, e) => a + D.evAmount(e), 0);
+    set('m-unconf', un.length ? `대조 필요 ${un.length}건 · 예약 기준 ${D.won(unconfSum)}` : withAmt.length ? '0건 — 지난 촬영 모두 짝 맞음' : '금액 있는 지난 촬영 없음');
+    set('m-note', `지난 촬영 ${past.length}건 중 금액 있는 ${withAmt.length}건을 입금과 이름으로 맞춰 봤습니다. 이름·금액이 확실히 안 맞으면 확정하지 않고 «대조 필요»로 둡니다`
+      + (lg && !lg.count ? ' · 가계부에 이번 달 내역이 아직 없어 전부 대조 필요로 보입니다' : ''));
+  } else set('m-unconf', dash);
+  if (st) set('m-plan', (st.planN ? D.won(st.planSum) + (st.planNoAmt ? ` + 미입력 ${st.planNoAmt}건` : '') : '남은 촬영 없음'));
+  else set('m-plan', dash);
+  {
+    const a = inc || 0, b = (match && st) ? unconfSum : 0, c = st ? st.planSum : 0, T = a + b + c;
+    bar('m-in-bar', pct(a, T)); bar('m-unconf-bar', pct(b, T)); bar('m-plan-bar', pct(c, T));
+  }
+
+  // ── 최근 문의
+  if (iq) {
+    set('iq-count', `전체 ${iq.total} · 신규 ${iq.fresh.length} · 상담중 ${iq.talking.length}` + (iq.capped ? ' · 최근 300건씩만 읽음' : ''));
+    put('iq-list', iq.list.length ? iq.list.slice(0, 5).map((x) => {
+      const fresh = x.status === '신규';
+      return `<div class="li"><div class="ii"${fresh ? ' style="background:#fdf2f0"' : ''}>&#128236;</div><div class="bd2">`
+        + `<div class="lb1">${mask(nmIq(x.name))}${x.insta ? ' · ' + mask('@' + x.insta) : ''}</div>`
+        + `<div class="lb2">${x.keep ? mask('“' + clip(x.keep, 60) + '”') : '남긴 글 없음'}</div></div>`
+        + `<div class="rt${fresh ? ' hot' : ''}">${esc(x.status)} · ${esc(ago(x.ms))}</div></div>`;
+    }).join('') : emptyLn('문의 없음'));
+  } else { set('iq-count', ''); put('iq-list', emptyLn('— 문의를 못 읽었습니다', true)); }
+
+  // ── 보유 장비 · 구매계획
+  if (ow) {
+    set('r-owns', `${ow.count}개 · 시세 ${D.manwon(ow.price)}원`);
+    const COLS = ['#b79bd4', '#e6c9a8', '#8cc0d8', '#a8d3a0'];
+    const top = ow.cats.slice(0, 4), rest = ow.cats.slice(4);
+    const mx = top.length ? top[0].n : 1;
+    put('own-cats', top.length ? top.map((c, i) => `<div class="cat"><div class="catl"><span>${esc(c.cat)}</span><b>${c.n}</b></div>`
+      + `<div class="catb"><i style="width:${pct(c.n, mx)}%;background:${COLS[i]}"></i></div></div>`).join('')
+      + (rest.length ? `<div class="cat"><div class="catl"><span>그 외 ${rest.length}개 분류</span><b>${rest.reduce((a, c) => a + c.n, 0)}</b></div><div style="font-size:10.5px;color:var(--mute);font-weight:650">${esc(rest.map((c) => c.cat + ' ' + c.n).join(' · '))}</div></div>` : '')
+      : emptyLn('보유 장비 없음'));
+    set('s-owns', ow.count + '개');
+  } else { set('r-owns', dash); put('own-cats', emptyLn('— 보유 장비를 못 읽었습니다', true)); set('s-owns', dash); }
+  { const od = $('s-o-dot'); if (od) od.style.background = ow ? '#7fb877' : '#c3cebf'; }
+  if (by) {
+    set('buy-count', `${by.count}개`);
+    const price = (b) => (+b.avg ? D.won(b.avg * 10000) : (+b.best || +b.max) ? `${b.best || '?'}~${b.max || '?'}만` : '가격 미정');
+    put('buy-list', by.list.length ? by.list.slice(0, 3).map((b) => `<div class="li"><div class="ii">&#128722;</div><div class="bd2"><div class="lb1">${esc(b.rank || '')}. ${esc(b.name || '이름 없음')}</div>`
+      + `<div class="lb2">${esc(clip(b.memo || b.cat || '', 30) || '메모 없음')}</div></div><div class="rt">${esc(price(b))}</div></div>`).join('')
+      + (by.list.length > 3 ? emptyLn(`외 ${by.list.length - 3}개 — 명진앱 구매 탭에서`) : '') : emptyLn('구매계획 없음'));
+    put('buy-sum', mask(D.won(by.sumAvg * 10000)));
+    set('buy-note', `득템가 합 ${by.sumBest.toLocaleString()}만 ~ 상한 합 ${by.sumMax.toLocaleString()}만 · 명진앱 구매계획 기준(만원 단위로 저장)`);
+  } else { set('buy-count', ''); put('buy-list', emptyLn('— 구매계획을 못 읽었습니다', true)); set('buy-sum', dash); }
+
+  // ── 수빈 이번 주 루틴
+  if (!sb) { set('sb-week', ''); put('sb-tbl', emptyLn('— 수빈 루틴을 못 읽었습니다 (권한 또는 연결 문제)', true)); }
+  else if (!sb.uid) { set('sb-week', ''); put('sb-tbl', emptyLn('수빈 계정을 못 찾았습니다 (수빈이 앱에 먼저 로그인해야 함)')); }
+  else {
+    set('sb-week', `${md(sb.days[0])}~${md(sb.days[6])} · 오늘 ${sb.doneToday}/${sb.dailyTotal}`);
+    if (!sb.daily.length) put('sb-tbl', emptyLn('매일 목표가 없습니다' + (sb.otherGoals ? ` (주간·월간·한 번 목표 ${sb.otherGoals}개는 수빈 앱에서)` : '')));
+    else {
+      const cls = { done: 'y', miss: 'n', todo: 't', future: 'f' };
+      put('sb-tbl', '<table class="hg"><tr><th>루틴</th>' + sb.days.map((d) => `<th${d === sb.today ? ' style="color:var(--g)"' : ''}>${WD[D.parseDS(d).getDay()]}</th>`).join('') + '</tr>'
+        + sb.daily.map((g) => `<tr><td>${mask(clip(g.title, 12))}</td>` + g.cells.map((c) => `<td><i class="dotc ${cls[c.state]}" title="${esc(md(c.d))} ${c.count}/${g.target}${esc(g.unit)}"></i></td>`).join('') + '</tr>').join('')
+        + '</table>' + (sb.otherGoals ? `<div class="srcnote">주간·월간·한 번 목표 ${sb.otherGoals}개는 수빈 앱에서</div>` : ''));
+    }
+  }
+
+  const okN = [evs, led, iq, tod, by, ow, sr].filter((x) => x).length;
+  const email = (D.currentUser() && D.currentUser().email) || '';
+  chip(0, okN ? true : false, okN ? `Firebase 연결됨 · ${email}` + (okN < 7 ? ` · 일부 못 읽음` : '') : `Firebase · 못 읽음 (${email})`);
+}
+
+// ── 로그인 버튼 ──
+const chipBtn = $('loginChip');
+if (chipBtn) chipBtn.onclick = () => {
+  const u = D.currentUser();
+  if (u) D.logout(); else D.login().catch((e) => alert('로그인 실패: ' + (e.code || e.message)));
+};
+
 paintDate();
-paintWeek(null);
+paintWeek(null, null);
 paintLocal();
 paintStatic();
 
-D.onUser(u => {
-  if(chipBtn) chipBtn.textContent = u ? ('👤 ' + (u.email || '').split('@')[0]) : '🔑 구글 로그인';
-  if(u){ paintCloud(); }
-  else {
-    ['b-next','b-todo','m-in','m-unc','r-owns','b-exc','g-todo'].forEach(id => set(id, dash));
-    set('b-next-sub', '구글 로그인이 필요합니다');
-    chip(0, false, 'Firebase · 로그인 필요');
-  }
+let _uid = undefined;
+D.onUser((u) => {
+  if (chipBtn) chipBtn.textContent = u ? ('👤 ' + (u.email || '').split('@')[0]) : '🔑 구글 로그인';
+  const id = u ? u.uid : null;
+  if (id !== _uid) { D.resetCache(); _uid = id; }
+  if (u) paintCloud();
+  else { _seq++; paintLoggedOut(); }
 });
+</script>
+<script>
+// 비상: 파이어베이스(www.gstatic.com)를 못 불러오면(오프라인·차단·인앱 브라우저) 위 모듈 전체가 실행되지 않아
+// 칸들이 '불러오는 중…'에 영원히 멈춘다. 10초 뒤에도 모듈이 안 떴으면 '—'로 바꾸고 이유를 알린다. (읽기·저장 없음)
+setTimeout(function () {
+  if (window.__homeModuleOk) return;
+  var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT), n, hit = [];
+  while ((n = w.nextNode())) if (n.nodeValue.indexOf('불러오는 중') >= 0) hit.push(n);
+  hit.forEach(function (t) { t.nodeValue = '—'; });
+  var bar = document.getElementById('demobar');
+  if (bar) bar.textContent = '⚠ 자료를 불러오는 프로그램을 받지 못했습니다(인터넷 연결·차단 확인). 새로고침해 보세요 — 표시된 — 는 «못 읽음»입니다.';
+}, 10000);
 </script>
 </body>
 </html>
