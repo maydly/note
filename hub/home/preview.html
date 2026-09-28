@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="maydly 홈">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="../icon-180.png">
-<title>maydly · 홈 대시보드</title>
+<title>maydly · 홈 대시보드 (정리판 미리보기)</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
@@ -433,6 +433,10 @@ a.chip:hover{background:#eef4ec}
 }
 /* 폰: 수입·지출 그래프 글자가 화면 폭에 맞춰 줄어 5px 정도로 읽을 수 없던 것 */
 @media(max-width:900px){ #lc text{font-size:20px} }
+
+/* ══ v2.3 정리판(명진 "불필요한 것 걷어내기") — 개발용 설명·기술 표시·빈 카드 숨김 ══ */
+#demobar,.srcnote,.tier .ts,.embnote,.frame .badge,#m-note,#own-note,.statusbar .stchip:not(.btn){display:none!important}
+.grid1{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px;margin-bottom:14px}.grid1>*{grid-column:span 12}
 </style>
 </head>
 <body>
@@ -787,21 +791,7 @@ a.chip:hover{background:#eef4ec}
           <iframe src="https://maydly.github.io/note/film/" loading="lazy" title="빈티지 필름"></iframe></div>
       </div>
 
-      <div class="card emb">
-        <div class="ch"><div class="ct">신의눈 3D</div>
-          <a class="more" href="https://maydly.github.io/gev/" target="_blank" rel="noopener">새 탭에서 열기 ↗</a></div>
-        <div class="frame"><div class="ph" onclick="this.parentNode.innerHTML='&lt;iframe src=&quot;https://maydly.github.io/gev/&quot; title=&quot;신의눈 3D&quot;&gt;&lt;/iframe&gt;'">
-          <div class="pi">🌏</div><div class="pt">눌러서 불러오기</div>
-          <div class="ps">3D 지구본은 무거워서 자동으로 켜지 않습니다<br>홈이 느려지지 않게 하려는 것</div></div></div>
-      </div>
 
-      <div class="card emb">
-        <div class="ch"><div class="ct">수빈 앱</div>
-          <a class="more" href="https://maydly.github.io/note/subin/" target="_blank" rel="noopener">새 탭에서 열기 ↗</a></div>
-        <div class="frame"><div class="ph" onclick="this.parentNode.innerHTML='&lt;iframe src=&quot;https://maydly.github.io/note/subin/&quot; title=&quot;수빈 앱&quot;&gt;&lt;/iframe&gt;'">
-          <div class="pi">🌱</div><div class="pt">눌러서 불러오기</div>
-          <div class="ps">수빈 개인 기록이라 기본은 꺼둡니다<br>현장 모드에서도 가려지는 영역</div></div></div>
-      </div>
     </div>
 
 
@@ -908,21 +898,14 @@ a.chip:hover{background:#eef4ec}
     </div>
 
     <!-- ══════ 기록 · 학습 ══════ -->
-    <div class="sechd"><h2>기록 &middot; 학습</h2><div class="sn">note &middot; 단어 여정 &middot; 에이전트</div></div>
-    <div class="grid3">
+    <div class="sechd"><h2>기록 &middot; 학습</h2><div class="sn">note &middot; 에이전트</div></div>
+    <div class="grid2">
       <div class="card">
         <div class="ch"><div class="ct">note 아카이브</div><div class="cs" id="note-count">—</div></div>
         <div class="lst" id="note-list"><div class="emptyln">불러오는 중…</div></div>
         <div class="srcnote" id="note-note">목록 끝 3편 · 노트에는 수정 날짜가 없습니다</div>
       </div>
 
-      <div class="card">
-        <div class="ch"><div class="ct">단어 여정</div><a class="more" href="https://maydly.github.io/maydly-hub/word-journey/">단어 여정 열기 &rarr;</a></div>
-        <div style="font-size:11.5px;color:var(--mute);font-weight:650;margin-bottom:10px">
-          촬영 전, 오늘의 나 다섯 단어</div>
-        <div class="emptyln nd" style="padding:4px 0">기록 데이터 없음 — 지금 앱은 체험판(데모)이라 고른 단어를 저장하지 않습니다.</div>
-        <div class="srcnote">저장 기능이 생기면 여기서 고른 단어·횟수를 보여줄 수 있습니다.</div>
-      </div>
 
       <div class="card">
         <div class="ch"><div class="ct">AI 에이전트</div><div class="cs" id="ag-count">—</div></div>
@@ -935,8 +918,8 @@ a.chip:hover{background:#eef4ec}
     <div class="tier"><h2>개인</h2><div class="ts">수빈 루틴 · 사주 — 현장 모드에서 가려짐</div></div>
     <div class="vopen">
     <!-- ══════ 수빈 ══════ -->
-    <div class="sechd"><h2>수빈</h2><div class="sn">루틴 &middot; 사주</div></div>
-    <div class="grid2">
+    <div class="sechd"><h2>수빈</h2><div class="sn">루틴</div></div>
+    <div class="grid1">
       <div class="card">
         <div class="ch"><div class="ct">이번주 루틴 <span class="cs" id="sb-week" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/subin/">수빈 앱 &rarr;</a></div>
         <div id="sb-tbl"><div class="emptyln">불러오는 중…</div></div>
@@ -945,15 +928,6 @@ a.chip:hover{background:#eef4ec}
         <div class="srcnote">수빈 앱의 «매일» 목표 기준 · 주는 월요일부터 · 연속 일수는 수빈 앱에 없는 개념이라 표시하지 않습니다.</div>
       </div>
 
-      <div class="card">
-        <div class="ch"><div class="ct">수빈 사주</div><a class="more" href="https://subin-routine.web.app/saju/">사주 앱 &rarr;</a></div>
-        <div class="saju">
-          <div class="sj1">&#128302; 오늘의 흐름</div>
-          <div class="sj2" style="font-size:15px">홈에서 읽을 수 있는 저장 데이터 없음</div>
-          <div class="sj3">사주 &middot; 별자리 &middot; MBTI를 합쳐 하루 한 줄로 보여주는 앱입니다.<br>
-            생년월일을 그때그때 입력해 계산하고 결과를 저장하지 않아서, 홈에는 가져올 값이 없습니다. 사주 앱에서 직접 보세요.</div>
-        </div>
-      </div>
     </div>
 
       </div>
