@@ -276,9 +276,9 @@ td:first-child{font-weight:750}
 
 /* 임베드 */
 .frame{position:relative;border:none;border-radius:var(--r2);overflow:hidden;background:var(--soft)}
-.frame iframe{width:100%;height:430px;border:0;display:block;background:#fff}
-.frame.tall iframe{height:540px}
-.frame.short iframe{height:300px}
+.frame iframe{width:100%;height:560px;border:0;display:block;background:#fff}
+.frame.tall iframe{height:660px}
+.frame.short iframe{height:520px}   /* v2.2: 300px 은 머리만 보여 못 씀 */
 .frame .badge{position:absolute;top:10px;right:11px;background:rgba(255,255,255,.94);
   border-radius:20px;padding:4px 11px;font-size:10px;font-weight:800;color:var(--sub);
   pointer-events:none;z-index:2;box-shadow:var(--sh)}
@@ -325,8 +325,9 @@ code{background:var(--soft);border-radius:6px;padding:2px 6px;font-size:11.5px;
   .apps{grid-template-columns:repeat(4,minmax(0,1fr))}
   .apps>*{grid-column:span 1}
   .card{padding:18px 18px;border-radius:20px}
-  .frame iframe{height:360px}
-  .frame.tall iframe{height:420px}
+  .frame iframe{height:480px}
+  .frame.tall iframe{height:540px}
+  .frame.short iframe{height:460px}
   .tier h2{font-size:18px}
   .mockbar{font-size:11px;line-height:1.55}
 }

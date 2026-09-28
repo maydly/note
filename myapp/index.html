@@ -2898,7 +2898,9 @@ window.sajuData={connected:false,email:'',reqs:[],err:'',loading:true};
 window.sharedInfoData={items:[],ready:false};
 function paint(){ if(window.renderSaju) try{window.renderSaju();}catch(e){} if(window.renderInfo) try{window.renderInfo();}catch(e){} }
 try{
-  const app=initializeApp(cfg,"saju"); const auth=getAuth(app), db=getFirestore(app);
+  // ?embed=1(홈 대시보드 앱 창)일 때만 기본 이름표로 — 홈과 같은 로그인을 함께 쓴다. 평소에는 지금처럼 "saju"(기존 로그인 유지). (운영-018, 260928)
+  const _EMBED=new URLSearchParams(location.search).get("embed")==="1";
+  const app=_EMBED?initializeApp(cfg):initializeApp(cfg,"saju"); const auth=getAuth(app), db=getFirestore(app);
   setPersistence(auth, browserLocalPersistence).catch(()=>{});   // 기기당 로그인 1회 유지
   // ── 명진앱 데이터 동기화(토큰 대신 구글 로그인) — 공유 컬렉션 mjApp ──
   const MJ_COL='mjApp';   // 명진앱 전체 데이터 공유 컬렉션(명진·수빈, 구글로그인)
