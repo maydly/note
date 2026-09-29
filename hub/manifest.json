@@ -1,17 +1,18 @@
 {
+  "id": "./",
   "name": "maydly 개인 허브",
   "short_name": "maydly",
-  "description": "명진·수빈 개인 도구 허브 — 캘린더·수빈앱·note",
+  "description": "명진·수빈 개인 허브 — 타일 독바에서 홈 대시보드·캘린더·명진앱·수빈앱·자료로",
   "lang": "ko",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f1eef0",
-  "theme_color": "#f1eef0",
+  "background_color": "#f0f6ef",
+  "theme_color": "#f0f6ef",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "icon-192.png?v=260930",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"

@@ -9,9 +9,21 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="maydly">
+<meta name="apple-mobile-web-app-title" content="maydly 홈"><!-- v2.5: 독바(maydly)와 홈 화면에서 구분되게 -->
 <link rel="manifest" href="manifest-preview.json"><!-- v2.3: 미리보기 전용 매니페스트(본 화면 manifest.json 은 그대로) -->
-<link rel="apple-touch-icon" href="../icon-180.png">
+<link rel="apple-touch-icon" href="icon-home-180.png"><!-- v2.5: 홈 전용 아이콘(m + 네잎클로버) — 옛 ../icon-180.png 는 깨져 있었다 -->
+<link rel="icon" type="image/png" sizes="192x192" href="icon-home-192.png">
+<script>
+// v2.5 아이폰 — 홈 화면 앱(standalone)으로 열렸는지 먼저 표시한다(CSS·링크 처리용). 저장 없음.
+//   폰·패드(손가락)의 홈 화면 앱만 — 데스크톱에 «앱 설치»한 창(크롬·엣지·맥 사파리 Dock)은 지금처럼 새 탭·방문 기록 그대로.
+(function () {
+  try {
+    var mm = function (q) { return !!(window.matchMedia && matchMedia(q).matches); };
+    var s = navigator.standalone === true || (mm('(display-mode: standalone)') && mm('(pointer: coarse)'));
+    if (s && window.top === window) { document.documentElement.classList.add('standalone'); window.__standalone = true; }
+  } catch (e) {}
+})();
+</script>
 <link rel="modulepreload" href="orbs.js"><link rel="modulepreload" href="vendor/thinking-orbs-engine-0.3.1.es.js"><!-- v2.4 오브스: 기다림 구슬을 파이어베이스와 나란히 미리 받아 둔다(첫 로드부터 보이게) -->
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"><!-- Pretendard 웹폰트(font-display: swap 내장) -->
@@ -1187,10 +1199,172 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
 .fpf .fpf-t{font-size:var(--f-body);font-weight:700;color:var(--sub)}
 .fpf .fpf-s{font-size:var(--f-sub);font-weight:600;color:var(--mute);line-height:1.6}
 @media(prefers-reduced-motion:reduce){ .orb{animation:none} .appc .frame .fph,.appc .frame.ld .fph{transition:none} .appext.nudge{animation:none} }
+
+/* ══ v2.5 독바 동기화 · 아이폰 (명진 260930 «독 업데이트 반영 · 아이폰 앱 동작·알림 프로페셔널하게») ══ */
+/* 가로로 돌려도 글자가 제멋대로 커지지 않게 · 누르는 곳을 길게 눌러도 글자가 선택되지 않게 */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.tab,.abtn,.nav,.bf,.appext,.sendbtn,.nbtn,.ovbar button,.ftouch,.fdone,.fdpin,.osk{-webkit-user-select:none;user-select:none}
+/* 홈 화면 앱: 링크를 길게 눌러 뜨는 미리보기·메뉴 끄기(거기서 열면 «크게 열기»를 건너뛰고 사파리 겹창 — 저장소가 따로라 로그인이 끊긴다). ↗(사파리로)는 그대로 */
+html.standalone a:not([data-out]){-webkit-touch-callout:none}
+
+/* 새 카드 — 협업 안내 · 오사카 렌즈 · 둘이 할 게임 */
+.cbrow{display:flex;align-items:flex-start;gap:14px 18px;flex-wrap:wrap}
+.cbtx{flex:1 1 320px;min-width:0}
+.cb1{font-size:var(--f-body);font-weight:700;color:var(--ink)}
+.cb2{font-size:var(--f-sub);color:var(--mute);font-weight:600;line-height:1.6;margin-top:8px}
+.cbchips{margin-top:10px}
+.collabcard .chip.on{background:#f1e9d6;color:#6b5320}
+.sendbtn{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;height:42px;padding:0 16px;border-radius:12px;border:0;cursor:pointer;
+  font:inherit;font-size:var(--f-body);font-weight:700;color:#5a4516;background:linear-gradient(135deg,#f3ead6,#e8dbbd);
+  box-shadow:0 5px 14px -8px #c3b08c,inset 0 0 0 1px rgba(255,255,255,.6);transition:transform .1s,box-shadow .18s}
+.sendbtn .ic{width:17px;height:17px}
+.sendbtn:active{transform:scale(.97)}
+@media(hover:hover){ .sendbtn:hover{box-shadow:0 8px 18px -8px #b39c70,inset 0 0 0 1px rgba(255,255,255,.6)} }
+.oskpi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.osk{display:flex;flex-direction:column;gap:3px;padding:13px 14px;border-radius:var(--r3);text-decoration:none;color:inherit;
+  background:linear-gradient(160deg,#eef5ea,#f8fbf6);box-shadow:inset 0 0 0 1px #e1ecdc;transition:transform .12s,box-shadow .18s}
+.osk b{font-size:24px;font-weight:700;letter-spacing:-1px;color:#3c6b33;line-height:1.1}
+.osk b small{font-size:13px;font-weight:700;margin-left:2px;letter-spacing:0}
+.osk span{font-size:var(--f-sub);font-weight:600;color:var(--sub)}
+.gk .osk{background:linear-gradient(160deg,#fcede7,#fdf8f5);box-shadow:inset 0 0 0 1px #f5ddd3}
+.gk .osk b{color:#9a4a33}
+.osk:active{transform:scale(.97)}
+@media(hover:hover){ .osk:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px #d3e4cc,0 8px 16px -10px rgba(60,90,50,.35)} .gk .osk:hover{box-shadow:inset 0 0 0 1px #efcdbf,0 8px 16px -10px rgba(150,80,50,.35)} }
+.osline{margin-top:12px}
+
+/* 알림 카드 */
+.nrow{display:flex;gap:13px;padding:14px 0;border-top:1px solid #f1f5f0}
+.nrow:first-child{border-top:0;padding-top:4px}
+.nrow:last-child{padding-bottom:2px}
+.nri{width:32px;height:32px;border-radius:10px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;
+  background:linear-gradient(150deg,var(--c1),var(--c2));box-shadow:0 3px 8px -4px var(--c2),inset 0 0 0 .5px rgba(255,255,255,.5)}
+.nri .ic{width:17px;height:17px;stroke-width:2.2;filter:drop-shadow(0 1px 1px rgba(0,0,0,.14))}
+.nrb{flex:1;min-width:0}
+.nr1{font-size:var(--f-body);font-weight:700;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.nst{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:11px;background:#eef3ec;color:var(--sub);font-size:var(--f-cap);font-weight:700}
+.nst.on{background:#dcefd6;color:#2b6a3c}
+.nst.off{background:#fdecd8;color:#8f4700}
+.nr2{font-size:var(--f-sub);color:var(--mute);font-weight:600;line-height:1.65;margin-top:5px}
+.nr2 b{color:var(--sub)}
+.nset{margin-top:8px}
+.nset>summary{display:inline-flex;align-items:center;gap:5px;list-style:none;cursor:pointer;font-size:var(--f-sub);font-weight:700;color:var(--link);padding:6px 0;min-height:36px}
+.nset>summary::-webkit-details-marker{display:none}
+.nset>summary .ic{transition:transform .15s}
+.nset[open]>summary .ic{transform:rotate(90deg)}
+.nset ol{margin:4px 0 0;padding-left:20px;font-size:var(--f-sub);color:var(--sub);font-weight:600;line-height:1.75}
+.nset li{padding-left:2px}
+.nbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.nbtns:empty{display:none}
+.nbtn{display:inline-flex;align-items:center;gap:7px;height:42px;padding:0 16px;border-radius:12px;border:0;cursor:pointer;font:inherit;font-size:var(--f-body);font-weight:700;
+  color:#fff;background:linear-gradient(135deg,#3b8053,#2f6e47);box-shadow:0 6px 16px -7px rgba(61,122,82,.65)}
+.nbtn .ic{width:17px;height:17px}
+.nbtn:active{transform:scale(.97)}
+#notify{scroll-margin-top:calc(var(--ab) + var(--tb) + 14px)}
+@media(max-width:900px){ #notify{scroll-margin-top:calc(var(--ab) + env(safe-area-inset-top,0px) + 12px)} .oskpi{gap:8px} .osk{padding:11px 12px} .osk b{font-size:22px} }
+
+/* 가로 모드 안전 영역 — 노치·다이내믹 아일랜드 쪽으로 카드가 들어가지 않게 (세로에서는 0이라 그대로) */
+@media(max-width:900px){
+  .main{padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px))}
+  body.tabs-on .tabs{padding-left:max(4px,env(safe-area-inset-left,0px));padding-right:max(4px,env(safe-area-inset-right,0px))}
+}
+@media(min-width:901px){
+  :root{--side:calc(212px + env(safe-area-inset-left,0px))}
+  .ab-brand{padding-left:calc(22px + env(safe-area-inset-left,0px))}
+  .side{padding-left:calc(12px + env(safe-area-inset-left,0px))}
+  .appbar{padding-right:max(22px,env(safe-area-inset-right,0px))}
+  .main{padding-right:max(30px,env(safe-area-inset-right,0px))}
+}
+/* 폰 가로(높이 500px 이하) — 앱 바는 한 줄, 아래 탭 막대는 아이콘만(내용 칸을 넓게) */
+@media(max-width:900px) and (max-height:500px) and (orientation:landscape){
+  :root{--ab:46px}
+  .appbar{grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto;grid-template-areas:"brand hello acts";column-gap:14px;align-content:center}
+  .ab-brand,.hello{align-self:center}
+  .abtn{height:38px;min-width:38px}
+  .tab .tx{display:none}
+  .tab .ti{height:26px}
+  .tab .tn{top:-3px}
+  body.tabs-on .tabs{padding-top:3px;padding-bottom:calc(3px + env(safe-area-inset-bottom,0px))}
+  .main{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+  .toast{bottom:calc(52px + env(safe-area-inset-bottom,0px))}
+}
+
+/* 홈 화면 앱(standalone) — 폰 앱 바에 «타일 독바» 아이콘(같은 창으로 돌아가기) */
+@media(max-width:900px){ html.standalone .abtn.dock{display:inline-flex} }
+html.standalone .abtn.dock .ic.ext{display:none}
+
+/* 앱 창 — 폰·패드(손가락)에서는 창 위에 투명 덮개. 그냥 밀면 쪽이 스크롤되고, 한 번 누르면 조작(오른쪽 위 «조작 끝») */
+.ftouch,.fdone{display:none}
+@media(pointer:coarse){
+  .appc .frame .ftouch{display:flex;position:absolute;inset:0;z-index:3;align-items:flex-end;justify-content:center;padding:0 0 14px;margin:0;
+    border:0;background:transparent;cursor:pointer;font:inherit;-webkit-tap-highlight-color:transparent}
+  .ftouch span{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-radius:17px;background:rgba(255,255,255,.94);
+    color:var(--sub);font-size:var(--f-sub);font-weight:700;box-shadow:0 4px 14px -4px rgba(28,38,32,.28),inset 0 0 0 1px #e3e9e0}
+  .ftouch span .ic{width:16px;height:16px;color:var(--c2,#7fb877)}
+  .appc .frame.live .ftouch,.appc .frame.fail .ftouch{display:none}
+  .appc .frame.live{box-shadow:inset 0 0 0 2px var(--c2,#7fb877)}
+  /* «조작 끝» — «눌러서 조작»과 같은 밝은 알약(흰 바탕 · 카드 색 테두리). 어두운 바탕은 쓰지 않는다 */
+  .appc .frame.live .fdone,.fdpin.on{display:inline-flex;align-items:center;gap:5px;height:34px;padding:0 13px;border:0;
+    border-radius:17px;background:rgba(255,255,255,.94);color:var(--sub);font:inherit;font-size:var(--f-sub);font-weight:700;cursor:pointer;
+    box-shadow:0 4px 14px -4px rgba(28,38,32,.28),inset 0 0 0 1.5px var(--c2,#7fb877);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+  .appc .frame.live .fdone{position:absolute;top:8px;right:8px;z-index:4}
+  .fdone .ic,.fdpin .ic{width:14px;height:14px;stroke-width:2.4;color:var(--c2,#7fb877)}
+  /* 창 윗부분이 앱 바 밑으로 밀려 올라가 있으면 창 안 «조작 끝»은 안 보인다 → 보이는 자리(앱 바 바로 아래, 그 창 오른쪽 끝)에 하나 띄운다 */
+  .appc .frame.live.pinned .fdone{visibility:hidden}
+  .fdpin.on{position:fixed;z-index:58;animation:fdpIn .18s ease-out}
+  @keyframes fdpIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+}
+.fdpin{display:none}
+@media(prefers-reduced-motion:reduce){ .fdpin.on{animation:none} }
+/* 앱 창 부제 — 좁은 폰(400px 이하)·폰 가로(높이 500px 이하)에서는 두 줄까지(… 로 잘리지 않게) */
+@media(max-width:400px),(max-height:500px) and (orientation:landscape){
+  .appsub{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.35}
+}
+
+/* 홈 화면 앱 — maydly 앱은 «새 탭»(사파리 겹창 · 로그인 따로) 대신 이 창 안에서 크게 연다. 위 막대 «‹ 홈»으로 돌아온다 */
+html.ovopen,html.ovopen body{overflow:hidden}
+.ov{position:fixed;inset:0;z-index:120;display:flex;flex-direction:column;background:#f0f6ef;animation:ovIn .24s cubic-bezier(.2,.75,.25,1)}
+.ov[hidden]{display:none}
+.ov:focus{outline:none}
+@keyframes ovIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.ovbar{flex:0 0 auto;display:flex;align-items:center;gap:4px;padding:calc(env(safe-area-inset-top,0px) + 4px) max(8px,env(safe-area-inset-right,0px)) 4px max(6px,env(safe-area-inset-left,0px));
+  background:rgba(250,253,249,.97);border-bottom:1px solid var(--line);-webkit-backdrop-filter:saturate(1.5) blur(14px);backdrop-filter:saturate(1.5) blur(14px)}
+.ovback{flex:0 0 auto;display:inline-flex;align-items:center;gap:1px;height:44px;padding:0 12px 0 4px;border:0;border-radius:12px;background:transparent;
+  color:#2d6a3e;font:inherit;font-size:16px;font-weight:700;cursor:pointer}
+.ovback .ic{width:24px;height:24px;stroke-width:2.2;transform:rotate(180deg)}
+.ovback:active,.ovbtn:active{background:#e6efe3}
+.ovt{flex:1 1 auto;min-width:0;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:700;letter-spacing:-.3px}
+.ovt .appi{width:26px;height:26px;border-radius:8px;box-shadow:0 3px 8px -4px var(--c2,#7fb489)}
+.ovt .appi .ic{width:15px;height:15px}
+.ovt span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ovbtn{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;
+  color:var(--sub);cursor:pointer;text-decoration:none}
+.ovbtn .ic{width:20px;height:20px}
+.ovbody{position:relative;flex:1 1 auto;min-height:0;background:#fff;transition:background-color .2s}
+/* 가로 모드: 노치·다이내믹 아일랜드 쪽(좌우 안전 영역)은 비워 둔다 — 끼운 쪽들은 좌우 안전 영역을 스스로 챙기지 않는다.
+   아래: 기본은 홈 막대 위에서 멈춘다. 끼운 쪽이 안전 영역 값을 그대로 받는 기기면(아이폰 사파리) .fullb — 바닥까지 채우고 쪽이 스스로 비운다(두 번 비지 않게).
+   남는 띠는 끼운 쪽 바탕색으로 칠한다(JS) */
+.ovbody iframe{position:absolute;left:env(safe-area-inset-left,0px);top:0;width:calc(100% - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px));
+  height:calc(100% - env(safe-area-inset-bottom,0px));border:0;background:#fff}
+.ovbody.fullb iframe{height:100%}
+.ovph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:var(--f-sub);font-weight:600;color:var(--mute);
+  background:linear-gradient(160deg,#f7faf6,#eef4ec);z-index:2;transition:opacity .3s ease}
+.ovph .fpo{display:block;width:64px;height:64px;padding:12px;box-sizing:content-box;border-radius:50%;background:#fff;box-shadow:0 8px 22px -10px rgba(63,143,92,.45),inset 0 0 0 1px #e4ede1}
+.ovph .fpi{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;
+  background:linear-gradient(150deg,var(--c1,#a9cfae),var(--c2,#7fb489));animation:fpp 1.4s ease-in-out infinite}
+.ovph .fpi .ic{width:22px;height:22px;stroke-width:2}
+.ovph.slow .ovpt{display:none}
+/* 비상 안내 막대의 «다시 불러오기» — 홈 화면 앱엔 새로고침 버튼이 없다 */
+.rlbtn{display:inline-flex;align-items:center;height:32px;margin:4px 0 0 8px;padding:0 14px;border-radius:16px;border:0;cursor:pointer;
+  font:inherit;font-size:12px;font-weight:700;color:#fff;background:#3d7a52}
+.ovph.orbon .fpi{display:none}
+.ovph.done{opacity:0;pointer-events:none}
+.ovph .ovslow{display:none;text-align:center;line-height:1.6;padding:0 30px}
+.ovph.slow .ovslow{display:block}
+@media(prefers-reduced-motion:reduce){ .ov{animation:none} .ovph .fpi{animation:none} }
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="clvd" viewBox="0 0 40 40"><g fill="currentColor"><path d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(90 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(180 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(270 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/></g><path d="M20,20 Q21,29 25,34" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></symbol><symbol id="clv" viewBox="0 0 100 100"><path d="M51 54 C52 68 55 80 62 93" fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="round"/><g transform="translate(50,45)" fill="currentColor"><path id="clvleaf" d="M0 -3 C-3,-12 -19,-16 -19,-28.5 C-19,-37.5 -9.5,-41.5 0,-33 C9.5,-41.5 19,-37.5 19,-28.5 C19,-16 3,-12 0,-3 Z" transform="rotate(45)"/><use href="#clvleaf" transform="rotate(90)"/><use href="#clvleaf" transform="rotate(180)"/><use href="#clvleaf" transform="rotate(270)"/></g></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9v10.5a1 1 0 0 0 1 1H10v-6h4v6h3.5a1 1 0 0 0 1-1V9"/></symbol><symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></symbol><symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.5"/><path d="M3 19.5a6 6 0 0 1 12 0"/><path d="M15.5 5.2a3.5 3.5 0 0 1 0 6.6M17.5 14a6 6 0 0 1 3.5 5.5"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol><symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="5" y="4.5" width="14" height="16.5" rx="2.5"/><path d="M9 4.5v-1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M8.5 11h7M8.5 15h4.5"/></symbol><symbol id="i-images" viewBox="0 0 24 24"><rect x="3" y="3" width="14" height="14" rx="2.5"/><circle cx="8" cy="8" r="1.6"/><path d="m17 12.5-3.2-3.2L6 17"/><path d="M7 21h11.5a2.5 2.5 0 0 0 2.5-2.5V7"/></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.7-6.5-11a6.5 6.5 0 0 1 13 0c0 5.3-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></symbol><symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3.5 13.7 8.3 18.5 10l-4.8 1.7L12 16.5l-1.7-4.8L5.5 10l4.8-1.7z"/><path d="m18.5 15.5.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></symbol><symbol id="i-check-sq" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></symbol><symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V5.5A1.5 1.5 0 0 0 17.5 4H6a2.5 2.5 0 0 0 0 5h13a1 1 0 0 1 1 1v3.5"/><path d="M3.5 6.5v11A2.5 2.5 0 0 0 6 20h13a1 1 0 0 0 1-1v-2.5"/><path d="M20.5 13.5H17a1.75 1.75 0 0 0 0 3.5h3.5z"/></symbol><symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17.5" cy="19.5" r="1.3"/><path d="M3 3.5h2.2l2.3 11.3A1.5 1.5 0 0 0 9 16h8.4a1.5 1.5 0 0 0 1.5-1.2l1.6-7.3H6"/></symbol><symbol id="i-box" viewBox="0 0 24 24"><path d="M20.5 7.5 12 3 3.5 7.5v9L12 21l8.5-4.5z"/><path d="m3.5 7.5 8.5 4.5 8.5-4.5M12 12v9"/></symbol><symbol id="i-notebook" viewBox="0 0 24 24"><rect x="4.5" y="3" width="15" height="18" rx="2.5"/><path d="M8.5 3v18M12 8h4M12 12h4"/></symbol><symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><circle cx="9" cy="9" r="1.8"/><path d="m20.5 15-4.5-4.5L5.5 20.5"/></symbol><symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.2M12 7.8v.01"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6.5h11M9 12h11M9 17.5h11M4.5 6.5h.01M4.5 12h.01M4.5 17.5h.01"/></symbol><symbol id="i-camera" viewBox="0 0 24 24"><path d="M3.5 8.5A1.5 1.5 0 0 1 5 7h2.5L9 4.8h6L16.5 7H19a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5z"/><circle cx="12" cy="12.8" r="3.3"/></symbol><symbol id="i-aperture" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m14.3 8 5.2 9M9.7 8h10.4M7.4 12l5.2-9M9.7 16 4.5 7M14.3 16H3.9M16.6 12l-5.2 9"/></symbol><symbol id="i-disc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9.5 17.5h5M10.5 20.5h3"/><path d="M12 3.5a6 6 0 0 0-3.6 10.8c.6.5 1.1 1.2 1.1 2v1.2h5v-1.2c0-.8.5-1.5 1.1-2A6 6 0 0 0 12 3.5z"/></symbol><symbol id="i-toolbox" viewBox="0 0 24 24"><rect x="3.5" y="8" width="17" height="11.5" rx="2"/><path d="M9 8V6.2A1.2 1.2 0 0 1 10.2 5h3.6A1.2 1.2 0 0 1 15 6.2V8M3.5 13h17M10 13v2h4v-2"/></symbol><symbol id="i-tripod" viewBox="0 0 24 24"><rect x="8" y="3.5" width="8" height="5.5" rx="1.3"/><path d="M12 9v3.5M12 12.5 6.5 20.5M12 12.5l5.5 8M12 12.5v8"/></symbol><symbol id="i-printer" viewBox="0 0 24 24"><path d="M7 9V3.5h10V9"/><rect x="3.5" y="9" width="17" height="7.5" rx="2"/><path d="M7 14h10v6.5H7z"/></symbol><symbol id="i-bag" viewBox="0 0 24 24"><path d="M5.5 7.5h13l-.9 12a1.5 1.5 0 0 1-1.5 1.4H7.9a1.5 1.5 0 0 1-1.5-1.4z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></symbol><symbol id="i-receipt" viewBox="0 0 24 24"><path d="M5.5 3h13v18l-2.2-1.4-2.1 1.4-2.2-1.4L9.8 21l-2.1-1.4L5.5 21z"/><path d="M9 8h6M9 12h6M9 16h3"/></symbol><symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6.5h8M16 6.5h4M4 12h3M11 12h9M4 17.5h10M18 17.5h2"/><circle cx="14" cy="6.5" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="16" cy="17.5" r="2"/></symbol><symbol id="i-book-open" viewBox="0 0 24 24"><path d="M12 6.5c-1.6-1.4-4-2-8.5-2V18c4.5 0 6.9.6 8.5 2 1.6-1.4 4-2 8.5-2V4.5c-4.5 0-6.9.6-8.5 2z"/><path d="M12 6.5V20"/></symbol><symbol id="i-film" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M7.5 3.5v17M16.5 3.5v17M3.5 8h4M3.5 12h17M3.5 16h4M16.5 8h4M16.5 16h4"/></symbol><symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4.5 3.5 6.5v13L9 17.5l6 2 5.5-2v-13L15 6.5z"/><path d="M9 4.5v13M15 6.5v13"/></symbol><symbol id="i-flag" viewBox="0 0 24 24"><path d="M5.5 21V4M5.5 4.5h11.5l-2.2 4.2 2.2 4.3H5.5"/></symbol><symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.3 2.3 3.5 5.2 3.5 8.5s-1.2 6.2-3.5 8.5c-2.3-2.3-3.5-5.2-3.5-8.5s1.2-6.2 3.5-8.5z"/></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M5 19V5.5a2 2 0 0 1 2-2h12v14H7a2 2 0 0 0-2 2 2 2 0 0 0 2 2h12"/></symbol><symbol id="i-bot" viewBox="0 0 24 24"><rect x="4.5" y="8" width="15" height="11.5" rx="3"/><path d="M12 8V5M9.5 13v1.5M14.5 13v1.5M2.5 13v2M21.5 13v2"/><circle cx="12" cy="4" r="1"/></symbol><symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19.5c0-8.5 5-13.5 15-15-1 9.5-6 14.5-15 15z"/><path d="M5 19.5 12.5 12"/></symbol><symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.2 5 5.8v5.7c0 4.3 3 7.8 7 9.3 4-1.5 7-5 7-9.3V5.8z"/><path d="m9 12 2.2 2.2L15.2 10"/></symbol><symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2.2 4.8-4.8 2.2 2.2-4.8z"/></symbol><symbol id="i-sprout" viewBox="0 0 24 24"><path d="M12 20.5V12"/><path d="M12 12c0-3.9-2.4-6.5-6.8-6.5 0 4 2.6 6.5 6.8 6.5z"/><path d="M12 14.5c0-3.4 2.1-5.8 6.3-5.8 0 3.6-2.3 5.8-6.3 5.8z"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.2A7.8 7.8 0 1 1 9.8 4.5a6.2 6.2 0 0 0 9.7 9.7z"/><path d="M17 3.5v3M15.5 5h3"/></symbol><symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.8 2.5 5.2 5.6.8-4 3.9 1 5.6-5.1-2.6-5.1 2.6 1-5.6-4-3.9 5.6-.8z"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.8"/><path d="M12 2.8v2M12 19.2v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2.8 12h2M19.2 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol><symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3.5" y="7" width="17" height="12.5" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3.5 12.5h17"/></symbol><symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></symbol><symbol id="i-library" viewBox="0 0 24 24"><rect x="3.5" y="4" width="4" height="16" rx="1"/><rect x="9.5" y="4" width="4" height="16" rx="1"/><path d="m15.4 5.2 3.3-.8 2.9 14.8-3.3.8z"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.1A4.2 4.2 0 0 1 12 7.4a4.2 4.2 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/></symbol><symbol id="i-bars" viewBox="0 0 24 24"><path d="M4 20h16"/><rect x="5" y="11" width="3" height="6" rx="1"/><rect x="10.5" y="7" width="3" height="10" rx="1"/><rect x="16" y="4" width="3" height="13" rx="1"/></symbol><symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.35-5.65"/><path d="M20 4v4.5h-4.5"/></symbol><symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M10.6 5.6A9.6 9.6 0 0 1 12 5.5c5.3 0 8.5 5 8.5 6.5 0 .7-.7 2-1.9 3.4M6.5 6.9C4.4 8.3 3.5 10.8 3.5 12c0 1.5 3.2 6.5 8.5 6.5 1.7 0 3.2-.5 4.4-1.3"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2M3.5 3.5l17 17"/></symbol><symbol id="i-ext" viewBox="0 0 24 24"><path d="M9 5.5h9.5V15M18.5 5.5 6 18"/></symbol><symbol id="i-log-in" viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 16.5 14.5 12 10 7.5M14.5 12H4"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5.5 6.5 6.5L9 18.5"/></symbol><symbol id="i-shirt" viewBox="0 0 24 24"><path d="M8.5 3.5 4 6l1.8 4 1.7-.8v11.3h9V9.2l1.7.8L20 6l-4.5-2.5a3.5 3.5 0 0 1-7 0z"/></symbol><symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2.8 5 13.2h6.5l-.7 8 8.2-10.4h-6.5z"/></symbol><symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h3.5"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 4.3 2.9 17.5a2 2 0 0 0 1.7 3h14.8a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4M12 17h.01"/></symbol><symbol id="i-tag" viewBox="0 0 24 24"><path d="M3.5 12.2V5A1.5 1.5 0 0 1 5 3.5h7.2l8.3 8.3a1.5 1.5 0 0 1 0 2.1l-6.9 6.9a1.5 1.5 0 0 1-2.1 0z"/><circle cx="8" cy="8" r="1.4"/></symbol><symbol id="i-bank" viewBox="0 0 24 24"><path d="M3.5 9.5 12 4.5l8.5 5M5.5 10v7.5M10 10v7.5M14 10v7.5M18.5 10v7.5M3.5 20h17"/></symbol><symbol id="i-inbox" viewBox="0 0 24 24"><path d="M3.5 13.5h4.7l1.6 2.5h4.4l1.6-2.5h4.7"/><path d="M6 5.5h12l2.5 8v5a1.5 1.5 0 0 1-1.5 1.5H5a1.5 1.5 0 0 1-1.5-1.5v-5z"/></symbol><symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M9.7 9.5a2.4 2.4 0 0 1 4.6.9c0 1.6-2.3 2-2.3 3.6M12 17h.01"/></symbol><symbol id="i-swap" viewBox="0 0 24 24"><path d="M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m8.5 12.3 2.4 2.4 4.6-5"/></symbol><symbol id="i-more" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18.5" cy="12" r="1.3"/></symbol><symbol id="i-dock" viewBox="0 0 24 24"><path d="M3.5 11 11 4.8l7.5 6.2"/><path d="M5.5 9.5v10a1 1 0 0 0 1 1H11"/><path d="M14.5 16.5h7M18.5 13.5l3 3-3 3"/></symbol><symbol id="i-archive" viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="4.5" rx="1.2"/><path d="M5 8.5V19a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19V8.5M10 12.5h4"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="m10 9.2 5 2.8-5 2.8z"/></symbol></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="clvd" viewBox="0 0 40 40"><g fill="currentColor"><path d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(90 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(180 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(270 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/></g><path d="M20,20 Q21,29 25,34" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></symbol><symbol id="clv" viewBox="0 0 100 100"><path d="M51 54 C52 68 55 80 62 93" fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="round"/><g transform="translate(50,45)" fill="currentColor"><path id="clvleaf" d="M0 -3 C-3,-12 -19,-16 -19,-28.5 C-19,-37.5 -9.5,-41.5 0,-33 C9.5,-41.5 19,-37.5 19,-28.5 C19,-16 3,-12 0,-3 Z" transform="rotate(45)"/><use href="#clvleaf" transform="rotate(90)"/><use href="#clvleaf" transform="rotate(180)"/><use href="#clvleaf" transform="rotate(270)"/></g></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9v10.5a1 1 0 0 0 1 1H10v-6h4v6h3.5a1 1 0 0 0 1-1V9"/></symbol><symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></symbol><symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.5"/><path d="M3 19.5a6 6 0 0 1 12 0"/><path d="M15.5 5.2a3.5 3.5 0 0 1 0 6.6M17.5 14a6 6 0 0 1 3.5 5.5"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol><symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="5" y="4.5" width="14" height="16.5" rx="2.5"/><path d="M9 4.5v-1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M8.5 11h7M8.5 15h4.5"/></symbol><symbol id="i-images" viewBox="0 0 24 24"><rect x="3" y="3" width="14" height="14" rx="2.5"/><circle cx="8" cy="8" r="1.6"/><path d="m17 12.5-3.2-3.2L6 17"/><path d="M7 21h11.5a2.5 2.5 0 0 0 2.5-2.5V7"/></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.7-6.5-11a6.5 6.5 0 0 1 13 0c0 5.3-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></symbol><symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3.5 13.7 8.3 18.5 10l-4.8 1.7L12 16.5l-1.7-4.8L5.5 10l4.8-1.7z"/><path d="m18.5 15.5.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></symbol><symbol id="i-check-sq" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></symbol><symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V5.5A1.5 1.5 0 0 0 17.5 4H6a2.5 2.5 0 0 0 0 5h13a1 1 0 0 1 1 1v3.5"/><path d="M3.5 6.5v11A2.5 2.5 0 0 0 6 20h13a1 1 0 0 0 1-1v-2.5"/><path d="M20.5 13.5H17a1.75 1.75 0 0 0 0 3.5h3.5z"/></symbol><symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17.5" cy="19.5" r="1.3"/><path d="M3 3.5h2.2l2.3 11.3A1.5 1.5 0 0 0 9 16h8.4a1.5 1.5 0 0 0 1.5-1.2l1.6-7.3H6"/></symbol><symbol id="i-box" viewBox="0 0 24 24"><path d="M20.5 7.5 12 3 3.5 7.5v9L12 21l8.5-4.5z"/><path d="m3.5 7.5 8.5 4.5 8.5-4.5M12 12v9"/></symbol><symbol id="i-notebook" viewBox="0 0 24 24"><rect x="4.5" y="3" width="15" height="18" rx="2.5"/><path d="M8.5 3v18M12 8h4M12 12h4"/></symbol><symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><circle cx="9" cy="9" r="1.8"/><path d="m20.5 15-4.5-4.5L5.5 20.5"/></symbol><symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.2M12 7.8v.01"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6.5h11M9 12h11M9 17.5h11M4.5 6.5h.01M4.5 12h.01M4.5 17.5h.01"/></symbol><symbol id="i-camera" viewBox="0 0 24 24"><path d="M3.5 8.5A1.5 1.5 0 0 1 5 7h2.5L9 4.8h6L16.5 7H19a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5z"/><circle cx="12" cy="12.8" r="3.3"/></symbol><symbol id="i-aperture" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m14.3 8 5.2 9M9.7 8h10.4M7.4 12l5.2-9M9.7 16 4.5 7M14.3 16H3.9M16.6 12l-5.2 9"/></symbol><symbol id="i-disc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9.5 17.5h5M10.5 20.5h3"/><path d="M12 3.5a6 6 0 0 0-3.6 10.8c.6.5 1.1 1.2 1.1 2v1.2h5v-1.2c0-.8.5-1.5 1.1-2A6 6 0 0 0 12 3.5z"/></symbol><symbol id="i-toolbox" viewBox="0 0 24 24"><rect x="3.5" y="8" width="17" height="11.5" rx="2"/><path d="M9 8V6.2A1.2 1.2 0 0 1 10.2 5h3.6A1.2 1.2 0 0 1 15 6.2V8M3.5 13h17M10 13v2h4v-2"/></symbol><symbol id="i-tripod" viewBox="0 0 24 24"><rect x="8" y="3.5" width="8" height="5.5" rx="1.3"/><path d="M12 9v3.5M12 12.5 6.5 20.5M12 12.5l5.5 8M12 12.5v8"/></symbol><symbol id="i-printer" viewBox="0 0 24 24"><path d="M7 9V3.5h10V9"/><rect x="3.5" y="9" width="17" height="7.5" rx="2"/><path d="M7 14h10v6.5H7z"/></symbol><symbol id="i-bag" viewBox="0 0 24 24"><path d="M5.5 7.5h13l-.9 12a1.5 1.5 0 0 1-1.5 1.4H7.9a1.5 1.5 0 0 1-1.5-1.4z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></symbol><symbol id="i-receipt" viewBox="0 0 24 24"><path d="M5.5 3h13v18l-2.2-1.4-2.1 1.4-2.2-1.4L9.8 21l-2.1-1.4L5.5 21z"/><path d="M9 8h6M9 12h6M9 16h3"/></symbol><symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6.5h8M16 6.5h4M4 12h3M11 12h9M4 17.5h10M18 17.5h2"/><circle cx="14" cy="6.5" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="16" cy="17.5" r="2"/></symbol><symbol id="i-book-open" viewBox="0 0 24 24"><path d="M12 6.5c-1.6-1.4-4-2-8.5-2V18c4.5 0 6.9.6 8.5 2 1.6-1.4 4-2 8.5-2V4.5c-4.5 0-6.9.6-8.5 2z"/><path d="M12 6.5V20"/></symbol><symbol id="i-film" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M7.5 3.5v17M16.5 3.5v17M3.5 8h4M3.5 12h17M3.5 16h4M16.5 8h4M16.5 16h4"/></symbol><symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4.5 3.5 6.5v13L9 17.5l6 2 5.5-2v-13L15 6.5z"/><path d="M9 4.5v13M15 6.5v13"/></symbol><symbol id="i-flag" viewBox="0 0 24 24"><path d="M5.5 21V4M5.5 4.5h11.5l-2.2 4.2 2.2 4.3H5.5"/></symbol><symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.3 2.3 3.5 5.2 3.5 8.5s-1.2 6.2-3.5 8.5c-2.3-2.3-3.5-5.2-3.5-8.5s1.2-6.2 3.5-8.5z"/></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M5 19V5.5a2 2 0 0 1 2-2h12v14H7a2 2 0 0 0-2 2 2 2 0 0 0 2 2h12"/></symbol><symbol id="i-bot" viewBox="0 0 24 24"><rect x="4.5" y="8" width="15" height="11.5" rx="3"/><path d="M12 8V5M9.5 13v1.5M14.5 13v1.5M2.5 13v2M21.5 13v2"/><circle cx="12" cy="4" r="1"/></symbol><symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19.5c0-8.5 5-13.5 15-15-1 9.5-6 14.5-15 15z"/><path d="M5 19.5 12.5 12"/></symbol><symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.2 5 5.8v5.7c0 4.3 3 7.8 7 9.3 4-1.5 7-5 7-9.3V5.8z"/><path d="m9 12 2.2 2.2L15.2 10"/></symbol><symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2.2 4.8-4.8 2.2 2.2-4.8z"/></symbol><symbol id="i-sprout" viewBox="0 0 24 24"><path d="M12 20.5V12"/><path d="M12 12c0-3.9-2.4-6.5-6.8-6.5 0 4 2.6 6.5 6.8 6.5z"/><path d="M12 14.5c0-3.4 2.1-5.8 6.3-5.8 0 3.6-2.3 5.8-6.3 5.8z"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.2A7.8 7.8 0 1 1 9.8 4.5a6.2 6.2 0 0 0 9.7 9.7z"/><path d="M17 3.5v3M15.5 5h3"/></symbol><symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.8 2.5 5.2 5.6.8-4 3.9 1 5.6-5.1-2.6-5.1 2.6 1-5.6-4-3.9 5.6-.8z"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.8"/><path d="M12 2.8v2M12 19.2v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2.8 12h2M19.2 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol><symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3.5" y="7" width="17" height="12.5" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3.5 12.5h17"/></symbol><symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></symbol><symbol id="i-library" viewBox="0 0 24 24"><rect x="3.5" y="4" width="4" height="16" rx="1"/><rect x="9.5" y="4" width="4" height="16" rx="1"/><path d="m15.4 5.2 3.3-.8 2.9 14.8-3.3.8z"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.1A4.2 4.2 0 0 1 12 7.4a4.2 4.2 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/></symbol><symbol id="i-bars" viewBox="0 0 24 24"><path d="M4 20h16"/><rect x="5" y="11" width="3" height="6" rx="1"/><rect x="10.5" y="7" width="3" height="10" rx="1"/><rect x="16" y="4" width="3" height="13" rx="1"/></symbol><symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.35-5.65"/><path d="M20 4v4.5h-4.5"/></symbol><symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M10.6 5.6A9.6 9.6 0 0 1 12 5.5c5.3 0 8.5 5 8.5 6.5 0 .7-.7 2-1.9 3.4M6.5 6.9C4.4 8.3 3.5 10.8 3.5 12c0 1.5 3.2 6.5 8.5 6.5 1.7 0 3.2-.5 4.4-1.3"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2M3.5 3.5l17 17"/></symbol><symbol id="i-ext" viewBox="0 0 24 24"><path d="M9 5.5h9.5V15M18.5 5.5 6 18"/></symbol><symbol id="i-log-in" viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 16.5 14.5 12 10 7.5M14.5 12H4"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5.5 6.5 6.5L9 18.5"/></symbol><symbol id="i-shirt" viewBox="0 0 24 24"><path d="M8.5 3.5 4 6l1.8 4 1.7-.8v11.3h9V9.2l1.7.8L20 6l-4.5-2.5a3.5 3.5 0 0 1-7 0z"/></symbol><symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2.8 5 13.2h6.5l-.7 8 8.2-10.4h-6.5z"/></symbol><symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h3.5"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 4.3 2.9 17.5a2 2 0 0 0 1.7 3h14.8a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4M12 17h.01"/></symbol><symbol id="i-tag" viewBox="0 0 24 24"><path d="M3.5 12.2V5A1.5 1.5 0 0 1 5 3.5h7.2l8.3 8.3a1.5 1.5 0 0 1 0 2.1l-6.9 6.9a1.5 1.5 0 0 1-2.1 0z"/><circle cx="8" cy="8" r="1.4"/></symbol><symbol id="i-bank" viewBox="0 0 24 24"><path d="M3.5 9.5 12 4.5l8.5 5M5.5 10v7.5M10 10v7.5M14 10v7.5M18.5 10v7.5M3.5 20h17"/></symbol><symbol id="i-inbox" viewBox="0 0 24 24"><path d="M3.5 13.5h4.7l1.6 2.5h4.4l1.6-2.5h4.7"/><path d="M6 5.5h12l2.5 8v5a1.5 1.5 0 0 1-1.5 1.5H5a1.5 1.5 0 0 1-1.5-1.5v-5z"/></symbol><symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M9.7 9.5a2.4 2.4 0 0 1 4.6.9c0 1.6-2.3 2-2.3 3.6M12 17h.01"/></symbol><symbol id="i-swap" viewBox="0 0 24 24"><path d="M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m8.5 12.3 2.4 2.4 4.6-5"/></symbol><symbol id="i-more" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18.5" cy="12" r="1.3"/></symbol><symbol id="i-dock" viewBox="0 0 24 24"><path d="M3.5 11 11 4.8l7.5 6.2"/><path d="M5.5 9.5v10a1 1 0 0 0 1 1H11"/><path d="M14.5 16.5h7M18.5 13.5l3 3-3 3"/></symbol><symbol id="i-archive" viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="4.5" rx="1.2"/><path d="M5 8.5V19a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19V8.5M10 12.5h4"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="m10 9.2 5 2.8-5 2.8z"/></symbol><symbol id="i-mail" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="m4.2 7.2 7.8 5.8 7.8-5.8"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.8 12S6.3 5.8 12 5.8 21.2 12 21.2 12 17.7 18.2 12 18.2 2.8 12 2.8 12z"/><circle cx="12" cy="12" r="2.8"/></symbol><symbol id="i-lens" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="6.5" stroke-width="1.8" stroke-dasharray="0.01 2.7"/><circle cx="12" cy="12" r="3.9"/><path d="M10.1 11.3a2 2 0 0 1 1.4-1.5"/></symbol><symbol id="i-gamepad" viewBox="0 0 24 24"><path d="M7.2 8h9.6a4.3 4.3 0 0 1 4.2 5.4l-.9 3.4a2.2 2.2 0 0 1-3.7 1l-2-2.2H9.6l-2 2.2a2.2 2.2 0 0 1-3.7-1l-.9-3.4A4.3 4.3 0 0 1 7.2 8z"/><path d="M8 10.5v3.4M6.3 12.2h3.4M15.3 11.3h.01M17.3 13.1h.01"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6.3 16.5V11a5.7 5.7 0 0 1 11.4 0v5.5l1.6 2H4.7z"/><path d="M10 20.3a2.1 2.1 0 0 0 4 0"/></symbol><symbol id="i-share" viewBox="0 0 24 24"><path d="M12 14.5V3.8M8.2 7.3 12 3.5l3.8 3.8"/><path d="M8 10.5H6.5a1.5 1.5 0 0 0-1.5 1.5v7a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5v-7a1.5 1.5 0 0 0-1.5-1.5H16"/></symbol><symbol id="i-touch" viewBox="0 0 24 24"><path d="M9.5 12.5V5.8a1.6 1.6 0 0 1 3.2 0v5.6"/><path d="M12.7 10.6a1.6 1.6 0 0 1 3.2 0v1.2M15.9 11.2a1.6 1.6 0 0 1 3.1.4v3.1a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.6-2.2l-2.4-3a1.6 1.6 0 0 1 2.4-2l1.5 1.6"/></symbol><symbol id="i-appbadge" viewBox="0 0 24 24"><rect x="3.5" y="6" width="14.5" height="14.5" rx="4"/><circle cx="18" cy="6" r="3.2"/></symbol></defs></svg>
 <!-- v2.3 검수: 여백 클로버는 화면에 고정(fixed)하지 않고, 콘텐츠와 안 겹치는 자리(구역 제목 오른쪽·목차 맨 아래·바닥글)에 둔다 -->
 
 <div class="mockbar" id="demobar">🍀 모든 칸이 <strong>실제 데이터</strong>로 채워집니다 (예시 값 없음). 저장하는 앱이 없는 항목(단어 여정 기록·수빈 사주·시안 발송 횟수)은 <b>데이터 없음</b>으로 적고, 못 읽은 값은 0이 아니라 <b>—</b> 로 표시합니다.</div>
@@ -1216,6 +1390,16 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
   </div>
 </header>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<!-- v2.5 아이폰 홈 화면 앱 전용 — maydly 앱을 이 창 안에서 크게 여는 창(같은 저장소라 PIN·로그인이 이어진다). 웹에서는 쓰지 않는다 -->
+<div class="ov" id="ov" role="dialog" aria-modal="true" aria-labelledby="ov-n" tabindex="-1" hidden>
+  <div class="ovbar">
+    <button type="button" class="ovback" id="ov-close" aria-label="홈으로 돌아가기"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg>홈</button>
+    <div class="ovt"><span class="appi" id="ov-i" aria-hidden="true"><svg class="ic"><use href="#i-grid"/></svg></span><span id="ov-n">maydly</span></div>
+    <button type="button" class="ovbtn" id="ov-share" aria-label="주소 보내기" title="주소 보내기"><svg class="ic" aria-hidden="true"><use href="#i-share"/></svg></button>
+    <a class="ovbtn" id="ov-ext" data-out="1" href="https://maydly.github.io/" target="_blank" rel="noopener" aria-label="사파리로 열기" title="사파리로 열기"><svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a>
+  </div>
+  <div class="ovbody" id="ov-body"></div>
+</div>
 
 <div class="shell">
 
@@ -1225,11 +1409,13 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
     <a class="nav on" style="--c1:#a9cfae;--c2:#7fb489" href="#today" target="_self" aria-current="page" title="홈 대시보드"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg></span><span class="nm">홈 대시보드</span></a>
     <div class="sidecap" title="누르면 새 탭으로 열립니다">바로가기 <svg class="ic sm" aria-hidden="true"><use href="#i-ext"/></svg></div>
 
-    <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>촬영 · 고객<span class="n">7</span></summary>
+    <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>촬영 · 고객<span class="n">9</span></summary>
       <a class="nav" style="--c1:#e7bcb4;--c2:#dda79d" href="https://maydly.github.io/maydly-cal/admin.html" title="명진 캘린더 — 지남·긴급(3일 이내)"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg></span><span class="nm">명진 캘린더</span><span class="bdg" id="nv-cal"></span></a>
       <a class="nav" style="--c1:#a8d3a0;--c2:#7fb877" href="https://maydly.github.io/maydly-cal/" title="협업 캘린더"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg></span><span class="nm">협업 캘린더</span></a>
+      <a class="nav" style="--c1:#ddd0b4;--c2:#c3b08c" href="https://maydly.github.io/collab/" title="협업 안내 — 협업 문의에 보낼 안내서 · 필독 공지 포함"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg></span><span class="nm">협업 안내</span></a>
       <a class="nav" style="--c1:#e3cf9d;--c2:#d0b97e" href="https://maydly.github.io/maydly-cal/pay.html" title="페이용 캘린더"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg></span><span class="nm">페이용 캘린더</span></a>
       <a class="nav" style="--c1:#cdd9b0;--c2:#aec48f" href="https://maydly.github.io/note/hub/설문데이터/" title="설문 데이터 — 시안 문의 기록"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-clipboard"/></svg></span><span class="nm">설문 데이터</span><span class="bdg" id="nv-inq"></span></a>
+      <a class="nav" style="--c1:#c6d4bb;--c2:#a3b995" href="https://maydly.github.io/note/hub/설문데이터/#views" title="시안 읽힘 — 어디까지 보고 어디서 멈추나"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></span><span class="nm">시안 읽힘</span></a>
       <a class="nav" style="--c1:#d9b8c4;--c2:#c59db0" href="https://maydly.github.io/note/hub/시안/" title="촬영 시안 4종"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-images"/></svg></span><span class="nm">촬영 시안</span></a>
       <a class="nav" style="--c1:#ecd3ab;--c2:#dcbd8d" href="https://maydly.github.io/note/hub/photomap/" title="대표 사진맵"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg></span><span class="nm">대표 사진맵</span></a>
       <a class="nav" style="--c1:#e6b8c8;--c2:#d59fb3" href="https://maydly.github.io/" title="maydly 시안(고객용)"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-sparkle"/></svg></span><span class="nm">maydly 시안(고객용)</span></a>
@@ -1245,8 +1431,8 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
       <a class="nav" style="--c1:#d0c5e3;--c2:#b1a2d0" href="https://maydly.github.io/note/myapp/?tab=info" title="정보"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg></span><span class="nm">정보</span></a>
     </details>
 
-    <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>장비 자료<span class="n">13</span></summary>
-      <a class="nav" style="--c1:#a7cdd0;--c2:#85b3b7" href="https://maydly.github.io/note/07_장비비교자료/00_장비비교_목차_latest.html" title="장비비교 목차"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg></span><span class="nm">장비비교 목차</span></a>
+    <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>장비 자료<span class="n">14</span></summary>
+      <a class="nav" style="--c1:#a7cdd0;--c2:#85b3b7" href="https://maydly.github.io/note/07_장비비교자료/" title="장비비교 목차"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg></span><span class="nm">장비비교 목차</span></a>
       <a class="nav" style="--c1:#a6c9d6;--c2:#84aec2" href="https://maydly.github.io/note/07_장비비교자료/01_카메라_비교표_latest.html" title="카메라 비교표 — 바디 포함"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-camera"/></svg></span><span class="nm">카메라 비교표</span></a>
       <a class="nav" style="--c1:#a9d0c8;--c2:#86b8ae" href="https://maydly.github.io/note/07_장비비교자료/02_렌즈_비교표_latest.html" title="렌즈 비교표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-aperture"/></svg></span><span class="nm">렌즈 비교표</span></a>
       <a class="nav" style="--c1:#aecfd8;--c2:#8bb5c4" href="https://maydly.github.io/note/07_장비비교자료/03_필터_비교표_latest.html" title="필터 비교표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-disc"/></svg></span><span class="nm">필터 비교표</span></a>
@@ -1255,6 +1441,7 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
       <a class="nav" style="--c1:#b3cfd2;--c2:#90b3b8" href="https://maydly.github.io/note/07_장비비교자료/06_촬영지원장비_비교표_latest.html" title="촬영지원장비 비교표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-tripod"/></svg></span><span class="nm">촬영지원장비 비교표</span></a>
       <a class="nav" style="--c1:#a8c4d4;--c2:#86a8bd" href="https://maydly.github.io/note/07_장비비교자료/07_포토프린터_비교표_latest.html" title="포토프린터 비교표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-printer"/></svg></span><span class="nm">포토프린터 비교표</span></a>
       <a class="nav" style="--c1:#b5d2cc;--c2:#92b8b0" href="https://maydly.github.io/note/07_장비비교자료/08_일본빈티지렌즈_쇼핑가이드_latest.html" title="일본 빈티지렌즈 가이드"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-bag"/></svg></span><span class="nm">일본 빈티지렌즈 가이드</span></a>
+      <a class="nav" style="--c1:#c3d6b8;--c2:#9dbb8e" href="https://maydly.github.io/note/osaka/" title="오사카 렌즈 — 올드렌즈 28종 가격표 · 매장 10곳 · 2026.10 여행"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-lens"/></svg></span><span class="nm">오사카 렌즈</span></a>
       <a class="nav" style="--c1:#a2cbc7;--c2:#7fb0ab" href="https://maydly.github.io/note/07_장비비교자료/09_보유장비현황_latest.html" title="보유장비 현황"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-archive"/></svg></span><span class="nm">보유장비 현황</span></a>
       <a class="nav" style="--c1:#b0cad6;--c2:#8daec0" href="https://maydly.github.io/note/07_장비비교자료/10_구매계획리스트_latest.html" title="구매계획 리스트"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-receipt"/></svg></span><span class="nm">구매계획 리스트</span></a>
       <a class="nav" style="--c1:#d8cba8;--c2:#c2b184" href="https://maydly.github.io/note/07_장비비교자료/11_조명셋업짜기_latest.html" title="조명 셋업 — 고른 결정 수"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-sliders"/></svg></span><span class="nm">조명 셋업 짜기</span><span class="bdg soft" id="nv-light"></span></a>
@@ -1282,10 +1469,11 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
       <a class="nav" style="--c1:#b7c9b0;--c2:#94ae8c" href="https://maydly.github.io/note/prep/" title="독립 준비 점검표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-compass"/></svg></span><span class="nm">독립 준비 점검표</span></a>
     </details>
 
-    <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>수빈<span class="n">3</span></summary>
+    <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>수빈<span class="n">4</span></summary>
       <a class="nav" style="--c1:#bcd0ac;--c2:#a3bd90" href="https://maydly.github.io/note/subin/" title="수빈 앱(루틴)"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="nm">수빈 앱(루틴)</span></a>
       <a class="nav" style="--c1:#e6c9a8;--c2:#d4ad82" href="https://subin-routine.web.app/saju/" title="수빈 사주"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-moon"/></svg></span><span class="nm">수빈 사주</span></a>
       <a class="nav" style="--c1:#bcd0ac;--c2:#a3bd90" href="https://maydly.github.io/subin-routine/" title="루틴앱 전용본"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg></span><span class="nm">루틴앱 전용본</span></a>
+      <a class="nav" style="--c1:#efc2b3;--c2:#dfa28f" href="https://maydly.github.io/note/games/" title="둘이 할 게임 — 2인 협동 · 1인 추리 129개"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-gamepad"/></svg></span><span class="nm">둘이 할 게임</span></a>
     </details>
   </aside>
 
@@ -1299,7 +1487,7 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
       <a class="tab" role="tab" id="tab-biz" href="#biz" target="_self" data-tab="biz" aria-selected="false" aria-controls="pane-biz" title="사업 — 단축키 2"><span class="ti"><svg class="ic" aria-hidden="true"><use href="#i-briefcase"/></svg></span><span class="tx">사업</span></a>
       <a class="tab" role="tab" id="tab-apps" href="#apps" target="_self" data-tab="apps" aria-selected="false" aria-controls="pane-apps" title="앱 창 — 단축키 3"><span class="ti"><svg class="ic" aria-hidden="true"><use href="#i-grid"/></svg></span><span class="tx">앱 창</span></a>
       <a class="tab" role="tab" id="tab-library" href="#library" target="_self" data-tab="library" aria-selected="false" aria-controls="pane-library" title="자료실 — 단축키 4"><span class="ti"><svg class="ic" aria-hidden="true"><use href="#i-library"/></svg></span><span class="tx">자료실</span></a>
-      <a class="tab" role="tab" id="tab-more" href="#more" target="_self" data-tab="more" aria-selected="false" aria-controls="pane-more" title="더보기 — 수빈 루틴 · 점검 · 바로가기 · 단축키 5"><span class="ti"><svg class="ic" aria-hidden="true"><use href="#i-more"/></svg></span><span class="tx">더보기</span></a>
+      <a class="tab" role="tab" id="tab-more" href="#more" target="_self" data-tab="more" aria-selected="false" aria-controls="pane-more" title="더보기 — 바로가기 · 알림 · 수빈 · 둘이 할 게임 · 점검 · 단축키 5"><span class="ti"><svg class="ic" aria-hidden="true"><use href="#i-more"/></svg></span><span class="tx">더보기</span></a>
     </nav>
 
     <section class="tabpane on" data-tab="today" id="pane-today" role="tabpanel" aria-labelledby="tab-today">
@@ -1484,7 +1672,7 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
     </div>
 
     <!-- ══════ 촬영 · 고객 ══════ -->
-    <div class="sechd"><h2>촬영 &middot; 고객</h2><div class="sn">문의 &middot; 시안 &middot; 사진맵</div></div>
+    <div class="sechd"><h2>촬영 &middot; 고객</h2><div class="sn">문의 &middot; 시안 &middot; 협업 안내</div></div>
     <div class="grid2">
       <div class="card">
         <div class="ch"><div class="ct"><span class="cic" style="--c1:#cdd9b0;--c2:#aec48f" aria-hidden="true"><svg class="ic"><use href="#i-inbox"/></svg></span>최근 문의 <span class="cs" id="iq-count" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/hub/설문데이터/">설문 데이터 &rarr;</a></div>
@@ -1501,16 +1689,27 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
         </div>
         <div style="margin-top:12px" class="chips">
           <span class="chip on">시안 4종 · 68컷</span>
-          <a class="chip" href="https://maydly.github.io/note/hub/시안읽힘/">시안 읽힘(어디까지 봤나) &rarr;</a>
+          <a class="chip" href="https://maydly.github.io/note/hub/설문데이터/#views">시안 읽힘(어디까지 봤나) &rarr;</a>
         </div>
         <div class="srcnote">시안을 «보낸» 기록은 저장하는 앱이 없어 발송 횟수는 데이터 없음으로 둡니다. 썸네일은 시안마다 표지 1장(240px)만 따로 만들어 씁니다.</div>
+      </div>
+    </div>
+
+    <!-- v2.5 독바 동기화 — 협업 안내(문의가 온 뒤 골라서 보내는 답신 안내서). 비용·금액 문구는 넣지 않는다 -->
+    <div class="card collabcard" style="margin-bottom:14px">
+      <div class="ch"><div class="ct"><span class="cic" style="--c1:#ddd0b4;--c2:#c3b08c" aria-hidden="true"><svg class="ic"><use href="#i-mail"/></svg></span>협업 안내</div><a class="more" href="https://maydly.github.io/collab/">안내서 열기 &rarr;</a></div>
+      <div class="cbrow">
+        <div class="cbtx"><div class="cb1">협업 문의가 오면 골라서 보내는 답신 안내서</div>
+          <div class="chips cbchips"><span class="chip">담고 싶은 사진</span><span class="chip">준비 나눔</span><span class="chip on">필독 공지</span><span class="chip">답장 때 알려줄 것</span></div>
+          <div class="cb2">필독 공지 — 사진 활용·저작권 · 촬영물 전달 기준 · 변경·취소 · 진행이 어려운 경우</div></div>
+        <button type="button" class="sendbtn" data-share="https://maydly.github.io/collab/" data-title="maydly — 상호 협업 촬영 안내"><svg class="ic" aria-hidden="true"><use href="#i-share"/></svg><span>주소 보내기</span></button>
       </div>
     </div>
 
     </section>
 
     <section class="tabpane" data-tab="apps" id="pane-apps" role="tabpanel" aria-labelledby="tab-apps">
-    <div class="tier"><span class="tchip" aria-hidden="true"><svg class="ic"><use href="#i-grid"/></svg></span><h2>앱 창</h2><div class="ts">진짜 앱을 그대로 끼워 넣음 — 여기서 바로 조작 · 새 탭에서 열기 ↗ 는 따로</div></div>
+    <div class="tier"><span class="tchip" aria-hidden="true"><svg class="ic"><use href="#i-grid"/></svg></span><h2>앱 창</h2><div class="ts">진짜 앱 8개를 그대로 끼워 넣음 — 여기서 바로 조작 · 새 탭에서 열기 ↗ 는 따로</div></div>
 
     <div class="appgrid">
       <div class="card appc" data-app="cal" style="--c1:#e7bcb4;--c2:#dda79d">
@@ -1549,6 +1748,18 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
           <a class="appext" href="https://maydly.github.io/note/film/" aria-label="빈티지 필름 — 새 탭에서 열기">새 탭에서 열기<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></div>
         <div class="frame short" id="fr-film"><div class="fph" aria-hidden="true"><span class="fpi"><svg class="ic"><use href="#i-film"/></svg></span><span class="fpt">빈티지 필름 불러오는 중…</span></div><iframe data-src="https://maydly.github.io/note/film/" title="빈티지 필름" loading="lazy"></iframe></div>
       </div>
+      <div class="card appc" data-app="osaka" style="--c1:#c3d6b8;--c2:#9dbb8e">
+        <div class="apph"><span class="appi" aria-hidden="true"><svg class="ic"><use href="#i-lens"/></svg></span>
+          <div class="appt"><div class="ct">오사카 렌즈</div><div class="appsub" id="ap-osaka" title="올드렌즈 28종 가격표 · 매장 10곳 · 2026.10 여행">렌즈 28종 · 매장 10곳</div></div>
+          <a class="appext" href="https://maydly.github.io/note/osaka/" aria-label="오사카 렌즈 — 새 탭에서 열기">새 탭에서 열기<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></div>
+        <div class="frame" id="fr-osaka"><div class="fph" aria-hidden="true"><span class="fpi"><svg class="ic"><use href="#i-lens"/></svg></span><span class="fpt">오사카 렌즈 불러오는 중…</span></div><iframe data-src="https://maydly.github.io/note/osaka/" title="오사카 렌즈" loading="lazy"></iframe></div>
+      </div>
+      <div class="card appc" data-app="games" style="--c1:#efc2b3;--c2:#dfa28f">
+        <div class="apph"><span class="appi" aria-hidden="true"><svg class="ic"><use href="#i-gamepad"/></svg></span>
+          <div class="appt"><div class="ct">둘이 할 게임</div><div class="appsub" id="ap-games">2인 협동 · 1인 추리 129개</div></div>
+          <a class="appext" href="https://maydly.github.io/note/games/" aria-label="둘이 할 게임 — 새 탭에서 열기">새 탭에서 열기<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></div>
+        <div class="frame" id="fr-games"><div class="fph" aria-hidden="true"><span class="fpi"><svg class="ic"><use href="#i-gamepad"/></svg></span><span class="fpt">둘이 할 게임 불러오는 중…</span></div><iframe data-src="https://maydly.github.io/note/games/" title="둘이 할 게임" loading="lazy"></iframe></div>
+      </div>
     </div>
 
     </section>
@@ -1557,7 +1768,7 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
     <div class="tier"><span class="tchip" aria-hidden="true"><svg class="ic"><use href="#i-library"/></svg></span><h2>자료실</h2><div class="ts">장비 · 필름 · 여행 · 기록 — 전부 펼침</div></div>
     <div class="vopen">
     <!-- ══════ 장비 ══════ -->
-    <div class="sechd"><h2>장비</h2><div class="sn">보유 &middot; 구매계획 &middot; 조명 셋업 &middot; 비교표</div></div>
+    <div class="sechd"><h2>장비</h2><div class="sn">보유 &middot; 구매계획 &middot; 조명 셋업 &middot; 비교표 &middot; 오사카 렌즈</div></div>
     <div class="grid3">
       <div class="card">
         <div class="ch"><div class="ct"><span class="cic" style="--c1:#d3bfe0;--c2:#b79bd4" aria-hidden="true"><svg class="ic"><use href="#i-box"/></svg></span>보유 장비</div><div class="cs"><span id="r-owns">—</span></div></div>
@@ -1590,7 +1801,7 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
       <div class="ch"><div class="ct"><span class="cic" style="--c1:#a7cdd0;--c2:#85b3b7" aria-hidden="true"><svg class="ic"><use href="#i-list"/></svg></span>장비 비교표</div><div class="cs">조명 셋업에서 고른 장비</div></div>
       <div id="pick-tbl"><div class="skel"><i></i><i></i><span class="sr">불러오는 중…</span></div></div>
       <div class="chips" style="margin-top:13px">
-        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/00_장비비교_목차_latest.html">목차</a>
+        <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/">목차</a>
         <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/01_카메라_비교표_latest.html">카메라</a>
         <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/02_렌즈_비교표_latest.html">렌즈</a>
         <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/03_필터_비교표_latest.html">필터</a>
@@ -1605,6 +1816,18 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
         <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/12_조명악세사리_원리비교가이드_latest.html">조명 악세사리 원리</a>
       </div>
       <div class="srcnote">비교표에서 «최근 본 것»·후보 비교 값은 저장하는 앱이 없어, 실제로 고른 기록(조명 셋업)만 표로 보여줍니다.</div>
+    </div>
+
+    <!-- v2.5 독바 동기화 — 오사카 렌즈(조사-009 구매 최종판, note/osaka/ 내용 기준) -->
+    <div class="card osakacard" style="margin-bottom:14px">
+      <div class="ch"><div class="ct"><span class="cic" style="--c1:#c3d6b8;--c2:#9dbb8e" aria-hidden="true"><svg class="ic"><use href="#i-lens"/></svg></span>오사카 렌즈 <span class="cs" style="margin-left:6px">구매 최종판</span></div><a class="more" href="https://maydly.github.io/note/osaka/">열기 &rarr;</a></div>
+      <div class="oskpi">
+        <a class="osk" href="https://maydly.github.io/note/osaka/"><b>28<small>종</small></b><span>올드렌즈 값표</span></a>
+        <a class="osk" href="https://maydly.github.io/note/osaka/"><b>10<small>곳</small></b><span>매장</span></a>
+        <a class="osk" href="https://maydly.github.io/note/osaka/"><b>3<small>안</small></b><span>예산</span></a>
+      </div>
+      <div class="cb2 osline">매대가를 넣으면 횡재·패스 판정 · 오사카역앞 빌딩 세 동에 네 곳 · 여는 시간에 맞춘 하루 순서 · 매대 5초 점검 · 일본어 여섯 마디 · 면세·통관 · 출발 전 체크리스트</div>
+      <div class="chips" style="margin-top:11px"><span class="chip on">2026년 10월 중순</span><span class="chip">100엔 = 870원 기준</span><span class="chip">예산 최소 · 표준 · 적극</span></div>
     </div>
 
     <!-- ══════ 필름 ══════ -->
@@ -1673,7 +1896,7 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
     </section>
 
     <section class="tabpane" data-tab="more" id="pane-more" role="tabpanel" aria-labelledby="tab-more">
-    <div class="tier"><span class="tchip" aria-hidden="true"><svg class="ic"><use href="#i-more"/></svg></span><h2>더보기</h2><div class="ts">바로가기 · 수빈 루틴 · 점검</div></div>
+    <div class="tier"><span class="tchip" aria-hidden="true"><svg class="ic"><use href="#i-more"/></svg></span><h2>더보기</h2><div class="ts">바로가기 · 알림 · 수빈 · 함께 · 점검</div></div>
 
     <!-- 폰 전용 — 왼쪽 목차와 같은 바로가기(이름 + 아이콘). 웹에서는 왼쪽 목차가 늘 보여 숨긴다 -->
     <div class="card linkscard" id="links" aria-label="바로가기">
@@ -1681,7 +1904,39 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
       <div id="links-list"></div>
     </div>
 
-    <div class="sechd" id="personal"><h2>수빈</h2><div class="sn">루틴 — 현장 모드에서 가려짐</div></div>
+    <!-- v2.5 알림 — 앱을 닫아도 오는 알림(구글 캘린더) · 홈 화면 아이콘 숫자(배지) · 앱 안 단계 알림. 서버·토큰 없음, 저장 없음 -->
+    <div class="sechd" id="notify"><h2>알림</h2><div class="sn">앱 밖 · 아이콘 숫자 · 앱 안</div></div>
+    <div class="card notifcard" style="margin-bottom:14px">
+      <div class="nrow">
+        <span class="nri" style="--c1:#a6c8e2;--c2:#80a9cf" aria-hidden="true"><svg class="ic"><use href="#i-calendar"/></svg></span>
+        <div class="nrb"><div class="nr1">앱을 닫아도 오는 알림 <span class="nst">구글 캘린더 「maydly 알림」</span></div>
+          <div class="nr2">알림 스크립트를 설치해 두었다면 보정본 전달·의상 확인 기한 <b>7일 전 · 3일 전 오전 9시</b>에 폰으로 알림이 와요. 기한 당일·지난 첫날엔 요약 메일도 한 통. 매일 아침 8시에 명진 캘린더를 읽기만 해서 채워요.</div>
+          <details class="nset"><summary><svg class="ic sm" aria-hidden="true"><use href="#i-chev"/></svg>아이폰에서 받으려면</summary>
+            <ol>
+              <li>PC에서 알림 스크립트를 한 번 설치해요(약 3분). 안내는 PC 작업 폴더 <b>운영-018 › 1-2_기한알림_구글캘린더</b>의 «maydly_기한알림_구글캘린더_설치안내» 문서예요. 이미 했다면 건너뛰기.</li>
+              <li>App Store에서 <b>Google Calendar</b> 앱을 받고 bucket0825 계정으로 로그인.</li>
+              <li>아이폰 <b>설정 › 알림 › Google Calendar</b> — 알림 허용 · 잠금 화면 · 배너 · 소리 켜기.</li>
+              <li>구글 캘린더 앱 왼쪽 위 메뉴(≡)에서 <b>「maydly 알림」</b> 체크를 켠 채로 두기.</li>
+              <li>일정 하나를 눌러 알림에 «7일 전 오전 9:00 · 3일 전 오전 9:00»이 있는지 확인.</li>
+              <li>아이폰 기본 캘린더에도 구글 계정이 연결돼 있으면 <b>설정 › 알림 › 캘린더</b>를 꺼서 두 번 오지 않게.</li>
+            </ol>
+            <div class="nr2">안 오면 집중 모드의 허용 앱 · 예약된 요약 · 백그라운드 앱 새로 고침을 확인해 보세요.</div>
+          </details></div>
+      </div>
+      <div class="nrow" id="bdg-row">
+        <span class="nri" style="--c1:#e7bcb4;--c2:#dda79d" aria-hidden="true"><svg class="ic"><use href="#i-appbadge"/></svg></span>
+        <div class="nrb"><div class="nr1">홈 화면 아이콘 숫자 <span class="nst" id="bdg-st">확인 중</span></div>
+          <div class="nr2" id="bdg-tx">아이폰 홈 화면에 추가한 앱에서 켤 수 있어요.</div>
+          <div class="nbtns"><button type="button" class="nbtn" id="bdg-on" hidden><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg>아이콘 숫자 켜기</button></div></div>
+      </div>
+      <div class="nrow">
+        <span class="nri" style="--c1:#a8d3a0;--c2:#7fb877" aria-hidden="true"><svg class="ic"><use href="#i-zap"/></svg></span>
+        <div class="nrb"><div class="nr1">앱 안 단계 알림 <span class="nst">「지금 처리할 것」</span></div>
+          <div class="nr2">기한 7일 전 «주의» → 3일 전 «긴급» → 지나면 «지남»으로 올라와요. 오늘 탭 숫자 · 목차 배지 · 아이콘 숫자가 같은 기준(지남 + 긴급)이에요.</div></div>
+      </div>
+    </div>
+
+    <div class="sechd" id="personal"><h2>수빈 · 함께</h2><div class="sn">루틴 — 현장 모드에서 가려짐 · 둘이 할 게임</div></div>
     <div class="card" style="margin-bottom:14px">
         <div class="ch"><div class="ct"><span class="cic" style="--c1:#bcd0ac;--c2:#a3bd90" aria-hidden="true"><svg class="ic"><use href="#i-sprout"/></svg></span>이번주 루틴 <span class="cs" id="sb-week" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/subin/">수빈 앱 &rarr;</a></div>
         <div id="sb-tbl"><div class="skel"><i></i><i></i><span class="sr">불러오는 중…</span></div></div>
@@ -1689,6 +1944,17 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
           <span><i style="background:#fff;border:1.5px solid #cfdccb"></i>오늘 아직</span><span><i style="border:1.5px dashed #dfe6dc"></i>앞으로</span></div>
                 <div class="srcnote">수빈 앱의 «매일» 목표 기준 · 주는 월요일부터 · 연속 일수는 수빈 앱에 없는 개념이라 표시하지 않습니다.</div>
       </div>
+
+    <!-- v2.5 독바 동기화 — 둘이 할 게임(note/games/ 내용 기준 · 찜 수는 이 기기 기록을 읽기만) -->
+    <div class="card gamescard" style="margin-bottom:14px">
+      <div class="ch"><div class="ct"><span class="cic" style="--c1:#efc2b3;--c2:#dfa28f" aria-hidden="true"><svg class="ic"><use href="#i-gamepad"/></svg></span>둘이 할 게임 <span class="cs" style="margin-left:6px">129개</span></div><a class="more" href="https://maydly.github.io/note/games/">게임 고르기 &rarr;</a></div>
+      <div class="oskpi gk">
+        <a class="osk" href="https://maydly.github.io/note/games/"><b>102</b><span>2인 협동</span></a>
+        <a class="osk" href="https://maydly.github.io/note/games/"><b>27</b><span>1인 추리</span></a>
+        <a class="osk" href="https://maydly.github.io/note/games/"><b id="gm-heart">—</b><span>♡ 찜 · 이 기기</span></a>
+      </div>
+      <div class="cb2 osline">잇 테이크 투 · 피크가 재밌었던 취향으로 «먼저 해볼 10개» · 추리는 오리 탐정 → 골든 아이돌 → 오브라 딘 순서 · 스팀 공식 데이터(9/28) 기준</div>
+    </div>
 
     <div class="sechd" id="system"><h2>점검</h2><div class="sn">주간 · 격주 · 4주 점검 · 재고</div></div>
     <div class="card">
@@ -1708,7 +1974,7 @@ body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리�
     </div>
     </section>
 
-    <div class="foot" title="홈 v2.4 미리보기"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
+    <div class="foot" title="홈 v2.5 미리보기"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
 
   </main>
 </div>
@@ -2104,6 +2370,13 @@ function paintLight(ls) {
 async function paintLocal() {
   const f = D.film();
   paintFilm(f);
+  // v2.5 둘이 할 게임 — 이 기기의 ♡ 찜 수(읽기만). 못 읽으면 «—»
+  //   jo009_hearts_v1 = 찜한 게임 이름 배열(games/index.html 의 KEY). 키가 없으면 찜한 적 없음 → 0.
+  //   data-adapter.js 는 건드리지 않는다(무변경 기준) — 여기서 직접 읽기만 한다.
+  { let gh = null;
+    try { const raw = localStorage.getItem('jo009_hearts_v1'); if (!raw) gh = 0; else { const a = JSON.parse(raw); gh = Array.isArray(a) ? a.filter(Boolean).length : null; } } catch (e) { gh = null; }
+    set('gm-heart', gh == null ? dash : String(gh));
+    set('ap-games', '2인 협동 · 1인 추리 129개' + (gh ? ` · 찜 ${gh}` : '')); }
   const [pl, ls] = await Promise.all([D.travelPlaces(), D.lightSetup()]);
   paintTravel(pl);
   paintLight(ls);
@@ -2469,6 +2742,8 @@ async function paintCloudRun() {
     paintNowSum({ over: S.over.length, d3: S.d3.length, d7: S.d7.length,
       extra: (noshToday ? noshToday.length : 0) + (noneMonth ? noneMonth.length : 0), w: lg ? wN : dash,
       calOk: !!evs, todoOk: !!tod, payMiss: !noneMonth, top });
+    // v2.5 홈 화면 아이콘 숫자 — 「지금 처리할 것」 큰 숫자·오늘 탭 숫자와 같은 값(지남 + 긴급). 캘린더·할 일을 둘 다 못 읽었으면 그대로 둔다(틀린 0 방지)
+    if (window.__homeBadge) window.__homeBadge.set((evs || tod) ? S.over.length + S.d3.length + (noshToday ? noshToday.length : 0) + (noneMonth ? noneMonth.length : 0) : null);
   }
   setTimeout(() => window.dispatchEvent(new Event('home:painted')), 0);   // 칸이 다 채워진 뒤 — #now 로 들어온 경우 위치를 다시 맞춘다
 
@@ -2709,13 +2984,22 @@ function toast(msg) {
 const LOGIN_ERR = { 'auth/popup-blocked': '팝업이 막혔어요. 다시 한 번 눌러 주세요.', 'auth/popup-closed-by-user': '로그인 창이 닫혔어요.',
   'auth/cancelled-popup-request': '로그인 창이 닫혔어요.', 'auth/network-request-failed': '인터넷 연결을 확인해 주세요.',
   'auth/unauthorized-domain': '이 주소에서는 로그인할 수 없어요.' };
-let _loginT = 0;
+let _loginT = 0, _loginSlowT = 0;
 function doLogin() {
   // v2.4 오브스: 누른 뒤 로그인이 끝날 때까지(성공 · 창 닫힘 · 실패) 로그인 칩에 «연결 중» 구슬. 3분 넘게 걸리면 구슬만 끈다
   _loggingIn = true; orbSync();
   clearTimeout(_loginT); _loginT = setTimeout(() => { _loggingIn = false; orbSync(); }, 180000);
+  // v2.5 아이폰 홈 화면 앱: 구글 로그인 창이 닫히지 않고 멈추는 경우가 있다(끝나지도 실패하지도 않음) → 15초 뒤 구슬을 멈추고 안내만
+  clearTimeout(_loginSlowT);
+  if (window.__standalone) _loginSlowT = setTimeout(() => {
+    if (!_loggingIn || D.currentUser()) return;
+    _loggingIn = false; orbSync();
+    // 다시 누르면 된다고 약속하지 않는다 — 홈 화면 앱의 구글 로그인 팝업은 다시 눌러도 같은 자리에서 멈춘다는 보고가 있다(firebase-js-sdk #77)
+    toast('홈 화면 앱에서는 구글 로그인 창이 멈출 수 있어요. 왼쪽 위 «완료»로 닫아 주세요 — 다시 눌러도 같으면 사파리에서 홈을 열어 로그인해 보세요.');
+    clearTimeout(toast._t); toast._t = setTimeout(() => { const el = $('toast'); if (el) el.hidden = true; }, 9000);   // 긴 안내라 조금 더 오래
+  }, 15000);
   D.login().catch((e) => toast('로그인하지 못했어요 — ' + (LOGIN_ERR[e && e.code] || '잠시 뒤 다시 시도해 주세요.')))
-    .finally(() => { clearTimeout(_loginT); _loggingIn = false; orbSync(); });
+    .finally(() => { clearTimeout(_loginT); clearTimeout(_loginSlowT); _loggingIn = false; orbSync(); });
 }
 const acct = $('acctMenu');
 function acctOpen(on) {
@@ -2801,6 +3085,7 @@ D.onUser((u) => {
   _bridging = false;             // 다리가 끝나고 첫 로그인 상태가 왔다
   paintLoginBtn(u);
   const id = u ? u.uid : null;
+  if (!u && _uid && window.__homeBadge) window.__homeBadge.clear();   // v2.5: 로그아웃 → 아이콘 숫자도 지운다(처음 켤 때 로그아웃 상태면 건드리지 않음)
   if (id !== _uid) { D.resetCache(); _uid = id; }
   if (u) paintCloud();
   else { _seq++; paintLoggedOut(); }
@@ -2814,7 +3099,14 @@ D.onUser((u) => {
 (function () {
   var TABS = ['today', 'biz', 'apps', 'library', 'more'];
   var NAMES = { today: '오늘', biz: '사업', apps: '앱 창', library: '자료실', more: '더보기' };
-  var ALIAS = { personal: 'more', system: 'more', links: 'more' };   // 옛 주소(#personal·#system)와 바로가기(#links) → 더보기 안 그 자리
+  var ALIAS = { personal: 'more', system: 'more', links: 'more', notify: 'more' };   // 옛 주소(#personal·#system)와 바로가기(#links)·알림(#notify) → 더보기 안 그 자리
+  // v2.5 아이폰 홈 화면 앱: 구역을 바꿀 때 방문 기록을 쌓지 않는다(주소만 바꿔 끼움) — 쓸어서 뒤로 가기가 탭을 거슬러 올라가지 않게. 웹은 지금처럼
+  var SA = !!window.__standalone;
+  function go(h) {
+    if (location.hash === h) { route('nav'); return; }
+    if (SA && window.history && history.replaceState) { try { history.replaceState(history.state, '', h); route('nav'); return; } catch (e) {} }
+    location.hash = h;
+  }
   var body = document.body;
   var arr = function (x) { return Array.prototype.slice.call(x); };
   var panes = arr(document.querySelectorAll('.tabpane'));
@@ -2848,7 +3140,7 @@ D.onUser((u) => {
       box.appendChild(c);
     });
     var d = document.createElement('a');
-    d.className = 'nav dockrow'; d.href = '../'; d.title = '타일 독바 — 새 탭으로 열림'; d.style.cssText = '--c1:#c9d6c3;--c2:#a3b69c';
+    d.className = 'nav dockrow'; d.href = '../'; d.title = window.__standalone ? '타일 독바로 돌아가기' : '타일 독바 — 새 탭으로 열림'; d.style.cssText = '--c1:#c9d6c3;--c2:#a3b69c';
     d.innerHTML = '<span class="e"><svg class="ic" aria-hidden="true"><use href="#i-dock"/></svg></span><span class="nm">타일 독바</span>';
     box.appendChild(d);
   })();
@@ -2932,14 +3224,14 @@ D.onUser((u) => {
       if (!box) { box = document.createElement('div'); box.className = 'fpf'; fph.appendChild(box); }
       if (kind === 'fail') {
         box.innerHTML = '<span class="fpf-t">창을 불러오지 못했어요</span>'
-          + '<span class="fpf-s">새 탭에서 열면 바로 볼 수 있어요</span>'
-          + '<a class="appext" target="_blank" rel="noopener">새 탭에서 열기<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a>';
+          + '<span class="fpf-s">' + (SA ? '크게 열면 바로 볼 수 있어요' : '새 탭에서 열면 바로 볼 수 있어요') + '</span>'
+          + '<a class="appext" target="_blank" rel="noopener">' + (SA ? '크게 열기' : '새 탭에서 열기') + '<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a>';
         var a = box.querySelector('a');
         a.href = ext ? ext.href : f.getAttribute('data-src');
-        a.setAttribute('aria-label', (f.title || '앱') + ' — 새 탭에서 열기');
+        a.setAttribute('aria-label', (f.title || '앱') + (SA ? ' — 크게 열기' : ' — 새 탭에서 열기'));
       } else {
         box.innerHTML = '<span class="fpf-t">느리게 열리고 있어요</span>'
-          + '<span class="fpf-s">조금 더 기다리거나, 위 «새 탭에서 열기»로 바로 볼 수 있어요</span>';
+          + '<span class="fpf-s">조금 더 기다리거나, 위 «' + (SA ? '크게 열기' : '새 탭에서 열기') + '»로 바로 볼 수 있어요</span>';
       }
     }
     function slow() {
@@ -3033,6 +3325,7 @@ D.onUser((u) => {
     });
     document.title = (t === 'today' ? '' : NAMES[t] + ' · ') + baseTitle;
     if (t === 'apps') loadApps();
+    else arr(document.querySelectorAll('#pane-apps .frame.live')).forEach(function (x) { x.classList.remove('live'); });   // v2.5: 다른 구역으로 가면 «조작 중» 창은 다시 덮는다
     if (t !== curTab) { curTab = t; animPane(t); }
     return t;
   }
@@ -3088,7 +3381,7 @@ D.onUser((u) => {
     if (h.charAt(0) !== '#') return;          // 다른 페이지 — 새 탭
     ev.preventDefault();                       // 같은 페이지 안 — 새 탭이 아니라 이 탭에서
     if (h.length < 2) return;
-    if (location.hash === h) route('nav'); else location.hash = h;
+    go(h);
   });
   if (bar) bar.addEventListener('keydown', function (ev) {   // 탭 줄: ← → Home End 로 이동
     var i = tabs.indexOf(document.activeElement); if (i < 0) return;
@@ -3111,7 +3404,7 @@ D.onUser((u) => {
     if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
     var name = TABS[+k - 1];
     ev.preventDefault();
-    if (location.hash === '#' + name) route('nav'); else location.hash = '#' + name;
+    go('#' + name);
   });
   setTimeout(function () { body.classList.add('ready'); }, 900);   // 카드 등장 움직임은 처음 한 번만
 
@@ -3122,6 +3415,360 @@ D.onUser((u) => {
   });
 
   route('init');
+})();
+</script>
+<script>
+// ══ v2.5 독바 동기화 · 아이폰 (260930) — 보내기 버튼 · 아이콘 숫자(배지) · 홈 화면 앱의 «크게 열기» 창 · 앱 창 덮개 ══
+// 원칙: 저장소(localStorage·IndexedDB·Firestore)에 쓰지 않는다. 알림 권한 요청은 명진이 버튼을 누를 때만(브라우저 권한 — 저장 아님).
+// 서비스 워커·푸시 없음(앱을 닫아도 오는 알림은 구글 캘린더 「maydly 알림」이 맡는다). 웹(데스크톱)에서는 지금처럼 새 탭.
+(function () {
+  var SA = !!window.__standalone;
+  var arr = function (x) { return Array.prototype.slice.call(x); };
+  var $ = function (id) { return document.getElementById(id); };
+  var tt = 0;
+  function note(msg) {   // 화면 아래 짧은 알림(모듈이 못 떠도 쓸 수 있게 따로)
+    var el = $('toast'); if (!el) return;
+    el.textContent = msg; el.hidden = false;
+    clearTimeout(tt); tt = setTimeout(function () { el.hidden = true; }, 3200);
+  }
+  var hhmm = function (d) { return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); };
+
+  // ── 주소 보내기 — 아이폰은 공유 시트, 안 되면 주소 복사
+  function sendUrl(url, title) {
+    if (navigator.share) {
+      navigator.share({ title: title || 'maydly', url: url }).catch(function () {});
+      return;
+    }
+    var done = function () { note('주소를 복사했어요'); };
+    var fail = function () { note('복사하지 못했어요 — ' + url); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, fail);
+    else fail();
+  }
+  document.addEventListener('click', function (ev) {
+    var b = ev.target && ev.target.closest ? ev.target.closest('.sendbtn') : null;
+    if (!b) return;
+    ev.preventDefault();
+    sendUrl(b.getAttribute('data-share'), b.getAttribute('data-title'));
+  });
+
+  // ── 홈 화면 아이콘 숫자(배지) — iOS 16.4+ 홈 화면 앱 · 알림 권한 허용 시. 값 = 「지금 처리할 것」 큰 숫자(지남 + 긴급)
+  //    앱이 열려 있을 때만 바뀐다(서버 푸시 없음) → «마지막으로 연 때 기준». 못 읽었으면(null) 건드리지 않는다
+  var B = { n: null, at: 0 };
+  var canBadge = function () { return SA && 'setAppBadge' in navigator && 'Notification' in window; };
+  var perm = function () { try { return Notification.permission; } catch (e) { return 'default'; } };
+  function applyBadge() {
+    if (!canBadge() || perm() !== 'granted' || B.n == null) return;
+    try {
+      var p = B.n > 0 ? navigator.setAppBadge(B.n) : navigator.clearAppBadge();
+      if (p && p.catch) p.catch(function () {});
+    } catch (e) {}
+  }
+  function paintBadgeUI() {
+    var st = $('bdg-st'), tx = $('bdg-tx'), btn = $('bdg-on');
+    if (!st || !tx || !btn) return;
+    var cls = function (c) { st.className = 'nst' + (c ? ' ' + c : ''); };
+    btn.hidden = true;
+    if (!SA) {
+      st.textContent = '홈 화면 앱에서'; cls('');
+      tx.textContent = '아이폰 홈 화면에 추가한 앱으로 열면 켤 수 있어요(iOS 16.4 이상). 켜면 지남 + 긴급 건수가 아이콘에 숫자로 떠요.';
+      return;
+    }
+    if (!canBadge()) {
+      st.textContent = '지원 안 됨'; cls('');
+      tx.textContent = '이 기기에서는 아이콘 숫자를 쓸 수 없어요(iOS 16.4 이상 필요).';
+      return;
+    }
+    var p = perm();
+    if (p === 'granted') {
+      st.textContent = '켜짐'; cls('on');
+      tx.textContent = B.n == null ? '로그인해서 데이터를 읽으면 숫자가 반영돼요. 앱을 연 때 기준으로 바뀌어요.'
+        : '지금 ' + B.n + '건 · ' + hhmm(new Date(B.at)) + ' 기준 — 숫자는 이 홈을 열 때만 새로 맞춰져요. 독바만 쓰는 날이 이어지면 그 사이 처리한 일이 반영되지 않은 옛 숫자가 남아요.';
+    } else if (p === 'denied') {
+      st.textContent = '꺼짐'; cls('off');
+      tx.textContent = '알림을 거절해 두었어요. 아이폰 설정 › 알림 › 이 앱(maydly 또는 maydly 홈)에서 알림 허용과 배지를 켜 주세요.';
+    } else {
+      st.textContent = '꺼짐'; cls('');
+      tx.textContent = '켜면 지남 + 긴급 건수를 아이콘에 숫자로 보여 줘요. 소리·배너 없이 숫자만 — 이 홈을 열 때만 새로 맞춰져서, 독바만 쓰는 날이 이어지면 옛 숫자가 남을 수 있어요.';
+      btn.hidden = false;
+    }
+  }
+  window.__homeBadge = {
+    set: function (n) { if (n == null) return; B.n = Math.max(0, n | 0); B.at = Date.now(); applyBadge(); paintBadgeUI(); },
+    clear: function () { B.n = 0; B.at = Date.now(); applyBadge(); paintBadgeUI(); }
+  };
+  { var bb = $('bdg-on');
+    if (bb) bb.addEventListener('click', function () {
+      // 권한 요청은 누른 바로 그 순간에(앞에 기다림이 있으면 iOS 가 거절한다)
+      var q = null;
+      try { q = Notification.requestPermission(); } catch (e) {}
+      Promise.resolve(q).then(function () {
+        paintBadgeUI(); applyBadge();
+        if (perm() === 'granted') note('아이콘 숫자를 켰어요');
+      }, paintBadgeUI);
+    }); }
+  paintBadgeUI();
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') paintBadgeUI(); });   // 설정에서 권한을 바꾸고 돌아온 경우
+
+  // ── 끼워 넣은 창 안의 «← 허브» 떠 있는 버튼 숨기기(같은 주소라 가능) — 홈 안에서는 홈이 곧 허브라 헷갈린다
+  function hideHubBtn(f) {
+    try {
+      var d = f.contentDocument;
+      if (!d || !d.head || d.getElementById('mh-embed-css')) return;
+      var st = d.createElement('style'); st.id = 'mh-embed-css';
+      st.textContent = '#maydlyHubBtn{display:none!important}';
+      d.head.appendChild(st);
+    } catch (e) {}
+  }
+  // ── 허브 주소인지 — 'dock'(타일 독바 /note/hub/) · 'home'(이 홈 /note/hub/home/) · ''(그 밖)
+  function hubKind(href) {
+    var u; try { u = new URL(href, location.href); } catch (e) { return ''; }
+    if (u.origin !== location.origin && u.origin !== 'https://maydly.github.io') return '';
+    var p = u.pathname.replace(/index\.html$/, '');
+    if (/\/note\/hub\/$/.test(p)) return 'dock';
+    if (/\/note\/hub\/home\/(preview\.html)?$/.test(p)) return 'home';
+    return '';
+  }
+  var dockUrl = function () { return new URL('../', location.href).href; };
+  // ── 끼워 넣은 창(앱 창 · 크게 열기) 안 쪽이 뜰 때마다(첫 쪽뿐 아니라 안에서 다음 쪽으로 넘어가도):
+  //    떠 있는 «← 허브» 숨김 + 앱 안 «← 허브» 링크(명진앱 머리 · 필름 · 점검표 · 떠 있는 버튼) 가로채기 — 창 안에 독바가 겹쳐 뜨지 않게.
+  //    onHub(종류, 이미 넘어갔나) 가 할 일을 정한다. 저장 없음(끼운 쪽 화면에만 손댄다)
+  function embedPrep(f, onHub) {
+    var d, w; try { d = f.contentDocument; w = f.contentWindow; } catch (e) { return false; }
+    if (!d || !w) return false;
+    var k = ''; try { k = hubKind(w.location.href); } catch (e) {}
+    if (k) { onHub(k, true); return true; }   // 스크립트로 허브에 들어와 버린 경우까지
+    hideHubBtn(f);
+    try {
+      if (!d.__mhHub) {
+        d.__mhHub = 1;
+        d.addEventListener('click', function (ev) {
+          if (ev.defaultPrevented || ev.button > 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+          var a = ev.target && ev.target.closest ? ev.target.closest('a[href]') : null; if (!a) return;
+          var k2 = hubKind(a.href); if (!k2) return;
+          ev.preventDefault(); ev.stopPropagation();
+          onHub(k2, false);
+        }, true);
+      }
+    } catch (e) {}
+    return false;
+  }
+  // 앱 창: «← 허브» = 타일 독바로(홈 화면 앱은 같은 창 · 웹은 새 탭 — 왼쪽 목차 «타일 독바»와 같다). 홈 링크면 여기가 홈이라고만.
+  //        창이 허브로 넘어가 버렸으면 원래 앱으로 되돌린다
+  arr(document.querySelectorAll('#pane-apps iframe')).forEach(function (f) {
+    var fr = f.parentNode;
+    var onHub = function (k, landed) {
+      fr.classList.remove('live');
+      if (landed) { var s = f.getAttribute('data-src'); if (s) f.setAttribute('src', s); return; }
+      if (k === 'dock') { if (SA) location.href = dockUrl(); else window.open(dockUrl(), '_blank', 'noopener'); }
+      else note('지금 보고 있는 곳이 홈이에요');
+    };
+    f.addEventListener('load', function () { if (f.getAttribute('src')) embedPrep(f, onHub); });
+    if (f.getAttribute('src')) embedPrep(f, onHub);
+  });
+
+  // ── 앱 창 덮개(폰·패드 — 손가락) : 그냥 밀면 쪽이 스크롤, 한 번 누르면 조작, 오른쪽 위 «조작 끝»으로 다시 덮는다. 웹(마우스)에서는 CSS 가 숨긴다
+  //    창 윗부분이 앱 바 밑으로 올라가 창 안 «조작 끝»이 가려지면, 보이는 자리(앱 바 바로 아래 · 그 창 오른쪽 끝)에 «조작 끝»을 하나 띄운다.
+  //    조작 중인 창이 거의 다 화면 밖으로 나가면(보이는 높이 96px 미만) 저절로 다시 덮는다
+  var liveFr = null, pinRaf = 0;
+  var pin = document.createElement('button');
+  pin.type = 'button'; pin.className = 'fdpin';
+  pin.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>조작 끝';
+  document.body.appendChild(pin);
+  function unlive(fr) {
+    fr.classList.remove('live', 'pinned');
+    if (liveFr === fr) { liveFr = null; pin.classList.remove('on'); }
+  }
+  pin.addEventListener('click', function () { if (liveFr) unlive(liveFr); });
+  function barEdges() {   // 앱 바(위)·탭 막대(폰은 아래, 패드·웹은 위)를 뺀, 실제로 보이는 세로 범위
+    var top = 0, bot = window.innerHeight;
+    ['.appbar', 'body.tabs-on .tabs'].forEach(function (s) {
+      var el = document.querySelector(s); if (!el || !el.getClientRects().length) return;
+      var r = el.getBoundingClientRect(); if (r.height <= 0) return;
+      if (r.top < window.innerHeight / 2) top = Math.max(top, r.bottom); else bot = Math.min(bot, r.top);
+    });
+    return { top: top, bot: bot };
+  }
+  function placePin() {
+    pinRaf = 0;
+    var fr = liveFr; if (!fr) return;
+    if (!fr.isConnected || !fr.classList.contains('live') || !fr.getClientRects().length) { unlive(fr); return; }
+    var r = fr.getBoundingClientRect(), e = barEdges();
+    if (Math.min(r.bottom, e.bot) - Math.max(r.top, e.top) < 96) { unlive(fr); return; }
+    var hid = r.top + 8 < e.top + 2;   // 창 안 «조작 끝»(창 위 8px)이 앱 바에 가렸다
+    fr.classList.toggle('pinned', hid);
+    pin.classList.toggle('on', hid);
+    if (hid) {
+      var card = fr.closest('.appc');
+      pin.style.top = Math.round(e.top + 8) + 'px';
+      pin.style.right = Math.round(Math.max(8, window.innerWidth - r.right + 8)) + 'px';
+      pin.style.setProperty('--c2', card ? getComputedStyle(card).getPropertyValue('--c2').trim() : '');
+      pin.setAttribute('aria-label', ((fr.querySelector('iframe') || {}).title || '앱') + ' 조작 끝');
+    }
+  }
+  var queuePin = function () { if (liveFr && !pinRaf) pinRaf = requestAnimationFrame(placePin); };
+  window.addEventListener('scroll', queuePin, { passive: true });
+  window.addEventListener('resize', queuePin);
+  var frMo = typeof MutationObserver === 'function' ? new MutationObserver(function () { if (liveFr && !liveFr.classList.contains('live')) unlive(liveFr); }) : null;
+  arr(document.querySelectorAll('#pane-apps .appc .frame')).forEach(function (fr) {
+    var f = fr.querySelector('iframe'); if (!f) return;
+    var nm = f.getAttribute('title') || '앱';
+    var cov = document.createElement('button');
+    cov.type = 'button'; cov.className = 'ftouch'; cov.setAttribute('aria-label', nm + ' 조작하기');
+    cov.innerHTML = '<span><svg class="ic" aria-hidden="true"><use href="#i-touch"/></svg>눌러서 조작</span>';
+    var dn = document.createElement('button');
+    dn.type = 'button'; dn.className = 'fdone'; dn.setAttribute('aria-label', nm + ' 조작 끝');
+    dn.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>조작 끝';
+    cov.addEventListener('click', function () {
+      if (liveFr && liveFr !== fr) unlive(liveFr);
+      fr.classList.add('live'); liveFr = fr; placePin();
+      try { f.focus(); } catch (e) {}
+    });
+    dn.addEventListener('click', function () { unlive(fr); });
+    fr.appendChild(cov); fr.appendChild(dn);
+    if (frMo) frMo.observe(fr, { attributes: true, attributeFilter: ['class'] });   // 다른 구역으로 가며 덮이면 떠 있는 «조작 끝»도 내린다
+  });
+
+  if (!SA) return;   // ↓ 여기부터는 아이폰 홈 화면 앱(standalone)에서만
+
+  // 문구 — «새 탭» 대신 «크게 열기»(실제로 이 창 안에서 크게 열린다)
+  arr(document.querySelectorAll('.appext')).forEach(function (a) {
+    var t = a.firstChild;
+    if (t && t.nodeType === 3 && /새 탭에서 열기/.test(t.nodeValue)) t.nodeValue = '크게 열기';
+    var l = a.getAttribute('aria-label'); if (l) a.setAttribute('aria-label', l.replace('새 탭에서 열기', '크게 열기'));
+  });
+  { var sc = document.querySelector('.sidecap'); if (sc) sc.title = '누르면 이 앱 안에서 크게 열립니다'; }
+  { var lc = document.querySelector('#links .cs'); if (lc) lc.textContent = '누르면 이 앱 안에서 크게 열려요'; }
+  { var db = document.querySelector('.abtn.dock'); if (db) { db.title = '타일 독바로 돌아가기'; db.setAttribute('aria-label', '타일 독바로 돌아가기'); } }
+
+  // ── «크게 열기» 창 — 같은 주소(maydly.github.io)의 앱은 사파리 겹창(저장소가 따로라 PIN·구글 로그인을 다시 해야 함) 대신
+  //    이 창 안에 화면 전체로 끼워 연다 → 같은 저장소라 PIN·통합 로그인이 이어지고, «‹ 홈»이 돌아오는 길이 된다.
+  //    다른 주소(수빈 사주 subin-routine.web.app)는 지금처럼 겹창. 오른쪽 위 ↗ 는 사파리 겹창으로 그대로 열기.
+  var ov = $('ov'), ovBody = $('ov-body'), ovN = $('ov-n'), ovI = $('ov-i'), ovExt = $('ov-ext'), ovShare = $('ov-share');
+  var ovUrl = '', ovFrom = null, ovTimer = 0, ovOrb = null, orbMod = null;
+  var norm = function (u) { try { return new URL(u, location.href).href; } catch (e) { return String(u || ''); } };
+  var INFO = null;   // 주소 → {이름, 색, 아이콘} — 왼쪽 목차와 앱 창 카드에서 모은다
+  function info(url) {
+    if (!INFO) {
+      INFO = { full: {}, path: {} };
+      var put = function (href, nm, c1, c2, ic) {
+        if (!href || !nm) return;
+        var u; try { u = new URL(href, location.href); } catch (e) { return; }
+        var v = { nm: nm, c1: c1, c2: c2, ic: ic };
+        if (!INFO.full[u.href]) INFO.full[u.href] = v;
+        if (!u.search && !u.hash && !INFO.path[u.pathname]) INFO.path[u.pathname] = v;
+      };
+      var icOf = function (el) { var x = el && el.querySelector('use'); return x ? (x.getAttribute('href') || '').replace('#', '') : 'i-grid'; };
+      arr(document.querySelectorAll('.appc')).forEach(function (c) {
+        var a = c.querySelector('.appext'), t = c.querySelector('.ct');
+        if (a && t) put(a.getAttribute('href'), t.textContent.trim(), c.style.getPropertyValue('--c1'), c.style.getPropertyValue('--c2'), icOf(c.querySelector('.appi')));
+      });
+      arr(document.querySelectorAll('.side a.nav')).forEach(function (a) {
+        var n = a.querySelector('.nm');
+        if (n) put(a.getAttribute('href'), n.textContent.trim(), a.style.getPropertyValue('--c1'), a.style.getPropertyValue('--c2'), icOf(a.querySelector('.e')));
+      });
+    }
+    var u; try { u = new URL(url, location.href); } catch (e) { return null; }
+    var noHash = u.origin + u.pathname + u.search;
+    return INFO.full[u.href] || INFO.full[noHash] || INFO.path[u.pathname] || null;
+  }
+  function ovPh(nm, c1, c2, ic) {
+    var ph = document.createElement('div');
+    ph.className = 'ovph'; ph.setAttribute('aria-hidden', 'true');
+    ph.innerHTML = '<span class="fpi" style="--c1:' + c1 + ';--c2:' + c2 + '"><svg class="ic"><use href="#' + ic + '"/></svg></span>'
+      + '<span class="ovpt"></span><span class="ovslow">느리게 열리고 있어요 — 조금 더 기다리거나 오른쪽 위 ↗ 로 사파리에서 열 수 있어요</span>';
+    ph.querySelector('.ovpt').textContent = nm + ' 여는 중…';
+    return ph;
+  }
+  function openOv(url, from) {
+    closeOv(true);
+    var nf = info(url) || {};
+    var nm = nf.nm || (from && (from.getAttribute('title') || '').split(' — ')[0]) || 'maydly';
+    var c1 = nf.c1 || '#a9cfae', c2 = nf.c2 || '#7fb489', ic = nf.ic || 'i-grid';
+    ovUrl = url; ovFrom = from || null;
+    ovN.textContent = nm;
+    ovI.style.setProperty('--c1', c1); ovI.style.setProperty('--c2', c2);
+    ovI.innerHTML = '<svg class="ic"><use href="#' + ic + '"/></svg>';
+    ovExt.href = url; ovExt.setAttribute('target', '_blank');
+    ovShare.hidden = !(navigator.share || (navigator.clipboard && navigator.clipboard.writeText));
+    var ph = ovPh(nm, c1, c2, ic);
+    var f = document.createElement('iframe');
+    f.title = nm;
+    f.setAttribute('allow', 'clipboard-write; geolocation; fullscreen');
+    ovBody.appendChild(ph); ovBody.appendChild(f);
+    var loaded = false;
+    f.addEventListener('load', function () {
+      if (!f.getAttribute('src')) return;
+      // 매번(안에서 다음 쪽으로 넘어가도) — 떠 있는 «← 허브» 숨김 · 앱 안 «← 허브» = 이 창을 닫고 홈으로 · 안전 영역 맞춤
+      if (embedPrep(f, function () { closeOv(); })) return;
+      fitOv(f); f.__mhFit = 1;
+      if (loaded) return;             // ↓ 자리표시·구슬 치우기는 처음 한 번만
+      loaded = true; clearTimeout(ovTimer);
+      if (ovOrb) { try { ovOrb.stop(); } catch (e) {} ovOrb = null; }
+      ph.classList.add('done');
+      setTimeout(function () { if (ph.parentNode) ph.parentNode.removeChild(ph); }, 320);
+    });
+    ovTimer = setTimeout(function () { if (!loaded) ph.classList.add('slow'); }, 12000);
+    (orbMod || (orbMod = import('./orbs.js').catch(function () { return null; }))).then(function (m) {
+      if (!m || loaded || !ph.isConnected) return;
+      var slot = document.createElement('span'); slot.className = 'fpo';
+      ph.insertBefore(slot, ph.firstChild); ph.classList.add('orbon');
+      try { ovOrb = m.mountOrb(slot, { state: 'working', size: 64, label: nm + ' 여는 중' }); } catch (e) { ph.classList.remove('orbon'); }
+    });
+    f.setAttribute('src', url);
+    ov.hidden = false;
+    document.documentElement.classList.add('ovopen');
+    try { ov.focus({ preventScroll: true }); } catch (e) {}   // 창 자체에 포커스(버튼에 초록 테두리가 뜨지 않게) — 다음 Tab 은 «‹ 홈»
+  }
+  function closeOv(quiet) {
+    if (ov.hidden) return;
+    clearTimeout(ovTimer);
+    if (ovOrb) { try { ovOrb.stop(); } catch (e) {} ovOrb = null; }
+    arr(ovBody.querySelectorAll('iframe')).forEach(function (f) { try { f.src = 'about:blank'; } catch (e) {} });
+    ovBody.innerHTML = '';
+    ovBody.classList.remove('fullb'); ovBody.style.backgroundColor = '';
+    ov.hidden = true;
+    document.documentElement.classList.remove('ovopen');
+    if (!quiet && ovFrom && ovFrom.isConnected) { try { ovFrom.focus({ preventScroll: true }); } catch (e) {} }
+    ovFrom = null;
+  }
+  // 끼운 쪽이 안전 영역 값을 받는지 재 보고(아이폰 사파리는 부모 값을 그대로 넘긴다고 알려짐 — csswg-drafts #4670) 바닥 채움을 정하고,
+  // 남는 띠(홈 막대 자리 · 가로 모드 좌우)를 끼운 쪽 바탕색으로 칠한다. 재는 칸은 넣었다 바로 뺀다(저장 없음)
+  function fitOv(f) {
+    try {
+      var d = f.contentDocument, w = f.contentWindow; if (!d || !w) return;
+      var pb = d.createElement('div');
+      pb.style.cssText = 'position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;'
+        + 'padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';
+      (d.body || d.documentElement).appendChild(pb);
+      var cs = w.getComputedStyle(pb);
+      var pass = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingRight) || 0) + (parseFloat(cs.paddingBottom) || 0) + (parseFloat(cs.paddingLeft) || 0) > 0;
+      pb.parentNode.removeChild(pb);
+      ovBody.classList.toggle('fullb', pass);
+      var bg = function (el) { var c = el ? w.getComputedStyle(el).backgroundColor : ''; return c && c !== 'transparent' && !/rgba\([^)]*,\s*0\)$/.test(c) ? c : ''; };
+      ovBody.style.backgroundColor = bg(d.body) || bg(d.documentElement) || '#fff';
+    } catch (e) {}
+  }
+  window.addEventListener('resize', function () { if (ov.hidden) return; var f = ovBody.querySelector('iframe'); if (f && f.__mhFit) fitOv(f); });
+  $('ov-close').addEventListener('click', function () { closeOv(); });
+  ovShare.addEventListener('click', function () { sendUrl(ovUrl, ovN.textContent); });
+  document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && !ov.hidden) closeOv(); });
+  // 링크 누름 가로채기(먼저 받는다 — capture). 같은 페이지 안(#…)·보내기·↗ 는 그대로
+  document.addEventListener('click', function (ev) {
+    if (ev.defaultPrevented || ev.button > 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+    var a = ev.target && ev.target.closest ? ev.target.closest('a[href]') : null;
+    if (!a || a.hasAttribute('download') || a.getAttribute('data-out')) return;
+    var h = a.getAttribute('href') || '';
+    if (!h || h.charAt(0) === '#') return;
+    var u; try { u = new URL(a.href, location.href); } catch (e) { return; }
+    if (u.origin !== location.origin) return;                 // 다른 주소(수빈 사주 등) — 사파리 겹창 그대로
+    ev.preventDefault(); ev.stopPropagation();
+    if (u.pathname === location.pathname) { location.href = u.href; return; }   // 홈 자신
+    if (a.classList.contains('dock') || a.classList.contains('dockrow') || /\/note\/hub\/$/.test(u.pathname) && !u.search) {
+      location.href = u.href;                                  // 타일 독바 — 같은 창으로 돌아간다(독바 범위 안)
+      return;
+    }
+    openOv(u.href, a);
+  }, true);
 })();
 </script>
 <script>
@@ -3143,7 +3790,13 @@ setTimeout(function () {
   Array.prototype.slice.call(document.querySelectorAll('.sk')).forEach(function (el) { el.classList.remove('sk'); });
   var bar = document.getElementById('demobar');
   if (bar) { bar.style.setProperty('display', 'block', 'important'); }
-  if (bar) bar.textContent = '데이터를 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침해 주세요.';
+  if (bar) {
+    bar.textContent = '데이터를 불러오지 못했어요. 인터넷 연결을 확인하고 다시 불러와 주세요.';
+    // v2.5: 홈 화면 앱에는 새로고침 버튼·당겨서 새로고침이 없다 → 누를 수 있는 버튼을 붙인다(저장 없음)
+    var rb = document.createElement('button'); rb.type = 'button'; rb.className = 'rlbtn'; rb.textContent = '다시 불러오기';
+    rb.addEventListener('click', function () { location.reload(); });
+    bar.appendChild(rb);
+  }
 }, 10000);
 </script>
 </body>

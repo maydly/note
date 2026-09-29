@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="maydly">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="apple-touch-icon" href="icon-180.png?v=260930"><!-- 260930: 깨져 있던 180 아이콘을 512 원본에서 다시 만듦(?v= 는 옛 파일이 남지 않게) -->
 <title>maydly · 개인 허브</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -61,6 +61,47 @@ body{max-width:460px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 46px)
 .toast{position:fixed;left:50%;bottom:38px;transform:translateX(-50%);background:rgba(46,42,38,.9);color:#fff;
   font-size:13px;font-weight:600;padding:11px 18px;border-radius:22px;z-index:80;opacity:0;transition:opacity .2s;pointer-events:none;max-width:88vw;text-align:center}
 .toast.on{opacity:1}
+
+/* ══ v2.5 아이폰 (260930) — 추가만(기존 타일·PIN·디자인 그대로) ══
+   글자 자동 확대 막기 · 타일을 길게 눌러도 글자 선택 안 됨 ·
+   홈 화면 앱에서 maydly 앱을 사파리 겹창(저장소 따로 → PIN·로그인 다시) 대신 이 창 안에서 크게 열고 «‹ 허브»로 돌아오기 */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.tile{-webkit-user-select:none;user-select:none}
+/* 홈 화면 앱: 타일을 길게 눌러 뜨는 링크 미리보기·메뉴 끄기(거기서 열면 크게 열기를 건너뛰고 사파리 겹창 — 저장소가 따로라 PIN·로그인이 끊긴다) */
+html.standalone .tile{-webkit-touch-callout:none}
+html.ovopen,html.ovopen body{overflow:hidden}
+.ov{position:fixed;inset:0;z-index:120;display:flex;flex-direction:column;background:#f0f6ef;animation:ovIn .24s cubic-bezier(.2,.75,.25,1)}
+.ov[hidden]{display:none}
+.ov:focus{outline:none}
+@keyframes ovIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.ovbar{flex:0 0 auto;display:flex;align-items:center;gap:4px;padding:calc(env(safe-area-inset-top) + 4px) max(8px,env(safe-area-inset-right)) 4px max(6px,env(safe-area-inset-left));
+  background:rgba(250,253,249,.97);border-bottom:1px solid #e3e9e0;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.ovback{flex:0 0 auto;display:inline-flex;align-items:center;gap:1px;height:44px;padding:0 12px 0 4px;border:0;border-radius:12px;background:transparent;
+  color:#2d6a3e;font:inherit;font-size:16px;font-weight:700;cursor:pointer}
+.ovback svg{width:24px;height:24px}
+.ovt{flex:1 1 auto;min-width:0;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:750;letter-spacing:-.3px}
+.ovt .oi{width:26px;height:26px;border-radius:8px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 3px 8px -4px rgba(90,70,50,.4)}
+.ovt .onm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ovbtn{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;color:#5d6b5f;cursor:pointer}
+.ovbtn svg{width:20px;height:20px}
+.ovback:active,.ovbtn:active{background:#e6efe3}
+.ovbody{position:relative;flex:1 1 auto;min-height:0;background:#fff;transition:background-color .2s}
+/* 가로 모드: 노치·다이내믹 아일랜드 쪽(좌우 안전 영역)은 비워 둔다 — 끼운 쪽들은 좌우 안전 영역을 스스로 챙기지 않는다.
+   아래: 기본은 홈 막대 위에서 멈춘다. 끼운 쪽이 안전 영역 값을 그대로 받는 기기면(아이폰 사파리) .fullb — 바닥까지 채우고 쪽이 스스로 비운다(두 번 비지 않게).
+   남는 띠는 끼운 쪽 바탕색으로 칠한다(JS) */
+.ovbody iframe{position:absolute;left:env(safe-area-inset-left,0px);top:0;width:calc(100% - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px));
+  height:calc(100% - env(safe-area-inset-bottom,0px));border:0;background:#fff}
+.ovbody.fullb iframe{height:100%}
+.ovph{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:12.5px;font-weight:600;color:#7c8a7d;background:#f0f6ef;transition:opacity .3s ease}
+.ovph .oic{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 5px 13px rgba(90,70,50,.14);animation:ovp 1.4s ease-in-out infinite}
+.ovph .fpo{display:block;width:64px;height:64px;padding:12px;box-sizing:content-box;border-radius:50%;background:#fff;box-shadow:0 8px 22px -10px rgba(63,143,92,.45),inset 0 0 0 1px #e4ede1}
+.ovph.orbon .oic{display:none}
+.ovph.done{opacity:0;pointer-events:none}
+.ovph .slw{display:none;text-align:center;padding:0 30px;line-height:1.6}
+.ovph.slow .slw{display:block}
+.ovph.slow .ovpt{display:none}
+@keyframes ovp{50%{transform:scale(.92);opacity:.72}}
+@media(prefers-reduced-motion:reduce){ .ov,.ovph .oic{animation:none} }
 </style>
 </head>
 <body>
@@ -85,6 +126,16 @@ body{max-width:460px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 46px)
 </div>
 
 <div class="toast" id="toast"></div>
+<!-- v2.5 아이폰 홈 화면 앱 전용 «크게 열기» 창 (추가만 · 웹에서는 쓰지 않음) -->
+<div class="ov" id="ov" role="dialog" aria-modal="true" aria-labelledby="ov-n" tabindex="-1" hidden>
+  <div class="ovbar">
+    <button type="button" class="ovback" id="ov-close" aria-label="허브로 돌아가기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5.5 8.5 12l6.5 6.5"/></svg>허브</button>
+    <div class="ovt"><span class="oi" id="ov-i" aria-hidden="true"></span><span class="onm" id="ov-n">maydly</span></div>
+    <button type="button" class="ovbtn" id="ov-share" aria-label="주소 보내기" title="주소 보내기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14.5V3.8M8.2 7.3 12 3.5l3.8 3.8"/><path d="M8 10.5H6.5a1.5 1.5 0 0 0-1.5 1.5v7a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5v-7a1.5 1.5 0 0 0-1.5-1.5H16"/></svg></button>
+    <a class="ovbtn" id="ov-ext" href="https://maydly.github.io/" target="_blank" rel="noopener noreferrer" aria-label="사파리로 열기" title="사파리로 열기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5h9.5V15M18.5 5.5 6 18"/></svg></a>
+  </div>
+  <div class="ovbody" id="ov-body"></div>
+</div>
 
 <script>
 // 개인 허브 (타일 · 파스텔 뮤트) — 도구는 각자 자리에, 여기선 링크만.
@@ -241,6 +292,153 @@ function sha256(ascii){
 // ===== 블록 끝: maydly 통합 로그인 (260929) =====
 if(localStorage.getItem('maydly_hub_session')==='1')enter();
 else document.getElementById('pin').focus();
+</script>
+<script>
+// ===== v2.5 아이폰 홈 화면 앱 (260930) — 추가 블록. 저장 없음(localStorage·IndexedDB 에 쓰지 않는다) =====
+//  ① 홈 화면 앱(standalone)에서 maydly 타일을 누르면 사파리 겹창 대신 이 창 안에서 크게 연다 — 같은 저장소라 PIN·통합 로그인이 이어진다.
+//     다른 주소(수빈 사주 subin-routine.web.app)·홈 대시보드(같은 창)는 그대로. 웹(데스크톱·사파리 탭)은 지금처럼 새 탭.
+//  ② 앱이 얼어 있다 깨어났을 때 타일 목록이 바뀌었으면(새 타일 추가 등) 페이지를 읽기만 해서 비교한 뒤 다시 불러온다.
+//  ③ 설치된 앱 안에서는 «홈 화면에 추가해…» 안내 줄을 감춘다.
+// 되돌리기: 이 <script> 블록과 위 v2.5 CSS·#ov 블록을 지우면 원래대로.
+(function(){
+  // 폰·패드(손가락)의 홈 화면 앱만 — 데스크톱에 «앱 설치»한 창(크롬·엣지·맥 사파리 Dock)은 지금처럼 새 탭
+  var SA=false;
+  try{var mm=function(q){return !!(window.matchMedia&&matchMedia(q).matches);};
+    SA=navigator.standalone===true||(mm('(display-mode: standalone)')&&mm('(pointer: coarse)'));}catch(e){}
+  if(window.top!==window)SA=false;
+  var $=function(id){return document.getElementById(id);};
+
+  // ③ (+ 홈 화면 앱 표시 — 타일을 길게 눌러 뜨는 미리보기·메뉴 끄기용 CSS)
+  if(SA){document.documentElement.classList.add('standalone');var ft=document.querySelector('.foot');if(ft)ft.textContent='명진 · 수빈 전용';}
+
+  // ② 타일 목록 비교(이름|주소) → 다르면 다시 불러오기. 15분에 한 번까지, 화면에 돌아왔을 때만
+  var sigOf=function(list){return list.map(function(l){return l.lb+'|'+l.url;}).join('\n');};
+  var MINE=sigOf(LINKS),lastChk=Date.now();
+  function sigText(t){
+    var i=t.indexOf('var LINKS=['),j=i<0?-1:t.indexOf('];',i);
+    if(j<0)return null;
+    var body=t.slice(i,j),re=/lb:'([^']*)'[^\n]*?url:'([^']*)'/g,m,out=[];
+    while((m=re.exec(body)))out.push(m[1]+'|'+m[2]);
+    return out.length?out.join('\n'):null;
+  }
+  function check(){
+    if(document.visibilityState!=='visible'||Date.now()-lastChk<15*60*1000||navigator.onLine===false||!window.fetch)return;
+    lastChk=Date.now();
+    fetch(location.pathname,{cache:'no-store',credentials:'same-origin'}).then(function(r){return r.ok?r.text():null;}).then(function(t){
+      var sg=t&&sigText(t);
+      if(sg&&sg!==MINE&&$('ov').hidden&&document.activeElement!==$('pin'))location.reload();
+    }).catch(function(){});
+  }
+  document.addEventListener('visibilitychange',check);
+  window.addEventListener('pageshow',function(e){if(e.persisted)check();});
+
+  if(!SA)return;   // ↓ ① 홈 화면 앱에서만
+  var ov=$('ov'),body=$('ov-body'),on=$('ov-n'),oi=$('ov-i'),ext=$('ov-ext'),share=$('ov-share');
+  var cur='',from=null,timer=0,orb=null,orbMod=null;
+  function info(href){for(var i=0;i<LINKS.length;i++)if(LINKS[i].url===href)return LINKS[i];return null;}
+  function send(){
+    var t=on.textContent;
+    if(navigator.share){navigator.share({title:t,url:cur}).catch(function(){});return;}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(cur).then(function(){toast('주소를 복사했어요');},function(){toast(cur);});
+  }
+  function close(quiet){
+    if(ov.hidden)return;
+    clearTimeout(timer);
+    if(orb){try{orb.stop();}catch(e){}orb=null;}
+    Array.prototype.slice.call(body.querySelectorAll('iframe')).forEach(function(f){try{f.src='about:blank';}catch(e){}});
+    body.innerHTML='';body.classList.remove('fullb');body.style.backgroundColor='';
+    ov.hidden=true;document.documentElement.classList.remove('ovopen');
+    if(!quiet&&from&&from.isConnected){try{from.focus({preventScroll:true});}catch(e){}}
+    from=null;
+  }
+  // 허브 주소인지 — 'dock'(이 독바 /note/hub/) · 'home'(홈 대시보드 /note/hub/home/) · ''(그 밖)
+  function hubKind(href){
+    var u;try{u=new URL(href,location.href);}catch(e){return '';}
+    if(u.origin!==location.origin&&u.origin!=='https://maydly.github.io')return '';
+    var p=u.pathname.replace(/index\.html$/,'');
+    if(/\/note\/hub\/$/.test(p))return 'dock';
+    if(/\/note\/hub\/home\/(preview\.html)?$/.test(p))return 'home';
+    return '';
+  }
+  // 크게 연 앱 안의 «← 허브»(명진앱 머리 · 필름 · 점검표 · 떠 있는 버튼) = 이 창을 닫고 독바로. 홈 대시보드 링크면 닫고 같은 창에서 홈으로
+  function onHub(k){close();if(k==='home')location.href=new URL('home/',location.href).href;}
+  // 끼운 쪽이 안전 영역 값을 받는지 재 보고(아이폰 사파리는 부모 값을 그대로 넘긴다고 알려짐) 바닥 채움을 정하고, 남는 띠를 쪽 바탕색으로 칠한다
+  function fit(f){
+    try{
+      var d=f.contentDocument,w=f.contentWindow;if(!d||!w)return;
+      var pb=d.createElement('div');
+      pb.style.cssText='position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';
+      (d.body||d.documentElement).appendChild(pb);
+      var cs=w.getComputedStyle(pb),pass=(parseFloat(cs.paddingTop)||0)+(parseFloat(cs.paddingRight)||0)+(parseFloat(cs.paddingBottom)||0)+(parseFloat(cs.paddingLeft)||0)>0;
+      pb.parentNode.removeChild(pb);
+      body.classList.toggle('fullb',pass);
+      var bg=function(el){var c=el?w.getComputedStyle(el).backgroundColor:'';return c&&c!=='transparent'&&!/rgba\([^)]*,\s*0\)$/.test(c)?c:'';};
+      body.style.backgroundColor=bg(d.body)||bg(d.documentElement)||'#fff';
+    }catch(e){}
+  }
+  // 창 안 쪽이 뜰 때마다(첫 쪽뿐 아니라 안에서 다음 쪽으로 넘어가도) — 저장 없음, 끼운 쪽 화면에만 손댄다
+  function embed(f){
+    var d,w;try{d=f.contentDocument;w=f.contentWindow;}catch(e){return false;}
+    if(!d||!w)return false;
+    var k='';try{k=hubKind(w.location.href);}catch(e){}
+    if(k){onHub(k);return true;}   // 스크립트로 허브에 들어와 버린 경우까지 — 독바 안에 독바가 겹치지 않게
+    try{if(d.head&&!d.getElementById('mh-embed-css')){var st=d.createElement('style');st.id='mh-embed-css';st.textContent='#maydlyHubBtn{display:none!important}';d.head.appendChild(st);}}catch(e){}
+    try{if(!d.__mhHub){d.__mhHub=1;d.addEventListener('click',function(ev){
+      if(ev.defaultPrevented||ev.button>0||ev.metaKey||ev.ctrlKey||ev.shiftKey||ev.altKey)return;
+      var a=ev.target&&ev.target.closest?ev.target.closest('a[href]'):null;if(!a)return;
+      var k2=hubKind(a.href);if(!k2)return;
+      ev.preventDefault();ev.stopPropagation();onHub(k2);
+    },true);}}catch(e){}
+    fit(f);f.__mhFit=1;
+    return false;
+  }
+  window.addEventListener('resize',function(){if(ov.hidden)return;var f=body.querySelector('iframe');if(f&&f.__mhFit)fit(f);});
+  function open(url,a,l){
+    close(true);
+    cur=url;from=a;
+    var g=l?'linear-gradient(150deg,'+l.g[0]+','+l.g[1]+')':'linear-gradient(150deg,#a9cfae,#7fb489)';
+    var nm=l?l.lb:'maydly';
+    on.textContent=nm;oi.style.background=g;oi.textContent=l?l.ic:'🍀';
+    ext.href=url;share.hidden=!(navigator.share||(navigator.clipboard&&navigator.clipboard.writeText));
+    var ph=document.createElement('div');ph.className='ovph';ph.setAttribute('aria-hidden','true');
+    ph.innerHTML='<span class="oic"></span><span class="ovpt"></span><span class="slw">느리게 열리고 있어요 — 조금 더 기다리거나 오른쪽 위 ↗ 로 사파리에서 열 수 있어요</span>';
+    ph.querySelector('.oic').style.background=g;ph.querySelector('.oic').textContent=l?l.ic:'🍀';
+    ph.querySelector('.ovpt').textContent=nm+' 여는 중…';
+    var f=document.createElement('iframe');f.title=nm;f.setAttribute('allow','clipboard-write; geolocation; fullscreen');
+    body.appendChild(ph);body.appendChild(f);
+    var done=false;
+    f.addEventListener('load',function(){
+      if(!f.getAttribute('src'))return;
+      if(embed(f))return;             // 매번 — 떠 있는 «← 허브» 숨김 · 허브 링크 가로채기 · 안전 영역 맞춤
+      if(done)return;                 // ↓ 자리표시·구슬 치우기는 처음 한 번만
+      done=true;clearTimeout(timer);
+      if(orb){try{orb.stop();}catch(e){}orb=null;}
+      ph.classList.add('done');setTimeout(function(){if(ph.parentNode)ph.parentNode.removeChild(ph);},320);
+    });
+    timer=setTimeout(function(){if(!done)ph.classList.add('slow');},12000);
+    (orbMod||(orbMod=import('./home/orbs.js').catch(function(){return null;}))).then(function(m){
+      if(!m||done||!ph.isConnected)return;
+      var slot=document.createElement('span');slot.className='fpo';ph.insertBefore(slot,ph.firstChild);ph.classList.add('orbon');
+      try{orb=m.mountOrb(slot,{state:'working',size:64,label:nm+' 여는 중'});}catch(e){ph.classList.remove('orbon');}
+    });
+    f.setAttribute('src',url);
+    ov.hidden=false;document.documentElement.classList.add('ovopen');
+    try{ov.focus({preventScroll:true});}catch(e){}
+  }
+  $('ov-close').addEventListener('click',function(){close();});
+  share.addEventListener('click',send);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!ov.hidden)close();});
+  document.addEventListener('click',function(ev){
+    if(ev.defaultPrevented||ev.button>0||ev.metaKey||ev.ctrlKey||ev.shiftKey||ev.altKey)return;
+    var a=ev.target&&ev.target.closest?ev.target.closest('a.tile'):null;
+    if(!a||a.getAttribute('target')!=='_blank')return;
+    var u;try{u=new URL(a.href,location.href);}catch(e){return;}
+    if(u.origin!==location.origin)return;   // 다른 주소 — 지금처럼 겹창
+    ev.preventDefault();ev.stopPropagation();
+    open(u.href,a,info(a.getAttribute('href')));
+  },true);
+})();
+// ===== 블록 끝: v2.5 아이폰 홈 화면 앱 (260930) =====
 </script>
 </body>
 </html>
