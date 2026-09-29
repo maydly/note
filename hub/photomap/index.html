@@ -36,6 +36,84 @@ import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10
 const cfg={apiKey:"AIzaSyBfyRE7CNENjgSfe25xHAdr87gOllpYtvM",authDomain:"subin-routine.firebaseapp.com",projectId:"subin-routine"};
 const app=initializeApp(cfg,"pmview"), auth=getAuth(app), db=getFirestore(app);
 setPersistence(auth, browserLocalPersistence).catch(()=>{});
+// ===== maydly 통합 로그인 (260929) =====
+// 한 기기에서 구글 로그인 한 번이면 maydly 앱이 다 열리게 하는 추가 블록(「로그인 다리」).
+//  · 이 사진맵(pmview)이 로그인 안 된 상태로 준비되면, 같은 Firebase 프로젝트의 다른 앱 이름
+//    ([DEFAULT] 홈·설문·점검표·수빈 → mjcal 관리자 캘린더 → saju 명진앱 순)에 남은 로그인을 찾아 복사한다.
+//  · 이 사진맵에 로그인돼 있고 [DEFAULT] 자리가 비어 있으면 거기에도 복사해 둔다(홈·설문이 바로 쓰게).
+//  · 허용 계정(명진·수빈)만 복사한다. 그 밖의 계정 기록은 건드리지 않고 건너뛴다.
+//  · 다른 앱의 기록은 먼저 저장소를 「읽기만」 해서 어디(localStorage / IndexedDB)에 있는지 확인한 뒤
+//    그 저장소 그대로 연다 — Firebase 가 기록을 다른 저장소로 옮기면서 열려 있는 그 앱 탭이
+//    잠깐 로그아웃되는 일을 막기 위해서다. DB 가 없으면 새로 만들지 않는다.
+//  · 기존 로그인·사진 읽기 코드는 그대로다. 로그인되면 원래의 onAuthStateChanged 가 사진맵을 불러온다.
+// 되돌리기: 이 블록(아래 「블록 끝」까지)을 통째로 지우면 원래대로.
+import { getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { initializeAuth, indexedDBLocalPersistence, updateCurrentUser } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+(()=>{
+  const SSO_ALLOWED=['bucket0825@gmail.com','ara030820@gmail.com'];
+  const SSO_SOURCES=['[DEFAULT]','mjcal','saju'];
+  const ssoKey=n=>'firebase:authUser:'+cfg.apiKey+':'+n;
+  const ssoOk=u=>{ const em=(u&&typeof u.email==='string')?u.email.trim().toLowerCase():''; return !!em&&SSO_ALLOWED.indexOf(em)>=0; };
+  const ssoWait=(p,ms)=>Promise.race([p,new Promise(r=>setTimeout(r,ms))]);
+  function ssoReadLs(n){ try{ const s=localStorage.getItem(ssoKey(n)); return s?JSON.parse(s):null; }catch(e){ return null; } }
+  function ssoReadIdb(n){ return new Promise(res=>{ try{
+    if(!window.indexedDB) return res(null);
+    const req=indexedDB.open('firebaseLocalStorageDb');
+    req.onupgradeneeded=e=>{ try{ e.target.transaction.abort(); }catch(x){} };   // 없으면 만들지 않음
+    req.onerror=e=>{ try{ e.preventDefault(); }catch(x){} res(null); };
+    req.onblocked=()=>res(null);
+    req.onsuccess=()=>{ const idb=req.result; try{
+      if(!idb.objectStoreNames.contains('firebaseLocalStorage')){ idb.close(); return res(null); }
+      const tx=idb.transaction('firebaseLocalStorage','readonly');
+      const g=tx.objectStore('firebaseLocalStorage').get(ssoKey(n));
+      g.onsuccess=()=>{ let v=g.result&&g.result.value; if(typeof v==='string'){ try{ v=JSON.parse(v); }catch(x){ v=null; } } res(v||null); };
+      g.onerror=()=>res(null);
+      tx.oncomplete=tx.onerror=tx.onabort=()=>{ try{ idb.close(); }catch(x){} };
+    }catch(x){ try{ idb.close(); }catch(y){} res(null); } };
+  }catch(e){ res(null); } }); }
+  // 저장 기록 위치 확인(읽기만): {p: 그 저장 방식, u: 기록} 또는 null
+  async function ssoStored(n){
+    const l=ssoReadLs(n); if(l) return {p:browserLocalPersistence,u:l};
+    const i=await ssoReadIdb(n); if(i) return {p:indexedDBLocalPersistence,u:i};
+    return null;
+  }
+  // 그 이름의 앱을 이 페이지에서 연다(이미 있으면 재사용). 저장 방식은 기록이 있는 곳 하나만 → 기록 이동 없음
+  function ssoAuthFor(n,p){
+    const a=getApps().find(x=>x.name===n)||initializeApp(cfg,n);
+    try{ return initializeAuth(a,{persistence:p}); }catch(e){ return getAuth(a); }
+  }
+  // (1) 가져오기: 이 앱이 로그아웃 상태일 때만
+  async function ssoImport(){
+    const ready=await ssoWait(auth.authStateReady().then(()=>true),10000);
+    if(ready!==true||auth.currentUser) return;   // 이 앱 로그인 확인이 10초 안에 안 끝나면(느린 망·리다이렉트 복귀 중) 손대지 않음 — 원래 로그인을 덮지 않게
+    for(const n of SSO_SOURCES){
+      const s=await ssoStored(n);
+      if(!s||!ssoOk(s.u)) continue;
+      const other=ssoAuthFor(n,s.p);
+      await ssoWait(other.authStateReady(),10000);
+      const u=other.currentUser;
+      if(!u||!ssoOk(u)) continue;
+      if(auth.currentUser) return;          // 그사이 직접 로그인했으면 그대로 둠
+      await updateCurrentUser(auth,u);
+      return;
+    }
+  }
+  // (2) [DEFAULT] 채우기: 이 앱에 허용 계정 로그인이 있고 [DEFAULT] 기록이 아예 없을 때만
+  async function ssoFillDefault(u){
+    if(!u||!ssoOk(u)) return;
+    if(await ssoStored('[DEFAULT]')) return;   // 누구 기록이든 있으면 손대지 않음
+    const d=ssoAuthFor('[DEFAULT]',browserLocalPersistence);
+    const dReady=await ssoWait(d.authStateReady().then(()=>true),10000);
+    if(dReady!==true||d.currentUser) return;
+    await updateCurrentUser(d,u);
+  }
+  let ssoQ=Promise.resolve();
+  const ssoRun=f=>{ ssoQ=ssoQ.then(f).catch(e=>console.warn('[maydly 통합 로그인]',e&&(e.code||e.message))); return ssoQ; };
+  ssoRun(ssoImport).then(()=>{
+    onAuthStateChanged(auth,u=>{ if(u&&ssoOk(u)) ssoRun(()=>ssoFillDefault(auth.currentUser)); });
+  });
+})();
+// ===== 블록 끝: maydly 통합 로그인 (260929) =====
 let manifest=null;
 function setMsg(t,cls){ var m=document.getElementById('msg'); if(m){m.textContent=t||''; m.className='msg '+(cls||'');} }
 async function loadManifest(){ if(manifest)return manifest; var d=await getDoc(doc(db,'photomap','_manifest')); if(!d.exists())throw new Error('아직 사진이 올라오지 않았어요'); manifest=d.data(); return manifest; }

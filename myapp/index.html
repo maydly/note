@@ -2887,12 +2887,82 @@ function sha256(ascii){function rr(v,a){return (v>>>a)|(v<<(32-a));}
   for(i=0;i<8;i++)for(j=3;j+1;j--){var b=(hash[i]>>(j*8))&255;result+=((b<16)?0:'')+b.toString(16);}
   return result;}
 if(localStorage.getItem('mj_session')==='1')enter();else document.getElementById('pin').focus();
+/* ===== maydly 통합 로그인 (260929) — PIN · 로그인 기록 읽기 =====
+   명진 260929: "통합해서 하나로 쓸 땐 한 번만 로그인해야지".
+   · 다른 maydly 앱(독바 maydly_hub_session · 관리자 캘린더 maydly_session)에서 같은 PIN 을 통과했으면 여기도 통과
+   · 이 기기에 명진·수빈 구글 로그인 기록(어느 앱 칸이든)이 있으면 PIN 없이 통과 — 기록은 «읽기만» 한다
+   · 여기서 PIN 을 통과하면 세 표시(mj_session·maydly_hub_session·maydly_session)를 모두 '1'로(같은 PIN 이라 보안 수준 동일)
+   · 구글 로그인 기록으로 통과했을 때는 아무 키도 쓰지 않는다(구글 로그아웃하면 다시 잠기게)
+   · 아래 window._mjSsoStore 는 모듈 쪽 로그인 다리(같은 제목 블록)도 쓴다
+   되돌리기: 이 블록과 모듈 쪽 「maydly 통합 로그인 (260929)」 블록(import 2줄 포함)을 지우고,
+            onAuthStateChanged 앞의 「_ssoAfter(()=>」와 그 끝의 「)」를 없애면 원래대로. */
+(function(){
+  var KEYS=['mj_session','maydly_hub_session','maydly_session'];
+  var OK=['bucket0825@gmail.com','ara030820@gmail.com'];   // 명진 · 수빈
+  var PFX='firebase:authUser:AIzaSyBfyRE7CNENjgSfe25xHAdr87gOllpYtvM:';
+  function okUser(u){var em=(u&&typeof u.email==='string')?u.email.trim().toLowerCase():'';return !!em&&OK.indexOf(em)>=0;}
+  function parse(v){if(typeof v==='string'){try{return JSON.parse(v);}catch(e){return null;}}return v||null;}
+  // Firebase 로그인 기록(localStorage) — 읽기만. [{name, where:'ls', user}]
+  function lsRecs(){var out=[];try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);
+    if(k&&k.indexOf(PFX)===0)out.push({name:k.slice(PFX.length),where:'ls',user:parse(localStorage.getItem(k))});}}catch(e){}return out;}
+  // Firebase 로그인 기록(IndexedDB firebaseLocalStorageDb) — 읽기만. DB 가 없으면 새로 만들지 않는다(업그레이드 취소).
+  function idbRecs(){return new Promise(function(res){var done=false;function fin(v){if(!done){done=true;res(v||[]);}}
+    try{
+      if(!window.indexedDB)return fin([]);
+      var rq=indexedDB.open('firebaseLocalStorageDb');
+      rq.onupgradeneeded=function(){try{rq.transaction.abort();}catch(e){}};
+      rq.onerror=function(ev){try{ev.preventDefault();}catch(e){}fin([]);};
+      rq.onblocked=function(){fin([]);};
+      rq.onsuccess=function(){var db=rq.result;function close(){try{db.close();}catch(e){}}
+        try{
+          if(!db.objectStoreNames.contains('firebaseLocalStorage')){close();return fin([]);}
+          var g=db.transaction('firebaseLocalStorage','readonly').objectStore('firebaseLocalStorage').getAll();
+          g.onsuccess=function(){var out=[];(g.result||[]).forEach(function(r){var k=r?String(r.fbase_key||''):'';
+            if(k.indexOf(PFX)===0)out.push({name:k.slice(PFX.length),where:'idb',user:parse(r.value)});});close();fin(out);};
+          g.onerror=function(){close();fin([]);};
+        }catch(e){close();fin([]);}
+      };
+      setTimeout(function(){fin([]);},1500);
+    }catch(e){fin([]);}
+  });}
+  function allRecs(){return idbRecs().then(function(a){return a.concat(lsRecs());});}
+  window._mjSsoStore={
+    ok:okUser,
+    // 이 페이지에서 syncGear 가 머지하기 전의 gear_ver — 모듈 쪽 다리가 「그사이 로컬 gear 머지가 있었나」 볼 때 씀(읽기만)
+    gear0:(function(){try{return localStorage.getItem('gear_ver');}catch(e){return null;}})(),
+    // names 순서대로, 허용 계정 기록만 → [{name, where:'idb'|'ls', email}]
+    find:function(names){return allRecs().then(function(rs){var out=[];names.forEach(function(n){rs.forEach(function(r){
+      if(r.name===n&&okUser(r.user))out.push({name:n,where:r.where,email:r.user.email});});});return out;});},
+    // 그 칸에 누구든(허용 계정이 아니어도) 로그인 기록이 있는지
+    has:function(name){return allRecs().then(function(rs){return rs.some(function(r){return r.name===name&&!!r.user;});});}
+  };
+  function gateOn(){var g=document.getElementById('gate');return !!g&&g.style.display!=='none';}
+  function ssoEnter(){if(gateOn())enter();}          // 게이트가 보일 때만 — boot() 두 번 실행 금지
+  // PIN 통과 → 세 표시 모두 '1'
+  var _tp=tryPin;
+  tryPin=function(){
+    var ok=false;try{ok=sha256(document.getElementById('pin').value.trim())===PW_HASH;}catch(e){}
+    if(ok)KEYS.forEach(function(k){try{localStorage.setItem(k,'1');}catch(e){}});
+    return _tp.apply(this,arguments);
+  };
+  if(!gateOn())return;                                 // 이 앱 표시(mj_session)로 이미 들어옴
+  // (1) 다른 maydly 앱의 PIN 통과 표시
+  for(var i=1;i<KEYS.length;i++){try{if(localStorage.getItem(KEYS[i])==='1'){ssoEnter();return;}}catch(e){}}
+  // (2) localStorage 에 남은 명진·수빈 구글 로그인 기록
+  if(lsRecs().some(function(r){return okUser(r.user);})){ssoEnter();return;}
+  // (3) IndexedDB 에 남은 명진·수빈 구글 로그인 기록
+  idbRecs().then(function(rs){if(rs.some(function(r){return okUser(r.user);}))ssoEnter();});
+})();
+/* ===== 블록 끝: maydly 통합 로그인 (260929) — PIN ===== */
 </script>
 <!-- 🙏 사주세요 — 수빈앱(Firebase) 연동. 코치=명진(bucket0825@gmail.com). 데이터는 수빈 소유(읽기+상태/답장) -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, browserLocalPersistence, setPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, query, where, onSnapshot, doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+// maydly 통합 로그인 (260929) — 로그인 다리에 필요한 것만 추가로 가져온다(위 기존 import 줄은 그대로)
+import { getApps, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { initializeAuth, updateCurrentUser, indexedDBLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 const cfg={apiKey:"AIzaSyBfyRE7CNENjgSfe25xHAdr87gOllpYtvM",authDomain:"subin-routine.firebaseapp.com",projectId:"subin-routine",appId:"1:102755018689:web:2927e3b73fb5391db17140"};
 window.sajuData={connected:false,email:'',reqs:[],err:'',loading:true};
 window.sharedInfoData={items:[],ready:false};
@@ -2902,6 +2972,138 @@ try{
   const _EMBED=new URLSearchParams(location.search).get("embed")==="1";
   const app=_EMBED?initializeApp(cfg):initializeApp(cfg,"saju"); const auth=getAuth(app), db=getFirestore(app);
   setPersistence(auth, browserLocalPersistence).catch(()=>{});   // 기기당 로그인 1회 유지
+  // ===== maydly 통합 로그인 (260929) — 로그인 다리 =====
+  // maydly 앱들은 같은 Firebase 프로젝트를 쓰지만 로그인 저장 칸(앱 이름)이 앱마다 다르다
+  // (홈·설문·준비표=기본[DEFAULT] · 관리자 캘린더="mjcal" · 명진앱="saju"(앱 창에선 기본) · 사진맵="pmview").
+  // 그래서 다른 앱에서 로그인해 둬도 여기선 다시 로그인해야 했다.
+  //  · 이 앱 칸이 비어 있으면 이 기기의 다른 칸에 있는 명진·수빈 로그인을 이 칸에 복사한다(updateCurrentUser).
+  //    찾는 순서: 평소 = 기본 → mjcal → pmview · 앱 창(?embed=1) = saju → mjcal → pmview
+  //  · 다른 칸은 «기록이 있는 저장소 하나만» 지정해 잠깐 열고 닫는다. getAuth() 기본값으로 열면 SDK 가 그 칸 기록을
+  //    IndexedDB 로 옮기고 localStorage 원본을 지워, 열려 있는 다른 앱이 로그아웃되기 때문(옮기기·지우기 없음).
+  //  · 이 앱에 로그인돼 있고(새로 로그인 포함) 기본 칸이 비어 있으면 기본 칸에도 복사 → 홈·설문이 바로 쓴다(평소 모드만).
+  //  · 순서(중요): 아래 기존 onAuthStateChanged 는 다리가 끝난 뒤(최대 2초) 등록한다. 그래서 첫 알림이 곧바로
+  //    「이미 로그인된 채로 열기」와 같은 경로가 된다 — 비로그인으로 먼저 알려 syncGear 가 잘못 판단하는 경쟁을 막는다.
+  //    시간 안에 못 끝나거나, syncGear 가 이미 비로그인으로 판단해 로컬에 gear 를 머지했을(할) 수 있으면
+  //    이번엔 복사하지 않는다(늦은 복사 없음 → 지금과 똑같이 동작. 다음에 열 때 다시 시도).
+  //  · 동기화 코드(cloudPull·cloudPush·_mjOnLogin·syncGear)는 한 줄도 바꾸지 않았다.
+  //  · 안전망: 다리로 처음 자동 로그인하기 직전, 이 기기 로컬 데이터 원본을 localStorage 'mj_sso_backup_260929' 에 한 번 보존.
+  //  · 이 앱에서 직접 로그아웃하면 'mj_sso_off_260929' 표시를 남겨 다음에 열 때 다리가 다시 자동 로그인하지 않는다
+  //    (로그아웃 뒤 「이 기기에만」 쓴 기록을 자동 로그인의 cloudPull 이 덮지 않게). 이 앱에 다시 로그인되면 표시를 지운다.
+  const _SSO_OK=['bucket0825@gmail.com','ara030820@gmail.com'];   // 명진 · 수빈
+  const _SSO_FROM=_EMBED?['saju','mjcal','pmview']:['[DEFAULT]','mjcal','pmview'];
+  const _SSO_WAIT=2000;
+  const _SSO_OFF='mj_sso_off_260929';
+  const _ssoOk=(u)=>!!(u&&typeof u.email==='string'&&_SSO_OK.indexOf(u.email.trim().toLowerCase())>=0);
+  const _ssoGear0=(window._mjSsoStore&&('gear0' in window._mjSsoStore))?window._mjSsoStore.gear0:(()=>{ try{ return localStorage.getItem('gear_ver'); }catch(e){ return null; } })();
+  let _ssoClosed=false, _ssoInflight=null, _ssoFilling=false;
+  window._mjSso={state:'wait'};
+  // 지금 복사해도 동기화 순서가 안전한가 — 읽기만 한다(동기 확인. 이 확인과 복사 시작 사이에 기다림이 없어야 한다)
+  const _ssoSafeNow=()=>{
+    if(_ssoClosed||auth.currentUser) return false;                                        // 알림 등록 후(늦은 복사 금지) · 이미 로그인
+    try{ if(localStorage.getItem('gear_ver')!==_ssoGear0) return false; }catch(e){}       // 그사이 로컬 gear 머지가 일어남
+    return true;
+  };
+  // syncGear 가 이미 기다림(3초)을 끝내고 「비로그인」으로 판단했다면, 새 gear 버전이 없을 때(=로컬 머지가 안 일어날 때)만 안전
+  const _ssoGearSafe=async()=>{
+    if(!(typeof window._gearWait==='number'&&window._gearWait>=30)) return true;          // 아직 기다리는 중 → 로그인 알림을 보고 판단함
+    try{ const r=await fetch('gear-data.json',{cache:'no-store'}); const g=(r&&r.ok)?await r.json():null;
+      return !(g&&g.version)||g.version===_ssoGear0; }catch(e){ return false; }
+  };
+  const _ssoBackupOnce=(from)=>{ try{
+    const BK='mj_sso_backup_260929';
+    if(localStorage.getItem(BK)) return;
+    const keys=[]; try{ Object.keys(window.K||{}).forEach((k)=>keys.push(window.K[k])); }catch(e){}
+    keys.push('mj_photos', window.PLANKEY||'maydly-purchase-plan-v1');
+    const data={}; keys.forEach((k)=>{ const v=localStorage.getItem(k); if(v!=null) data[k]=v; });
+    const s=JSON.stringify({_app:'maydly-myapp',_why:'maydly 통합 로그인(260929) — 다리로 처음 자동 로그인하기 직전 이 기기 로컬 원본',
+      _at:new Date().toISOString(),_from:from,data});
+    let total=0; for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i)||''; total+=k.length+(localStorage.getItem(k)||'').length; }
+    if(total+s.length>1500000){ window._mjSso.backup='skip-space'; return; }   // 여유가 적으면 건너뛴다(앱 저장이 막히지 않게)
+    localStorage.setItem(BK,s); window._mjSso.backup='saved';
+  }catch(e){ window._mjSso.backup='skip-error'; } };
+  // 다른 칸을 저장소 하나만 지정해 잠깐 연다(읽기 전용). 이 페이지가 이미 쓰는 칸이면 건드리지 않는다.
+  const _ssoOpen=async(name,where)=>{
+    if(getApps().some((a)=>a.name===name)) return null;
+    const a=(name==='[DEFAULT]')?initializeApp(cfg):initializeApp(cfg,name);
+    try{
+      const au=initializeAuth(a,{persistence:(where==='idb')?indexedDBLocalPersistence:browserLocalPersistence});
+      await au.authStateReady();
+      return {app:a,auth:au};
+    }catch(e){ try{ await deleteApp(a); }catch(_){ } return null; }
+  };
+  // 이 기기에 명진앱 기록이 있는가 — 기기 저장소(localStorage)를 읽기만 한다(PIN 통과 전이라 변수는 아직 비어 있을 수 있음).
+  // 판단을 못 하면 안전하게 «있음»(자동 로그인 안 함)
+  const _ssoLocalHasData=()=>{ try{
+    const keys=Object.values(window.K||{}); if(!keys.length) return true;
+    keys.push('mj_photos');
+    const filled=(v)=>{ if(Array.isArray(v)) return v.length>0;
+      if(v&&typeof v==='object'){ if(Array.isArray(v.items)) return v.items.length>0; if(v.map&&typeof v.map==='object') return Object.keys(v.map).length>0; return Object.keys(v).length>0; }
+      return false; };
+    for(const k of keys){ const raw=localStorage.getItem(k); if(raw==null||raw==='') continue;
+      let v; try{ v=JSON.parse(raw); }catch(e){ return true; } if(filled(v)) return true; }
+    return false;
+  }catch(e){ return true; } };
+  const _ssoBridge=async()=>{
+    const S=window._mjSsoStore; if(!S){ window._mjSso.state='no-store'; return; }
+    await auth.authStateReady();
+    if(auth.currentUser){ window._mjSso.state='own'; return; }                    // 이 칸에 이미 로그인 — 손대지 않는다
+    try{ if(localStorage.getItem(_SSO_OFF)==='1'){ window._mjSso.state='off'; return; } }catch(e){}   // 이 앱에서 직접 로그아웃한 뒤 — 자동으로 되살리지 않는다
+    // (260930 추가) 이 기기에 명진앱 기록이 이미 있으면 자동 로그인하지 않는다. 자동 로그인 직후 cloudPull 이 합치지 않고
+    // 클라우드 값으로 바꾸므로, 아직 안 올린 이 기기 기록이 덮일 수 있다(명진앱 동기화 사고 재발 방지 — 로컬이 진실원본).
+    // 이런 기기는 지금처럼 명진이 직접 로그인을 누른다(PIN 은 건너뜀). 기록이 비어 있는 새 기기만 자동으로 이어진다.
+    if(_ssoLocalHasData()){ window._mjSso.state='skip-local-data'; return; }
+    const recs=await S.find(_SSO_FROM);
+    for(const r of recs){
+      if(!_ssoSafeNow()){ window._mjSso.state='skip-unsafe'; return; }
+      const rd=await _ssoOpen(r.name,r.where);
+      if(!rd) continue;
+      try{
+        const u=rd.auth.currentUser;
+        if(!_ssoOk(u)) continue;                                                   // 허용 계정만
+        if(!(await _ssoGearSafe())){ window._mjSso.state='skip-gear'; return; }
+        if(!_ssoSafeNow()){ window._mjSso.state='skip-unsafe'; return; }
+        _ssoBackupOnce(r.name);
+        _ssoInflight=updateCurrentUser(auth,u);                                     // 확인과 같은 틱에서 시작 — 알림 등록이 끼어들지 않게
+        await _ssoInflight;
+        window._mjSso.state='copied:'+r.name;
+        return;
+      }catch(e){}
+      finally{ try{ await deleteApp(rd.app); }catch(e){} }                          // 잠깐 연 칸만 닫는다(저장된 기록은 그대로)
+    }
+    if(window._mjSso.state==='wait') window._mjSso.state='none';
+  };
+  // 이 앱에 로그인돼 있으면 비어 있는 기본 칸에도 복사(평소 모드만). 기본 칸에 누구든 있으면 덮어쓰지 않는다.
+  const _ssoFillDefault=async(u)=>{
+    if(_EMBED||_ssoFilling||!_ssoOk(u)) return; _ssoFilling=true;
+    let a=null;
+    try{
+      const S=window._mjSsoStore; if(!S) return;
+      if(await S.has('[DEFAULT]')) return;
+      if(getApps().some((x)=>x.name==='[DEFAULT]')) return;
+      a=initializeApp(cfg);
+      const au=initializeAuth(a,{persistence:browserLocalPersistence});
+      await au.authStateReady();
+      if(au.currentUser||!auth.currentUser||auth.currentUser.uid!==u.uid) return;
+      await updateCurrentUser(au,auth.currentUser);
+      window._mjSso.filledDefault=true;
+    }catch(e){}
+    finally{ if(a){ try{ await deleteApp(a); }catch(e){} } _ssoFilling=false; }
+  };
+  const _ssoDone=new Promise((res)=>{
+    let fired=false;
+    const go=()=>{ if(fired) return; fired=true; _ssoClosed=true;
+      if(window._mjSso.state==='wait') window._mjSso.state='timeout';
+      (_ssoInflight||Promise.resolve()).then(res,res); };
+    _ssoBridge().catch(()=>{}).then(go);
+    setTimeout(go,_SSO_WAIT);
+  });
+  const _ssoAfter=(fn)=>{ _ssoDone.then(()=>{
+    try{ fn(); }catch(e){ window.sajuData.err='연동 초기화 실패: '+(e.message||e); paint(); }
+    // 직접 로그아웃(☁ 로그아웃 · 사주 연결해제 — 둘 다 sajuDisconnect) → 표시를 남긴다. 다시 로그인되면 지운다.
+    try{ const _d=window.sajuDisconnect; if(typeof _d==='function'){ window.sajuDisconnect=function(){ try{ localStorage.setItem(_SSO_OFF,'1'); }catch(e){} return _d.apply(this,arguments); }; } }catch(e){}
+    try{ onAuthStateChanged(auth,(u)=>{ if(!u) return; try{ localStorage.removeItem(_SSO_OFF); }catch(e){} _ssoFillDefault(u); }); }catch(e){}   // _ssoFillDefault 는 앱 창(?embed=1)에선 바로 끝남
+  }); };
+  // ===== 블록 끝: maydly 통합 로그인 (260929) — 로그인 다리 =====
   // ── 명진앱 데이터 동기화(토큰 대신 구글 로그인) — 공유 컬렉션 mjApp ──
   const MJ_COL='mjApp';   // 명진앱 전체 데이터 공유 컬렉션(명진·수빈, 구글로그인)
   window.MJAPP={ user:null, ready:false,
@@ -2917,7 +3119,7 @@ try{
   };
   let subinUid=null, unsub=null;
   async function findSubinUid(){ const s=await getDocs(query(collection(db,'users'),where('role','==','user'))); return s.empty?null:s.docs[0].id; }
-  onAuthStateChanged(auth, async (user)=>{
+  _ssoAfter(()=>onAuthStateChanged(auth, async (user)=>{   // maydly 통합 로그인 (260929): 다리 끝난 뒤 등록 — 되돌릴 땐 「_ssoAfter(()=>」와 끝의 「)」만 지우면 됨
     window.sajuData.loading=false;
     // 명진앱 동기화: 로그인 상태 반영 + 로그인되면 클라우드 불러오기(안전 pull)
     window.MJAPP.user=user; window.MJAPP.ready=true;
@@ -2943,7 +3145,7 @@ try{
       window.sajuData.connected=false; window.sajuData.email=''; window.sajuData.reqs=[]; if(unsub){unsub();unsub=null;}
     }
     paint();
-  });
+  }));
   window.sajuConnect=async ()=>{
     try{ const p=new GoogleAuthProvider(); await signInWithPopup(auth,p); }
     catch(e){

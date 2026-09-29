@@ -265,6 +265,133 @@
   const app = initializeApp(cfg);
   const auth = getAuth(app), db = getFirestore(app);
   setPersistence(auth, browserLocalPersistence);
+
+  // ===== maydly 통합 로그인 (260929) =====
+  // 한 기기에서 구글 로그인 한 번이면 maydly 앱이 다 열리게 하는 «추가» 블록. 위아래 기존 로그인·데이터 코드는 그대로다.
+  //  · 이 페이지(기본 이름표 [DEFAULT])가 로그인 안 된 채로 준비되면, 같은 Firebase 프로젝트의 다른 이름표
+  //    (관리자 캘린더 mjcal · 명진앱 saju · 사진맵 pmview — 이 세 이름표만)에 저장된 로그인을 찾아 이 페이지로 복사한다.
+  //    maydly 사무실(maydly-office)은 일부러 기본 로그인과 섞지 않게 따로 둔 앱이라 가져오지도, 함께 로그아웃하지도 않는다(다른 앱 다리와 같은 목록).
+  //    이 페이지가 [DEFAULT] 라서, 복사되면 홈·독립 준비 점검표도 같은 로그인을 곧바로 쓴다.
+  //  · 이 페이지 허용 계정(ALLOWED, 명진)만 옮긴다. 다른 계정(수빈 등)은 옮기지 않는다 — 옮겨도 아래 기존 코드가 곧바로 로그아웃시킨다.
+  //  · 다른 이름표 기록은 기록이 있던 저장소(localStorage 또는 IndexedDB) 하나만 쓰게 해서 불러온다.
+  //    → 저장 위치를 옮기거나 지우지 않는다(열려 있는 다른 앱 탭의 로그인이 풀리지 않게).
+  //  · 이 페이지에서 「로그아웃」을 누르면(허용 계정일 때만) 같은 계정이 든 다른 이름표도 함께 로그아웃한다.
+  //    (안 그러면 다음에 열 때 다른 이름표에서 다시 로그인돼 버린다.)
+  //    다른 계정을 거절하는 기존 자동 로그아웃(onAuthStateChanged 안 signOut)은 다른 이름표로 퍼뜨리지 않는다.
+  // 되돌리기: 이 블록(「블록 끝」까지)을 통째로 지우면 원래대로.
+  import { getApps as ssoGetApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { initializeAuth as ssoInitAuth, indexedDBLocalPersistence as ssoIdbPersistence, updateCurrentUser as ssoUpdateCurrentUser } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  (function(){
+    const PREFIX = 'firebase:authUser:' + cfg.apiKey + ':';
+    const okUser = (u)=> !!(u && u.email === ALLOWED);            // 아래 기존 판정과 똑같은 기준
+    const insts = {};                                              // 이름표 → 그 이름표 Auth (한 번만 만든다)
+    const NAMES = ['mjcal', 'saju', 'pmview'];                     // 통합 로그인 대상 이름표(찾는 순서). 여기 없는 이름표는 읽지도 건드리지도 않는다
+
+    // IndexedDB(firebaseLocalStorageDb) 로그인 기록을 «읽기만». DB 가 없으면 만들지 않는다.
+    function readIdb(){
+      return new Promise((resolve)=>{
+        const out = []; let done = false;
+        const fin = ()=>{ if(!done){ done = true; resolve(out); } };
+        setTimeout(fin, 3000);
+        try{
+          if(!window.indexedDB) return fin();
+          const req = indexedDB.open('firebaseLocalStorageDb');
+          req.onupgradeneeded = (e)=>{ try{ e.target.transaction.abort(); }catch(x){} };
+          req.onerror = (e)=>{ try{ e.preventDefault(); }catch(x){} fin(); };
+          req.onblocked = ()=> fin();
+          req.onsuccess = ()=>{
+            const idb = req.result;
+            try{
+              if(!idb.objectStoreNames.contains('firebaseLocalStorage')){ idb.close(); return fin(); }
+              const tx = idb.transaction('firebaseLocalStorage', 'readonly');
+              const all = tx.objectStore('firebaseLocalStorage').getAll();
+              all.onsuccess = ()=>{
+                (all.result || []).forEach((row)=>{
+                  const k = String((row && row.fbase_key) || '');
+                  let v = row && row.value;
+                  if(typeof v === 'string'){ try{ v = JSON.parse(v); }catch(x){ v = null; } }
+                  if(k.indexOf(PREFIX) === 0) out.push({ name:k.slice(PREFIX.length), where:'idb', user:v });
+                });
+              };
+              tx.oncomplete = tx.onerror = tx.onabort = ()=>{ try{ idb.close(); }catch(x){} fin(); };
+            }catch(x){ try{ idb.close(); }catch(y){} fin(); }
+          };
+        }catch(e){ fin(); }
+      });
+    }
+    // 이 기기에 저장된 «다른 이름표» 로그인 기록 목록(읽기만). 같은 이름표가 두 곳에 있으면 localStorage 쪽을 쓴다.
+    async function scan(){
+      const recs = [];
+      try{
+        for(let i = 0; i < localStorage.length; i++){
+          const k = localStorage.key(i);
+          if(!k || k.indexOf(PREFIX) !== 0) continue;
+          let u = null; try{ u = JSON.parse(localStorage.getItem(k)); }catch(e){}
+          recs.push({ name:k.slice(PREFIX.length), where:'ls', user:u });
+        }
+      }catch(e){}
+      (await readIdb()).forEach((r)=>{ if(!recs.some((x)=>x.name === r.name)) recs.push(r); });
+      return recs.filter((r)=> NAMES.indexOf(r.name) >= 0).sort((a, b)=> NAMES.indexOf(a.name) - NAMES.indexOf(b.name));
+    }
+    // 다른 이름표의 Auth — 기록이 있던 저장소 하나만 지정(다른 저장소로 옮기거나 지우는 동작이 생기지 않게)
+    function authFor(rec){
+      if(!insts[rec.name]){
+        insts[rec.name] = (async ()=>{
+          const a = ssoGetApps().find((x)=>x.name === rec.name) || initializeApp(cfg, rec.name);
+          const au = ssoInitAuth(a, { persistence: rec.where === 'idb' ? ssoIdbPersistence : browserLocalPersistence });
+          await au.authStateReady();
+          return au;
+        })();
+      }
+      return insts[rec.name];
+    }
+
+    // 이 페이지가 처음 준비됐을 때의 로그인 상태(한 번만 듣고 끊는다). 아래 기존 거절 로그아웃과 순서가 엉켜도 «처음» 값으로 판단한다.
+    const firstState = new Promise((res)=>{
+      let un = null, got = false;
+      un = onAuthStateChanged(auth, (u)=>{ if(got) return; got = true; res(u || null); if(un) un(); });
+      if(got && un) un();
+    });
+
+    // ① 가져오기: 이 페이지가 «로그인 안 된 채로» 준비됐을 때만, 다른 이름표의 명진 로그인을 복사
+    (async ()=>{
+      try{
+        if(await firstState) return;                               // 처음부터 누군가 로그인(다른 계정 포함) → 손대지 않음(판정은 기존 코드 몫)
+        const recs = (await scan()).filter((r)=> okUser(r.user));
+        for(const r of recs){
+          try{
+            const o = await authFor(r);
+            const u = o.currentUser;
+            if(!okUser(u)) continue;                               // 불러오니 만료·다른 계정이면 건너뜀
+            if(auth.currentUser) return;                           // 그사이 직접 로그인했으면 그대로 둔다
+            await ssoUpdateCurrentUser(auth, u);                   // → 기존 onAuthStateChanged 가 평소처럼 대시보드를 연다
+            // #views(시안 읽힘)로 열려 로그인 전에 이미 읽기를 시도했으면, 로그인된 상태로 한 번 더 읽는다
+            try{ if(V_LOADED) loadViews(); }catch(e){}
+            return;
+          }catch(e){}
+        }
+      }catch(e){}
+    })();
+
+    // ② 전체 로그아웃: 「로그아웃」 누를 때(허용 계정일 때만) 같은 계정이 든 다른 이름표도 로그아웃
+    //    capture 단계라 기존 로그아웃(signOut(auth))보다 먼저 지금 계정을 확인한다. 기존 처리는 그대로 이어진다.
+    const outBtn = document.getElementById('logoutBtn');
+    if(outBtn) outBtn.addEventListener('click', ()=>{
+      const me = auth.currentUser;
+      if(!okUser(me)) return;
+      const uid = me.uid;
+      (async ()=>{
+        try{
+          const recs = (await scan()).filter((r)=> r.user && r.user.uid === uid);
+          for(const r of recs){
+            try{ const o = await authFor(r); if(o.currentUser && o.currentUser.uid === uid) await signOut(o); }catch(e){}
+          }
+        }catch(e){}
+      })();
+    }, true);
+  })();
+  // ===== 블록 끝: maydly 통합 로그인 (260929) =====
+
   // 리다이렉트 로그인에서 돌아온 경우 결과 처리(팝업 폴백 대응)
   getRedirectResult(auth).catch((e)=>{ showGateErr('로그인 처리 중 문제가 있었어요. 다시 로그인 버튼을 눌러주세요.'); });
 

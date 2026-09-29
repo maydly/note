@@ -168,6 +168,77 @@ function sha256(ascii){
   for(i=0;i<8;i++)for(j=3;j+1;j--){var b=(hash[i]>>(j*8))&255;result+=((b<16)?0:'')+b.toString(16);}
   return result;
 }
+// ===== maydly 통합 로그인 (260929) =====
+// 한 기기에서 한 번(PIN 한 번 또는 구글 로그인 한 번)이면 maydly 앱이 다 열리게 하는 추가 블록.
+//  · 다른 maydly 앱(명진앱 mj_session · 관리자 캘린더 maydly_session)에서 PIN 을 통과했으면 여기도 통과
+//  · 이 기기에 허용 계정(명진·수빈)의 maydly 구글 로그인 기록이 있으면 PIN 없이 통과
+//    (Firebase SDK 없이 기록을 「읽기만」 한다 — localStorage 와 IndexedDB firebaseLocalStorageDb)
+//  · 여기서 PIN 을 통과하면 세 앱 표시(maydly_hub_session·mj_session·maydly_session)를 모두 '1'로
+//  · 구글 로그인으로 통과했을 때는 아무 키도 쓰지 않는다(구글 로그아웃하면 다시 잠기게)
+// 되돌리기: 이 블록(아래 「블록 끝」까지)을 통째로 지우면 원래대로.
+(function(){
+  var SSO_KEYS=['maydly_hub_session','mj_session','maydly_session'];
+  var SSO_ALLOWED=['bucket0825@gmail.com','ara030820@gmail.com'];
+  var SSO_PREFIX='firebase:authUser:AIzaSyBfyRE7CNENjgSfe25xHAdr87gOllpYtvM:';
+  function ls(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function gateShown(){var g=document.getElementById('gate');return !!g&&g.style.display!=='none';}
+  function ssoEnter(){if(gateShown())enter();}
+  function okUser(u){
+    var em=u&&typeof u.email==='string'?u.email.trim().toLowerCase():'';
+    return !!em&&SSO_ALLOWED.indexOf(em)>=0;
+  }
+  // PIN 통과 → 세 앱 표시 모두 '1' (같은 PIN 이라 보안 수준 동일)
+  var origTryPin=tryPin;
+  window.tryPin=function(){
+    var r=origTryPin.apply(this,arguments);
+    try{if(localStorage.getItem('maydly_hub_session')==='1'){for(var i=0;i<SSO_KEYS.length;i++)localStorage.setItem(SSO_KEYS[i],'1');}}catch(e){}
+    return r;
+  };
+  // 이 앱 표시가 이미 '1'이면 원래 자동 입장 줄이 처리 → 여기선 손대지 않음(두 번 입장 방지)
+  if(ls('maydly_hub_session')==='1')return;
+  // (1) 다른 maydly 앱의 PIN 통과 표시
+  for(var i=1;i<SSO_KEYS.length;i++){if(ls(SSO_KEYS[i])==='1'){ssoEnter();return;}}
+  // (2) localStorage 에 남은 구글 로그인 기록 (browserLocalPersistence 쓰는 앱들)
+  try{
+    for(var j=0;j<localStorage.length;j++){
+      var k=localStorage.key(j);
+      if(k&&k.indexOf(SSO_PREFIX)===0){
+        var u=null;try{u=JSON.parse(localStorage.getItem(k));}catch(e){}
+        if(okUser(u)){ssoEnter();return;}
+      }
+    }
+  }catch(e){}
+  // (3) IndexedDB 에 남은 구글 로그인 기록 (기본 저장 방식 앱들 — 예: 수빈 앱). 읽기 전용.
+  try{
+    if(!window.indexedDB)return;
+    var req=indexedDB.open('firebaseLocalStorageDb');
+    // DB 가 없으면 새로 만들지 않도록 즉시 취소
+    req.onupgradeneeded=function(e){try{e.target.transaction.abort();}catch(x){}};
+    req.onerror=function(e){try{e.preventDefault();}catch(x){}};
+    req.onblocked=function(){};
+    req.onsuccess=function(){
+      var db=req.result;
+      try{
+        if(!db.objectStoreNames.contains('firebaseLocalStorage')){db.close();return;}
+        var tx=db.transaction('firebaseLocalStorage','readonly');
+        var st=tx.objectStore('firebaseLocalStorage');
+        var all=st.getAll();
+        all.onsuccess=function(){
+          var rows=all.result||[],hit=false;
+          for(var n=0;n<rows.length;n++){
+            var row=rows[n]||{};
+            var key=String(row.fbase_key||''),val=row.value;
+            if(typeof val==='string'){try{val=JSON.parse(val);}catch(x){val=null;}}
+            if(key.indexOf(SSO_PREFIX)===0&&okUser(val)){hit=true;break;}
+          }
+          if(hit)ssoEnter();
+        };
+        tx.oncomplete=tx.onerror=tx.onabort=function(){try{db.close();}catch(x){}};
+      }catch(x){try{db.close();}catch(y){}}
+    };
+  }catch(e){}
+})();
+// ===== 블록 끝: maydly 통합 로그인 (260929) =====
 if(localStorage.getItem('maydly_hub_session')==='1')enter();
 else document.getElementById('pin').focus();
 </script>

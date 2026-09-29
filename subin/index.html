@@ -1938,6 +1938,70 @@
   const db = getFirestore(app);
   const provider = new GoogleAuthProvider();
 
+  /* ═══ maydly 통합 로그인 (260929) — 시작 ════════════════════════════════════════
+     왜: maydly.github.io 안 앱들을 한 기기에서 구글 로그인 "한 번"으로 쓰기 위해(명진 260929).
+     이 앱은 Firebase 기본[DEFAULT] 이름을 쓴다(홈·설문·prep·앱 창과 같은 칸).
+     기존 로그인·데이터 코드는 한 줄도 바꾸지 않고 아래만 덧붙였다.
+     ① 로그인 저장 위치를 다른 기본[DEFAULT] 페이지와 같은 localStorage 로 맞춘다(서로 로그아웃시키지 않게).
+        예전에 IndexedDB 에 저장돼 있던 로그인은 SDK 가 옮겨 온다(다시 로그인할 필요 없음).
+     ② 가져오기 다리: 이 기기 기본[DEFAULT] 에 로그인이 없으면, 같은 프로젝트의 다른 이름
+        mjcal(관리자 캘린더) → saju(명진앱) → pmview(대표 사진맵) 순으로 저장된 로그인을 찾아
+        허용 계정(명진·수빈)일 때만 이 앱으로 복사한다(updateCurrentUser).
+        허용 밖 계정은 복사하지 않는다(복사하면 users 에 '수빈' 역할로 등록될 수 있음).
+     ③ 여기서 새로 로그인하면 그 자체가 기본[DEFAULT] 이라 홈·설문이 바로 같이 쓴다(따로 복사할 것 없음).
+     로그인 없이 데이터가 보이게 하는 것은 없다 — 데이터는 여전히 Firestore 규칙이 허용 계정에만 연다.
+     되돌리기: 이 블록(시작~끝)만 지우면 이전과 똑같다.
+  ══════════════════════════════════════════════════════════════════════════════ */
+  import { initializeApp as mjSsoInitApp, getApps as mjSsoGetApps, getApp as mjSsoGetApp, deleteApp as mjSsoDeleteApp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth as mjSsoGetAuth, initializeAuth as mjSsoInitAuth, setPersistence as mjSsoSetPersistence,
+    browserLocalPersistence as mjSsoLocal, updateCurrentUser as mjSsoUpdateUser }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  mjSsoSetPersistence(auth, mjSsoLocal)
+    .catch(e => console.warn('[maydly 통합 로그인] 저장 위치 맞추기 실패 — 기존대로 동작', e?.code || e));
+  (function mjSsoBridge(){
+    const ALLOW = ['bucket0825@gmail.com', 'ara030820@gmail.com'];   // 명진·수빈만
+    const FROM  = ['mjcal', 'saju', 'pmview'];                          // 찾는 순서
+    const okUser = u => !!(u && typeof u.email === 'string' && ALLOW.includes(u.email.toLowerCase()));
+    const storedKey = n => 'firebase:authUser:' + firebaseConfig.apiKey + ':' + n;
+    // 저장 기록을 읽기만 해서 허용 계정 기록이 있는 이름만 고른다. 하나도 없으면 아무것도 하지 않는다.
+    const cands = FROM.filter(n => {
+      try { return okUser(JSON.parse(localStorage.getItem(storedKey(n)) || 'null')); } catch(e) { return false; }
+    });
+    if(!cands.length) return;
+    // 가져오는 동안(보통 1초 안) 로그인 화면이 깜빡이지 않게 로딩 곰을 보여 준다. 늦어도 6초 뒤엔 원래대로.
+    const root = document.documentElement;
+    const st = document.createElement('style');
+    st.textContent = 'html.mj-sso-wait #login-screen{display:none!important}'
+      + 'html.mj-sso-wait:not(.embed-info) #loading-screen{display:flex!important}';
+    document.head.appendChild(st);
+    root.classList.add('mj-sso-wait');
+    let settled = false;
+    const guard = setTimeout(() => finish(), 6000);
+    function finish() { if(settled) return; settled = true; clearTimeout(guard); root.classList.remove('mj-sso-wait'); }
+    (async () => {
+      try {
+        await auth.authStateReady();
+        if(auth.currentUser) return;                        // 이미 로그인돼 있으면 손대지 않는다
+        for(const n of cands) {
+          let made = null;
+          try {
+            let other;
+            if(mjSsoGetApps().some(a => a.name === n)) other = mjSsoGetAuth(mjSsoGetApp(n));
+            else { made = mjSsoInitApp(firebaseConfig, n); other = mjSsoInitAuth(made, { persistence: mjSsoLocal }); }
+            await other.authStateReady();
+            const u = other.currentUser;
+            if(okUser(u) && !auth.currentUser) await mjSsoUpdateUser(auth, u);
+          } catch(e) { console.warn('[maydly 통합 로그인] ' + n + ' 에서 가져오기 건너뜀', e?.code || e); }
+          finally { if(made) { try { await mjSsoDeleteApp(made); } catch(e) {} } }
+          if(auth.currentUser) break;
+        }
+      } catch(e) { console.warn('[maydly 통합 로그인] 건너뜀', e?.code || e); }
+      finally { finish(); }
+    })();
+  })();
+  /* ═══ maydly 통합 로그인 (260929) — 끝 ═══ */
+
   let currentUser = null, userRole = null, subinUid = null, coachUid = null;
   let goals = [], logs = {}, notifications = [];
   let activeFilter = 'daily', activeTab = 'today', activeCoachTab = 'status';

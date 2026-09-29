@@ -35,8 +35,111 @@ const auth = getAuth(app);
 const db   = getFirestore(app);
 try { setPersistence(auth, browserLocalPersistence); } catch (e) {}
 
+// ═════════════════════════════════════════════════════════════
+// maydly 통합 로그인 (260929) — 시작
+//  명진 260929: "통합해서 하나로 쓸 땐 한 번만 로그인해야지".
+//  같은 Firebase 프로젝트(subin-routine)를 여러 앱이 쓰지만 로그인 칸(앱 이름)이 앱마다 다르다
+//  (홈·설문 = 기본[DEFAULT] · 관리자 캘린더 = "mjcal" · 명진앱 = "saju" · 사진맵 = "pmview").
+//  그래서 다른 앱에서 로그인해 둬도 홈은 로그아웃으로 떴다.
+//  → 홈이 로그인 안 된 채로 뜨면, 이 기기의 다른 칸에 저장된 로그인을 찾아 홈 칸(기본)으로 복사한다.
+//  · 쓰기: Firebase SDK updateCurrentUser 가 홈 칸에 로그인을 저장하는 것(SDK 로그인 유지 동작)뿐.
+//    이 블록은 localStorage·IndexedDB 에 직접 쓰지 않는다(읽기만).
+//  · 다른 칸은 «기록이 있는 저장소 하나만» 지정해 연다. getAuth() 기본값(IndexedDB·local·session 셋)으로 열면
+//    SDK 가 그 칸 기록을 IndexedDB 로 옮기고 localStorage 원본을 지워, 열려 있는 관리자 캘린더 등이 로그아웃된다(검증함).
+//  · 허용 계정(명진·수빈)만 복사한다. 데이터를 볼 수 있는지는 여전히 Firestore 규칙이 정한다.
+//  · 홈 칸에 이미 누가 로그인돼 있으면 아무것도 하지 않는다(덮어쓰지 않음).
+//  · 2초 안에 못 끝나면 기다리지 않고 화면을 그린다. 늦게 끝나도 그때 로그인 상태로 바뀐다.
+//  · 되돌리기: 이 블록 전체를 지우고 아래 원래 두 줄로 바꾸면 된다.
+//      // ── 로그인 ──
+//      export function onUser(cb) { return onAuthStateChanged(auth, cb); }
+// ═════════════════════════════════════════════════════════════
+import { getApp, getApps, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { initializeAuth, indexedDBLocalPersistence, updateCurrentUser }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const SSO_ALLOWED = ["bucket0825@gmail.com", "ara030820@gmail.com"];   // 명진 · 수빈
+const SSO_SLOTS = ["mjcal", "saju", "pmview"];                           // 찾는 순서 (maydly-office 는 넣지 않는다)
+const SSO_WAIT_MS = 2000;
+const ssoKey = (name) => "firebase:authUser:" + CFG.apiKey + ":" + name;
+const ssoOk = (email) => SSO_ALLOWED.indexOf(String(email || "").trim().toLowerCase()) >= 0;
+
+// IndexedDB 의 Firebase 로그인 기록을 «읽기만» 한다. DB 가 없으면 만들지 않는다(업그레이드를 취소).
+function ssoIdbGet(key) {
+  return new Promise((resolve) => {
+    let req;
+    try { req = indexedDB.open("firebaseLocalStorageDb"); } catch (e) { resolve(null); return; }
+    req.onupgradeneeded = () => { try { req.transaction.abort(); } catch (e) {} };
+    req.onerror = (ev) => { try { ev.preventDefault(); } catch (e) {} resolve(null); };
+    req.onsuccess = () => {
+      const idb = req.result;
+      const done = (v) => { try { idb.close(); } catch (e) {} resolve(v); };
+      try {
+        if (!idb.objectStoreNames.contains("firebaseLocalStorage")) { done(null); return; }
+        const g = idb.transaction(["firebaseLocalStorage"], "readonly").objectStore("firebaseLocalStorage").get(key);
+        g.onsuccess = () => done(g.result && g.result.value ? g.result.value : null);
+        g.onerror = () => done(null);
+      } catch (e) { done(null); }
+    };
+  });
+}
+
+// 그 칸의 로그인 기록이 어느 저장소에 있는지(허용 계정일 때만) — 없거나 허용 계정이 아니면 null
+async function ssoWhere(name) {
+  const key = ssoKey(name);
+  let raw = null;
+  try { raw = localStorage.getItem(key); } catch (e) {}
+  if (raw) {
+    let u = null;
+    try { u = JSON.parse(raw); } catch (e) {}
+    return u && ssoOk(u.email) ? browserLocalPersistence : null;
+  }
+  const v = await ssoIdbGet(key);
+  return v && ssoOk(v.email) ? indexedDBLocalPersistence : null;
+}
+
+async function ssoBridge() {
+  if (typeof auth.authStateReady === "function") await auth.authStateReady();
+  else await new Promise((r) => { const off = onAuthStateChanged(auth, () => { off(); r(); }); });
+  if (auth.currentUser) return;                       // 홈 칸에 이미 로그인 — 손대지 않는다
+  for (const name of SSO_SLOTS) {
+    if (auth.currentUser) return;                     // 그사이 홈에서 직접 로그인했으면 멈춘다
+    let per = null;
+    try { per = await ssoWhere(name); } catch (e) {}
+    if (!per) continue;
+    let made = false, oApp = null;
+    try {
+      made = !getApps().some((a) => a.name === name);
+      oApp = made ? initializeApp(CFG, name) : getApp(name);
+      let oAuth;
+      try { oAuth = initializeAuth(oApp, { persistence: per }); }   // 저장소 하나만 — 기록을 옮기거나 지우지 않는다
+      catch (e) { if (e && e.code === "auth/already-initialized") oAuth = getAuth(oApp); else throw e; }
+      await oAuth.authStateReady();
+      const other = oAuth.currentUser;
+      if (other && ssoOk(other.email) && !auth.currentUser) {
+        await updateCurrentUser(auth, other);         // 홈 칸(기본)에 복사 → onAuthStateChanged 가 로그인으로 알린다
+        return;
+      }
+    } catch (e) {
+      // 이 칸은 건너뛴다(홈은 원래처럼 로그인 버튼을 보여준다)
+    } finally {
+      if (made && oApp) deleteApp(oApp).catch(() => {});   // 이 페이지에서 잠깐 연 칸만 닫는다(저장된 기록은 그대로)
+    }
+  }
+}
+const ssoReady = Promise.race([
+  ssoBridge().catch(() => {}),
+  new Promise((r) => setTimeout(r, SSO_WAIT_MS))
+]);
+
 // ── 로그인 ────────────────────────────────────────────────────
-export function onUser(cb) { return onAuthStateChanged(auth, cb); }
+// 다리가 끝난 뒤(최대 2초) 로그인 상태를 알린다 — 로그아웃 화면이 잠깐 떴다가 바뀌는 깜빡임을 막는다.
+export function onUser(cb) {
+  let off = null, stop = false;
+  ssoReady.then(() => { if (!stop) off = onAuthStateChanged(auth, cb); });
+  return () => { stop = true; if (off) off(); };
+}
+// maydly 통합 로그인 (260929) — 끝
+// ═════════════════════════════════════════════════════════════
 
 // 리다이렉트로 로그인하고 돌아온 경우를 먼저 받아준다(폰에서 이 경로를 탄다)
 getRedirectResult(auth).catch(() => {});
