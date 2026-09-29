@@ -212,6 +212,43 @@ export function buildAlerts(evs, today = todayISO()) {
 /** 납품(보정본 전달)만 — 의상확인은 뺀다 */
 export const isDelivery = (a) => a && (a.kind === "basic" || a.kind === "buy" || a.kind === "rush");
 
+// ── 알림 단계 (v2.3, 명진 260929 「긴급은 안 됐으면 일주일·3일 전에 알림」) ──
+// 기한 있는 일이 아직 안 됐으면, 기한까지 남은 날로 단계를 매긴다. 읽기만 한다.
+//  over = 기한 지남 · d3 = 오늘~3일 남음(관리자 캘린더 ALERT_LEAD 와 같은 선) · d7 = 4~7일 남음
+export const STAGE_URGENT = ALERT_LEAD;   // 3
+export const STAGE_WARN = 7;
+export function stageOf(left) {
+  if (typeof left !== "number" || !Number.isFinite(left)) return null;
+  return left < 0 ? "over" : left <= STAGE_URGENT ? "d3" : left <= STAGE_WARN ? "d7" : null;
+}
+/**
+ * 단계별로 묶은 «기한 있는 일» — 보정본 전달(기본·구매분·긴급) · 의상 확인(촬영일이 기한) · 명진앱 할 일(기한 있는 것).
+ * 기한 계산은 buildAlerts 그대로. 의상 확인만 창을 넓힌다 — 관리자 캘린더는 촬영 3일 전부터 알리고(OUTFIT_LEAD),
+ * 홈은 같은 조건(예약완료·촬영 라벨·아직 안 지난 촬영)으로 7일 전부터 «주의»에 미리 보여 준다.
+ * evs: calEvents() 결과 · tod: todos() 결과 — 못 읽었으면(null) 그쪽은 빠지고 calOk/todoOk 가 false.
+ * 결과: {over:[], d3:[], d7:[], calOk, todoOk} — 각 항목 {kind, title, due, left, stage, e?(일정), todo?(할 일)}, 급한 순
+ */
+export function stageItems(evs, tod, today = todayISO()) {
+  const S = { over: [], d3: [], d7: [], calOk: !!evs, todoOk: !!tod };
+  const add = (a) => { const s = stageOf(a.left); if (s) S[s].push(Object.assign({ stage: s }, a)); };
+  if (evs) {
+    buildAlerts(evs, today).forEach((a) => { if (a.kind !== "outfit") add(a); });
+    evs.forEach((e) => {
+      if (!e || isExt(e) || !stActive(e.status)) return;
+      if (e.status === "booked" && SHOOT_LABELS.includes(e.label)) {
+        const left = dDiff(today, e.date);
+        if (left >= 0 && left <= STAGE_WARN) add({ kind: "outfit", title: DLV_TITLE.outfit, e, due: e.date, left, urgent: left <= OUTFIT_LEAD });
+      }
+    });
+  }
+  if (tod && Array.isArray(tod.dated)) {
+    tod.dated.forEach((x) => add({ kind: "todo", title: String(x.text || "").trim() || "할 일", todo: x, due: x.due, left: dDiff(today, x.due) }));
+  }
+  const ord = (a, b) => a.left - b.left || String(a.due).localeCompare(String(b.due));
+  S.over.sort(ord); S.d3.sort(ord); S.d7.sort(ord);
+  return S;
+}
+
 /** 예약 이벤트 전체. 관리자 캘린더가 쓰는 mj_cal/events 를 «읽기만» 한다. */
 export function calEvents() {
   return once("cal", async () => {
@@ -435,10 +472,12 @@ export async function todos() {
   const dueToday = list.filter((x) => !x.done && x.due === t);
   const noDue = list.filter((x) => !x.done && !x.due);
   const overdue = list.filter((x) => !x.done && x.due && x.due < t);
+  // 기한 있는 미완 할 일 전부(기한 순) — 홈 「지금 처리할 것」 알림 단계(stageItems)가 쓴다
+  const dated = list.filter((x) => !x.done && /^\d{4}-\d{2}-\d{2}$/.test(String(x.due || ""))).sort((a, b) => String(a.due).localeCompare(String(b.due)));
   return {
     total: list.length,
     open: list.filter((x) => !x.done).length,
-    dueToday, noDue, overdue,
+    dueToday, noDue, overdue, dated,
     todayLeft: dueToday.length + noDue.length,
     doneToday: list.filter((x) => x.done && x.doneAt === t).length
   };
