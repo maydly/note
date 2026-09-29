@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <base target="_blank"><!-- v2.3: 다른 페이지로 가는 링크는 전부 새 탭. 같은 페이지 안(#…)은 아래 스크립트가 이 탭으로 -->
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#f8faf7">
+<meta name="theme-color" content="#f0f6ef">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -828,22 +828,31 @@ button.bf{font:inherit;color:inherit;text-align:left;border:0;width:100%;cursor:
   box-shadow:0 4px 12px rgba(28,38,32,.08),0 18px 44px rgba(28,38,32,.16);padding:12px 18px 12px 16px;font-size:var(--f-body);font-weight:600;border-left:4px solid var(--amb)}
 .toast[hidden]{display:none}
 
-/* ── 앱 창 — 앱 카드. 「여기서 열기」를 눌러야 그 창만 불러온다 ── */
-.appgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:14px;align-items:start}
-.appc{display:flex;flex-direction:column;gap:14px;padding:18px 20px;position:relative}
-.appc.open{grid-column:1/-1}
+/* ── 앱 창 (v2.4) — 탭을 열면 6개 앱이 바로 끼워 넣은 창으로 보인다(「여기서 열기」 없음). 웹 2열 · 폰 1열. 카드마다 「새 탭에서 열기 ↗」 ── */
+.appgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px;align-items:start}
+.appc{display:flex;flex-direction:column;gap:14px;padding:18px 20px 20px;position:relative}
 .apph{display:flex;align-items:center;gap:12px;min-width:0}
-.appi{width:42px;height:42px;border-radius:13px;background:var(--gl);color:#2d6a3e;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
-.appt{min-width:0}
+.appi{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;color:#fff;
+  background:linear-gradient(150deg,var(--c1,#a9cfae),var(--c2,#7fb489));box-shadow:0 5px 14px -6px var(--c2,#7fb489),inset 0 0 0 .5px rgba(255,255,255,.5)}
+.appi .ic{width:21px;height:21px;stroke-width:2;filter:drop-shadow(0 1px 1px rgba(0,0,0,.14))}
+.appt{min-width:0;flex:1 1 auto}
 .appsub{font-size:var(--f-sub);color:var(--mute);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.appa{display:flex;gap:8px;flex-wrap:wrap}
-.appbtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:38px;padding:0 14px;border-radius:11px;border:1px solid var(--line);
-  background:#fff;color:var(--sub);font:inherit;font-size:var(--f-body);font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap}
-.appbtn:hover{border-color:#d4ddd1;color:var(--ink)}
-.appopen{background:var(--pri);border-color:var(--pri);color:#fff}
-.appopen:hover{background:#346b47;color:#fff;border-color:#346b47}
-.appopen[aria-expanded="true"]{background:#fff;color:var(--sub);border-color:var(--line)}
-.appc .frame[hidden]{display:none}
+.appext{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;height:34px;padding:0 12px;border-radius:10px;background:var(--soft);
+  color:var(--link);font-size:var(--f-sub);font-weight:700;text-decoration:none;white-space:nowrap;transition:background .12s,transform .1s}
+.appext:hover{background:#e8f2e5}
+.appext:active{transform:scale(.97)}
+.appext .ic{width:13px;height:13px;stroke-width:2.3}
+.appc .frame{background:linear-gradient(160deg,#f7faf6,#eef4ec);box-shadow:inset 0 0 0 1px #e8eee5}
+.appc .frame iframe{position:relative;z-index:1;background:transparent}
+.appc .frame.ld iframe{background:#fff}
+.fph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  font-size:var(--f-sub);font-weight:600;color:var(--mute);pointer-events:none}
+.fph .fpi{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;
+  background:linear-gradient(150deg,var(--c1,#a9cfae),var(--c2,#7fb489));animation:fpp 1.4s ease-in-out infinite}
+.fph .fpi .ic{width:22px;height:22px;stroke-width:2}
+.appc .frame.ld .fph{display:none}
+@keyframes fpp{50%{transform:scale(.92);opacity:.72}}
+@media(prefers-reduced-motion:reduce){ .fph .fpi{animation:none} }
 
 /* ── 더보기 — 폰 전용 바로가기 ── */
 .linkscard{margin-bottom:14px}
@@ -853,12 +862,7 @@ button.bf{font:inherit;color:inherit;text-align:left;border:0;width:100%;cursor:
 .linkscard .nav.dockrow{margin-top:8px;border-top:1px solid var(--line);border-radius:0;padding-top:14px}
 @media(min-width:901px){ .linkscard{display:none} }
 
-/* ── 네잎클로버 — 로고 옆 1개 + 여백 몇 개(구역 제목 오른쪽 · 목차 맨 아래 · 바닥글). 화면에 고정하지 않아 글자와 겹치지 않는다 ── */
-.tier::after{content:'';margin-left:auto;align-self:center;flex:0 0 auto;width:26px;height:26px;background:var(--g);opacity:.16;transform:rotate(-14deg);
-  -webkit-mask:var(--clvm) center/contain no-repeat;mask:var(--clvm) center/contain no-repeat}
-.sideclv{margin-top:auto;padding:28px 12px 4px;display:flex;align-items:flex-end;gap:4px;color:var(--g)}
-.sideclv svg:first-child{width:26px;height:26px;opacity:.17;transform:rotate(-12deg)}
-.sideclv svg:last-child{width:16px;height:16px;opacity:.13;transform:rotate(20deg);margin-bottom:14px}
+/* ── 네잎클로버 — 로고(독바와 같은 줄기 있는 네잎) + 바닥글 1개. 여백 클로버는 v2.4 부터 독바와 같은 배경 패턴이 대신한다 ── */
 .footclv{width:14px;height:14px;color:var(--g);opacity:.55;vertical-align:-2px;margin-right:6px}
 .clvmark{width:26px;height:26px}
 
@@ -908,16 +912,11 @@ button.bf{font:inherit;color:inherit;text-align:left;border:0;width:100%;cursor:
   .lc-btn{width:100%}
   .acctmenu{position:fixed;top:calc(var(--ab) + env(safe-area-inset-top,0px) + 6px);right:10px}
   .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
-  /* 앱 카드 2열 — 누르면 새 탭(폰에서는 끼워 넣은 창을 쓰지 않는다: 창 위에서 페이지 대신 창이 스크롤되기 때문) */
-  .appgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  .appc{padding:16px 15px;gap:10px}
-  .apph{flex-direction:column;align-items:flex-start;gap:10px}
-  .appsub{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-  .appopen{display:none}
-  .appc .frame{display:none!important}
-  .appc.open{grid-column:auto}
-  .appnew{height:auto;padding:0;border:0;background:none;color:var(--link);font-size:var(--f-sub)}
-  .appnew::after{content:'';position:absolute;inset:0;border-radius:inherit}
+  /* 앱 창 — 폰도 끼워 넣은 창을 그대로 보여준다(1열 · 540/480/460). 카드 좌우 여백을 잡고 밀면 쪽 전체가 스크롤된다 */
+  .appgrid{grid-template-columns:minmax(0,1fr);gap:12px}
+  .appc{padding:14px;gap:12px}
+  .appi{width:38px;height:38px;border-radius:12px}
+  .appext{height:36px;padding:0 11px}
   .tier::after{width:22px;height:22px}
   .th4>*{grid-column:span 3}   /* 시안 표지 4장은 한 줄에 — 2×2 는 화면을 너무 차지 */
   .th4{gap:8px}
@@ -939,10 +938,7 @@ button.bf{font:inherit;color:inherit;text-align:left;border:0;width:100%;cursor:
   .grid3>*:last-child:nth-child(odd){grid-column:span 12}
 }
 
-/* 로그아웃 — 로그인 카드 한 장만 또렷하게, 나머지 데이터 칸은 흐리게(같은 안내 문구를 여러 번 보지 않게) */
-body.out .brief .bf .bs{display:none}
-body.out .brief .bf,body.out #pane-today .grid2 .card{opacity:.62}
-body.out .brief .bf{min-height:0}
+/* 로그아웃 — v2.4: 흐리게 하지 않는다. 구조와 색은 그대로 보이고, 값 자리에만 «로그인하면 보여요» (명진 260929 «생기가 없어졌어») */
 
 /* 대비 보정 — 쪽 바탕(#f3f6f2) 위 12px 글자도 4.5:1 이상 · 흰 글자 위 초록은 진한 초록 */
 .foot,.sidecap,.sidecap .ic,details.grp>summary{color:var(--sub)}
@@ -952,16 +948,216 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
 .nowlb.lv-over .c{color:#a8372b}
 .itemmore{min-height:40px}
 @media(max-width:900px){ .ab-brand{font-size:19px} }
+/* ══ v2.4 생기 복구 (명진 260929 «허브가 왜 이렇게 생기가 없어졌어?») ══
+   독바와 같은 클로버 배경 · 독바 앱 색 파스텔 아이콘 · 섹션 탭 고유색 · 카드 제목 칩 · 브리핑 색 · 알림 단계 빨강/주황/노랑 ·
+   진행 막대·7일·칸반 색 · 카드 등장 움직임. 구조·기능은 v2.3 그대로 */
+:root{
+  --bg:#f0f6ef;
+  /* 알림 단계 — 글자색(흰 바탕 4.5:1 이상) · 점(또렷한 색) · 옅은 바탕 */
+  --red:#c9372c; --redbg:#fdeceb; --amb:#b85c00; --ambbg:#fdecd8; --ylw:#735900; --ylwbg:#fbf2c9;
+  --dot-over:#e5484d; --dot-d3:#f08c2a; --dot-d7:#f0c030;
+}
+/* 배경 — 타일 독바와 같은 네잎클로버 패턴(같은 그림 · 같은 농도). 카드는 흰색이라 글자 뒤로는 비치지 않는다 */
+html,body{background:#f0f6ef url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'112'%20height%3D'112'%3E%3Cg%20fill%3D'%234f9a6a'%20fill-opacity%3D'0.035'%3E%3Cg%20transform%3D'translate(28%2C28)'%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.46)%20rotate(0)'%2F%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.46)%20rotate(90)'%2F%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.46)%20rotate(180)'%2F%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.46)%20rotate(270)'%2F%3E%3C%2Fg%3E%3Cg%20transform%3D'translate(84%2C86)'%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.32)%20rotate(0)'%2F%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.32)%20rotate(90)'%2F%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.32)%20rotate(180)'%2F%3E%3Cpath%20d%3D'M0%200%20C-2.4%2C-10.5%20-17%2C-15.5%20-17%2C-27.5%20C-17%2C-36.5%20-8%2C-40.5%200%2C-32.5%20C8%2C-40.5%2017%2C-36.5%2017%2C-27.5%20C17%2C-15.5%202.4%2C-10.5%200%2C0%20Z'%20transform%3D'scale(0.32)%20rotate(270)'%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+@media(min-width:901px){ body.tabs-on .tabs{background:rgba(240,246,239,.9)} }
+.appbar{background:rgba(250,253,249,.86)}
+
+/* ── 섹션 색 — 오늘 초록 · 사업 코랄 · 앱 창 라벤더 · 자료실 하늘 · 더보기 샌드 (탭과 그 구역이 같은 값을 쓴다) ── */
+[data-tab="today"]{--k1:#a8d3a0;--k2:#7fb877;--kc:#4f9a6a;--ki:#2b6a3c;--kt1:#e6f4e2;--kt2:#d2eacb}
+[data-tab="biz"]{--k1:#efc2b3;--k2:#dfa28f;--kc:#cf7258;--ki:#95422c;--kt1:#fdeee8;--kt2:#f8dacf}
+[data-tab="apps"]{--k1:#d3bfe0;--k2:#b79bd4;--kc:#9677c0;--ki:#5d3e86;--kt1:#f3ecf9;--kt2:#e5d8f2}
+[data-tab="library"]{--k1:#a6c8e2;--k2:#80a9cf;--kc:#4f86ba;--ki:#245887;--kt1:#e8f1f9;--kt2:#d3e3f3}
+[data-tab="more"]{--k1:#e3cf9d;--k2:#d0b97e;--kc:#b08c34;--ki:#6b510f;--kt1:#faf3df;--kt2:#f1e3bd}
+.tab .ti,.tab:hover .ti{color:var(--kc)}
+.tab.on .ti{color:var(--ki)}
+@media(min-width:901px){
+  body.tabs-on .tabs{align-items:center;gap:6px}
+  .tab{height:38px;padding:0 15px 0 12px;border-radius:12px}
+  .tab::after{display:none}
+  .tab:hover{background:rgba(255,255,255,.8);color:var(--ink)}
+  .tab.on{background:linear-gradient(135deg,var(--kt1),var(--kt2));color:var(--ki);font-weight:700;
+    box-shadow:0 4px 12px -6px var(--k2),inset 0 0 0 1px rgba(255,255,255,.65)}
+}
+@media(max-width:900px){
+  .tab.on{color:var(--ki)}
+  .tab.on .ti{background:linear-gradient(135deg,var(--kt1),var(--kt2));color:var(--ki);box-shadow:0 3px 10px -5px var(--k2)}
+}
+/* 구역 제목 — 그 탭 색의 둥근 네모 칩 · 작은 구역 제목 앞 색 점 */
+.tier{align-items:center;gap:10px}
+.tchip{width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;color:#fff;
+  background:linear-gradient(150deg,var(--k1),var(--k2));box-shadow:0 4px 12px -5px var(--k2),inset 0 0 0 .5px rgba(255,255,255,.5)}
+.tchip .ic{width:17px;height:17px;stroke-width:2.1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.12))}
+.sechd h2{display:flex;align-items:center;gap:8px}
+.sechd h2::before{content:'';width:9px;height:9px;border-radius:3px;background:linear-gradient(150deg,var(--k1),var(--k2));flex:0 0 auto}
+
+/* ── 왼쪽 목차 — 아이폰 설정처럼 앱마다 파스텔 그라데이션 둥근 네모 + 흰 선 아이콘 (색 = 독바의 그 앱 색) ── */
+.nav{gap:11px;padding:5px 10px}
+.nav .e,.nav:hover .e,.nav.on .e{flex:0 0 26px;width:26px;height:26px;border-radius:8px;color:#fff;
+  background:linear-gradient(150deg,var(--c1,#cfdccb),var(--c2,#aabca6));box-shadow:0 2px 6px -2px rgba(70,60,45,.32),inset 0 0 0 .5px rgba(255,255,255,.5)}
+/* 흰 선이 옅은 파스텔에 묻히지 않게 — 색은 독바 그대로, 선을 굵게 + 선 둘레에 얇은 그림자 */
+.nav .e .ic{width:16px;height:16px;stroke-width:2.4;filter:drop-shadow(0 0 .6px rgba(40,30,20,.38)) drop-shadow(0 1px 1px rgba(40,30,20,.2))}
+.nav:hover{background:rgba(255,255,255,.9)}
+/* 폰 더보기 › 바로가기(2열) — 칩 24px · 간격 8px, 긴 이름은 두 줄까지(잘리지 않게) */
+.linkscard .nav{padding:9px 8px;gap:8px}
+.linkscard .nav .e,.linkscard .nav:hover .e,.linkscard .nav.on .e{flex:0 0 24px;width:24px;height:24px;border-radius:7px}
+.linkscard .nav .e .ic{width:15px;height:15px}
+.linkscard .nav .nm{white-space:normal;text-overflow:clip;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.3;word-break:keep-all;overflow-wrap:anywhere}
+
+/* ── 카드 제목 앞 파스텔 아이콘 칩 (그 카드 주제 색) ── */
+.ch{align-items:center}
+.ct{display:flex;align-items:center;gap:9px;min-width:0}
+.cic,.bic{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;color:#fff;
+  background:linear-gradient(150deg,var(--c1,#cfdccb),var(--c2,#aabca6));box-shadow:0 3px 8px -3px var(--c2,#aabca6),inset 0 0 0 .5px rgba(255,255,255,.5)}
+.cic{width:26px;height:26px;border-radius:8px}
+.cic .ic{width:15px;height:15px;stroke-width:2.1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.12))}
+.bic{width:22px;height:22px;border-radius:7px}
+.bic .ic{width:13px;height:13px;stroke-width:2.3;filter:drop-shadow(0 1px 1px rgba(0,0,0,.12))}
+
+/* ── 브리핑 4장 — 각자 고유색(연한 그라데이션 틴트 · 색 숫자). 틴트·큰 숫자는 단계와 무관하게 늘 제 색.
+   알림 단계(지남 빨강 · 긴급 주황)는 왼쪽 4px 띠 · D 배지 · 요약 칩 점에만 — 카드 면을 경고색으로 물들이지 않는다.
+   「지금 처리할 것」 고유색은 청록(단계 색 빨강·주황·노랑과 헷갈리지 않게) ── */
+.bf{background:linear-gradient(160deg,var(--tint,#fff) 0%,#fff 72%)}
+.bf::before{display:none}
+.bf .bl{gap:8px;color:var(--sub)}
+.bf .bv,.bf.today .bv,.bf.lv-over .bv,.bf.lv-d3 .bv{color:var(--vc,var(--ink))}
+.bf.today{--c1:#a8d3a0;--c2:#7fb877;--tint:#e3f2de;--vc:#2b6a3c}
+#now{--c1:#a7d3cf;--c2:#7fb8b2;--tint:#e1f2ef;--vc:#1f6560}
+#bf-todo{--c1:#d3bfe0;--c2:#b79bd4;--tint:#f1e8f9;--vc:#62428c}
+#bf-dlv{--c1:#a6c8e2;--c2:#80a9cf;--tint:#e3eff9;--vc:#255b8c}
+.bf.lv-over::before,.bf.lv-d3::before{display:block;width:4px}
+.bf.lv-over::before{background:var(--dot-over)}
+.bf.lv-d3::before{background:var(--dot-d3)}
+.nowtile[aria-expanded="true"]{background:linear-gradient(160deg,var(--tint) 0%,#fff 72%);box-shadow:inset 0 0 0 1.5px var(--c1),var(--sh)}
+
+/* ── 알림 단계 색 — 지남 빨강 · 긴급(3일) 주황 · 주의(7일) 노랑 : 배지 · 그룹 점 · 접힌 요약 칩 ── */
+.nowdot{background:var(--dot-over);box-shadow:0 0 0 3px #fde1df}
+.nowsum .k.lv-over:not(.zero) i,.nowlb.lv-over:not(.zero) i{background:var(--dot-over)}
+.nowsum .k.lv-d3:not(.zero) i,.nowlb.lv-d3:not(.zero) i{background:var(--dot-d3)}
+.nowsum .k.lv-d7:not(.zero) i,.nowlb.lv-d7:not(.zero) i{background:var(--dot-d7)}
+/* 0건이면 점·개수 칩 모두 회색 — 의미 없는 곳에 빨강을 쓰지 않는다 (요약 칩과 그룹 라벨이 같은 규칙) */
+.nowsum .k.zero i,.nowlb.zero i{background:#dbe3d8}
+.nowsum .k.lv-over:not(.zero) b{color:var(--red)}
+.nowsum .k.lv-d3:not(.zero) b{color:var(--amb)}
+.nowsum .k.lv-d7:not(.zero) b{color:var(--ylw)}
+.dbg.lv-over,.item .i2 .dbg.lv-over{background:var(--red);color:#fff;box-shadow:none}
+.dbg.lv-d3{background:#fde2c3;color:#8f4700;box-shadow:none}
+.dbg.lv-d7{background:#faedb0;color:#604b00;box-shadow:none}
+.nowlb.lv-over .c{background:var(--redbg);color:#a8372b}
+.nowlb.lv-d3 .c{background:#fde2c3;color:#8f4700}
+.nowlb.lv-d7 .c{background:#faedb0;color:#604b00}
+.nowlb.zero .c{background:#eef3ec;color:var(--sub)}
+/* 칸반 배지 — .item .i2 .dbg(흰 바탕)보다 강하게: 긴급·주의도 칩 모양(바탕색) 그대로 */
+.item .i2 .dbg.lv-d3{background:#fde2c3;color:#8f4700}
+.item .i2 .dbg.lv-d7{background:#faedb0;color:#604b00}
+.sc.lv-over{background:var(--redbg);color:var(--red)} .sc.lv-d3{background:#fde2c3;color:#8f4700} .sc.lv-d7{background:#faedb0;color:#604b00}
+.nav .bdg{background:var(--red)}
+.nav .bdg.lv-d3,.tab .tn.lv-d3,.tab.on .tn.lv-d3{background:var(--amb);color:#fff}
+/* 처리할 것 한 줄 — 왼쪽 단계 색 띠 + 단계 색 아이콘 칩 */
+.nowit{grid-template-columns:30px minmax(0,1fr) 56px 64px}
+.nowit .ni,.nowit.u .ni{width:30px;height:30px;border-radius:9px;background:#e6f2e2;color:#3f8a55}
+.nowit .ni .ic{width:17px;height:17px}
+.nowit.s-over{box-shadow:inset 3px 0 0 var(--dot-over)} .nowit.s-over .ni{background:#fde3e1;color:var(--red)}
+.nowit.s-d3{box-shadow:inset 3px 0 0 var(--dot-d3)} .nowit.s-d3 .ni{background:#fde6cc;color:#a85400}
+.nowit.s-d7{box-shadow:inset 3px 0 0 var(--dot-d7)} .nowit.s-d7 .ni{background:#fbf0c0;color:#7a5f00}
+.nowit.u .ni{background:#fdecd8;color:#a85400}
+@media(max-width:900px){ .nowit{grid-template-columns:30px minmax(0,1fr) 52px} }
+
+/* ── 진행 막대 — 목표마다 제 색(v2.2 처럼) + 이름 앞 색 점 ── */
+.goal{--gc1:#8cc285;--gc2:#4f9a6a}
+.goal:has(#g-week-bar){--gc1:#a6c8e2;--gc2:#6fa2cf}
+.goal:has(#g-month-bar),.goal:has(#g-month2-bar){--gc1:#ecd0a8;--gc2:#d4a36e}
+.goal:has(#g-light-bar){--gc1:#ddd0a8;--gc2:#c2a869}
+.goal:has(#g-prep-bar){--gc1:#b7c9b0;--gc2:#86a67e}
+.goal:has(#g-subin-bar){--gc1:#c4d8b2;--gc2:#98b683}
+.goal:has(#m-unconf-bar){--gc1:#f2c0ae;--gc2:#de8c73}
+.goal:has(#m-plan-bar){--gc1:#dcd2ee;--gc2:#b3a2d3}
+.gbar{background:#edf3eb}
+.gbar i,.gbar i.warn,.gbar i.soft{background:linear-gradient(90deg,var(--gc1),var(--gc2))}
+.gn{display:flex;align-items:center;gap:8px}
+.gn::before{content:'';width:8px;height:8px;border-radius:3px;background:linear-gradient(150deg,var(--gc1),var(--gc2));flex:0 0 auto}
+body.out .goal.nodata .gbar{display:block}   /* 로그아웃: 빈 막대 자리도 보여 구조가 그대로 보이게(값은 «—») */
+#own-cats .cat:nth-child(4n+1) .catb i{background:linear-gradient(90deg,#d3bfe0,#a88bcc)}
+#own-cats .cat:nth-child(4n+2) .catb i{background:linear-gradient(90deg,#a6c8e2,#6fa2cf)}
+#own-cats .cat:nth-child(4n+3) .catb i{background:linear-gradient(90deg,#a8d3a0,#6fae78)}
+#own-cats .cat:nth-child(4n+4) .catb i{background:linear-gradient(90deg,#e3cf9d,#c9a860)}
+
+/* ── 앞으로 7일 · 칸반 — 색을 돌려준다 ── */
+.d7{background:#f2f7f0}
+.d7.busy{background:#dcefd6}
+.d7.today{background:linear-gradient(160deg,#3b8053,#2c6843);box-shadow:0 6px 14px -6px rgba(61,122,82,.55)}   /* 흰 12px 글자 4.5:1 이상 */
+.hg th.tdy{color:#2f7a4c}   /* 수빈 루틴 표 — 오늘 요일 머리글(흰 바탕 5.2:1) */
+.pipe .kcol:nth-child(1){background:linear-gradient(170deg,#e9f5e5,#f6faf4)}
+.pipe .kcol:nth-child(2){background:linear-gradient(170deg,#ebeffa,#f6f8fc)}
+.pipe .kcol:nth-child(1) .colt{color:#2b6a3c} .pipe .kcol:nth-child(2) .colt{color:#33508a}
+.pipe .kcol:nth-child(1) .coln{background:#cfe8c8;color:#2b6a3c} .pipe .kcol:nth-child(2) .coln{background:#d8e0f5;color:#33508a}
+.pipe .kcol:nth-child(1) .item{box-shadow:inset 3px 0 0 #8cc285,0 1px 3px rgba(28,38,32,.06)}
+.pipe .kcol:nth-child(2) .item{box-shadow:inset 3px 0 0 #9fb3e0,0 1px 3px rgba(28,38,32,.06)}
+
+/* ── 목록 아이콘 — 목록마다 파스텔 그라데이션 칩 + 흰 선 아이콘 (브리핑 .bic 와 같은 방식) ──
+   상태를 인라인 바탕색으로 나타내는 칩(style 있음 — 오래된 필름·감사 결과)은 그 바탕을 두고 아이콘만 제 색 */
+.li .ii{--c1:#a8d3a0;--c2:#72ad6a;color:var(--ic,#4f8a5f);background:#eaf3e7}
+.li .ii:not([style]){background:linear-gradient(150deg,var(--c1),var(--c2));color:#fff;
+  box-shadow:0 3px 8px -4px var(--c2),inset 0 0 0 .5px rgba(255,255,255,.5)}
+.li .ii:not([style]) .ic{stroke-width:2.2;filter:drop-shadow(0 1px 1px rgba(0,0,0,.16))}
+.li .ii[style*="gradient"]{color:#fff;box-shadow:0 3px 8px -4px rgba(60,50,40,.35),inset 0 0 0 .5px rgba(255,255,255,.5)}
+.li .ii[style*="gradient"] .ic{stroke-width:2.2;filter:drop-shadow(0 1px 1px rgba(0,0,0,.16))}
+#unc-list .ii{--c1:#ecd3ab;--c2:#d3a868;--ic:#a0621a}
+#iq-list .ii{--c1:#cdd9b0;--c2:#9fb877;--ic:#62762c}
+#buy-list .ii{--c1:#d3bfe0;--c2:#aa89cc;--ic:#80569f}
+#film-list .ii{--c1:#e0b9a0;--c2:#c68f6c;--ic:#a0603a}
+#pl-list .ii,#pl-list + .lst .ii{--c1:#a6c8e2;--c2:#74a0cb;--ic:#3f78ad}
+#note-list .ii{--c1:#c3c4e4;--c2:#9a9dd2;--ic:#5358a3}
+/* 최근 촬영 — 줄마다 다른 파스텔(v2.2 색 타일 팔레트) + 이름 첫 글자(현장 모드면 흐려짐). 사진은 넣지 않는다 */
+#shots .li .ii.shi{width:36px;height:36px;border-radius:12px;font-size:15px;font-weight:700;letter-spacing:-.3px;color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.18)}
+#shots .li:nth-child(4n+1) .ii.shi{--c1:#d9b8c4;--c2:#a98292}
+#shots .li:nth-child(4n+2) .ii.shi{--c1:#a6c8e2;--c2:#6f93b3}
+#shots .li:nth-child(4n+3) .ii.shi{--c1:#e6c9a8;--c2:#b99671}
+#shots .li:nth-child(4n+4) .ii.shi{--c1:#bcd0ac;--c2:#87a077}
+/* 일정 타임라인 점 — 종류색(촬영 초록 · 보정 전달 하늘 · 할 일 라벤더) */
+.tlrow.k-shoot{--tc:#7fb877} .tlrow.k-dlv{--tc:#80a9cf} .tlrow.k-todo{--tc:#b79bd4}
+.tlrow.k-shoot .dot,.tlrow.k-dlv .dot,.tlrow.k-todo .dot{border-color:var(--tc)}
+.tlrow.done.k-shoot .dot{background:var(--tc);border-color:var(--tc);opacity:.6}
+.tlrow.now.k-shoot .dot{background:var(--tc);border-color:#fff;box-shadow:0 0 0 4px #d8ecd3}
+
+/* ── 로그인 카드 — 밝고 반가운 톤 ── */
+.logincard{background:linear-gradient(115deg,#dff1d9 0%,#f2f9ee 46%,#fdf4e1 100%);box-shadow:var(--sh),inset 0 0 0 1px rgba(127,184,119,.3)}
+.lc-ic{background:#fff;color:#4f9a6a;box-shadow:0 5px 14px -6px rgba(79,154,106,.55)}
+.lcclv{width:28px;height:28px;display:block}
+.lc-t{color:#23502f}
+.lc-btn{background:linear-gradient(135deg,#3b8053,#2f6e47);box-shadow:0 6px 16px -7px rgba(61,122,82,.65)}   /* 흰 글자 4.5:1 이상 */
+/* 시안 색 블록 이름표 — 아래쪽 어둠을 조금 더(흰 글자 대비). 색 블록 그대로, 사진 없음 */
+.th4 a.t::after{background:linear-gradient(180deg,rgba(0,0,0,0) 28%,rgba(0,0,0,.34) 60%,rgba(0,0,0,.6))}
+.th4 a.t span,.th4 a.t small{text-shadow:0 1px 3px rgba(0,0,0,.45),0 0 1px rgba(0,0,0,.35)}
+/* 주소 #now 로 들어올 때 스크립트·주소 이동이 준 포커스엔 초록 테두리를 그리지 않는다(다음 키 입력부터 다시 보임) */
+#now.hfocus:focus-visible{outline:none}
+
+/* ── 움직임 — 첫 화면·탭 전환 때 카드가 살짝 떠오르며 순서대로(스크립트가 .anim 과 --i 를 붙였다 0.9초 뒤 뗀다) ── */
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.card,.bf,body.ready .card,body.ready .bf,body.tabs-on .tabpane.on{animation:none}
+.tabpane.anim .tier,.tabpane.anim .sechd,.tabpane.anim .bf,.tabpane.anim .card{
+  animation:rise .22s cubic-bezier(.2,.75,.25,1) backwards;animation-delay:calc(var(--i,0) * 40ms)}
+/* hover 들림은 누를 수 있는 것에만(브리핑 카드 · 시안 표지 · 앱 창 «새 탭» 버튼) — 누를 수 없는 div 카드는 움직이지 않는다(거짓 신호 방지) */
+@media(hover:hover){
+  .bf:hover{transform:translateY(-3px);box-shadow:var(--shx)}
+  .bf:active{transform:translateY(-1px) scale(.985)}
+  .th4 a.t{transition:transform .18s,box-shadow .18s}
+  .th4 a.t:hover{transform:translateY(-3px);box-shadow:0 10px 20px -8px rgba(60,50,40,.35)}
+}
+@media(prefers-reduced-motion:reduce){
+  .tabpane.anim .tier,.tabpane.anim .sechd,.tabpane.anim .bf,.tabpane.anim .card{animation:none}
+  .card:hover,.bf:hover,.bf:active,.th4 a.t:hover{transform:none}
+}
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="clv" viewBox="0 0 100 100"><path d="M51 54 C52 68 55 80 62 93" fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="round"/><g transform="translate(50,45)" fill="currentColor"><path id="clvleaf" d="M0 -3 C-3,-12 -19,-16 -19,-28.5 C-19,-37.5 -9.5,-41.5 0,-33 C9.5,-41.5 19,-37.5 19,-28.5 C19,-16 3,-12 0,-3 Z" transform="rotate(45)"/><use href="#clvleaf" transform="rotate(90)"/><use href="#clvleaf" transform="rotate(180)"/><use href="#clvleaf" transform="rotate(270)"/></g></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9v10.5a1 1 0 0 0 1 1H10v-6h4v6h3.5a1 1 0 0 0 1-1V9"/></symbol><symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></symbol><symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.5"/><path d="M3 19.5a6 6 0 0 1 12 0"/><path d="M15.5 5.2a3.5 3.5 0 0 1 0 6.6M17.5 14a6 6 0 0 1 3.5 5.5"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol><symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="5" y="4.5" width="14" height="16.5" rx="2.5"/><path d="M9 4.5v-1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M8.5 11h7M8.5 15h4.5"/></symbol><symbol id="i-images" viewBox="0 0 24 24"><rect x="3" y="3" width="14" height="14" rx="2.5"/><circle cx="8" cy="8" r="1.6"/><path d="m17 12.5-3.2-3.2L6 17"/><path d="M7 21h11.5a2.5 2.5 0 0 0 2.5-2.5V7"/></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.7-6.5-11a6.5 6.5 0 0 1 13 0c0 5.3-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></symbol><symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3.5 13.7 8.3 18.5 10l-4.8 1.7L12 16.5l-1.7-4.8L5.5 10l4.8-1.7z"/><path d="m18.5 15.5.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></symbol><symbol id="i-check-sq" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></symbol><symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V5.5A1.5 1.5 0 0 0 17.5 4H6a2.5 2.5 0 0 0 0 5h13a1 1 0 0 1 1 1v3.5"/><path d="M3.5 6.5v11A2.5 2.5 0 0 0 6 20h13a1 1 0 0 0 1-1v-2.5"/><path d="M20.5 13.5H17a1.75 1.75 0 0 0 0 3.5h3.5z"/></symbol><symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17.5" cy="19.5" r="1.3"/><path d="M3 3.5h2.2l2.3 11.3A1.5 1.5 0 0 0 9 16h8.4a1.5 1.5 0 0 0 1.5-1.2l1.6-7.3H6"/></symbol><symbol id="i-box" viewBox="0 0 24 24"><path d="M20.5 7.5 12 3 3.5 7.5v9L12 21l8.5-4.5z"/><path d="m3.5 7.5 8.5 4.5 8.5-4.5M12 12v9"/></symbol><symbol id="i-notebook" viewBox="0 0 24 24"><rect x="4.5" y="3" width="15" height="18" rx="2.5"/><path d="M8.5 3v18M12 8h4M12 12h4"/></symbol><symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><circle cx="9" cy="9" r="1.8"/><path d="m20.5 15-4.5-4.5L5.5 20.5"/></symbol><symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.2M12 7.8v.01"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6.5h11M9 12h11M9 17.5h11M4.5 6.5h.01M4.5 12h.01M4.5 17.5h.01"/></symbol><symbol id="i-camera" viewBox="0 0 24 24"><path d="M3.5 8.5A1.5 1.5 0 0 1 5 7h2.5L9 4.8h6L16.5 7H19a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5z"/><circle cx="12" cy="12.8" r="3.3"/></symbol><symbol id="i-aperture" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m14.3 8 5.2 9M9.7 8h10.4M7.4 12l5.2-9M9.7 16 4.5 7M14.3 16H3.9M16.6 12l-5.2 9"/></symbol><symbol id="i-disc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9.5 17.5h5M10.5 20.5h3"/><path d="M12 3.5a6 6 0 0 0-3.6 10.8c.6.5 1.1 1.2 1.1 2v1.2h5v-1.2c0-.8.5-1.5 1.1-2A6 6 0 0 0 12 3.5z"/></symbol><symbol id="i-toolbox" viewBox="0 0 24 24"><rect x="3.5" y="8" width="17" height="11.5" rx="2"/><path d="M9 8V6.2A1.2 1.2 0 0 1 10.2 5h3.6A1.2 1.2 0 0 1 15 6.2V8M3.5 13h17M10 13v2h4v-2"/></symbol><symbol id="i-tripod" viewBox="0 0 24 24"><rect x="8" y="3.5" width="8" height="5.5" rx="1.3"/><path d="M12 9v3.5M12 12.5 6.5 20.5M12 12.5l5.5 8M12 12.5v8"/></symbol><symbol id="i-printer" viewBox="0 0 24 24"><path d="M7 9V3.5h10V9"/><rect x="3.5" y="9" width="17" height="7.5" rx="2"/><path d="M7 14h10v6.5H7z"/></symbol><symbol id="i-bag" viewBox="0 0 24 24"><path d="M5.5 7.5h13l-.9 12a1.5 1.5 0 0 1-1.5 1.4H7.9a1.5 1.5 0 0 1-1.5-1.4z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></symbol><symbol id="i-receipt" viewBox="0 0 24 24"><path d="M5.5 3h13v18l-2.2-1.4-2.1 1.4-2.2-1.4L9.8 21l-2.1-1.4L5.5 21z"/><path d="M9 8h6M9 12h6M9 16h3"/></symbol><symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6.5h8M16 6.5h4M4 12h3M11 12h9M4 17.5h10M18 17.5h2"/><circle cx="14" cy="6.5" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="16" cy="17.5" r="2"/></symbol><symbol id="i-book-open" viewBox="0 0 24 24"><path d="M12 6.5c-1.6-1.4-4-2-8.5-2V18c4.5 0 6.9.6 8.5 2 1.6-1.4 4-2 8.5-2V4.5c-4.5 0-6.9.6-8.5 2z"/><path d="M12 6.5V20"/></symbol><symbol id="i-film" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M7.5 3.5v17M16.5 3.5v17M3.5 8h4M3.5 12h17M3.5 16h4M16.5 8h4M16.5 16h4"/></symbol><symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4.5 3.5 6.5v13L9 17.5l6 2 5.5-2v-13L15 6.5z"/><path d="M9 4.5v13M15 6.5v13"/></symbol><symbol id="i-flag" viewBox="0 0 24 24"><path d="M5.5 21V4M5.5 4.5h11.5l-2.2 4.2 2.2 4.3H5.5"/></symbol><symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.3 2.3 3.5 5.2 3.5 8.5s-1.2 6.2-3.5 8.5c-2.3-2.3-3.5-5.2-3.5-8.5s1.2-6.2 3.5-8.5z"/></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M5 19V5.5a2 2 0 0 1 2-2h12v14H7a2 2 0 0 0-2 2 2 2 0 0 0 2 2h12"/></symbol><symbol id="i-bot" viewBox="0 0 24 24"><rect x="4.5" y="8" width="15" height="11.5" rx="3"/><path d="M12 8V5M9.5 13v1.5M14.5 13v1.5M2.5 13v2M21.5 13v2"/><circle cx="12" cy="4" r="1"/></symbol><symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19.5c0-8.5 5-13.5 15-15-1 9.5-6 14.5-15 15z"/><path d="M5 19.5 12.5 12"/></symbol><symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.2 5 5.8v5.7c0 4.3 3 7.8 7 9.3 4-1.5 7-5 7-9.3V5.8z"/><path d="m9 12 2.2 2.2L15.2 10"/></symbol><symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2.2 4.8-4.8 2.2 2.2-4.8z"/></symbol><symbol id="i-sprout" viewBox="0 0 24 24"><path d="M12 20.5V12"/><path d="M12 12c0-3.9-2.4-6.5-6.8-6.5 0 4 2.6 6.5 6.8 6.5z"/><path d="M12 14.5c0-3.4 2.1-5.8 6.3-5.8 0 3.6-2.3 5.8-6.3 5.8z"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.2A7.8 7.8 0 1 1 9.8 4.5a6.2 6.2 0 0 0 9.7 9.7z"/><path d="M17 3.5v3M15.5 5h3"/></symbol><symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.8 2.5 5.2 5.6.8-4 3.9 1 5.6-5.1-2.6-5.1 2.6 1-5.6-4-3.9 5.6-.8z"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.8"/><path d="M12 2.8v2M12 19.2v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2.8 12h2M19.2 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol><symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3.5" y="7" width="17" height="12.5" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3.5 12.5h17"/></symbol><symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></symbol><symbol id="i-library" viewBox="0 0 24 24"><rect x="3.5" y="4" width="4" height="16" rx="1"/><rect x="9.5" y="4" width="4" height="16" rx="1"/><path d="m15.4 5.2 3.3-.8 2.9 14.8-3.3.8z"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.1A4.2 4.2 0 0 1 12 7.4a4.2 4.2 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/></symbol><symbol id="i-bars" viewBox="0 0 24 24"><path d="M4 20h16"/><rect x="5" y="11" width="3" height="6" rx="1"/><rect x="10.5" y="7" width="3" height="10" rx="1"/><rect x="16" y="4" width="3" height="13" rx="1"/></symbol><symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.35-5.65"/><path d="M20 4v4.5h-4.5"/></symbol><symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M10.6 5.6A9.6 9.6 0 0 1 12 5.5c5.3 0 8.5 5 8.5 6.5 0 .7-.7 2-1.9 3.4M6.5 6.9C4.4 8.3 3.5 10.8 3.5 12c0 1.5 3.2 6.5 8.5 6.5 1.7 0 3.2-.5 4.4-1.3"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2M3.5 3.5l17 17"/></symbol><symbol id="i-ext" viewBox="0 0 24 24"><path d="M9 5.5h9.5V15M18.5 5.5 6 18"/></symbol><symbol id="i-log-in" viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 16.5 14.5 12 10 7.5M14.5 12H4"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5.5 6.5 6.5L9 18.5"/></symbol><symbol id="i-shirt" viewBox="0 0 24 24"><path d="M8.5 3.5 4 6l1.8 4 1.7-.8v11.3h9V9.2l1.7.8L20 6l-4.5-2.5a3.5 3.5 0 0 1-7 0z"/></symbol><symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2.8 5 13.2h6.5l-.7 8 8.2-10.4h-6.5z"/></symbol><symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h3.5"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 4.3 2.9 17.5a2 2 0 0 0 1.7 3h14.8a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4M12 17h.01"/></symbol><symbol id="i-tag" viewBox="0 0 24 24"><path d="M3.5 12.2V5A1.5 1.5 0 0 1 5 3.5h7.2l8.3 8.3a1.5 1.5 0 0 1 0 2.1l-6.9 6.9a1.5 1.5 0 0 1-2.1 0z"/><circle cx="8" cy="8" r="1.4"/></symbol><symbol id="i-bank" viewBox="0 0 24 24"><path d="M3.5 9.5 12 4.5l8.5 5M5.5 10v7.5M10 10v7.5M14 10v7.5M18.5 10v7.5M3.5 20h17"/></symbol><symbol id="i-inbox" viewBox="0 0 24 24"><path d="M3.5 13.5h4.7l1.6 2.5h4.4l1.6-2.5h4.7"/><path d="M6 5.5h12l2.5 8v5a1.5 1.5 0 0 1-1.5 1.5H5a1.5 1.5 0 0 1-1.5-1.5v-5z"/></symbol><symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M9.7 9.5a2.4 2.4 0 0 1 4.6.9c0 1.6-2.3 2-2.3 3.6M12 17h.01"/></symbol><symbol id="i-swap" viewBox="0 0 24 24"><path d="M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m8.5 12.3 2.4 2.4 4.6-5"/></symbol><symbol id="i-more" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18.5" cy="12" r="1.3"/></symbol><symbol id="i-dock" viewBox="0 0 24 24"><path d="M3.5 11 11 4.8l7.5 6.2"/><path d="M5.5 9.5v10a1 1 0 0 0 1 1H11"/><path d="M14.5 16.5h7M18.5 13.5l3 3-3 3"/></symbol><symbol id="i-archive" viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="4.5" rx="1.2"/><path d="M5 8.5V19a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19V8.5M10 12.5h4"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="m10 9.2 5 2.8-5 2.8z"/></symbol></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="clvd" viewBox="0 0 40 40"><g fill="currentColor"><path d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(90 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(180 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(270 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/></g><path d="M20,20 Q21,29 25,34" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></symbol><symbol id="clv" viewBox="0 0 100 100"><path d="M51 54 C52 68 55 80 62 93" fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="round"/><g transform="translate(50,45)" fill="currentColor"><path id="clvleaf" d="M0 -3 C-3,-12 -19,-16 -19,-28.5 C-19,-37.5 -9.5,-41.5 0,-33 C9.5,-41.5 19,-37.5 19,-28.5 C19,-16 3,-12 0,-3 Z" transform="rotate(45)"/><use href="#clvleaf" transform="rotate(90)"/><use href="#clvleaf" transform="rotate(180)"/><use href="#clvleaf" transform="rotate(270)"/></g></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9v10.5a1 1 0 0 0 1 1H10v-6h4v6h3.5a1 1 0 0 0 1-1V9"/></symbol><symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></symbol><symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.5"/><path d="M3 19.5a6 6 0 0 1 12 0"/><path d="M15.5 5.2a3.5 3.5 0 0 1 0 6.6M17.5 14a6 6 0 0 1 3.5 5.5"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol><symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="5" y="4.5" width="14" height="16.5" rx="2.5"/><path d="M9 4.5v-1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M8.5 11h7M8.5 15h4.5"/></symbol><symbol id="i-images" viewBox="0 0 24 24"><rect x="3" y="3" width="14" height="14" rx="2.5"/><circle cx="8" cy="8" r="1.6"/><path d="m17 12.5-3.2-3.2L6 17"/><path d="M7 21h11.5a2.5 2.5 0 0 0 2.5-2.5V7"/></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.7-6.5-11a6.5 6.5 0 0 1 13 0c0 5.3-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></symbol><symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3.5 13.7 8.3 18.5 10l-4.8 1.7L12 16.5l-1.7-4.8L5.5 10l4.8-1.7z"/><path d="m18.5 15.5.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></symbol><symbol id="i-check-sq" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></symbol><symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V5.5A1.5 1.5 0 0 0 17.5 4H6a2.5 2.5 0 0 0 0 5h13a1 1 0 0 1 1 1v3.5"/><path d="M3.5 6.5v11A2.5 2.5 0 0 0 6 20h13a1 1 0 0 0 1-1v-2.5"/><path d="M20.5 13.5H17a1.75 1.75 0 0 0 0 3.5h3.5z"/></symbol><symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17.5" cy="19.5" r="1.3"/><path d="M3 3.5h2.2l2.3 11.3A1.5 1.5 0 0 0 9 16h8.4a1.5 1.5 0 0 0 1.5-1.2l1.6-7.3H6"/></symbol><symbol id="i-box" viewBox="0 0 24 24"><path d="M20.5 7.5 12 3 3.5 7.5v9L12 21l8.5-4.5z"/><path d="m3.5 7.5 8.5 4.5 8.5-4.5M12 12v9"/></symbol><symbol id="i-notebook" viewBox="0 0 24 24"><rect x="4.5" y="3" width="15" height="18" rx="2.5"/><path d="M8.5 3v18M12 8h4M12 12h4"/></symbol><symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><circle cx="9" cy="9" r="1.8"/><path d="m20.5 15-4.5-4.5L5.5 20.5"/></symbol><symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.2M12 7.8v.01"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6.5h11M9 12h11M9 17.5h11M4.5 6.5h.01M4.5 12h.01M4.5 17.5h.01"/></symbol><symbol id="i-camera" viewBox="0 0 24 24"><path d="M3.5 8.5A1.5 1.5 0 0 1 5 7h2.5L9 4.8h6L16.5 7H19a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5z"/><circle cx="12" cy="12.8" r="3.3"/></symbol><symbol id="i-aperture" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m14.3 8 5.2 9M9.7 8h10.4M7.4 12l5.2-9M9.7 16 4.5 7M14.3 16H3.9M16.6 12l-5.2 9"/></symbol><symbol id="i-disc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9.5 17.5h5M10.5 20.5h3"/><path d="M12 3.5a6 6 0 0 0-3.6 10.8c.6.5 1.1 1.2 1.1 2v1.2h5v-1.2c0-.8.5-1.5 1.1-2A6 6 0 0 0 12 3.5z"/></symbol><symbol id="i-toolbox" viewBox="0 0 24 24"><rect x="3.5" y="8" width="17" height="11.5" rx="2"/><path d="M9 8V6.2A1.2 1.2 0 0 1 10.2 5h3.6A1.2 1.2 0 0 1 15 6.2V8M3.5 13h17M10 13v2h4v-2"/></symbol><symbol id="i-tripod" viewBox="0 0 24 24"><rect x="8" y="3.5" width="8" height="5.5" rx="1.3"/><path d="M12 9v3.5M12 12.5 6.5 20.5M12 12.5l5.5 8M12 12.5v8"/></symbol><symbol id="i-printer" viewBox="0 0 24 24"><path d="M7 9V3.5h10V9"/><rect x="3.5" y="9" width="17" height="7.5" rx="2"/><path d="M7 14h10v6.5H7z"/></symbol><symbol id="i-bag" viewBox="0 0 24 24"><path d="M5.5 7.5h13l-.9 12a1.5 1.5 0 0 1-1.5 1.4H7.9a1.5 1.5 0 0 1-1.5-1.4z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></symbol><symbol id="i-receipt" viewBox="0 0 24 24"><path d="M5.5 3h13v18l-2.2-1.4-2.1 1.4-2.2-1.4L9.8 21l-2.1-1.4L5.5 21z"/><path d="M9 8h6M9 12h6M9 16h3"/></symbol><symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6.5h8M16 6.5h4M4 12h3M11 12h9M4 17.5h10M18 17.5h2"/><circle cx="14" cy="6.5" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="16" cy="17.5" r="2"/></symbol><symbol id="i-book-open" viewBox="0 0 24 24"><path d="M12 6.5c-1.6-1.4-4-2-8.5-2V18c4.5 0 6.9.6 8.5 2 1.6-1.4 4-2 8.5-2V4.5c-4.5 0-6.9.6-8.5 2z"/><path d="M12 6.5V20"/></symbol><symbol id="i-film" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M7.5 3.5v17M16.5 3.5v17M3.5 8h4M3.5 12h17M3.5 16h4M16.5 8h4M16.5 16h4"/></symbol><symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4.5 3.5 6.5v13L9 17.5l6 2 5.5-2v-13L15 6.5z"/><path d="M9 4.5v13M15 6.5v13"/></symbol><symbol id="i-flag" viewBox="0 0 24 24"><path d="M5.5 21V4M5.5 4.5h11.5l-2.2 4.2 2.2 4.3H5.5"/></symbol><symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.3 2.3 3.5 5.2 3.5 8.5s-1.2 6.2-3.5 8.5c-2.3-2.3-3.5-5.2-3.5-8.5s1.2-6.2 3.5-8.5z"/></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M5 19V5.5a2 2 0 0 1 2-2h12v14H7a2 2 0 0 0-2 2 2 2 0 0 0 2 2h12"/></symbol><symbol id="i-bot" viewBox="0 0 24 24"><rect x="4.5" y="8" width="15" height="11.5" rx="3"/><path d="M12 8V5M9.5 13v1.5M14.5 13v1.5M2.5 13v2M21.5 13v2"/><circle cx="12" cy="4" r="1"/></symbol><symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19.5c0-8.5 5-13.5 15-15-1 9.5-6 14.5-15 15z"/><path d="M5 19.5 12.5 12"/></symbol><symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.2 5 5.8v5.7c0 4.3 3 7.8 7 9.3 4-1.5 7-5 7-9.3V5.8z"/><path d="m9 12 2.2 2.2L15.2 10"/></symbol><symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2.2 4.8-4.8 2.2 2.2-4.8z"/></symbol><symbol id="i-sprout" viewBox="0 0 24 24"><path d="M12 20.5V12"/><path d="M12 12c0-3.9-2.4-6.5-6.8-6.5 0 4 2.6 6.5 6.8 6.5z"/><path d="M12 14.5c0-3.4 2.1-5.8 6.3-5.8 0 3.6-2.3 5.8-6.3 5.8z"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.2A7.8 7.8 0 1 1 9.8 4.5a6.2 6.2 0 0 0 9.7 9.7z"/><path d="M17 3.5v3M15.5 5h3"/></symbol><symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.8 2.5 5.2 5.6.8-4 3.9 1 5.6-5.1-2.6-5.1 2.6 1-5.6-4-3.9 5.6-.8z"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.8"/><path d="M12 2.8v2M12 19.2v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2.8 12h2M19.2 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol><symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3.5" y="7" width="17" height="12.5" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3.5 12.5h17"/></symbol><symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></symbol><symbol id="i-library" viewBox="0 0 24 24"><rect x="3.5" y="4" width="4" height="16" rx="1"/><rect x="9.5" y="4" width="4" height="16" rx="1"/><path d="m15.4 5.2 3.3-.8 2.9 14.8-3.3.8z"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.1A4.2 4.2 0 0 1 12 7.4a4.2 4.2 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/></symbol><symbol id="i-bars" viewBox="0 0 24 24"><path d="M4 20h16"/><rect x="5" y="11" width="3" height="6" rx="1"/><rect x="10.5" y="7" width="3" height="10" rx="1"/><rect x="16" y="4" width="3" height="13" rx="1"/></symbol><symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.35-5.65"/><path d="M20 4v4.5h-4.5"/></symbol><symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M10.6 5.6A9.6 9.6 0 0 1 12 5.5c5.3 0 8.5 5 8.5 6.5 0 .7-.7 2-1.9 3.4M6.5 6.9C4.4 8.3 3.5 10.8 3.5 12c0 1.5 3.2 6.5 8.5 6.5 1.7 0 3.2-.5 4.4-1.3"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2M3.5 3.5l17 17"/></symbol><symbol id="i-ext" viewBox="0 0 24 24"><path d="M9 5.5h9.5V15M18.5 5.5 6 18"/></symbol><symbol id="i-log-in" viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 16.5 14.5 12 10 7.5M14.5 12H4"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5.5 6.5 6.5L9 18.5"/></symbol><symbol id="i-shirt" viewBox="0 0 24 24"><path d="M8.5 3.5 4 6l1.8 4 1.7-.8v11.3h9V9.2l1.7.8L20 6l-4.5-2.5a3.5 3.5 0 0 1-7 0z"/></symbol><symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2.8 5 13.2h6.5l-.7 8 8.2-10.4h-6.5z"/></symbol><symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h3.5"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 4.3 2.9 17.5a2 2 0 0 0 1.7 3h14.8a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4M12 17h.01"/></symbol><symbol id="i-tag" viewBox="0 0 24 24"><path d="M3.5 12.2V5A1.5 1.5 0 0 1 5 3.5h7.2l8.3 8.3a1.5 1.5 0 0 1 0 2.1l-6.9 6.9a1.5 1.5 0 0 1-2.1 0z"/><circle cx="8" cy="8" r="1.4"/></symbol><symbol id="i-bank" viewBox="0 0 24 24"><path d="M3.5 9.5 12 4.5l8.5 5M5.5 10v7.5M10 10v7.5M14 10v7.5M18.5 10v7.5M3.5 20h17"/></symbol><symbol id="i-inbox" viewBox="0 0 24 24"><path d="M3.5 13.5h4.7l1.6 2.5h4.4l1.6-2.5h4.7"/><path d="M6 5.5h12l2.5 8v5a1.5 1.5 0 0 1-1.5 1.5H5a1.5 1.5 0 0 1-1.5-1.5v-5z"/></symbol><symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M9.7 9.5a2.4 2.4 0 0 1 4.6.9c0 1.6-2.3 2-2.3 3.6M12 17h.01"/></symbol><symbol id="i-swap" viewBox="0 0 24 24"><path d="M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m8.5 12.3 2.4 2.4 4.6-5"/></symbol><symbol id="i-more" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18.5" cy="12" r="1.3"/></symbol><symbol id="i-dock" viewBox="0 0 24 24"><path d="M3.5 11 11 4.8l7.5 6.2"/><path d="M5.5 9.5v10a1 1 0 0 0 1 1H11"/><path d="M14.5 16.5h7M18.5 13.5l3 3-3 3"/></symbol><symbol id="i-archive" viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="4.5" rx="1.2"/><path d="M5 8.5V19a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19V8.5M10 12.5h4"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="m10 9.2 5 2.8-5 2.8z"/></symbol></defs></svg>
 <!-- v2.3 검수: 여백 클로버는 화면에 고정(fixed)하지 않고, 콘텐츠와 안 겹치는 자리(구역 제목 오른쪽·목차 맨 아래·바닥글)에 둔다 -->
 
 <div class="mockbar" id="demobar">🍀 모든 칸이 <strong>실제 데이터</strong>로 채워집니다 (예시 값 없음). 저장하는 앱이 없는 항목(단어 여정 기록·수빈 사주·시안 발송 횟수)은 <b>데이터 없음</b>으로 적고, 못 읽은 값은 0이 아니라 <b>—</b> 로 표시합니다.</div>
 
 <header class="appbar" id="appbar">
-  <a class="ab-brand" href="#today" target="_self" aria-label="maydly 홈 — 오늘로"><svg class="clvmark" viewBox="0 0 40 40" aria-hidden="true"><use href="#clv"/></svg><span>maydly<span class="d">.</span></span></a>
+  <a class="ab-brand" href="#today" target="_self" aria-label="maydly 홈 — 오늘로"><svg class="clvmark" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg><span>maydly<span class="d">.</span></span></a>
   <div class="hello"><span class="hgreet"><span id="greet">안녕하세요</span>, 명진님</span><span class="hsep" aria-hidden="true"> · </span><span id="today-line"><span class="sk">불러오는 중…</span></span><span id="today-extra"></span></div>
   <div class="acts">
     <div class="statusbar">
@@ -987,72 +1183,71 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
   <!-- 사이드바 = 앱 내비 -->
   <aside class="side" aria-label="앱 바로가기">
 
-    <a class="nav on" href="#today" target="_self" aria-current="page" title="홈 대시보드"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg></span><span class="nm">홈 대시보드</span></a>
+    <a class="nav on" style="--c1:#a9cfae;--c2:#7fb489" href="#today" target="_self" aria-current="page" title="홈 대시보드"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg></span><span class="nm">홈 대시보드</span></a>
     <div class="sidecap" title="누르면 새 탭으로 열립니다">바로가기 <svg class="ic sm" aria-hidden="true"><use href="#i-ext"/></svg></div>
 
     <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>촬영 · 고객<span class="n">7</span></summary>
-      <a class="nav" href="https://maydly.github.io/maydly-cal/admin.html" title="명진 캘린더 — 지남·긴급(3일 이내)"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg></span><span class="nm">명진 캘린더</span><span class="bdg" id="nv-cal"></span></a>
-      <a class="nav" href="https://maydly.github.io/maydly-cal/" title="협업 캘린더"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg></span><span class="nm">협업 캘린더</span></a>
-      <a class="nav" href="https://maydly.github.io/maydly-cal/pay.html" title="페이용 캘린더"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg></span><span class="nm">페이용 캘린더</span></a>
-      <a class="nav" href="https://maydly.github.io/note/hub/설문데이터/" title="설문 데이터 — 시안 문의 기록"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-clipboard"/></svg></span><span class="nm">설문 데이터</span><span class="bdg" id="nv-inq"></span></a>
-      <a class="nav" href="https://maydly.github.io/note/hub/시안/" title="촬영 시안 4종"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-images"/></svg></span><span class="nm">촬영 시안</span></a>
-      <a class="nav" href="https://maydly.github.io/note/hub/photomap/" title="대표 사진맵"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg></span><span class="nm">대표 사진맵</span></a>
-      <a class="nav" href="https://maydly.github.io/" title="maydly 시안(고객용)"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-sparkle"/></svg></span><span class="nm">maydly 시안(고객용)</span></a>
+      <a class="nav" style="--c1:#e7bcb4;--c2:#dda79d" href="https://maydly.github.io/maydly-cal/admin.html" title="명진 캘린더 — 지남·긴급(3일 이내)"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg></span><span class="nm">명진 캘린더</span><span class="bdg" id="nv-cal"></span></a>
+      <a class="nav" style="--c1:#a8d3a0;--c2:#7fb877" href="https://maydly.github.io/maydly-cal/" title="협업 캘린더"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg></span><span class="nm">협업 캘린더</span></a>
+      <a class="nav" style="--c1:#e3cf9d;--c2:#d0b97e" href="https://maydly.github.io/maydly-cal/pay.html" title="페이용 캘린더"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg></span><span class="nm">페이용 캘린더</span></a>
+      <a class="nav" style="--c1:#cdd9b0;--c2:#aec48f" href="https://maydly.github.io/note/hub/설문데이터/" title="설문 데이터 — 시안 문의 기록"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-clipboard"/></svg></span><span class="nm">설문 데이터</span><span class="bdg" id="nv-inq"></span></a>
+      <a class="nav" style="--c1:#d9b8c4;--c2:#c59db0" href="https://maydly.github.io/note/hub/시안/" title="촬영 시안 4종"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-images"/></svg></span><span class="nm">촬영 시안</span></a>
+      <a class="nav" style="--c1:#ecd3ab;--c2:#dcbd8d" href="https://maydly.github.io/note/hub/photomap/" title="대표 사진맵"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg></span><span class="nm">대표 사진맵</span></a>
+      <a class="nav" style="--c1:#e6b8c8;--c2:#d59fb3" href="https://maydly.github.io/" title="maydly 시안(고객용)"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-sparkle"/></svg></span><span class="nm">maydly 시안(고객용)</span></a>
     </details>
 
     <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>명진앱<span class="n">7</span></summary>
-      <a class="nav" href="https://maydly.github.io/note/myapp/?tab=todo" title="할 일 — 오늘 남은 것"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-check-sq"/></svg></span><span class="nm">할 일</span><span class="bdg soft" id="nv-todo"></span></a>
-      <a class="nav" href="https://maydly.github.io/note/myapp/?tab=money" title="가계부 — 분류할 내역"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg></span><span class="nm">가계부</span><span class="bdg soft" id="nv-unc"></span></a>
-      <a class="nav" href="https://maydly.github.io/note/myapp/?tab=buy" title="구매계획"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-cart"/></svg></span><span class="nm">구매</span><span class="bdg soft" id="nv-buy"></span></a>
-      <a class="nav" href="https://maydly.github.io/note/myapp/?tab=own" title="보유 장비"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-box"/></svg></span><span class="nm">보유 장비</span></a>
-      <a class="nav" href="https://maydly.github.io/note/myapp/?tab=shoot" title="촬영 기록"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-notebook"/></svg></span><span class="nm">촬영 기록</span></a>
-      <a class="nav" href="https://maydly.github.io/note/myapp/?tab=shoot" title="사진"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-image"/></svg></span><span class="nm">사진</span></a>
-      <a class="nav" href="https://maydly.github.io/note/myapp/?tab=info" title="정보"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg></span><span class="nm">정보</span></a>
+      <a class="nav" style="--c1:#d3bfe0;--c2:#b79bd4" href="https://maydly.github.io/note/myapp/?tab=todo" title="할 일 — 오늘 남은 것"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-check-sq"/></svg></span><span class="nm">할 일</span><span class="bdg soft" id="nv-todo"></span></a>
+      <a class="nav" style="--c1:#dcc0da;--c2:#c49dc4" href="https://maydly.github.io/note/myapp/?tab=money" title="가계부 — 분류할 내역"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg></span><span class="nm">가계부</span><span class="bdg soft" id="nv-unc"></span></a>
+      <a class="nav" style="--c1:#cbc3e6;--c2:#a99fd8" href="https://maydly.github.io/note/myapp/?tab=buy" title="구매계획"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-cart"/></svg></span><span class="nm">구매</span><span class="bdg soft" id="nv-buy"></span></a>
+      <a class="nav" style="--c1:#d6c3e6;--c2:#b8a0d6" href="https://maydly.github.io/note/myapp/?tab=own" title="보유 장비"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-box"/></svg></span><span class="nm">보유 장비</span></a>
+      <a class="nav" style="--c1:#dfc3d6;--c2:#c8a0bd" href="https://maydly.github.io/note/myapp/?tab=shoot" title="촬영 기록"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-notebook"/></svg></span><span class="nm">촬영 기록</span></a>
+      <a class="nav" style="--c1:#c9c6ea;--c2:#a7a3da" href="https://maydly.github.io/note/myapp/?tab=shoot" title="사진"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-image"/></svg></span><span class="nm">사진</span></a>
+      <a class="nav" style="--c1:#d0c5e3;--c2:#b1a2d0" href="https://maydly.github.io/note/myapp/?tab=info" title="정보"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg></span><span class="nm">정보</span></a>
     </details>
 
     <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>장비 자료<span class="n">13</span></summary>
-      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/00_장비비교_목차_latest.html" title="장비비교 목차"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg></span><span class="nm">장비비교 목차</span></a>
-      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/01_카메라_비교표_latest.html" title="카메라 비교표 — 바디 포함"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-camera"/></svg></span><span class="nm">카메라 비교표</span></a>
-      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/02_렌즈_비교표_latest.html" title="렌즈 비교표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-aperture"/></svg></span><span class="nm">렌즈 비교표</span></a>
-      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/03_필터_비교표_latest.html" title="필터 비교표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-disc"/></svg></span><span class="nm">필터 비교표</span></a>
-      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/04_조명_비교표_latest.html" title="조명 비교표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-bulb"/></svg></span><span class="nm">조명 비교표</span></a>
-      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/05_악세사리_비교표_latest.html" title="악세사리 비교표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-toolbox"/></svg></span><span class="nm">악세사리 비교표</span></a>
-      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/06_촬영지원장비_비교표_latest.html" title="촬영지원장비 비교표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-tripod"/></svg></span><span class="nm">촬영지원장비 비교표</span></a>
-      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/07_포토프린터_비교표_latest.html" title="포토프린터 비교표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-printer"/></svg></span><span class="nm">포토프린터 비교표</span></a>
-      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/08_일본빈티지렌즈_쇼핑가이드_latest.html" title="일본 빈티지렌즈 가이드"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-bag"/></svg></span><span class="nm">일본 빈티지렌즈 가이드</span></a>
-      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/09_보유장비현황_latest.html" title="보유장비 현황"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-archive"/></svg></span><span class="nm">보유장비 현황</span></a>
-      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/10_구매계획리스트_latest.html" title="구매계획 리스트"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-receipt"/></svg></span><span class="nm">구매계획 리스트</span></a>
-      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/11_조명셋업짜기_latest.html" title="조명 셋업 — 고른 결정 수"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-sliders"/></svg></span><span class="nm">조명 셋업 짜기</span><span class="bdg soft" id="nv-light"></span></a>
-      <a class="nav" href="https://maydly.github.io/note/07_장비비교자료/12_조명악세사리_원리비교가이드_latest.html" title="조명 악세사리 원리"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-book-open"/></svg></span><span class="nm">조명 악세사리 원리</span></a>
+      <a class="nav" style="--c1:#a7cdd0;--c2:#85b3b7" href="https://maydly.github.io/note/07_장비비교자료/00_장비비교_목차_latest.html" title="장비비교 목차"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg></span><span class="nm">장비비교 목차</span></a>
+      <a class="nav" style="--c1:#a6c9d6;--c2:#84aec2" href="https://maydly.github.io/note/07_장비비교자료/01_카메라_비교표_latest.html" title="카메라 비교표 — 바디 포함"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-camera"/></svg></span><span class="nm">카메라 비교표</span></a>
+      <a class="nav" style="--c1:#a9d0c8;--c2:#86b8ae" href="https://maydly.github.io/note/07_장비비교자료/02_렌즈_비교표_latest.html" title="렌즈 비교표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-aperture"/></svg></span><span class="nm">렌즈 비교표</span></a>
+      <a class="nav" style="--c1:#aecfd8;--c2:#8bb5c4" href="https://maydly.github.io/note/07_장비비교자료/03_필터_비교표_latest.html" title="필터 비교표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-disc"/></svg></span><span class="nm">필터 비교표</span></a>
+      <a class="nav" style="--c1:#b0d3c4;--c2:#8dbaa8" href="https://maydly.github.io/note/07_장비비교자료/04_조명_비교표_latest.html" title="조명 비교표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-bulb"/></svg></span><span class="nm">조명 비교표</span></a>
+      <a class="nav" style="--c1:#a3c6cc;--c2:#80aab3" href="https://maydly.github.io/note/07_장비비교자료/05_악세사리_비교표_latest.html" title="악세사리 비교표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-toolbox"/></svg></span><span class="nm">악세사리 비교표</span></a>
+      <a class="nav" style="--c1:#b3cfd2;--c2:#90b3b8" href="https://maydly.github.io/note/07_장비비교자료/06_촬영지원장비_비교표_latest.html" title="촬영지원장비 비교표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-tripod"/></svg></span><span class="nm">촬영지원장비 비교표</span></a>
+      <a class="nav" style="--c1:#a8c4d4;--c2:#86a8bd" href="https://maydly.github.io/note/07_장비비교자료/07_포토프린터_비교표_latest.html" title="포토프린터 비교표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-printer"/></svg></span><span class="nm">포토프린터 비교표</span></a>
+      <a class="nav" style="--c1:#b5d2cc;--c2:#92b8b0" href="https://maydly.github.io/note/07_장비비교자료/08_일본빈티지렌즈_쇼핑가이드_latest.html" title="일본 빈티지렌즈 가이드"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-bag"/></svg></span><span class="nm">일본 빈티지렌즈 가이드</span></a>
+      <a class="nav" style="--c1:#a2cbc7;--c2:#7fb0ab" href="https://maydly.github.io/note/07_장비비교자료/09_보유장비현황_latest.html" title="보유장비 현황"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-archive"/></svg></span><span class="nm">보유장비 현황</span></a>
+      <a class="nav" style="--c1:#b0cad6;--c2:#8daec0" href="https://maydly.github.io/note/07_장비비교자료/10_구매계획리스트_latest.html" title="구매계획 리스트"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-receipt"/></svg></span><span class="nm">구매계획 리스트</span></a>
+      <a class="nav" style="--c1:#d8cba8;--c2:#c2b184" href="https://maydly.github.io/note/07_장비비교자료/11_조명셋업짜기_latest.html" title="조명 셋업 — 고른 결정 수"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-sliders"/></svg></span><span class="nm">조명 셋업 짜기</span><span class="bdg soft" id="nv-light"></span></a>
+      <a class="nav" style="--c1:#dccfae;--c2:#c6b48c" href="https://maydly.github.io/note/07_장비비교자료/12_조명악세사리_원리비교가이드_latest.html" title="조명 악세사리 원리"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-book-open"/></svg></span><span class="nm">조명 악세사리 원리</span></a>
     </details>
 
     <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>필름<span class="n">1</span></summary>
-      <a class="nav" href="https://maydly.github.io/note/film/" title="빈티지 필름 — 재고"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-film"/></svg></span><span class="nm">빈티지 필름</span></a>
+      <a class="nav" style="--c1:#e0b9a0;--c2:#caa080" href="https://maydly.github.io/note/film/" title="빈티지 필름 — 재고"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-film"/></svg></span><span class="nm">빈티지 필름</span></a>
     </details>
 
     <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>여행 · 지도<span class="n">3</span></summary>
-      <a class="nav" href="https://maydly.github.io/note/travel/" title="여행지도 — 내 장소"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg></span><span class="nm">여행지도</span></a>
-      <a class="nav" href="https://maydly.github.io/note/travel-kr/" title="여행지도 한국"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-flag"/></svg></span><span class="nm">여행지도 한국</span></a>
-      <a class="nav" href="https://maydly.github.io/gev/" title="신의눈 3D"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg></span><span class="nm">신의눈 3D</span></a>
+      <a class="nav" style="--c1:#a6c8e2;--c2:#80a9cf" href="https://maydly.github.io/note/travel/" title="여행지도 — 내 장소"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg></span><span class="nm">여행지도</span></a>
+      <a class="nav" style="--c1:#aac5e6;--c2:#86a6d4" href="https://maydly.github.io/note/travel-kr/" title="여행지도 한국"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-flag"/></svg></span><span class="nm">여행지도 한국</span></a>
+      <a class="nav" style="--c1:#a3bde0;--c2:#7f9ccc" href="https://maydly.github.io/gev/" title="신의눈 3D"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg></span><span class="nm">신의눈 3D</span></a>
     </details>
 
     <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>기록 · 학습<span class="n">3</span></summary>
-      <a class="nav" href="https://maydly.github.io/note/" title="note 아카이브 — 노트 수"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg></span><span class="nm">note 아카이브</span></a>
-      <a class="nav" href="https://maydly.github.io/note/03_AI에이전트운영체계/" title="AI 에이전트 운영체계"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-bot"/></svg></span><span class="nm">AI 에이전트 운영체계</span></a>
-      <a class="nav" href="https://maydly.github.io/maydly-hub/word-journey/" title="단어 여정"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg></span><span class="nm">단어 여정</span></a>
+      <a class="nav" style="--c1:#c3c4e4;--c2:#a9abd6" href="https://maydly.github.io/note/" title="note 아카이브 — 노트 수"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg></span><span class="nm">note 아카이브</span></a>
+      <a class="nav" style="--c1:#c8c2e2;--c2:#aaa1d2" href="https://maydly.github.io/note/03_AI에이전트운영체계/" title="AI 에이전트 운영체계"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-bot"/></svg></span><span class="nm">AI 에이전트 운영체계</span></a>
+      <a class="nav" style="--c1:#bcdcb6;--c2:#8ac07d" href="https://maydly.github.io/maydly-hub/word-journey/" title="단어 여정"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg></span><span class="nm">단어 여정</span></a>
     </details>
 
     <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>점검<span class="n">2</span></summary>
-      <a class="nav" href="https://maydly.github.io/note/hub/governance/" title="거버넌스 — 주간 점검에서 확인할 것"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg></span><span class="nm">거버넌스</span><span class="bdg soft" id="nv-gov"></span></a>
-      <a class="nav" href="https://maydly.github.io/note/prep/" title="독립 준비 점검표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-compass"/></svg></span><span class="nm">독립 준비 점검표</span></a>
+      <a class="nav" style="--c1:#9ab5a8;--c2:#7a9e90" href="https://maydly.github.io/note/hub/governance/" title="거버넌스 — 주간 점검에서 확인할 것"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg></span><span class="nm">거버넌스</span><span class="bdg soft" id="nv-gov"></span></a>
+      <a class="nav" style="--c1:#b7c9b0;--c2:#94ae8c" href="https://maydly.github.io/note/prep/" title="독립 준비 점검표"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-compass"/></svg></span><span class="nm">독립 준비 점검표</span></a>
     </details>
 
     <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>수빈<span class="n">3</span></summary>
-      <a class="nav" href="https://maydly.github.io/note/subin/" title="수빈 앱(루틴)"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="nm">수빈 앱(루틴)</span></a>
-      <a class="nav" href="https://subin-routine.web.app/saju/" title="수빈 사주"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-moon"/></svg></span><span class="nm">수빈 사주</span></a>
-      <a class="nav" href="https://maydly.github.io/subin-routine/" title="루틴앱 전용본"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg></span><span class="nm">루틴앱 전용본</span></a>
+      <a class="nav" style="--c1:#bcd0ac;--c2:#a3bd90" href="https://maydly.github.io/note/subin/" title="수빈 앱(루틴)"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="nm">수빈 앱(루틴)</span></a>
+      <a class="nav" style="--c1:#e6c9a8;--c2:#d4ad82" href="https://subin-routine.web.app/saju/" title="수빈 사주"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-moon"/></svg></span><span class="nm">수빈 사주</span></a>
+      <a class="nav" style="--c1:#bcd0ac;--c2:#a3bd90" href="https://maydly.github.io/subin-routine/" title="루틴앱 전용본"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg></span><span class="nm">루틴앱 전용본</span></a>
     </details>
-    <div class="sideclv" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#clv"/></svg><svg viewBox="0 0 100 100"><use href="#clv"/></svg></div>
   </aside>
 
   <!-- 본문 -->
@@ -1069,11 +1264,11 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
     </nav>
 
     <section class="tabpane on" data-tab="today" id="pane-today" role="tabpanel" aria-labelledby="tab-today">
-    <div class="tier"><h2>오늘</h2><div class="ts">지금 판단해야 할 것</div></div>
+    <div class="tier"><span class="tchip" aria-hidden="true"><svg class="ic"><use href="#i-sun"/></svg></span><h2>오늘</h2><div class="ts">지금 판단해야 할 것</div></div>
 
     <!-- 로그인 안내 — 로그아웃일 때만 한 장 (카드마다 «로그인 필요»를 반복하지 않게) -->
     <div class="card logincard" id="loginCard" hidden>
-      <div class="lc-ic" aria-hidden="true"><svg class="ic"><use href="#i-log-in"/></svg></div>
+      <div class="lc-ic" aria-hidden="true"><svg class="lcclv" viewBox="0 0 40 40"><use href="#clvd"/></svg></div>
       <div class="lc-tx"><div class="lc-t">구글 로그인하면 촬영 · 할 일 · 돈이 보여요</div>
         <div class="lc-s">명진 · 수빈 계정만 읽을 수 있고, 홈은 읽기만 해요.</div></div>
       <button type="button" class="lc-btn" id="loginCardBtn">구글 로그인</button>
@@ -1081,19 +1276,19 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
 
     <!-- 브리핑 — 다음 촬영 · 지금 처리할 것(누르면 아래로 펼침) · 오늘 할 일 · 납품 마감 -->
     <div class="brief">
-      <a class="bf today" href="https://maydly.github.io/maydly-cal/admin.html"><div class="bl">다음 촬영</div>
+      <a class="bf today" href="https://maydly.github.io/maydly-cal/admin.html"><div class="bl"><span class="bic" aria-hidden="true"><svg class="ic"><use href="#i-camera"/></svg></span>다음 촬영</div>
         <div class="bv"><span id="b-next"><span class="sk">불러오는 중…</span></span></div>
         <div class="bs"><span id="b-next-sub"><span class="sk">불러오는 중…</span></span></div></a>
       <button type="button" class="bf nowtile" id="now" aria-expanded="false" aria-controls="now-panel">
-        <span class="bl">지금 처리할 것<span class="nowdot" id="now-dot" hidden title="기한이 지난 일이 있습니다"></span><span class="car" aria-hidden="true"><svg class="ic sm"><use href="#i-chev"/></svg></span></span>
+        <span class="bl"><span class="bic" aria-hidden="true"><svg class="ic"><use href="#i-zap"/></svg></span>지금 처리할 것<span class="nowdot" id="now-dot" hidden title="기한이 지난 일이 있습니다"></span><span class="car" aria-hidden="true"><svg class="ic sm"><use href="#i-chev"/></svg></span></span>
         <span class="bv"><span id="b-exc"><span class="sk">불러오는 중…</span></span></span>
         <span class="bs nowtop" id="now-top"><span class="sk">불러오는 중…</span></span>
         <span class="bs nowsum" id="now-sum"></span>
       </button>
-      <a class="bf" id="bf-todo" href="https://maydly.github.io/note/myapp/?tab=today"><div class="bl">오늘 할 일</div>
+      <a class="bf" id="bf-todo" href="https://maydly.github.io/note/myapp/?tab=today"><div class="bl"><span class="bic" aria-hidden="true"><svg class="ic"><use href="#i-check-sq"/></svg></span>오늘 할 일</div>
         <div class="bv"><span id="b-todo"><span class="sk">불러오는 중…</span></span></div>
         <div class="bs"><span id="b-todo-sub"><span class="sk">불러오는 중…</span></span></div></a>
-      <a class="bf" id="bf-dlv" href="https://maydly.github.io/maydly-cal/admin.html"><div class="bl">납품 마감</div>
+      <a class="bf" id="bf-dlv" href="https://maydly.github.io/maydly-cal/admin.html"><div class="bl"><span class="bic" aria-hidden="true"><svg class="ic"><use href="#i-image"/></svg></span>납품 마감</div>
         <div class="bv"><span id="b-dlv"><span class="sk">불러오는 중…</span></span></div>
         <div class="bs"><span id="b-dlv-sub"><span class="sk">불러오는 중…</span></span></div></a>
     </div>
@@ -1119,12 +1314,12 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
     <!-- 일정 + 진행 상황 -->
     <div class="grid2">
       <div class="card">
-        <div class="ch"><div class="ct">일정</div><a class="more" href="https://maydly.github.io/maydly-cal/admin.html">캘린더에서 보기 →</a></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#e7bcb4;--c2:#dda79d" aria-hidden="true"><svg class="ic"><use href="#i-calendar"/></svg></span>일정</div><a class="more" href="https://maydly.github.io/maydly-cal/admin.html">캘린더에서 보기 →</a></div>
         <div class="tl" id="tl"><div class="skel"><i></i><i></i><span class="sr">불러오는 중…</span></div></div>
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">진행 상황</div></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#a8d3a0;--c2:#7fb877" aria-hidden="true"><svg class="ic"><use href="#i-bars"/></svg></span>진행 상황</div></div>
         <div class="goal"><div class="gl"><div class="gn">오늘 할 일</div><div class="gv"><span id="g-todo">—</span></div></div>
           <div class="gbar"><i id="g-todo-bar" style="width:0%"></i></div></div>
         <div class="goal" title="일요일~토요일 · 목표 10명"><div class="gl"><div class="gn">이번 주 촬영</div><div class="gv"><span id="g-week">—</span></div></div>
@@ -1145,10 +1340,10 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
     </section>
 
     <section class="tabpane" data-tab="biz" id="pane-biz" role="tabpanel" aria-labelledby="tab-biz">
-    <div class="tier"><h2>사업</h2><div class="ts">촬영 흐름 · 돈 · 고객</div></div>
+    <div class="tier"><span class="tchip" aria-hidden="true"><svg class="ic"><use href="#i-briefcase"/></svg></span><h2>사업</h2><div class="ts">촬영 흐름 · 돈 · 고객</div></div>
     <!-- 촬영 진행 파이프라인 -->
     <div class="card" style="margin-bottom:14px">
-      <div class="ch"><div class="ct">촬영 진행</div><div class="cs">예약부터 납품까지</div></div>
+      <div class="ch"><div class="ct"><span class="cic" style="--c1:#efc2b3;--c2:#dfa28f" aria-hidden="true"><svg class="ic"><use href="#i-camera"/></svg></span>촬영 진행</div><div class="cs">예약부터 납품까지</div></div>
       <div class="pipe">
         <div class="kcol">
           <div class="colh"><div class="colt">촬영 확정</div><div class="coln" id="k-conf-n">—</div></div>
@@ -1165,7 +1360,7 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
     <!-- 목표 + 사진 -->
     <div class="grid2b">
       <div class="card">
-        <div class="ch"><div class="ct">진행 중인 목표</div><a class="more" href="https://maydly.github.io/note/prep/">독립 준비 →</a></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#b7c9b0;--c2:#94ae8c" aria-hidden="true"><svg class="ic"><use href="#i-flag"/></svg></span>진행 중인 목표</div><a class="more" href="https://maydly.github.io/note/prep/">독립 준비 →</a></div>
         <div class="goal">
           <div class="gl" title="이 기기에서 고른 조명 셋업 기준"><div class="gn">조명 셋업 결정</div><div class="gv"><span id="g-light">—</span></div></div>
           <div class="gbar"><i id="g-light-bar" style="width:0%"></i></div>
@@ -1185,7 +1380,7 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">최근 촬영</div><a class="more" href="https://maydly.github.io/note/myapp/?tab=shoot">촬영 기록 →</a></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#ecd3ab;--c2:#dcbd8d" aria-hidden="true"><svg class="ic"><use href="#i-image"/></svg></span>최근 촬영</div><a class="more" href="https://maydly.github.io/note/myapp/?tab=shoot">촬영 기록 →</a></div>
         <div class="lst" id="shots"><div class="skel"><i></i><i></i><span class="sr">불러오는 중…</span></div></div>
         <div class="cfoot" id="shots-note"><span class="sk">불러오는 중…</span></div>
       </div>
@@ -1196,7 +1391,7 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
     <!-- 수입지출 + 도넛 (v2.3 검수: 오늘 탭 → 사업 › 돈으로 옮김) -->
     <div class="grid2">
       <div class="card">
-        <div class="ch"><div class="ct">수입 · 지출</div><div class="cs">최근 6개월 · 이체·충전 제외</div></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#a8d3a0;--c2:#7fb877" aria-hidden="true"><svg class="ic"><use href="#i-wallet"/></svg></span>수입 · 지출</div><div class="cs">최근 6개월 · 이체·충전 제외</div></div>
         <svg class="linechart" id="lc" viewBox="0 0 640 210" style="width:100%;height:auto;display:block" role="img" aria-label="최근 6개월 수입과 지출">
           <g class="skr"><rect x="60" y="46" width="540" height="10" rx="5"/><rect x="60" y="92" width="420" height="10" rx="5"/><rect x="60" y="138" width="480" height="10" rx="5"/></g><text x="330" y="100" text-anchor="middle" class="lcmsg sksvg">불러오는 중…</text>
         </svg>
@@ -1208,7 +1403,7 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">이번달 지출</div><div class="cs"><span class="mask" id="dn-total">—</span></div></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#e3cf9d;--c2:#d0b97e" aria-hidden="true"><svg class="ic"><use href="#i-receipt"/></svg></span>이번달 지출</div><div class="cs"><span class="mask" id="dn-total">—</span></div></div>
         <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
           <div style="position:relative;width:132px;height:132px;flex:0 0 auto">
             <svg width="132" height="132" viewBox="0 0 132 132" style="transform:rotate(-90deg)" id="dn-svg">
@@ -1226,18 +1421,18 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
     </div>
     <div class="grid3">
       <div class="card">
-        <div class="ch"><div class="ct">미분류 내역</div><a class="more" href="https://maydly.github.io/note/myapp/?tab=money">가계부에서 보기 &rarr;</a></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#e6c9a8;--c2:#d4ad82" aria-hidden="true"><svg class="ic"><use href="#i-tag"/></svg></span>미분류 내역</div><a class="more" href="https://maydly.github.io/note/myapp/?tab=money">가계부에서 보기 &rarr;</a></div>
         <div class="lst" id="unc-list"><div class="skel"><i></i><i></i><span class="sr">불러오는 중…</span></div></div>
         <div class="callout">분류할 내역 <b><span id="m-unc">—</span>건</b></div>
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">캘린더 대조</div><div class="cs">이번 달 입금 &harr; 예약</div></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#a6c8e2;--c2:#80a9cf" aria-hidden="true"><svg class="ic"><use href="#i-swap"/></svg></span>캘린더 대조</div><div class="cs">이번 달 입금 &harr; 예약</div></div>
         <div class="lst" id="cm-list"><div class="skel"><i></i><i></i><span class="sr">불러오는 중…</span></div></div>
         <div class="srcnote" id="cm-note">명진앱 「캘린더와 대조」와 같은 기준 — 입금자 이름과 같은 예약이 앞뒤 60일 안에 있는지</div>
       </div>
       <div class="card">
-        <div class="ch"><div class="ct">미수금 · 예정 수입</div><div class="cs" id="m-month">이번 달</div></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#a7cdd0;--c2:#85b3b7" aria-hidden="true"><svg class="ic"><use href="#i-bank"/></svg></span>미수금 · 예정 수입</div><div class="cs" id="m-month">이번 달</div></div>
         <div class="goal"><div class="gl" title="명진앱 가계부에 들어온 이번 달 수입"><div class="gn">확인된 수입</div><div class="gv"><span class="mask"><span id="m-in">—</span></span></div></div>
           <div class="gbar"><i id="m-in-bar" style="width:0%"></i></div></div>
         <div class="goal"><div class="gl" title="이번 달 지난 촬영 중 입금과 이름이 안 맞는 것 — 예약 금액 기준"><div class="gn">입금 미확인</div><div class="gv"><span class="mask"><span id="m-unconf">—</span></span></div></div>
@@ -1253,12 +1448,12 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
     <div class="sechd"><h2>촬영 &middot; 고객</h2><div class="sn">문의 &middot; 시안 &middot; 사진맵</div></div>
     <div class="grid2">
       <div class="card">
-        <div class="ch"><div class="ct">최근 문의 <span class="cs" id="iq-count" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/hub/설문데이터/">설문 데이터 &rarr;</a></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#cdd9b0;--c2:#aec48f" aria-hidden="true"><svg class="ic"><use href="#i-inbox"/></svg></span>최근 문의 <span class="cs" id="iq-count" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/hub/설문데이터/">설문 데이터 &rarr;</a></div>
         <div class="lst" id="iq-list"><div class="skel"><i></i><i></i><span class="sr">불러오는 중…</span></div></div>
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">촬영 시안</div><a class="more" href="https://maydly.github.io/note/hub/시안/">시안 원본 보기 &rarr;</a></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#d9b8c4;--c2:#c59db0" aria-hidden="true"><svg class="ic"><use href="#i-images"/></svg></span>촬영 시안</div><a class="more" href="https://maydly.github.io/note/hub/시안/">시안 원본 보기 &rarr;</a></div>
         <div class="th4">
           <a class="t" href="https://maydly.github.io/note/hub/시안/우중시안_촬영컨셉시안.html" style="background:linear-gradient(155deg,#b8c4cf,#8a97a6)"><span>우중</span><small>13컷</small></a>
           <a class="t" href="https://maydly.github.io/note/hub/시안/바다시안_촬영컨셉시안.html" style="background:linear-gradient(155deg,#a6c8e2,#7b9fc0)"><span>바다</span><small>23컷</small></a>
@@ -1276,82 +1471,64 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
     </section>
 
     <section class="tabpane" data-tab="apps" id="pane-apps" role="tabpanel" aria-labelledby="tab-apps">
-    <div class="tier"><h2>앱 창</h2><div class="ts">여기서 열기 = 이 화면 안에서 바로 조작 · 새 탭 = 따로 열기</div></div>
+    <div class="tier"><span class="tchip" aria-hidden="true"><svg class="ic"><use href="#i-grid"/></svg></span><h2>앱 창</h2><div class="ts">진짜 앱을 그대로 끼워 넣음 — 여기서 바로 조작 · 새 탭에서 열기 ↗ 는 따로</div></div>
 
     <div class="appgrid">
-      <div class="card appc" data-app="cal">
+      <div class="card appc" data-app="cal" style="--c1:#e7bcb4;--c2:#dda79d">
         <div class="apph"><span class="appi" aria-hidden="true"><svg class="ic"><use href="#i-calendar"/></svg></span>
-          <div class="appt"><div class="ct">명진 캘린더</div><div class="appsub" id="ap-cal">예약 · 보정본 기한</div></div></div>
-        <div class="appa">
-          <button type="button" class="appbtn appopen" aria-expanded="false" aria-controls="fr-cal"><svg class="ic sm" aria-hidden="true"><use href="#i-play"/></svg><span>여기서 열기</span></button>
-          <a class="appbtn appnew" href="https://maydly.github.io/maydly-cal/admin.html" aria-label="명진 캘린더 — 새 탭으로 열기">새 탭<svg class="ic sm" aria-hidden="true"><use href="#i-ext"/></svg></a>
-        </div>
-        <div class="frame tall" id="fr-cal" hidden><iframe data-src="https://maydly.github.io/maydly-cal/admin.html?embed=1" title="명진 캘린더"></iframe></div>
+          <div class="appt"><div class="ct">명진 캘린더</div><div class="appsub" id="ap-cal">예약 · 보정본 기한</div></div>
+          <a class="appext" href="https://maydly.github.io/maydly-cal/admin.html" aria-label="명진 캘린더 — 새 탭에서 열기">새 탭에서 열기<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></div>
+        <div class="frame tall" id="fr-cal"><div class="fph" aria-hidden="true"><span class="fpi"><svg class="ic"><use href="#i-calendar"/></svg></span>명진 캘린더 여는 중…</div><iframe data-src="https://maydly.github.io/maydly-cal/admin.html?embed=1" title="명진 캘린더" loading="lazy"></iframe></div>
       </div>
-      <div class="card appc" data-app="my">
+      <div class="card appc" data-app="my" style="--c1:#d3bfe0;--c2:#b79bd4">
         <div class="apph"><span class="appi" aria-hidden="true"><svg class="ic"><use href="#i-check-sq"/></svg></span>
-          <div class="appt"><div class="ct">명진앱</div><div class="appsub" id="ap-my">할 일 · 가계부 · 구매 · 보유 장비</div></div></div>
-        <div class="appa">
-          <button type="button" class="appbtn appopen" aria-expanded="false" aria-controls="fr-my"><svg class="ic sm" aria-hidden="true"><use href="#i-play"/></svg><span>여기서 열기</span></button>
-          <a class="appbtn appnew" href="https://maydly.github.io/note/myapp/" aria-label="명진앱 — 새 탭으로 열기">새 탭<svg class="ic sm" aria-hidden="true"><use href="#i-ext"/></svg></a>
-        </div>
-        <div class="frame tall" id="fr-my" hidden><iframe data-src="https://maydly.github.io/note/myapp/?embed=1&tab=today" title="명진앱"></iframe></div>
+          <div class="appt"><div class="ct">명진앱</div><div class="appsub" id="ap-my">할 일 · 가계부 · 구매 · 보유 장비</div></div>
+          <a class="appext" href="https://maydly.github.io/note/myapp/" aria-label="명진앱 — 새 탭에서 열기">새 탭에서 열기<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></div>
+        <div class="frame tall" id="fr-my"><div class="fph" aria-hidden="true"><span class="fpi"><svg class="ic"><use href="#i-check-sq"/></svg></span>명진앱 여는 중…</div><iframe data-src="https://maydly.github.io/note/myapp/?embed=1&tab=today" title="명진앱" loading="lazy"></iframe></div>
       </div>
-      <div class="card appc" data-app="travel">
+      <div class="card appc" data-app="travel" style="--c1:#a6c8e2;--c2:#80a9cf">
         <div class="apph"><span class="appi" aria-hidden="true"><svg class="ic"><use href="#i-map"/></svg></span>
-          <div class="appt"><div class="ct">여행지도</div><div class="appsub" id="ap-travel">내 장소 · 촬영지 · 길찾기</div></div></div>
-        <div class="appa">
-          <button type="button" class="appbtn appopen" aria-expanded="false" aria-controls="fr-travel"><svg class="ic sm" aria-hidden="true"><use href="#i-play"/></svg><span>여기서 열기</span></button>
-          <a class="appbtn appnew" href="https://maydly.github.io/note/travel/" aria-label="여행지도 — 새 탭으로 열기">새 탭<svg class="ic sm" aria-hidden="true"><use href="#i-ext"/></svg></a>
-        </div>
-        <div class="frame" id="fr-travel" hidden><iframe data-src="https://maydly.github.io/note/travel/" title="여행지도"></iframe></div>
+          <div class="appt"><div class="ct">여행지도</div><div class="appsub" id="ap-travel">내 장소 · 촬영지 · 길찾기</div></div>
+          <a class="appext" href="https://maydly.github.io/note/travel/" aria-label="여행지도 — 새 탭에서 열기">새 탭에서 열기<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></div>
+        <div class="frame" id="fr-travel"><div class="fph" aria-hidden="true"><span class="fpi"><svg class="ic"><use href="#i-map"/></svg></span>여행지도 여는 중…</div><iframe data-src="https://maydly.github.io/note/travel/" title="여행지도" loading="lazy"></iframe></div>
       </div>
-      <div class="card appc" data-app="light">
+      <div class="card appc" data-app="light" style="--c1:#d8cba8;--c2:#c2b184">
         <div class="apph"><span class="appi" aria-hidden="true"><svg class="ic"><use href="#i-sliders"/></svg></span>
-          <div class="appt"><div class="ct">조명 셋업 짜기</div><div class="appsub" id="ap-light">결정표 13개</div></div></div>
-        <div class="appa">
-          <button type="button" class="appbtn appopen" aria-expanded="false" aria-controls="fr-light"><svg class="ic sm" aria-hidden="true"><use href="#i-play"/></svg><span>여기서 열기</span></button>
-          <a class="appbtn appnew" href="https://maydly.github.io/note/07_장비비교자료/11_조명셋업짜기_latest.html" aria-label="조명 셋업 짜기 — 새 탭으로 열기">새 탭<svg class="ic sm" aria-hidden="true"><use href="#i-ext"/></svg></a>
-        </div>
-        <div class="frame" id="fr-light" hidden><iframe data-src="https://maydly.github.io/note/07_장비비교자료/11_조명셋업짜기_latest.html" title="조명 셋업 짜기"></iframe></div>
+          <div class="appt"><div class="ct">조명 셋업 짜기</div><div class="appsub" id="ap-light">결정표 13개</div></div>
+          <a class="appext" href="https://maydly.github.io/note/07_장비비교자료/11_조명셋업짜기_latest.html" aria-label="조명 셋업 짜기 — 새 탭에서 열기">새 탭에서 열기<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></div>
+        <div class="frame" id="fr-light"><div class="fph" aria-hidden="true"><span class="fpi"><svg class="ic"><use href="#i-sliders"/></svg></span>조명 셋업 짜기 여는 중…</div><iframe data-src="https://maydly.github.io/note/07_장비비교자료/11_조명셋업짜기_latest.html" title="조명 셋업 짜기" loading="lazy"></iframe></div>
       </div>
-      <div class="card appc" data-app="inq">
+      <div class="card appc" data-app="inq" style="--c1:#cdd9b0;--c2:#aec48f">
         <div class="apph"><span class="appi" aria-hidden="true"><svg class="ic"><use href="#i-clipboard"/></svg></span>
-          <div class="appt"><div class="ct">시안 문의 데이터</div><div class="appsub" id="ap-inq">문의 기록</div></div></div>
-        <div class="appa">
-          <button type="button" class="appbtn appopen" aria-expanded="false" aria-controls="fr-inq"><svg class="ic sm" aria-hidden="true"><use href="#i-play"/></svg><span>여기서 열기</span></button>
-          <a class="appbtn appnew" href="https://maydly.github.io/note/hub/설문데이터/" aria-label="시안 문의 데이터 — 새 탭으로 열기">새 탭<svg class="ic sm" aria-hidden="true"><use href="#i-ext"/></svg></a>
-        </div>
-        <div class="frame short" id="fr-inq" hidden><iframe data-src="https://maydly.github.io/note/hub/설문데이터/?embed=1" title="시안 문의 데이터"></iframe></div>
+          <div class="appt"><div class="ct">시안 문의 데이터</div><div class="appsub" id="ap-inq">문의 기록</div></div>
+          <a class="appext" href="https://maydly.github.io/note/hub/설문데이터/" aria-label="시안 문의 데이터 — 새 탭에서 열기">새 탭에서 열기<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></div>
+        <div class="frame short" id="fr-inq"><div class="fph" aria-hidden="true"><span class="fpi"><svg class="ic"><use href="#i-clipboard"/></svg></span>시안 문의 데이터 여는 중…</div><iframe data-src="https://maydly.github.io/note/hub/설문데이터/?embed=1" title="시안 문의 데이터" loading="lazy"></iframe></div>
       </div>
-      <div class="card appc" data-app="film">
+      <div class="card appc" data-app="film" style="--c1:#e0b9a0;--c2:#caa080">
         <div class="apph"><span class="appi" aria-hidden="true"><svg class="ic"><use href="#i-film"/></svg></span>
-          <div class="appt"><div class="ct">빈티지 필름</div><div class="appsub" id="ap-film">재고 · 도감 · 셋팅 계산기</div></div></div>
-        <div class="appa">
-          <button type="button" class="appbtn appopen" aria-expanded="false" aria-controls="fr-film"><svg class="ic sm" aria-hidden="true"><use href="#i-play"/></svg><span>여기서 열기</span></button>
-          <a class="appbtn appnew" href="https://maydly.github.io/note/film/" aria-label="빈티지 필름 — 새 탭으로 열기">새 탭<svg class="ic sm" aria-hidden="true"><use href="#i-ext"/></svg></a>
-        </div>
-        <div class="frame short" id="fr-film" hidden><iframe data-src="https://maydly.github.io/note/film/" title="빈티지 필름"></iframe></div>
+          <div class="appt"><div class="ct">빈티지 필름</div><div class="appsub" id="ap-film">재고 · 도감 · 셋팅 계산기</div></div>
+          <a class="appext" href="https://maydly.github.io/note/film/" aria-label="빈티지 필름 — 새 탭에서 열기">새 탭에서 열기<svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></a></div>
+        <div class="frame short" id="fr-film"><div class="fph" aria-hidden="true"><span class="fpi"><svg class="ic"><use href="#i-film"/></svg></span>빈티지 필름 여는 중…</div><iframe data-src="https://maydly.github.io/note/film/" title="빈티지 필름" loading="lazy"></iframe></div>
       </div>
     </div>
 
     </section>
 
     <section class="tabpane" data-tab="library" id="pane-library" role="tabpanel" aria-labelledby="tab-library">
-    <div class="tier"><h2>자료실</h2><div class="ts">장비 · 필름 · 여행 · 기록 — 전부 펼침</div></div>
+    <div class="tier"><span class="tchip" aria-hidden="true"><svg class="ic"><use href="#i-library"/></svg></span><h2>자료실</h2><div class="ts">장비 · 필름 · 여행 · 기록 — 전부 펼침</div></div>
     <div class="vopen">
     <!-- ══════ 장비 ══════ -->
     <div class="sechd"><h2>장비</h2><div class="sn">보유 &middot; 구매계획 &middot; 조명 셋업 &middot; 비교표</div></div>
     <div class="grid3">
       <div class="card">
-        <div class="ch"><div class="ct">보유 장비</div><div class="cs"><span id="r-owns">—</span></div></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#d3bfe0;--c2:#b79bd4" aria-hidden="true"><svg class="ic"><use href="#i-box"/></svg></span>보유 장비</div><div class="cs"><span id="r-owns">—</span></div></div>
         <div id="own-cats"><div class="skel"><i></i><i></i><span class="sr">불러오는 중…</span></div></div>
         <div style="margin-top:12px;font-size:var(--f-sub);color:var(--mute);font-weight:600" id="own-note">
           09 보유장비현황 &harr; 명진앱 보유탭 동기화 중</div>
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">다음 결정</div><a class="more" href="https://maydly.github.io/note/07_장비비교자료/11_조명셋업짜기_latest.html">조명 셋업 &rarr;</a></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#d8cba8;--c2:#c2b184" aria-hidden="true"><svg class="ic"><use href="#i-sliders"/></svg></span>다음 결정</div><a class="more" href="https://maydly.github.io/note/07_장비비교자료/11_조명셋업짜기_latest.html">조명 셋업 &rarr;</a></div>
         <div style="background:#f4f8f3;border:1px solid #e4ece0;border-radius:14px;padding:14px 15px">
           <div style="font-size:var(--f-cap);color:var(--mute);font-weight:700" id="nd-count">결정 — / 13</div>
           <div style="font-size:var(--f-title);font-weight:700;letter-spacing:-.3px;margin-top:5px" id="nd-title"><span class="sk">불러오는 중…</span></div>
@@ -1362,7 +1539,7 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">구매계획 <span class="cs" id="buy-count" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/myapp/?tab=buy">전체 &rarr;</a></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#dcc0da;--c2:#c49dc4" aria-hidden="true"><svg class="ic"><use href="#i-cart"/></svg></span>구매계획 <span class="cs" id="buy-count" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/myapp/?tab=buy">전체 &rarr;</a></div>
         <div class="lst" id="buy-list"><div class="skel"><i></i><i></i><span class="sr">불러오는 중…</span></div></div>
         <div style="margin-top:11px;display:flex;justify-content:space-between;font-size:12px;font-weight:700">
           <span>평균가 합계</span><span id="buy-sum">—</span></div>
@@ -1371,7 +1548,7 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
     </div>
 
     <div class="card" style="margin-bottom:14px">
-      <div class="ch"><div class="ct">장비 비교표</div><div class="cs">조명 셋업에서 고른 장비</div></div>
+      <div class="ch"><div class="ct"><span class="cic" style="--c1:#a7cdd0;--c2:#85b3b7" aria-hidden="true"><svg class="ic"><use href="#i-list"/></svg></span>장비 비교표</div><div class="cs">조명 셋업에서 고른 장비</div></div>
       <div id="pick-tbl"><div class="skel"><i></i><i></i><span class="sr">불러오는 중…</span></div></div>
       <div class="chips" style="margin-top:13px">
         <a class="chip" href="https://maydly.github.io/note/07_장비비교자료/00_장비비교_목차_latest.html">목차</a>
@@ -1395,12 +1572,12 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
     <div class="sechd"><h2>필름</h2><div class="sn">재고 &middot; 도감 &middot; 셋팅</div></div>
     <div class="grid2">
       <div class="card">
-        <div class="ch"><div class="ct">필름 재고<span id="r-film-anchor" class="cs" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/film/">빈티지 필름 &rarr;</a></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#e0b9a0;--c2:#caa080" aria-hidden="true"><svg class="ic"><use href="#i-film"/></svg></span>필름 재고<span id="r-film-anchor" class="cs" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/film/">빈티지 필름 &rarr;</a></div>
         <div class="lst" id="film-list"><div class="skel"><i></i><i></i><span class="sr">불러오는 중…</span></div></div>
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">촬영 셋팅 메모</div><div class="cs" id="film-set-cs" title="필름 앱과 같은 계산식">FM10 기준</div></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#e6c9a8;--c2:#d4ad82" aria-hidden="true"><svg class="ic"><use href="#i-aperture"/></svg></span>촬영 셋팅 메모</div><div class="cs" id="film-set-cs" title="필름 앱과 같은 계산식">FM10 기준</div></div>
         <div id="film-set"><div class="skel"><i></i><i></i><span class="sr">불러오는 중…</span></div></div>
         <div class="chips" style="margin-top:12px">
           <a class="chip" href="https://maydly.github.io/note/film/">도감</a><a class="chip" href="https://maydly.github.io/note/film/">구매처</a><a class="chip on" href="https://maydly.github.io/note/film/">셋팅 계산기</a>
@@ -1412,7 +1589,7 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
     <div class="sechd"><h2>여행 &middot; 지도</h2><div class="sn">내 장소 &middot; 촬영지 &middot; 3D</div></div>
     <div class="grid2">
       <div class="card">
-        <div class="ch"><div class="ct">내 장소 분포</div><a class="more" href="https://maydly.github.io/note/travel/">여행지도 &rarr;</a></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#a6c8e2;--c2:#80a9cf" aria-hidden="true"><svg class="ic"><use href="#i-map"/></svg></span>내 장소 분포</div><a class="more" href="https://maydly.github.io/note/travel/">여행지도 &rarr;</a></div>
         <div class="mmap">
           <svg viewBox="0 0 300 200" style="width:100%;height:auto;display:block" id="map-svg" role="img" aria-label="한국 안 내 장소 분포">
             <g class="skr"><rect x="95" y="30" width="110" height="140" rx="40"/></g><text x="150" y="104" text-anchor="middle" font-size="11" fill="#9aa79b" font-weight="700" class="sksvg">불러오는 중…</text>
@@ -1428,7 +1605,7 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
       </div>
 
       <div class="card">
-        <div class="ch"><div class="ct">최근 저장한 장소</div><div class="cs" id="pl-src">—</div></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#aac5e6;--c2:#86a6d4" aria-hidden="true"><svg class="ic"><use href="#i-pin"/></svg></span>최근 저장한 장소</div><div class="cs" id="pl-src">—</div></div>
         <div class="lst" id="pl-list"><div class="skel"><i></i><i></i><span class="sr">불러오는 중…</span></div></div>
         <div class="lst">
           <a class="li" href="https://maydly.github.io/gev/" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg></div><div class="bd2"><div class="lb1">신의눈 3D로 보기</div>
@@ -1441,14 +1618,14 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
     <div class="sechd"><h2>기록 &middot; 학습</h2><div class="sn">note &middot; 에이전트</div></div>
     <div class="grid2">
       <div class="card">
-        <div class="ch"><div class="ct">note 아카이브</div><div class="cs" id="note-count">—</div></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#c3c4e4;--c2:#a9abd6" aria-hidden="true"><svg class="ic"><use href="#i-book"/></svg></span>note 아카이브</div><div class="cs" id="note-count">—</div></div>
         <div class="lst" id="note-list"><div class="skel"><i></i><i></i><span class="sr">불러오는 중…</span></div></div>
         <div class="srcnote" id="note-note">목록 끝 3편 · 노트에는 수정 날짜가 없습니다</div>
       </div>
 
 
       <div class="card">
-        <div class="ch"><div class="ct">AI 에이전트</div><div class="cs" id="ag-count">—</div></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#c8c2e2;--c2:#aaa1d2" aria-hidden="true"><svg class="ic"><use href="#i-bot"/></svg></span>AI 에이전트</div><div class="cs" id="ag-count">—</div></div>
         <div class="lst" id="ag-list"><div class="skel"><i></i><i></i><span class="sr">불러오는 중…</span></div></div>
       </div>
     </div>
@@ -1457,17 +1634,17 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
     </section>
 
     <section class="tabpane" data-tab="more" id="pane-more" role="tabpanel" aria-labelledby="tab-more">
-    <div class="tier"><h2>더보기</h2><div class="ts">바로가기 · 수빈 루틴 · 점검</div></div>
+    <div class="tier"><span class="tchip" aria-hidden="true"><svg class="ic"><use href="#i-more"/></svg></span><h2>더보기</h2><div class="ts">바로가기 · 수빈 루틴 · 점검</div></div>
 
     <!-- 폰 전용 — 왼쪽 목차와 같은 바로가기(이름 + 아이콘). 웹에서는 왼쪽 목차가 늘 보여 숨긴다 -->
     <div class="card linkscard" id="links" aria-label="바로가기">
-      <div class="ch"><div class="ct">바로가기</div><div class="cs">누르면 새 탭으로 열려요</div></div>
+      <div class="ch"><div class="ct"><span class="cic" style="--c1:#e3cf9d;--c2:#d0b97e" aria-hidden="true"><svg class="ic"><use href="#i-grid"/></svg></span>바로가기</div><div class="cs">누르면 새 탭으로 열려요</div></div>
       <div id="links-list"></div>
     </div>
 
     <div class="sechd" id="personal"><h2>수빈</h2><div class="sn">루틴 — 현장 모드에서 가려짐</div></div>
     <div class="card" style="margin-bottom:14px">
-        <div class="ch"><div class="ct">이번주 루틴 <span class="cs" id="sb-week" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/subin/">수빈 앱 &rarr;</a></div>
+        <div class="ch"><div class="ct"><span class="cic" style="--c1:#bcd0ac;--c2:#a3bd90" aria-hidden="true"><svg class="ic"><use href="#i-sprout"/></svg></span>이번주 루틴 <span class="cs" id="sb-week" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/subin/">수빈 앱 &rarr;</a></div>
         <div id="sb-tbl"><div class="skel"><i></i><i></i><span class="sr">불러오는 중…</span></div></div>
         <div class="hgleg" id="sb-leg" hidden><span><i style="background:var(--g2)"></i>목표 채움</span><span><i style="background:#f3e4e0"></i>못 채움</span>
           <span><i style="background:#fff;border:1.5px solid #cfdccb"></i>오늘 아직</span><span><i style="border:1.5px dashed #dfe6dc"></i>앞으로</span></div>
@@ -1476,7 +1653,7 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
 
     <div class="sechd" id="system"><h2>점검</h2><div class="sn">주간 · 격주 · 4주 점검 · 재고</div></div>
     <div class="card">
-      <div class="ch"><div class="ct">점검 · 재고</div><a class="more" href="https://maydly.github.io/note/hub/governance/">거버넌스 →</a></div>
+      <div class="ch"><div class="ct"><span class="cic" style="--c1:#9ab5a8;--c2:#7a9e90" aria-hidden="true"><svg class="ic"><use href="#i-shield"/></svg></span>점검 · 재고</div><a class="more" href="https://maydly.github.io/note/hub/governance/">거버넌스 →</a></div>
       <div class="chk"><div class="st" id="s-w-dot" style="background:#c3cebf"></div>
         <div class="c1">주간 점검 <span class="c1v" id="s-gov">—</span></div><div class="c2" id="s-w-date">—</div></div>
       <div class="chk"><div class="st" id="s-b-dot" style="background:#c3cebf"></div>
@@ -1492,7 +1669,7 @@ body.privacy #privacyBtn,#privacyBtn[aria-pressed="true"]{background:var(--pri);
     </div>
     </section>
 
-    <div class="foot" title="홈 v2.3 미리보기"><svg class="footclv" viewBox="0 0 100 100" aria-hidden="true"><use href="#clv"/></svg>maydly · 명진 · 수빈 전용</div>
+    <div class="foot" title="홈 v2.4 미리보기"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
 
   </main>
 </div>
@@ -1564,7 +1741,12 @@ const level = (id, lv) => { const el = $(id); if (!el) return; el.classList.togg
 function paintNowSum(o, msg) {
   const el = $('now-sum'), dot = $('now-dot'), tn = $('tab-n-today');
   const setTab = (txt, lv) => { if (!tn) return; tn.textContent = txt; tn.classList.toggle('lv-d3', lv === 'd3'); };
-  const grpN = (a, b, c, w) => { set('now-over-n', a); set('now-d3-n', b); set('now-d7-n', c); set('now-w-n', w); };
+  // 그룹 라벨 개수 — 0건이면 라벨에 zero(점·칩 회색, 요약 칩과 같은 규칙)
+  const grpN = (a, b, c, w) => {
+    [['now-over-n', a], ['now-d3-n', b], ['now-d7-n', c], ['now-w-n', w]].forEach(([id, v]) => {
+      set(id, v); const e = $(id); if (e && e.parentNode) e.parentNode.classList.toggle('zero', v === 0);
+    });
+  };
   if (!o) {
     const sk = `<span class="sk">${LOADING}</span>`;
     if (msg === LOADING) { put('b-exc', sk); put('now-top', sk); }
@@ -1974,7 +2156,8 @@ function paintShots(sr, ph) {
   }
   put('shots', sr.recent.length ? sr.recent.map((s) => {
     const n = String(s.name || '').trim();
-    return `<div class="li"><div class="ii">${ico('camera')}</div><div class="bd2"><div class="lb1">${mask(n || '이름 없음')}</div>`
+    const ini = Array.from(n)[0] || '';   // 이름 첫 글자 — mask 로 감싸 현장 모드에서 흐려진다(없으면 카메라 아이콘)
+    return `<div class="li"><div class="ii shi">${ini ? mask(ini) : ico('camera')}</div><div class="bd2"><div class="lb1">${mask(n || '이름 없음')}</div>`
       + `<div class="lb2">${s.place ? esc(clip(s.place, 24)) : '장소 기록 없음'}</div></div><div class="rt">${esc(mdw(s.date))}</div></div>`;
   }).join('') : emptyLn('지난 촬영 기록이 없어요'));
   const yr = sr.fromYear ? (sr.fromYear === sr.toYear ? sr.fromYear : `${sr.fromYear}–${sr.toYear}`) : '';
@@ -2176,16 +2359,16 @@ async function paintCloud() {
       if (e.status === 'nosh') pill = `<div class="pill warn">${warnIc}노쇼</div>`;
       else if (nh) pill = `<div class="pill warn" title="노쇼 이력 ${nh.cnt}회">${warnIc}노쇼 이력</div>`;
       else if (D.isPayLabel(e.label)) pill = '<div class="pill pay">페이</div>';
-      rows.push({ order: timed ? D.evStartMs(e) : 0, tm: e.date !== today ? md(e.date) + '부터' : timed ? e.time : '종일', cls, t1, t2: t2.join(' · '), pill });
+      rows.push({ order: timed ? D.evStartMs(e) : 0, tm: e.date !== today ? md(e.date) + '부터' : timed ? e.time : '종일', cls, k: isShoot ? 'k-shoot' : '', t1, t2: t2.join(' · '), pill });
     });
     if (dl) dl.filter((a) => a.left === 0).forEach((a) => {
-      rows.push({ order: 9e15, tm: '오늘까지', cls: '', t1: `${mask(nmCal(a.e.client))} ${esc(a.title)} 전달`, t2: esc(`촬영 ${md(a.e.date)}`), pill: '<div class="pill col">보정</div>' });
+      rows.push({ order: 9e15, tm: '오늘까지', cls: '', k: 'k-dlv', t1: `${mask(nmCal(a.e.client))} ${esc(a.title)} 전달`, t2: esc(`촬영 ${md(a.e.date)}`), pill: '<div class="pill col">보정</div>' });
     });
     if (tod) tod.dueToday.concat([]).forEach((x) => {
-      rows.push({ order: 9.5e15, tm: '시간 미정', cls: '', t1: esc(x.text || '할 일'), t2: '할 일 · 오늘 마감', pill: '' });
+      rows.push({ order: 9.5e15, tm: '시간 미정', cls: '', k: 'k-todo', t1: esc(x.text || '할 일'), t2: '할 일 · 오늘 마감', pill: '' });
     });
     rows.sort((a, b) => a.order - b.order);
-    put('tl', rows.length ? rows.map((r) => `<div class="tlrow ${r.cls}"><div class="bar"></div><div class="tm">${esc(r.tm)}</div><div class="dot"></div>`
+    put('tl', rows.length ? rows.map((r) => `<div class="tlrow ${r.cls} ${r.k || ''}"><div class="bar"></div><div class="tm">${esc(r.tm)}</div><div class="dot"></div>`
       + `<div class="bd"><div class="t1">${r.t1}</div><div class="t2">${r.t2}</div></div>${r.pill}</div>`).join('')
       + (tod ? '' : emptyLn('— 할 일은 불러오지 못했습니다', true))
       : emptyLn('오늘 일정 없음' + (tod ? '' : ' · 할 일은 불러오지 못했습니다')));
@@ -2284,10 +2467,10 @@ async function paintCloud() {
     const rowOf = (x, kind) => {
       const e = x.near && x.near.e;
       const S = {
-        none: ['#fdf3e7', ico('help'), '캘린더에 같은 이름 없음', '짝 없음', ' hot'],
-        bad: ['#fdf6ea', ico('alert'), e ? `${md(e.date)} 예약은 ${e.status === 'nosh' ? '노쇼' : '취소'} — 예약금은 수입 유지` : '노쇼·취소', '수입 유지', ''],
-        far: ['#fdf6ea', ico('swap'), e ? `가장 가까운 예약 ${md(e.date)} — 60일 밖` : '60일 밖', '60일 밖', ''],
-        ok: ['#eaf3ea', ico('check'), e ? `${md(e.date)} ${D.labelName(e.label)} 촬영과 짝` : '짝 맞음', '짝 맞음', '']
+        none: ['linear-gradient(150deg,#ecd3ab,#d3a868)', ico('help'), '캘린더에 같은 이름 없음', '짝 없음', ' hot'],
+        bad: ['linear-gradient(150deg,#e8c9b0,#cf9f7c)', ico('alert'), e ? `${md(e.date)} 예약은 ${e.status === 'nosh' ? '노쇼' : '취소'} — 예약금은 수입 유지` : '노쇼·취소', '수입 유지', ''],
+        far: ['linear-gradient(150deg,#ddd0b4,#bfa981)', ico('swap'), e ? `가장 가까운 예약 ${md(e.date)} — 60일 밖` : '60일 밖', '60일 밖', ''],
+        ok: ['linear-gradient(150deg,#a8d3a0,#72ad6a)', ico('check'), e ? `${md(e.date)} ${D.labelName(e.label)} 촬영과 짝` : '짝 맞음', '짝 맞음', '']
       }[kind];
       return `<div class="li"><div class="ii" style="background:${S[0]}">${S[1]}</div><div class="bd2">`
         + `<div class="lb1">${mask('「' + x.n + '」')} 입금 ${mask(D.won(x.t.amt))}</div>`
@@ -2366,7 +2549,7 @@ async function paintCloud() {
     if (!sb.daily.length) put('sb-tbl', emptyLn('매일 목표가 없습니다' + (sb.otherGoals ? ` (주간·월간·한 번 목표 ${sb.otherGoals}개는 수빈 앱에서)` : '')));
     else {
       const cls = { done: 'y', miss: 'n', todo: 't', future: 'f' };
-      put('sb-tbl', '<table class="hg"><tr><th>루틴</th>' + sb.days.map((d) => `<th${d === sb.today ? ' style="color:var(--g)"' : ''}>${WD[D.parseDS(d).getDay()]}</th>`).join('') + '</tr>'
+      put('sb-tbl', '<table class="hg"><tr><th>루틴</th>' + sb.days.map((d) => `<th${d === sb.today ? ' class="tdy"' : ''}>${WD[D.parseDS(d).getDay()]}</th>`).join('') + '</tr>'
         + sb.daily.map((g) => `<tr><td>${mask(clip(g.title, 12))}</td>` + g.cells.map((c) => `<td><i class="dotc ${cls[c.state]}" title="${esc(md(c.d))} ${c.count}/${g.target}${esc(g.unit)}"></i></td>`).join('') + '</tr>').join('')
         + '</table>' + (sb.otherGoals ? `<div class="srcnote">주간·월간·한 번 목표 ${sb.otherGoals}개는 수빈 앱에서</div>` : ''));
     }
@@ -2515,7 +2698,7 @@ D.onUser((u) => {
       box.appendChild(c);
     });
     var d = document.createElement('a');
-    d.className = 'nav dockrow'; d.href = '../'; d.title = '타일 독바 — 새 탭으로 열림';
+    d.className = 'nav dockrow'; d.href = '../'; d.title = '타일 독바 — 새 탭으로 열림'; d.style.cssText = '--c1:#c9d6c3;--c2:#a3b69c';
     d.innerHTML = '<span class="e"><svg class="ic" aria-hidden="true"><use href="#i-dock"/></svg></span><span class="nm">타일 독바</span>';
     box.appendChild(d);
   })();
@@ -2546,8 +2729,66 @@ D.onUser((u) => {
     nowPanel.hidden = !open;
   }
   if (nowBtn) nowBtn.addEventListener('click', function () { setNow(nowBtn.getAttribute('aria-expanded') !== 'true'); });
+  if (nowBtn) {   // #now 진입 표시(hfocus)는 키를 누르거나 포커스가 떠나면 뗀다 → 그 뒤 키보드 포커스는 평소처럼 테두리
+    document.addEventListener('keydown', function () { nowBtn.classList.remove('hfocus'); }, true);
+    nowBtn.addEventListener('blur', function () { nowBtn.classList.remove('hfocus'); });
+  }
 
-  // ── 구역 탭 (앱 창의 끼워 넣은 창은 탭을 열어도 불러오지 않는다 — 「여기서 열기」를 누른 창만)
+  // ── 구역 탭 — 앱 창은 처음 열 때(주소 #apps 로 바로 들어와도) 6개 창을 한꺼번에 불러온다. 그 전에는 불러오지 않는다 (v2.4)
+  var curTab = null, appsOn = false, animT = 0;
+  var RM = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  // 끼워 넣은 앱이 불러오면서 스스로 입력칸에 포커스를 가져가면(예: 명진앱 PIN 칸) 홈의 숫자키·화살표가 멈추고, 쪽이 그 창 쪽으로 밀릴 수 있다.
+  // 창을 불러오는 동안~불러온 뒤 3초까지, 사용자가 그 창을 누르거나 Tab 으로 들어가지 않았는데 포커스가 넘어가면 홈으로 되돌리고 스크롤도 제자리로
+  var userAct = 0, lastY = 0;
+  ['pointerdown', 'wheel', 'touchstart', 'keydown'].forEach(function (n) { window.addEventListener(n, function () { userAct = Date.now(); }, { passive: true, capture: true }); });
+  window.addEventListener('scroll', function () { var a = document.activeElement; if (!a || a.tagName !== 'IFRAME') lastY = window.pageYOffset; }, { passive: true });
+  // 홈 안에서 마지막으로 포커스가 있던 자리(끼워 넣은 창 제외) — 창이 포커스를 가져가면 body 가 아니라 이 자리로 돌려준다
+  // (키보드로 탭 줄을 ← → 로 오가다 앱 창에 닿아도 탭 줄 이동이 끊기지 않게)
+  var lastFocus = null;
+  document.addEventListener('focusin', function (ev) { var t = ev.target; if (t && t.tagName !== 'IFRAME' && t !== document.body) lastFocus = t; });
+  function unsteal() {
+    var a = document.activeElement;
+    if (!a || a.tagName !== 'IFRAME' || !a.closest('#pane-apps')) return;
+    if (a.__ld && Date.now() - a.__ld > 3000) return;               // 다 불러오고 3초가 지났으면 사용자가 들어간 것
+    if (a.matches(':hover') || Date.now() - userAct < 500) return;  // 그 창을 눌렀거나 Tab 으로 들어간 것
+    var back = lastFocus && lastFocus.isConnected && lastFocus.getClientRects().length ? lastFocus : null;
+    if (back) { try { back.focus({ preventScroll: true }); } catch (e) { back.focus(); } }
+    if (document.activeElement === a) a.blur();
+    if (document.activeElement === a) window.focus();
+    if (Math.abs(window.pageYOffset - lastY) > 2 && Date.now() - userAct > 1500) window.scrollTo(0, lastY);
+  }
+  window.addEventListener('blur', function () { setTimeout(unsteal, 0); });
+  function loadApps() {
+    if (appsOn) return;
+    appsOn = true;
+    lastY = window.pageYOffset;
+    arr(document.querySelectorAll('#pane-apps iframe[data-src]')).forEach(function (f) {
+      var fr = f.parentNode;
+      f.addEventListener('load', function () {
+        if (!f.getAttribute('src')) return;
+        f.__ld = Date.now(); fr.classList.add('ld');
+        setTimeout(unsteal, 0); setTimeout(unsteal, 400);
+      });
+      f.setAttribute('src', f.getAttribute('data-src'));
+    });
+  }
+  // 카드 등장 — 첫 화면·탭을 바꿀 때 카드가 살짝 떠오르며 순서대로(40ms 간격 · 0.22초). 동작 줄이기면 없음.
+  // 등장 전 잠깐 투명(fill-mode backwards) — 움직임이 돌지 않는 환경에서 투명으로 굳지 않게 0.9초 뒤 표시(anim)를 떼어 낸다
+  function animPane(t) {
+    if (RM && RM.matches) return;
+    var p = document.getElementById('pane-' + t);
+    if (!p) return;
+    panes.forEach(function (x) { x.classList.remove('anim'); });
+    var i = 0;
+    arr(p.querySelectorAll('.tier,.sechd,.bf,.card')).forEach(function (el) {
+      if (!el.getClientRects().length) return;   // 숨은 카드(로그인 안내·펼치기 전 패널·웹의 폰 전용 카드)는 순번을 받지 않는다
+      el.style.setProperty('--i', String(Math.min(i++, 9)));
+    });
+    void p.offsetWidth;
+    p.classList.add('anim');
+    clearTimeout(animT);
+    animT = setTimeout(function () { p.classList.remove('anim'); }, 900);
+  }
   function show(name) {
     var t = TABS.indexOf(name) >= 0 ? name : 'today';
     panes.forEach(function (p) { p.classList.toggle('on', p.getAttribute('data-tab') === t); });
@@ -2556,6 +2797,8 @@ D.onUser((u) => {
       a.classList.toggle('on', on); a.setAttribute('aria-selected', on ? 'true' : 'false'); a.tabIndex = on ? 0 : -1;
     });
     document.title = (t === 'today' ? '' : NAMES[t] + ' · ') + baseTitle;
+    if (t === 'apps') loadApps();
+    if (t !== curTab) { curTab = t; animPane(t); }
     return t;
   }
   function route(how) {
@@ -2563,6 +2806,8 @@ D.onUser((u) => {
     if (h === 'now') {         // #now → 오늘 탭 + 「지금 처리할 것」 펼침 + 그 위치로
       show('today'); setNow(true);
       var el = document.getElementById('now');
+      // 주소 이동이 카드 버튼에 준 포커스엔 초록 테두리를 그리지 않는다(포커스 자리는 그대로 — 다음 키 입력부터 테두리 보임)
+      if (el) el.classList.add('hfocus');
       if (el) setTimeout(function () { el.scrollIntoView({ block: 'start', behavior: how === 'init' ? 'auto' : 'smooth' }); }, 0);
       nowUntil = Date.now() + 8000; userMoved = false;   // 자료가 늦게 채워져 카드가 밀리면 한 번 더 맞춘다(그 사이 직접 움직였으면 안 함)
       return;
@@ -2593,19 +2838,6 @@ D.onUser((u) => {
   document.addEventListener('click', function (ev) {
     var tg = ev.target && ev.target.closest ? ev.target : null;
     if (!tg || ev.defaultPrevented) return;
-    // 앱 카드 「여기서 열기」 — 그 창만 불러와 카드 폭을 넓힌다. 다시 누르면 접는다(웹만 · 폰은 새 탭)
-    var ob = tg.closest('.appopen');
-    if (ob) {
-      var c = ob.closest('.appc'), fr = c && c.querySelector('.frame'), f = fr && fr.querySelector('iframe');
-      if (!fr || !f) return;
-      var open = ob.getAttribute('aria-expanded') !== 'true';
-      if (open && !f.getAttribute('src')) f.setAttribute('src', f.getAttribute('data-src'));
-      fr.hidden = !open; c.classList.toggle('open', open);
-      ob.setAttribute('aria-expanded', open ? 'true' : 'false');
-      var sp = ob.querySelector('span'); if (sp) sp.textContent = open ? '닫기' : '여기서 열기';
-      if (open) setTimeout(function () { c.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 30);
-      return;
-    }
     // 칸반 「+n건 더」 — 이 자리에서 펼치기/접기
     var mb = tg.closest('.itemmore');
     if (mb) {
