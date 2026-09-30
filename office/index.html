@@ -933,6 +933,11 @@ body[data-r="home"] .bnr-off{display:none!important}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+/* 260930 아이폰: 입력 글씨 16px 미만이면 누를 때 화면이 확대됨 → 모바일 화면(1023px 이하)·터치 기기에서만 16px. 데스크톱 모양 그대로 */
+@media (max-width:1023px),(pointer:coarse){
+  .inp,.dirs .inp,.memo input{font-size:16px}
+  .dirs .inp::placeholder{font-size:14px} /* 좁은 두 칸(어느 기기에서→어느 기기로) 안내글은 원래 크기로 — 16px면 「(예: 맥)」이 잘림. 입력 글씨는 16px */
+}
 </style>
 </head>
 <body data-r="login" class="route-login">

@@ -149,6 +149,10 @@
   .vlead{font-size:12.5px;color:var(--sub);margin:-4px 0 12px;line-height:1.75}
   @media (max-width:720px){ .vfunnel{grid-template-columns:repeat(2,1fr)}
     .vrow{grid-template-columns:82px 1fr 68px;gap:9px;font-size:12.5px} }
+  /* 260930 아이폰: 입력칸 글씨 16px 미만이면 누를 때 화면이 확대됨 → 모바일에서만 16px (데스크톱 모양 그대로) */
+  @media (max-width:900px), (pointer:coarse){
+    .search input{font-size:16px}
+  }
 </style>
 </head>
 <body>

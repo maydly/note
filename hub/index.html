@@ -102,6 +102,18 @@ html.ovopen,html.ovopen body{overflow:hidden}
 .ovph.slow .ovpt{display:none}
 @keyframes ovp{50%{transform:scale(.92);opacity:.72}}
 @media(prefers-reduced-motion:reduce){ .ov,.ovph .oic{animation:none} }
+
+/* ══ v2.6 아이폰 글씨 (260930) — 추가만(타일 색·아이콘·배치 그대로) ══
+   설명 8→10px 로 키워 폰에서 읽히게 · 이름은 띄어쓰기 자리에서만 꺾이게(「점검/표」처럼 단어 중간 꺾임 없음).
+   타일은 최소 정사각형을 유지하고, 글이 넘칠 때만 세로로 조금 커진다(한 줄 안의 타일 높이는 같게).
+   폰·태블릿(좁은 화면 또는 손가락 입력)에서만 — 데스크톱 모양은 그대로.
+   되돌리기: 이 블록만 지우면 원래대로. */
+@media (max-width:900px), (pointer:coarse){
+  .grid{align-items:stretch}
+  .tile:not(.wide){aspect-ratio:auto;min-height:calc((min(100vw,460px) - 64px)/4);gap:4px}
+  .tile .lb{font-size:11.5px;line-height:1.15;word-break:keep-all;overflow-wrap:anywhere}
+  .tile .sm{font-size:10px;line-height:1.25;margin-top:2px}
+}
 </style>
 </head>
 <body>

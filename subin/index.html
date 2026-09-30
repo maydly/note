@@ -782,6 +782,17 @@
   #fd-toast{ position:fixed; left:50%; bottom:92px; transform:translateX(-50%) translateY(20px); background:#5a4550; color:#fff; padding:13px 20px; border-radius:16px; font-size:13.5px; font-weight:700; opacity:0; pointer-events:none; transition:.25s; z-index:9999; max-width:88vw; text-align:center; line-height:1.5; white-space:pre-line; box-shadow:0 10px 30px rgba(90,69,80,.35); }
   #fd-toast.fd-on{ opacity:1; transform:translateX(-50%) translateY(0); }
 </style>
+<style>
+  /* 260930 아이폰 입력칸 확대 방지 — 아이폰 사파리는 입력 글씨가 16px 미만이면 누를 때 화면을 확대한다.
+     손가락(터치) 기기에서만 16px 로 올린다. 데스크톱(마우스) 모양은 그대로. 이 블록만 지우면 원래대로 돌아간다. */
+  @media (hover:none) and (pointer:coarse){
+    input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]):not([type=button]):not([type=submit]):not([type=reset]):not([type=image]),
+    select, textarea{ font-size:16px !important; }
+    /* 날짜칸은 글씨가 커지면 폭도 같이 늘어 줄이 꺾이므로, 원래 폭(도전 160 · 생리 기록 140)에 고정해 배치를 그대로 둔다 */
+    .chal-add .chal-in.date{ flex:0 0 160px; min-width:0; }
+    .cyc-add input{ flex:0 0 140px; min-width:0; }
+  }
+</style>
 </head>
 <body>
 

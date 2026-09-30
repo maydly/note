@@ -103,6 +103,11 @@
       button{padding:12px 15px}
       button.mini{padding:6px 10px;font-size:12.5px}
     }
+    /* 260930 아이폰: 입력칸 글씨가 16px 미만이면 누를 때 화면이 확대됨 → 모바일·터치에서만 16px (데스크톱 모양 그대로) */
+    @media (max-width:900px), (pointer:coarse){
+      .fld input,.fld select{font-size:16px}
+      .sync textarea{font-size:16px;min-height:132px} /* 글씨가 커진 만큼 안내문이 잘리지 않게 높이만 같이 */
+    }
   </style>
 </head>
 <body>

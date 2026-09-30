@@ -99,6 +99,11 @@
   .galbtns{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
   .galbtns a{display:inline-flex;align-items:center;border:1px solid #cdd7dd;border-radius:8px;padding:7px 11px;font-size:12px;font-weight:800;color:var(--accent);background:#fff}
   .galbtns a:hover{background:#eef6f7}
+  /* 260930 아이폰: 입력칸 글씨 16px 미만이면 누를 때 화면이 확대됨 → 모바일에서만 16px (데스크톱 모양 그대로) */
+  @media (max-width:900px), (pointer:coarse){
+    select,input[type=text],input[type=number]{font-size:16px}
+    select{padding-left:8px;padding-right:2px} /* 16px로 커진 「컬러네거/흑백(관대)」가 화살표에 잘리지 않게 — 아이폰은 화살표 자리를 칸 오른쪽 안쪽에 따로 잡음 */
+  }
 </style>
 </head>
 <body>

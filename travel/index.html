@@ -229,6 +229,14 @@ body.my-on .search-box{display:none !important}
 .marker-cluster-medium{background:rgba(74,79,87,.3)!important} .marker-cluster-medium div{background:rgba(74,79,87,.88)!important;color:#fff!important}
 .marker-cluster-large{background:rgba(138,75,42,.32)!important} .marker-cluster-large div{background:rgba(138,75,42,.9)!important;color:#fff!important}
 .marker-cluster div{font-family:inherit!important;font-weight:800!important}
+/* 아이폰 입력칸 확대 방지 (260930) — 터치 기기에서만 입력 글씨 16px. 데스크톱 모양은 그대로 */
+@media (hover:none) and (pointer:coarse){
+ input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]):not([type=button]):not([type=submit]):not([type=reset]):not([type=image]),select,textarea{font-size:16px!important}
+}
+/* 좁은 폰(375 등)에서는 장소검색 안내문이 16px 이면 끝이 잘리므로 안내문 글씨만 원래 14px (입력 글씨는 16px 그대로) */
+@media (hover:none) and (pointer:coarse) and (max-width:389px){
+ #pSearch::placeholder{font-size:14px}
+}
 </style>
 </head>
 <body>

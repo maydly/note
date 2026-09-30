@@ -346,6 +346,11 @@ body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystem
 .err{font-size:12.5px;color:#c2564b;min-height:16px}
 .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:rgba(46,42,38,.92);color:#fff;font-size:13px;font-weight:600;padding:11px 18px;border-radius:22px;z-index:95;opacity:0;transition:opacity .2s;pointer-events:none;max-width:88vw;text-align:center}
 .toast.on{opacity:1}
+/* 아이폰 입력칸 확대 방지 (260930) — 터치 기기에서만 입력 글씨 16px. 데스크톱 모양은 그대로. PIN(.pin 18px)은 제외 */
+@media (hover:none) and (pointer:coarse){
+ input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]):not([type=button]):not([type=submit]):not([type=reset]):not([type=image]):not(.pin),select,textarea{font-size:16px!important}
+ .moodtxt{padding-top:5px;padding-bottom:5px}
+}
 </style></head><body>
 
 <!-- PIN 게이트 -->

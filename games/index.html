@@ -167,6 +167,15 @@ footer p{margin:4px 0}
   .group{scroll-margin-top:150px}
   .strip button{width:104px}
 }
+/* ══ 아이폰 입력칸 확대 방지 (260930) — 추가만(기존 디자인·기능 그대로) ══
+   아이폰은 입력칸 글씨가 16px 보다 작으면 누를 때 화면을 확대한다 → 폰(좁은 화면·터치)에서만 16px.
+   데스크톱(넓은 화면 + 마우스)은 이 블록이 적용되지 않아 모양이 그대로다.
+   검색칸은 줄 높이를 24px 로 고정해 칸 높이(44px)를 예전과 같게 둔다. */
+@media (max-width:900px), (pointer:coarse){
+  .search{font-size:16px;line-height:24px}
+  .sort{font-size:16px}
+  textarea{font-size:16px}
+}
 </style>
 </head>
 <body>
