@@ -1840,9 +1840,9 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
       gi('i-repeat','it-t','정기업무 일정표',rv?(esc((rv.list||[]).length)+'개 · '+(rv.enabled?'켜짐':'꺼짐')+(nx?' · 다음 '+esc(isToday(nx.next)?hm(nx.next):mdw(nx.next)+' '+hm(nx.next))+' '+esc(nx.title):'')):'사무실 PC 가 아직 올리지 않았습니다',rv&&rv.list?'<button type="button" class="gi-v lk" data-jump="rtnTable">보기'+IC('i-chev-r')+'</button>':LOCKV)+
       gi('i-layers','it-n','동시 진행 자리',cc?('최대 '+esc(cc.maxActiveJobs)+'건 · 통로마다 '+esc(cc.maxActivePerLane)+'건 · 지금 '+esc((cc.active||[]).length)+'건'):'—',LOCKV);
     setHTML($('#setOffice'),h);
-    var u=st().usageToday||EMPTY.usageToday, pct=Math.round(jr(u)*100), w80=Math.round((u.stopNewWorkAtRatio||0.8)*100);
+    var u=st().usageToday||EMPTY.usageToday, pct=Math.round(jr(u)*100), w80=Math.round((u.stopNewWorkAtRatio||0.8)*100), allP=Math.round((u.stopAllAtRatio||1)*100), same=w80>=allP; // (v1.13) 선은 설정값
     var lim=st().staff.map(function(p){return esc(p.name)+' '+esc(p.dailyCallLimit||'—')}).join(' · ');
-    setHTML($('#setUsage'),'<div class="gi" style="align-items:flex-start;padding-top:13px;padding-bottom:13px"><span class="it it-a">'+IC('i-bolt')+'</span><div class="gi-b"><b>'+(isPlan(u)?'요금제 사용량 ':'오늘 사용량(달러 기준) ')+pct+'%</b><div class="mgauge"><i class="'+(pct>=100?'r':pct>=w80?'a':'')+'" style="width:'+Math.min(100,pct)+'%"></i><b style="left:'+w80+'%"></b></div><small style="margin-top:6px">'+w80+'% 새 작업 멈춤 · 100% 전원 퇴근 (9/29 대표님 결정 — Claude 요금제 사용률 기준 · 못 읽으면 하루 달러 한도)<span class="own"> · $'+(u.costUsd||0).toFixed(3)+' / $'+(+u.limitUsd||0).toFixed(2)+'</span></small></div></div>'+
+    setHTML($('#setUsage'),'<div class="gi" style="align-items:flex-start;padding-top:13px;padding-bottom:13px"><span class="it it-a">'+IC('i-bolt')+'</span><div class="gi-b"><b>'+(isPlan(u)?'요금제 사용량 ':'오늘 사용량(달러 기준) ')+pct+'%</b><div class="mgauge"><i class="'+(pct>=allP?'r':pct>=w80?'a':'')+'" style="width:'+Math.min(100,pct)+'%"></i><b style="left:'+w80+'%"></b></div><small style="margin-top:6px">'+(same?allP+'% 새 작업 멈춤·전원 퇴근':w80+'% 새 작업 멈춤 · '+allP+'% 전원 퇴근')+' (9/29 대표님 결정 — Claude 요금제 사용률 기준 · 못 읽으면 하루 달러 한도)<span class="own"> · $'+(u.costUsd||0).toFixed(3)+' / $'+(+u.limitUsd||0).toFixed(2)+'</span></small></div></div>'+
       gi('i-team','it-n','직원별 하루 호출 상한',lim||'—',LOCKV));
     var ds=$('#setDevice'); if(ds) ds.textContent='구글 로그인 · 이 기기 '+deviceLabel()+(isStandalone()?' 홈 화면 앱':' 브라우저');
     setHTML($('#setStop'),stopCardHtml('settings'));
@@ -2010,13 +2010,13 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
       '<div class="hb-top">'+pill+'<span class="s12 mut ml">24시간 근무'+(o.overrides&&o.overrides.demoAnytime?' · 시연 모드':'')+'</span></div>'+
       '<div class="hb-big">'+big+'</div><p class="hb-s">'+ms+'</p>'+(staff.length?'<div class="hb-avs">'+avs+'</div>':'<p class="hb-s">직원 정보를 아직 받지 못했습니다.</p>')+'</div>');
     // 숫자 4칸
-    var uu=st().usageToday||EMPTY.usageToday, pct=Math.round(jr(uu)*100), w80=Math.round((uu.stopNewWorkAtRatio||0.8)*100), proj=projection(uu);
+    var uu=st().usageToday||EMPTY.usageToday, pct=Math.round(jr(uu)*100), w80=Math.round((uu.stopNewWorkAtRatio||0.8)*100), allP=Math.round((uu.stopAllAtRatio||1)*100), proj=projection(uu);
     var oldest=pa[0], dl=oldest?aprDeadline(oldest):null;
     var doneToday=st().jobs.filter(function(j){return j.stage==='완료'&&isToday(j.doneAt)}).length;
     var qJobs=st().jobs.filter(function(j){return j.stage==='질문대기'}).length;
     var nb=nextBrief();
     setHTML($('#homeTiles'),
-      '<a class="mt'+(s==='off'?' stale':'')+'" href="#rules"><span class="kl">'+(isPlan(uu)?'요금제 사용량':'오늘 사용량')+'</span><div class="mt-ring"><div class="ringbox">'+ringSvg(jr(uu),w80,pct>=100?'r':pct>=w80?'a':'')+'<div class="ringc"><b>'+pct+'<small>%</small></b></div></div><p>'+(proj!=null?'자정 예상<br><b>약 '+proj+'%</b>':'직원 호출<br><b>'+(uu.calls||0)+'회</b>')+'</p></div><span class="ks">'+w80+'%면 새 작업 멈춤</span></a>'+
+      '<a class="mt'+(s==='off'?' stale':'')+'" href="#rules"><span class="kl">'+(isPlan(uu)?'요금제 사용량':'오늘 사용량')+'</span><div class="mt-ring"><div class="ringbox">'+ringSvg(jr(uu),w80,pct>=allP?'r':pct>=w80?'a':'')+'<div class="ringc"><b>'+pct+'<small>%</small></b></div></div><p>'+(proj!=null?'자정 예상<br><b>약 '+proj+'%</b>':'직원 호출<br><b>'+(uu.calls||0)+'회</b>')+'</p></div><span class="ks">'+w80+'%면 새 작업 멈춤</span></a>'+
       '<a class="mt'+(pa.length?' w':'')+'" href="#approvals"><span class="kl">결재 대기</span><b class="kv">'+pa.length+'<small>건</small></b><span class="ks">'+(oldest?'가장 오래 '+esc(durText(now()-new Date(oldest.createdAt)))+(dl?' · 기한 '+txt(dl):' · 기한 없음'):'기다리는 결재 없음')+'</span></a>'+
       '<a class="mt" href="#ledger"><span class="kl">진행 중 일감</span><b class="kv">'+active+'<small>건</small></b><span class="ks">질문대기 '+qJobs+' · 오늘 완료 '+doneToday+'</span></a>'+
       '<a class="mt" href="#reports"><span class="kl">다음 보고</span><b class="kv">'+(nb?esc(nb.publish&&/^\d{1,2}:\d{2}$/.test(nb.publish)?nb.publish:hm(nb.next)):'—')+'</b><span class="ks">'+(nb?esc(nb.title)+' · '+esc(leftText(nb.next))+' 취합':'정기업무 일정표 정보 없음')+'</span></a>');
@@ -2077,15 +2077,15 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     return {o:o,exact:false};
   }
   function usageHtml(s){
-    var u=st().usageToday||EMPTY.usageToday, pct=Math.round(jr(u)*100), w80=Math.round((u.stopNewWorkAtRatio||0.8)*100), proj=projection(u);
+    var u=st().usageToday||EMPTY.usageToday, pct=Math.round(jr(u)*100), w80=Math.round((u.stopNewWorkAtRatio||0.8)*100), allP=Math.round((u.stopAllAtRatio||1)*100), same=w80>=allP, proj=projection(u);
     var lc=laneCalls(), tot=lc.o['지시']+lc.o['정기']+lc.o['제안'];
     var bar=tot?'<div class="ubar"><i class="t" style="width:'+(lc.o['정기']/tot*100).toFixed(1)+'%"></i><i class="g" style="width:'+(lc.o['지시']/tot*100).toFixed(1)+'%"></i><i class="p" style="width:'+(lc.o['제안']/tot*100).toFixed(1)+'%"></i></div><div class="ulg"><span><i style="background:var(--teal)"></i>정기 '+lc.o['정기']+'회</span><span><i style="background:var(--g-500)"></i>지시 '+lc.o['지시']+'회</span>'+(lc.o['제안']?'<span><i style="background:var(--violet)"></i>제안 '+lc.o['제안']+'회</span>':'')+(lc.exact?'':'<span class="mut">오늘 움직인 일감 기준 · 대략</span>')+'</div>':'';
-    return '<div class="use'+(s==='off'?' stale':'')+'"><div class="ringbox">'+ringSvg(jr(u),w80,pct>=100?'r':pct>=w80?'a':'')+'<div class="ringc"><b>'+pct+'<small>%</small></b><span>'+(isPlan(u)?'요금제':'오늘')+'</span></div></div>'+
+    return '<div class="use'+(s==='off'?' stale':'')+'"><div class="ringbox">'+ringSvg(jr(u),w80,pct>=allP?'r':pct>=w80?'a':'')+'<div class="ringc"><b>'+pct+'<small>%</small></b><span>'+(isPlan(u)?'요금제':'오늘')+'</span></div></div>'+
       '<div class="use-d"><h4>'+(isPlan(u)?'요금제 사용량 '+pct+'%':proj!=null?'이 속도면 자정에 약 '+proj+'%':'오늘 '+pct+'% 사용')+'</h4><p class="s12 mut" style="margin-top:2px">'+planText(u)+' · 오늘 직원 호출 '+(u.calls||0)+'회<span class="own"> · $'+(u.costUsd||0).toFixed(3)+' / $'+(+u.limitUsd||0).toFixed(2)+'</span>'+(proj!=null?' · 자정 값은 지금 속도 그대로 본 단순 추정':'')+'</p>'+bar+
-      '<p class="urule"><span><span class="tg tg-a">'+w80+'%</span>새 작업 멈춤</span><span><span class="tg tg-r">100%</span>전원 퇴근</span><span class="dtag">'+(u.basis==='plan'?'Claude 요금제 기준(5시간·주간 중 큰 값)':u.basis==='plan+달러보조'?'Claude 요금제 기준 + 확인 못 한 창은 달러 보조':'요금제 사용률 확인 불가 — 하루 달러 한도 기준')+'</span></p></div></div>'+
+      '<p class="urule">'+(same?'<span><span class="tg tg-r">'+allP+'%</span>새 작업 멈춤·전원 퇴근</span>':'<span><span class="tg tg-a">'+w80+'%</span>새 작업 멈춤</span><span><span class="tg tg-r">'+allP+'%</span>전원 퇴근</span>')+'<span class="dtag">'+(u.basis==='plan'?'Claude 요금제 기준(5시간·주간 중 큰 값)':u.basis==='plan+달러보조'?'Claude 요금제 기준 + 확인 못 한 창은 달러 보조':'요금제 사용률 확인 불가 — 하루 달러 한도 기준')+'</span></p></div></div>'+
       '<div class="use-more">'+(u.overLimitToday?'<p><b style="color:var(--amber-ink)">'+esc(ovText(u))+'</b></p>':'')+
       '<p class="own">'+(u.externalUsd?'대장 밖 호출(스모크 등) $'+(+u.externalUsd).toFixed(3)+' 포함 · ':'')+(u.estimatedUsd?'비용을 몰라 상한으로 추정한 몫 $'+(+u.estimatedUsd).toFixed(3)+' 포함 · ':'')+'</p>'+
-      '<p>할 일 없는 직원은 AI를 부르지 않습니다. 80%·100% 판단은 Claude 요금제 사용률(5시간·주간 중 큰 값)로 하고, 읽지 못하면 하루 달러 한도로 대신합니다. 직원 사용량은 대표님 Claude 요금제 한도와 같은 통에서 나갑니다.</p>'+localAiLine(s)+'</div>';
+      '<p>할 일 없는 직원은 AI를 부르지 않습니다. 새 작업 멈춤·전원 퇴근 판단('+(same?allP+'%':w80+'%·'+allP+'%')+')은 Claude 요금제 사용률(5시간·주간 중 큰 값)로 하고, 읽지 못하면 하루 달러 한도로 대신합니다. 직원 사용량은 대표님 Claude 요금제 한도와 같은 통에서 나갑니다.</p>'+localAiLine(s)+'</div>';
   }
 
   // (v1.4) 요금제 사용률 한 줄 — 5시간·주간 %(못 읽으면 "요금제 사용률 확인 불가")
@@ -2926,7 +2926,7 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
   }
   function askOverLimit(u){
     var planHot=(u.planRatio||0)>=(u.stopAllAtRatio||1);
-    ask({pill:'한도 넘겨 계속',pillCls:'b-warn',title:'한도를 넘겨 계속 쓸까요?',body:'<p>'+(planHot?'Claude 요금제 사용량이 '+Math.round((u.planRatio||0)*100)+'%입니다. 계속 쓰시면 그 요금제 창의 재설정 시각과 자정 중 먼저 오는 때까지 한도로 다시 멈추지 않고, 직원 사용량이 대표님 Claude 요금제 몫에서 더 나갑니다.':'요금제 사용률을 확인할 수 없는 동안 쓴 달러가 하루 달러 한도의 '+Math.round(((u.dollarFallback||{}).ratio||u.ratio||0)*100)+'%입니다. 계속 쓰시면 오늘은 달러 대체로는 멈추지 않지만, 새로 받은 요금제 값이 80%·100%면 다시 멈춥니다.')+'</p><p style="margin-top:8px">그대로 두시면 [확인하고 전원 출근]을 누르실 때까지 쉽니다(날짜가 바뀌어도 자동 출근 없음).</p>',ok:'한도 넘겨 계속 쓰기'})
+    ask({pill:'한도 넘겨 계속',pillCls:'b-warn',title:'한도를 넘겨 계속 쓸까요?',body:'<p>'+(planHot?'Claude 요금제 사용량이 '+Math.round((u.planRatio||0)*100)+'%입니다. 계속 쓰시면 그 요금제 창의 재설정 시각까지 그 창으로는 다시 멈추지 않고(다른 창·달러 보조는 계속 봄), 직원 사용량이 대표님 Claude 요금제 몫에서 더 나갑니다.':'요금제 사용률을 확인할 수 없는 동안 쓴 달러가 하루 달러 한도의 '+Math.round(((u.dollarFallback||{}).ratio||u.ratio||0)*100)+'%입니다. 계속 쓰시면 오늘은 달러 대체로는 멈추지 않지만, 새로 받은 요금제 값이 '+(Math.round((u.stopNewWorkAtRatio||0.8)*100)>=Math.round((u.stopAllAtRatio||1)*100)?Math.round((u.stopAllAtRatio||1)*100)+'%':Math.round((u.stopNewWorkAtRatio||0.8)*100)+'%·'+Math.round((u.stopAllAtRatio||1)*100)+'%')+'면 다시 멈춥니다.')+'</p><p style="margin-top:8px">그대로 두시면 [확인하고 전원 출근]을 누르실 때까지 쉽니다(날짜가 바뀌어도 자동 출근 없음).</p>',ok:'한도 넘겨 계속 쓰기'})
     .then(function(v){if(v===null)return;startOffice({overLimit:true});});
   }
   function startOffice(body){
