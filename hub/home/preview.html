@@ -2039,7 +2039,7 @@ html.ovopen,html.ovopen body{overflow:hidden}
     </div>
     </section>
 
-    <div class="foot" title="홈 v2.7 미리보기"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
+    <div class="foot" title="홈 v2.7.1 미리보기"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
 
   </main>
 </div>
@@ -3059,6 +3059,17 @@ function paintShots(sr, ph) {
 let _seq = 0;
 let _cloudOnce = false;   // 한 번이라도 다 그렸나 — 새로고침 때 스켈레톤으로 되돌리지 않기 위해
 // v2.4 오브스: 읽는 동안 앱 바 «찾는 중» · 「지금 처리할 것」 «계산하는 중» 구슬 — 다 그리면(또는 버려지면) 멈춘다
+// v2.7.1 칸마다 따로 그리기 — 한 칸에서 오류가 나도 나머지 칸은 끝까지 그린다(예전엔 중간에 멈추면 뒤 칸들이 «로그인하면 보여요»로 남았다).
+//   오류 난 칸에는 «이 칸을 그리다 문제가 생겼어요 · 오류 내용»을 적고, 상태 칩에 개수(마우스를 올리면 칸 이름·내용)를 남긴다. 저장은 하지 않는다
+const _secErr = [];
+function secFail(name, ids, e, textIds) {
+  const msg = String((e && (e.message || e)) || '알 수 없는 오류').slice(0, 120);
+  _secErr.push(`${name}: ${msg}`);
+  try { console.error('[홈] «' + name + '» 칸을 그리다 오류', e); } catch (_) {}
+  (ids || []).forEach((id) => put(id, emptyLn(`— 이 칸을 그리다 문제가 생겼어요 · ${msg}`, true)));
+  (textIds || []).forEach((id) => set(id, '표시 오류'));
+}
+function safeCalc(name, fn, fb) { try { return fn(); } catch (e) { secFail(name, [], e, []); return fb; } }
 function paintCloud() { const p = paintCloudRun(); busy('solve', p); return busy('read', p); }
 async function paintCloudRun() {
   const seq = ++_seq;
@@ -3069,15 +3080,16 @@ async function paintCloudRun() {
     D.shootRecords(), D.photoIndex(), D.subinRoutine(), D.prepProgress()
   ]);
   if (seq !== _seq || !D.currentUser()) return;       // 그사이 로그아웃·다시 그리기면 버린다
+  _secErr.length = 0;   // v2.7.1: 이번에 그리다 난 칸 오류만 모은다
 
   const now = new Date(), today = D.todayISO(), mk = D.monthPrefix();
-  const alerts = evs ? D.buildAlerts(evs, today) : null;
+  const alerts = evs ? safeCalc('보정본 기한 계산', () => D.buildAlerts(evs, today), null) : null;
   const dl = alerts ? alerts.filter(D.isDelivery) : null;
-  const nosh = evs ? D.noshHistory(evs) : null;
-  const st = evs ? D.calStats(evs, now) : null;
-  const ns = evs ? D.nextShoot(evs, now) : null;
-  const lg = led ? D.ledgerThisMonth(led, mk) : null;
-  const match = (led && evs) ? D.matchLedgerCal(led, evs, alias || {}) : null;
+  const nosh = evs ? safeCalc('노쇼 이력', () => D.noshHistory(evs), null) : null;
+  const st = evs ? safeCalc('촬영 통계', () => D.calStats(evs, now), null) : null;
+  const ns = evs ? safeCalc('다음 촬영', () => D.nextShoot(evs, now), null) : null;
+  const lg = led ? safeCalc('이번 달 가계부', () => D.ledgerThisMonth(led, mk), null) : null;
+  const match = (led && evs) ? safeCalc('입금 대조', () => D.matchLedgerCal(led, evs, alias || {}), null) : null;
   const inMonth = (x) => String(x.t.date).slice(0, 7) === mk;
   const noshOf = (e) => (nosh && e && nosh[D.personKey(e.client)]) || null;
 
@@ -3086,13 +3098,14 @@ async function paintCloudRun() {
 
   // ── 알림 단계 (명진 260929) — 기한 있는 일(보정본 전달·긴급 보정본·의상 확인·명진앱 할 일)을
   //    지남 / 긴급(3일 이내) / 주의(7일 이내)로. 기한 계산은 관리자 캘린더 buildAlerts 그대로(data-adapter.js stageItems)
-  const S = D.stageItems(evs, tod, today);
+  const S = safeCalc('알림 단계', () => D.stageItems(evs, tod, today), { over: [], d3: [], d7: [] });
   const dS = { over: S.over.filter(D.isDelivery), d3: S.d3.filter(D.isDelivery), d7: S.d7.filter(D.isDelivery) };
   // 짝 없는 입금(이번 달) — 기한이 없어 단계는 없지만 «긴급» 묶음 맨 아래에 둔다 (시안 문의=설문 데이터는 기록용이라 넣지 않음 — 명진 260928)
-  const noneMonth = match ? match.R.none.filter(inMonth) : null;
+  const noneMonth = match ? safeCalc('짝 없는 입금', () => match.R.none.filter(inMonth), null) : null;
   // 오늘 촬영인데 노쇼 이력이 있는 고객 — 오늘 판단할 일이라 «긴급» 묶음 맨 아래(짝 없는 입금과 같은 자리)
-  const noshToday = evs ? evs.filter((e) => D.isShootEv(e) && e.date === today && noshOf(e)).sort((a, b) => D.evStartMs(a) - D.evStartMs(b)) : null;
+  const noshToday = evs ? safeCalc('오늘 노쇼 이력', () => evs.filter((e) => D.isShootEv(e) && e.date === today && noshOf(e)).sort((a, b) => D.evStartMs(a) - D.evStartMs(b)), null) : null;
 
+  try {
   // 날짜줄 · 목차 배지 — 캘린더 배지는 홈과 같은 기준(지남 + 긴급 3일 이내, 캘린더 쪽 일만)
   set('today-extra', ns ? (ns.todayCount ? ` · 오늘 촬영 ${ns.todayCount}건` : ' · 오늘 촬영 없음') : '');
   {
@@ -3107,6 +3120,8 @@ async function paintCloudRun() {
   set('ap-my', [tod ? `오늘 할 일 ${tod.todayLeft}건` : '', lg && lg.unclassified ? `분류할 내역 ${lg.unclassified}건` : ''].filter(Boolean).join(' · ') || '할 일 · 가계부 · 구매 · 보유 장비');
   set('ap-inq', iq ? `문의 기록 ${iq.total}건` : '문의 기록');
 
+  } catch (e) { secFail('날짜줄·목차 배지', [], e, []); }
+  try {
   // ── 브리핑 · 다음 촬영 (노쇼 이력은 여기에만 글자로 적는다 — 다른 곳은 작은 경고 아이콘)
   level('bf-dlv', null);
   if (!evs) { set('b-next', dash); set('b-next-sub', '캘린더를 불러오지 못했습니다'); }
@@ -3127,6 +3142,8 @@ async function paintCloudRun() {
     put('b-next-sub', items(parts));
   }
 
+  } catch (e) { secFail('브리핑·다음 촬영', ['b-next-sub'], e, ['b-next']); }
+  try {
   // ── 오늘 할 일 (명진앱 정의: 오늘 마감 + 날짜 없는 미완)
   if (tod) {
     set('b-todo', `${tod.todayLeft}건 남음`);
@@ -3137,6 +3154,8 @@ async function paintCloudRun() {
     bar('g-todo-bar', pct(tod.doneToday, den));
   } else { set('b-todo', dash); set('b-todo-sub', '할 일을 불러오지 못했습니다'); set('g-todo', '불러오지 못함'); goalNo('g-todo', true); bar('g-todo-bar', 0); }
 
+  } catch (e) { secFail('오늘 할 일', ['b-todo-sub'], e, ['b-todo', 'g-todo']); }
+  try {
   // ── 납품 마감 (보정본 전달) — 숫자 = 지남 + 긴급(3일 이내). 단계별 개수는 「지금 처리할 것」 한 곳에만
   if (!dl) { set('b-dlv', dash); set('b-dlv-sub', '캘린더를 불러오지 못했습니다'); }
   else {
@@ -3151,6 +3170,8 @@ async function paintCloudRun() {
     }
   }
 
+  } catch (e) { secFail('납품 마감', ['b-dlv-sub'], e, ['b-dlv']); }
+  try {
   // ── 지금 처리할 것 — 지남 → 긴급(3일 · 기한 없이 오늘 확인할 것) → 주의(7일) → 기한 없는 확인
   {
     // 행 부제에는 «남은 일수»를 쓰지 않는다 — 오른쪽 D 배지가 같은 말을 한다
@@ -3229,8 +3250,10 @@ async function paintCloudRun() {
     // v2.5 홈 화면 아이콘 숫자 — 「지금 처리할 것」 큰 숫자·오늘 탭 숫자와 같은 값(지남 + 긴급). 캘린더·할 일을 둘 다 못 읽었으면 그대로 둔다(틀린 0 방지)
     if (window.__homeBadge) window.__homeBadge.set((evs || tod) ? S.over.length + S.d3.length + (noshToday ? noshToday.length : 0) + (noneMonth ? noneMonth.length : 0) : null);
   }
+  } catch (e) { secFail('지금 처리할 것', ['now-over'], e, []); }
   setTimeout(() => window.dispatchEvent(new Event('home:painted')), 0);   // 칸이 다 채워진 뒤 — #now 로 들어온 경우 위치를 다시 맞춘다
 
+  try {
   // ── 오늘 타임라인 (캘린더 일정 전부 + 오늘 마감 할 일 + 오늘 기한 전달)
   if (!evs) put('tl', emptyLn('— 캘린더를 불러오지 못했습니다', true));
   else {
@@ -3269,6 +3292,8 @@ async function paintCloudRun() {
       : emptyLn('오늘 일정 없음' + (tod ? '' : ' · 할 일은 불러오지 못했습니다')));
   }
 
+  } catch (e) { secFail('오늘 타임라인', ['tl'], e, []); }
+  try {
   // ── 진행 상황 · 목표 수입 (관리자 캘린더 대시보드와 같은 숫자)
   if (st) {
     set('g-week', `${st.weekCount} / ${st.weekTarget}명`); bar('g-week-bar', pct(st.weekCount, st.weekTarget));
@@ -3282,6 +3307,8 @@ async function paintCloudRun() {
     ['g-week-bar', 'g-month-bar', 'g-month2-bar'].forEach((id) => bar(id, 0));
   }
 
+  } catch (e) { secFail('진행 상황·목표 수입', [], e, ['g-week', 'g-month', 'g-month2']); }
+  try {
   // ── 앞으로 7일
   paintWeek(evs, alerts);
   if (evs) {
@@ -3300,10 +3327,12 @@ async function paintCloudRun() {
     set('w7-note', parts.length ? parts.join(' · ') : '앞으로 7일 촬영이 없습니다');
   } else set('w7-note', '— 캘린더를 불러오지 못했습니다');
 
+  } catch (e) { secFail('앞으로 7일', [], e, ['w7-note']); }
   // ── 수입·지출 · 도넛
-  paintLineChart(led);
-  paintDonut(led);
+  try { paintLineChart(led); } catch (e) { secFail('수입·지출 그래프', [], e, ['lc-note']); }
+  try { paintDonut(led); } catch (e) { secFail('이번 달 지출 도넛', ['dn-leg'], e, []); }
 
+  try {
   // ── 칸반
   {
     const card = (i1, i2, cls) => `<div class="item${cls ? ' ' + cls : ''}"><div class="i1">${i1}</div><div class="i2">${i2}</div></div>`;
@@ -3324,6 +3353,8 @@ async function paintCloudRun() {
     }
   }
 
+  } catch (e) { secFail('칸반', ['k-conf', 'k-dlv'], e, []); }
+  try {
   // ── 진행 중인 목표 · 독립 준비 · 수빈 오늘
   if (!prep) { set('g-prep', '불러오지 못함'); bar('g-prep-bar', 0); goalNo('g-prep', true); }
   else if (!prep.uploaded) { set('g-prep', '점검표 없음'); bar('g-prep-bar', 0); goalNo('g-prep', true); }
@@ -3334,9 +3365,13 @@ async function paintCloudRun() {
   else if (!sb.dailyTotal) { set('g-subin', '매일 목표 없음'); bar('g-subin-bar', 0); goalNo('g-subin', true); }
   else { set('g-subin', `${sb.doneToday} / ${sb.dailyTotal}`); bar('g-subin-bar', pct(sb.doneToday, sb.dailyTotal)); goalNo('g-subin', false); }
 
+  } catch (e) { secFail('진행 중인 목표', [], e, ['g-prep', 'g-subin']); }
+  try {
   // ── 최근 촬영
   paintShots(sr, ph);
 
+  } catch (e) { secFail('최근 촬영', ['shots'], e, []); }
+  try {
   // ── 돈 · 미분류
   if (lg) {
     set('m-unc', lg.unclassified);
@@ -3353,6 +3388,8 @@ async function paintCloudRun() {
     }).join('') + (ul.length > 5 ? emptyLn(`외 ${ul.length - 5}건 — 가계부에서`) : '') : emptyLn('분류할 내역 없음'));
   } else { set('m-unc', dash); put('unc-list', emptyLn('— 가계부를 불러오지 못했습니다', true)); }
 
+  } catch (e) { secFail('돈·미분류', ['unc-list'], e, ['m-unc']); }
+  try {
   // ── 캘린더 대조 (이번 달 입금)
   if (!match) put('cm-list', emptyLn(!led ? '— 가계부를 불러오지 못했습니다' : '— 캘린더를 불러오지 못했습니다', true));
   else {
@@ -3378,6 +3415,8 @@ async function paintCloudRun() {
     set('cm-note', `이번 달 촬영·미분류 입금 ${tot}건 — 짝 맞음 ${m.ok.length} · 노쇼·취소 ${m.bad.length} · 60일 밖 ${m.far.length} · 짝 없음 ${m.none.length} · 이름 아님 ${m.skip.length}` + (m.notShoot.length ? ` · 촬영비 아님(명진 지정) ${m.notShoot.length}` : ''));
   }
 
+  } catch (e) { secFail('캘린더 대조', ['cm-list'], e, []); }
+  try {
   // ── 미수금 · 예정 수입
   set('m-month', Number(mk.slice(5)) + '월');
   const inc = lg ? (lg.count ? lg.income : null) : null;
@@ -3400,6 +3439,8 @@ async function paintCloudRun() {
     bar('m-in-bar', pct(a, T)); bar('m-unconf-bar', pct(b, T)); bar('m-plan-bar', pct(c, T));
   }
 
+  } catch (e) { secFail('미수금·예정 수입', [], e, ['m-in', 'm-unconf', 'm-plan']); }
+  try {
   // ── 최근 문의
   if (iq) {
     set('iq-count', `전체 ${iq.total} · 신규 ${iq.fresh.length} · 상담중 ${iq.talking.length}`);
@@ -3413,6 +3454,8 @@ async function paintCloudRun() {
     }).join('') : emptyLn('문의 없음'));
   } else { set('iq-count', ''); put('iq-list', emptyLn('— 문의를 불러오지 못했습니다', true)); }
 
+  } catch (e) { secFail('최근 문의', ['iq-list'], e, []); }
+  try {
   // ── 보유 장비 · 구매계획
   if (ow) {
     set('r-owns', `${ow.count}개 · 시세 ${D.manwon(ow.price)}원`);
@@ -3425,6 +3468,8 @@ async function paintCloudRun() {
     set('s-owns', '· ' + ow.count + '개'); set('s-owns-r', `시세 ${D.manwon(ow.price)}원`);
   } else { set('r-owns', dash); put('own-cats', emptyLn('— 보유 장비를 불러오지 못했습니다', true)); set('s-owns', ''); set('s-owns-r', '불러오지 못함'); }
   { const od = $('s-o-dot'); if (od) od.style.background = ow ? '#7fb877' : '#c3cebf'; }
+  } catch (e) { secFail('보유 장비', ['own-cats'], e, ['r-owns']); }
+  try {
   if (by) {
     set('buy-count', `${by.count}개`);
     const price = (b) => (+b.avg ? D.won(b.avg * 10000) : (+b.best || +b.max) ? `${b.best || '?'}~${b.max || '?'}만` : '가격 미정');
@@ -3435,6 +3480,8 @@ async function paintCloudRun() {
     set('buy-note', `득템가 합 ${by.sumBest.toLocaleString()}만 ~ 상한 합 ${by.sumMax.toLocaleString()}만 · 명진앱 구매계획 기준(만원 단위로 저장)`);
   } else { set('buy-count', ''); put('buy-list', emptyLn('— 구매계획을 불러오지 못했습니다', true)); set('buy-sum', dash); }
 
+  } catch (e) { secFail('구매계획', ['buy-list'], e, ['buy-sum']); }
+  try {
   // ── 수빈 이번 주 루틴
   { const lgd = $('sb-leg'); if (lgd) lgd.hidden = !(sb && sb.uid && sb.daily.length); }   // 표가 있을 때만 범례
   if (!sb) { set('sb-week', ''); put('sb-tbl', emptyLn('수빈 루틴을 불러오지 못했습니다', true)); }
@@ -3450,9 +3497,12 @@ async function paintCloudRun() {
     }
   }
 
+  } catch (e) { secFail('수빈 이번 주 루틴', ['sb-tbl'], e, []); }
   const okN = [evs, led, iq, tod, by, ow, sr].filter((x) => x).length;
   const email = (D.currentUser() && D.currentUser().email) || '';
-  chip(0, okN ? true : false, okN ? `Firebase 연결됨 · ${email}` + (okN < 7 ? ` · 일부 불러오기 실패` : '') : `Firebase · 불러오기 실패 (${email})`);
+  chip(0, okN ? !_secErr.length : false, (okN ? `Firebase 연결됨 · ${email}` + (okN < 7 ? ` · 일부 불러오기 실패` : '') : `Firebase · 불러오기 실패 (${email})`)
+    + (_secErr.length ? ` · ${_secErr.length}칸 표시 오류` : ''));
+  { const c = document.querySelectorAll('.statusbar .stchip')[0]; if (c) c.title = _secErr.length ? '표시 오류 — ' + _secErr.join(' / ') : ''; }
   _cloudOnce = true;
   stamp();
 }
