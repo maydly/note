@@ -2039,7 +2039,7 @@ html.ovopen,html.ovopen body{overflow:hidden}
     </div>
     </section>
 
-    <div class="foot" title="홈 v2.7.1 미리보기"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
+    <div class="foot" title="홈 v2.7.2 미리보기"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
 
   </main>
 </div>
@@ -2100,7 +2100,7 @@ const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&':
 const mask = (s) => `<span class="mask">${esc(s)}</span>`;
 const WD = ['일', '월', '화', '수', '목', '금', '토'];
 const md = (ds) => { const a = String(ds || '').split('-'); return a.length === 3 ? (+a[1]) + '/' + (+a[2]) : String(ds || ''); };
-const mdw = (ds) => md(ds) + ' ' + WD[D.parseDS(ds).getDay()];
+const mdw = (ds) => { const w = WD[D.parseDS(ds).getDay()]; return md(ds) + (w ? ' ' + w : ''); };   // 날짜를 못 읽으면 요일 없이(«undefined» 대신)
 const pct = (a, b) => (b > 0 ? Math.max(0, Math.min(100, Math.round(a / b * 100))) : 0);
 const bar = (id, p) => { const el = $(id); if (el) el.style.width = Math.max(0, Math.min(100, p || 0)) + '%'; };
 // 빈 상태 한 줄 — 아이콘 + 짧은 문구. nd=true 는 «불러오기 실패», 문자열이면 종류('info' 등)
@@ -3091,7 +3091,7 @@ async function paintCloudRun() {
   const lg = led ? safeCalc('이번 달 가계부', () => D.ledgerThisMonth(led, mk), null) : null;
   const match = (led && evs) ? safeCalc('입금 대조', () => D.matchLedgerCal(led, evs, alias || {}), null) : null;
   const inMonth = (x) => String(x.t.date).slice(0, 7) === mk;
-  const noshOf = (e) => (nosh && e && nosh[D.personKey(e.client)]) || null;
+  const noshOf = (e) => { if (!nosh || !e) return null; const k = D.personKey(e.client); return Object.prototype.hasOwnProperty.call(nosh, k) ? nosh[k] : null; };
 
   document.body.classList.remove('out');
   { const lc = $('loginCard'); if (lc) lc.hidden = true; }
@@ -3221,14 +3221,14 @@ async function paintCloudRun() {
     if (noshToday) noshToday.forEach((e) => {
       const nh = noshOf(e);
       x += nowItem({ ic: ico('alert'), href: CAL, n1: `오늘 ${esc(TIME(e) || '시간 미정')} ${mask(nmCal(e.client))} 촬영 — 노쇼 이력 ${nh.cnt}회`,
-        n2: `사유: ${esc(nh.reasons[0] || '사유 없음')} · 마지막 ${esc(md(nh.last))} — 촬영 전 확인할지 판단`, nr: '캘린더 →' });
+        n2: `사유: ${esc((nh.reasons && nh.reasons[0]) || '사유 없음')} · 마지막 ${esc(md(nh.last))} — 촬영 전 확인할지 판단`, nr: '캘린더 →' });
     });
     else x += emptyLn('— 캘린더를 못 읽어 오늘 촬영 노쇼 이력을 확인하지 못했습니다', true);
     if (noneMonth) {
       x += capList(noneMonth, 4, (p) => nowItem({ u: true, ic: ico('wallet'), href: MY + '?tab=money',
         n1: `예약과 짝이 없는 입금 ${mask(D.won(p.t.amt))}`, n2: `${esc(md(p.t.date))} · 입금자 「${mask(p.n)}」 — 캘린더에 같은 이름 없음`,
         nr: '가계부 →' }), '짝 없는 입금 외 N건 — 가계부 「캘린더와 대조」에서', MY + '?tab=money');
-    } else x += emptyLn('— 입금 대조를 하지 못했습니다(가계부나 캘린더를 못 읽음)', true);
+    } else x += emptyLn(led && evs ? '— 입금 대조를 계산하다 문제가 생겼어요' : '— 입금 대조를 하지 못했습니다(가계부나 캘린더를 못 읽음)', true);
     put('now-pay', x || emptyLn('없음'));
 
     // 기한 없는 확인 — 분류할 가계부 내역
@@ -3391,7 +3391,7 @@ async function paintCloudRun() {
   } catch (e) { secFail('돈·미분류', ['unc-list'], e, ['m-unc']); }
   try {
   // ── 캘린더 대조 (이번 달 입금)
-  if (!match) put('cm-list', emptyLn(!led ? '— 가계부를 불러오지 못했습니다' : '— 캘린더를 불러오지 못했습니다', true));
+  if (!match) put('cm-list', emptyLn(!led ? '— 가계부를 불러오지 못했습니다' : !evs ? '— 캘린더를 불러오지 못했습니다' : '— 입금 대조를 계산하다 문제가 생겼어요', true));
   else {
     const R = match.R;
     const m = { ok: R.ok.filter(inMonth), bad: R.bad.filter(inMonth), far: R.far.filter(inMonth), none: R.none.filter(inMonth), skip: R.skip.filter(inMonth), notShoot: (R.notShoot || []).filter(inMonth) };

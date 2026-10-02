@@ -435,7 +435,7 @@ export const personKey = (s) => String(s || "").replace(/\s+/g, "").replace(/\(.
 
 /** 노쇼 이력 — 사람별 {name, cnt, last, reasons[]} */
 export function noshHistory(evs) {
-  const map = {};
+  const map = Object.create(null);   // 이름이 constructor·toString 같은 내부 단어여도 안전하게(상속값 없음)
   evs.forEach((e) => {
     if (!e || e.status !== "nosh") return;
     const k = personKey(e.client); if (!k) return;
@@ -499,7 +499,7 @@ export function ledgerMonthly(arr, n = 6, mk = monthPrefix()) {
 
 /** 이번달 지출을 분류별로 (이체·충전 제외) */
 export function expenseByCat(arr, mk = monthPrefix()) {
-  const by = {};
+  const by = Object.create(null);
   let total = 0, count = 0;
   arr.forEach((t) => {
     if (t.date.slice(0, 7) !== mk || t.type !== "out" || isMove(t)) return;
@@ -539,8 +539,9 @@ export async function calAlias() {
  * used = 어떤 입금과든 짝지어진 예약 id
  */
 export function matchLedgerCal(ledger, evs, alias) {
-  const nameOf = (desc) => { const n = calRawName(desc); if (!n) return null; return alias[n] || n; };
-  const byName = {};
+  const own = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+  const nameOf = (desc) => { const n = calRawName(desc); if (!n) return null; return (own(alias, n) && alias[n]) || n; };
+  const byName = Object.create(null);   // 일정 이름이 내부 단어(constructor 등)여도 안전하게
   evs.forEach((e) => { const n = calNorm(e.client); if (n && e.date) (byName[n] = byName[n] || []).push(e); });
   const ins = ledger.filter((t) => t.type === "in" && CAL_TARGET.test(t.cat || ""));
   const R = { ok: [], bad: [], far: [], none: [], skip: [], notShoot: [] };
@@ -602,7 +603,7 @@ export async function buys() {
 export async function owns() {
   const arr = await mjDoc("owns");
   if (!Array.isArray(arr)) return null;
-  const by = {};
+  const by = Object.create(null);
   let price = 0;
   arr.filter(Boolean).forEach((o) => {
     const c = o.cat || "기타";
