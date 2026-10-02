@@ -366,6 +366,67 @@ a.chip:hover{background:#eef4ec}
 #lc *,#map-svg *{font-family:inherit}
 /* 폰: 수입·지출 그래프 글자가 화면 폭에 맞춰 줄어 5px 정도로 읽을 수 없던 것 */
 @media(max-width:900px){ #lc text{font-size:20px} }
+/* ── 수입·지출 그래프 금액 말풍선 (v2.7) — 마우스를 올리면(폰은 누르거나 옆으로 밀면, 키보드는 ← →) 그 달 금액이 떠오른다 ── */
+.lcwrap{position:relative}
+/* 말풍선이 카드 밖으로 문서 폭을 넓히지 않게(폰을 돌렸을 때 화면 전체가 작아지던 것). 카드 안쪽 여백까지는 보인다 */
+.lccard{overflow-x:clip}
+#lc{touch-action:pan-y;touch-action:pan-y pinch-zoom;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;border-radius:12px;
+  scroll-margin-top:calc(var(--ab) + var(--tb) + 14px)}   /* Tab·Shift+Tab 으로 들어올 때 위 막대 밑에 숨지 않게 */
+@media(max-width:900px){ #lc{scroll-margin-top:calc(var(--ab) + env(safe-area-inset-top,0px) + 12px);scroll-margin-bottom:calc(72px + env(safe-area-inset-bottom,0px))} }
+#lc:focus{outline:none}
+#lc:focus-visible{outline:2px solid var(--g);outline-offset:4px}
+#lc .lc-ml{transition:fill .2s ease}
+#lc .lc-ml.on{fill:#3d7a52;font-weight:800}
+.lc-hl{opacity:0;transition:opacity .2s ease;pointer-events:none}
+.lc-hl.on{opacity:1}
+.lc-hl .mv{transition:transform .34s cubic-bezier(.22,.9,.24,1),opacity .2s ease}
+.lc-hl.jump .mv{transition:none}
+.lc-hl .lc-sc{transform:scale(var(--lcsc,1))}
+.lc-hl .ring{transform-box:fill-box;transform-origin:center}
+.lc-hl .ring.pop{animation:lcpop .42s cubic-bezier(.34,1.56,.64,1)}
+@keyframes lcpop{0%{transform:scale(.45)}100%{transform:scale(1)}}
+.lctip{position:absolute;top:var(--ty,0px);left:0;z-index:4;max-width:calc(100% - 4px);padding:11px 14px 10px;border-radius:14px;
+  background:rgba(255,255,255,.97);color:var(--ink);font-size:12px;line-height:1.5;pointer-events:none;white-space:nowrap;
+  box-shadow:0 1px 2px rgba(28,38,32,.06),0 14px 34px -10px rgba(52,96,60,.32),inset 0 0 0 1px rgba(127,184,119,.28);
+  opacity:0;visibility:hidden;transform:translate3d(calc(var(--ax,0px) - var(--k,0) * 100%),calc(8px - var(--kv,0) * (100% + 16px)),0) scale(.95);transform-origin:var(--to,left top);
+  transition:opacity .18s ease,transform .34s cubic-bezier(.22,.9,.24,1),width .2s ease,visibility 0s linear .34s}
+.lctip.on{opacity:1;visibility:visible;transform:translate3d(calc(var(--ax,0px) - var(--k,0) * 100%),calc(0px - var(--kv,0) * 100%),0) scale(1);
+  transition:opacity .18s ease,transform .34s cubic-bezier(.22,.9,.24,1),width .2s ease,visibility 0s}
+/* 세로 위치(--ty)는 transform 이 아니라 top 이라 움직임 없이 바로 바뀐다(스크롤·막대·카드 경계로 생기는 위아래 이동). 가로(--ax)만 미끄러진다.
+   --k=1 은 오른쪽 모서리, --kv=1 은 아랫변 기준(그래프 위 말풍선 — 내용이 길어져도 그래프 쪽으로 안 내려옴).
+   jump = 움직임 없이 바로(처음 나타날 때·좌우가 바뀔 때·창 크기). tjump = 나타나는 움직임만 끊고 투명도는 그대로 */
+.lctip.jump{transition:none}
+.lctip.on.tjump{transition:opacity .18s ease,width .2s ease,visibility 0s}
+.lt-h{display:flex;align-items:baseline;gap:7px;margin-bottom:6px;font-size:14px;font-weight:800;letter-spacing:-.3px}
+.lt-h small{font-size:11px;font-weight:700;color:var(--mute);letter-spacing:0}
+.lt-r{display:flex;align-items:center;gap:7px;padding:2px 0;font-weight:700;color:var(--sub)}
+.lt-r i{flex:0 0 auto;width:9px;height:9px;border-radius:50%}
+.lt-r i.lt-o{background:#fff;box-shadow:inset 0 0 0 2px #7fbf8c}
+.lt-r small{font-size:10.5px;font-weight:600;color:var(--mute);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lt-r b{margin-left:auto;padding-left:16px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.2px}
+.lt-r b.lt-nb{font-weight:600;color:var(--mute)}
+.lt-f{margin-top:7px;padding-top:7px;border-top:1px dashed #e1e9de;font-size:11.5px;font-weight:600;color:var(--mute);line-height:1.6;white-space:normal;word-break:keep-all}
+.lt-f.lt-nd{margin-top:2px;border-top:0;padding-top:0;white-space:normal;max-width:210px}
+.lt-y{display:inline-block;margin-left:2px;padding:0 7px;border-radius:999px;font-size:11px;font-weight:800;line-height:1.7;white-space:nowrap}
+.lt-y.up{background:#e2f1de;color:#2f6b45}
+.lt-y.dn{background:#fbe4de;color:#9a4733}
+.lt-y.eq{background:#eef2ec;color:#5d6b5f}
+.lt-y.nw{background:#fdf2e3;color:#8a6420}
+/* 그래프가 작으면(폰) 조금 작게 — 화면 폭이 아니라 그래프 폭 기준(lcPlace 가 붙임). 양쪽 다 자리가 모자라면 더 촘촘하게 */
+.lctip.lt-sm{padding:8px 11px 8px;border-radius:12px;font-size:11.5px;line-height:1.4}
+.lctip.lt-sm .lt-h{font-size:13px;margin-bottom:4px}
+.lctip.lt-sm .lt-r{padding:1px 0;gap:6px}
+.lctip.lt-sm .lt-r b{padding-left:12px}
+.lctip.lt-sm .lt-f{margin-top:5px;padding-top:5px;font-size:11px;line-height:1.5}
+.lctip.lt-tight{padding:7px 9px 7px;font-size:11px}
+.lctip.lt-tight .lt-h{font-size:12.5px}
+.lctip.lt-tight .lt-r{gap:5px}
+.lctip.lt-tight .lt-r b{padding-left:8px}
+.lctip.lt-tight .lt-f{font-size:10.5px}
+.lctip.lt-tight .lt-y{padding:0 5px}
+.lctip.lt-tight .lt-f.lt-nd{max-width:150px}
+.lctip .lt-f.lt-nd{margin-top:2px;padding-top:0;border-top:0}   /* 폰 크기 규칙(.lt-sm .lt-f)에 밀리지 않게 */
+@media(prefers-reduced-motion:reduce){ .lc-hl,.lc-hl .mv,.lctip,.lctip.on,#lc .lc-ml{transition:none} .lc-hl .ring.pop{animation:none} }
 
 /* ══ v2.3 정리판(명진 "불필요한 것 걷어내기") — 개발용 설명·기술 표시·빈 카드 숨김 ══ */
 #demobar,.srcnote,.tier .ts,.embnote,.frame .badge,#m-note,#own-note,.statusbar .stchip:not(.btn){display:none!important}
@@ -1617,11 +1678,14 @@ html.ovopen,html.ovopen body{overflow:hidden}
     <div class="sechd"><h2>돈</h2><div class="sn">수입·지출 · 입금 대조 · 미수금</div></div>
     <!-- 수입지출 + 도넛 (v2.3 검수: 오늘 탭 → 사업 › 돈으로 옮김) -->
     <div class="grid2">
-      <div class="card">
+      <div class="card lccard">
         <div class="ch"><div class="ct"><span class="cic" style="--c1:#a8d3a0;--c2:#7fb877" aria-hidden="true"><svg class="ic"><use href="#i-wallet"/></svg></span>수입 · 지출</div><div class="cs">최근 6개월 · 이체·충전 제외</div></div>
+        <div class="lcwrap" id="lc-wrap">
         <svg class="linechart" id="lc" viewBox="0 0 640 210" style="width:100%;height:auto;display:block" role="img" aria-label="최근 6개월 수입과 지출, 작년 같은 달 수입">
           <g class="skr"><rect x="60" y="46" width="540" height="10" rx="5"/><rect x="60" y="92" width="420" height="10" rx="5"/><rect x="60" y="138" width="480" height="10" rx="5"/></g><text x="330" y="100" text-anchor="middle" class="lcmsg sksvg">불러오는 중…</text>
         </svg>
+        <div class="lctip" id="lc-tip" aria-hidden="true"></div><span class="sr" id="lc-sr" aria-live="polite"></span>
+        </div>
         <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:var(--f-sub);font-weight:700;color:#6b7a67">
           <span style="display:flex;align-items:center;gap:6px"><i style="width:14px;height:3px;background:#4f9a6a;border-radius:2px;display:block"></i>수입</span>
           <span style="display:flex;align-items:center;gap:6px"><i style="width:14px;height:0;border-top:3px dashed #dda79d;display:block"></i>지출</span>
@@ -1975,7 +2039,7 @@ html.ovopen,html.ovopen body{overflow:hidden}
     </div>
     </section>
 
-    <div class="foot" title="홈 v2.5 미리보기"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
+    <div class="foot" title="홈 v2.7 미리보기"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
 
   </main>
 </div>
@@ -2022,6 +2086,16 @@ const $ = (id) => document.getElementById(id);
 const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
 const put = (id, h) => { const el = $(id); if (el) el.innerHTML = h; };
 const dash = '—';
+// 수입·지출 그래프 금액 말풍선 상태 (v2.7) — paintLineChart 가 값을 넣고, 아래 lcShow·lcHide 가 읽기만 한다
+let lcState = null, lcIdx = -1, lcLast = -1, lcMute = -1, lcLeaveT = 0, lcResetT = 0, lcRaf = 0, lcScrollRaf = 0, lcHideAt = -1e9, lcTouch = null, lcShown = {};
+const lcRM = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+// 그 달 강조 — 세로 안내선·옅은 띠·점 고리(수입·지출·작년). 맨 위 투명 판이 마우스·손가락을 받는다
+const LC_HL = '<g class="lc-hl" id="lc-hl" aria-hidden="true">'
+  + '<g class="mv" id="lc-hl-x"><rect x="-23" y="12" width="46" height="166" rx="12" fill="#7fb877" fill-opacity=".1"/><line x1="0" y1="16" x2="0" y2="176" stroke="#7fb877" stroke-width="1.5" stroke-dasharray="2 4" stroke-linecap="round"/></g>'
+  + '<g class="mv" id="lc-hl-ly"><g class="lc-sc"><circle class="ring" r="6" fill="#fff" stroke="#7fbf8c" stroke-width="2.6"/></g></g>'
+  + '<g class="mv" id="lc-hl-out"><g class="lc-sc"><circle r="12" fill="#dda79d" fill-opacity=".2"/><circle class="ring" r="6" fill="#dda79d" stroke="#fff" stroke-width="2.6"/></g></g>'
+  + '<g class="mv" id="lc-hl-in"><g class="lc-sc"><circle r="13" fill="#4f9a6a" fill-opacity=".18"/><circle class="ring" r="6.5" fill="#4f9a6a" stroke="#fff" stroke-width="2.6"/></g></g>'
+  + '</g><rect class="lc-hit" x="0" y="0" width="640" height="210" fill="transparent"/>';
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const mask = (s) => `<span class="mask">${esc(s)}</span>`;
 const WD = ['일', '월', '화', '수', '목', '금', '토'];
@@ -2482,6 +2556,8 @@ function paintLineChart(led) {
   const months = Array.isArray(led) ? D.ledgerMonthly(led, 6, mk) : Array.from({ length: 6 }, (_, i) => {
     const d = new Date(now.getFullYear(), now.getMonth() - 5 + i, 1); return { month: d.getMonth() + 1, in: null, out: null, count: 0 };
   });
+  // 거래 건수도 금액과 같은 기준(이체·충전 제외)으로 센다 — 말풍선 «거래 N건»
+  if (Array.isArray(led)) months.forEach((m) => { m.n = led.filter((t) => t.date.slice(0, 7) === m.mk && !D.isMove(t)).length; });
   const vals = [];
   months.forEach((m) => { if (m.in != null) vals.push(m.in); if (m.out != null) vals.push(m.out); });
   // 작년 같은 달(12개월 전) 6개월 — 같은 계산(이체·충전 제외). 기록이 없는 달은 0 이 아니라 빈칸(null)
@@ -2505,7 +2581,7 @@ function paintLineChart(led) {
       prev.forEach((m, i) => { if (m.in != null) cr.push([X(i), Y(m.in)]); else if (cr.length) { pr.push(cr); cr = []; } });
       if (cr.length) pr.push(cr);
       pr.forEach((r) => { if (r.length > 1) h += `<polyline points="${r.map((p) => p[0] + ',' + p[1].toFixed(1)).join(' ')}" fill="none" stroke="#7fbf8c" stroke-width="2.4" stroke-dasharray="0.1 6" stroke-linecap="round" stroke-linejoin="round"/>`; });
-      prev.forEach((m, i) => { if (m.in != null) h += `<circle cx="${X(i)}" cy="${Y(m.in).toFixed(1)}" r="3.2" fill="#fff" stroke="#7fbf8c" stroke-width="1.8"><title>작년 ${m.month}월 수입 ${D.won(m.in)}</title></circle>`; });
+      prev.forEach((m, i) => { if (m.in != null) h += `<circle cx="${X(i)}" cy="${Y(m.in).toFixed(1)}" r="3.2" fill="#fff" stroke="#7fbf8c" stroke-width="1.8"/>`; });
     }
     runs('in').forEach((r) => {
       if (r.length > 1) {
@@ -2517,35 +2593,418 @@ function paintLineChart(led) {
       if (r.length > 1) h += `<polyline points="${r.map((p) => p[0] + ',' + p[1].toFixed(1)).join(' ')}" fill="none" stroke="#dda79d" stroke-width="2.6" stroke-dasharray="6 5" stroke-linejoin="round"/>`;
     });
     months.forEach((m, i) => {
-      if (m.in != null) h += `<circle cx="${X(i)}" cy="${Y(m.in).toFixed(1)}" r="${i === 5 ? 4.5 : 3.4}" fill="#4f9a6a" stroke="#fff" stroke-width="2"><title>${m.month}월 수입 ${D.won(m.in)}</title></circle>`;
-      if (m.out != null) h += `<circle cx="${X(i)}" cy="${Y(m.out).toFixed(1)}" r="${i === 5 ? 4.5 : 3.4}" fill="#dda79d" stroke="#fff" stroke-width="2"><title>${m.month}월 지출 ${D.won(m.out)}</title></circle>`;
+      if (m.in != null) h += `<circle cx="${X(i)}" cy="${Y(m.in).toFixed(1)}" r="${i === 5 ? 4.5 : 3.4}" fill="#4f9a6a" stroke="#fff" stroke-width="2"/>`;
+      if (m.out != null) h += `<circle cx="${X(i)}" cy="${Y(m.out).toFixed(1)}" r="${i === 5 ? 4.5 : 3.4}" fill="#dda79d" stroke="#fff" stroke-width="2"/>`;
       if (m.in == null) h += `<text x="${X(i)}" y="170" text-anchor="middle" font-size="11" fill="#c3cebf" font-weight="700">—</text>`;
-      // 넓은 투명 칸 — 마우스를 올리면 그 달 값이 뜬다
-      h += `<rect x="${X(i) - 54}" y="14" width="108" height="168" fill="transparent"><title>${m.month}월 · ${m.in == null ? '내역 없음(가져오기 전일 수 있음)' : `수입 ${D.won(m.in)} · 지출 ${D.won(m.out)} · 거래 ${m.count}건`}${prev ? ` · 작년 ${prev[i].month}월 수입 ${prev[i].in == null ? '기록 없음' : D.won(prev[i].in)}` : ''}</title></rect>`;
     });
+    // 마우스를 올리면 그 달 강조 + 금액 말풍선(lcShow) — 예전 회색 기본 말풍선(title 태그) 대신 (v2.7).
+    // 말풍선이 열린 채 다시 그리면(새로고침·앱 복귀) 강조를 켠 채로 넣어 깜빡이지 않게
+    h += lcIdx >= 0 ? LC_HL.replace('class="lc-hl"', 'class="lc-hl on jump"') : LC_HL;
   } else {
     const msg = led === undefined ? LOGIN : led === null ? '가계부를 불러오지 못했습니다' : '최근 6개월 가계부 내역이 없습니다';
     h += `<text x="330" y="100" text-anchor="middle" class="lcmsg">${esc(msg)}</text>`;
   }
   h += '<g font-size="10.5" fill="#a7b1a4" font-family="Pretendard" text-anchor="middle">'
-     + months.map((m, i) => `<text x="${X(i)}" y="199">${m.month}월</text>`).join('') + '</g>';
+     + months.map((m, i) => `<text class="lc-ml${hasData && i === lcIdx ? ' on' : ''}" data-i="${i}" x="${X(i)}" y="199">${m.month}월</text>`).join('') + '</g>';
   svg.innerHTML = h;
   const cur = months[5];
-  // 이번 달은 아직 진행 중 — 작년 한 달 전체가 아니라 작년 같은 기간(1일~오늘 날짜)의 수입과 비교한다
-  let yoy = '';
+  // 이번 달은 아직 진행 중 — 작년 한 달 전체가 아니라 «같은 기간(1일~오늘 날짜)»끼리 비교한다.
+  // 올해 쪽도 오늘까지만 센다(가계부에 뒷날짜로 미리 적어 둔 기록이 있어도 %가 틀어지지 않게)
+  let yoy = '', lySame = null, curSame = null;
   if (Array.isArray(led) && prev && cur.in != null) {
-    const lyMonth = prev[5].mk, cut = `${lyMonth}-${String(now.getDate()).padStart(2, '0')}`;
+    const dd = String(now.getDate()).padStart(2, '0'), lyMonth = prev[5].mk, cut = `${lyMonth}-${dd}`, cutNow = `${mk}-${dd}`;
+    const inSum = (list) => list.reduce((a, t) => a + (t.type === 'in' && !D.isMove(t) ? (Number(t.amt) || 0) : 0), 0);
+    curSame = inSum(led.filter((t) => t.date.slice(0, 7) === mk && t.date <= cutNow));
     const lyList = led.filter((t) => t.date.slice(0, 7) === lyMonth);
     if (lyList.length) {
-      const lyIn = lyList.filter((t) => t.date <= cut && t.type === 'in' && !D.isMove(t)).reduce((a, t) => a + (Number(t.amt) || 0), 0);
-      if (lyIn > 0) { const pct = Math.round((cur.in - lyIn) / lyIn * 100); yoy = ` · 작년 같은 기간보다 ${pct >= 0 ? '+' : ''}${pct}%`; }
+      lySame = inSum(lyList.filter((t) => t.date <= cut));
+      if (lySame > 0) {
+        const r = lcDelta(curSame, lySame);
+        yoy = r.kind === 'eq' ? ' · 작년 같은 기간과 같음'
+            : r.q ? ` · 작년 같은 기간보다 ${r.kind === 'up' ? '+' : '-'}${r.q.toLocaleString()}%`
+            : ` · 작년 같은 기간보다 1% 미만 ${r.kind === 'up' ? '늘어남' : '줄어듦'}`;   // «-1% 미만»은 거꾸로 읽혀서 말로
+      }
       else yoy = ' · 작년 같은 기간 수입 0원';
     } else yoy = ' · 작년 같은 달 기록 없음';
   }
-  set('lc-note', Array.isArray(led) ? (cur.in == null ? `${cur.month}월 내역 없음` : `${cur.month}월 수입 ${D.manwon(cur.in)} · 지출 ${D.manwon(cur.out)}${yoy}`) : '');
+  // 뒷날짜로 미리 적어 둔 수입이 있으면 비교에 쓴 «오늘까지» 금액도 함께 적는다(보이는 숫자와 %가 어긋나지 않게)
+  const inTxt = curSame != null && curSame !== cur.in ? `${D.manwon(cur.in)}(오늘까지 ${D.manwon(curSame)})` : D.manwon(cur.in);
+  set('lc-note', Array.isArray(led) ? (cur.in == null ? `${cur.month}월 내역 없음` : `${cur.month}월 수입 ${inTxt} · 지출 ${D.manwon(cur.out)}${yoy}`) : '');
   const lyLeg = $('lc-ly'); if (lyLeg) lyLeg.style.opacity = (prev && prevVals.length) || !Array.isArray(led) ? '' : '.45';   // 작년 기록이 하나도 없으면 범례만 흐리게
   const ln = $('lc-note'); if (ln) ln.classList.add('mask');
+  // 금액 말풍선이 읽을 값 — 그래프를 다시 그리면(로그인 뒤 데이터 도착 등) 열려 있던 달을 새 값으로 다시 띄운다
+  lcState = { has: hasData, months, prev, X, Y, lySame, curSame, day: now.getDate() };
+  svg.setAttribute('tabindex', hasData ? '0' : '-1');
+  svg.setAttribute('aria-label', hasData ? '최근 6개월 수입과 지출, 작년 같은 달 수입. 화살표 키로 달별 금액 보기' : '최근 6개월 수입과 지출, 작년 같은 달 수입');
+  if (hasData) { if (lcIdx >= 0) lcShow(lcIdx, 'repaint'); }
+  else {   // 로그아웃·불러오기 실패 — 닫고, 마지막으로 본 금액이 화면 속(DOM)에 남지 않게 비운다
+    lcHide(); lcLast = -1; lcShown = {};
+    const tp = $('lc-tip'); if (tp) { tp.innerHTML = ''; tp.style.removeProperty('width'); delete tp.dataset.tw; }
+  }
 }
+
+// ══ 수입·지출 그래프 금액 말풍선 (v2.7) ══ — 마우스를 올리면(폰은 누르거나 옆으로 밀면, 키보드는 ← →) 그 달 금액이 떠오른다.
+//    읽기만 한다. 값은 paintLineChart 가 그린 그대로(lcState). 현장 모드면 금액이 흐려진다(.mask)
+function lcGeo() {   // 그래프 상자 → 실제 그림(viewBox) 배율·여백. 폰은 그래프가 세로로 가운데 정렬돼 위아래 여백이 있다
+  const svg = $('lc'); if (!svg) return null;
+  const r = svg.getBoundingClientRect(), s = Math.min(r.width / 640, r.height / 210);
+  return s ? { r, s, ox: (r.width - 640 * s) / 2, oy: (r.height - 210 * s) / 2 } : null;
+}
+function lcInPlot(e) {   // 손가락·마우스가 그려진 그래프 안인가(위아래 빈 여백·카드 여백은 밖)
+  const g = lcGeo(); if (!g) return false;
+  const vx = (e.clientX - g.r.left - g.ox) / g.s, vy = (e.clientY - g.r.top - g.oy) / g.s;
+  return vx >= 0 && vx <= 640 && vy >= 0 && vy <= 210;
+}
+function lcAt(clientX) {   // 화면 좌표 → 가장 가까운 달
+  const g = lcGeo(); if (!g || !lcState) return -1;
+  const vx = (clientX - g.r.left - g.ox) / g.s;
+  return Math.max(0, Math.min(lcState.months.length - 1, Math.round((vx - 76) / 108)));
+}
+// 증감 — 명진앱 가계부 deltaChip 과 같은 규칙: 작년이 0원이면 «새로», 같으면 «그대로», 방향은 반올림 전 차이로 정한다
+function lcDelta(a, b) {
+  if (a == null || b == null) return null;
+  if (!b) return a > 0 ? { kind: 'new' } : null;
+  const d = a - b; if (!d) return { kind: 'eq' };
+  let q = Math.round(Math.abs(d) / b * 100);
+  if (d < 0 && a > 0 && q >= 100) q = 99;   // 수입이 남아 있는데 «100% 줄었다»로 보이지 않게
+  return { kind: d > 0 ? 'up' : 'dn', q };
+}
+function lcPct(r) { return r.q ? r.q.toLocaleString() + '%' : '1% 미만'; }
+function lcChip(r) {
+  if (!r) return '';
+  if (r.kind === 'new') return '<span class="lt-y mask nw">새로</span>';
+  if (r.kind === 'eq') return '<span class="lt-y mask eq">그대로</span>';
+  return `<span class="lt-y mask ${r.kind}">${r.kind === 'up' ? '▲' : '▼'} ${lcPct(r)}</span>`;
+}
+function lcSpan(st) { return st.day === 1 ? '1일' : `1~${st.day}일`; }
+function lcTipHTML(i) {
+  const st = lcState, m = st.months[i], p = st.prev ? st.prev[i] : null, isCur = i === st.months.length - 1;
+  const val = (k, v) => `<b class="mask" data-k="${k}" data-v="${v}">${esc(D.won(v))}</b>`;
+  const span = lcSpan(st);
+  let h = `<div class="lt-h">${m.month}월<small>${isCur ? '이번 달 · 진행 중' : esc(String(m.mk || '').slice(0, 4)) + '년'}</small></div>`;
+  if (m.in == null) h += '<div class="lt-f lt-nd">이 달 가계부 내역 없음 — 가져오기 전일 수 있음</div>';
+  else h += `<div class="lt-r"><i style="background:#4f9a6a"></i>수입${val('in', m.in)}</div>`
+          + `<div class="lt-r"><i style="background:#dda79d"></i>지출${val('out', m.out)}</div>`;
+  if (p) h += `<div class="lt-r"><i class="lt-o"></i>작년 ${p.month}월${isCur && p.in != null ? '<small>한 달 전체</small>' : ''}`
+          + `${p.in == null ? '<b class="lt-nb">기록 없음</b>' : val('ly', p.in)}</div>`;
+  const f = [];
+  // 이번 달에 뒷날짜로 미리 적어 둔 수입이 있으면 «오늘까지» 금액도 — 아래 요약줄과 같게(작년 기록 유무와 상관없이)
+  if (isCur && m.in != null && st.curSame != null && st.curSame !== m.in) f.push(`오늘까지(${span}) 수입 <span class="mask">${esc(D.won(st.curSame))}</span>`);
+  if (m.in != null && p) {
+    if (isCur) {   // 이번 달은 진행 중 — 올해·작년 모두 1일~오늘 날짜까지로 비교(아래 요약과 같은 계산)
+      if (st.lySame != null)
+        f.push(st.lySame > 0 ? `작년 같은 기간(${span}) <span class="mask">${esc(D.won(st.lySame))}</span> 대비 ${lcChip(lcDelta(st.curSame, st.lySame))}`
+                             : `작년 같은 기간(${span}) 수입 <span class="mask">0원</span>${st.curSame > 0 ? ' ' + lcChip({ kind: 'new' }) : ''}`);
+    } else { const c = lcChip(lcDelta(m.in, p.in)); if (c) f.push(`작년 대비 수입 ${c}`); }
+  }
+  if (m.in != null) f.push(`거래 ${m.n != null ? m.n : m.count}건`);
+  if (f.length) h += `<div class="lt-f">${f.join('<br>')}</div>`;
+  return h;
+}
+function lcSRText(i) {   // 키보드·손가락으로 고른 달을 화면낭독기가 읽는 한 줄 — 말풍선과 같은 재료·같은 순서
+  const st = lcState, m = st.months[i], p = st.prev ? st.prev[i] : null, isCur = i === st.months.length - 1;
+  const head = `${m.month}월(${isCur ? '이번 달, 진행 중' : String(m.mk || '').slice(0, 4) + '년'})`;
+  if (document.body.classList.contains('privacy')) return `${head} — 현장 모드라 금액을 가렸습니다`;
+  const span = lcSpan(st), won = D.won;
+  let s = `${head}, ` + (m.in == null ? '가계부 내역 없음' : `수입 ${won(m.in)}, 지출 ${won(m.out)}`);
+  if (p) s += p.in == null ? `, 작년 ${p.month}월 기록 없음` : `, 작년 ${p.month}월${isCur ? ' 한 달 전체' : ''} 수입 ${won(p.in)}`;
+  if (isCur && m.in != null && st.curSame != null && st.curSame !== m.in) s += `, 오늘까지(${span}) 수입 ${won(st.curSame)}`;
+  if (m.in != null && p) {
+    if (isCur && st.lySame != null) {
+      if (st.lySame > 0) { const r = lcDelta(st.curSame, st.lySame); s += `, 작년 같은 기간(${span}) ${won(st.lySame)}` + (r.kind === 'eq' ? '과 같음' : `보다 ${lcPct(r)} ${r.kind === 'up' ? '많음' : '적음'}`); }
+      else s += `, 작년 같은 기간(${span}) 수입 0원${st.curSame > 0 ? ', 작년엔 없던 수입' : ''}`;
+    } else if (!isCur) {
+      const r = lcDelta(m.in, p.in);
+      if (r) s += r.kind === 'eq' ? ', 수입이 작년과 같음' : r.kind === 'new' ? ', 작년엔 없던 수입' : `, 작년보다 수입 ${lcPct(r)} ${r.kind === 'up' ? '많음' : '적음'}`;
+    }
+  }
+  if (m.in != null) s += `, 거래 ${m.n != null ? m.n : m.count}건`;
+  return s;
+}
+function lcMove(id, x, y) {   // 값이 없는 달은 숨기되 바닥선에 대기 — 다음 달로 옮길 때 아래에서 떠오른다
+  const g = $(id); if (!g) return;
+  g.style.opacity = y == null ? '0' : '';
+  g.style.transform = `translate(${x}px,${(y == null ? 176 : y).toFixed(1)}px)`;
+}
+function lcSnap(els) {   // 진행 중인 움직임을 끊고 지금 값으로 바로(말풍선·강조를 같은 순간에 맞춘다)
+  els.forEach((el) => { if (el) el.classList.add('jump'); });
+  return () => els.forEach((el) => { if (el) { void el.getBoundingClientRect(); el.classList.remove('jump'); } });
+}
+function lcBars() {   // 화면에 붙어 있는 막대(위 앱 바·탭 줄, 폰 아래 탭 줄) — 말풍선이 그 밑에 숨지 않게
+  let top = 0, bottom = window.innerHeight;
+  [$('appbar'), document.querySelector('nav.tabs')].forEach((el) => {
+    if (!el) return;
+    const ps = getComputedStyle(el).position; if (ps !== 'sticky' && ps !== 'fixed') return;
+    const b = el.getBoundingClientRect(); if (!b.width || !b.height) return;
+    if (b.top < window.innerHeight / 2) top = Math.max(top, b.bottom); else bottom = Math.min(bottom, b.top);
+  });
+  return { top, bottom };
+}
+function lcGone() {   // 스크롤·회전 뒤 — 그림이 막대 사이에서 거의 안 보이거나, 보이는 카드 부분에 옆 말풍선이 들어갈 자리가 없으면 닫는다
+  const g = lcGeo(); if (!g) return true;
+  const b = lcBars(), pt = g.r.top + g.oy + 12 * g.s, pb = g.r.top + g.oy + 182 * g.s;
+  if (pb < b.top + 16 || pt > b.bottom - 16) return true;
+  const tip = $('lc-tip'), card = $('lc').closest('.card');
+  if (tip && card && tip.dataset.side && tip.dataset.side !== 'U') {
+    const cb = card.getBoundingClientRect();
+    if (Math.min(cb.bottom, b.bottom) - Math.max(cb.top, b.top) < tip.offsetHeight + 12) return true;
+  }
+  return false;
+}
+function lcMeasure(tip, fresh) {   // 폭 = 끝값과 지금 보이는 값 중 넓은 쪽 → 숫자가 굴러가는 동안 테두리 밖으로 넘치지 않는다
+  const bs = [...tip.querySelectorAll('b[data-v]')], keep = bs.map((b) => b.textContent);
+  tip.style.width = '';
+  bs.forEach((b) => { b.textContent = D.won(Number(b.dataset.v)); });
+  let w = tip.offsetWidth;
+  if (!fresh && bs.some((b) => b.dataset.k in lcShown)) {
+    bs.forEach((b) => { if (b.dataset.k in lcShown) b.textContent = D.won(lcShown[b.dataset.k]); });
+    w = Math.max(w, tip.offsetWidth);
+  }
+  bs.forEach((b, j) => { b.textContent = keep[j]; });
+  return w + 1;
+}
+function lcPlace(i, o) {   // o: first(처음 나타남) · keepW(스크롤 — 잰 폭 그대로) · instant(창 크기 — 움직임 없이) · reenter(닫히던 중 다시). 반환: 순간이동했는지
+  o = o || {};
+  const tip = $('lc-tip'), wrap = $('lc-wrap'), g = lcGeo(); if (!tip || !wrap || !g || !lcState) return false;
+  const wr = wrap.getBoundingClientRect(), W = wrap.clientWidth, gap = 14, pad = 8;
+  $('lc').style.setProperty('--lcsc', Math.max(1, Math.min(1.7, 0.86 / g.s)).toFixed(2));   // 그래프가 작을수록(폰) 고리를 키운다(최대 1.7배)
+  const ox = g.r.left - wr.left + g.ox, oy = g.r.top - wr.top + g.oy, px = ox + lcState.X(i) * g.s;
+  const roomR = W + pad - (px + gap), roomL = px - gap + pad;
+  let tw = +tip.dataset.tw || 0;
+  if (!o.keepW || !tw) {
+    tip.classList.toggle('lt-sm', W < 560);
+    tip.classList.remove('lt-tight');
+    tw = lcMeasure(tip, o.first);
+    if (tw > roomR && tw > roomL) { tip.classList.add('lt-tight'); tw = lcMeasure(tip, o.first); }
+    tip.style.width = tw + 'px'; tip.dataset.tw = tw;
+  }
+  // 쪽 — 지금 쪽에 자리가 있으면 그대로(좌우로 덜 오가게), 없으면 자리 있는 쪽, 양쪽 다 없으면 그래프 위(또는 아래)
+  const fitsL = tw <= roomL, fitsR = tw <= roomR, prev = tip.dataset.side;
+  let side;
+  if (!fitsL && !fitsR) side = 'U';
+  else {
+    side = prev === 'L' || prev === 'R' ? prev : (i >= 3 ? 'L' : 'R');
+    if (side === 'L' && !fitsL) side = 'R'; else if (side === 'R' && !fitsR) side = 'L';
+  }
+  // 세로 — 모두 윗변 기준으로 계산: 위 막대 밑·아래 막대 위로 먼저 맞추고, 마지막에 카드 안(카드가 최우선 — 다른 카드 위로 뜨지 않게)
+  const th = tip.offsetHeight, card = wrap.closest('.card'), cb = card ? card.getBoundingClientRect() : wr, bars = lcBars();
+  const minTy = bars.top + 6 - wr.top, barMax = bars.bottom - 6 - th - wr.top;
+  const cardTop = cb.top + 6 - wr.top, cardMax = cb.bottom - 6 - th - wr.top;
+  let ax, k = 0, kv = 0, ty, to = 'left top';
+  if (side !== 'U') {
+    if (side === 'R') ax = px + gap; else { ax = px - gap; k = 1; to = 'right top'; }   // L 은 오른쪽 모서리 기준 — 폭이 바뀌어도 안내선 쪽 모서리가 제자리
+    ty = Math.min(cardMax, Math.max(cardTop, Math.min(barMax, Math.max(minTy, 0))));
+  } else {
+    ax = Math.max(-pad, Math.min(W + pad - tw, px - tw / 2));
+    const up = oy + 10 * g.s - th - 6, dn = oy + 210 * g.s + 4;
+    let below = false;
+    if (up >= Math.max(minTy, cardTop)) ty = up;                                                  // ① 그래프 위 — 카드 안
+    else if (dn <= Math.min(cardMax, barMax) || (up < minTy && dn <= barMax)) { ty = dn; below = true; }   // ② x축 아래 — 카드 안, 또는 위가 막대에 막히면 카드 바닥을 조금 넘더라도(점을 덮는 것보다 낫다)
+    else ty = up;                                                                                 // ③ 그래프 위 — 카드 위로 조금
+    ty = Math.min(below ? barMax : Math.min(cardMax, barMax), Math.max(minTy, ty));
+    if (below) to = 'center top'; else { kv = 1; ty += th; to = 'center bottom'; }               // 위쪽은 아랫변 기준(내용이 길어져도 그래프 쪽으로 안 내려옴)
+  }
+  const v = { ax: Math.round(ax) + 'px', k: String(k), kv: String(kv), ty: Math.round(ty) + 'px' }, st = tip.style;
+  const cur = { ax: st.getPropertyValue('--ax'), k: st.getPropertyValue('--k'), kv: st.getPropertyValue('--kv') || '0', ty: st.getPropertyValue('--ty') };
+  if (cur.ax === v.ax && cur.k === v.k && cur.kv === v.kv && cur.ty === v.ty && prev === side) return false;
+  const pAx = parseFloat(cur.ax);
+  const flip = !o.first && !!prev && (prev !== side || (side === 'U' && cur.kv !== v.kv));   // 보이는 중이든 사라지는 중이든 쪽이 바뀌면
+  // 같은 쪽이어도 폭이 커져 옛 자리에서 카드 밖으로 넘칠 판이면 순간이동(L 은 왼쪽으로, R·U 는 오른쪽으로 튀어나간다)
+  const spill = !o.first && !flip && prev === side && !isNaN(pAx) && ((k === 1 && pAx - tw < -pad) || (k === 0 && pAx + tw > W + pad) || (side === 'U' && pAx < -pad));
+  const jumpy = flip || spill || !!o.reenter, snap = !o.first && (o.instant || jumpy);
+  const fade = jumpy && tip.classList.contains('on') && !(lcRM && lcRM.matches);
+  const done = snap ? lcSnap([tip, $('lc-hl')]) : null;   // 말풍선과 강조를 같은 순간에 옮긴다(강조가 말풍선 밑을 지나가지 않게)
+  if (fade) st.opacity = '0';   // 가로질러 미끄러지지 않고 새 자리에서 다시 나타난다
+  st.setProperty('--ax', v.ax); st.setProperty('--k', v.k); st.setProperty('--kv', v.kv); st.setProperty('--ty', v.ty); st.setProperty('--to', to);
+  tip.dataset.side = side;
+  if (done) done();
+  if (fade) st.opacity = '';
+  return jumpy;
+}
+function lcFit() {   // 다 굴러간 뒤 끝값 기준으로 다시 재서 폭을 줄인다(큰 달에서 넘어와 남은 빈칸 없애기) — 0.2초에 걸쳐
+  const tip = $('lc-tip'); if (!tip || lcIdx < 0) return;
+  const tw = +tip.dataset.tw || 0, w = lcMeasure(tip, true), nw = tw ? Math.min(w, tw) : w;
+  if (tw && nw < tw) { tip.style.width = tw + 'px'; void tip.offsetWidth; }   // 옛 폭에서 시작해야 width 전환이 돈다
+  tip.style.width = nw + 'px'; tip.dataset.tw = nw;
+  if (nw < tw && tip.dataset.side === 'U') lcPlace(lcIdx, { keepW: true });
+}
+function lcTween(tip, fromZero) {   // 금액이 굴러가듯 바뀐다(처음엔 0에서, 달을 옮기면 보던 값에서). 출발~도착 사이를 벗어나지 않는다
+  cancelAnimationFrame(lcRaf);
+  const reduce = lcRM && lcRM.matches, jobs = [], keys = new Set();
+  tip.querySelectorAll('b[data-v]').forEach((el) => {
+    const k = el.dataset.k, to = Number(el.dataset.v); keys.add(k);
+    const from = fromZero ? 0 : (k in lcShown ? lcShown[k] : to);
+    if (reduce || from === to) { lcShown[k] = to; el.textContent = D.won(to); return; }
+    jobs.push({ el, k, from, to, lo: Math.min(from, to), hi: Math.max(from, to) }); el.textContent = D.won(from);
+  });
+  Object.keys(lcShown).forEach((k) => { if (!keys.has(k)) delete lcShown[k]; });   // 이번 말풍선에 없는 줄은 잊는다(두 달 전 값에서 굴러가지 않게)
+  if (!jobs.length) { lcFit(); return; }
+  let t0 = 0; const dur = 340;
+  const step = (now) => {
+    if (!t0) t0 = now;   // 첫 프레임 시각을 출발점으로(이벤트 시각으로 잡으면 첫 프레임이 거꾸로 감)
+    const q = Math.max(0, Math.min(1, (now - t0) / dur)), e = 1 - Math.pow(1 - q, 3);
+    jobs.forEach((j) => {   // 차이를 1,000원 단위로 굴린다 — 첫 프레임은 정확히 출발값, 마지막은 정확히 도착값
+      const v = q >= 1 ? j.to : Math.min(j.hi, Math.max(j.lo, j.from + Math.round((j.to - j.from) * e / 1000) * 1000));
+      lcShown[j.k] = v; j.el.textContent = D.won(v);
+    });
+    if (q < 1) lcRaf = requestAnimationFrame(step); else lcFit();
+  };
+  lcRaf = requestAnimationFrame(step);
+}
+function lcShow(i, how) {   // how: 'key'·'touch'(낭독 줄을 새로 씀) · 'repaint'(다시 그린 직후 — 깜빡임·고리 튐 없이)
+  const st = lcState, svg = $('lc'), tip = $('lc-tip'), hl = $('lc-hl');
+  if (!st || !st.has || !svg || !tip || !hl || i < 0 || i >= st.months.length) return;
+  if (!svg.getClientRects().length) { lcHide(); return; }   // 숨은 탭에서는 띄우지 않는다
+  clearTimeout(lcLeaveT); clearTimeout(lcResetT);
+  const tipOn = tip.classList.contains('on'), hlOn = hl.classList.contains('on');
+  if (i === lcIdx && tipOn && hlOn && how !== 'repaint') {   // 이미 그 달 — 키보드·손가락으로 다시 골랐으면 낭독 줄만 채운다
+    if (how === 'key' || how === 'touch') { lcMute = -1; const tx = lcSRText(i), sr = $('lc-sr'); if (sr && sr.textContent !== tx) set('lc-sr', tx); }
+    return;
+  }
+  const fading = !tipOn && performance.now() - lcHideAt < 360;   // 막 닫히던 중이면 깜빡이지 않고 이어서 다시 켠다
+  const before = lcIdx, changed = i !== (lcIdx >= 0 ? lcIdx : (fading ? lcLast : -1));
+  lcIdx = i; lcLast = i;
+  if (how === 'key' || how === 'touch') lcMute = -1;
+  const m = st.months[i], p = st.prev ? st.prev[i] : null, x = st.X(i), reduce = lcRM && lcRM.matches;
+  // 막 나타나던 말풍선을 바로 다른 달로 옮기면 나타나는 움직임을 끊고 출발한다(강조보다 한 프레임 먼저 나가 점을 가리지 않게)
+  if (tipOn && tip._fresh && i !== before && how !== 'repaint') { tip.classList.add('tjump'); void tip.offsetWidth; tip.classList.remove('tjump'); }
+  tip._fresh = !tipOn;
+  // ① 그래프 안 — 처음(또는 다시 그린 직후)엔 제자리에서, 그다음부턴 미끄러지듯
+  const instant = !hl.dataset.placed || (!hlOn && !fading);
+  if (instant) hl.classList.add('jump');
+  lcMove('lc-hl-x', x, 0);
+  lcMove('lc-hl-in', x, m.in == null ? null : st.Y(m.in));
+  lcMove('lc-hl-out', x, m.out == null ? null : st.Y(m.out));
+  lcMove('lc-hl-ly', x, p && p.in != null ? st.Y(p.in) : null);
+  const gl = hl.querySelector('line'); if (gl) gl.setAttribute('y2', m.in == null ? '154' : '176');   // 내역 없는 달은 바닥 «—» 위에서 멈춘다(+ 모양 방지)
+  if (instant) { void hl.getBoundingClientRect(); hl.classList.remove('jump'); }
+  hl.classList.add('on'); hl.dataset.placed = '1';
+  if (changed && how !== 'repaint' && !reduce) hl.querySelectorAll('.ring').forEach((c) => { c.classList.remove('pop'); void c.getBoundingClientRect(); c.classList.add('pop'); });
+  svg.querySelectorAll('.lc-ml').forEach((tx) => tx.classList.toggle('on', +tx.dataset.i === i));   // 아래 «N월» 글자도 함께
+  // ② 금액 말풍선 — 처음·다시 그리기는 제자리에서 바로(강조와 맞춤), 닫히던 중 다시 열면 새 자리로 순간이동
+  const first = !tipOn && !fading, snapNow = first || how === 'repaint';
+  tip.innerHTML = lcTipHTML(i);
+  if (snapNow) tip.classList.add('jump');
+  if (first) delete tip.dataset.side;
+  lcPlace(i, { first, reenter: fading });
+  if (snapNow) { void tip.offsetWidth; tip.classList.remove('jump'); }
+  tip.classList.add('on');
+  lcTween(tip, first);
+  // 낭독 줄 — 키보드·손가락은 새로 읽고, 다시 그리면 새 값으로, 마우스로 옮기면 비운다(옛 달·옛 금액이 남지 않게)
+  if (how === 'key' || how === 'touch') set('lc-sr', lcSRText(i));
+  else { const sr = $('lc-sr'); if (sr && sr.textContent) { const tx = how === 'repaint' ? lcSRText(i) : ''; if (sr.textContent !== tx) set('lc-sr', tx); } }
+}
+function lcHide() {
+  clearTimeout(lcLeaveT); cancelAnimationFrame(lcRaf);
+  const tip = $('lc-tip'), hl = $('lc-hl'), svg = $('lc');
+  if (lcIdx >= 0) lcHideAt = performance.now();
+  if (tip) { tip.classList.remove('on'); tip._fresh = false; }
+  if (hl) hl.classList.remove('on');
+  if (svg) svg.querySelectorAll('.lc-ml.on').forEach((tx) => tx.classList.remove('on'));
+  lcIdx = -1; lcTouch = null;
+  set('lc-sr', '');
+  // 다 사라진 뒤엔 위치·폭을 처음으로 — 숨은 말풍선이 옛 자리(가로 화면 폭 등)에 남아 있지 않게
+  clearTimeout(lcResetT);
+  lcResetT = setTimeout(() => {
+    if (lcIdx >= 0 || !tip) return;
+    tip.classList.add('jump');
+    ['--ax', '--ty'].forEach((k) => tip.style.setProperty(k, '0px')); tip.style.setProperty('--k', '0'); tip.style.setProperty('--kv', '0');
+    tip.style.removeProperty('width'); delete tip.dataset.side; delete tip.dataset.tw;
+    void tip.offsetWidth; tip.classList.remove('jump');
+  }, 420);
+}
+function lcHideNow() {   // 스크롤·회전으로 그래프가 사라질 때 — 옛 자리에서 흐려지며 남지 않게 바로 닫는다
+  const done = lcSnap([$('lc-tip'), $('lc-hl')]); lcHide(); done();
+}
+(function lcBind() {
+  try {
+    const svg = $('lc'); if (!svg) return;
+    const ok = () => !!(lcState && lcState.has);
+    let hoverI = -1, away = false, outTap = null;   // hoverI: 마우스가 있는 달(Esc 로 닫은 달 기억용) · away: 다른 창·앱에 다녀오는 중 · outTap: 바깥 «톡» 판정
+    const leaveSoon = () => { clearTimeout(lcLeaveT); lcLeaveT = setTimeout(lcHide, 140); };
+    svg.addEventListener('pointermove', (e) => {
+      if (!ok() || !e.isPrimary) return;
+      if (e.pointerType === 'mouse') {
+        if (!lcInPlot(e)) { hoverI = -1; if (lcIdx >= 0) leaveSoon(); return; }   // 그래프 위아래 빈 여백은 밖으로 본다
+        clearTimeout(lcLeaveT);
+        const i = lcAt(e.clientX); hoverI = i;
+        if (i === lcMute) return;   // Esc 로 닫은 달 — 마우스가 다른 달로 옮길 때까지 다시 열지 않는다
+        lcMute = -1; lcShow(i); return;
+      }
+      const t = lcTouch; if (!t || t.id !== e.pointerId) return;
+      const dx = e.clientX - t.x, dy = e.clientY - t.y;
+      if (!t.drag && Math.abs(dx) > 6 && Math.abs(dx) > Math.abs(dy)) t.drag = true;   // 옆으로 밀면 따라간다
+      if (t.drag) { lcMute = -1; lcShow(lcAt(e.clientX)); }
+    });
+    svg.addEventListener('pointerdown', (e) => {
+      if (!ok() || e.pointerType === 'mouse') return;
+      if (!e.isPrimary) { lcTouch = null; outTap = null; return; }   // 두 손가락(확대)은 브라우저에 맡긴다
+      if (!lcInPlot(e)) { lcTouch = null; outTap = lcIdx >= 0 ? { id: e.pointerId, x: e.clientX, y: e.clientY } : null; return; }   // 그래프 둘레 빈 곳 — 손을 뗄 때 «톡»이면 닫는다
+      lcTouch = { id: e.pointerId, x: e.clientX, y: e.clientY, drag: false };
+    });
+    svg.addEventListener('pointerup', (e) => {
+      const t = lcTouch; if (!t || t.id !== e.pointerId) return;
+      lcTouch = null;
+      if (t.drag) { if (lcIdx >= 0) set('lc-sr', lcSRText(lcIdx)); return; }   // 밀어서 본 뒤엔 그 달에 그대로 둔다
+      const i = lcAt(e.clientX);
+      if (i === lcIdx) lcHide(); else lcShow(i, 'touch');   // 같은 달을 다시 누르면 닫힌다
+    });
+    svg.addEventListener('pointercancel', () => { lcTouch = null; });   // 위아래로 밀면 화면이 스크롤된다(말풍선은 그래프가 보이는 동안 그대로)
+    svg.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') { hoverI = -1; lcMute = -1; if (lcIdx >= 0) leaveSoon(); } });
+    // 바깥을 누르면 닫는다 — 마우스는 누르는 순간, 손가락은 «톡»(거의 안 움직이고 뗌)일 때만(스크롤·두 손가락 확대로는 안 닫힘)
+    document.addEventListener('pointerdown', (e) => {
+      if (lcIdx < 0 || svg.contains(e.target)) return;
+      if (e.pointerType === 'mouse') { lcHide(); return; }
+      outTap = e.isPrimary ? { id: e.pointerId, x: e.clientX, y: e.clientY } : null;
+    }, { passive: true, capture: true });
+    document.addEventListener('pointerup', (e) => {
+      const o = outTap; outTap = null;
+      if (o && o.id === e.pointerId && Math.abs(e.clientX - o.x) < 10 && Math.abs(e.clientY - o.y) < 10 && lcIdx >= 0) lcHide();
+    }, { passive: true, capture: true });
+    document.addEventListener('pointercancel', () => { outTap = null; }, { passive: true, capture: true });
+    svg.addEventListener('focus', () => {   // Tab 으로 들어오면 마지막으로 보던 달(처음이면 이번 달)부터. 마우스·손가락으로 눌러 생긴 포커스는 제외
+      if (away) { away = false; return; }   // 다른 창·앱에서 돌아온 것 — Esc 로 닫아 둔 것을 되살리지 않는다
+      let kb = true; try { kb = svg.matches(':focus-visible'); } catch (_) {}
+      if (!kb || !ok()) return;
+      if (lcIdx < 0) lcShow(lcLast >= 0 ? lcLast : lcState.months.length - 1, 'key');
+      else set('lc-sr', lcSRText(lcIdx));   // 마우스로 이미 열린 달 — 낭독 줄만 채운다
+    });
+    svg.addEventListener('blur', () => {
+      if (!document.hasFocus()) { away = true; return; }   // 다른 창·앱으로 — 보던 달을 그대로 둔다
+      away = false;
+      if (lcIdx >= 0 && !svg.matches(':hover')) lcHide();
+    });
+    svg.addEventListener('keydown', (e) => {
+      if (!ok() || e.altKey || e.ctrlKey || e.metaKey) return;   // 조합키(뒤로 가기·맨 위로 등)는 브라우저에 맡긴다
+      if (lcIdx < 0 && lcGone()) return;   // 그래프가 화면 밖이면 키는 브라우저에(Home·End 로 페이지 이동 등)
+      const n = lcState.months.length - 1, base = lcIdx >= 0 ? lcIdx : (lcLast >= 0 ? lcLast : n);
+      let j;
+      if (e.key === 'Escape') { if (lcIdx >= 0) { e.preventDefault(); lcMute = hoverI; lcHide(); } return; }
+      if (e.key === 'Home') j = 0;
+      else if (e.key === 'End') j = n;
+      else if (e.key === 'ArrowLeft') j = lcIdx < 0 ? base : Math.max(0, base - 1);   // 닫혀 있으면 첫 번은 보던 달을 다시 띄운다
+      else if (e.key === 'ArrowRight') j = lcIdx < 0 ? base : Math.min(n, base + 1);
+      else return;
+      e.preventDefault(); lcShow(j, 'key');
+    });
+    document.addEventListener('keydown', (e) => {   // 마우스로 띄운 말풍선도 Esc 로 닫는다(그래프에 포커스가 없어도). 마우스가 있는 달은 옮길 때까지 다시 안 연다
+      if (e.key !== 'Escape' || lcIdx < 0 || e.target === svg) return;
+      lcMute = hoverI; lcHide();
+    });
+    // 창 크기·회전 — 미끄러지지 않고 바로(말풍선·강조 함께). 그래프가 거의 안 보이면 바로 닫는다
+    window.addEventListener('resize', () => { if (lcIdx >= 0) { if (lcGone()) lcHideNow(); else lcPlace(lcIdx, { instant: true }); } }, { passive: true });
+    window.addEventListener('scroll', () => {   // 스크롤 — 세로 자리만 바로 맞춘다(가로는 그대로라 강조와 어긋나지 않음). 그래프가 거의 안 보이면 바로 닫는다
+      if (lcIdx < 0 || lcScrollRaf) return;
+      lcScrollRaf = requestAnimationFrame(() => { lcScrollRaf = 0; if (lcIdx < 0) return; if (lcGone()) lcHideNow(); else lcPlace(lcIdx, { keepW: true }); });
+    }, { passive: true });
+    window.addEventListener('hashchange', () => { lcLast = -1; if (lcIdx >= 0) lcHide(); });   // 다른 탭으로 가면 닫는다
+    let priv = document.body.classList.contains('privacy');   // 현장 모드를 켜고 끄면 낭독 줄도 맞춘다(금액이 남지 않게)
+    new MutationObserver(() => {
+      const pv = document.body.classList.contains('privacy'); if (pv === priv) return; priv = pv;
+      const sr = $('lc-sr'); if (sr && sr.textContent) set('lc-sr', lcIdx >= 0 ? lcSRText(lcIdx) : '');
+    }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  } catch (err) { console.warn('수입·지출 말풍선 준비 실패', err); }   // 말풍선이 안 돼도 대시보드는 그대로
+})();
 
 // ══ 이번달 지출 도넛 ══ — 상위 3개 분류 + 기타 + 미분류(따로 한 칸). 색은 순서 고정.
 const DN_COLORS = ['#4a86c8', '#e07b4f', '#9a63b0'];
