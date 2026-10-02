@@ -1619,12 +1619,13 @@ html.ovopen,html.ovopen body{overflow:hidden}
     <div class="grid2">
       <div class="card">
         <div class="ch"><div class="ct"><span class="cic" style="--c1:#a8d3a0;--c2:#7fb877" aria-hidden="true"><svg class="ic"><use href="#i-wallet"/></svg></span>수입 · 지출</div><div class="cs">최근 6개월 · 이체·충전 제외</div></div>
-        <svg class="linechart" id="lc" viewBox="0 0 640 210" style="width:100%;height:auto;display:block" role="img" aria-label="최근 6개월 수입과 지출">
+        <svg class="linechart" id="lc" viewBox="0 0 640 210" style="width:100%;height:auto;display:block" role="img" aria-label="최근 6개월 수입과 지출, 작년 같은 달 수입">
           <g class="skr"><rect x="60" y="46" width="540" height="10" rx="5"/><rect x="60" y="92" width="420" height="10" rx="5"/><rect x="60" y="138" width="480" height="10" rx="5"/></g><text x="330" y="100" text-anchor="middle" class="lcmsg sksvg">불러오는 중…</text>
         </svg>
         <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:var(--f-sub);font-weight:700;color:#6b7a67">
           <span style="display:flex;align-items:center;gap:6px"><i style="width:14px;height:3px;background:#4f9a6a;border-radius:2px;display:block"></i>수입</span>
           <span style="display:flex;align-items:center;gap:6px"><i style="width:14px;height:0;border-top:3px dashed #dda79d;display:block"></i>지출</span>
+          <span style="display:flex;align-items:center;gap:6px" id="lc-ly"><i style="width:15px;height:0;border-top:3px dotted #7fbf8c;display:block"></i>작년 수입</span>
           <span id="lc-note" style="margin-left:auto;color:var(--mute);font-weight:600"></span>
         </div>
       </div>
@@ -2483,7 +2484,11 @@ function paintLineChart(led) {
   });
   const vals = [];
   months.forEach((m) => { if (m.in != null) vals.push(m.in); if (m.out != null) vals.push(m.out); });
-  const max = vals.length ? Math.max(...vals) : 0;
+  // 작년 같은 달(12개월 전) 6개월 — 같은 계산(이체·충전 제외). 기록이 없는 달은 0 이 아니라 빈칸(null)
+  const lyMk = `${Number(mk.slice(0, 4)) - 1}${mk.slice(4)}`;
+  const prev = Array.isArray(led) ? D.ledgerMonthly(led, 6, lyMk) : null;
+  const prevVals = prev ? prev.filter((m) => m.in != null).map((m) => m.in) : [];
+  const max = vals.length ? Math.max(...vals, ...prevVals) : 0;
   let top = 1000000;
   if (max > 0) { const mag = Math.pow(10, Math.floor(Math.log10(max))); top = Math.ceil(max / mag * 2) / 2 * mag; }
   const Y = (v) => 176 - v / top * 156;
@@ -2494,6 +2499,14 @@ function paintLineChart(led) {
     h += `<g font-size="10" fill="#b3bdaf" font-family="Pretendard" class="mask"><text x="0" y="24">${esc(D.manwon(top))}</text><text x="0" y="102">${esc(D.manwon(top / 2))}</text><text x="10" y="180">0</text></g>`;
     // 끊긴 구간(그 달 내역 없음)은 선을 잇지 않는다
     const runs = (key) => { const out = []; let cur = []; months.forEach((m, i) => { if (m[key] != null) cur.push([X(i), Y(m[key]), m, i]); else if (cur.length) { out.push(cur); cur = []; } }); if (cur.length) out.push(cur); return out; };
+    // 작년 같은 달 수입 — 연한 초록 동그란 점선 + 속 빈 점(올해 선 뒤에 깔림)
+    if (prev) {
+      const pr = []; let cr = [];
+      prev.forEach((m, i) => { if (m.in != null) cr.push([X(i), Y(m.in)]); else if (cr.length) { pr.push(cr); cr = []; } });
+      if (cr.length) pr.push(cr);
+      pr.forEach((r) => { if (r.length > 1) h += `<polyline points="${r.map((p) => p[0] + ',' + p[1].toFixed(1)).join(' ')}" fill="none" stroke="#7fbf8c" stroke-width="2.4" stroke-dasharray="0.1 6" stroke-linecap="round" stroke-linejoin="round"/>`; });
+      prev.forEach((m, i) => { if (m.in != null) h += `<circle cx="${X(i)}" cy="${Y(m.in).toFixed(1)}" r="3.2" fill="#fff" stroke="#7fbf8c" stroke-width="1.8"><title>작년 ${m.month}월 수입 ${D.won(m.in)}</title></circle>`; });
+    }
     runs('in').forEach((r) => {
       if (r.length > 1) {
         h += `<path d="M${r[0][0]},${r[0][1].toFixed(1)} ${r.slice(1).map((p) => `L${p[0]},${p[1].toFixed(1)}`).join(' ')} L${r[r.length - 1][0]},176 L${r[0][0]},176 Z" fill="url(#inc)"/>`;
@@ -2508,7 +2521,7 @@ function paintLineChart(led) {
       if (m.out != null) h += `<circle cx="${X(i)}" cy="${Y(m.out).toFixed(1)}" r="${i === 5 ? 4.5 : 3.4}" fill="#dda79d" stroke="#fff" stroke-width="2"><title>${m.month}월 지출 ${D.won(m.out)}</title></circle>`;
       if (m.in == null) h += `<text x="${X(i)}" y="170" text-anchor="middle" font-size="11" fill="#c3cebf" font-weight="700">—</text>`;
       // 넓은 투명 칸 — 마우스를 올리면 그 달 값이 뜬다
-      h += `<rect x="${X(i) - 54}" y="14" width="108" height="168" fill="transparent"><title>${m.month}월 · ${m.in == null ? '내역 없음(가져오기 전일 수 있음)' : `수입 ${D.won(m.in)} · 지출 ${D.won(m.out)} · 거래 ${m.count}건`}</title></rect>`;
+      h += `<rect x="${X(i) - 54}" y="14" width="108" height="168" fill="transparent"><title>${m.month}월 · ${m.in == null ? '내역 없음(가져오기 전일 수 있음)' : `수입 ${D.won(m.in)} · 지출 ${D.won(m.out)} · 거래 ${m.count}건`}${prev ? ` · 작년 ${prev[i].month}월 수입 ${prev[i].in == null ? '기록 없음' : D.won(prev[i].in)}` : ''}</title></rect>`;
     });
   } else {
     const msg = led === undefined ? LOGIN : led === null ? '가계부를 불러오지 못했습니다' : '최근 6개월 가계부 내역이 없습니다';
@@ -2518,7 +2531,19 @@ function paintLineChart(led) {
      + months.map((m, i) => `<text x="${X(i)}" y="199">${m.month}월</text>`).join('') + '</g>';
   svg.innerHTML = h;
   const cur = months[5];
-  set('lc-note', Array.isArray(led) ? (cur.in == null ? `${cur.month}월 내역 없음` : `${cur.month}월 수입 ${D.manwon(cur.in)} · 지출 ${D.manwon(cur.out)}`) : '');
+  // 이번 달은 아직 진행 중 — 작년 한 달 전체가 아니라 작년 같은 기간(1일~오늘 날짜)의 수입과 비교한다
+  let yoy = '';
+  if (Array.isArray(led) && prev && cur.in != null) {
+    const lyMonth = prev[5].mk, cut = `${lyMonth}-${String(now.getDate()).padStart(2, '0')}`;
+    const lyList = led.filter((t) => t.date.slice(0, 7) === lyMonth);
+    if (lyList.length) {
+      const lyIn = lyList.filter((t) => t.date <= cut && t.type === 'in' && !D.isMove(t)).reduce((a, t) => a + (Number(t.amt) || 0), 0);
+      if (lyIn > 0) { const pct = Math.round((cur.in - lyIn) / lyIn * 100); yoy = ` · 작년 같은 기간보다 ${pct >= 0 ? '+' : ''}${pct}%`; }
+      else yoy = ' · 작년 같은 기간 수입 0원';
+    } else yoy = ' · 작년 같은 달 기록 없음';
+  }
+  set('lc-note', Array.isArray(led) ? (cur.in == null ? `${cur.month}월 내역 없음` : `${cur.month}월 수입 ${D.manwon(cur.in)} · 지출 ${D.manwon(cur.out)}${yoy}`) : '');
+  const lyLeg = $('lc-ly'); if (lyLeg) lyLeg.style.opacity = (prev && prevVals.length) || !Array.isArray(led) ? '' : '.45';   // 작년 기록이 하나도 없으면 범례만 흐리게
   const ln = $('lc-note'); if (ln) ln.classList.add('mask');
 }
 
