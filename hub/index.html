@@ -2,6 +2,11 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<script id="cc-default-home">
+/* 261003 명진: 대시보드가 기본 홈 — 이 타일 독바는 대시보드의 «타일 독바»를 골랐을 때만(주소 끝 ?dock).
+   그 밖의 길(즐겨찾기·다른 앱의 «← 허브»·홈 화면 아이콘·옛 주소)은 곧바로 대시보드로 — 방문 기록을 쌓지 않는다(replace) */
+(function(){try{if(!/[?&]dock(?:[=&]|$)/.test(location.search))location.replace('home/'+location.search+location.hash);}catch(e){}})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#f0f6ef">

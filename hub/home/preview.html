@@ -1441,7 +1441,7 @@ html.ovopen,html.ovopen body{overflow:hidden}
     </div>
     <button type="button" class="abtn" id="refreshBtn" title="다시 불러오기 — 읽기만 합니다(저장 없음)" aria-label="다시 불러오기"><svg class="ic" aria-hidden="true"><use href="#i-refresh"/></svg><span class="lbl-w">마지막 갱신</span><span class="upd" id="upd-t">--:--</span></button>
     <button type="button" class="abtn" id="privacyBtn" aria-pressed="false" title="현장 모드 — 돈·이름을 흐리게 가립니다" aria-label="현장 모드"><svg class="ic" aria-hidden="true"><use href="#i-eye-off"/></svg><span class="lbl">현장 모드</span></button>
-    <a class="abtn dock" href="../" title="타일 독바 — 새 탭으로 열림" aria-label="타일 독바 (새 탭)"><svg class="ic" aria-hidden="true"><use href="#i-dock"/></svg><span class="lbl">타일 독바</span><svg class="ic ext" aria-hidden="true"><use href="#i-ext"/></svg></a>
+    <a class="abtn dock" href="../?dock" title="타일 독바 — 새 탭으로 열림" aria-label="타일 독바 (새 탭)"><svg class="ic" aria-hidden="true"><use href="#i-dock"/></svg><span class="lbl">타일 독바</span><svg class="ic ext" aria-hidden="true"><use href="#i-ext"/></svg></a>
     <button type="button" class="abtn login out" id="loginChip" title="구글 계정으로 로그인" aria-label="구글 로그인"><svg class="ic" aria-hidden="true"><use href="#i-log-in"/></svg><span class="lbl"><span class="g">구글 </span>로그인</span></button>
     <div class="acctmenu" id="acctMenu" role="dialog" aria-label="계정" hidden>
       <div class="am-who" id="acctWho"></div>
@@ -2039,7 +2039,7 @@ html.ovopen,html.ovopen body{overflow:hidden}
     </div>
     </section>
 
-    <div class="foot" title="홈 v2.7.2 미리보기"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
+    <div class="foot" title="홈 v2.8 미리보기"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
 
   </main>
 </div>
@@ -3674,7 +3674,7 @@ D.onUser((u) => {
       box.appendChild(c);
     });
     var d = document.createElement('a');
-    d.className = 'nav dockrow'; d.href = '../'; d.title = window.__standalone ? '타일 독바로 돌아가기' : '타일 독바 — 새 탭으로 열림'; d.style.cssText = '--c1:#c9d6c3;--c2:#a3b69c';
+    d.className = 'nav dockrow'; d.href = '../?dock'; d.title = window.__standalone ? '타일 독바로 돌아가기' : '타일 독바 — 새 탭으로 열림'; d.style.cssText = '--c1:#c9d6c3;--c2:#a3b69c';
     d.innerHTML = '<span class="e"><svg class="ic" aria-hidden="true"><use href="#i-dock"/></svg></span><span class="nm">타일 독바</span>';
     box.appendChild(d);
   })();
@@ -4058,11 +4058,11 @@ D.onUser((u) => {
     var u; try { u = new URL(href, location.href); } catch (e) { return ''; }
     if (u.origin !== location.origin && u.origin !== 'https://maydly.github.io') return '';
     var p = u.pathname.replace(/index\.html$/, '');
-    if (/\/note\/hub\/$/.test(p)) return 'dock';
+    if (/\/note\/hub\/$/.test(p)) return /[?&]dock(?:[=&]|$)/.test(u.search) ? 'dock' : 'home';   // 261003: 그냥 허브 주소 = 기본 홈(이 대시보드), ?dock 일 때만 타일 독바
     if (/\/note\/hub\/home\/(preview\.html)?$/.test(p)) return 'home';
     return '';
   }
-  var dockUrl = function () { return new URL('../', location.href).href; };
+  var dockUrl = function () { return new URL('../?dock', location.href).href; };
   // ── 끼워 넣은 창(앱 창 · 크게 열기) 안 쪽이 뜰 때마다(첫 쪽뿐 아니라 안에서 다음 쪽으로 넘어가도):
   //    떠 있는 «← 허브» 숨김 + 앱 안 «← 허브» 링크(명진앱 머리 · 필름 · 점검표 · 떠 있는 버튼) 가로채기 — 창 안에 독바가 겹쳐 뜨지 않게.
   //    onHub(종류, 이미 넘어갔나) 가 할 일을 정한다. 저장 없음(끼운 쪽 화면에만 손댄다)
@@ -4086,7 +4086,8 @@ D.onUser((u) => {
     } catch (e) {}
     return false;
   }
-  // 앱 창: «← 허브» = 타일 독바로(홈 화면 앱은 같은 창 · 웹은 새 탭 — 왼쪽 목차 «타일 독바»와 같다). 홈 링크면 여기가 홈이라고만.
+  // 앱 창: 앱 안 «← 허브»(그냥 허브 주소)는 이제 이 홈을 뜻한다(261003 대시보드가 기본 홈) — 여기가 홈이라고만 알린다.
+  //        ?dock 링크만 타일 독바로(홈 화면 앱은 같은 창 · 웹은 새 탭 — 왼쪽 목차 «타일 독바»와 같다).
   //        창이 허브로 넘어가 버렸으면 원래 앱으로 되돌린다
   arr(document.querySelectorAll('#pane-apps iframe')).forEach(function (f) {
     var fr = f.parentNode;
