@@ -31,3 +31,4 @@
 - 메인: `https://maydly.github.io/note/`
 - AI 에이전트 운영 체계: `https://maydly.github.io/note/03_AI에이전트운영체계/`
 - 장비 비교자료: `https://maydly.github.io/note/07_장비비교자료/`
+- AI 가상오피스 안내서: `https://maydly.github.io/note/studies/ai-virtual-office-guide.html`
