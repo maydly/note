@@ -224,7 +224,9 @@
         <div id="vdwell"></div>
         <div class="vhint">글자 수는 <b>2026년 9월 21일</b> 시안 페이지 기준으로 잰 값이에요.
           페이지 글을 크게 고치면 다시 재야 맞습니다.
-          «다 읽으려면»은 <b>1분에 450자</b> 읽는다고 봤을 때입니다.</div></div>
+          «다 읽으려면»은 <b>1분에 450자</b> 읽는다고 봤을 때입니다.<br>
+          <b>10월 5일 오후</b>부터는 긴 대목(시안 방향 등) 윗부분을 읽는 시간도 그 대목에 제대로 잡혀요.
+          그 전 기록은 그 시간이 바로 위 짧은 대목에 붙어 있어서, «최근 7일» 보기는 <b>10월 12일쯤</b>부터 정확해져요.</div></div>
 
       <div class="panel"><h2>분량에 비해 가장 안 읽힌 곳</h2>
         <div class="vlead">지나가긴 했는데, <b>그 분량이면 당연히 더 걸렸어야 할 만큼</b>
@@ -248,7 +250,8 @@
         <div class="vlead">접힌 설명을 실제로 열어본 비율. 낮으면 아무도 안 읽고 있다는 뜻이에요.</div>
         <div id="vacc"></div></div>
       <div class="panel"><h2>문의까지 가는 길</h2>
-        <div class="vfunnel" id="vfunnel"></div><div class="vhint" id="vfunnelHint"></div></div>
+        <div class="vfunnel" id="vfunnel"></div><div class="vhint" id="vfunnelHint"></div>
+        <div class="vhint">«실제로 냄»은 <b>10월 5일 오후</b> 방문부터 기록돼요. 그 전 기록은 기록 코드 오류로 0이에요.</div></div>
       <div class="panel"><h2>어떻게 보나</h2><div id="vmisc"></div></div>
     </div>
 
@@ -817,9 +820,15 @@ function renderViews(){
   const typed = rows.filter(r=>['typed','submitted'].indexOf(r.form)>=0).length;
   vq('vfunnel').innerHTML = [['들어옴',n],['문의까지 내려옴',reach],['쓰기 시작',typed],['실제로 냄',done]]
     .map(([t,c])=>'<div class="vfn"><div class="n">'+c+'</div><div class="t">'+t+'</div><div class="p">'+vpct(c,n)+'%</div></div>').join('');
+  /* «실제로 냄»은 기록 코드 고친 뒤(2026-10-05 15:10, 옛 페이지 캐시 10분 감안)부터만 믿을 수 있다 —
+     그 전 기록으로 «못 끝냈다»를 계산하면 늘 100%로 틀리게 나온다 */
+  const V_FIX_SUBMIT = new Date('2026-10-05T15:10:00+09:00').getTime();
+  const fixed = rows.filter(r => { const t = r.ts && r.ts.toDate ? r.ts.toDate() : new Date(r.ts); return t.getTime() >= V_FIX_SUBMIT; });
+  const typedF = fixed.filter(r=>['typed','submitted'].indexOf(r.form)>=0).length;
+  const doneF  = fixed.filter(r=>r.form==='submitted').length;
   vq('vfunnelHint').innerHTML = (reach && typed < reach*0.4)
     ? '문의까지 내려온 사람 중 <b>'+vpct(reach-typed,reach)+'%가 쓰지 않고 떠났어요.</b> 폼이 부담스럽지 않은지 볼 만해요.'
-    : (typed && done < typed*0.6) ? '쓰기 시작한 사람 중 <b>'+vpct(typed-done,typed)+'%가 끝내지 못했어요.</b>' : '';
+    : (typedF >= 3 && doneF < typedF*0.6) ? '쓰기 시작한 사람 중 <b>'+vpct(typedF-doneF,typedF)+'%가 끝내지 못했어요.</b> (10월 5일 오후 이후 기록 기준)' : '';
 
   const long = rows.filter(r=>(r.dur||0)>=300).length, quick = rows.filter(r=>(r.dur||0)<30).length;
   vq('vmisc').innerHTML =
