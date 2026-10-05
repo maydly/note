@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- (261005 배포전검토2 C4-3) 화면 판 — 배포할 때마다 바꾼다. 아이폰 메뉴 「다시 불러오기」 줄과 배포 파일 확인에 쓴다(README 21-6c 9-③④) -->
+<meta name="mdo-hub-build" content="261005">
 <meta name="theme-color" content="#FAF8F3">
 <title>maydly 사무실</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -21,7 +23,7 @@
   - 대표 계정 = 전체, 열람 계정 = 열람 전용(조작 버튼 없음). 최종 방어선은 저장소 보안규칙(쓰기는 대표 계정만).
   - 이름·폴더명·규칙표 같은 글은 이 파일에 적지 않고, 로그인한 뒤 저장소에서 받아 그린다.
   - 연락처·금액은 사무실 PC 가 가려서 올린다(●●● · ●●●원). 모든 글은 HTML 로 해석하지 않고 글로만 넣는다(esc).
-  - 폰: 홈 화면에 추가한 앱에서 설정 → [폰 알림 받기] → 결재 요청·긴급만 알림(이름·장소·연락처·금액 없음).
+  - 폰: 홈 화면에 추가한 앱에서 설정 → [폰 알림 받기] → 결재 요청·긴급·개발 결정 요청만 알림(이름·장소·연락처·금액 없음 · 누르면 그 카드로).
   - 외부 요청: 구글 로그인·저장소 부품(gstatic firebasejs 10.12.0)만. 글꼴은 기기 기본, 아이콘은 이 파일 안의 SVG.
   - 보고 읽음 표시는 이 기기에만 저장(서버 변경 없음).
 -->
@@ -123,7 +125,7 @@ body:not(.office-on) .on-only,body:not(.office-off) .off-only,body:not(.office-s
 .av.s18,.av.s20,.av.s22{font-size:9px;letter-spacing:-.06em}
 .av.s24{font-size:10px}
 .av .ic{width:calc(var(--s)*.42);height:calc(var(--s)*.42)}
-.av-chief{--a:#B2DBA9;--b:#7FB877}.av-ops{--a:#EAD6A3;--b:#D0B97E}.av-insta{--a:#E3C1CD;--b:#C59DB0}.av-mag{--a:#DCC8E8;--b:#B79BD4}.av-docs{--a:#B2D2EA;--b:#80A9CF}.av-prog{--a:#B2D6D8;--b:#85B3B7}.av-qa{--a:#EFC6BE;--b:#DDA79D}
+.av-dev{--a:#E3EEF9;--b:#BFD6EE;color:#2C5A86}.av-chief{--a:#B2DBA9;--b:#7FB877}.av-ops{--a:#EAD6A3;--b:#D0B97E}.av-insta{--a:#E3C1CD;--b:#C59DB0}.av-mag{--a:#DCC8E8;--b:#B79BD4}.av-docs{--a:#B2D2EA;--b:#80A9CF}.av-prog{--a:#B2D6D8;--b:#85B3B7}.av-qa{--a:#EFC6BE;--b:#DDA79D}
 .av-me{--a:#D6ECDB;--b:#A9D1B3;font-size:calc(var(--s)*.4)}.av-sb{--a:#E2DCEB;--b:#C9BFD9;font-size:calc(var(--s)*.4)}.av-sys,.av-pgm{--a:#FBE8E5;--b:#EFC6BE;color:var(--red-ink)}
 .role-viewer .av-me{--a:#E2DCEB;--b:#C9BFD9}
 .av .pr{position:absolute;right:-1px;bottom:-1px;width:calc(var(--s)*.3);height:calc(var(--s)*.3);min-width:9px;min-height:9px;border-radius:50%;box-shadow:0 0 0 2.5px var(--surface)}
@@ -823,7 +825,7 @@ body[data-r="home"] .bnr-off{display:none!important}
 .menu li:first-child a{border-top:0}
 .menu .ic{color:var(--ink-3)}
 .menu .small{margin-left:auto;font-size:12px;color:var(--ink-3);font-weight:500}
-.toast{position:fixed;left:50%;top:calc(var(--sat) + 62px);z-index:80;transform:translate(-50%,-14px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:10px;padding:10px 15px 10px 10px;border-radius:16px;background:rgba(255,255,255,.98);box-shadow:0 14px 32px -12px rgba(29,37,32,.35),0 0 0 1px rgba(29,37,32,.06);font-size:13.5px;font-weight:650;color:var(--ink);width:max-content;max-width:calc(100% - 24px);line-height:1.45;transition:opacity .2s,transform .25s var(--ease)}
+.toast{position:fixed;left:50%;top:calc(var(--sat) + 62px + var(--vvt,0px));z-index:80;transform:translate(-50%,-14px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:10px;padding:10px 15px 10px 10px;border-radius:16px;background:rgba(255,255,255,.98);box-shadow:0 14px 32px -12px rgba(29,37,32,.35),0 0 0 1px rgba(29,37,32,.06);font-size:13.5px;font-weight:650;color:var(--ink);width:max-content;max-width:calc(100% - 24px);line-height:1.45;transition:opacity .2s,transform .25s var(--ease)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .toast .ti{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;flex:0 0 28px}
 .toast .ti .ic{width:16px;height:16px;stroke-width:2.3}
@@ -930,14 +932,233 @@ body[data-r="home"] .bnr-off{display:none!important}
 .ogrid>*,.ordgrid>*,.setgrid>*,.hgrid>*,.hcols>*{min-width:0}
 .bootfail{position:relative;z-index:41;margin:10px 14px}
 
+/* ───── 톡 (1-10 메신저형 보고·지시 — 목업 v1.2 · 클래스는 tk- · 토큰은 .tk 안에만) ───── */
+.tk{--tk-canvas:#ECE7DC;--tk-me:#367C52;--tk-card-w:min(250px,calc(100vw - 88px))}
+.tk-list{min-width:0}
+.tk-head{display:flex;align-items:center;gap:10px;margin:8px 2px 10px;min-width:0}
+.tk-head h1{font-size:26px;font-weight:800;letter-spacing:-.6px;flex:1;min-width:0}
+.tk-pw,.live{max-width:100%;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.tk-pw{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:15px;background:var(--g-100);color:var(--g-700);font:700 12.5px/1 var(--f);white-space:nowrap;flex:0 1 auto}
+.tk-pw.off{background:var(--gray-bg);color:var(--gray-ink)}.tk-pw.stop{background:var(--red-bg);color:var(--red-ink)}.tk-pw.warn{background:var(--amber-bg);color:var(--amber-ink)}
+.tk-band{display:flex;align-items:center;gap:6px 10px;flex-wrap:wrap;padding:8px 12px;border-radius:12px;font-size:12.5px;line-height:1.45;background:var(--sunken);color:var(--ink-2)}
+.tk-band>span{flex:1 1 180px;min-width:0}
+.tk-band.stop{background:var(--red-bg);color:var(--red-ink)}.tk-band.warn{background:var(--amber-bg);color:var(--amber-ink)}
+.tk-band .btn{min-height:30px;padding:0 11px;font-size:12.5px;border-radius:9px}
+.tk-list>.tk-band{margin:0 0 10px}
+.tk-search{display:flex;align-items:center;gap:8px;height:38px;border-radius:12px;background:var(--sunken);padding:0 12px;margin:0 0 4px;color:var(--ink-4)}
+.tk-search .ic{width:16px;height:16px}
+.tk-search input{flex:1;min-width:0;border:0;background:none;font-size:14px;outline:0;color:var(--ink)}
+.tk-search input::placeholder{color:var(--ink-4)}
+.tk-sec{font-size:12px;font-weight:700;color:var(--ink-3);padding:12px 4px 6px}
+.tk-rooms{background:var(--surface);border-radius:var(--r4);box-shadow:var(--sh1);overflow:hidden}
+.tk-rm{display:flex;align-items:center;gap:12px;padding:10px 14px;color:var(--ink);position:relative;min-width:0}
+.tk-rm+.tk-rm::before{content:"";position:absolute;top:0;left:70px;right:14px;height:1px;background:var(--line)}
+.tk-rm.pin{background:var(--g-50)}
+.tk-rm.on{box-shadow:inset 3px 0 0 var(--g-500);background:var(--g-50)}
+.tk-rm .t{flex:1;min-width:0}
+.tk-rm .t b{display:flex;align-items:center;gap:5px;font-size:15px;letter-spacing:-.2px;min-width:0}
+.tk-rm .t b span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tk-rm .t b small{font-size:12px;color:var(--ink-4);font-weight:600;white-space:nowrap;flex:0 0 auto}
+.tk-rm .t p{margin:1px 0 0;font-size:13px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tk-rm .r{display:flex;flex-direction:column;align-items:flex-end;gap:5px;font:500 11.5px/1 var(--fn);color:var(--ink-4);white-space:nowrap;flex:0 0 auto}
+.tk-ub{min-width:19px;height:19px;border-radius:10px;background:var(--red);color:#fff;font:700 11px/19px var(--fn);text-align:center;padding:0 5px}
+.tk-ub.dot{min-width:9px;width:9px;height:9px;padding:0;border-radius:50%}
+.tk-tag{display:inline-block;font-size:10.5px;font-weight:750;color:var(--g-700);background:var(--g-100);border-radius:5px;padding:0 5px;margin-right:4px;vertical-align:1px}
+.tk-tag.ap{color:var(--amber-ink);background:var(--amber-bg)}.tk-tag.q{color:var(--blue-ink);background:var(--blue-bg)}.tk-tag.ch{color:var(--red-ink);background:var(--red-bg)}
+.tk .av,.tk-av{border-radius:40%}
+.tk-avr{--a:#E2F1E6;--b:#BFE0C9;color:var(--g-700)}
+.tk-avr .clvi{width:58%;height:58%;color:var(--g-600)}
+.tk-room,.tk-doc,.tk-empty{display:none}
+.tk-rh{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:calc(8px + var(--sat)) calc(12px + var(--sar)) 10px calc(8px + var(--sal));background:var(--surface);box-shadow:0 1px 0 var(--line);min-width:0;position:relative;z-index:2}
+.tk-rh .bk{width:36px;height:36px;display:grid;place-items:center;color:var(--ink-2);flex:0 0 36px;border-radius:18px}
+.tk-rh .bk .ic{width:22px;height:22px}
+.tk-rh h2{font-size:17px;font-weight:800;letter-spacing:-.4px;line-height:1.25;min-width:0;flex:1}
+.tk-rh h2 small{display:block;font-size:12px;color:var(--ink-3);font-weight:500;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tk-rh .ib{box-shadow:none;background:var(--sunken)}
+.tk-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;background:var(--tk-canvas);padding:10px calc(10px + var(--sar)) 12px calc(10px + var(--sal))} /* (261005 IOS-08) 가로 화면 노치·둥근 모서리 안전 여백 */
+.tk-msgs{margin-top:auto;display:flex;flex-direction:column;gap:8px;min-width:0}
+.tk-more{align-self:center;font-size:11.5px;color:var(--ink-3);padding:2px 10px}
+.tk-day{align-self:center;font-size:11.5px;color:var(--ink-3);background:rgba(255,255,255,.6);border-radius:10px;padding:2px 10px;margin:2px 0}
+.tk-sys{align-self:center;max-width:92%;text-align:center;font-size:12px;color:var(--ink-2);background:rgba(29,37,32,.06);border-radius:10px;padding:4px 10px;line-height:1.45;overflow-wrap:anywhere}
+.tk-sys.r{color:var(--red-ink);background:var(--red-bg);font-weight:700}
+.tk-sys a{color:var(--g-700);font-weight:700}
+.tk-sys a.w{color:inherit;font-weight:inherit}
+.tk-m{display:flex;gap:8px;align-items:flex-start;min-width:0}
+.tk-m>.av{--s:36px;font-size:11px}
+.tk-m>.av.ghost{visibility:hidden}
+.tk-w{display:flex;flex-direction:column;gap:3px;max-width:78%;min-width:0}
+.tk-m.cdm .tk-w{max-width:none}
+.tk-nm{font-size:12px;color:var(--ink-2);font-weight:650}
+.tk-row{display:flex;align-items:flex-end;gap:3px 5px;flex-wrap:nowrap;min-width:0}
+.tk-m.cdm .tk-row{flex-wrap:wrap}
+.tk-bub{background:#fff;border-radius:4px 16px 16px 16px;padding:8px 11px;font-size:14px;line-height:1.5;box-shadow:0 1px 1px rgba(29,37,32,.06);white-space:pre-wrap;overflow-wrap:anywhere;min-width:0;max-width:100%;flex:0 1 auto;text-align:left}
+.tk-tm{font:500 10.5px/1.25 var(--fn);color:var(--ink-3);white-space:nowrap;display:flex;flex-direction:column;align-items:flex-end}
+.tk-rd{color:var(--amber);font-weight:800;font-size:11px}
+.tk-mini{font-size:11px;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:2px 8px;justify-content:flex-end}
+.tk-mini .mm{color:var(--g-700);font-weight:700}
+.tk-me{justify-content:flex-end}
+.tk-me .tk-row{flex-direction:row-reverse}
+.tk-me .tk-bub{background:var(--tk-me);color:#fff;border-radius:16px 4px 16px 16px}
+.tk-me .tk-w{align-items:flex-end}
+.tk-me .tk-bub .mask .mk{color:#fff}
+.tk-rq{display:block;font-size:12px;line-height:1.4;opacity:.9;border-left:2px solid rgba(255,255,255,.65);padding-left:7px;margin-bottom:4px;white-space:normal}
+.tk-me.out .tk-bub{background:var(--g-200);color:var(--g-900)}
+.tk-me.out .tk-rq{border-left-color:var(--g-500)}
+.tk-me.out-c .tk-bub{background:var(--amber-bg);color:var(--amber-ink);box-shadow:inset 0 0 0 1.5px #EFD39A}
+.tk-me.out-f .tk-bub{background:var(--red-bg);color:var(--red-ink)}
+.tk-oact{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.tk-oact button{font-size:12px;font-weight:750;border-radius:10px;padding:4px 11px;min-height:30px;background:#fff;color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line-2)}
+.tk-oact button.pr{background:var(--g-600);color:#fff;box-shadow:none}
+.tk-oinfo{font-size:11px;color:var(--ink-3);display:flex;align-items:center;gap:4px;justify-content:flex-end}
+.tk-oinfo .ic{width:12px;height:12px}
+.tk-cd{background:#fff;border-radius:4px 16px 16px 16px;overflow:hidden;box-shadow:0 1px 1px rgba(29,37,32,.06);width:var(--tk-card-w);flex:0 0 auto;min-width:0}
+.tk-hd{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;padding:7px 11px;background:var(--g-100);color:var(--g-700);min-width:0}
+.tk-hd small{font-weight:650;opacity:.85;margin-left:auto;font-size:11px;white-space:nowrap}
+.tk-cd.k-ap .tk-hd,.tk-cd.t-amber .tk-hd{background:var(--amber-bg);color:var(--amber-ink)}
+.tk-cd.k-q .tk-hd,.tk-cd.t-blue .tk-hd{background:var(--blue-bg);color:var(--blue-ink)}
+.tk-cd.t-red .tk-hd{background:var(--red-bg);color:var(--red-ink)}
+.tk-cd.t-green .tk-hd{background:var(--g-100);color:var(--g-700)}
+.tk-bd{padding:9px 11px 10px;min-width:0}
+.tk-bd b.tt{display:block;font-size:14px;line-height:1.4;letter-spacing:-.2px;overflow-wrap:anywhere}
+.tk-bd p{margin:5px 0 0;font-size:12.5px;color:var(--ink-2);line-height:1.5;overflow-wrap:anywhere}
+.tk-meta{font-size:11px;color:var(--ink-3);margin-top:6px;overflow-wrap:anywhere}
+.tk-meta .af{color:var(--amber-ink);font-weight:700}
+.tk-ops{margin-top:7px;display:flex;flex-direction:column;gap:5px}
+.tk-op{font-size:12.5px;border:1px solid var(--line-2);border-radius:9px;padding:6px 8px;text-align:left;width:100%;display:flex;gap:6px;align-items:flex-start;color:var(--ink);background:#fff;line-height:1.4;overflow-wrap:anywhere}
+.tk-op>span{flex:1;min-width:0}
+.tk-op.on{border-color:var(--g-500);background:var(--g-50);font-weight:700}
+.tk-op i{font-style:normal;font-size:10.5px;font-weight:800;color:#fff;background:var(--g-600);border-radius:5px;padding:0 5px;flex:0 0 auto;margin-top:1px}
+.tk-ft{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);border-top:1px solid var(--line)}
+.tk-ft.ap{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) minmax(0,1fr)}
+.tk-ft>button,.tk-ft>a{min-height:42px;padding:6px 4px;font-size:13px;font-weight:750;color:var(--g-700);text-align:center;line-height:1.25;display:flex;align-items:center;justify-content:center;overflow-wrap:anywhere;min-width:0}
+.tk-ft>*+*{border-left:1px solid var(--line)}
+.tk-ft .no{color:var(--ink-3)}
+.tk-st{border-top:1px solid var(--line);padding:8px 11px;font-size:12.5px;font-weight:700;color:var(--ink-3);line-height:1.4;overflow-wrap:anywhere}
+.tk-its{margin-top:6px;display:flex;flex-direction:column;gap:5px}
+.tk-it{display:flex;align-items:center;gap:6px;font-size:12.5px;line-height:1.4;border-top:1px dashed var(--line-2);padding-top:5px;min-width:0}
+.tk-it>span{flex:1;min-width:0;overflow-wrap:anywhere}
+.tk-it>button{flex:0 0 auto;font-size:12px;font-weight:750;color:#fff;background:var(--g-600);border-radius:9px;padding:3px 10px;min-height:28px}
+.tk-it>em{flex:0 0 auto;font-style:normal;font-size:11px;color:var(--ink-3);max-width:45%;text-align:right}
+.tk-qr{display:flex;flex-wrap:wrap;gap:8px;padding:0 0 0 44px;min-width:0}
+.tk-qr button{font-size:12.5px;font-weight:700;color:var(--g-700);background:#fff;border:1px solid var(--g-200);border-radius:18px;padding:6px 12px;min-height:40px;max-width:100%;overflow-wrap:anywhere;text-align:center}
+.tk-qr button small{display:block;font-size:10px;color:var(--red-ink);font-weight:750}
+.tk-qr .tk-qsent{font-size:12px;font-style:normal;font-weight:700;color:var(--ink-3);padding:6px 2px}
+.tk-qr button .tk-rc{display:inline-block;margin-left:4px;font-size:10px;font-weight:800;color:#fff;background:var(--g-600,#3F7D4E);border-radius:999px;padding:0 6px;vertical-align:1px}
+.tk-hl{animation:tkhl 2.4s ease-out}
+@keyframes tkhl{0%,45%{box-shadow:0 0 0 3px var(--amber)}100%{box-shadow:0 0 0 0 rgba(194,126,20,0)}}
+.tk-sb{flex:0 0 auto;padding:6px calc(10px + var(--sar)) 0 calc(10px + var(--sal));background:#fff}
+.tk-sb:empty{display:none}
+.tk-inp{flex:0 0 auto;background:#fff;border-top:1px solid var(--line);padding:8px calc(10px + var(--sar)) calc(10px + var(--sab)) calc(10px + var(--sal))}
+.tk-sb+.tk-inp{border-top:0}
+.tk-chips{display:flex;gap:6px;margin-bottom:7px;flex-wrap:wrap;min-width:0}
+.tk-chips:empty{display:none}
+.tk-chips button{font-size:12px;font-weight:700;color:var(--ink-2);background:var(--sunken);border-radius:12px;padding:4px 10px;min-height:28px;max-width:100%;overflow-wrap:anywhere;text-align:left}
+.tk-chips button.on{background:var(--g-100);color:var(--g-700)}
+.tk-chips button.on.urg{background:var(--red-bg);color:var(--red-ink)}
+.tk-qb{display:flex;align-items:center;gap:8px;background:var(--g-50);border-left:3px solid var(--g-500);border-radius:0 10px 10px 0;padding:5px 6px 5px 9px;font-size:12.5px;margin-bottom:7px;min-width:0}
+.tk-qb:empty{display:none}
+.tk-qb span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink-2)}
+.tk-qb span b{color:var(--g-700)}
+.tk-qb button{width:28px;height:28px;flex:0 0 28px;border-radius:14px;display:grid;place-items:center;color:var(--ink-3)}
+.tk-qb button .ic{width:15px;height:15px}
+.tk-dest{display:flex;justify-content:flex-end;margin-bottom:6px;min-width:0}
+.tk-dest:empty{display:none}
+.tk-dest button,.tk-dest span{font-size:11.5px;font-weight:700;color:var(--g-700);background:var(--g-50);border-radius:10px;padding:3px 9px;max-width:100%;overflow-wrap:anywhere;text-align:right;min-height:24px}
+.tk-ib{display:flex;align-items:flex-end;gap:8px;min-width:0}
+.tk-ib textarea{flex:1;min-width:0;min-height:40px;max-height:132px;border-radius:20px;background:var(--sunken);border:0;padding:9px 14px;font-size:15px;line-height:1.45;resize:none;outline:0;color:var(--ink)}
+.tk-ib textarea::placeholder{color:var(--ink-4);font-size:13.5px}
+.tk-ib textarea.ph2:placeholder-shown{min-height:62px}
+@media(max-width:384px){.tk-ib textarea:placeholder-shown{min-height:62px}}
+.tk-ib textarea:focus{box-shadow:inset 0 0 0 1.5px var(--g-500)}
+.tk-send{width:40px;height:40px;border-radius:50%;background:var(--g-600);color:#fff;display:grid;place-items:center;flex:0 0 40px}
+.tk-send .ic{width:19px;height:19px}
+.tk-ro{flex:0 0 auto;background:var(--sunken);padding:10px 14px calc(10px + var(--sab));font-size:12.5px;color:var(--ink-3);text-align:center;border-top:1px solid var(--line)}
+.tk-dh{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:calc(8px + var(--sat)) calc(12px + var(--sar)) 10px calc(8px + var(--sal));background:var(--surface);box-shadow:0 1px 0 var(--line)}
+.tk-dh h2{font-size:16px;font-weight:800;line-height:1.25;flex:1;min-width:0}
+.tk-dh h2 small{display:block;font-size:12px;color:var(--ink-3);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tk-dh .bk{width:36px;height:36px;display:grid;place-items:center;color:var(--ink-2);flex:0 0 36px}
+.tk-dh .bk .ic{width:22px;height:22px}
+.tk-down{width:38px;height:38px;border-radius:19px;display:grid;place-items:center;color:var(--ink-2);background:var(--sunken);flex:0 0 38px}
+.tk-down .ic{width:18px;height:18px}
+.tk-own{flex:0 0 auto;padding:7px 14px;font-size:12px;color:var(--amber-ink);background:var(--amber-bg);overflow-wrap:anywhere}
+.tk-note{flex:0 0 auto;padding:6px 14px;font-size:11.5px;color:var(--ink-3);background:var(--sunken)}
+.tk-frame{flex:1;min-height:0;display:flex;background:#fff;padding:0 var(--sar) 0 var(--sal)}
+.tk-frame iframe{flex:1;width:100%;min-height:0;border:0;display:block;background:#fff}
+.tk-frame .rempty{margin:16px;flex:1;align-self:flex-start}
+.tk-dact{flex:0 0 auto;display:flex;gap:8px;padding:10px calc(12px + var(--sar)) calc(12px + var(--sab)) calc(12px + var(--sal));background:var(--paper);box-shadow:0 -1px 0 var(--line)}
+.tk-dact:empty{display:none}
+.tk-dact>*{flex:1;min-width:0;text-align:center;font-size:14px;font-weight:750;border-radius:13px;min-height:46px;display:flex;align-items:center;justify-content:center;background:#fff;color:var(--ink-2);box-shadow:0 0 0 1px var(--line-2)}
+.tk-dact>.pr{background:var(--g-600);color:#fff;box-shadow:none}
+.tk-sum{margin-top:8px;font-size:13px;color:var(--ink-2);line-height:1.55}
+.tk-quote{font-size:13px;color:var(--ink-2);background:var(--sunken);border-radius:10px;padding:8px 10px;margin-top:4px;overflow-wrap:anywhere;white-space:pre-wrap}
+/* 근무·대기 창 */
+.tk-ps{display:flex;gap:10px;align-items:flex-start;border-radius:14px;padding:11px 12px;background:var(--g-50);margin-top:8px}
+.tk-ps>.dt{margin-top:6px;width:10px;height:10px;flex-basis:10px}
+.tk-ps>div{flex:1;min-width:0}
+.tk-ps b.big{display:block;font-size:15px;font-weight:800;color:var(--g-700)}
+.tk-ps p{margin:2px 0 0;font-size:12.5px;color:var(--ink-3);line-height:1.5;overflow-wrap:anywhere}
+.tk-ps.off{background:var(--sunken)}.tk-ps.off b.big{color:var(--ink-2)}
+.tk-ps.stop{background:var(--red-bg)}.tk-ps.stop b.big{color:var(--red-ink)}
+.tk-ps.warn{background:var(--amber-bg)}.tk-ps.warn b.big{color:var(--amber-ink)}
+.tk-ps .btn{margin-top:8px}
+.tk-swr{margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line-2);border-radius:14px;padding:11px 12px}
+.tk-swr>div{flex:1;min-width:0}
+.tk-swr b{font-size:14.5px}
+.tk-swr small{display:block;font-size:12px;color:var(--ink-3);font-weight:500;margin-top:1px}
+.tk-swr.dim{opacity:.6}
+.tk-what{font-size:12.5px;color:var(--ink-2);margin:10px 2px 0;line-height:1.55;padding-left:16px;list-style:disc}
+.tk-what li{margin:3px 0}
+.tk-pcoff{margin-top:12px;background:var(--sunken);border-radius:14px;padding:10px 12px;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.tk-pcoff b{color:var(--ink)}
+.tk-pend{margin-top:8px;font-size:12px;color:var(--amber-ink);display:flex;align-items:center;gap:6px}
+@media(max-width:1023px){
+  body.tk-in .top,body.tk-in .tabbar,body.tk-in #banners,body.tk-in .tk-list,body.tk-in .clv{display:none!important}
+  body.tk-in{overflow:hidden}
+  body.tk-in .tk-room{display:flex;position:fixed;inset:0;z-index:45;flex-direction:column;background:var(--tk-canvas)}
+  body.tk-doc-in .tk-doc{display:flex;position:fixed;inset:0;z-index:46;flex-direction:column;background:var(--paper)}
+  body.talk-route #topPill{display:none}
+  body.talk-route #banners{display:none}
+}
+@media(min-width:1024px){
+  body.talk-route .top,body.talk-route #banners{display:none}
+  body.talk-route .view{overflow:hidden;padding:0}
+  body.talk-route section[data-route="talk"].on{height:100%}
+  .tk{display:grid;grid-template-columns:320px minmax(0,1fr);height:100%;min-height:0}
+  .tk.has-doc{grid-template-columns:300px minmax(340px,1fr) minmax(0,1.1fr)}
+  .tk-list{overflow-y:auto;padding:12px 14px 24px;box-shadow:inset -1px 0 0 var(--line);min-height:0}
+  .tk-room,.tk-empty{display:flex;flex-direction:column;min-height:0;background:var(--tk-canvas)}
+  .tk-room[hidden]{display:none}
+  .tk-empty{align-items:center;justify-content:center;text-align:center;color:var(--ink-3);font-size:13.5px;padding:24px;line-height:1.6}
+  .tk-empty .clvi{width:46px;height:46px;color:var(--g-500);opacity:.5;margin-bottom:8px}
+  .tk-doc{display:flex;flex-direction:column;min-height:0;box-shadow:inset 1px 0 0 var(--line);background:var(--paper)}
+  .tk-doc[hidden]{display:none}
+  .tk-rh,.tk-dh{padding-top:10px}
+  .tk-rh .bk.m{display:none}
+}
+
+/* (261004 배포전검토1 IOS-04·07) 톡 버튼 눌림 표시 + 보이는 크기는 그대로 두고 누르는 영역만 44px 로 넓힘(홈 화면 앱은 뒤로 손짓이 없어 뒤로 버튼이 유일한 길) */
+.tk-qr button:active,.tk-ft button:active,.tk-ft a:active,.tk-op:active,.tk-send:active,.tk-rh .bk:active,.tk-qb button:active,.tk-dest button:active{filter:brightness(.9);transform:scale(.97)}
+.tk-rh .bk,.tk-send,.tk-qb button,.tk-dest button{position:relative}
+.tk-rh .bk::after{content:'';position:absolute;inset:-4px}
+.tk-send::after{content:'';position:absolute;inset:-2px}
+.tk-qb button::after{content:'';position:absolute;inset:-8px}
+.tk-dest button::after{content:'';position:absolute;inset:-10px 0}
+/* (IOS-05) 키보드가 떠 있는 동안은 홈 막대 여백(--sab)이 키보드 위에 빈 띠로 남지 않게 */
+html.kb .tk-inp{padding-bottom:10px}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
 /* 260930 아이폰: 입력 글씨 16px 미만이면 누를 때 화면이 확대됨 → 모바일 화면(1023px 이하)·터치 기기에서만 16px. 데스크톱 모양 그대로 */
+/*  (261004 배포전검토1 M1) 9/30 라이브에 직접 넣은 수정(maydly/note 03919ac)을 코드 원본으로 옮기고, 1-10 톡 입력칸(.tk-ib textarea · .tk-search input)과
+    그 밖 입력·선택칸 전부로 넓혔다. 톡 칸 규칙보다 뒤에 두어야 이긴다(그래서 스타일 맨 끝 — 톡 CSS 묶음 밖이라 tk- 접두어 검사 대상 아님). maximum-scale 은 쓰지 않는다(손가락 확대는 그대로). */
 @media (max-width:1023px),(pointer:coarse){
   .inp,.dirs .inp,.memo input{font-size:16px}
   .dirs .inp::placeholder{font-size:14px} /* 좁은 두 칸(어느 기기에서→어느 기기로) 안내글은 원래 크기로 — 16px면 「(예: 맥)」이 잘림. 입력 글씨는 16px */
+  .tk-ib textarea,.tk-search input,select,textarea,input:not([type]),input[type=text],input[type=search],input[type=email],input[type=number],input[type=tel],input[type=url],input[type=password],input[type=date],input[type=time]{font-size:16px}
+  .tk-ib textarea::placeholder{font-size:13.5px}
+  .tk-search input::placeholder{font-size:14px}
 }
+
 </style>
 </head>
 <body data-r="login" class="route-login">
@@ -996,10 +1217,12 @@ body[data-r="home"] .bnr-off{display:none!important}
 <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5z"/></symbol>
 <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.8v2M12 19.2v2M2.8 12h2M19.2 12h2M5.5 5.5l1.4 1.4M17.1 17.1l1.4 1.4M5.5 18.5l1.4-1.4M17.1 6.9l1.4-1.4"/></symbol>
 <symbol id="i-pin" viewBox="0 0 24 24"><path d="M9 3.5h6l-1 5 3.5 3.5v2h-11v-2L10 8.5z"/><path d="M12 14v6.5"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M12 4.5c4.7 0 8.5 3 8.5 6.8s-3.8 6.8-8.5 6.8c-1 0-2-.1-2.9-.4L5 19.5l1.1-3.4c-1.6-1.2-2.6-2.9-2.6-4.8 0-3.8 3.8-6.8 8.5-6.8z"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24"><path d="M12 3.5v11"/><path d="m7.5 8 4.5-4.5L16.5 8"/><path d="M5.5 12.5v6a1.5 1.5 0 0 0 1.5 1.5h10a1.5 1.5 0 0 0 1.5-1.5v-6"/></symbol>
 <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><circle cx="18.5" cy="12" r="1.4" fill="currentColor"/></symbol>
 </defs></svg>
 
-<p class="note bootfail" id="bootFail" hidden>화면을 불러오지 못했습니다 — 인터넷 연결을 확인하고 새로고침해 주세요.</p>
+<p class="note bootfail" id="bootFail" hidden>화면을 불러오지 못했습니다 — 인터넷 연결을 확인하고 다시 불러와 주세요. <button type="button" class="btn btn-q btn-sm" onclick="location.reload()" style="margin-top:6px">다시 불러오기</button></p>
 
 <!-- 여백 클로버 (배경 도배 없음 · 은은하게) -->
 <div class="clv c1" aria-hidden="true"><svg class="clvi"><use href="#clover"/></svg></div>
@@ -1014,8 +1237,9 @@ body[data-r="home"] .bnr-off{display:none!important}
     <a class="bm" href="#home"><svg class="clvi"><use href="#clover"/></svg>maydly<i>.</i><small>사무실</small></a>
     <div class="sofc" id="sideOffice"></div>
     <nav class="nav" aria-label="메뉴">
-      <a href="#home" data-nav="home"><svg class="ic"><use href="#i-home"/></svg>홈</a>
-      <a href="#office" data-nav="office"><svg class="ic"><use href="#i-team"/></svg>사무실</a>
+      <a href="#talk" data-nav="talk"><svg class="ic"><use href="#i-chat"/></svg>톡<span class="c r" data-cnt="talk" hidden></span></a>
+      <a href="#home" data-nav="home"><svg class="ic"><use href="#i-home"/></svg>현황판</a>
+      <a href="#office" data-nav="office"><svg class="ic"><use href="#i-team"/></svg>평면도</a>
       <a href="#approvals" data-nav="approvals"><svg class="ic"><use href="#i-stamp"/></svg>결재함<span class="c r own" data-cnt="apr" hidden></span></a>
       <a href="#reports" data-nav="reports"><svg class="ic"><use href="#i-inbox"/></svg>보고함<span class="c r own" data-cnt="rep" hidden></span></a>
       <a href="#ledger" data-nav="ledger" data-navtab="main"><svg class="ic"><use href="#i-board"/></svg>일감 대장<span class="c" data-cnt="led"></span></a>
@@ -1077,6 +1301,21 @@ body[data-r="home"] .bnr-off{display:none!important}
             <div class="cd" style="margin-top:16px;padding:6px 0"><div class="qi"><span class="sk" style="width:38px;height:38px;border-radius:12px;flex:0 0 38px"></span><span class="qb"><span class="sk" style="height:10px;width:40%"></span><span class="sk" style="height:13px;width:85%;margin-top:4px"></span></span></div><div class="qi"><span class="sk" style="width:38px;height:38px;border-radius:12px;flex:0 0 38px"></span><span class="qb"><span class="sk" style="height:10px;width:32%"></span><span class="sk" style="height:13px;width:75%;margin-top:4px"></span></span></div></div>
             <div class="row" style="justify-content:center;margin-top:18px"><span class="spin"></span><span class="s13 mut" id="loadSkelMsg">사무실 자료를 받는 중…</span></div>
           </div>
+        </div>
+      </section>
+
+      <!-- ═════ 톡 (1-10 — 첫 화면) · 단톡방에서 지시 · 1:1방으로 보고 ═════ -->
+      <section data-route="talk" aria-label="톡">
+        <div class="tk" id="tk">
+          <div class="tk-list" id="tkList">
+            <div class="tk-head"><h1>톡</h1><span id="tkPill"></span></div>
+            <div id="tkListBand"></div>
+            <label class="tk-search"><svg class="ic"><use href="#i-review"/></svg><input id="tkSearch" data-keep="tk-search" maxlength="40" placeholder="방 이름·최근 글 찾기" aria-label="방 이름·최근 글 찾기" autocomplete="off"></label>
+            <div id="tkRooms"></div>
+          </div>
+          <div class="tk-room" id="tkRoom" hidden></div>
+          <div class="tk-empty only-d" id="tkEmpty"><svg class="clvi" aria-hidden="true"><use href="#clover"/></svg><p>왼쪽에서 방을 고르세요.<br>단톡방에서 지시하고, 직원 1:1방에서 보고를 받습니다.</p></div>
+          <div class="tk-doc" id="tkDoc" hidden></div>
         </div>
       </section>
 
@@ -1164,7 +1403,7 @@ body[data-r="home"] .bnr-off{display:none!important}
           <div class="pane-l">
             <div class="pghead">
               <div class="row nw" style="align-items:flex-end"><h1 class="lt">보고함</h1><button type="button" class="btn btn-s btn-sm ml" data-mark-read>모두 읽음</button></div>
-              <p class="lts" id="repLede">보고는 모아서 하루 두 번(12:00 브리핑 · 00:00 업무일지) + 월요일 주간보고. 폰은 결재·긴급만 울립니다.</p>
+              <p class="lts" id="repLede">보고는 모아서 하루 두 번(12:00 브리핑 · 00:00 업무일지) + 월요일 주간보고. 폰은 결재·긴급·개발 결정 요청만 울립니다.</p>
             </div>
             <div class="chips" role="group" aria-label="보고 종류" id="repChips"></div>
             <div id="repPin"></div>
@@ -1311,7 +1550,7 @@ body[data-r="home"] .bnr-off{display:none!important}
           <div>
             <div class="cd prof" id="setProfile"><span class="av av-me s52" data-ui="meAvatar"></span><div><b data-ui="meLabel"></b><span id="setDevice"></span></div><button type="button" class="btn btn-q btn-sm" data-logout><svg class="ic"><use href="#i-logout"/></svg>로그아웃</button></div>
             <div class="own">
-              <p class="gt2"><svg class="ic"><use href="#i-bell"/></svg>이 기기 폰 알림 · 결재·긴급만</p>
+              <p class="gt2"><svg class="ic"><use href="#i-bell"/></svg>이 기기 폰 알림 · 결재·긴급·개발 결정 요청만</p>
               <div id="setPush"></div>
             </div>
             <p class="gt2"><svg class="ic"><use href="#i-lock"/></svg>사무실 — 사무실 PC에서 바꿉니다</p>
@@ -1331,14 +1570,13 @@ body[data-r="home"] .bnr-off{display:none!important}
   </div>
 </div>
 
-<!-- 폰 아래 탭 — 가운데 지시 -->
+<!-- 폰 아래 탭 5개 — 톡(첫 화면) · 현황판 · 평면도 · 결재함 · 대장 (261001 대표님 결정) -->
 <nav class="tabbar" aria-label="아래 메뉴">
-  <a href="#home" data-nav="home"><svg class="ic"><use href="#i-home"/></svg>홈</a>
-  <a href="#office" data-nav="office"><svg class="ic"><use href="#i-team"/></svg>사무실</a>
-  <a href="#order" data-nav="order" class="mid own" aria-label="지시하기"><span class="midb"><svg class="ic"><use href="#i-pen"/></svg></span>지시</a>
-  <a href="#ledger" data-nav="ledger" class="sub"><svg class="ic"><use href="#i-board"/></svg>일감</a>
-  <a href="#approvals" data-nav="approvals"><svg class="ic"><use href="#i-stamp"/></svg>결재<b class="bdg own" data-cnt="apr" hidden></b></a>
-  <a href="#reports" data-nav="reports"><svg class="ic"><use href="#i-inbox"/></svg>보고<b class="bdg own" data-cnt="rep" hidden></b></a>
+  <a href="#talk" data-nav="talk"><svg class="ic"><use href="#i-chat"/></svg>톡<b class="bdg" data-cnt="talk" hidden></b></a>
+  <a href="#home" data-nav="home"><svg class="ic"><use href="#i-home"/></svg>현황판</a>
+  <a href="#office" data-nav="office"><svg class="ic"><use href="#i-team"/></svg>평면도</a>
+  <a href="#approvals" data-nav="approvals"><svg class="ic"><use href="#i-stamp"/></svg>결재함<b class="bdg own" data-cnt="apr" hidden></b></a>
+  <a href="#ledger" data-nav="ledger"><svg class="ic"><use href="#i-board"/></svg>대장</a>
 </nav>
 
 <!-- 메뉴 시트 (내 프로필) -->
@@ -1347,11 +1585,14 @@ body[data-r="home"] .bnr-off{display:none!important}
     <div class="grab"></div>
     <div class="prof" style="padding:4px 4px 12px"><span class="av av-me s44" data-ui="meAvatar"></span><div><b data-ui="meLabel"></b><span>구글 로그인</span></div><a class="btn btn-s btn-sm" href="#rules"><svg class="ic"><use href="#i-sliders"/></svg>설정</a></div>
     <ul class="menu">
+      <li><a href="#reports"><svg class="ic"><use href="#i-inbox"/></svg>보고함<span class="small" id="moreRep"></span></a></li>
+      <li class="own"><a href="#order"><svg class="ic"><use href="#i-pen"/></svg>지시하기<span class="small">톡 단톡방에서도 됩니다</span></a></li>
       <li><a href="#ledger"><svg class="ic"><use href="#i-board"/></svg>일감 대장<span class="small" id="moreLedger"></span></a></li>
       <li><a href="#ledger/prop"><svg class="ic"><use href="#i-bulb"/></svg>제안함 · 기기 바꿈 메모<span class="small" id="moreProp"></span></a></li>
       <li class="sub"><a href="#order"><svg class="ic"><use href="#i-pen"/></svg>최근 지시 진행 상태</a></li>
       <li><a href="#preview"><svg class="ic"><use href="#i-eye"/></svg>결과물 미리보기</a></li>
       <li><a href="#rules"><svg class="ic"><use href="#i-sliders"/></svg>설정 · 규칙<span class="small">읽기 전용</span></a></li>
+      <li><a href="#" data-reload><svg class="ic"><use href="#i-refresh"/></svg>다시 불러오기<span class="small">새 화면 받기 · 화면 판 261005</span></a></li>
       <li><a href="#login" data-logout><svg class="ic"><use href="#i-logout"/></svg>로그아웃</a></li>
     </ul>
     <p class="note" style="margin-top:12px">로그인한 구글 계정으로 대표·열람이 정해집니다. 화면의 자료는 사무실 PC 가 올린 것이고, 조작은 사무실 PC 가 가져가 처리합니다.</p>
@@ -1370,10 +1611,20 @@ body[data-r="home"] .bnr-off{display:none!important}
       <ul id="stopNow"></ul>
       <p style="margin-top:10px"><b>언제</b> — 사무실 PC 가 명령함을 확인하는 다음 차례(15초 안팎)에 다른 명령보다 <b>가장 먼저</b> 처리합니다.</p>
       <p style="margin-top:10px"><b>일어나는 일</b> — 하던 일은 멈춥니다. 이미 만든 새 버전 파일은 그대로 남습니다(삭제·덮어쓰기 없음). 진행 중 일감은 이어서 할 자리로 되돌려 둡니다. 보고·결재 기록은 그대로입니다.</p>
-      <p style="margin-top:10px"><b>다시 시작</b> — [확인하고 전원 출근]을 누르면 멈춘 자리에서 이어갑니다.</p>
+      <p style="margin-top:10px"><b>다시 시작</b> — [확인하고 출근]을 누르면 멈춘 자리에서 이어갑니다.</p>
       <div class="fld"><span class="lb">사유 (선택)</span><div class="chips wrap" id="stopReasons"><button type="button" class="chip" data-reason="사용량이 걱정됨">사용량이 걱정됨</button><button type="button" class="chip" data-reason="이상한 움직임">이상한 움직임</button><button type="button" class="chip" data-reason="잠깐 쉬게">잠깐 쉬게</button></div></div>
     </div>
-    <div class="mbtns"><button type="button" class="btn btn-q" data-close id="stopCancel">취소</button><button type="button" class="btn btn-d" id="stopGo"><svg class="ic"><use href="#i-stop"/></svg>긴급정지 — 전원 퇴근</button></div>
+    <div class="mbtns"><button type="button" class="btn btn-q" data-close id="stopCancel">취소</button><button type="button" class="btn btn-d" id="stopGo"><svg class="ic"><use href="#i-stop"/></svg>긴급정지 — 모두 멈춤</button></div>
+  </div>
+</div>
+
+<!-- 근무·대기 창 (#power — 톡 머리 알약 · 바탕화면 켜기·끄기 아이콘이 여는 곳) -->
+<div class="ov" id="powerSheet" role="dialog" aria-modal="true" aria-labelledby="powerTitle">
+  <div class="modal">
+    <div class="grab"></div>
+    <h2 id="powerTitle">근무·대기</h2>
+    <div id="powerBody"></div>
+    <button type="button" class="btn btn-q btn-w" data-close style="margin-top:14px">닫기</button>
   </div>
 </div>
 
@@ -1398,11 +1649,11 @@ setTimeout(function(){if(!window.__hubReady){var n=document.getElementById('boot
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDoc, deleteDoc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot, setDoc, deleteDoc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 (function(){
   'use strict';
-  var ROUTES=['login','home','office','reports','approvals','order','ledger','preview','rules'];
-  var TITLES={login:'로그인',home:'홈',office:'사무실',reports:'보고함',approvals:'결재함',order:'지시하기',ledger:'일감 대장',preview:'결과물 미리보기',rules:'설정·규칙'};
+  var ROUTES=['login','talk','power','home','office','reports','approvals','order','ledger','preview','rules'];
+  var TITLES={login:'로그인',talk:'톡',power:'근무·대기',home:'현황판',office:'평면도',reports:'보고함',approvals:'결재함',order:'지시하기',ledger:'일감 대장',preview:'결과물 미리보기',rules:'설정·규칙'};
   var SPLIT=['reports','approvals','preview'];
   var B=document.body;
   var $=function(s,r){return (r||document).querySelector(s)};
@@ -1656,16 +1907,19 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     void t.offsetWidth; t.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show')},3400);
   }
   var askResolve=null;
-  function closeAll(){
+  // stay=true 면 근무·대기 창(#power)을 닫아도 주소를 그대로 둔다(그 위에 확인창을 띄울 때 등)
+  function closeAll(stay){
+    var pw=$('#powerSheet'), wasPow=!!(pw&&pw.classList.contains('open'));
     $$('.ov.open').forEach(function(o){o.classList.remove('open')});
     if(askResolve){var r=askResolve;askResolve=null;r(null);}
+    if(wasPow&&!stay&&ui.cur==='power') setTimeout(function(){if(ui.cur==='power')location.hash=ui.powerBack||'#talk';},0);
   }
   // ask({pill,pillCls,title,body(html),input:{label,required(값 또는 선택지→참거짓),placeholder,chips[],value},choices:[{value,label}],choiceDefault,choicesLabel,ok,okCls})
   //  → Promise(입력값|'' — choices 가 있으면 {choice,text} — 취소면 null)
   var askChoice=null;
   var PILLTG={'b-ok':'tg-g','b-info':'tg-b','b-warn':'tg-a','b-danger':'tg-r','b-neutral':'tg-n'};
   function ask(o){
-    closeAll();
+    closeAll(true);
     $('#askPill').className='tg '+(PILLTG[o.pillCls]||'tg-b'); $('#askPill').textContent=o.pill||'확인';
     $('#askTitle').textContent=o.title||''; $('#askBody').innerHTML=o.body||'';
     var f=$('#askFld'), inp=$('#askInp'), cho=$('#askChoices'), choLb=$('#askChoLb');
@@ -1704,7 +1958,7 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
   function R(){return U().reviewer}
   function LS(){return short(L())||'팀장'}
   function RS(){return short(R())||'검수 담당'}
-  function stopListeners(){unsub.forEach(function(f){try{f()}catch(e){}});unsub=[];}
+  function stopListeners(){unsub.forEach(function(f){try{f()}catch(e){}});unsub=[];tkStop();}
   function sha256hex(s){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(s||'').trim().toLowerCase())).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return (x<16?'0':'')+x.toString(16)}).join('')})}
   function parseJson(d){try{return JSON.parse(d.get('json')||'null')}catch(e){return null}}
   function errText(e){var c=e&&e.code?String(e.code):'';if(c==='permission-denied')return '권한이 없습니다(쓰기는 대표 계정만)';if(c==='unavailable')return '인터넷 연결을 확인해 주세요';return (e&&e.message)||String(e);}
@@ -1725,6 +1979,8 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
       var j=parseJson(snap); if(!j){conn.ok=false;render();return;}
       conn.empty=false;
       var t=snap.get('heartbeatAt'); hb.at=t&&t.toMillis?t.toMillis():0; hb.offline=!!snap.get('offline');
+      // (1-10) 사무실 프로그램을 끌 때 올린 시각(Firestore 서버 시각) — "사무실 프로그램 꺼짐 · {시각}"
+      var oa=snap.get('offlineAt'); hb.offlineAt=oa&&oa.toMillis?oa.toMillis():0;
       conn.lastOkAt=hb.at; conn.ok=true; conn.everOk=true;
       base=j; if(j.cloud&&+j.cloud.offlineAfterMs) OFF_MS=+j.cloud.offlineAfterMs;
       rebuildPathRe();
@@ -1745,7 +2001,8 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
       else {deny('이 구글 계정은 maydly 사무실에 들어올 수 없습니다.');return;}
       session.checked=true; startSubListeners(); assemble();
       // 로그인 전에 열려 있던 주소(알림으로 연 결재함 등)로. 주소가 이미 같으면 hashchange 가 안 나므로 직접 그린다
-      if(ui.cur==='login'){var to=session.after||'#home';session.after=null;if(location.hash!==to)location.hash=to;go();} else render();
+      //  (1-10 · 261001 대표님 결정) 첫 화면 = 톡 목록
+      if(ui.cur==='login'){var to=session.after||'#talk';session.after=null;if(location.hash!==to)location.hash=to;go();} else render();
     });
   }
   function startSubListeners(){
@@ -1770,6 +2027,13 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
           if((x.status==='done'||x.status==='err')&&pending[d.id]){var p=pending[d.id];delete pending[d.id];try{p.cb(x.result||{ok:x.status==='done'})}catch(e){}}});
         renderChrome(); renderPending();
       },function(){}));
+      // (1-10) 톡 글 전용 — 아직 사무실 PC 가 가져가지 않은 chatSend 만(정렬은 기기에서 · 복합 색인 불필요).
+      //  위 최근 20건 창 밖으로 밀려 결과를 놓치지 않게, 보낸 요청 ID 의 명령 문서는 따로 구독한다(tkWatch).
+      unsub.push(onSnapshot(query(coll('inbox'),where('status','==','new'),where('type','==','chatSend'),limit(30)),function(snap){
+        var q={}; snap.forEach(function(d){var x=d.data()||{},rid=x.payload&&x.payload.requestId;if(typeof rid==='string')q[rid]=d.id;});
+        tk.queued=q; tkResume(); renderTalk();
+      },function(){}));
+      tkResume();
     }
   }
   function deny(msg){
@@ -1787,17 +2051,18 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
   function cmdId(){var a=new Uint8Array(6);crypto.getRandomValues(a);return String(Date.now()).padStart(15,'0')+'_'+Array.prototype.map.call(a,function(x){return (x<16?'0':'')+x.toString(16)}).join('');}
   function clean(o){var r={};Object.keys(o||{}).forEach(function(k){if(o[k]!==undefined&&o[k]!==null&&o[k]!=='')r[k]=o[k]});return r;}
   // 명령함에 한 건 쓰기 → 사무실 PC 가 15초마다 가져가 처리하고 결과를 적는다(onResult 로 받음)
-  //  명령 11종(서버 cloud.js 와 같은 이름): order · approval · answer · staffLeave · staffReturn · officeStop · officeStart · pushTest · proposalStart · handoffNote · archiveRetry(v1.6)
-  function cmd(type,payload,onResult){
+  //  명령 14종(서버 cloud.js 와 같은 이름): order · approval · answer · staffLeave · staffReturn · officeStop · officeStart · pushTest · proposalStart · handoffNote · archiveRetry(v1.6)
+  //   + (1-10 톡) chatSend · chatRead · power — quiet 면 "보냈습니다" 알림을 띄우지 않는다(톡은 말풍선으로 상태를 보임)
+  function cmd(type,payload,onResult,quiet){
     if(!guard()) return Promise.resolve(null);
     var ref=doc(db,ROOT[0],ROOT[1],'inbox',cmdId());
     if(onResult) pending[ref.id]={cb:onResult,at:Date.now(),type:type};
     return setDoc(ref,{type:type,payload:clean(payload),status:'new',createdAt:serverTimestamp(),from:'온라인 허브'}).then(function(){
-      toast(type==='officeStop'?(status()==='off'?'사무실이 꺼져 있어 쌓아 두었습니다 — 켜지면 다른 명령보다 가장 먼저 처리합니다.':'보냈습니다 — 다음 확인(15초 안팎) 때 다른 명령보다 가장 먼저 처리합니다.'):status()==='off'?'사무실이 꺼져 있어 쌓아 두었습니다 — 켜지면 보낸 순서대로 처리합니다.':'보냈습니다 — 사무실이 처리하면 알려 드립니다(15초 안팎).');
+      if(!quiet) toast(type==='officeStop'?(status()==='off'?offTxt()+' — 쌓아 두었다가 켜지면 다른 명령보다 가장 먼저 처리합니다.':'보냈습니다 — 다음 확인(15초 안팎) 때 다른 명령보다 가장 먼저 처리합니다.'):status()==='off'?offTxt()+' — 쌓아 두었다가 켜지면 보낸 순서대로 처리합니다.':'보냈습니다 — 사무실이 처리하면 알려 드립니다(15초 안팎).');
       renderChrome(); return ref.id;
-    }).catch(function(e){delete pending[ref.id];toast('보내지 못했습니다 — '+errText(e));return null;});
+    }).catch(function(e){delete pending[ref.id];if(!quiet||type!=='chatRead')toast('보내지 못했습니다 — '+errText(e));return null;});
   }
-  function queuedCount(){return inboxDocs.filter(function(x){return x.status==='new'}).length}
+  function queuedCount(){return inboxDocs.filter(function(x){return x.status==='new'&&x.type!=='chatRead'}).length}
   function loadWorkIds(){workIds=(base&&base.workIds)||[];}
   // 이름·호칭은 공개 파일에 적지 않고 로그인 뒤 받은 화면 글(ui)로 채운다
   function fillUi(){
@@ -1847,7 +2112,7 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     setHTML($('#setOffice'),h);
     var u=st().usageToday||EMPTY.usageToday, pct=Math.round(jr(u)*100), w80=Math.round((u.stopNewWorkAtRatio||0.8)*100), allP=Math.round((u.stopAllAtRatio||1)*100), same=w80>=allP; // (v1.13) 선은 설정값
     var lim=st().staff.map(function(p){return esc(p.name)+' '+esc(p.dailyCallLimit||'—')}).join(' · ');
-    setHTML($('#setUsage'),'<div class="gi" style="align-items:flex-start;padding-top:13px;padding-bottom:13px"><span class="it it-a">'+IC('i-bolt')+'</span><div class="gi-b"><b>'+(isPlan(u)?'요금제 사용량 ':'오늘 사용량(달러 기준) ')+pct+'%</b><div class="mgauge"><i class="'+(pct>=allP?'r':pct>=w80?'a':'')+'" style="width:'+Math.min(100,pct)+'%"></i><b style="left:'+w80+'%"></b></div><small style="margin-top:6px">'+(same?allP+'% 새 작업 멈춤·전원 퇴근':w80+'% 새 작업 멈춤 · '+allP+'% 전원 퇴근')+' (9/29 대표님 결정 — Claude 요금제 사용률 기준 · 못 읽으면 하루 달러 한도)<span class="own"> · $'+(u.costUsd||0).toFixed(3)+' / $'+(+u.limitUsd||0).toFixed(2)+'</span></small></div></div>'+
+    setHTML($('#setUsage'),'<div class="gi" style="align-items:flex-start;padding-top:13px;padding-bottom:13px"><span class="it it-a">'+IC('i-bolt')+'</span><div class="gi-b"><b>'+(isPlan(u)?'요금제 사용량 ':'오늘 사용량(달러 기준) ')+pct+'%</b><div class="mgauge"><i class="'+(pct>=allP?'r':pct>=w80?'a':'')+'" style="width:'+Math.min(100,pct)+'%"></i><b style="left:'+w80+'%"></b></div><small style="margin-top:6px">'+(same?allP+'% 새 작업 멈춤·한도 정지':w80+'% 새 작업 멈춤 · '+allP+'% 한도 정지')+' (9/29 대표님 결정 — Claude 요금제 사용률 기준 · 못 읽으면 하루 달러 한도)<span class="own"> · $'+(u.costUsd||0).toFixed(3)+' / $'+(+u.limitUsd||0).toFixed(2)+'</span></small></div></div>'+
       gi('i-team','it-n','직원별 하루 호출 상한',lim||'—',LOCKV));
     var ds=$('#setDevice'); if(ds) ds.textContent='구글 로그인 · 이 기기 '+deviceLabel()+(isStandalone()?' 홈 화면 앱':' 브라우저');
     setHTML($('#setStop'),stopCardHtml('settings'));
@@ -1860,9 +2125,9 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     ['on','off','stopped','limit'].forEach(function(k){B.classList.toggle('office-'+k,s===k)});
     B.classList.toggle('role-viewer',ui.role!=='owner');
     fillUi(); renderLogin(); renderRules(); renderSettings();
-    renderChrome(); renderBanners(); renderHome(); renderOffice(); renderOrderForm(); renderOrderList(); renderLedger(); renderReports(); renderApprovals(); renderPreview(); renderPushCard();
+    renderChrome(); renderTalk(); renderBanners(); renderHome(); renderOffice(); renderOrderForm(); renderOrderList(); renderLedger(); renderReports(); renderApprovals(); renderPreview(); renderPushCard();
     var na=pendingApprovals().length;
-    document.title=(ui.role==='owner'&&na?'(결재 '+na+') ':'')+'maydly 사무실 · '+TITLES[ui.cur];
+    document.title=(ui.role==='owner'&&na?'(결재 '+na+') ':'')+'maydly 사무실 · '+(TITLES[ui.cur]||'');
     B.classList.toggle('sheet-open',ui.cur==='approvals'&&!!ui.id&&!isDesk());
   }
   function renderLogin(){
@@ -1870,25 +2135,23 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     var sk=$('#loadSkel'), card=$('#loginCard'); if(sk) sk.hidden=!loading; if(card) card.hidden=loading;
   }
 
-  function livePill(s){
-    if(!session.checked) return session.user?'<span class="live ld"><span class="spin"></span>연결 중</span>':'';
-    return {on:'<a href="#office" class="live" title="사무실 상태"><span class="dt dt-work"></span>켜짐<span class="lv-x"> · '+sigSpan()+'</span></a>',
-      off:'<a href="#office" class="live off" title="사무실 상태"><span class="dt dt-home"></span>꺼짐<span class="lv-x"> · '+(conn.lastOkAt?esc(durShort(new Date(conn.lastOkAt))):'연결 전')+'</span></a>',
-      stopped:'<a href="#office" class="live stop" title="사무실 상태"><span class="dt dt-stop"></span>전원 정지</a>',
-      limit:'<a href="#office" class="live warn" title="사무실 상태"><span class="dt dt-ask"></span>한도 도달</a>'}[s];
-  }
+  // (1-10 E-1) 머리 알약도 근무·대기 우선순위로(PC 꺼짐 · 프로그램 꺼짐 · 울타리 정지 · 한도 정지 · 대기 · 근무) — 누르면 근무·대기 창
+  function livePill(){return pillHtml('live');}
   function renderChrome(){
-    var s=status(), o=st().office, sinceHm=o.since?hm(o.since):'';
+    var s=status(), w=ws(), o=st().office, sinceHm=o.since?hm(o.since):'';
     var side={
-      on:'<b class="on"><span class="dt dt-work"></span>켜짐 · 신호 '+sigSpan()+'</b>',
-      off:'<b class="off"><span class="dt dt-home"></span>사무실 꺼짐</b>'+(conn.lastOkAt?esc(hm(new Date(conn.lastOkAt)))+'부터 신호 없음':'아직 신호 없음'),
-      stopped:'<b class="stop"><span class="dt dt-stop"></span>전원 정지 '+esc(sinceHm)+'</b>서버는 켜짐 · 신호 '+sigSpan(),
-      limit:'<b class="warn"><span class="dt dt-ask"></span>한도 도달 · 전원 퇴근</b>서버는 켜짐 · 신호 '+sigSpan()
-    }[s];
+      work:'<b class="on"><span class="dt dt-work"></span>근무 중 · 신호 '+sigSpan()+'</b>',
+      standby:'<b class="off"><span class="dt dt-home"></span>대기 중</b>지시는 받아 두었다가 근무로 바꾸면 처리 · 신호 '+sigSpan(),
+      pcoff:'<b class="off"><span class="dt dt-home"></span>PC 꺼짐</b>'+(conn.lastOkAt?'마지막 신호 '+esc(hm(new Date(conn.lastOkAt))):'아직 신호 없음'),
+      progoff:'<b class="off"><span class="dt dt-home"></span>사무실 프로그램 꺼짐</b>'+esc(offAtHm()),
+      stopped:'<b class="stop"><span class="dt dt-stop"></span>울타리 정지 — 확인 필요</b>'+esc(sinceHm)+' · 신호 '+sigSpan(),
+      limit:'<b class="warn"><span class="dt dt-ask"></span>한도 정지 — 확인 필요</b>'+esc(sinceHm)+' · 신호 '+sigSpan()
+    }[w];
     var staff=st().staff;
-    setHTML($('#sideOffice'),side+(s==='on'?'24시간 근무 · '+onDutyCount()+'/'+(staff.length||7)+' 출근':'')+(U().stageLabel?'<span class="mut stg" title="'+esc(U().stageLabel)+'">'+esc(U().stageLabel)+'</span>':''));
-    setHTML($('#topPill'),livePill(s));
-    setHTML($('#sideCtl'),(s==='stopped'||s==='limit')?'<button type="button" class="btn btn-p btn-sm" data-office-start>'+IC('i-power')+'확인하고 전원 출근</button>':'<button type="button" class="btn btn-do btn-sm" data-open-stop>'+IC('i-stop')+'긴급정지</button>');
+    setHTML($('#sideOffice'),'<a href="#power" style="display:block">'+side+(w==='work'?'24시간 근무 · '+onDutyCount()+'/'+(staff.length||7)+' 출근':'')+'</a>'+(U().stageLabel?'<span class="mut stg" title="'+esc(U().stageLabel)+'">'+esc(U().stageLabel)+'</span>':''));
+    setHTML($('#topPill'),livePill());
+    setHTML($('#sideCtl'),(s==='stopped'||s==='limit')?'<button type="button" class="btn btn-p btn-sm" data-office-start>'+IC('i-power')+'확인하고 출근</button>':'<button type="button" class="btn btn-do btn-sm" data-open-stop>'+IC('i-stop')+'긴급정지</button>');
+    tkBadges(); var mr=$('#moreRep'); if(mr){var rc0=openQuestions().length+activeUrgent().length;mr.textContent=rc0?'답할 질문·긴급 '+rc0:'';}
     var rc=openQuestions().length+activeUrgent().length, ac=pendingApprovals().length;
     $$('[data-cnt="rep"]').forEach(function(c){c.hidden=!rc;c.textContent=rc;c.title='답하지 않은 질문 '+openQuestions().length+' · 확인할 긴급 '+activeUrgent().length});
     $$('[data-cnt="apr"]').forEach(function(c){c.hidden=!ac;c.textContent=ac;c.title='결재 대기'});
@@ -1907,21 +2170,21 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     var s=status(), o=st().office, h='';
     if(!session.checked){setHTML($('#banners'),'');return;}
     if(s==='off'){
-      h+='<div class="bnr bnr-off" role="status">'+IC('i-wifioff')+'<div><b>사무실 꺼짐 — 지시는 쌓아 두고 켜지면 처리합니다.</b> '+
+      h+='<div class="bnr bnr-off" role="status">'+IC('i-wifioff')+'<div><b>'+(ws()==='progoff'?'사무실 프로그램 꺼짐 · '+esc(offAtHm())+' — 바탕화면 🍀 켜기 아이콘으로 켜 주세요.':'PC 꺼짐 · 마지막 신호 '+esc(lastSigHm())+' — 지시는 쌓아 두고 켜지면 처리합니다.')+'</b> '+
         (conn.empty?'사무실 PC 가 아직 온라인에 자료를 올리지 않았습니다.':conn.lastOkAt?esc(hm(new Date(conn.lastOkAt)))+'부터 사무실 PC 신호가 없습니다(3분 넘게). 마지막으로 받은 상태를 보여 드립니다.':'아직 사무실 PC 신호를 받지 못했습니다.')+
         ' 사무실 PC 가 켜져 있고 인터넷에 연결돼 있는지 확인해 주세요. 다시 켜지면 자동으로 이어 붙습니다.<span class="own"> 그동안 보낸 지시·결재는 명령함에 쌓였다가 켜지면 차례대로 처리됩니다.</span></div></div>';
     }
     if(s==='stopped'){
       var v=o.lastViolation, list='';
       if(o.stoppedBy==='울타리'&&v&&v.violations) list=' · '+v.violations.slice(0,3).map(function(x){return esc(x.kind)+': '+esc(x.path)}).join(' / ');
-      h+='<div class="bnr bnr-stop" role="alert">'+IC('i-stop')+'<div><b>전원 정지'+(o.stoppedBy==='울타리'?' — 울타리 위반':'')+'</b> · '+esc(hm(o.since))+' · '+txt(o.reason||'')+list+
-        '. 팀 전원이 멈췄습니다. 대표님이 확인하시면 다시 출근합니다.<span class="sub"> 열람 전용 — 전원 출근은 대표님만 할 수 있습니다.</span>'+
-        '<div class="sb-acts">'+lastUrgentLink()+'<button type="button" class="btn btn-p btn-sm own" data-office-start>'+IC('i-power')+'확인하고 전원 출근</button></div></div></div>';
+      h+='<div class="bnr bnr-stop" role="alert">'+IC('i-stop')+'<div><b>울타리 정지 — 확인 필요'+(o.stoppedBy==='울타리'?' · 울타리 위반':'')+'</b> · '+esc(hm(o.since))+' · '+txt(o.reason||'')+list+
+        '. 팀 전원이 멈췄습니다. 대표님이 확인하시면 다시 출근합니다.<span class="sub"> 열람 전용 — [확인하고 출근]은 대표님만 할 수 있습니다.</span>'+
+        '<div class="sb-acts">'+lastUrgentLink()+'<button type="button" class="btn btn-p btn-sm own" data-office-start>'+IC('i-power')+'확인하고 출근</button></div></div></div>';
     }
     if(s==='limit'){
-      h+='<div class="bnr bnr-limit" role="status">'+IC('i-bolt')+'<div><b>'+(/^Claude 요금제/.test(o.reason||'')?'Claude 요금제 사용량 한도 도달':'달러 대체 한도 도달')+'</b> · '+esc(hm(o.since))+' · '+txt(o.reason||'')+(o.limitDetail?'<span class="own"> · '+txt(o.limitDetail)+'</span>':'')+
-        '. 전원 퇴근했고, 보고·결재 기록은 계속됩니다. 대표님이 확인하시기 전까지 아무도 다시 출근하지 않습니다(날짜가 바뀌어도 자동 출근 없음). <span class="dtag">'+(/^Claude 요금제/.test(o.reason||'')?'Claude 요금제 사용량 기준':'하루 달러 한도 기준(요금제 사용률을 확인할 수 없는 동안 쓴 몫)')+'</span><span class="sub"> 열람 전용 — 전원 출근은 대표님만 할 수 있습니다.</span>'+
-        '<div class="sb-acts">'+lastUrgentLink()+'<button type="button" class="btn btn-p btn-sm own" data-office-start>'+IC('i-power')+'확인하고 전원 출근</button></div></div></div>';
+      h+='<div class="bnr bnr-limit" role="status">'+IC('i-bolt')+'<div><b>한도 정지 — 확인 필요 · '+(/^Claude 요금제/.test(o.reason||'')?'Claude 요금제 사용량 한도 도달':'달러 대체 한도 도달')+'</b> · '+esc(hm(o.since))+' · '+txt(o.reason||'')+(o.limitDetail?'<span class="own"> · '+txt(o.limitDetail)+'</span>':'')+
+        '. 새 일과 근무를 멈췄고, 보고·결재 기록은 계속됩니다. 대표님이 확인하시기 전까지 아무도 다시 출근하지 않습니다(날짜가 바뀌어도 자동 출근 없음). <span class="dtag">'+(/^Claude 요금제/.test(o.reason||'')?'Claude 요금제 사용량 기준':'하루 달러 한도 기준(요금제 사용률을 확인할 수 없는 동안 쓴 몫)')+'</span><span class="sub"> 열람 전용 — [확인하고 출근]은 대표님만 할 수 있습니다.</span>'+
+        '<div class="sb-acts">'+lastUrgentLink()+'<button type="button" class="btn btn-p btn-sm own" data-office-start>'+IC('i-power')+'확인하고 출근</button></div></div></div>';
     }
     if(s!=='off'&&o.claude&&o.claude.found&&o.claude.verified===false){
       h+='<div class="bnr bnr-stop" role="alert">'+IC('i-alert')+'<div><b>긴급 — 직원 실행 파일 새 버전('+esc(o.claude.version||'')+')의 안전 인자를 확인하지 못했습니다.</b> 새 작업을 시작하지 않습니다(안전 쪽으로 멈춤). 10분마다 다시 확인합니다.'+(o.claude.missing&&o.claude.missing.length?' 없는 인자: '+esc(o.claude.missing.join(' ')):'')+'</div></div>';
@@ -1954,10 +2217,12 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
   function nextBrief(){var rv=st().routines,nx=null;if(rv&&rv.list)rv.list.filter(function(x){return x.kind==='brief'||x.kind==='daily-log'||x.kind==='weekly'}).forEach(function(x){if(x.next&&(!nx||x.next<nx.next))nx=x;});return nx}
   function newsCls(t){t=String(t||'');return /정지|긴급|위반|실패/.test(t)?'t-r':/결재|질문/.test(t)?'t-a':/검수/.test(t)?'t-b':/퇴근|꺼졌|꺼짐/.test(t)?'t-n':/정기|브리핑|업무일지|주간보고|점검/.test(t)?'t-t':/제안/.test(t)?'t-v':''}
   function newsTl(n,empty){var nw=st().news.slice(0,n);return nw.length?nw.map(function(x){return '<li class="'+newsCls(x.text)+'"><time>'+esc(when(x.at))+'</time><p>'+txt(x.text)+'</p></li>'}).join(''):'<li class="tl-e">'+(empty||'아직 소식이 없습니다.')+'</li>'}
-  var CMD_LB={order:['지시','i-send','it-g'],approval:['결재','i-stamp','it-a'],answer:['질문 답','i-msg','it-b'],staffLeave:['퇴근시키기','i-moon','it-n'],staffReturn:['출근시키기','i-power','it-g'],officeStop:['긴급정지','i-stop','it-r'],officeStart:['전원 출근','i-power','it-g'],pushTest:['시험 알림','i-bell','it-n'],proposalStart:['제안 착수','i-play','it-v'],handoffNote:['기기 바꿈 메모','i-swap','it-t']};
+  var CMD_LB={order:['지시','i-send','it-g'],approval:['결재','i-stamp','it-a'],answer:['질문 답','i-msg','it-b'],staffLeave:['퇴근시키기','i-moon','it-n'],staffReturn:['출근시키기','i-power','it-g'],officeStop:['긴급정지','i-stop','it-r'],officeStart:['확인하고 출근','i-power','it-g'],chatSend:['톡','i-chat','it-g'],chatRead:['톡 읽음','i-check','it-n'],power:['근무·대기','i-power','it-n'],pushTest:['시험 알림','i-bell','it-n'],proposalStart:['제안 착수','i-play','it-v'],handoffNote:['기기 바꿈 메모','i-swap','it-t']};
   function cmdLine(x){
     var p=x.payload||{}, t=CMD_LB[x.type]||[String(x.type||''),'i-send','it-n'], d='';
     if(x.type==='order') d=clip(p.body,40);
+    else if(x.type==='chatSend') d=clip(p.text,40);
+    else if(x.type==='power') d=p.mode==='standby'?'대기로':'근무로';
     else if(x.type==='approval') d=(p.reportId||'')+' '+(p.decision||'')+(p.option?' '+p.option:'');
     else if(x.type==='answer') d=(p.reportId||'')+' · '+clip(p.answer,24);
     else if(x.type==='staffLeave'||x.type==='staffReturn') d=nameOf(p.staffId);
@@ -1980,39 +2245,43 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     var owner=ui.role==='owner', nm=owner?((u.owner||{}).name||''):((u.viewer||{}).name||'');
     var hero;
     if(!owner) hero=esc(nm)+'님, 오늘 사무실 현황입니다';
-    else if(s==='off') hero=esc(nm)+' 대표님, 사무실이 <em class="a">꺼져 있습니다</em>';
-    else if(s==='stopped') hero=esc(nm)+' 대표님, <em class="r">전원 정지</em> 중입니다';
-    else if(s==='limit') hero=esc(nm)+' 대표님, <em class="a">한도 도달</em>로 전원 퇴근 중입니다';
+    else if(s==='off') hero=esc(nm)+' 대표님, '+(ws()==='progoff'?'사무실 프로그램이 <em class="a">꺼져 있습니다</em>':'<em class="a">PC 가 꺼져 있습니다</em>');
+    else if(s==='stopped') hero=esc(nm)+' 대표님, <em class="r">울타리 정지</em> — 확인이 필요합니다';
+    else if(s==='limit') hero=esc(nm)+' 대표님, <em class="a">한도 정지</em> — 확인이 필요합니다';
     else if(urg.length) hero=esc(nm)+' 대표님, <em class="r">긴급 '+urg.length+'건</em>을 확인해 주세요';
+    else if(ws()==='standby') hero=esc(nm)+' 대표님, 사무실은 <em class="a">대기 중</em>입니다';
     else hero=esc(nm)+' 대표님, 사무실이 <em>잘 돌고 있습니다</em>';
     setHTML($('#homeHero'),hero);
     // 머리 문장
     var parts=[]; if(urg.length) parts.push('긴급 '+urg.length+'건'); if(pa.length) parts.push('결재 '+pa.length+'건'); if(oq.length) parts.push('질문 '+oq.length+'건');
     var active=activeCount(), lede;
-    if(s==='off') lede=(parts.length?parts.join(' · ')+'이 대표님을 기다립니다(마지막으로 받은 상태). ':'')+'사무실이 꺼져 있어 지금 상태는 알 수 없습니다(지시·결재는 쌓아 두면 켜질 때 처리).';
-    else if(s==='stopped') lede=(parts.length?parts.join(' · ')+'이 대표님을 기다립니다. ':'')+esc(hm(o.since))+' 전원 정지 중이라, 확인하시기 전까지 직원은 아무도 일하지 않습니다.';
-    else if(s==='limit') lede=(parts.length?parts.join(' · ')+'이 대표님을 기다립니다. ':'')+esc(hm(o.since))+' 사용량 한도 도달로 전원 퇴근해, 확인하시기 전까지 직원은 아무도 일하지 않습니다 (설계안).';
+    if(s==='off') lede=(parts.length?parts.join(' · ')+'이 대표님을 기다립니다(마지막으로 받은 상태). ':'')+offTxt()+' — 지금 상태는 알 수 없습니다(지시·결재는 쌓아 두면 켜질 때 처리).';
+    else if(s==='stopped') lede=(parts.length?parts.join(' · ')+'이 대표님을 기다립니다. ':'')+esc(hm(o.since))+' 울타리 정지 중이라, [확인하고 출근]을 누르시기 전까지 직원은 아무도 일하지 않습니다.';
+    else if(s==='limit') lede=(parts.length?parts.join(' · ')+'이 대표님을 기다립니다. ':'')+esc(hm(o.since))+' 한도 정지 중이라, [확인하고 출근]을 누르시기 전까지 직원은 아무도 일하지 않습니다.';
+    else if(ws()==='standby') lede=(parts.length?parts.join(' · ')+'이 대표님을 기다립니다. ':'')+'대기 중 — 새 일·정기업무·AI 호출은 멈췄고, 지시·톡·결재는 받아 두었다가 근무로 바꾸면 처리합니다.';
     else lede=parts.length?parts.join(' · ')+'이 대표님을 기다립니다. '+(active?'나머지 '+active+'건은 직원들이 처리하고 있습니다.':''):'지금 대표님을 기다리는 결재·질문은 없습니다.'+(active?' 진행 중 일감 '+active+'건은 직원들이 처리하고 있습니다.':' 새 일은 지시하기에서 맡기시면 됩니다.');
     setHTML($('#homeLede'),lede);
     // 사무실 꺼짐 — 무엇이 쌓였는지(처리 대기 명령) + 가능한 이유
     var off='';
     if(s==='off'){
-      var pend=inboxDocs.filter(function(x){return x.status==='new'});
+      var pend=inboxDocs.filter(function(x){return x.status==='new'&&x.type!=='chatRead'});
       off='<div class="offb">'+IC('i-wifioff')+(conn.empty?'사무실 PC 가 아직 온라인에 자료를 올리지 않았습니다':conn.lastOkAt?esc(hm(new Date(conn.lastOkAt)))+'부터 사무실 PC 신호가 없습니다 · '+esc(durShort(new Date(conn.lastOkAt))):'아직 사무실 PC 신호를 받지 못했습니다')+'</div>'+
         '<div class="cd offc" role="status"><svg class="ill" viewBox="0 0 132 96" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 80h104" stroke="#D6CFC1" stroke-width="2"/><rect x="36" y="22" width="60" height="38" rx="6" fill="#F1EEE7" stroke="#B9C0BA" stroke-width="2"/><path d="M58 60v10h16V60M50 70h32" stroke="#B9C0BA" stroke-width="2"/><path d="M104 18a12 12 0 1 1-13-11 9 9 0 0 0 13 11z" fill="#FCF1DC" stroke="#C9A25A" stroke-width="1.8"/><path d="M112 34h5l-5 5h5M118 24h3l-3 3h3" stroke="#C9A25A" stroke-width="1.5"/><path d="M58 38l16 0" stroke="#D0D5D1" stroke-width="2"/></svg>'+
-        '<h3>사무실 꺼짐 — 지시는 쌓아 두고 켜지면 처리</h3><p>'+(conn.lastOkAt?'아래는 마지막으로 받은 상태입니다. ':'')+'지시·결재는 쌓아 두고, 켜지면 보낸 순서대로 처리합니다. 긴급정지는 가장 먼저.</p>'+
+        '<h3>'+(ws()==='progoff'?'사무실 프로그램 꺼짐 · '+esc(offAtHm()):'PC 꺼짐 · 마지막 신호 '+esc(lastSigHm()))+' — 지시는 쌓아 두고 켜지면 처리</h3><p>'+(conn.lastOkAt?'아래는 마지막으로 받은 상태입니다. ':'')+'지시·결재는 쌓아 두고, 켜지면 보낸 순서대로 처리합니다. 긴급정지는 가장 먼저.</p>'+
         '<ul class="offl"><li>'+IC('i-info')+'<span>가능한 이유: 사무실 PC 꺼짐·재부팅 · 서버 창을 닫음 · 인터넷 끊김 · 사무실 PC 의 온라인 연결(구글 로그인)이 끊김</span></li><li>'+IC('i-refresh')+'<span>사무실이 다시 켜지면 이 화면이 자동으로 이어 붙습니다</span></li><li>'+IC('i-clock')+'<span>그동안 보낸 지시·결재는 쌓였다가 켜지면 처리됩니다</span></li></ul></div>'+
         (owner&&pend.length?'<div class="sh"><h2>처리 대기 명령 <span class="tg tg-n">'+pend.length+'</span></h2><span class="lk mut">켜지면 처리</span></div><div class="cd">'+pend.map(cmdLine).join('')+'</div>':'')+
         (conn.lastOkAt?'<div class="sh"><h2>마지막으로 받은 상태</h2><span class="lk mut">'+esc(hm(new Date(conn.lastOkAt)))+' 기준</span></div>':'');
     }
     setHTML($('#homeOff'),off);
     // 현황판 — 사무실 상태와 직원 얼굴이 먼저
-    var pill={on:'<span class="st st-work"><span class="dt dt-work"></span>켜짐 · 신호 '+sigSpan()+'</span>',stopped:'<span class="st st-stop"><span class="dt dt-stop"></span>전원 정지 '+esc(hm(o.since))+'</span>',limit:'<span class="st st-ask"><span class="dt dt-ask"></span>한도 도달 · 전원 퇴근</span>',off:'<span class="st st-home"><span class="dt dt-home"></span>꺼짐 · 마지막 상태</span>'}[s];
-    var ms={on:stateSummary()+' — 할 일이 없는 직원은 AI를 부르지 않아 사용량이 나가지 않습니다.',stopped:'전원 정지('+esc(hm(o.since))+') — 대표님이 확인하시면 다시 출근합니다.',limit:'사용량 한도 도달('+esc(hm(o.since))+')로 전원 퇴근했습니다 (설계안).',off:'사무실이 꺼져 있어 좌석 상태를 알 수 없습니다.'}[s];
-    var big=s==='off'?'신호 없음 · '+esc(total)+'명':s==='stopped'?'전원 정지 · 일감 '+active+'건 멈춤':s==='limit'?'전원 퇴근 · 일감 '+active+'건 대기':onDutyCount()+'명 출근 · 일감 '+active+'건 진행';
+    // (1-10 E-1) 근무·대기 우선순위로 표시 — 대기면 "24시간 근무 · N명 출근" 대신 "대기 중"
+    var w0=ws(), sb=w0==='standby';
+    var pill={on:sb?'<span class="st st-home"><span class="dt dt-home"></span>대기 중 · 신호 '+sigSpan()+'</span>':'<span class="st st-work"><span class="dt dt-work"></span>근무 중 · 신호 '+sigSpan()+'</span>',stopped:'<span class="st st-stop"><span class="dt dt-stop"></span>울타리 정지 — 확인 필요</span>',limit:'<span class="st st-ask"><span class="dt dt-ask"></span>한도 정지 — 확인 필요</span>',off:'<span class="st st-home"><span class="dt dt-home"></span>'+(w0==='progoff'?'사무실 프로그램 꺼짐':'PC 꺼짐')+' · 마지막 상태</span>'}[s];
+    var ms={on:sb?'대기 중 — 새 일·정기업무·AI 호출은 멈췄습니다. 지시는 받아 두었다가 근무로 바꾸면 처리합니다.':stateSummary()+' — 할 일이 없는 직원은 AI를 부르지 않아 사용량이 나가지 않습니다.',stopped:'울타리 정지('+esc(hm(o.since))+') — 대표님이 [확인하고 출근]을 누르시면 다시 출근합니다.',limit:'한도 정지('+esc(hm(o.since))+') — 대표님이 [확인하고 출근]을 누르시면 다시 출근합니다.',off:(w0==='progoff'?'사무실 프로그램이 꺼져 있어':'PC 가 꺼져 있어')+' 좌석 상태를 알 수 없습니다.'}[s];
+    var big=s==='off'?'신호 없음 · '+esc(total)+'명':s==='stopped'?'울타리 정지 · 일감 '+active+'건 멈춤':s==='limit'?'한도 정지 · 일감 '+active+'건 대기':sb?'대기 중 · 일감 '+active+'건 멈춤':onDutyCount()+'명 출근 · 일감 '+active+'건 진행';
     var avs=staff.map(function(p){return '<a href="#office" data-seat-go="'+esc(p.id)+'" aria-label="'+esc(p.title)+' · '+esc(p.state)+'">'+av(p.id,'s36',pres(p))+'</a>'}).join('');
-    setHTML($('#homeBoard'),'<div class="hb'+(s==='stopped'?' stop':s==='limit'?' warn':'')+(s==='off'?' stale':'')+'"><svg class="wmclv clvi" style="width:90px;height:90px;right:-14px;top:-18px;opacity:.1;transform:rotate(20deg)" aria-hidden="true"><use href="#clover"/></svg>'+
-      '<div class="hb-top">'+pill+'<span class="s12 mut ml">24시간 근무'+(o.overrides&&o.overrides.demoAnytime?' · 시연 모드':'')+'</span></div>'+
+    setHTML($('#homeBoard'),'<div class="hb'+(s==='stopped'?' stop':s==='limit'||sb?' warn':'')+(s==='off'?' stale':'')+'"><svg class="wmclv clvi" style="width:90px;height:90px;right:-14px;top:-18px;opacity:.1;transform:rotate(20deg)" aria-hidden="true"><use href="#clover"/></svg>'+
+      '<div class="hb-top">'+pill+'<span class="s12 mut ml">'+(sb?'<a class="lk" href="#power">근무로 바꾸기</a>':'24시간 근무'+(o.overrides&&o.overrides.demoAnytime?' · 시연 모드':''))+'</span></div>'+
       '<div class="hb-big">'+big+'</div><p class="hb-s">'+ms+'</p>'+(staff.length?'<div class="hb-avs">'+avs+'</div>':'<p class="hb-s">직원 정보를 아직 받지 못했습니다.</p>')+'</div>');
     // 숫자 4칸
     var uu=st().usageToday||EMPTY.usageToday, pct=Math.round(jr(uu)*100), w80=Math.round((uu.stopNewWorkAtRatio||0.8)*100), allP=Math.round((uu.stopAllAtRatio||1)*100), proj=projection(uu);
@@ -2045,7 +2314,7 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     setHTML($('#homeRtn'),routinesHtml());
     setHTML($('#homeFloor'),staff.filter(function(p){var k=pres(p);return k==='work'||k==='rev'||k==='ask'||k==='stop'}).concat(staff.filter(function(p){var k=pres(p);return !(k==='work'||k==='rev'||k==='ask'||k==='stop')})).slice(0,4).map(function(p){return deskHtml(p,false,true)}).join(''));
     // 빠른 지시 안내
-    $('#quickNote').textContent=s==='off'?'사무실이 꺼져 있습니다. 보내면 쌓아 두었다가 켜지면 처리합니다.':s==='stopped'?'전원 정지 중이라 지시는 접수만 해 두고, 전원 출근 뒤 처리합니다.':s==='limit'?'한도 도달로 전원 퇴근 중이라 지시는 접수만 해 두고, 다시 출근하면 처리합니다.':'보내면 '+LS()+'이 배분을 시작합니다(직원 호출 = 사용량 발생).';
+    $('#quickNote').textContent=s==='off'?offTxt()+'. 보내면 쌓아 두었다가 켜지면 처리합니다.':s==='stopped'?'울타리 정지 중이라 지시는 접수만 해 두고, [확인하고 출근] 뒤 처리합니다.':s==='limit'?'한도 정지 중이라 지시는 접수만 해 두고, [확인하고 출근] 뒤 처리합니다.':ws()==='standby'?'대기 중이라 지시는 받아 두었다가 근무로 바꾸면 처리합니다.':'보내면 '+LS()+'이 배분을 시작합니다(직원 호출 = 사용량 발생).';
     setHTML($('#homeStop'),'<div class="ctl-h"><b>사무실 조작</b><span class="s12 mut" style="margin:0">대표 전용</span></div>'+stopCardHtml('home'));
     var qb=$('#quickForm button'); if(qb) qb.disabled=false;
   }
@@ -2087,10 +2356,10 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     var bar=tot?'<div class="ubar"><i class="t" style="width:'+(lc.o['정기']/tot*100).toFixed(1)+'%"></i><i class="g" style="width:'+(lc.o['지시']/tot*100).toFixed(1)+'%"></i><i class="p" style="width:'+(lc.o['제안']/tot*100).toFixed(1)+'%"></i></div><div class="ulg"><span><i style="background:var(--teal)"></i>정기 '+lc.o['정기']+'회</span><span><i style="background:var(--g-500)"></i>지시 '+lc.o['지시']+'회</span>'+(lc.o['제안']?'<span><i style="background:var(--violet)"></i>제안 '+lc.o['제안']+'회</span>':'')+(lc.exact?'':'<span class="mut">오늘 움직인 일감 기준 · 대략</span>')+'</div>':'';
     return '<div class="use'+(s==='off'?' stale':'')+'"><div class="ringbox">'+ringSvg(jr(u),w80,pct>=allP?'r':pct>=w80?'a':'')+'<div class="ringc"><b>'+pct+'<small>%</small></b><span>'+(isPlan(u)?'요금제':'오늘')+'</span></div></div>'+
       '<div class="use-d"><h4>'+(isPlan(u)?'요금제 사용량 '+pct+'%':proj!=null?'이 속도면 자정에 약 '+proj+'%':'오늘 '+pct+'% 사용')+'</h4><p class="s12 mut" style="margin-top:2px">'+planText(u)+' · 오늘 직원 호출 '+(u.calls||0)+'회<span class="own"> · $'+(u.costUsd||0).toFixed(3)+' / $'+(+u.limitUsd||0).toFixed(2)+'</span>'+(proj!=null?' · 자정 값은 지금 속도 그대로 본 단순 추정':'')+'</p>'+bar+
-      '<p class="urule">'+(same?'<span><span class="tg tg-r">'+allP+'%</span>새 작업 멈춤·전원 퇴근</span>':'<span><span class="tg tg-a">'+w80+'%</span>새 작업 멈춤</span><span><span class="tg tg-r">'+allP+'%</span>전원 퇴근</span>')+'<span class="dtag">'+(u.basis==='plan'?'Claude 요금제 기준(5시간·주간 중 큰 값)':u.basis==='plan+달러보조'?'Claude 요금제 기준 + 확인 못 한 창은 달러 보조':'요금제 사용률 확인 불가 — 하루 달러 한도 기준')+'</span></p></div></div>'+
+      '<p class="urule">'+(same?'<span><span class="tg tg-r">'+allP+'%</span>새 작업 멈춤·한도 정지</span>':'<span><span class="tg tg-a">'+w80+'%</span>새 작업 멈춤</span><span><span class="tg tg-r">'+allP+'%</span>한도 정지</span>')+'<span class="dtag">'+(u.basis==='plan'?'Claude 요금제 기준(5시간·주간 중 큰 값)':u.basis==='plan+달러보조'?'Claude 요금제 기준 + 확인 못 한 창은 달러 보조':'요금제 사용률 확인 불가 — 하루 달러 한도 기준')+'</span></p></div></div>'+
       '<div class="use-more">'+(u.overLimitToday?'<p><b style="color:var(--amber-ink)">'+esc(ovText(u))+'</b></p>':'')+
       '<p class="own">'+(u.externalUsd?'대장 밖 호출(스모크 등) $'+(+u.externalUsd).toFixed(3)+' 포함 · ':'')+(u.estimatedUsd?'비용을 몰라 상한으로 추정한 몫 $'+(+u.estimatedUsd).toFixed(3)+' 포함 · ':'')+'</p>'+
-      '<p>할 일 없는 직원은 AI를 부르지 않습니다. 새 작업 멈춤·전원 퇴근 판단('+(same?allP+'%':w80+'%·'+allP+'%')+')은 Claude 요금제 사용률(5시간·주간 중 큰 값)로 하고, 읽지 못하면 하루 달러 한도로 대신합니다. 직원 사용량은 대표님 Claude 요금제 한도와 같은 통에서 나갑니다.</p>'+localAiLine(s)+'</div>';
+      '<p>할 일 없는 직원은 AI를 부르지 않습니다. 새 작업 멈춤·한도 정지 판단('+(same?allP+'%':w80+'%·'+allP+'%')+')은 Claude 요금제 사용률(5시간·주간 중 큰 값)로 하고, 읽지 못하면 하루 달러 한도로 대신합니다. 직원 사용량은 대표님 Claude 요금제 한도와 같은 통에서 나갑니다.</p>'+localAiLine(s)+'</div>';
   }
 
   // (v1.4) 요금제 사용률 한 줄 — 5시간·주간 %(못 읽으면 "요금제 사용률 확인 불가")
@@ -2124,10 +2393,11 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
 
   function stopCardHtml(where){
     var s=status(), o=st().office;
-    if(s==='stopped') return '<p class="s12" style="color:var(--red-ink);font-weight:700">전원 정지 중 — '+esc(hm(o.since))+' '+txt(o.reason||'')+'</p><button type="button" class="btn btn-p btn-w" data-office-start>'+IC('i-power')+'확인하고 전원 출근</button><p class="s12">'+(o.stoppedBy==='울타리'?'내용을 확인하신 뒤 누르시면 프로그램이 복사본을 다시 검사합니다. 위반한 일감은 중단된 채로 남고(다시 하려면 새로 지시), 다른 일감은 멈춘 자리에서 이어갑니다. ':'누르시면 멈춘 자리에서 이어갑니다. ')+lastUrgentLink()+'</p>';
-    if(s==='limit') return '<p class="s12" style="color:var(--amber-ink);font-weight:700">전원 퇴근 중 — '+esc(hm(o.since))+' 사용량 한도 도달 (설계안)</p><button type="button" class="btn btn-p btn-w" data-office-start>'+IC('i-power')+'확인하고 전원 출근</button><p class="s12">누르시면 오늘 한도를 넘겨 계속 쓸지 한 번 더 여쭙니다. 날짜가 바뀌어도 자동으로 다시 출근하지 않습니다.</p>';
-    var h='<button type="button" class="btn btn-do btn-w'+(where==='settings'?' btn-lg':'')+'" data-open-stop>'+IC('i-stop')+'긴급정지 — 전원 퇴근</button>';
-    if(s==='off') return h+'<p class="s12">사무실이 꺼져 있습니다. 누르면 쌓아 두었다가 켜지면 다른 명령보다 가장 먼저 처리합니다(꺼져 있는 동안은 직원도 일하지 않습니다).</p>';
+    if(s==='stopped') return '<p class="s12" style="color:var(--red-ink);font-weight:700">울타리 정지 — 확인 필요 · '+esc(hm(o.since))+' '+txt(o.reason||'')+'</p><button type="button" class="btn btn-p btn-w" data-office-start>'+IC('i-power')+'확인하고 출근</button><p class="s12">'+(o.stoppedBy==='울타리'?'내용을 확인하신 뒤 누르시면 프로그램이 복사본을 다시 검사합니다. 위반한 일감은 중단된 채로 남고(다시 하려면 새로 지시), 다른 일감은 멈춘 자리에서 이어갑니다. ':'누르시면 멈춘 자리에서 이어갑니다. ')+lastUrgentLink()+'</p>';
+    if(s==='limit') return '<p class="s12" style="color:var(--amber-ink);font-weight:700">한도 정지 — 확인 필요 · '+esc(hm(o.since))+' 사용량 한도</p><button type="button" class="btn btn-p btn-w" data-office-start>'+IC('i-power')+'확인하고 출근</button><p class="s12">누르시면 오늘 한도를 넘겨 계속 쓸지 한 번 더 여쭙니다. 날짜가 바뀌어도 자동으로 다시 출근하지 않습니다.</p>';
+    var h='<button type="button" class="btn btn-do btn-w'+(where==='settings'?' btn-lg':'')+'" data-open-stop>'+IC('i-stop')+'긴급정지 — 모두 멈춤</button>';
+    if(ws()==='standby') h='<a class="btn btn-s btn-w" href="#power">'+IC('i-power')+'대기 중 — 근무·대기 바꾸기</a><div style="height:8px"></div>'+h;
+    if(s==='off') return h+'<p class="s12">'+offTxt()+'. 누르면 쌓아 두었다가 켜지면 다른 명령보다 가장 먼저 처리합니다(꺼져 있는 동안은 직원도 일하지 않습니다).</p>';
     return h+'<p class="s12">누르면 확인창이 먼저 뜹니다. 이미 만든 파일은 그대로 남습니다(삭제·덮어쓰기 없음).'+(where!=='settings'?' 한 명만 쉬게 하려면 사무실 자리의 [퇴근시키기], 다시 부르려면 [출근시키기]를 누릅니다.':'')+'</p>';
   }
 
@@ -2156,7 +2426,7 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
       return '<b>지금</b>'+txt(p.task||p.state)+(j?' — '+txt(j.title):'')+(busy?' · '+esc(durText(now()-new Date(busy.startedAt))):'');}
     if(p.state==='질문대기'){var q=questionOf(p.id);return '<b>지금</b>'+(q?esc(q.jobId||'')+' — 대표님 답 기다림 · '+txt(q.firstLine):'대표님 답 기다림');}
     var nj=nextJobFor(p.id);
-    if(s==='limit') return '<b>퇴근</b>사용량 한도 도달로 전원 퇴근 — 대표님이 [확인하고 전원 출근]을 누르실 때까지 쉽니다'+(p.onDuty?'':' (대표님이 퇴근시킨 직원은 그대로 쉼)')+'.';
+    if(s==='limit') return '<b>퇴근</b>한도 정지 — 대표님이 [확인하고 출근]을 누르실 때까지 쉽니다'+(p.onDuty?'':' (대표님이 퇴근시킨 직원은 그대로 쉼)')+'.';
     if(p.state==='퇴근'||!p.onDuty){
       var queued=st().jobs.filter(function(j){return j.waiting&&j.waiting.indexOf(p.title)>=0&&/퇴근/.test(j.waiting)}).length;
       return '<b>퇴근 중</b>대표님이 [출근시키기]를 누를 때까지 쉽니다. 그 사이 차례가 온 일감은 대장에 쌓입니다'+(queued?' · 쌓인 일감 '+queued+'건':'')+'.';
@@ -2235,10 +2505,10 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
   function renderOffice(){
     var s=status(), o=st().office, staff=st().staff;
     var cst=countStates();
-    var lede={on:'24시간 근무 · 근무 '+onDutyCount()+'/'+(staff.length||7)+(cst['퇴근']?'('+cst['퇴근']+'명 퇴근)':'')+' · 마지막 신호 '+sigSpan(),
-      stopped:'<span style="color:var(--red-ink)">전원 정지 — '+esc(hm(o.since))+' '+txt(o.reason||'')+' · 대표님이 확인하시면 다시 출근합니다</span>',
-      limit:'전원 퇴근 — '+esc(hm(o.since))+' 사용량 한도 도달 (설계안)',
-      off:'사무실 꺼짐 — '+(conn.lastOkAt?esc(hm(new Date(conn.lastOkAt)))+'부터 신호 없음 · 아래는 마지막 상태':'아직 연결 전')}[s];
+    var lede={on:ws()==='standby'?'<a class="lk" href="#power">대기 중</a> — 지시는 받아 두었다가 근무로 바꾸면 처리 · 마지막 신호 '+sigSpan():'24시간 근무 · 근무 '+onDutyCount()+'/'+(staff.length||7)+(cst['퇴근']?'('+cst['퇴근']+'명 퇴근)':'')+' · 마지막 신호 '+sigSpan(),
+      stopped:'<span style="color:var(--red-ink)">울타리 정지 — 확인 필요 · '+esc(hm(o.since))+' '+txt(o.reason||'')+' · [확인하고 출근]을 누르시면 다시 출근합니다</span>',
+      limit:'한도 정지 — 확인 필요 · '+esc(hm(o.since))+' 사용량 한도',
+      off:(ws()==='progoff'?'사무실 프로그램 꺼짐 — '+esc(offAtHm()):'PC 꺼짐 — '+(conn.lastOkAt?'마지막 신호 '+esc(hm(new Date(conn.lastOkAt))):'아직 연결 전'))+' · 아래는 마지막 상태'}[s];
     setHTML($('#officeLede'),lede);
     var LG=[['작업중','work','작업'],['검수중','rev','검수'],['질문대기','ask','질문'],['대기','idle','대기'],['퇴근','home','퇴근'],['정지','stop','정지']];
     setHTML($('#officeLegend'),LG.map(function(x){return '<span class="st st-'+x[1]+'"><span class="dt dt-'+x[1]+'"></span>'+x[2]+(s==='off'?'':' <span class="n">'+(cst[x[0]]||0)+'</span>')+'</span>'}).join(''));
@@ -2309,7 +2579,7 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
       sel.value=ui.workId||'';
     }
     var note=$('#orderState');
-    var msg=s==='off'?'사무실이 꺼져 있습니다. 보내면 쌓아 두었다가 켜지면 처리합니다.':s==='stopped'?'전원 정지 중입니다. 지시는 접수만 해 두고, 전원 출근 뒤 처리합니다.':s==='limit'?'한도 도달로 전원 퇴근 중입니다. 지시는 접수만 해 두고, 다시 출근하면 처리합니다.':'';
+    var msg=s==='off'?offTxt()+'. 보내면 쌓아 두었다가 켜지면 처리합니다.':s==='stopped'?'울타리 정지 중입니다. 지시는 접수만 해 두고, [확인하고 출근] 뒤 처리합니다.':s==='limit'?'한도 정지 중입니다. 지시는 접수만 해 두고, [확인하고 출근] 뒤 처리합니다.':ws()==='standby'?'대기 중입니다. 지시는 받아 두었다가 근무로 바꾸면 처리합니다.':'';
     note.hidden=!msg; note.textContent=msg; note.style.color=s==='stopped'?'var(--red-ink)':'var(--amber-ink)';
     $('#ordSend').disabled=false;
     renderOrderRec();
@@ -2557,7 +2827,7 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     var badge={question:openQuestions().length,approval:pendingApprovals().length,urgent:activeUrgent().length};
     setHTML($('#repChips'),RF.map(function(f){var n=f[0]==='all'?all.length:(badge[f[0]]!=null?badge[f[0]]:cnt[f[0]]||0);return '<button type="button" class="chip'+(ui.rf===f[0]?' on':'')+'" data-rf="'+f[0]+'">'+esc(f[1])+(n?' <span class="n">'+n+'</span>':'')+'</button>'}).join(''));
     var unread=all.filter(isUnread).length;
-    setHTML($('#repLede'),(ui.role?'안 읽음 '+unread+' · ':'')+'12:00·00:00 모아서 + 월요일 주간 · 폰은 결재·긴급만 울립니다. 읽음 표시는 이 기기에만 남습니다.');
+    setHTML($('#repLede'),(ui.role?'안 읽음 '+unread+' · ':'')+'12:00·00:00 모아서 + 월요일 주간 · 폰은 결재·긴급·개발 결정 요청만 울립니다. 읽음 표시는 이 기기에만 남습니다.');
     var list=all.filter(function(r){return ui.rf==='all'||rtype(r)[0]===ui.rf});
     // 맨 위 최신 브리핑 고정
     var pin=['all','brief','log','weekly'].indexOf(ui.rf)>=0?list.filter(function(x){return BRIEF_TYPES.indexOf(x.type)>=0})[0]:null;
@@ -2626,7 +2896,7 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     var links='';
     if(r.data&&r.data.resultPath) links+='<a class="btn btn-s btn-sm" href="#preview/'+enc(r.data.resultPath)+'">'+IC('i-eye')+'결과물 미리보기</a>';
     if(r.data&&r.data.finalRelPath) links+='<a class="btn btn-s btn-sm" href="#preview/'+enc(r.data.finalRelPath)+'">'+IC('i-file')+'새 최종본 보기</a>';
-    if(r.type==='긴급'&&(status()==='stopped'||status()==='limit')) links+='<button type="button" class="btn btn-p btn-sm own" data-office-start>'+IC('i-power')+'확인하고 전원 출근</button><a class="btn btn-s btn-sm" href="#office">사무실 보기</a>';
+    if(r.type==='긴급'&&(status()==='stopped'||status()==='limit')) links+='<button type="button" class="btn btn-p btn-sm own" data-office-start>'+IC('i-power')+'확인하고 출근</button><a class="btn btn-s btn-sm" href="#office">사무실 보기</a>';
     if(r.jobId) links+='<a class="btn btn-s btn-sm" href="#ledger">'+IC('i-board')+'일감 대장</a>';
     if(links&&r.type!=='결재 요청') h+='<div class="acts">'+links+'</div>';
     if(r.type!=='질문') h+='<div class="ro sub">'+IC('i-eye')+'열람 전용 — 결재·답하기·조작은 대표님만 할 수 있습니다</div>';
@@ -2725,7 +2995,7 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
       (a.draftRelPath?'<a class="path" href="#preview/'+enc(a.draftRelPath)+'">'+esc(a.draftRelPath)+'</a>':'')+'</div>';
     var ifA=findSec(r,'승인하면 일어날 일');
     if(ifA.length) h+='<div class="dsec"><h4>승인하면 일어날 일</h4><div class="okbox">'+IC('i-check')+'<span>'+ifA.map(function(x,i){return i===0?'<b>'+txt(x)+'</b>':txt(x)}).join('<br>')+'</span></div>'+
-      (wait?'<p class="s12 mut stop-only own" style="margin-top:6px">전원 정지 중에도 결재는 됩니다. 적용은 전원 출근 뒤에 합니다.</p><p class="s12 mut limit-only own" style="margin-top:6px">한도 도달로 전원 퇴근 중에도 결재는 됩니다. 적용은 다시 출근한 뒤에 합니다.</p>':'')+'</div>';
+      (wait?'<p class="s12 mut stop-only own" style="margin-top:6px">울타리 정지 중에도 결재는 됩니다. 적용은 [확인하고 출근] 뒤에 합니다.</p><p class="s12 mut limit-only own" style="margin-top:6px">한도 정지 중에도 결재는 됩니다. 적용은 [확인하고 출근] 뒤에 합니다.</p>':'')+'</div>';
     var what=findSec(r,'무엇을'); if(what.length) h+=fold('fwh-'+a.id,'무엇을',txt(clip(what[0],40)),what.map(linkify).join('<br>'));
     if(draft[0]) h+=fold('frv-'+a.id,'검수','<span class="tg tg-g" style="height:19px">통과</span>',linkify(draft[0].replace(/^[^(]*\(/,'').replace(/\)\s*$/,''))+(r&&r.data&&r.data.completionReportId?' <a class="lk" href="#reports/'+enc(r.data.completionReportId)+'">완료보고 보기 →</a>':''));
     var whyL=findSec(r,'왜'); if(whyL.length) h+=fold('fw-'+a.id,'왜 결재?','결재선 「'+esc(a.kind)+'」',whyL.map(linkify).join('<br>'));
@@ -2865,30 +3135,47 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     $$('[data-pane]',wrap).forEach(function(p){p.hidden=(p.getAttribute('data-pane')!==name)});
   }
   function navState(){
-    var s=ui.cur;
+    var s=ui.cur==='power'?'talk':ui.cur;
     $$('[data-nav]').forEach(function(a){var on=a.getAttribute('data-nav')===s;var nt=a.getAttribute('data-navtab');if(on&&nt)on=nt==='prop'?ui.ltab==='prop':ui.ltab!=='prop';a.classList.toggle('on',on)});
   }
   function go(){
-    var h=location.hash.replace(/^#/,'');
+    var raw=location.hash.replace(/^#/,''), h=raw;
     try{h=decodeURIComponent(h)}catch(e){}
     var q='',i=h.indexOf('?'); if(i>=0){q=h.slice(i+1);h=h.slice(0,i);}
-    var k=h.indexOf('/'), s=(k<0?h:h.slice(0,k))||'home', id=k<0?'':h.slice(k+1);
-    // 로그인 전에는 로그인 화면만(알림으로 열린 화면 주소는 기억했다가 로그인 뒤 연다) · 로그인 뒤 로그인 화면은 홈으로
-    if(!session.user||!session.checked){if(s!=='login'&&h)session.after='#'+h;s='login';id='';}else if(s==='login'){s='home';id='';}
-    if(ROUTES.indexOf(s)<0){toast('없는 화면입니다 — 홈으로 이동합니다','info');s='home';id='';}
+    // (1-10 · 261001 대표님 결정) 첫 화면 = 톡 목록
+    var k=h.indexOf('/'), s=(k<0?h:h.slice(0,k))||'talk', id=k<0?'':h.slice(k+1);
+    // 로그인 전에는 로그인 화면만(알림으로 열린 화면 주소는 기억했다가 로그인 뒤 연다) · 로그인 뒤 로그인 화면은 톡으로
+    if(!session.user||!session.checked){if(s!=='login'&&raw)session.after='#'+raw;s='login';id='';}else if(s==='login'){s='talk';id='';}
+    if(ROUTES.indexOf(s)<0){toast('없는 화면입니다 — 톡으로 이동합니다','info');s='talk';id='';}
     if(s==='preview'&&id) delete fileCache[id];   // 열 때마다 새로 읽음(최종본 교체 반영)
     if(s==='ledger'){if(['all','prop','stall'].indexOf(id)>=0)ui.ltab=id;id='';}
+    // 톡 주소는 조각마다 따로 풀어 읽는다 — #talk/<방> · #talk/<방>/m/<메시지> · #talk/<방>/r/<보고번호> (조각은 enc 로 만든 주소)
+    var prevRoom=tk.room, prevSub=tk.sub+'|'+tk.subId;
+    if(s==='talk'){
+      var ps=raw.split('?')[0].split('/').map(function(x){try{return decodeURIComponent(x)}catch(e){return x}});
+      tk.room=String(ps[1]||'').slice(0,40); tk.sub=(ps[2]==='m'||ps[2]==='r')&&ps[3]?ps[2]:''; tk.subId=tk.sub?ps.slice(3).join('/').slice(0,80):''; id=tk.room;
+    } else if(s!=='power'){tk.room='';tk.sub='';tk.subId='';}
+    if(tk.room!==prevRoom){tk.hl='';tk.scrollKey='';}
+    if(tk.sub+'|'+tk.subId!==prevSub) tk.hl='';
     var prevS=ui.cur, prevId=ui.id;
+    if(s==='power'&&prevS!=='power') ui.powerBack=ui.lastHash&&!/^#power/.test(ui.lastHash)&&!/^#login/.test(ui.lastHash)?ui.lastHash:'#talk';
     ui.cur=s; ui.id=id;
+    var sec=s==='power'?'talk':s;
     B.setAttribute('data-r',s); B.classList.toggle('route-login',s==='login'); B.classList.toggle('split-route',SPLIT.indexOf(s)>=0);
-    $$('section[data-route]').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-route')===s)});
+    B.classList.toggle('talk-route',sec==='talk'); B.classList.toggle('tk-in',sec==='talk'&&!!tk.room); B.classList.toggle('tk-doc-in',sec==='talk'&&!!tk.room&&tk.sub==='r'&&!!tk.subId);
+    $$('section[data-route]').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-route')===sec)});
     navState();
     if(s==='approvals'&&id){var a=aprById(id);if(a){ui.aprTab=a.status==='대기'?'wait':'done';}}
     setTab($('section[data-route="approvals"] [data-tabwrap]'),ui.aprTab);
     setTab($('section[data-route="ledger"]'),ui.ltab);
     if((s==='reports'||s==='approvals')&&id) markRead(id);
     if(s==='order') loadWorkIds();
+    if(sec==='talk'&&tk.room) tkSubRoom(tk.room); else tkUnsubRoom();
+    if(sec==='talk'&&tk.sub==='r'&&tk.subId&&session.checked&&(tk.sub+'|'+tk.subId!==prevSub||prevS!==s||!tk.html[tk.subId])) tkLoadHtml(tk.subId);
+    ui.lastHash='#'+raw;
     closeAll(); render();
+    if(s==='power') openPower();
+    if(sec==='talk'){if(!tk.room||prevS!==s||tk.room!==prevRoom){window.scrollTo(0,0);}return;}
     // 스크롤: 같은 목록·상세 화면 안에서 고른 것만 바뀌면 목록 위치는 그대로
     if(SPLIT.indexOf(s)>=0&&prevS===s){
       $$('section[data-route="'+s+'"] .pane-d .sheet-scroll, section[data-route="'+s+'"] .pane-a').forEach(function(x){x.scrollTop=0});
@@ -2918,29 +3205,30 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     if(o.status==='stopped'&&o.stoppedBy==='울타리'){
       var v=o.lastViolation||{};
       var list=(v.violations||[]).slice(0,6).map(function(x){return '<li>'+txt(x.kind+': '+x.path)+'</li>'}).join('');
-      ask({pill:'울타리 위반 확인',pillCls:'b-danger',title:'확인하고 전원 출근시킬까요?',
+      ask({pill:'울타리 위반 확인',pillCls:'b-danger',title:'확인하고 출근시킬까요?',
         body:'<p>위반 내용'+(v.jobId?' ('+esc(v.jobId)+')':'')+':</p><ul class="s12" style="margin:6px 0 8px 18px">'+list+'</ul><p>누르시면 사무실 프로그램이 복사본을 <b>다시 검사</b>합니다. 위반 직전과 달라진 곳이 남아 있으면 목록을 보여 드립니다. <b>위반한 일감은 중단된 채로 남습니다 — 다시 하려면 새로 지시해 주세요.</b> 다른 일감은 멈춘 자리에서 이어갑니다.</p>',
-        choicesLabel:'남은 변화가 있으면',choices:[{value:'처리했음',label:'처리했음(되돌렸음) — 다시 검사'},{value:'그대로 인정',label:'그대로 인정 — 지금 상태로 출근'}],choiceDefault:'처리했음',ok:'확인하고 전원 출근'})
+        choicesLabel:'남은 변화가 있으면',choices:[{value:'처리했음',label:'처리했음(되돌렸음) — 다시 검사'},{value:'그대로 인정',label:'그대로 인정 — 지금 상태로 출근'}],choiceDefault:'처리했음',ok:'확인하고 출근'})
       .then(function(r){if(r===null)return;startOffice({fenceAck:r.choice});});
       return;
     }
     if(o.status==='limit'&&(u.limitRatio!=null?u.limitRatio:(u.ratio||0))>=(u.stopAllAtRatio||1)){askOverLimit(u);return;}
-    ask({pill:'전원 출근 확인',pillCls:'b-ok',title:'확인하고 전원 출근시킬까요?',body:'<p>누르면 전원 출근시키고 멈춘 자리에서 이어갑니다.'+(o.status==='limit'?' 오늘 사용량은 한도 아래라 추가 확인은 없습니다.':'')+'</p>',ok:'확인하고 전원 출근'}).then(function(v){
+    ask({pill:'출근 확인',pillCls:'b-ok',title:'확인하고 출근시킬까요?',body:'<p>누르면 다시 출근시키고 멈춘 자리에서 이어갑니다.'+(ws()==='standby'?' 지금은 대기 중이라 출근 확인만 하고, 근무로 바꾸면 이어서 합니다.':'')+(o.status==='limit'?' 오늘 사용량은 한도 아래라 추가 확인은 없습니다.':'')+'</p>',ok:'확인하고 출근'}).then(function(v){
       if(v===null) return; startOffice({});
     });
   }
   function askOverLimit(u){
     var planHot=(u.planRatio||0)>=(u.stopAllAtRatio||1);
-    ask({pill:'한도 넘겨 계속',pillCls:'b-warn',title:'한도를 넘겨 계속 쓸까요?',body:'<p>'+(planHot?'Claude 요금제 사용량이 '+Math.round((u.planRatio||0)*100)+'%입니다. 계속 쓰시면 그 요금제 창의 재설정 시각까지 그 창으로는 다시 멈추지 않고(다른 창·달러 보조는 계속 봄), 직원 사용량이 대표님 Claude 요금제 몫에서 더 나갑니다.':'요금제 사용률을 확인할 수 없는 동안 쓴 달러가 하루 달러 한도의 '+Math.round(((u.dollarFallback||{}).ratio||u.ratio||0)*100)+'%입니다. 계속 쓰시면 오늘은 달러 대체로는 멈추지 않지만, 새로 받은 요금제 값이 '+(Math.round((u.stopNewWorkAtRatio||0.8)*100)>=Math.round((u.stopAllAtRatio||1)*100)?Math.round((u.stopAllAtRatio||1)*100)+'%':Math.round((u.stopNewWorkAtRatio||0.8)*100)+'%·'+Math.round((u.stopAllAtRatio||1)*100)+'%')+'면 다시 멈춥니다.')+'</p><p style="margin-top:8px">그대로 두시면 [확인하고 전원 출근]을 누르실 때까지 쉽니다(날짜가 바뀌어도 자동 출근 없음).</p>',ok:'한도 넘겨 계속 쓰기'})
+    ask({pill:'한도 넘겨 계속',pillCls:'b-warn',title:'한도를 넘겨 계속 쓸까요?',body:'<p>'+(planHot?'Claude 요금제 사용량이 '+Math.round((u.planRatio||0)*100)+'%입니다. 계속 쓰시면 그 요금제 창의 재설정 시각까지 그 창으로는 다시 멈추지 않고(다른 창·달러 보조는 계속 봄), 직원 사용량이 대표님 Claude 요금제 몫에서 더 나갑니다.':'요금제 사용률을 확인할 수 없는 동안 쓴 달러가 하루 달러 한도의 '+Math.round(((u.dollarFallback||{}).ratio||u.ratio||0)*100)+'%입니다. 계속 쓰시면 오늘은 달러 대체로는 멈추지 않지만, 새로 받은 요금제 값이 '+(Math.round((u.stopNewWorkAtRatio||0.8)*100)>=Math.round((u.stopAllAtRatio||1)*100)?Math.round((u.stopAllAtRatio||1)*100)+'%':Math.round((u.stopNewWorkAtRatio||0.8)*100)+'%·'+Math.round((u.stopAllAtRatio||1)*100)+'%')+'면 다시 멈춥니다.')+'</p><p style="margin-top:8px">그대로 두시면 [확인하고 출근]을 누르실 때까지 쉽니다(날짜가 바뀌어도 자동 출근 없음).</p>',ok:'한도 넘겨 계속 쓰기'})
     .then(function(v){if(v===null)return;startOffice({overLimit:true});});
   }
   function startOffice(body){
     cmd('officeStart',body,function(r){
-      if(r.ok){toast(body.fenceAck?'전원 출근했습니다. 위반 일감은 중단된 채로 두었습니다(다시 하려면 새로 지시).':body.overLimit?'전원 출근했습니다. 한도를 넘겨 계속 씁니다(기준은 소식에).':'전원 출근했습니다. 멈춘 자리에서 이어갑니다.');return;}
+      // (1-10) 대기 중이면 서버가 "출근 확인 · 지금은 대기 — 근무로 바꾸면 이어서 합니다" 를 돌려준다 — 그 글을 그대로
+      if(r.ok){toast(r.message&&/대기/.test(r.message)?r.message:body.fenceAck?'출근했습니다. 위반 일감은 중단된 채로 두었습니다(다시 하려면 새로 지시).':body.overLimit?'출근했습니다. 한도를 넘겨 계속 씁니다(기준은 소식에).':'출근했습니다. 멈춘 자리에서 이어갑니다.');return;}
       var d=r.extra||{};
       if(d.needFenceAck&&d.residual){
         ask({pill:'아직 남은 변화',pillCls:'b-danger',title:'위반 직전과 달라진 곳이 '+d.residual.length+'건 남아 있습니다',
-          body:'<ul class="s12" style="margin:0 0 8px 18px">'+d.residual.slice(0,20).map(function(x){return '<li>'+txt(x)+'</li>'}).join('')+'</ul><p>되돌리신 뒤 다시 [확인하고 전원 출근]을 누르셔도 되고, 지금 상태를 그대로 인정하고 출근시킬 수도 있습니다.</p>',ok:'그대로 인정하고 전원 출근',okCls:'btn-d'})
+          body:'<ul class="s12" style="margin:0 0 8px 18px">'+d.residual.slice(0,20).map(function(x){return '<li>'+txt(x)+'</li>'}).join('')+'</ul><p>되돌리신 뒤 다시 [확인하고 출근]을 누르셔도 되고, 지금 상태를 그대로 인정하고 출근시킬 수도 있습니다.</p>',ok:'그대로 인정하고 출근',okCls:'btn-d'})
         .then(function(v){if(v===null)return;startOffice({fenceAck:'그대로 인정'});});
         return;
       }
@@ -2952,7 +3240,7 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     if(!guard()) return;
     var s=status(); if(s==='stopped'||s==='limit') return;
     var busy=st().staff.filter(function(p){return p.state==='작업중'||p.state==='검수중'||p.state==='질문대기'});
-    $('#stopNow').innerHTML=s==='off'?'<li>사무실이 꺼져 있습니다 — 보내면 쌓아 두었다가 켜지면 다른 명령보다 가장 먼저 처리합니다.</li>':busy.length?busy.map(function(p){return '<li>'+esc(p.title)+' — '+txt(p.task||(p.state==='질문대기'?'대표님 답 기다림 (질문대기)':p.state))+'</li>'}).join(''):'<li>지금 AI를 부르고 있는 직원은 없습니다.</li>';
+    $('#stopNow').innerHTML=s==='off'?'<li>'+offTxt()+' — 보내면 쌓아 두었다가 켜지면 다른 명령보다 가장 먼저 처리합니다.</li>':busy.length?busy.map(function(p){return '<li>'+esc(p.title)+' — '+txt(p.task||(p.state==='질문대기'?'대표님 답 기다림 (질문대기)':p.state))+'</li>'}).join(''):'<li>지금 AI를 부르고 있는 직원은 없습니다.</li>';
     $$('#stopReasons .chip').forEach(function(c){c.classList.remove('sel')});
     closeAll(); $('#stopModal').classList.add('open'); setTimeout(function(){try{$('#stopCancel').focus()}catch(e){}},30);
   }
@@ -3021,6 +3309,759 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     cmd('staffReturn',{staffId:id},function(r){toast(r.ok?(p?p.title:'직원')+' 출근했습니다. 쌓인 일감이 있으면 이어서 합니다.':'출근시키지 못했습니다 — '+(r.message||''));});
   }
 
+  // ══ 톡 (1-10 · 메신저형 보고·지시 — 261001 대표님 결정) ═══════════════════════
+  // - 방 목록 = 상태 문서 chat(요약) · 연 방 하나만 chat/{방} 문서를 구독 · 보고서는 report_html/{보고번호} 를 열 때 한 번 읽음.
+  // - 대표님 글은 명령 chatSend 로(사무실 PC 가 가져가 처리). 보낸 글 원문은 이 기기에만(mdo.talk.out.v1) — 말풍선은 그 원문으로.
+  // - 방·직원 이름은 이 파일에 적지 않고 데이터(rooms[])로만 그린다. 서버 글은 모두 esc/txt · class 는 표로만 · 보고서 HTML 은 sandbox iframe 에만.
+  var tk={room:'',sub:'',subId:'',docs:{},roomSub:'',roomUnsub:null,band:{},bandOff:{},dest:{},chips:{urg:false,apr:false,workId:'',hint:''},opt:{},hl:'',scrollKey:'',readT:{},readQ:{},sendingNow:{},bandLost:{},html:{},queued:{},w:{},power:null,q:'',stale:{},composing:false};
+  var TK_ACTS=['opt','approve','revise','reject','answer','direct','summary','arch','prop','band','dest','chip','pend','out','pmode','dl','reply'];
+  var CHAT_MODES=['auto','answer','revise','reject','order','note'];
+  function chatV(){return (base&&base.chat&&typeof base.chat==='object')?base.chat:null}
+  function rooms(){var c=chatV();return c&&Array.isArray(c.rooms)?c.rooms.filter(function(r){return r&&typeof r.id==='string'}):[]}
+  function roomById(id){var a=rooms();for(var i=0;i<a.length;i++)if(a[i].id===id)return a[i];return null}
+  function isGrp(r){return !!r&&r.kind==='group'}
+  function isDev(r){return !!r&&r.kind==='dev'}
+  function devByAuthor(id){var a=rooms();for(var i=0;i<a.length;i++)if(isDev(a[i])&&a[i].author&&a[i].author.id===id)return a[i];return null}
+  function ownerNm(){return (U().owner&&U().owner.name)||'대표'}
+  function tkMsgs(room){var d=tk.docs[room];return d&&d.obj&&Array.isArray(d.obj.msgs)?d.obj.msgs.filter(function(m){return m&&typeof m==='object'}):[]}
+  function tkMsg(room,id){var a=tkMsgs(room);for(var i=0;i<a.length;i++)if(a[i].id===id)return a[i];return null}
+  function tkFindRep(room,repId,kind){var a=tkMsgs(room);for(var i=a.length-1;i>=0;i--){var m=a[i];if(m.card&&m.ref&&m.ref.reportId===repId&&(!kind||m.kind===kind))return m;}return null}
+  function tkHref(room,sub,id){return '#talk/'+enc(room)+(sub&&id?'/'+sub+'/'+enc(id):'')}
+  function tkFocus(){var t=$('#tkTxt');if(t)try{t.focus()}catch(e){}}
+  function tkGrow(t){if(!t)return;t.style.height='auto';t.style.height=Math.min(132,t.scrollHeight)+'px'}
+  // (261004 배포전검토1 IOS-03) 방마다 보내지 않은 글(초안)을 이 기기에 보관 — 톡 목록·다른 방·폰 알림으로 옮겼다 돌아와도 이어서 쓴다.
+  //  보내면 지운다. 7일 · 20개 방까지. 로그아웃하면 지운다(대표 계정만 · 보낸 글 기록과 같은 이 기기 저장).
+  var DRAFT_KEY='mdo.talk.draft.v1', DRAFT_MS=7*864e5;
+  function draftAll(){var o=null;try{o=JSON.parse(localStorage.getItem(DRAFT_KEY)||'{}')}catch(e){o=null}return o&&typeof o==='object'&&!Array.isArray(o)?o:{}}
+  function draftGet(room){var d=draftAll()[room];return d&&typeof d.t==='string'&&Date.now()-(+d.at||0)<=DRAFT_MS?d.t:''}
+  function draftSet(room,t){
+    if(ui.role!=='owner'||!room) return;
+    var o=draftAll(), n={}, v=String(t||'');
+    if(v.trim()) o[room]={t:v.slice(0,4000),at:Date.now()}; else delete o[room];
+    Object.keys(o).filter(function(k){return o[k]&&Date.now()-(+o[k].at||0)<=DRAFT_MS}).sort(function(a,b){return (+o[b].at)-(+o[a].at)}).slice(0,20).forEach(function(k){n[k]=o[k]});
+    if(Object.keys(n).length){try{localStorage.setItem(DRAFT_KEY,JSON.stringify(n))}catch(e){}}else{try{localStorage.removeItem(DRAFT_KEY)}catch(e){}}
+  }
+  // (IOS-05) 방 화면을 보이는 영역(visualViewport)에 맞춘다 — 아이폰 키보드가 올라와도 머리줄(뒤로·방 이름)·입력줄·마지막 말풍선이 보이게.
+  //  높이가 바뀌기 전에 맨 아래였으면(tk.atBottom) 바뀐 뒤에도 맨 아래로(입력칸이 여러 줄로 커질 때 · 가로로 돌릴 때도 같은 처리).
+  function tkVV(){
+    var vv=window.visualViewport, el=$('#tkRoom'), de=document.documentElement;
+    if(!el) return;
+    var on=!!vv&&!isDesk()&&document.body.classList.contains('tk-in')&&!el.hidden;
+    if(!on){el.style.removeProperty('height');el.style.removeProperty('top');de.classList.remove('kb');de.style.removeProperty('--vvt');return;}
+    var kb=window.innerHeight-vv.height>120;
+    el.style.height=Math.round(vv.height)+'px'; el.style.top=Math.round(vv.offsetTop)+'px';
+    de.classList.toggle('kb',kb); de.style.setProperty('--vvt',Math.round(vv.offsetTop)+'px');
+    tkKeepBottom();
+  }
+  function tkKeepBottom(){var sc=$('#tkScroll');if(sc&&tk.atBottom)sc.scrollTop=sc.scrollHeight;}
+  function tkWatchSize(sc){
+    if(!window.ResizeObserver||!sc||tk.roSc===sc) return;
+    if(!tk.ro) tk.ro=new ResizeObserver(function(){tkKeepBottom();});
+    if(tk.roSc) try{tk.ro.unobserve(tk.roSc)}catch(e){}
+    tk.ro.observe(sc); tk.roSc=sc;
+  }
+  // 시각 — 오늘 HH:MM · 어제 HH:MM · 그 전 M/D HH:MM (0-1)
+  function tkDayKey(v){var k=kp(v);return k?k.key:''}
+  function tkDayLabel(v){var k=kp(v);return k?k.Y+'년 '+k.M+'월 '+k.D+'일 '+k.dow+'요일':''}
+  function tkWhen(v){var k=kp(v),t=kp(now());if(!k||!t)return '';if(k.key===t.key)return hm(v);var y=kp(new Date(now().getTime()-864e5));if(y&&k.key===y.key)return '어제 '+hm(v);return k.M+'/'+k.D+' '+hm(v)}
+
+  // ── 근무·대기 상태(E-1) — PC 꺼짐 > 사무실 프로그램 꺼짐 > 울타리 정지 > 한도 정지 > 대기 > 근무 ──
+  function ws(){
+    if(!base) return 'pcoff';
+    if(hb.offline) return 'progoff';
+    if(!hb.at||Date.now()-hb.at>OFF_MS) return 'pcoff';
+    var o=st().office||{};
+    if(o.status==='stopped'||o.workBlock==='stopped') return 'stopped';
+    if(o.status==='limit'||o.workBlock==='limit') return 'limit';
+    if(o.power==='standby'||o.workBlock==='standby') return 'standby';
+    return 'work';
+  }
+  var WSL={work:['근무 중','','dt-work'],standby:['대기 중','off','dt-home'],stopped:['울타리 정지','stop','dt-stop',' — 확인 필요'],limit:['한도 정지','warn','dt-ask',' — 확인 필요'],pcoff:['PC 꺼짐','off','dt-home'],progoff:['프로그램 꺼짐','off','dt-home']};
+  function lastSigHm(){return conn.lastOkAt?hm(new Date(conn.lastOkAt)):'—'}
+  // (0-1) 꺼짐 안내 한 마디 — 근무 신호가 끊긴 것(PC 꺼짐)과 프로그램만 끈 것을 나눠 말한다
+  function offTxt(){return ws()==='progoff'?'사무실 프로그램이 꺼져 있습니다':'PC 가 꺼져 있습니다(또는 인터넷 끊김)'}
+  function offAtHm(){return hb.offlineAt?hm(new Date(hb.offlineAt)):lastSigHm()}
+  // 알약 하나 — 누르면 근무·대기 창(#power). 좁은 화면(머리)에서는 뒷부분(lv-x)을 접는다
+  function pillHtml(cls){
+    if(!session.checked) return session.user?'<span class="live ld"><span class="spin"></span>연결 중</span>':'';
+    var s=ws(), w=WSL[s];
+    var x=s==='work'?' · 신호 '+sigSpan():s==='pcoff'?' · '+esc(lastSigHm()):s==='progoff'?' · '+esc(offAtHm()):esc(w[3]||'');
+    return '<a href="#power" class="'+cls+(w[1]?' '+w[1]:'')+'" title="근무·대기 — 누르면 창이 열립니다"><span class="dt '+w[2]+'"></span>'+(s==='progoff'?'<span class="lv-x">사무실 </span>':'')+esc(w[0])+'<span class="lv-x">'+x+'</span></a>';
+  }
+  // 상태 띠(방 입력줄 위 · 톡 목록 위) — 근무 중이면 없음. 버튼은 대표만(.own)
+  function bandHtml(){
+    var s=ws(); if(s==='work') return '';
+    var t={pcoff:['','PC 꺼짐 — 켜지면 처리합니다(보낸 글은 PC로 보내는 중)'],progoff:['','사무실 프로그램 꺼짐 — 바탕화면 🍀 켜기 아이콘으로 켜 주세요'],stopped:['stop','울타리 정지 — 확인 필요'],limit:['warn','한도 정지 — 확인 필요'],standby:['','대기 중 — 지시는 받아 두었다가 근무로 바꾸면 처리합니다']}[s];
+    var btn=s==='stopped'||s==='limit'?'<button type="button" class="btn btn-p own" data-office-start>'+IC('i-power')+'확인하고 출근</button>':s==='standby'?'<button type="button" class="btn btn-s own" data-act="pmode" data-id="work">근무로</button>':'';
+    return '<div class="tk-band'+(t[0]?' '+t[0]:'')+'" role="status" data-ws="'+s+'"><span>'+esc(t[1])+'</span>'+btn+'</div>';
+  }
+
+  // ── 안 읽음 — 대표는 서버(readOwner) + 기기 덮개 · 열람은 기기에만(방마다 점) ──
+  var RD_OWNER='mdo.talk.read.v1.owner', RD_VIEW='mdo.talk.read.v1.viewer', rdC={};
+  function rdLoad(k){if(rdC[k])return rdC[k];var o=null;try{o=JSON.parse(localStorage.getItem(k)||'null')}catch(e){o=null}if(!o||typeof o!=='object'||Array.isArray(o))o={};rdC[k]=o;return o;}
+  function rdSave(k){try{localStorage.setItem(k,JSON.stringify(rdC[k]||{}))}catch(e){}}
+  function tkUnread(r){
+    if(!ui.role||!r) return {n:0,dot:false};
+    if(ui.role==='owner'){
+      var ov1=rdLoad(RD_OWNER)[r.id], ovq=tk.readQ[r.id], ov=ovq&&(!ov1||ovq.at>ov1.at)?ovq:ov1, srv=String(((chatV()||{}).readOwner||{})[r.id]||''), n=Math.max(0,+r.unreadOwner||0);
+      // 읽음을 보낸 뒤 서버 값이 오기 전 — 그 뒤로 새 글이 없으면 0(서버 값이 따라오면 서버 값)
+      if(ov&&typeof ov.at==='string'&&!(srv&&srv>=ov.at)&&(!r.lastAt||String(r.lastAt)<=ov.at)) n=0;
+      return {n:n,dot:false};
+    }
+    var vw=rdLoad(RD_VIEW); if(!vw._since){vw._since=now().toISOString();rdSave(RD_VIEW);}
+    var lk=(r.last||{}).kind, seen=String(vw[r.id]||vw._since);
+    if(Array.isArray(r.marks)){var mk=r.marks.filter(function(a){return typeof a==='string'&&a>seen});return {n:mk.length,plus:!!r.marksMore&&mk.length>0&&mk.length===r.marks.length,dot:false};}
+    return {n:0,dot:!!(r.lastAt&&String(r.lastAt)>seen&&lk!=='me'&&lk!=='sys')};
+  }
+  // (261002 재감사 D2-03) 합계에 「넘음(20+)」과 「정확한 수 모름(옛 요약 점 = 방 수)」을 함께 전달
+  function tkUnreadTotal(){var t=0,plus=false,dots=0;rooms().forEach(function(r){var u=tkUnread(r);t+=u.n||0;if(u.plus)plus=true;if(!u.n&&u.dot)dots++;});return {n:t,plus:plus,dots:dots}}
+  function tkBadges(){var u=tkUnreadTotal(), n=u.n+u.dots;$$('[data-cnt="talk"]').forEach(function(c){c.hidden=!n;c.textContent=n>99?'99+':String(n)+(u.plus?'+':'');c.title=(u.n?'안 읽은 메시지 '+u.n+(u.plus?'개 넘음':''):'')+(u.dots?(u.n?' · ':'')+'새 글이 있는 방 '+u.dots+'곳':'');});}
+  // (261002 검토 C2-07) 대화가 실제로 보이는가 — 탭이 보이고, 그 방이 열려 있고, 보고서 화면·시트가 덮지 않고, 대화 칸 높이가 있을 때만
+  function tkConvVisible(room){
+    if(document.visibilityState&&document.visibilityState!=='visible') return false;
+    if(!room||tk.room!==room||ui.cur!=='talk') return false;
+    if(tk.sub==='r'&&window.innerWidth<1024) return false; // 폰·좁은 화면(1024 미만): 보고서가 대화를 덮음(맥 3단 화면은 나란히 보임)
+    if(document.querySelector('.ov.open')) return false;
+    var sc=$('#tkScroll')||$('#tkMsgs'); if(sc&&!(sc.clientHeight>0)) return false;
+    return true;
+  }
+  // (261002 검토 C2-06) 방마다 따로 예약 — 다른 방을 읽어도 앞 방 전송이 취소되지 않는다. 기기 덮개는 전송(명령 쓰기)이 된 뒤에 확정.
+  function tkRead(room,now0){
+    if(ui.role!=='owner'||!room) return;
+    var ms=tkMsgs(room); if(!ms.length) return;
+    var last=ms[ms.length-1], r=roomById(room); if(!last.id||!last.at) return;
+    var any=ms.some(function(m){return m.unread})||!!(r&&+r.unreadOwner>0);
+    var ovs=rdLoad(RD_OWNER), ov=ovs[room];
+    if(!any||(ov&&ov.at>=String(last.at))) return;
+    if(!tkConvVisible(room)) return;
+    var q=tk.readQ[room]; if(q&&q.at>=String(last.at)&&!now0) return;
+    tk.readQ[room]={at:String(last.at),id:String(last.id)}; tkBadges();
+    clearTimeout(tk.readT[room]);
+    var send=function(){
+      delete tk.readT[room]; var w=tk.readQ[room]; if(!w) return;
+      cmd('chatRead',{room:room,upTo:w.id.slice(0,80)},null,true).then(function(id){
+        if(tk.readQ[room]===w) delete tk.readQ[room];
+        if(id){var o2=rdLoad(RD_OWNER);if(!o2[room]||o2[room].at<w.at){o2[room]={at:w.at,id:w.id};rdSave(RD_OWNER);}}
+        tkBadges();
+      });
+    };
+    if(now0) send(); else tk.readT[room]=setTimeout(send,3000);
+  }
+  function tkViewerSeen(room){
+    if(ui.role!=='viewer') return;
+    if(!tkConvVisible(room)) return;
+    var ms=tkMsgs(room), last=ms[ms.length-1]; if(!last||!last.at) return;
+    var vw=rdLoad(RD_VIEW); if(!vw[room]||String(vw[room])<String(last.at)){vw[room]=String(last.at);rdSave(RD_VIEW);}
+  }
+
+  // ── 보낸 글(이 기기) — { 요청ID: {room,text,mode,replyTo,chip,…,at,state:'sending'|'done'|'choose'|'fail',cmd} } 최근 50 · 7일 ──
+  var OUT_KEY='mdo.talk.out.v1', outC=null;
+  function outAll(){
+    if(outC) return outC;
+    var o=null; try{o=JSON.parse(localStorage.getItem(OUT_KEY)||'null')}catch(e){o=null}
+    if(!o||typeof o!=='object'||Array.isArray(o)) o={};
+    var lim=Date.now()-7*864e5;
+    outC={};
+    Object.keys(o).filter(function(k){var e=o[k];return /^[A-Za-z0-9_-]{8,80}$/.test(k)&&e&&typeof e==='object'&&typeof e.room==='string'&&typeof e.text==='string'&&Date.parse(e.at)>lim}).sort(function(a,b){return String(o[a].at)<String(o[b].at)?-1:1}).slice(-50).forEach(function(k){outC[k]=o[k]});
+    return outC;
+  }
+  function outSave(){
+    var o=outAll(), ks=Object.keys(o).sort(function(a,b){return String(o[a].at)<String(o[b].at)?-1:1});
+    ks.slice(0,Math.max(0,ks.length-50)).forEach(function(k){delete o[k]});
+    try{localStorage.setItem(OUT_KEY,JSON.stringify(o))}catch(e){}
+  }
+  function newRid(){var a=new Uint8Array(6);crypto.getRandomValues(a);return 'c-'+Date.now().toString(36)+'-'+Array.prototype.map.call(a,function(x){return 'abcdefghijklmnopqrstuvwxyz0123456789'.charAt(x%36)}).join('');}
+  function okChoice(c){return !!c&&typeof c==='object'&&CHAT_MODES.indexOf(c.mode)>=0&&typeof c.label==='string'&&(!c.replyTo||(typeof c.replyTo==='string'&&/^[^\s<>"'`]{1,40}$/.test(c.replyTo)))}
+  function tkPost(p,o){
+    if(!guard()) return null;
+    var rid=newRid();
+    outAll()[rid]={room:p.room,text:p.text,mode:p.mode,replyTo:p.replyTo||null,chip:!!p.chip,ci:(p.chip&&typeof p.ci==='number')?p.ci:null,urgency:p.urgency||null,workId:p.workId||null,hint:p.hint||null,replyText:(o&&o.replyText)?String(o.replyText).slice(0,80):null,sig:(o&&typeof o.sig==='string')?o.sig.slice(0,4000):null,at:new Date().toISOString(),state:'sending',cmd:null};
+    outSave(); tkCmd(rid); renderTalk(); tkToEnd();
+    return rid;
+  }
+  function tkCmd(rid){
+    var e=outAll()[rid]; if(!e) return;
+    tkUnwatch(rid); e.state='sending'; e.err=null; e.cmd=null; outSave(); tk.sendingNow[rid]=1;
+    var pl={room:e.room,text:e.text,mode:e.mode,requestId:rid};
+    if(e.replyTo) pl.replyTo=e.replyTo; if(e.chip) pl.chip=true; if(e.chip&&typeof e.ci==='number') pl.ci=e.ci; if(e.urgency) pl.urgency=e.urgency; if(e.workId) pl.workId=e.workId; if(e.hint) pl.hint=e.hint;
+    // (261002 검토 C2-02) 보낸 시각(sentAt)을 남겨 둔다 — 명령 문서를 쓰기 전에 창이 닫히면 cmd 가 비므로, 다시 열 때(tkResume) 오래된 'sending' 은 실패로 바꿔 [다시][지우기]를 보인다
+    e.sentAt=Date.now(); outSave();
+    cmd('chatSend',pl,null,true).then(function(id){
+      delete tk.sendingNow[rid];
+      var x=outAll()[rid]; if(!x) return;
+      if(!id){x.state='fail';x.err='인터넷 연결을 확인해 주세요';} else {x.cmd=id;tkWatch(rid);}
+      outSave(); renderTalk();
+    });
+  }
+  // 보낸 명령 문서 하나만 구독해 결과를 받는다(최근 20건 창 밖으로 밀려도 놓치지 않게)
+  function tkWatch(rid){
+    var e=outAll()[rid]; if(!e||!e.cmd||tk.w[rid]||ui.role!=='owner'||!session.checked) return;
+    tk.w[rid]=onSnapshot(doc(db,ROOT[0],ROOT[1],'inbox',e.cmd),function(snap){
+      // (261002 재감사 R2-03) 명령 번호는 있는데 문서가 없음(지워졌거나 쓰기가 반영되지 않음) — 1분 넘게 그대로면 실패로 바꿔 [다시][지우기](같은 요청 ID 라 서버가 두 번 처리하지 않음)
+      if(!snap.exists()){
+        var age=Date.now()-(+e.sentAt||Date.parse(e.at)||0), fin=function(){var x=outAll()[rid];if(!x||x.state!=='sending'||tk.sendingNow[rid])return;tkUnwatch(rid);x.state='fail';x.err='사무실에 전달됐는지 확인하지 못했습니다 — 다시 보내도 한 번만 처리됩니다';outSave();renderTalk();};
+        if(age>60000) fin(); else setTimeout(fin,60000-age+500);
+        return;
+      }
+      var x=snap.data()||{}; if(x.status!=='done'&&x.status!=='err') return;
+      tkUnwatch(rid); tkResult(rid,x.result||{ok:x.status==='done'});
+    },function(){tkUnwatch(rid);});
+  }
+  function tkUnwatch(rid){var f=tk.w[rid];if(f){delete tk.w[rid];try{f()}catch(e){}}}
+  function tkResume(){
+    if(ui.role!=='owner'||!session.checked) return;
+    var o=outAll(), ch=false;
+    Object.keys(o).forEach(function(k){var e=o[k];if(e.state!=='sending')return;if(!e.cmd&&tk.queued[k]){e.cmd=tk.queued[k];ch=true;}if(e.cmd)tkWatch(k);
+      // (C2-02) 명령 문서를 쓰기 전에 끊긴 글 — 이 창에서 보내는 중이 아니고(tk.sendingNow) 1분 넘게 명령 번호가 없으면 실패로(같은 요청 ID 로 다시 보낼 수 있음)
+      else if(!tk.sendingNow[k]&&Date.now()-(+e.sentAt||Date.parse(e.at)||0)>60000){e.state='fail';e.err='보내지 못했습니다(창이 닫혔거나 연결이 끊김) — 다시 보내 주세요';ch=true;}});
+    if(ch){outSave();renderTalk();}
+  }
+  function tkStop(){Object.keys(tk.w).forEach(tkUnwatch);tkUnsubRoom();}
+  function tkResult(rid,r){
+    var e=outAll()[rid]; if(!e) return;
+    var ex=r&&r.extra&&typeof r.extra==='object'?r.extra:{};
+    if(r&&r.ok){
+      e.state='done'; e.doneAt=Date.now();
+      if(r.action==='order'&&roomById(e.room)&&!isGrp(roomById(e.room))) toast(LS()+'에게 새 지시로 보냈습니다 — 단톡방에도 보입니다'+(r.jobId?' ('+r.jobId+')':''));
+      else if(r.action==='note'&&isDev(roomById(e.room))) toast('Claude에게 보냈습니다 — 직원에게는 가지 않습니다');
+      else if(r.action==='note') toast('메모로 남겼습니다 — 일감이 아니라 AI 를 부르지 않습니다');
+    } else if(r&&(ex.changed||r.changed)){
+      // (261005 배포전검토2 T409) 사무실은 이미 새 선택지로 바뀌었는데 이 기기의 방 문서는 아직 옛 칩 — 그대로 두면 다시 눌러도 409 가 반복된다.
+      //  그래서 이 카드의 지금 칩 글을 적어 두고, 방 문서가 새 칩으로 바뀔 때까지(최대 90초) 칩 대신 「새 선택지를 받는 중」을 보인다.
+      //  (261005 배포전검토3 N2) 잠금 서명은 「보낼 때」의 칩 글로 만든다. 사무실은 방 문서(5초 묶음)를 명령 처리(15초 확인)보다 먼저 올리기 쉬워,
+      //  409 결과보다 새 방 문서가 먼저 와 있는 경우가 흔하다 — 그때 지금 칩으로 잠그면 이미 새 칩인데도 90초 동안 못 눌렀다.
+      //  지금 칩이 보낸 때와 이미 다르거나(새 문서 도착) 보낸 번호의 칩 글이 보낸 글과 다르면 잠그지 않고 바로 새 칩을 보인다.
+      if(e.replyTo){var sm=tkMsg(e.room,e.replyTo),cur=tkChipSig(sm),sc=sm&&sm.card&&Array.isArray(sm.card.choices)?sm.card.choices:[];
+        // (261005 Codex 최종감사1 N2 옛 기록) 서명·번호가 둘 다 없는 옛 보낸 글(이번 판 이전 허브가 보냄)은 보낸 글이 지금 칩 목록에 아직 있는지로 본다 — 없으면 이미 새 칩
+        var moved=(typeof e.sig==='string'&&e.sig!==cur)||(typeof e.ci==='number'&&sc[e.ci]!==e.text)||(typeof e.sig!=='string'&&typeof e.ci!=='number'&&sc.indexOf(e.text)<0);
+        if(!moved){tk.stale[e.replyTo]={sig:typeof e.sig==='string'?e.sig:cur,at:Date.now()};setTimeout(renderTalk,TK_STALE_MS+300);}}
+      tkUnwatch(rid); delete outAll()[rid]; outSave(); renderTalk();
+      toast(e.replyTo&&!tk.stale[e.replyTo]?'선택지가 바뀌었습니다 — 카드의 새 선택지로 다시 골라 주세요(아무것도 보내지 않았습니다)':'선택지가 바뀌었습니다 — 새 선택지를 받는 중입니다. 잠시 뒤 카드가 바뀌면 다시 골라 주세요(아무것도 보내지 않았습니다)','info'); return;
+    } else if(r&&(ex.needChoice||r.needChoice)){
+      e.state='choose'; e.choices=(ex.choices||r.choices||[]).filter(okChoice).slice(0,8); e.err=String(r.message||'').slice(0,120);
+      if(!e.choices.length){e.state='fail';e.err=e.err||'보낼 곳을 정하지 못했습니다';}
+    } else {e.state='fail'; e.err=String((r&&r.message)||'사무실 처리 오류').slice(0,120);}
+    outSave(); renderTalk();
+  }
+  // 방 문서에 같은 요청 ID 의 내 말풍선이 올라오면 기기 말풍선은 지운다(받은 지 2분 지나도 지움)
+  function tkOutPrune(){
+    var o=outAll(), seen={}, ch=false;
+    Object.keys(tk.docs).forEach(function(r){tkMsgs(r).forEach(function(m){if(m.rid)seen[m.rid]=1})});
+    Object.keys(o).forEach(function(k){var e=o[k];
+      if((seen[k]&&e.state!=='choose'&&e.state!=='fail')||(e.state==='done'&&e.doneAt&&Date.now()-e.doneAt>120000)){tkUnwatch(k);delete o[k];ch=true;}});
+    if(ch) outSave();
+  }
+  function tkChooseRooms(){var o=ui.role==='owner'?outAll():{},m={};Object.keys(o).forEach(function(k){if(o[k].state==='choose')m[o[k].room]=1});return m}
+
+  // ── 연 방 하나만 구독 ──
+  function tkSubRoom(room){
+    if(!room||!session.checked){tkUnsubRoom();return;}
+    if(tk.roomSub===room) return;
+    tkUnsubRoom(); tk.roomSub=room;
+    if(!/^[A-Za-z0-9_-]{1,40}$/.test(room)){tk.docs[room]={obj:{msgs:[]},err:'방 이름 모양이 맞지 않습니다'};return;}
+    tk.roomUnsub=onSnapshot(doc(db,ROOT[0],ROOT[1],'chat',room),function(snap){
+      if(tk.roomSub!==room) return;
+      var o=snap.exists()?parseJson(snap):null;
+      if(o&&!Array.isArray(o.msgs)) o.msgs=[];
+      tk.docs[room]=o?{obj:o}:{obj:{msgs:[]},none:true};
+      tkOutPrune(); renderTalk();
+    },function(e){if(tk.roomSub!==room)return;tk.docs[room]={obj:{msgs:[]},err:errText(e)};renderTalk();});
+  }
+  function tkUnsubRoom(){if(tk.roomUnsub){try{tk.roomUnsub()}catch(e){}}tk.roomUnsub=null;tk.roomSub='';}
+
+  // ── 그리기 ──
+  function renderTalk(){
+    if(!$('#tk')) return;
+    tkOutPrune();
+    if(tk.room) tkAutoBand(tk.room);
+    renderRoom(); renderTalkList(); renderDoc(); renderPowerSheet(); tkBadges();
+  }
+  function roomAv(r,sz){
+    if(isGrp(r)) return '<span class="av tk-avr '+sz+'" aria-hidden="true"><svg class="clvi"><use href="#clover"/></svg></span>';
+    var c=String(r.avatarClass||''), s=staffById(r.staffId);
+    c=/^av-[a-z]+$/.test(c)?c:AVC_(r.staffId);
+    return '<span class="'+esc('av '+sz+' '+c)+'" aria-hidden="true">'+esc(String(r.avatar||(s?s.avatar:'')||''))+'</span>';
+  }
+  function roomRow(r){
+    var on=tk.room===r.id&&isDesk(), un=tkUnread(r), last=r.last&&typeof r.last==='object'?r.last:{}, grp=isGrp(r), pin=grp||isDev(r);
+    var tag=(tkChooseRooms()[r.id]?'<span class="tk-tag ch">보낼 곳 고르기</span>':'')+(r.tag==='approval'?'<span class="tk-tag ap">결재</span>':r.tag==='question'?'<span class="tk-tag q">'+(isDev(r)?'결정':'질문')+'</span>':last.kind==='report'?'<span class="tk-tag">보고서</span>':'');
+    var who=grp&&last.from&&last.from!=='me'&&last.from!=='office'&&last.kind!=='sys'?nameOf(last.from)+': ':'';
+    var lt=last.text?who+String(last.text):String(r.sub||'');
+    var sub=pin?'':String(r.sub||'').split(' · ')[0];
+    return '<a class="tk-rm'+(pin?' pin':'')+(on?' on':'')+'" href="'+tkHref(r.id)+'" data-room="'+esc(r.id)+'">'+roomAv(r,'s44')+
+      '<div class="t"><b><span>'+esc(r.title||'')+'</span>'+(sub?'<small>'+esc(sub)+'</small>':'')+'</b><p>'+tag+txt(clip(lt,80))+'</p></div>'+
+      '<div class="r">'+esc(r.lastAt?tkWhen(r.lastAt):'')+(un.n?'<span class="tk-ub">'+(un.n>99?'99+':un.n)+(un.plus?'+':'')+'</span>':un.dot?'<span class="tk-ub dot" aria-label="새 글"></span>':'')+'</div></a>';
+  }
+  function renderTalkList(){
+    setHTML($('#tkPill'),pillHtml('tk-pw'));
+    setHTML($('#tkListBand'),session.checked?bandHtml():'');
+    if(!session.checked){setHTML($('#tkRooms'),'');return;}
+    var c=chatV();
+    if(!c){setHTML($('#tkRooms'),'<div class="rempty">'+(conn.ok?'사무실 PC 가 아직 톡을 올리지 않았습니다.<span class="s12">사무실 프로그램이 새 버전이 되면 여기에 방이 보입니다.</span>':'사무실 자료를 받는 중…')+'</div>');return;}
+    var q=String(tk.q||'').trim().toLowerCase(), all=rooms();
+    var f=all.filter(function(r){return !q||(String(r.title||'')+' '+String((r.last||{}).text||'')).toLowerCase().indexOf(q)>=0});
+    var g=f.filter(function(r){return isGrp(r)||isDev(r)}), d=f.filter(function(r){return !isGrp(r)&&!isDev(r)});
+    var h=(g.length?'<div class="tk-rooms">'+g.map(roomRow).join('')+'</div>':'')+(d.length?'<p class="tk-sec">직원 1:1 · 보고</p><div class="tk-rooms">'+d.map(roomRow).join('')+'</div>':'');
+    if(!f.length) h='<div class="rempty">'+(q?'찾는 방·글이 없습니다.':'아직 방이 없습니다.')+'</div>';
+    setHTML($('#tkRooms'),h);
+  }
+  // 열린 질문·결재 카드(최근 것 먼저)
+  function tkOpenCards(room){var q=[],a=[];tkMsgs(room).forEach(function(m){if(m.state!=='open'||!m.ref||typeof m.ref.reportId!=='string')return;if(m.kind==='question')q.push(m);else if(m.kind==='approval')a.push(m);});q.reverse();a.reverse();return {q:q,a:a}}
+  // replyTo = 카드 메시지 번호(q:… · qg:… · apr:… — 서버가 앞 꼬리를 떼고 보고번호로 찾음 · 메모 인용 msgId 로도 씀)
+  function tkBandFor(m,mode){var c=m.card||{};return {mode:mode,replyTo:String(m.id||''),msgId:m.id,text:String(c.title||m.text||'')}}
+  // 열린 질문이 있으면 가장 최근 질문으로 인용 띠를 미리 붙인다(× 로 떼면 다시 붙이지 않음). 열린 결재만 있으면 붙이지 않는다.
+  // (261002 검토 C2-01) 입력칸에 쓰던 글이 있으면 띠를 자동으로 바꾸지 않는다 — 띠가 가리키던 질문이 다른 기기에서 처리되면
+  //  띠만 떼고 "이미 처리된 질문입니다 — 보낼 곳을 다시 골라 주세요"로 멈춘다(쓰던 글이 다른 질문의 답으로 나가지 않게). 보낼 때 선택 시트가 막아 준다.
+  function tkTyping(room){var ta=$('#tkTxt');return !!(ta&&room===tk.room&&String(ta.value||'').trim())}
+  function tkAutoBand(room){
+    var b=tk.band[room];
+    if(b&&b.msgId&&tk.docs[room]){var m=tkMsg(room,b.msgId);if(!m||m.state!=='open'){var lk=b.mode;tk.band[room]=null;b=null;if(tkTyping(room)){if(lk==='answer'&&!isDev(roomById(room)))tk.bandLost[room]=true;toast('이미 처리된 질문입니다 — 보낼 곳을 다시 골라 주세요','info');}}}
+    if(b||ui.role!=='owner'||tkTyping(room)||isDev(roomById(room))) return;
+    var q=tkOpenCards(room).q[0];
+    if(q&&q.id!==tk.bandOff[room]) tk.band[room]=tkBandFor(q,'answer');
+  }
+  var BAND_LB={answer:'질문에 답',revise:'결재 수정 요청',reject:'반려 사유',reply:'보고에 답장'};
+  var KIND_CD={report:'k-rep',approval:'k-ap',question:'k-q',alert:'k-al'};
+  var TONE_CD={green:'t-green',amber:'t-amber',blue:'t-blue',red:'t-red'};
+  var HEAD_IC={report:'▤',approval:'✔',question:'?',alert:'!'};
+  var ARCH={pending:'드라이브 저장 대기',done:'드라이브에 저장됨',failed:'보관 실패'};
+  function tkRec(c){var o=(c.options||[]).filter(function(x){return x&&x.recommended})[0];return o?o.label:((c.options||[])[0]||{}).label}
+  function tkSel(rid,m){return (m.state==='open'&&tk.opt[rid])||tkRec(m.card||{})}
+  function tkStaffAv(id,ghost){
+    var dr=devByAuthor(id); if(dr) return '<span class="'+esc('av s36 '+(/^av-[a-z]+$/.test(String(dr.avatarClass||''))?dr.avatarClass:'')+(ghost?' ghost':''))+'" aria-hidden="true">'+esc(String(dr.avatar||''))+'</span>';
+    if(!id||id==='office') return '<span class="av av-sys s36'+(ghost?' ghost':'')+'" aria-hidden="true">'+IC('i-bell')+'</span>';
+    var s=staffById(id); return '<span class="'+esc('av s36 '+AVC_(id)+(ghost?' ghost':''))+'" aria-hidden="true">'+esc(s?String(s.avatar||''):'?')+'</span>';
+  }
+  function tkMeHtml(m){
+    var rq=m.reply&&m.reply.text?'<span class="tk-rq">↩ '+txt(clip(m.reply.text,40))+'</span>':'';
+    var mini=[];
+    if(m.hint) mini.push('@'+esc(m.hint)+' 추천');
+    if(m.memo) mini.push('<span class="mm">메모 · 일감 아님</span>');
+    if(m.src) mini.push(esc(m.src));
+    var tm='<span class="tk-tm">'+(m.pending?'<button type="button" class="tk-rd" data-act="pend" data-id="'+esc(m.id||'')+'" aria-label="아직 배분 전">1</button>':'')+esc(hm(m.at))+'</span>';
+    return '<div class="tk-m tk-me" data-mid="'+esc(m.id||'')+'"><div class="tk-w"><div class="tk-row"><div class="tk-bub">'+rq+txt(m.text||'')+'</div>'+tm+'</div>'+(mini.length?'<div class="tk-mini">'+mini.join('<span aria-hidden="true">·</span>')+'</div>':'')+'</div></div>';
+  }
+  function tkCardFoot(room,m,c,acts,rid,owner,open){
+    var kind=m.kind, mid=esc(m.id||''), b=[];
+    if(kind==='report'){
+      if(!acts.length||acts.indexOf('open')>=0) b.push(c.online===true?'<a href="'+tkHref(room,'r',rid)+'">보고서 열기</a>':'<button type="button" data-act="summary" data-id="'+mid+'">요약 보기</button>');
+      if(owner&&c.archive==='failed'&&acts.indexOf('archiveRetry')>=0) b.push('<button type="button" class="no" data-act="arch" data-id="'+esc(rid)+'">다시 보관</button>');
+      return b.length?'<div class="tk-ft">'+b.join('')+'</div>':'';
+    }
+    if(!open) return kind==='alert'&&(!m.done||m.done==='알림')?'':'<div class="tk-st">'+txt(m.done||(m.state==='void'?'지난 카드':'처리됨'))+'</div>';
+    if(!owner) return '<div class="tk-st">'+esc(kind==='approval'?ownerNm()+'님 결재 대기 중':kind==='question'?ownerNm()+'님 답을 기다리는 중':'확인 필요')+'</div>'+(kind==='approval'&&c.online===true?'<div class="tk-ft"><a class="no" href="'+tkHref(room,'r',rid)+'">결재 요청서 자세히</a></div>':'');
+    if(kind==='approval'){
+      var rec=tkRec(c), sel=tkSel(rid,m), lb=(!rec||sel===rec)?'승인':sel+'로 다시 만들기';
+      return '<div class="tk-ft ap"><button type="button" data-act="approve" data-id="'+mid+'">'+esc(lb)+'</button><button type="button" class="no" data-act="revise" data-id="'+mid+'">수정 요청</button><button type="button" class="no" data-act="reject" data-id="'+mid+'">반려</button></div>'+(c.online===true?'<div class="tk-ft"><a class="no" href="'+tkHref(room,'r',rid)+'">결재 요청서 자세히</a></div>':'');
+    }
+    if(kind==='question') return '<div class="tk-ft"><button type="button" data-act="direct" data-id="'+mid+'">직접 답하기</button></div>';
+    if(kind==='alert'){
+      var s=ws();
+      if(acts.indexOf('officeStart')>=0&&(s==='stopped'||s==='limit')) b.push('<button type="button" data-office-start>확인하고 출근</button>');
+      if(acts.indexOf('power')>=0) b.push('<a class="no" href="#power">근무·대기</a>');
+      if(acts.indexOf('archiveRetry')>=0) b.push('<button type="button" data-act="arch" data-id="'+esc(rid||(m.ref&&m.ref.jobId?'job:'+m.ref.jobId:''))+'">다시 보관</button>');
+      return b.length?'<div class="tk-ft">'+b.join('')+'</div>':'';
+    }
+    return '';
+  }
+  function tkCardHtml(room,m){
+    var c=m.card&&typeof m.card==='object'?m.card:{}, kind=m.kind, tone=c.tone||m.tone, owner=ui.role==='owner', open=m.state==='open';
+    var acts=Array.isArray(m.actions)?m.actions:[], rid=m.ref&&typeof m.ref.reportId==='string'?m.ref.reportId:'';
+    var h='<div class="tk-cd '+(KIND_CD[kind]||'')+(TONE_CD[tone]?' '+TONE_CD[tone]:'')+'"><div class="tk-hd">'+esc(HEAD_IC[kind]||'▤')+' '+esc(c.head||'')+(c.sub?'<small>'+esc(c.sub)+'</small>':'')+'</div><div class="tk-bd"><b class="tt">'+txt(c.title||'')+'</b>'+(Array.isArray(c.lines)?(c.full?c.lines:c.lines.slice(0,3)).map(function(l){return '<p>'+txt(l)+'</p>'}).join(''):'');
+    if(kind==='approval'&&Array.isArray(c.options)&&c.options.length){
+      var sel=tkSel(rid,m), pick=owner&&open;
+      h+='<div class="tk-ops" role="radiogroup" aria-label="선택지">'+c.options.slice(0,6).map(function(o){var on=o.label===sel,inner='<span>'+esc(o.label)+' '+txt(o.text||'')+'</span>'+(o.recommended?'<i>추천</i>':'');
+        return pick?'<button type="button" class="tk-op'+(on?' on':'')+'" role="radio" aria-checked="'+(on?'true':'false')+'" data-act="opt" data-id="'+esc(rid)+'" data-opt="'+esc(o.label)+'">'+inner+'</button>':'<div class="tk-op'+(on&&open?' on':'')+'">'+inner+'</div>'}).join('')+'</div>';
+    }
+    if(Array.isArray(c.items)&&c.items.length){
+      h+='<div class="tk-its">'+c.items.slice(0,10).map(function(it){var pid=String(it.proposalId||'');
+        var b=it.state==='open'?(owner&&acts.indexOf('proposalStart')>=0?'<button type="button" data-act="prop" data-id="'+esc(pid)+'">착수</button>':'<em>착수 대기</em>'):'<em>'+txt(it.done||'처리됨')+'</em>';
+        return '<div class="tk-it"><span>'+esc(pid)+' '+txt(it.title||'')+'</span>'+b+'</div>'}).join('')+'</div>';
+    }
+    var meta=[]; if(c.meta) meta.push(txt(c.meta)); if(ARCH[c.archive]) meta.push(c.archive==='failed'?'<span class="af">'+esc(ARCH[c.archive])+'</span>':esc(ARCH[c.archive]));
+    if(meta.length) h+='<div class="tk-meta">'+meta.join(' · ')+'</div>';
+    return h+'</div>'+tkCardFoot(room,m,c,acts,rid,owner,open)+'</div>';
+  }
+  function tkQrHtml(m){
+    if(ui.role!=='owner'||m.state!=='open') return '';
+    var c=m.card||{}, ch=Array.isArray(c.choices)?c.choices.slice(0,5):[];
+    if(!ch.length) return '';
+    if(tkAnsweredOut(m.id)) return '<div class="tk-qr"><em class="tk-qsent">답 보냄 — 사무실이 받으면 카드가 닫힙니다</em></div>';
+    if(tkChoosingOut(m.id)) return '<div class="tk-qr"><em class="tk-qsent tk-qwait">아래 보낸 글에서 보낼 곳을 골라 주세요(고르기 · 지우기)</em></div>';
+    if(tkStaleOn(m)) return '<div class="tk-qr"><em class="tk-qsent tk-qwait">새 선택지를 받는 중입니다 — 잠시 뒤 다시 골라 주세요(입력칸에 글로 답해도 됩니다)</em></div>';
+    return '<div class="tk-qr">'+ch.map(function(x,i){var cl=tkIsCloseChip(c,x,i);return '<button type="button" data-act="answer" data-id="'+esc(m.id||'')+'" data-ci="'+i+'">'+txt(x)+(c.recommended&&x===c.recommended?'<span class="tk-rc">추천</span>':'')+(cl?'<small>일감 닫힘</small>':'')+'</button>'}).join('')+'</div>';
+  }
+  function tkMsgHtml(room,m,cont){
+    var id=esc(m.id||'');
+    if(m.kind==='sys'){
+      // 링크: 글 끝이 "… 방 열기 ›" 면 그 끝만 · 다른 "… ›" 끝이면 마지막 조각만 · › 가 없으면(진행 줄 등) 줄 전체가 원래 메시지로 가는 링크
+      var tone=(m.card&&m.card.tone)||m.tone, lk=m.link&&typeof m.link==='object'&&typeof m.link.room==='string'?m.link:null, t=String(m.text||''), inner=txt(t);
+      if(lk){
+        var href=tkHref(lk.room,lk.msgId?'m':'',lk.msgId), lb=String(lk.label||''), suf=' '+lb+' ›', k=Math.max(t.lastIndexOf(' · '),t.lastIndexOf(' — '));
+        if(lb&&t.length>suf.length&&t.slice(-suf.length)===suf) inner=txt(t.slice(0,-suf.length))+' <a href="'+href+'">'+esc(lb)+' ›</a>';
+        else if(/›\s*$/.test(t)) inner=k>0?txt(t.slice(0,k+3))+'<a href="'+href+'">'+txt(t.slice(k+3))+'</a>':'<a href="'+href+'">'+txt(t)+'</a>';
+        else inner='<a class="w" href="'+href+'" title="'+esc(lb||'원래 메시지 보기')+'">'+txt(t)+'</a>';
+      }
+      return '<div class="tk-sys'+(tone==='red'?' r':'')+'" data-mid="'+id+'">'+inner+'</div>';
+    }
+    if(m.kind==='me') return tkMeHtml(m);
+    var who=m.from, da=devByAuthor(who), head=cont?'':'<span class="tk-nm">'+esc(who==='office'?'사무실 프로그램':da?String((da.author&&da.author.name)||''):(short(who)||''))+'</span>', body;
+    if(m.card) body='<div class="tk-row">'+tkCardHtml(room,m)+'<span class="tk-tm">'+esc(hm(m.at))+'</span></div>'+(m.kind==='question'?tkQrHtml(m):'');
+    else body='<div class="tk-row"><div class="tk-bub">'+txt(m.text||'')+'</div><span class="tk-tm">'+esc(hm(m.at))+'</span></div>'+(m.meta?'<span class="tk-mini" style="justify-content:flex-start">'+txt(m.meta)+'</span>':'');
+    return '<div class="tk-m'+(m.card?' cdm':'')+'" data-mid="'+id+'">'+tkStaffAv(who,cont)+'<div class="tk-w">'+head+body+'</div></div>';
+  }
+  function tkOutHtml(rid,e){
+    var st0=e.state, k=esc(rid), cls=st0==='choose'?' out-c':st0==='fail'?' out-f':' out', info, act='';
+    if(st0==='choose'){info='보낼 곳을 골라 주세요';act='<button type="button" class="pr" data-act="out" data-id="'+k+'" data-op="pick">고르기</button><button type="button" data-act="out" data-id="'+k+'" data-op="del">지우기</button>';}
+    else if(st0==='fail'){info='보내지 못했습니다 — '+(e.err||'');act='<button type="button" class="pr" data-act="out" data-id="'+k+'" data-op="retry">다시</button><button type="button" data-act="out" data-id="'+k+'" data-op="del">지우기</button>';}
+    else info=st0==='done'?'사무실 PC 가 받았습니다':'PC로 보내는 중';
+    return '<div class="tk-m tk-me'+cls+'" data-mid="out:'+k+'" data-out="'+esc(st0)+'"><div class="tk-w"><div class="tk-row"><button type="button" class="tk-bub" data-act="out" data-id="'+k+'" data-op="info">'+(e.replyText?'<span class="tk-rq">↩ '+txt(clip(e.replyText,40))+'</span>':'')+esc(e.text)+'</button><span class="tk-tm">'+esc(hm(e.at))+'</span></div><div class="tk-oinfo">'+(st0==='sending'||st0==='done'?IC('i-clock'):'')+esc(info)+'</div>'+(act?'<div class="tk-oact">'+act+'</div>':'')+'</div></div>';
+  }
+  function tkMsgsHtml(room,o){
+    var ms=tkMsgs(room), h='', lastDay='', prevFrom='', prevAt=0, rids={};
+    if(o&&o.more) h+='<div class="tk-more">더 이전 대화는 PC 허브에서 볼 수 있습니다(온라인은 최근 80개)</div>';
+    ms.forEach(function(m){if(m.rid)rids[m.rid]=1;});
+    ms.forEach(function(m){
+      var dk=tkDayKey(m.at); if(dk&&dk!==lastDay){lastDay=dk;h+='<div class="tk-day">'+esc(tkDayLabel(m.at))+'</div>';prevFrom='';}
+      var t=Date.parse(m.at)||0, cont=m.kind!=='me'&&m.kind!=='sys'&&!!m.from&&m.from===prevFrom&&t-prevAt<5*60e3;
+      h+=tkMsgHtml(room,m,cont);
+      prevFrom=(m.kind==='me'||m.kind==='sys')?'':m.from; prevAt=t;
+    });
+    if(ui.role==='owner'){
+      var out=outAll(), ks=Object.keys(out).filter(function(k){return out[k].room===room&&!rids[k]}).sort(function(a,b){return String(out[a].at)<String(out[b].at)?-1:1});
+      ks.forEach(function(k){var e=out[k],dk=tkDayKey(e.at);if(dk&&dk!==lastDay){lastDay=dk;h+='<div class="tk-day">'+esc(tkDayLabel(e.at))+'</div>';}h+=tkOutHtml(k,e);});
+      if(!ms.length&&!ks.length) h+='<div class="tk-sys">아직 대화가 없습니다.</div>';
+    } else if(!ms.length) h+='<div class="tk-sys">아직 대화가 없습니다.</div>';
+    return h;
+  }
+  function tkToEnd(){var sc=$('#tkScroll');if(sc)sc.scrollTop=sc.scrollHeight;}
+  function tkHighlight(room){
+    if(tk.sub!=='m'||!tk.subId||!tk.docs[room]) return;
+    var key=room+'|'+tk.subId; if(tk.hl===key) return; tk.hl=key;
+    var el=$$('#tkMsgs [data-mid]').filter(function(x){return x.getAttribute('data-mid')===tk.subId})[0];
+    if(!el){toast('이 메시지는 최근 대화(80개) 밖이라 온라인에서 볼 수 없습니다 — PC 허브에서 보세요','info');return;}
+    var t=el.querySelector('.tk-cd,.tk-bub')||el;
+    try{t.scrollIntoView({block:'center'})}catch(e){}
+    t.classList.remove('tk-hl'); void t.offsetWidth; t.classList.add('tk-hl');
+  }
+  function renderRoom(){
+    var el=$('#tkRoom'), emp=$('#tkEmpty'), room=tk.room, r=room?roomById(room):null;
+    if(!el) return;
+    el.hidden=!room; if(emp) emp.hidden=!!room;
+    if(!room){if(el._h)setHTML(el,'');return;}
+    var grp=isGrp(r), dv=isDev(r), ph=grp?'지시 입력 — '+LS()+'이 받아 나눕니다':dv?'Claude에게 보내는 글 — 직원에게는 가지 않습니다':'질문 답·결재 메모 — 그 밖은 '+LS()+'에게 새 지시로';
+    setHTML(el,'<header class="tk-rh"><a class="bk m" href="#talk" aria-label="톡 목록으로">'+IC('i-chev-l')+'</a><span id="tkRhAv"></span><h2 id="tkRhT"></h2></header>'+
+      '<div class="tk-scroll" id="tkScroll"><div class="tk-msgs" id="tkMsgs"></div></div>'+
+      '<div class="tk-sb" id="tkSb"></div>'+
+      '<div class="tk-inp own" id="tkInp"><div class="tk-chips" id="tkChips"></div><div class="tk-qb" id="tkQb"></div><div class="tk-dest" id="tkDest"></div>'+
+      '<form class="tk-ib" id="tkForm" autocomplete="off"><textarea id="tkTxt"'+(grp?'':' class="ph2"')+' data-keep="tk-txt-'+esc(room)+'" rows="1" maxlength="'+(grp?4000:2000)+'" placeholder="'+esc(ph)+'" aria-label="'+esc(ph)+'"></textarea><button type="submit" class="tk-send" aria-label="보내기">'+IC('i-send')+'</button></form></div>'+
+      '<div class="tk-ro sub">읽기 전용 — 연락처·금액은 가려져 있습니다</div>');
+    // (IOS-03) 새로 그린 입력칸이 비었으면 이 방 초안을 되살린다(같은 방 다시 그리기는 data-keep 이 지킴)
+    var ta0=$('#tkTxt'); if(ta0&&ui.role==='owner'&&!ta0.value){var dr=draftGet(room);if(dr){ta0.value=dr;tkGrow(ta0);}}
+    // 맨 아래에 붙어 있었는지는 무엇이든 바꾸기 전에 잰다(입력줄·띠 높이가 바뀌어도 맨 아래를 지키게)
+    var sc=$('#tkScroll'), box=$('#tkMsgs'), before=box._h, near=sc.scrollHeight-sc.scrollTop-sc.clientHeight<80;
+    tkWatchSize(sc);
+    setHTML($('#tkRhAv'),r?roomAv(r,'s36'):'');
+    setHTML($('#tkRhT'),r?esc(r.title||'')+'<small>'+esc(r.sub||'')+'</small>':'없는 방입니다');
+    setHTML($('#tkSb'),bandHtml());
+    if(ui.role==='owner'&&r) tkRenderInput(room,grp);
+    var d=tk.docs[room], h;
+    if(!r) h='<div class="rempty">없는 방입니다 — 톡 목록에서 다시 골라 주세요.</div>';
+    else if(!d) h='<div class="tk-sys">대화를 불러오는 중…</div>';
+    else if(d.err) h='<div class="tk-sys r">대화를 불러오지 못했습니다 — '+esc(d.err)+'</div>';
+    else h=tkMsgsHtml(room,d.obj);
+    setHTML(box,h);
+    var changed=box._h!==before, key=room+'|'+(d&&!d.err?1:0);
+    var first=tk.scrollKey!==key;
+    if(first){tk.scrollKey=key;sc.scrollTop=sc.scrollHeight;if(d&&!d.err){tkRead(room,true);tkViewerSeen(room);}}
+    else if(near){sc.scrollTop=sc.scrollHeight;if(changed){tkRead(room,false);tkViewerSeen(room);}}
+    // (261002 검토 C2-07) 대화가 가려져 있다가(보고서 전체화면·시트) 다시 보이게 되면 그때 읽음 — 가려진 동안은 tkRead 가 보내지 않으므로
+    var vis=d&&!d.err&&tkConvVisible(room), was=tk.wasVis;
+    tk.wasVis=vis?room:''; // 먼저 적는다(읽음 전송이 다시 그리기를 부르면 되풀이되지 않게)
+    if(vis&&!first&&was!==room&&sc.scrollHeight-sc.scrollTop-sc.clientHeight<80){tkRead(room,true);tkViewerSeen(room);}
+    tk.atBottom=sc.scrollHeight-sc.scrollTop-sc.clientHeight<80;
+    tkHighlight(room);
+    tkVV();
+  }
+  function tkRenderInput(room,grp){
+    var b=tk.band[room]||null, ch=tk.chips;
+    setHTML($('#tkChips'),grp&&!b?'<button type="button" class="urg'+(ch.urg?' on':'')+'" data-act="chip" data-id="urg" aria-pressed="'+(ch.urg?'true':'false')+'">⚡ 긴급</button><button type="button"'+(ch.apr?' class="on"':'')+' data-act="chip" data-id="apr" aria-pressed="'+(ch.apr?'true':'false')+'">✔ 결재로 받기</button><button type="button"'+(ch.workId?' class="on"':'')+' data-act="chip" data-id="work"># '+esc(ch.workId||'업무 지정')+'</button><button type="button"'+(ch.hint?' class="on"':'')+' data-act="chip" data-id="hint">@ '+esc(ch.hint?(nameOf(ch.hint)||ch.hint)+' 추천':'담당 추천')+'</button>':'');
+    setHTML($('#tkQb'),b?'<span><b>↩ '+esc(grp&&b.mode==='answer'?LS()+' 질문에 답':isDev(roomById(room))&&b.mode==='answer'?'결정 요청에 답':BAND_LB[b.mode]||'')+'</b> · '+txt(clip(b.text,40))+'</span><button type="button" data-act="band" data-id="'+esc(room)+'" aria-label="인용 떼기">'+IC('i-x')+'</button>':'');
+    var dm=tk.dest[room]==='note'?'note':'order', dest, rr=roomById(room);
+    if(isDev(rr)) dest='<span>'+esc(String((rr.author&&rr.author.name)||''))+(b&&b.mode==='answer'?'에게 결정 답':'에게만')+' · 직원에게는 가지 않습니다</span>';
+    else if(b&&b.mode!=='reply') dest='<span>'+esc(BAND_LB[b.mode]||'')+'</span>';
+    else if(grp) dest='<span>'+esc(LS())+'에게 지시</span>';
+    else dest='<button type="button" data-act="dest" data-id="'+esc(room)+'" aria-label="보낼 곳 바꾸기">'+esc(dm==='note'?'메모만 남기기(일 아님)':LS()+'에게 새 지시')+' ▾</button>';
+    setHTML($('#tkDest'),dest);
+  }
+  // ── 보고서 화면(목업 ④) — 받은 HTML 은 sandbox="" iframe 의 srcdoc 에만 ──
+  function tkLoadHtml(id){
+    if(!/^[^\/\s]{1,60}$/.test(id)||id==='.'||id==='..'){tk.html[id]={none:true};return;} // 문서 이름으로 못 쓰는 번호는 읽지 않음
+    var prev=tk.html[id]&&tk.html[id].obj;
+    tk.html[id]={loading:true,obj:prev||null};
+    getDoc(doc(db,ROOT[0],ROOT[1],'report_html',id)).then(function(d){var o=d.exists()?parseJson(d):null;tk.html[id]=o&&typeof o.html==='string'?{obj:o}:{none:true};})
+      .catch(function(e){tk.html[id]={err:errText(e)};}).then(function(){if(tk.sub==='r'&&tk.subId===id)renderDoc();});
+  }
+  function tkFrameSet(box,html,key){
+    if(box._k===key) return;
+    box._k=key; box._h=null;
+    while(box.firstChild) box.removeChild(box.firstChild);
+    var f=document.createElement('iframe');
+    f.setAttribute('sandbox','');
+    f.setAttribute('referrerpolicy','no-referrer');
+    f.setAttribute('title','보고서');
+    f.srcdoc=String(html||'');
+    box.appendChild(f);
+  }
+  function renderDoc(){
+    var el=$('#tkDoc'), on=tk.sub==='r'&&!!tk.subId&&!!tk.room, wrap=$('#tk');
+    if(!el) return;
+    el.hidden=!on; if(wrap) wrap.classList.toggle('has-doc',on);
+    if(!on){if(el._h)setHTML(el,'');return;}
+    var id=tk.subId, room=tk.room, r=roomById(room), rep=repById(id), card=tkFindRep(room,id), apm=tkFindRep(room,id,'approval'), apr=aprById(id), owner=ui.role==='owner';
+    setHTML(el,'<header class="tk-dh"><a class="bk" href="'+tkHref(room)+'" aria-label="방으로 돌아가기">'+IC('i-chev-l')+'</a><h2>보고서<small id="tkDhSub"></small></h2><button type="button" class="tk-down" data-act="dl" data-id="'+esc(id)+'" aria-label="보고서 파일 받기" title="파일 받기">'+IC('i-share')+'</button></header><div id="tkDocOwn"></div><div id="tkDocNote"></div><div class="tk-frame" id="tkFrame"></div><div class="tk-dact own" id="tkDact"></div>');
+    setHTML($('#tkDhSub'),esc((r&&r.title)||(rep&&(rep.fromTitle||short(rep.from)))||'')+' · '+(r&&isGrp(r)?'단톡방':r&&isDev(r)?'개발 진행 방':'1:1방')+'에서 열림');
+    setHTML($('#tkDocOwn'),owner&&rep&&Array.isArray(rep.ownerLines)&&rep.ownerLines.length?'<div class="tk-own own">대표님만 · '+rep.ownerLines.slice(0,3).map(txt).join(' · ')+'</div>':'');
+    var hs=tk.html[id]||{}, box=$('#tkFrame');
+    setHTML($('#tkDocNote'),hs.obj&&hs.obj.truncated?'<div class="tk-note">보고서가 길어 뒷부분을 줄였습니다 — 전문은 PC 허브·드라이브 파일에서</div>':'');
+    if(hs.obj) tkFrameSet(box,hs.obj.html,id+'|'+String(hs.obj.v||''));
+    else {
+      var c=card&&card.card||{};
+      var msg=hs.loading?'<div class="rempty"><span class="spin"></span> 보고서를 여는 중…</div>':'<div class="rempty">이 보고서 전문은 PC 허브·드라이브 파일에서 볼 수 있습니다.'+(c.title?'<span class="s12" style="display:block;margin-top:8px">'+txt(c.title)+'</span>':'')+(hs.err?'<span class="s12">'+esc(hs.err)+'</span>':'')+'</div>';
+      box._k='msg'; setHTML(box,msg);
+    }
+    var acts='';
+    if(owner){
+      // (261002 검토 C2-04) 완료보고(보고-…-01)와 결재 요청(보고-…-02)은 번호가 다르다 — 보고의 일감(jobId)으로 열린 결재를 찾아 그 카드로(로컬 허브와 같은 방식)
+      var oap=apr&&apr.status==='대기'?apr:null;
+      if(!oap&&rep&&rep.jobId){var jb=jobById(rep.jobId);if(jb&&jb.approvalId){var a1=aprById(jb.approvalId);if(a1&&a1.status==='대기')oap=a1;}if(!oap)oap=(st().approvals||[]).filter(function(x){return x&&x.jobId===rep.jobId&&x.status==='대기'})[0]||null;}
+      var apm2=apm&&apm.state==='open'?apm:oap?tkFindRep(room,oap.id,'approval'):null;
+      if(oap||apm2) acts+='<a class="pr" href="'+tkHref(room,'m',apm2?apm2.id:'apr:'+oap.id)+'">결재하기</a>';
+      acts+='<button type="button" data-act="reply" data-id="'+esc(id)+'">답장</button>';
+    }
+    setHTML($('#tkDact'),acts);
+  }
+  function tkDownload(id){
+    var hs=tk.html[id]; if(!hs||!hs.obj||typeof hs.obj.html!=='string'){toast('보고서를 아직 받지 못했습니다','info');return;}
+    var nm=String(hs.obj.fileName||('보고서_'+id+'_열람판.html')).replace(/[\\/:*?"<>|\s]+/g,'_').slice(0,150); if(!/\.html?$/i.test(nm)) nm+='.html';
+    try{var u=URL.createObjectURL(new Blob([hs.obj.html],{type:'text/html;charset=utf-8'})),a=document.createElement('a');a.href=u;a.download=nm;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);if(a.parentNode)a.parentNode.removeChild(a);},2000);}catch(e){toast('파일을 받지 못했습니다 — '+errText(e));}
+  }
+  // ── 근무·대기 창(목업 ⑥) ──
+  function renderPowerSheet(){
+    var el=$('#powerBody'); if(!el) return;
+    var s=ws(), o=st().office||{}, cur=o.power==='standby'?'standby':'work';
+    if(tk.power&&(Date.now()-tk.power.at>180000||cur===tk.power.mode)) tk.power=null;
+    var pend=tk.power?tk.power.mode:null, eff=pend||cur;
+    var u=st().usageToday||{}, wk=u.plan&&u.plan.sevenDay&&u.plan.sevenDay.pctNow!=null?' · 주간 사용률 '+esc(u.plan.sevenDay.pctNow)+'%':'';
+    var card;
+    if(s==='pcoff') card='<div class="tk-ps off"><span class="dt dt-home"></span><div><b class="big">PC 꺼짐 · 마지막 신호 '+esc(lastSigHm())+'</b><p>(또는 인터넷 끊김) · 폰으로 PC 를 켤 수는 없습니다. PC 를 켜서 로그인하면 사무실이 알아서 떠 마지막 상태로 이어집니다.</p></div></div>';
+    else if(s==='progoff') card='<div class="tk-ps off"><span class="dt dt-home"></span><div><b class="big">사무실 프로그램 꺼짐 · '+esc(offAtHm())+'</b><p>PC 에서 바탕화면 🍀 켜기 아이콘으로 켜 주세요. 켜지면 마지막 상태(근무·대기) 그대로 이어집니다.</p></div></div>';
+    else if(s==='stopped'||s==='limit') card='<div class="tk-ps '+(s==='stopped'?'stop':'warn')+'"><span class="dt '+(s==='stopped'?'dt-stop':'dt-ask')+'"></span><div><b class="big">'+(s==='stopped'?'울타리 정지 — 확인 필요':'한도 정지 — 확인 필요')+'</b><p>'+(o.since?esc(hm(o.since))+' · ':'')+txt(o.reason||'')+'</p><button type="button" class="btn btn-p btn-w own" data-office-start>'+IC('i-power')+'확인하고 출근</button></div></div>';
+    else if(s==='standby') card='<div class="tk-ps off"><span class="dt dt-home"></span><div><b class="big">대기 중</b><p>쉬는 중 — 지시는 받아 두었다가 근무로 바꾸면 처리 · PC 연결됨 · 신호 '+sigSpan()+wk+'</p></div></div>';
+    else card='<div class="tk-ps"><span class="dt dt-work"></span><div><b class="big">근무 중</b><p>PC 연결됨 · 신호 '+sigSpan()+wk+'</p></div></div>';
+    var note=s==='stopped'||s==='limit'?'정지가 풀리면 근무·대기 — 지금 바꾸면 스위치만 바뀌고 정지는 그대로':s==='pcoff'||s==='progoff'?'지금 바꾸면 PC 가 켜진 뒤 적용합니다':eff==='work'?'켜짐 = 근무 · 끄면 대기':'꺼짐 = 대기 · 켜면 근무';
+    var sw='<div class="tk-swr own'+(s==='work'||s==='standby'?'':' dim')+'"><div><b>사무실 근무</b><small>'+esc(note)+'</small></div><button type="button" class="sw'+(eff==='work'?' on':'')+'" role="switch" aria-checked="'+(eff==='work'?'true':'false')+'" aria-label="근무·대기 바꾸기" data-act="pmode" data-id="'+(eff==='work'?'standby':'work')+'"'+(pend?' disabled':'')+'></button></div>'+
+      (pend?'<p class="tk-pend own"><span class="spin"></span>'+(pend==='work'?'근무':'대기')+'로 바꾸는 중 — 사무실 PC 가 다음 확인 때 적용합니다</p>':'');
+    var what='<ul class="tk-what"><li><b>대기</b> = 쉬는 중 — 새 일·정기업무·AI 호출 멈춤(하던 호출은 마무리) · 지시·톡·결재는 받아 둠</li><li><b>근무</b> = 받아 둔 지시부터 이어서 처리</li><li>울타리·한도 정지는 이 스위치와 따로 — [확인하고 출근]이 필요합니다</li></ul>';
+    var pc=s==='work'||s==='standby'?'<div class="tk-pcoff"><b>PC 자체가 꺼지면</b> 여기가 「PC 꺼짐 · 마지막 신호」로 바뀝니다. 폰으로 PC 를 켤 수는 없고, PC 를 켜서 로그인하면 사무실이 알아서 떠 마지막 상태로 이어집니다.</div>':'';
+    setHTML(el,card+sw+what+pc+'<div class="ro sub">'+IC('i-eye')+'열람 전용 — 근무·대기는 '+esc(ownerNm())+'님만 바꿀 수 있습니다</div>');
+  }
+  function openPower(){closeAll(true);renderPowerSheet();$('#powerSheet').classList.add('open');}
+  function tkPower(mode){
+    if(!guard()) return; if(mode!=='work'&&mode!=='standby') return;
+    var s=ws();
+    tk.power={mode:mode,at:Date.now()}; renderTalk();
+    cmd('power',{mode:mode},function(r){tk.power=null;toast(r&&r.ok?(r.message||(mode==='work'?'근무로 바꿨습니다':'대기로 바꿨습니다')):'바꾸지 못했습니다 — '+((r&&r.message)||'사무실 처리 오류'));render();},true).then(function(id){
+      if(!id){tk.power=null;render();return;}
+      toast(s==='pcoff'||s==='progoff'?'쌓아 두었습니다 — PC 가 켜지면 적용합니다':(mode==='work'?'근무로':'대기로')+' 바꾸라고 보냈습니다 — 사무실 PC 가 다음 확인 때 적용합니다','info');
+    });
+  }
+  // ── 입력·카드 동작 ──
+  var DMOK_KEY='mdo.talk.dmOrderOk.v1';
+  function tkOrderOk(){
+    var ok=false; try{ok=localStorage.getItem(DMOK_KEY)==='1'}catch(e){ok=false}
+    if(ok) return Promise.resolve(true);
+    return ask({pill:'새 지시',pillCls:'b-info',title:'이 글은 '+LS()+'에게 새 지시로 갑니다',body:'<p>1:1방은 질문 답·결재 메모를 쓰는 곳입니다. 그 밖의 글은 '+esc(LS())+'이 받아 알맞은 직원에게 나누는 <b>새 지시</b>가 되고, 단톡방에도 보입니다(이 방 직원은 추천으로만 — 최종 배분은 '+esc(LS())+').</p><p style="margin-top:6px">일이 아니라 메모만 남기려면 보낼 곳을 「메모만 남기기」로 바꾸세요. 확인하시면 다음부터는 묻지 않습니다.</p>',ok:'새 지시로 보내기'})
+      .then(function(v){if(v===null)return false;try{localStorage.setItem(DMOK_KEY,'1')}catch(e){}return true;});
+  }
+  function tkClearInput(room,b){var ta=$('#tkTxt');if(ta){ta.value='';tkGrow(ta);}draftSet(room,'');if(b&&b.msgId)tk.bandOff[room]=b.msgId;tk.band[room]=null;tk.dest[room]='order';tk.bandLost[room]=false;}
+  // (261002 재감사 R2-01) 답하던 질문이 다른 기기에서 처리돼 띠가 떨어진 뒤 보낼 때 — 새 지시로 바로 가지 않게 고르게 한다(기본 = 보내지 않음)
+  function tkChooseLost(p,grp){
+    var ch=grp?[{mode:'keep',label:'보내지 않고 글 남겨 두기'},{mode:'order',label:'새 지시로 보내기'}]:[{mode:'keep',label:'보내지 않고 글 남겨 두기'},{mode:'note',label:'메모만 남기기(일 아님)'},{mode:'order',label:LS()+'에게 새 지시'}];
+    ask({pill:'보낼 곳',pillCls:'b-warn',title:'답하던 질문이 이미 처리됐습니다',body:'<p>쓰던 글이 답하려던 질문은 다른 기기에서 먼저 처리됐습니다. 그대로 보내면 새 지시가 되므로 먼저 여쭙니다.</p><p class="tk-quote">'+esc(clip(p.text,160))+'</p>',choices:ch.map(function(c,i){return {value:String(i),label:c.label}}),choiceDefault:'0',ok:'고르기'}).then(function(r){
+      if(r===null) return; var c=ch[+r.choice]; if(!c||c.mode==='keep') return;
+      if(c.mode==='note'&&p.text.length>300){toast('메모는 300자까지입니다 — 줄여서 다시 보내 주세요','info');return;}
+      var q={room:p.room,text:p.text,mode:c.mode};
+      if(grp&&c.mode==='order'){var cc=tk.chips;if(cc.apr&&p.text.indexOf('최종본은 결재로')<0)q.text=p.text+' — 최종본은 결재로';if(cc.urg)q.urgency='지금';if(cc.workId)q.workId=cc.workId;if(cc.hint)q.hint=cc.hint;tk.chips={urg:false,apr:false,workId:'',hint:''};}
+      if(c.mode==='order'&&!grp){tkOrderOk().then(function(ok){if(ok)tkSendNow(q,null);});return;}
+      tkSendNow(q,null);
+    });
+  }
+  function tkSendNow(p,b){tkClearInput(p.room,b);tkPost(p,{replyText:b&&b.text});}
+  function tkChooseLocal(p,oc){
+    var ch=[];
+    oc.q.slice(0,3).forEach(function(m){ch.push({mode:'answer',replyTo:String(m.id),label:'질문에 답: '+clip((m.card||{}).title||'',30),rt:(m.card||{}).title,mid:m.id})});
+    if(oc.a[0]) ch.push({mode:'revise',replyTo:String(oc.a[0].id),label:'결재 수정 요청 메모로',rt:(oc.a[0].card||{}).title,mid:oc.a[0].id});
+    ch.push({mode:'order',label:LS()+'에게 새 지시'});
+    ch.push({mode:'note',label:'메모만 남기기(일 아님)'});
+    ask({pill:'보낼 곳',pillCls:'b-info',title:'어느 쪽으로 보낼까요?',body:'<p>이 방에 답을 기다리는 '+(oc.q.length&&oc.a.length?'질문·결재':oc.q.length?'질문':'결재')+'가 있습니다. 글이 어디로 갈지 골라 주세요.</p><p class="tk-quote">'+esc(clip(p.text,160))+'</p>',choices:ch.map(function(c,i){return {value:String(i),label:c.label}}),choiceDefault:'0',ok:'보내기'}).then(function(r){
+      if(r===null) return; var c=ch[+r.choice]; if(!c) return;
+      if(c.mode==='note'&&p.text.length>300){toast('메모는 300자까지입니다 — 줄여서 다시 보내 주세요','info');return;}
+      var q={room:p.room,text:p.text,mode:c.mode}; if(c.replyTo) q.replyTo=c.replyTo;
+      tkSendNow(q,c.mid?{msgId:c.mid,text:c.rt}:null);
+    });
+  }
+  function tkChooseGroup(p,qs){
+    var ch=qs.slice(0,3).map(function(m){return {mode:'answer',replyTo:String(m.id),label:LS()+' 질문에 답: '+clip((m.card||{}).title||'',30),rt:(m.card||{}).title,mid:m.id}});
+    ch.push({mode:'order',label:'새 지시로 보내기'});
+    ask({pill:'보낼 곳',pillCls:'b-info',title:'어느 쪽으로 보낼까요?',body:'<p>'+esc(LS())+'이 답을 기다리는 질문이 있습니다. 글이 어디로 갈지 골라 주세요.</p><p class="tk-quote">'+esc(clip(p.text,160))+'</p>',choices:ch.map(function(c,i){return {value:String(i),label:c.label}}),choiceDefault:'0',ok:'보내기'}).then(function(r){
+      if(r===null) return; var c=ch[+r.choice]; if(!c) return;
+      if(c.mode==='answer'){var m=tkMsg(p.room,c.mid);if(!m||m.state!=='open'){toast('그 질문은 이미 처리됐습니다 — 다시 골라 주세요','info');return;}tkSendNow({room:p.room,text:p.text,mode:'answer',replyTo:c.replyTo},{msgId:c.mid,text:c.rt});return;}
+      var q={room:p.room,text:p.text,mode:'order'}, cc=tk.chips;
+      if(cc.apr&&p.text.indexOf('최종본은 결재로')<0) q.text=p.text+' — 최종본은 결재로';
+      if(cc.urg) q.urgency='지금'; if(cc.workId) q.workId=cc.workId; if(cc.hint) q.hint=cc.hint;
+      tk.chips={urg:false,apr:false,workId:'',hint:''};
+      tkSendNow(q,null);
+    });
+  }
+  function tkSubmit(){
+    if(!guard()) return;
+    var room=tk.room, r=roomById(room), ta=$('#tkTxt'); if(!r||!ta) return;
+    var text=ta.value.trim(), grp=isGrp(r), b=tk.band[room]||null, max=grp?4000:2000;
+    if(!text){toast('보낼 글을 적어 주세요','info');tkFocus();return;}
+    if(text.length>max){toast('글이 너무 깁니다('+max+'자까지)','info');return;}
+    if(isDev(r)){
+      if(b&&b.mode==='answer'&&b.replyTo){tkSendNow({room:room,text:text,mode:'answer',replyTo:b.replyTo},b);return;}
+      tkSendNow(Object.assign({room:room,text:text,mode:'note'},b&&b.replyTo?{replyTo:b.replyTo}:{}),b);return;
+    }
+    if(grp){
+      if(b&&b.mode==='answer'&&b.replyTo){tkSendNow({room:room,text:text,mode:'answer',replyTo:b.replyTo},b);return;}
+      var gq=b?[]:tkOpenCards(room).q.filter(function(m){return m.id!==tk.bandOff[room]});
+      if(gq.length){tkChooseGroup({room:room,text:text},gq);return;}
+      if(!b&&tk.bandLost[room]){tkChooseLost({room:room,text:text},true);return;}
+      var p={room:room,text:text,mode:'order'}, ch=tk.chips;
+      if(ch.apr&&text.indexOf('최종본은 결재로')<0) p.text=text+' — 최종본은 결재로';
+      if(ch.urg) p.urgency='지금'; if(ch.workId) p.workId=ch.workId; if(ch.hint) p.hint=ch.hint;
+      tk.chips={urg:false,apr:false,workId:'',hint:''};
+      tkSendNow(p,b); return;
+    }
+    if(b&&b.replyTo&&b.mode!=='reply'){tkSendNow({room:room,text:text,mode:b.mode,replyTo:b.replyTo},b);return;}
+    var rq=b&&b.mode==='reply'&&b.replyTo?{replyTo:b.replyTo}:{};
+    if(tk.dest[room]==='note'){if(text.length>300){toast('메모는 300자까지입니다','info');return;}tkSendNow(Object.assign({room:room,text:text,mode:'note'},rq),b);return;}
+    // 보고서 [답장]으로 붙인 띠는 보낼 곳이 보이는 상태에서 쓴 글이라 선택 시트 없이(새 지시 첫 확인만)
+    if(b&&b.mode==='reply'){tkOrderOk().then(function(ok){if(ok)tkSendNow(Object.assign({room:room,text:text,mode:'order'},rq),b);});return;}
+    var oc=tkOpenCards(room);
+    if(oc.q.length||oc.a.length){tkChooseLocal({room:room,text:text},oc);return;}
+    if(!b&&tk.bandLost[room]){tkChooseLost({room:room,text:text},false);return;}
+    tkOrderOk().then(function(ok){if(ok)tkSendNow({room:room,text:text,mode:'order'},b);});
+  }
+  // (261004 배포전검토1 N1·N2) 닫기 칩 = 서버가 준 번호(closeIdx). 나가는 길의 가림으로 칩 글이 겹쳐도 번호로 정확히 — 옛 서버(closeIdx 없음)만 글 비교
+  function tkIsCloseChip(c,x,i){return typeof c.closeIdx==='number'?i===c.closeIdx:(!!c.closeChoice&&x===c.closeChoice)}
+  // 이 카드에 이 기기가 답을 보내는 중이거나 막 보냄 — 칩을 다시 누르지 못하게(IOS-04 두 번 누름)
+  // (261005 배포전검토2 T409) 409 changed 뒤 새 방 문서를 기다리는 카드 — 칩 글이 바뀌면(새 문서 도착) 또는 90초가 지나면 풀림
+  var TK_STALE_MS=90000;
+  function tkChipSig(m){var c=m&&m.card;return JSON.stringify(c&&Array.isArray(c.choices)?c.choices:[])}
+  function tkStaleOn(m){var k=m&&String(m.id),x=k&&tk.stale[k];if(!x)return false;if(tkChipSig(m)!==x.sig||Date.now()-x.at>TK_STALE_MS){delete tk.stale[k];return false;}return true}
+  // (261005 배포전검토2 S-5) 이 카드에 보낸 답이 「보낼 곳 고르기」(409 needChoice) 상태 — 고르거나 지우기 전에는 칩을 다시 누르지 못하게(같은 카드에 두 번 답 없음)
+  function tkChoosingOut(mid){var o=ui.role==='owner'?outAll():{};return Object.keys(o).some(function(k){var e=o[k];return e&&e.mode==='answer'&&e.replyTo===String(mid)&&e.state==='choose'})}
+  function tkAnsweredOut(mid){var o=ui.role==='owner'?outAll():{};return Object.keys(o).some(function(k){var e=o[k];return e&&e.mode==='answer'&&e.replyTo===String(mid)&&(e.state==='sending'||e.state==='done')})}
+  function tkChip(mid,ci){
+    if(!guard()) return;
+    var room=tk.room, m=tkMsg(room,mid); if(!m||m.state!=='open'||!m.ref||typeof m.ref.reportId!=='string') return;
+    if(tkAnsweredOut(m.id)){toast('이 카드에 답을 보내는 중입니다','info');return;}
+    if(tkChoosingOut(m.id)){toast('아래 보낸 글에서 보낼 곳을 먼저 골라 주세요','info');return;}
+    if(tkStaleOn(m)){toast('새 선택지를 받는 중입니다 — 잠시 뒤 다시 골라 주세요','info');return;}
+    var c=m.card||{}, x=(Array.isArray(c.choices)?c.choices:[])[ci]; if(typeof x!=='string'||!x) return;
+    // (261004 고정 칩 번호 계약) 칩 번호(ci)를 함께 보낸다 — 서버가 지금 칩 목록의 그 번호와 글을 대조해 판정(바뀌었으면 기록 없이 「다시 골라 주세요」)
+    var send=function(){if(tkAnsweredOut(m.id)||tkChoosingOut(m.id)||tkStaleOn(tkMsg(room,mid)||m))return;tk.bandOff[room]=m.id;var b=tk.band[room];if(b&&b.msgId===m.id)tk.band[room]=null;tkPost({room:room,text:x,mode:'answer',replyTo:String(m.id),chip:true,ci:ci},{replyText:c.title,sig:tkChipSig(tkMsg(room,mid)||m)});};
+    if(tkIsCloseChip(c,x,ci)) ask({pill:'일감 닫기',pillCls:'b-warn',title:'「'+x+'」로 답하면 이 일감을 닫습니다',body:'<p>'+txt(c.title||'')+'</p><p style="margin-top:6px">닫으면 이 일은 더 진행하지 않습니다. 이어서 하려면 다른 답을 고르세요.</p>',ok:'닫기로 답하기',okCls:'btn-d'}).then(function(v){if(v!==null)send();});
+    else send();
+  }
+  function tkApprove(mid){
+    if(!guard()) return;
+    var m=tkMsg(tk.room,mid); if(!m||m.state!=='open'||!m.ref||typeof m.ref.reportId!=='string') return;
+    var c=m.card||{}, id=m.ref.reportId, rec=tkRec(c), sel=tkSel(id,m), s=ws();
+    if(rec&&sel&&sel!==rec){
+      ask({pill:'다시 만들기',pillCls:'b-warn',title:sel+'로 다시 만들까요?',body:'<p>추천안이 아니어서 '+esc(sel)+'로 다시 만듭니다(재작업). 새 버전으로 고쳐 검수를 다시 거친 뒤 결재에 다시 올라옵니다(추천안은 '+esc(rec)+').</p>',ok:sel+'로 다시 만들기'}).then(function(v){if(v===null)return;decide(id,'승인',{option:sel});});
+      return;
+    }
+    ask({pill:'결재 승인',pillCls:'b-ok',title:'승인 '+(sel||'')+'안 — '+String(c.title||''),body:'<p>승인하면 담당이 바로 적용합니다(바꾸기 전 최종본은 생성버전 폴더에 그대로 남음). 게시·발송은 하지 않습니다.'+(s==='pcoff'||s==='progoff'?' 지금은 사무실 PC 가 꺼져 있어 켜지면 처리합니다.':s!=='work'?' 지금은 '+esc(WSL[s][0])+'이라 승인 기록만 먼저 남고, 적용은 근무로 바뀐 뒤에 합니다.':'')+'</p>',ok:'승인'}).then(function(v){if(v===null)return;decide(id,'승인',{option:sel});});
+  }
+  function tkReject(mid){
+    if(!guard()) return;
+    var room=tk.room, m=tkMsg(room,mid); if(!m||m.state!=='open'||!m.ref||typeof m.ref.reportId!=='string') return;
+    var id=m.ref.reportId, c=m.card||{};
+    ask({pill:'반려',pillCls:'b-danger',title:'반려 — 어떻게 할까요?',body:'<p>'+txt(c.title||'')+'</p>',choicesLabel:'반려한 뒤',choices:[{value:'redo',label:'사유 적고 다시 만들기'},{value:'close',label:'이 일감 닫기(재작업 없음)'}],choiceDefault:'redo',
+      input:{label:'사유 (닫기는 선택 · 다시 만들기는 여기나 입력칸에)',chips:['방향이 다름','내용이 부족함','톤이 맞지 않음'],placeholder:'예) 인물 중심으로 다시'},ok:'반려',okCls:'btn-d'})
+    .then(function(r){
+      if(r===null) return;
+      if(r.choice==='close'){decide(id,'반려',{close:true,memo:r.text||undefined});return;}
+      if(r.text){tkPost({room:room,text:r.text,mode:'reject',replyTo:String(m.id)},{replyText:c.title});return;}
+      tk.band[room]=tkBandFor(m,'reject'); renderTalk(); tkFocus();
+    });
+  }
+  function tkSummary(mid){
+    var m=tkMsg(tk.room,mid); if(!m) return; var c=m.card||{};
+    ask({pill:'요약',pillCls:'b-ok',title:String(c.title||'보고서'),body:(Array.isArray(c.lines)?c.lines.map(function(l){return '<p>'+txt(l)+'</p>'}).join(''):'')+(c.meta?'<p class="s12 mut" style="margin-top:6px">'+txt(c.meta)+'</p>':'')+'<p class="tk-sum">이 보고서 전문은 PC 허브·드라이브 파일에서 볼 수 있습니다.</p>',ok:'닫기'});
+  }
+  function tkPickOut(rid){
+    var e=outAll()[rid]; if(!e||!Array.isArray(e.choices)||!e.choices.length) return;
+    ask({pill:'보낼 곳',pillCls:'b-warn',title:'어느 쪽으로 보낼지 골라 주세요',body:'<p class="tk-quote">'+esc(clip(e.text,160))+'</p>'+(e.err?'<p class="s12 mut" style="margin-top:6px">'+txt(e.err)+'</p>':''),choices:e.choices.map(function(c,i){return {value:String(i),label:c.label}}),choiceDefault:'0',ok:'이쪽으로 보내기'}).then(function(r){
+      if(r===null) return; var c=e.choices[+r.choice]; if(!c||!outAll()[rid]) return;
+      // (261002 재감사 D2-02) 개발 진행 방의 「Claude에게 글로만 보내기」는 2000자(직원 메모 300자 규칙이 아님)
+      if(c.mode==='note'&&!isDev(roomById(e.room))&&e.text.length>300){toast('메모는 300자까지입니다 — 줄여서 다시 써 주세요','info');return;}
+      e.mode=c.mode; e.replyTo=c.replyTo||null; e.chip=!!c.chip; e.ci=null; e.choices=null; tkCmd(rid); renderTalk();
+    });
+  }
+  function tkChipToggle(c){
+    if(!guard()) return;
+    var ch=tk.chips;
+    if(c==='urg'){ch.urg=!ch.urg;renderTalk();return;}
+    if(c==='apr'){ch.apr=!ch.apr;renderTalk();return;}
+    if(c==='work'){var wl=(base&&base.workIds)||[];if(!wl.length){toast('업무ID 목록을 아직 받지 못했습니다','info');return;}
+      ask({pill:'# 업무 지정',pillCls:'b-info',title:'어느 업무에 붙일까요?',choices:[{value:'',label:'지정 안 함 — '+LS()+'이 찾아 연결'}].concat(wl.slice(0,40).map(function(w){return {value:String(w),label:String(w)}})),choiceDefault:ch.workId||'',ok:'고르기'}).then(function(r){if(r===null)return;ch.workId=r.choice||'';renderTalk();});return;}
+    if(c==='hint'){
+      ask({pill:'@ 담당 추천',pillCls:'b-info',title:'누구에게 맡기면 좋을까요?',body:'<p>추천은 힌트입니다 — 최종 배분은 '+esc(LS())+'이 합니다. 결과물을 만드는 직원만 고를 수 있습니다.</p>',choices:[{value:'',label:'추천 없음'}].concat(WRITERS().map(function(id){return {value:id,label:short(id)||id}})),choiceDefault:ch.hint||'',ok:'고르기'}).then(function(r){if(r===null)return;ch.hint=r.choice||'';renderTalk();});
+    }
+  }
+  function tkAct(act,id,el){
+    var room=tk.room, m;
+    switch(act){
+      case 'opt': var lb=el.getAttribute('data-opt')||''; if(lb.length>12||!id) return; tk.opt[id]=lb; renderTalk(); return;
+      case 'approve': tkApprove(id); return;
+      case 'revise': m=tkMsg(room,id); if(!m||!guard()) return; tk.band[room]=tkBandFor(m,'revise'); renderTalk(); tkFocus(); return;
+      case 'reject': tkReject(id); return;
+      case 'answer': tkChip(id,+el.getAttribute('data-ci')); return;
+      case 'direct': m=tkMsg(room,id); if(!m||!guard()) return; tk.band[room]=tkBandFor(m,'answer'); renderTalk(); tkFocus(); return;
+      case 'summary': tkSummary(id); return;
+      case 'arch': if(!guard()||!id) return; cmd('archiveRetry',/^job:/.test(id)?{jobId:id.slice(4)}:{reportId:id},function(r){toast(r&&r.ok?(r.message||'다시 보관을 시도했습니다'):'다시 보관하지 못했습니다 — '+((r&&r.message)||'사무실 처리 오류'));}); return;
+      case 'prop':
+        if(!id) return;
+        if((st().proposals||[]).some(function(x){return x.id===id})){startProposal(id);return;}
+        if(!guard()) return;
+        ask({pill:'제안 착수',pillCls:'b-ok',title:id+' — 착수할까요?',body:'<p>착수하시면 일감(통로 「제안」)이 되어 '+esc(LS())+'이 배분합니다(직원 호출 = 사용량 발생).</p>',ok:'착수'}).then(function(v){if(v===null)return;cmd('proposalStart',{proposalId:id},function(r){toast(r&&r.ok?(r.message||'착수했습니다'):'착수하지 못했습니다 — '+((r&&r.message)||'사무실 처리 오류'));});});
+        return;
+      case 'band': var b=tk.band[room]; if(b&&b.msgId) tk.bandOff[room]=b.msgId; tk.band[room]=null; renderTalk(); tkFocus(); return;
+      case 'dest': tk.dest[room]=tk.dest[room]==='note'?'order':'note'; renderTalk(); return;
+      case 'chip': tkChipToggle(id); return;
+      case 'pend': toast(LS()+'이 아직 배분 전입니다 — 배분하면 「1」이 사라집니다','info'); return;
+      case 'out':
+        var op=el.getAttribute('data-op'), e=outAll()[id]; if(!e) return;
+        if(op==='info'){if(e.state==='sending')toast('사무실 PC 가 다음 확인(15초 안팎) 때 가져갑니다'+(ws()==='pcoff'||ws()==='progoff'?' — 지금은 꺼져 있어 켜지면 가져갑니다':''),'info');return;}
+        if(op==='pick'){tkPickOut(id);return;}
+        if(op==='retry'){if(guard())tkCmd(id);renderTalk();return;}
+        if(op==='del'){tkUnwatch(id);delete outAll()[id];outSave();renderTalk();}
+        return;
+      case 'pmode': tkPower(id); return;
+      case 'dl': tkDownload(id); return;
+      case 'reply':
+        if(!guard()) return;
+        var rm=tkFindRep(room,id);
+        tk.band[room]={mode:'reply',replyTo:rm?String(rm.id):null,msgId:'',text:String((rm&&rm.card&&rm.card.title)||(repById(id)||{}).firstLine||id)};
+        location.hash=tkHref(room); setTimeout(tkFocus,150); return;
+    }
+  }
+
   // ── 이 기기 폰 알림(웹 푸시) ─────────────────────────────
   // 아이폰은 홈 화면에 추가한 앱에서만(iOS 16.4+) 알림을 받을 수 있다. [폰 알림 받기]를 누르는 그 순간에 구독한다(아이폰 조건).
   var swReg=null, pushSub=null, pushBusy=false;
@@ -3071,12 +4112,12 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     else if(!sp.ok) h=gi('i-bell','it-n','폰 알림',esc(sp.why),'');
     else if(window.Notification&&Notification.permission==='denied') h=gi('i-bell','it-r','알림이 거부돼 있습니다','이 기기 <b>설정 → 알림 → maydly 사무실</b>에서 허용한 뒤 다시 여세요.','');
     else if(pushSub&&!sameKey(pushSub,key)) h=gi('i-refresh','it-a','알림을 다시 켜야 합니다','사무실 알림 키가 바뀌었습니다. 끈 뒤 다시 켜 주세요.','<button type="button" class="btn btn-s btn-sm" data-push-off'+(pushBusy?' disabled':'')+'>알림 끄기</button>');
-    else if(pushSub) h=gi('i-bell','it-g','폰 알림 받기 · 켜짐','결재 요청·긴급만 · 문구에 이름·장소·연락처·금액 없음 · 누르면 결재함','<button type="button" class="sw on" data-push-off role="switch" aria-checked="true" aria-label="이 기기 알림 끄기"'+(pushBusy?' disabled':'')+'></button>')+
+    else if(pushSub) h=gi('i-bell','it-g','폰 알림 받기 · 켜짐','결재 요청·긴급·개발 결정 요청만 · 문구에 이름·장소·연락처·금액 없음 · 누르면 그 화면으로','<button type="button" class="sw on" data-push-off role="switch" aria-checked="true" aria-label="이 기기 알림 끄기"'+(pushBusy?' disabled':'')+'></button>')+
       gi('i-send','it-n','시험 알림 보내기','사무실이 켜져 있으면 15초 안팎','<button type="button" class="btn btn-s btn-sm" data-push-test>'+IC('i-send')+'보내기</button>');
-    else h=gi('i-bell','it-n','폰 알림 받기','이 기기에서 결재 요청·긴급 알림을 받으려면 켜 주세요. 허용 창이 뜨면 <b>허용</b>을 누르시면 됩니다.'+(key?'':' · 사무실 PC 연결 뒤 켤 수 있습니다'),'<button type="button" class="sw" data-push-on role="switch" aria-checked="false" aria-label="이 기기 알림 켜기"'+(pushBusy||!key?' disabled':'')+'></button>');
+    else h=gi('i-bell','it-n','폰 알림 받기','이 기기에서 결재 요청·긴급·개발 결정 요청 알림을 받으려면 켜 주세요. 허용 창이 뜨면 <b>허용</b>을 누르시면 됩니다.'+(key?'':' · 사무실 PC 연결 뒤 켤 수 있습니다'),'<button type="button" class="sw" data-push-on role="switch" aria-checked="false" aria-label="이 기기 알림 켜기"'+(pushBusy||!key?' disabled':'')+'></button>');
     setHTML(el,'<div class="cd">'+h+'</div>');
     var mini='';
-    if(!pushSub&&!(base&&base.config&&base.config.pushEnabled===false)&&session.checked) mini='<a class="cd pmini" href="#rules"><span class="it it-g">'+IC('i-bell')+'</span><span class="qb"><b class="qt" style="font-size:14px">이 기기 폰 알림 켜기</b><span class="qs">'+(sp.install?'홈 화면에 추가한 앱에서 켤 수 있습니다':'결재 요청·긴급만 울립니다 · 설정 · 규칙에서')+'</span></span>'+IC('i-chev-r')+'</a>';
+    if(!pushSub&&!(base&&base.config&&base.config.pushEnabled===false)&&session.checked) mini='<a class="cd pmini" href="#rules"><span class="it it-g">'+IC('i-bell')+'</span><span class="qb"><b class="qt" style="font-size:14px">이 기기 폰 알림 켜기</b><span class="qs">'+(sp.install?'홈 화면에 추가한 앱에서 켤 수 있습니다':'결재 요청·긴급·개발 결정 요청만 울립니다 · 설정 · 규칙에서')+'</span></span>'+IC('i-chev-r')+'</a>';
     setHTML($('#homePushMini'),mini);
   }
 
@@ -3116,13 +4157,17 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
   document.addEventListener('click',function(e){
     var t=e.target, el;
     if(swMoved&&Date.now()-swMoved<450&&t.closest&&t.closest('.swp-fg')){e.preventDefault();return;}
-    el=t.closest('[data-logout]'); if(el){e.preventDefault();closeAll();signOut(auth).then(function(){toast('로그아웃했습니다');}).catch(function(){});return;}
+    // (1-10) 톡·근무·대기 창 버튼 — 동작 이름은 허용 목록, 번호는 모양 검사 뒤에만
+    el=t.closest('[data-act]'); if(el&&el.closest('#tk,#powerSheet')){e.preventDefault();var act=el.getAttribute('data-act')||'',aid=el.getAttribute('data-id')||'';if(TK_ACTS.indexOf(act)<0||!/^[^\s<>"'`]{0,80}$/.test(aid))return;tkAct(act,aid,el);return;}
+    el=t.closest('a[href="#power"]'); if(el&&ui.cur==='power'){e.preventDefault();openPower();return;}
+    el=t.closest('[data-reload]'); if(el){e.preventDefault();location.reload();return;}
+    el=t.closest('[data-logout]'); if(el){e.preventDefault();closeAll();try{localStorage.removeItem(DRAFT_KEY)}catch(_){}signOut(auth).then(function(){toast('로그아웃했습니다');}).catch(function(){});return;}
     el=t.closest('[data-push-on]'); if(el){enablePush();return;}
     el=t.closest('[data-push-off]'); if(el){disablePush();return;}
     el=t.closest('[data-push-test]'); if(el){pushTest();return;}
     el=t.closest('[data-open-stop]'); if(el){openStop();return;}
     el=t.closest('#stopGo'); if(el){doStop();return;}
-    el=t.closest('[data-office-start]'); if(el){officeStart();return;}
+    el=t.closest('[data-office-start]'); if(el){if(el.closest('#powerSheet')){location.hash=ui.powerBack||'#talk';setTimeout(officeStart,80);}else officeStart();return;}
     el=t.closest('[data-open-more]'); if(el){closeAll();$('#moreSheet').classList.add('open');return;}
     el=t.closest('#moreSheet a[href^="#"]'); if(el){closeAll();return;}
     el=t.closest('#askCancel'); if(el){closeAll();return;}
@@ -3159,16 +4204,35 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     var x=e.target;
     if(x.id==='ordwid') ui.workId=x.value;
   });
-  document.addEventListener('input',function(e){if(e.target&&e.target.id==='ordtxt')renderOrderRec();});
+  document.addEventListener('input',function(e){var x=e.target;if(!x)return;if(x.id==='ordtxt')renderOrderRec();else if(x.id==='tkTxt'){tkGrow(x);draftSet(tk.room,x.value);}else if(x.id==='tkSearch'){tk.q=x.value;renderTalkList();}});
+  // 대화를 위로 올려 보다가 맨 아래로 내려오면 그때 읽음(대표: 3초 묶음 · 열람: 이 기기)
+  document.addEventListener('scroll',function(e){var x=e.target;if(!x||x.id!=='tkScroll'||!tk.room)return;tk.atBottom=x.scrollHeight-x.scrollTop-x.clientHeight<80;if(x.scrollHeight-x.scrollTop-x.clientHeight<80){tkRead(tk.room,false);tkViewerSeen(tk.room);}},true);
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'&&ui.cur==='talk'&&tk.room){var sc=$('#tkScroll');if(sc&&sc.scrollHeight-sc.scrollTop-sc.clientHeight<80)tkRead(tk.room,false);}});
+  // (261004 배포전검토1 IOS-02) 보내기를 눌러도 입력칸 초점을 유지한다 — 아이폰은 초점이 빠지면 키보드가 내려가 글마다 입력칸을 다시 눌러야 했다.
+  //  마우스는 mousedown 기본 동작(초점 옮김)을 막고, 손가락은 touchend 기본 동작(합성 click·초점 옮김)을 막은 뒤 직접 보낸다.
+  function tkSendKeepsFocus(e){var b=e.target&&e.target.closest?e.target.closest('#tkForm .tk-send'):null;return !!b&&document.activeElement&&document.activeElement.id==='tkTxt'}
+  document.addEventListener('mousedown',function(e){if(tkSendKeepsFocus(e)&&!tk.composing)e.preventDefault();},true);
+  //  (261005) 손가락을 버튼 밖으로 끌어 뗀 경우는 보내지 않는다(보통 탭과 같게 — 손을 떼는 자리가 버튼 안일 때만)
+  //  (261005 배포전검토2 S-1) 한글 마지막 글자를 조합하는 중이면 막지 않는다 — 막으면 조합이 끝나기 전에 글을 읽고 입력칸을 비워
+  //  마지막 글자가 빠지거나 보낸 뒤 입력칸에 다시 생길 수 있다. 그때만 예전처럼 버튼이 초점을 가져가 조합을 끝낸 뒤 보낸다(키보드는 내려감).
+  document.addEventListener('compositionstart',function(e){if(e.target&&e.target.id==='tkTxt')tk.composing=true;},true);
+  document.addEventListener('compositionend',function(e){if(e.target&&e.target.id==='tkTxt')tk.composing=false;},true);
+  document.addEventListener('focusout',function(e){if(e.target&&e.target.id==='tkTxt')tk.composing=false;},true);
+  document.addEventListener('touchend',function(e){if(!tkSendKeepsFocus(e))return;if(tk.composing)return;var b=e.target.closest('#tkForm .tk-send'),p=e.changedTouches&&e.changedTouches[0];if(p&&b){var r=b.getBoundingClientRect();if(p.clientX<r.left-8||p.clientX>r.right+8||p.clientY<r.top-8||p.clientY>r.bottom+8)return;}if(e.cancelable===false)return;e.preventDefault();tkSubmit();},{capture:true,passive:false});
+  if(window.visualViewport){visualViewport.addEventListener('resize',tkVV);visualViewport.addEventListener('scroll',tkVV);}
+  window.addEventListener('resize',function(){tkVV();});
   document.addEventListener('submit',function(e){
     var f=e.target; e.preventDefault();
+    if(f.id==='tkForm'){tkSubmit();return;}
     if(f.id==='orderForm'){var ta=$('#ordtxt');sendOrder(ta.value,{assignee:ui.who,urgency:ui.when,workId:ui.workId,via:'허브 지시창'},$('#ordSend')).then(function(ok){if(ok){ta.value='';renderOrderRec();}});return;}
     if(f.id==='quickForm'){var qi=$('#quickTxt');sendOrder(qi.value,{via:'허브 빠른 지시'},$('button',f)).then(function(ok){if(ok)qi.value='';});return;}
     if(f.id==='handoffForm'){sendHandoff(f);return;}
     if(f.hasAttribute('data-answer')){answer(f);return;}
   });
   document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){if($$('.ov.open').length)closeAll();else if(ui.cur==='approvals'&&ui.id&&!isDesk())location.hash='#approvals';return;}
+    // 톡 입력칸: 맥·넓은 화면은 Enter 로 보내기(Shift+Enter 줄바꿈) · 어디서나 ⌘/Ctrl+Enter · 한글 조합 중에는 보내지 않음
+    if(e.target&&e.target.id==='tkTxt'&&e.key==='Enter'&&!e.isComposing&&e.keyCode!==229&&((isDesk()&&!e.shiftKey)||e.metaKey||e.ctrlKey)){e.preventDefault();tkSubmit();return;}
+    if(e.key==='Escape'){if($$('.ov.open').length)closeAll();else if(ui.cur==='approvals'&&ui.id&&!isDesk())location.hash='#approvals';else if(ui.cur==='talk'&&tk.room&&e.target&&e.target.id!=='tkTxt')location.hash=tk.sub==='r'?tkHref(tk.room):'#talk';return;}
     // 맥: ⌘↵(윈도우 Ctrl↵)로 지금 연 결재 승인 — 확인창은 그대로 뜬다
     if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)&&!$$('.ov.open').length&&ui.cur==='approvals'&&ui.id&&isDesk()){var a=aprById(ui.id);if(a&&a.status==='대기'&&ui.role==='owner'){e.preventDefault();approve(ui.id);}}
   });
@@ -3199,7 +4263,7 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     session.ready=true; session.user=u||null; session.checked=false;
     $('#loginBtn').hidden=!!u;
     if(!u){
-      stopListeners(); base=null; S=null; parts={reports:[],approvals:[],jobs:[]}; inboxDocs=[]; pending={}; ui.role=null; readSt=null;
+      stopListeners(); base=null; S=null; parts={reports:[],approvals:[],jobs:[]}; inboxDocs=[]; pending={}; ui.role=null; readSt=null; tk.docs={}; tk.html={}; tk.queued={}; tk.band={}; tk.power=null; rdC={};
       conn.ok=false; conn.tried=false; conn.empty=false; hb={at:0,offline:false};
       $('#loginWait').hidden=true;
       if(ui.cur!=='login') location.hash='#login'; else render();
@@ -3217,7 +4281,8 @@ import { getFirestore, doc, collection, query, orderBy, limit, onSnapshot, setDo
     navigator.serviceWorker.addEventListener('message',function(e){
       var d=e.data||{};
       if(d.type!=='open'||typeof d.url!=='string') return;
-      try{var u=new URL(d.url);if(u.origin===location.origin&&u.pathname===location.pathname&&u.hash)location.hash=u.hash;}catch(_){}
+      var base=function(p){return String(p||'').replace(/index\.html$/,'')};
+      try{var u=new URL(d.url);if(u.origin===location.origin&&base(u.pathname)===base(location.pathname)&&u.hash){if(location.hash===u.hash){tk.hl='';go();}else location.hash=u.hash;}}catch(_){}
     });
   }
   $('#installHint').hidden=!(isIOS()&&!isStandalone());
