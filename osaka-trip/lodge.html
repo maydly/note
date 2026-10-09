@@ -74,6 +74,9 @@ body{word-break:keep-all;overflow-wrap:anywhere}
 .mylab{font-size:13px;font-weight:800;color:#2f5d8a;margin:8px 0 2px}
 .oth{font-size:13.5px;margin:4px 0 0;color:#4d4436} .oth b{color:#8a3b6b}
 .both{display:inline-block;font-size:12.5px;font-weight:800;border-radius:999px;padding:1px 9px;background:#f3e8f0;color:#8a3b6b;margin-left:6px;white-space:nowrap}
+.lchip.need,#sync.need{background:#2f5d8a;color:#fff;border-color:#2f5d8a;font-weight:700;box-shadow:0 1px 4px #2f5d8a40}
+#duo{display:none;flex-wrap:wrap;gap:6px;margin:2px 0 6px}#duo.on{display:flex}
+#duo button{font:inherit;font-size:13.5px;border:1px solid #e3c9da;background:#fff;color:#8a3b6b;border-radius:999px;padding:8px 12px;cursor:pointer}#duo button.on{background:#8a3b6b;border-color:#8a3b6b;color:#fff;font-weight:700}
 #inp{width:100%;height:90px;font:16px/1.5 system-ui;border:1px solid #d8d0c0;border-radius:10px;padding:8px;margin-top:6px}
 </style><style>/* required styles */
 
@@ -738,14 +741,14 @@ svg.leaflet-image-layer.leaflet-interactive path {
 	}
 </style></head><body><div class="wrap">
 <p style="margin:0 0 4px"><a href="./" style="display:inline-block;padding:10px 0">← 오사카 10월 여행</a></p><h1>오사카 숙소 고르기 — 위치 · 가는 길</h1>
-<p style="margin:4px 0"><span class="lchip" id="lsync">☁️ 확인 중…</span></p>
+<p style="margin:4px 0"><span class="lchip" id="lsync">☁️ 확인 중…</span></p><div id="duo"></div>
 <p class="stamp">지금 예약 가능한 곳만(10/10 01:13 다시 확인) · 가격 = 총액(청소비·수수료 포함, 2인) · 경로 = 평일 오전 10시 시간표 기준(대중교통 검색 transitous)</p>
 <div class="box main"><b>보는 법</b> — 맨 위 큰 지도에서 숙소(번호 핀)와 날짜별로 가는 곳(검은 이름표)의 거리를 한눈에 보고, 카드마다 <b>작은 지도 + 「가는 길」 표</b>로 어떻게 몇 분인지 봅니다.
 표의 줄을 누르면 작은 지도에 그 길이 그려집니다(걷기 = 회색 점선, 전철 = 노선 색).<br>
 <span class="sub">⚠ 에어비앤비가 보여 주는 숙소 위치는 실제와 수백 m 다를 수 있어(사생활 보호로 일부러 흐림), 걷는 시간은 몇 분씩 차이 날 수 있습니다. 정확한 주소는 예약 뒤에 나옵니다.</span><br>
 <span class="sub">📱 폰에서는 지도를 두 손가락으로 움직이고 키워요(한 손가락은 화면 내리기).</span></div>
 <div id="omap"></div>
-<div class="leg"><span><i class="pin" style="background:#d08a00;width:16px;height:16px"></i>제 추천</span><span><i class="pin" style="background:#2f7d4f;width:16px;height:16px"></i>9/29 평점판에 있던 곳</span><span><i class="pin" style="background:#2f5d8a;width:16px;height:16px"></i>새로 나온 곳</span><span><b class="dst">이름표</b> 날짜별로 가는 곳</span></div>
+<div class="leg"><span><i class="pin" style="background:#d08a00;width:16px;height:16px"></i>추천(정리)</span><span><i class="pin" style="background:#2f7d4f;width:16px;height:16px"></i>9/29 평점판에 있던 곳</span><span><i class="pin" style="background:#2f5d8a;width:16px;height:16px"></i>새로 나온 곳</span><span><b class="dst">이름표</b> 날짜별로 가는 곳</span></div>
 <div class="bar">
  <button class="go" onclick="exportIt()">결과 복사</button><span class="sub" id="cnt"></span>
  <b>정렬</b><span id="sorts"></span>
@@ -753,7 +756,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
 </div>
 <div id="list"></div>
 <div class="box"><b>결과</b> (「결과 복사」가 안 되면 아래 칸을 통째로 복사)<textarea id="out" readonly></textarea>
-<p style="margin:10px 0 0"><b>가져오기</b> — 맥에서 연 예전 숙소판에서 매긴 점수가 있으면, 그 판의 「결과 복사」 글을 아래에 붙여 넣고 「가져오기」를 누르세요. 내 점수로 들어가요.</p>
+<p style="margin:10px 0 0"><b>가져오기</b> — (명진 맥 전용) 예전 숙소판에서 매긴 <b>내</b> 점수를 옮길 때만 써요. 다른 사람 점수는 로그인하면 자동으로 보여요. 이미 매긴 곳은 그대로 둬요.</p>
 <textarea id="inp" placeholder="[플래닝-005 오사카 숙소 · 위치판 점수] 로 시작하는 글"></textarea><button class="go" style="margin-top:6px" onclick="importIt()">가져오기</button></div>
 </div>
 <div id="lb" onclick="lbNext(event)"><img id="lbi" alt=""><p id="lbt"></p></div>
@@ -773,14 +776,19 @@ const mineKey=w=>'p005_lodge2610_mine_'+w;
 function mergeR(a,b){const r=Object.assign({},a||{});for(const id in (b||{})){const x=b[id],y=r[id];if(x&&(!y||(x.t||0)>(y.t||0)))r[id]=x}return r}
 function sameR(a,b){return JSON.stringify(a||{})===JSON.stringify(b||{})}
 function scoreOf(st){return st&&!st.x&&st.s?st.s:0}
+function tot(id){return ((S[id]&&S[id].x)||(O[id]&&O[id].x))?-1:scoreOf(S[id])+scoreOf(O[id])}
 function rated(st){return !!(st&&(st.s||st.x))}
 window.__WHO=WHO;window.__NAME=NAME;window.__mergeR=mergeR;window.__mine=()=>S;
 window.__setLogin=w=>{if(!w){ME=null;OWHO=null;O={};try{S=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){S={}}draw();return}
  ME=w;OWHO=w==='mj'?'sb':'mj';let mine={};try{mine=JSON.parse(localStorage.getItem(mineKey(w))||'{}')||{}}catch(e){}
  let anon={};try{anon=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){}
- const mk='p005_lodge2610_mig_'+w;let mig=null;try{mig=localStorage.getItem(mk)}catch(e){}
- const now=Date.now();if(!mig){for(const id in anon){if(anon[id]&&!anon[id].t)anon[id].t=now-1}S=mergeR(mine,anon);try{localStorage.setItem(mk,'1')}catch(e){}}else S=mine;
- save();draw()};
+ const ids=Object.keys(anon).filter(id=>anon[id]);
+ if(ids.length){let ow=null;try{ow=localStorage.getItem('p005_lodge2610_anon_owner')}catch(e){}
+  if(!ow||ow===w||confirm('이 기기에서 로그인 전에 매긴 점수 '+ids.length+'곳을 '+NAME[w]+' 점수로 넣을까요?\n(다른 사람이 매긴 거면 「취소」)')){
+   for(const id of ids){if(!anon[id].t)anon[id].t=1}   // 예전 판(시각 없음) = 가장 옛것 → 새 판에서 매긴·지운 기록을 못 덮음
+   mine=mergeR(mine,anon);
+   try{localStorage.setItem(KEY+'_moved_'+w+'_'+Date.now(),JSON.stringify(anon));localStorage.setItem(KEY,'{}');localStorage.setItem('p005_lodge2610_anon_owner',w)}catch(e){}}}
+ S=mine;save();draw()};
 window.__gotMine=c=>{const m=mergeR(S,c);if(!sameR(m,S)){S=m;save();updAll()}};
 window.__setMine=c=>{const m=mergeR(S,c);if(!sameR(m,S)){S=m;save();updAll()}};
 window.__gotOther=o=>{O=o||{};updAll()};
@@ -802,14 +810,16 @@ function legHtml(r,k){if(!r)return '<span class="sub">경로 없음</span>';cons
   const lw=t.legs[t.legs.length-1];if(k==='kix'&&lw&&lw.t==='walk'&&lw.min>12)h+=`<br><span class="sub">⚠ 마지막에 짐 들고 ${lw.min}분 걷기 — 지하철로 한 번 더 갈아타거나 짧은 택시(1~2천 엔)도 생각</span>`}
  return h}
 let SO='mine', FL='all';
-const SORTS=[['mine','제 추천 순'],['both','둘 점수 합 순'],['p4','싼 순(4박)'],['p5','싼 순(5박)'],['move','이동 짧은 순(5일 합)']];
+const SORTS=[['mine','추천 순'],['both','둘 점수 합 순'],['p4','싼 순(4박)'],['p5','싼 순(5박)'],['move','이동 짧은 순(5일 합)']];
 function FLTS(){const a=[['all','전부'],['five','5박 가능만'],['new','새로 나온 곳'],['done','내가 매긴 곳']];if(OWHO)a.push(['oth',NAME[OWHO]+'이 매긴 곳'],['two','둘 다 매긴 곳']);return a}
 function ctl(){document.getElementById('sorts').innerHTML=SORTS.map(s=>`<button class="${SO===s[0]?'on':''}" onclick="SO='${s[0]}';draw()">${s[1]}</button>`).join('');
+ const du=document.getElementById('duo');if(du){du.classList.toggle('on',!!OWHO);du.innerHTML=OWHO?`<button class="${SO==='both'?'on':''}" onclick="SO=SO==='both'?'mine':'both';draw();toList()">둘 점수 합 순으로</button><button class="${FL==='two'?'on':''}" onclick="FL=FL==='two'?'all':'two';draw();toList()">둘 다 매긴 곳만</button><button class="${FL==='oth'?'on':''}" onclick="FL=FL==='oth'?'all':'oth';draw();toList()">${NAME[OWHO]}이 매긴 곳만</button>`:''}
  document.getElementById('flts').innerHTML=FLTS().map(s=>`<button class="${FL===s[0]?'on':''}" onclick="FL='${s[0]}';draw()">${s[1]}</button>`).join('')}
+function toList(){const l=document.getElementById('list');window.scrollTo(0,l.getBoundingClientRect().top+scrollY-64)}
 const MM={}, SEL={};
 function draw(){ctl();let L2=D.items.slice();
  if(FL==='five')L2=L2.filter(x=>x.t5);if(FL==='new')L2=L2.filter(x=>x.new);if(FL==='done')L2=L2.filter(x=>rated(S[x.id]));if(FL==='oth')L2=L2.filter(x=>rated(O[x.id]));if(FL==='two')L2=L2.filter(x=>rated(S[x.id])&&rated(O[x.id]));
- if(SO==='both')L2.sort((a,b)=>((scoreOf(S[b.id])+scoreOf(O[b.id]))-(scoreOf(S[a.id])+scoreOf(O[a.id])))||a.n-b.n);else if(SO==='p4')L2.sort((a,b)=>a.total-b.total);else if(SO==='p5')L2.sort((a,b)=>(a.t5||9e9)-(b.t5||9e9));else if(SO==='move')L2.sort((a,b)=>(sum5(a)??999)-(sum5(b)??999));else L2.sort((a,b)=>a.n-b.n);
+ if(SO==='both')L2.sort((a,b)=>(tot(b.id)-tot(a.id))||a.n-b.n);else if(SO==='p4')L2.sort((a,b)=>a.total-b.total);else if(SO==='p5')L2.sort((a,b)=>(a.t5||9e9)-(b.t5||9e9));else if(SO==='move')L2.sort((a,b)=>(sum5(a)??999)-(sum5(b)??999));else L2.sort((a,b)=>a.n-b.n);
  Object.keys(MM).forEach(k=>{try{MM[k].remove()}catch(e){}delete MM[k]});
  document.getElementById('list').innerHTML=L2.map(card).join('');
  cntUI(L2.length);
@@ -823,7 +833,7 @@ function card(x){const st=S[x.id]||{},s5=sum5(x);
  <div class="ph">${x.pics.slice(0,4).map((p,i)=>`<img loading="lazy" src="${sm(p)}" onclick="lb('${x.id}',${i})" alt="">`).join('')}</div>
  <div class="two"><div class="mm" id="mm${x.id}" data-id="${x.id}"></div>
  <div><table class="rt">${rows}</table><p class="sum5">5일 이동(편도 합) <b>${s5!=null?s5+'분':'—'}</b> · ${esc(x.area)} · ${esc(x.beds)}</p>
- <p class="sub" style="margin:2px 0 0">제 메모: ${esc(x.memo)}</p>
+ <p class="sub" style="margin:2px 0 0">정리 메모: ${esc(x.memo)}</p>
  ${x.four?`<a class="bk" href="https://www.airbnb.co.kr/rooms/${x.id}?check_in=2026-10-12&check_out=2026-10-16&adults=2" target="_blank">4박 예약 →</a>`:''}${x.t5?`<a class="bk" style="background:#c2410c" href="https://www.airbnb.co.kr/rooms/${x.id}?check_in=2026-10-12&check_out=2026-10-17&adults=2" target="_blank">5박 예약 →</a>`:''}
  <div class="mylab" id="ml${x.id}">${myLab()}</div><div class="rate" id="rt${x.id}">${rateHtml(x)}</div><div class="oth" id="ot${x.id}">${otherHtml(x)}</div>
  </div></div></div>`}
@@ -841,27 +851,33 @@ function pick(id,k,silent){SEL[id]=k;document.querySelectorAll(`tr[data-id="${id
  g.addTo(o.map);o.layer=g;if(k==='kix'){const b=[];g.eachLayer(l=>b.push(...l.getLatLngs()));if(b.length)o.map.fitBounds(b,{padding:[14,14]})}
  else if(!silent){const b=[[x.lat,x.lng]];g.eachLayer(l=>b.push(...l.getLatLngs()));o.map.fitBounds(b,{padding:[18,18]})}}
 let IO=null;function observe(){if(IO)IO.disconnect();IO=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){initMini(e.target);IO.unobserve(e.target)}}),{rootMargin:'300px'});document.querySelectorAll('.mm').forEach(el=>IO.observe(el))}
-function touched(id){S[id].t=Date.now();save();if(window.__lodgePush)window.__lodgePush();if(SO==='both'||FL==='done'||FL==='two')draw();else{updOne(id);cntUI();out()}}
+function touched(id){S[id].t=Date.now();save();if(window.__lodgePush)window.__lodgePush();if(SO==='both'||FL==='done'||FL==='two'||FL==='oth'){const c=document.getElementById('c'+id),y0=c?c.getBoundingClientRect().top:null;draw();const c2=document.getElementById('c'+id);if(c2&&y0!=null)window.scrollBy(0,c2.getBoundingClientRect().top-y0)}else{updOne(id);cntUI();out()}}
 function rate(id,k){S[id]=Object.assign({},S[id]||{});S[id].s=(S[id].s===k?0:k);S[id].x=false;touched(id)}
 function skip(id){S[id]=Object.assign({},S[id]||{});S[id].x=!S[id].x;if(S[id].x)S[id].s=0;touched(id)}
 function memo(id,v){S[id]=Object.assign({},S[id]||{});S[id].m=v;S[id].t=Date.now();save();if(window.__lodgePush)window.__lodgePush();updOne(id,true);out()}
-function myLab(){return ME?`내 점수(${NAME[ME]})`:'내 점수 — 위 「☁️」로 로그인하면 수빈과 같이 저장돼요'}
+function myLab(){return ME?`내 점수(${NAME[ME]})`:'내 점수 — 맨 위 「☁️」를 눌러 로그인하면 명진·수빈 점수가 같이 저장돼요'}
 function rateHtml(x){const st=S[x.id]||{};return [1,2,3,4,5,6,7,8,9,10].map(k=>`<button class="${st.s===k?'on':''}" onclick="rate('${x.id}',${k})">${k}</button>`).join('')+`<button class="x ${st.x?'on':''}" onclick="skip('${x.id}')">빼기</button><input placeholder="메모" value="${esc(st.m||'')}" onchange="memo('${x.id}',this.value)">`}
 function otherHtml(x){if(!OWHO)return '';const o=O[x.id],nm=NAME[OWHO];if(!o||(!o.s&&!o.x&&!o.m))return `<span class="sub">${nm}: 아직 안 매김</span>`;return `<b>${nm}: ${o.x?'빼기':(o.s?o.s+'점':'점수 없음')}</b>${o.m?' · '+esc(o.m):''}`}
-function bothBadge(x){if(!ME)return '';const a=S[x.id],b=O[x.id];if(!rated(a)&&!rated(b))return '';const f=st=>st&&st.x?'빼기':(st&&st.s?st.s:'—');return `<span class="both">${NAME[ME]} ${f(a)} · ${NAME[OWHO]} ${f(b)}${scoreOf(a)&&scoreOf(b)?' = '+(scoreOf(a)+scoreOf(b)):''}</span>`}
+function bothBadge(x){if(!ME)return '';const a=S[x.id],b=O[x.id];if(!rated(a)&&!rated(b))return '';const f=st=>st&&st.x?'빼기':(st&&st.s?st.s:'아직');return `<span class="both">${NAME[ME]} ${f(a)} · ${NAME[OWHO]} ${f(b)}${scoreOf(a)&&scoreOf(b)?' = '+(scoreOf(a)+scoreOf(b)):''}</span>`}
 function updOne(id,keepInput){const x=D.items.find(i=>i.id===id);if(!x)return;const c=document.getElementById('c'+id);if(!c)return;const st=S[id]||{};c.classList.toggle('done',!!st.s);c.classList.toggle('out',!!st.x);
  const rt=document.getElementById('rt'+id);if(rt&&!keepInput){const ae=document.activeElement;if(!(ae&&ae.tagName==='INPUT'&&rt.contains(ae)))rt.innerHTML=rateHtml(x)}
  const ot=document.getElementById('ot'+id);if(ot)ot.innerHTML=otherHtml(x);const bb=document.getElementById('bb'+id);if(bb)bb.innerHTML=bothBadge(x);const ml=document.getElementById('ml'+id);if(ml)ml.textContent=myLab()}
 function updAll(){D.items.forEach(x=>updOne(x.id));cntUI();out();ctl()}
 function cntUI(n){const e=document.getElementById('cnt');if(!e)return;if(n==null)n=document.querySelectorAll('#list .card').length;const a=D.items.filter(x=>rated(S[x.id])).length,b=OWHO?D.items.filter(x=>rated(O[x.id])).length:0;e.textContent=`${n}곳 · 내 점수 ${a}곳${OWHO?` · ${NAME[OWHO]} ${b}곳`:''}`}
-function importIt(){const t=document.getElementById('inp').value||'';let n=0;const now=Date.now();
- t.split(/\n/).forEach(line=>{const m=line.match(/^\s*\d+번\s*\|\s*(빼기|(\d{1,2})\/10점|점수 없음)/);const k=line.match(/\|\s*(\d{5,})\s*(?:\|\s*메모:\s*(.*))?\s*$/);if(!m||!k)return;const id=k[1];if(!D.items.some(x=>x.id===id))return;
-  const st=Object.assign({},S[id]||{});if(m[1]==='빼기'){st.x=true;st.s=0}else if(m[2]){st.s=Math.max(0,Math.min(10,+m[2]));st.x=false}if(k[2])st.m=k[2].trim();st.t=now+n;S[id]=st;n++});
- save();if(window.__lodgePush)window.__lodgePush();draw();alert(n?`${n}곳 점수를 가져왔어요.`:'가져올 점수를 못 찾았어요. 「결과 복사」로 받은 글 전체를 붙여 넣어 주세요.')}
+function importIt(){const t=document.getElementById('inp').value||'';let n=0,kept=0,other=0;
+ const h=t.match(/위치판 점수 · (명진|수빈) 복사\]/);
+ if(h){alert(`새 숙소판에서 ${h[1]}이 복사한 글이에요. 새 판 점수는 로그인하면 자동으로 보여서 가져오지 않아요.`);return}
+ t.split(/\n/).forEach(line=>{const m=line.match(/^\s*\d+번\s*\|\s*(빼기|(\d{1,2})\/10점|점수 없음)\s*\|\s*([^|]*)/);const k=line.match(/\|\s*(\d{5,})\s*(?:\|\s*메모:\s*(.*?))?\s*(?:\|\s*(?:명진|수빈) 메모:.*)?$/);if(!m)return;
+  if(/^(명진|수빈)\s/.test(m[3].trim())){other++;return}   // 새 판(둘이 같이)의 결과 글 — 받지 않음
+  if(!k)return;const id=k[1];if(!D.items.some(x=>x.id===id))return;if(m[1]==='점수 없음'&&!k[2])return;
+  if(S[id]&&(S[id].t||0)>1){kept++;return}               // 새 판에서 이미 매긴·지운 곳은 옛 점수로 덮지 않음
+  const st=Object.assign({},S[id]||{});if(m[1]==='빼기'){st.x=true;st.s=0}else if(m[2]){st.s=Math.max(0,Math.min(10,+m[2]));st.x=false}if(k[2])st.m=k[2].trim();st.t=1;S[id]=st;n++});
+ if(n){save();if(window.__lodgePush)window.__lodgePush();draw()}
+ alert(n?`${n}곳 점수를 가져왔어요.${kept?` (${kept}곳은 새 판에서 이미 매겨서 그대로 뒀어요)`:''}`:other?'새 숙소판에서 복사한 글이라 가져오지 않았어요 — 새 판 점수는 로그인하면 자동으로 보여요.':kept?'모두 새 판에서 이미 매긴 곳이라 바뀐 게 없어요.':'가져올 점수를 못 찾았어요. 예전 판 「결과 복사」 글 전체를 붙여 넣어 주세요.')}
 function save(){try{localStorage.setItem(ME?mineKey(ME):KEY,JSON.stringify(S))}catch(e){}}
-function out(){const has=st=>st&&(st.s||st.x||st.m);const L2=D.items.filter(x=>has(S[x.id])||has(O[x.id])).sort((a,b)=>((scoreOf(S[b.id])+scoreOf(O[b.id]))-(scoreOf(S[a.id])+scoreOf(O[a.id])))||a.n-b.n);
+function out(){const has=st=>st&&(st.s||st.x||st.m);const L2=D.items.filter(x=>has(S[x.id])||has(O[x.id])).sort((a,b)=>(tot(b.id)-tot(a.id))||a.n-b.n);
  const f=st=>st&&st.x?'빼기':(st&&st.s?st.s+'/10점':'점수 없음');
- document.getElementById('out').value='[플래닝-005 오사카 숙소 · 위치판 점수]\n'+L2.map(x=>{const s=S[x.id]||{},o=O[x.id]||{};return `${x.n}번 | ${f(s)}${OWHO?` | ${NAME[OWHO]} ${f(o)}`:''} | 4박 ${won(x.total)}${x.t5?' / 5박 '+won(x.t5):''} | ${x.name} | ${x.id}${s.m?' | 메모: '+s.m:''}${OWHO&&o.m?' | '+NAME[OWHO]+' 메모: '+o.m:''}`}).join('\n')}
+ document.getElementById('out').value='[플래닝-005 오사카 숙소 · 위치판 점수'+(ME?' · '+NAME[ME]+' 복사':'')+']\n'+L2.map(x=>{const s=S[x.id]||{},o=O[x.id]||{};return `${x.n}번 | ${ME?NAME[ME]+' ':''}${f(s)}${OWHO?` | ${NAME[OWHO]} ${f(o)}`:''} | 4박 ${won(x.total)}${x.t5?' / 5박 '+won(x.t5):''} | ${x.name} | ${x.id}${s.m?' | 메모: '+s.m:''}${OWHO&&o.m?' | '+NAME[OWHO]+' 메모: '+o.m:''}`}).join('\n')}
 function exportIt(){out();const t=document.getElementById('out');t.select();(navigator.clipboard?navigator.clipboard.writeText(t.value):Promise.reject()).then(()=>alert('복사됐습니다. 대화창에 붙여넣어 주세요.')).catch(()=>{document.execCommand('copy');alert('복사됐습니다.')})}
 let LB=null;function lb(id,i){LB={x:D.items.find(x=>x.id===id),i};showLb()}
 function showLb(){document.getElementById('lb').style.display='flex';document.getElementById('lbi').src=big(LB.x.pics[LB.i]);document.getElementById('lbt').textContent=`${LB.x.n}번 · ${LB.i+1}/${LB.x.pics.length} · 사진 누르면 다음, 바깥 누르면 닫기`}
@@ -884,16 +900,22 @@ try{
  const db=fs.getFirestore(getApp());
  const ref=w=>fs.doc(db,'mjApp','osakaLodge2610_'+w);
  const parse=s=>{try{return s&&s.exists()?(JSON.parse(s.data().json||'{}').r||{}):{}}catch(e){return {}}};
- let me=null,offs=[],timer=null;
+ let me=null,offs=[],timer=null,bad=false;
+ const INAPP=/KAKAOTALK|Instagram|FBAN|FBAV|FB_IAB|NAVER\(inapp|Line\/|DaumApps|everytimeApp/i.test(navigator.userAgent);
+ const openOut=()=>{if(/KAKAOTALK/i.test(navigator.userAgent))location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(location.href);else alert('오른쪽 아래(또는 위) ⋯ 메뉴 → 「Safari로 열기」를 눌러 주세요.\n여기(앱 안)에서 매긴 것은 사파리로 넘어가지 않아요.')};
+ const needLogin=(u,el,lg)=>{el.classList.add('need');
+  if(INAPP){el.textContent='☁️ 카톡·앱 안에서는 구글 로그인이 안 돼요 — 눌러서 사파리로';el.onclick=openOut;return}
+  el.textContent=u?'☁️ 등록 안 된 구글 계정이에요 — 눌러서 명진·수빈 계정으로':'☁️ 눌러서 구글 로그인 — 명진·수빈 같이 저장';
+  el.onclick=async()=>{try{if(u&&ad.logout)await ad.logout()}catch(e){}el.textContent='☁️ 로그인 창 여는 중…';try{await ad.login()}catch(e){el.textContent='⚠️ 로그인이 안 됐어요 — 사파리에서 열어 다시 눌러 주세요'}}};
  const okText=()=>'☁️ '+window.__NAME[me]+'으로 저장 중 · '+window.__NAME[me==='mj'?'sb':'mj']+' 점수도 보여요';
- window.__lodgePush=()=>{if(!me)return;clearTimeout(timer);timer=setTimeout(async()=>{try{let merged=null;const w=me;
-   await fs.runTransaction(db,async tx=>{const s=await tx.get(ref(w));merged=window.__mergeR(window.__mine(),parse(s));tx.set(ref(w),{json:JSON.stringify({v:1,r:merged}),at:fs.serverTimestamp(),by:w})});
-   if(w===me){window.__setMine(merged);CH.textContent=okText()}}catch(e){CH.textContent='⚠️ 저장 실패 — 이 기기에만 저장돼요(다시 열면 다시 시도)';console.warn(e)}},600)};
+ window.__lodgePush=()=>{if(!me)return;clearTimeout(timer);timer=setTimeout(async()=>{const w=me,mine=JSON.parse(JSON.stringify(window.__mine()));try{let merged=null;
+   await fs.runTransaction(db,async tx=>{const s=await tx.get(ref(w));if(me!==w){merged=null;return}merged=window.__mergeR(mine,parse(s));tx.set(ref(w),{json:JSON.stringify({v:1,r:merged}),at:fs.serverTimestamp(),by:w})});
+   if(w===me&&merged){window.__setMine(merged);bad=false;CH.textContent=okText()}}catch(e){if(w!==me)return;bad=true;CH.textContent='⚠️ 저장 실패 — 이 기기에만 저장돼요(잠시 뒤 다시 시도)';console.warn(e);setTimeout(()=>{if(window.__lodgePush)window.__lodgePush()},5000)}},600)};
  ad.onUser(u=>{offs.forEach(f=>{try{f()}catch(e){}});offs=[];const w=u&&window.__WHO[String(u.email||'').toLowerCase()];
-  if(!w){me=null;window.__setLogin(null);CH.textContent='☁️ 로그인하면 수빈과 같이 저장돼요 (누르기)';CH.onclick=()=>ad.login();return}
-  me=w;CH.onclick=null;window.__setLogin(w);CH.textContent='☁️ 맞추는 중…';
+  if(!w){me=null;window.__setLogin(null);needLogin(u,CH);return}
+  me=w;CH.onclick=null;CH.classList.remove('need');window.__setLogin(w);CH.textContent='☁️ 맞추는 중…';
   offs.push(fs.onSnapshot(ref(w),s=>{window.__gotMine(parse(s))},e=>{CH.textContent='⚠️ 불러오기 실패 — 이 기기 점수만 보여요';console.warn(e)}));
-  offs.push(fs.onSnapshot(ref(w==='mj'?'sb':'mj'),s=>{window.__gotOther(parse(s));CH.textContent=okText()},e=>console.warn(e)));
+  offs.push(fs.onSnapshot(ref(w==='mj'?'sb':'mj'),s=>{window.__gotOther(parse(s));if(!bad)CH.textContent=okText()},e=>console.warn(e)));
   window.__lodgePush()});
 }catch(e){CH.textContent='이 기기에만 저장돼요';console.warn('sync off',e)}
 </script></body></html>
