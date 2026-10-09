@@ -2,6 +2,7 @@
 <title>오사카 숙소 고르기 — 위치·가는 길</title><meta name="robots" content="noindex,nofollow">
 <style>
 *{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{margin:0;background:#faf8f4;color:#2c2a26;font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,sans-serif;line-height:1.6;font-size:15.5px}
 .wrap{max-width:1100px;margin:0 auto;padding:26px 16px 120px}
 h1{font-size:24px;margin:0 0 4px} h2{font-size:20px;margin:28px 0 8px;padding-bottom:6px;border-bottom:2px solid #cfc7b6}
@@ -50,6 +51,25 @@ table.rt{width:100%;border-collapse:collapse;font-size:13.5px}
 #out{width:100%;height:120px;font:12.5px/1.5 monospace;border:1px solid #d8d0c0;border-radius:10px;padding:8px}
 a{color:#2f5d8a;font-weight:600}
 .leaflet-container{font-family:inherit}
+/* 261009 아이폰 고침(세로 넘침·지도 스크롤 갇힘·고정 막대·입력칸 확대·버튼 크기) */
+@media(max-width:820px){.two{grid-template-columns:minmax(0,1fr)}}
+.rt td.k{white-space:normal}
+.chip{white-space:normal}
+#omap,.mm{isolation:isolate}
+#omap{height:min(520px,60vh)}
+.mm{height:min(290px,45vh)}
+@media (max-width:820px),(max-height:500px){.bar{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}.bar>*{flex:0 0 auto}.bar>span{display:flex;gap:6px}.bar button{white-space:nowrap}}
+.rate input,#out{font-size:16px}
+.bar{-webkit-backdrop-filter:blur(4px)}
+body{word-break:keep-all;overflow-wrap:anywhere}
+#lb img{max-height:calc(100vh - 90px);max-height:calc(100dvh - 90px)}
+.rate button{min-width:40px;min-height:40px}
+.bk{padding:10px 14px}
+.bar button{padding:8px 14px}
+@media (max-width:820px) and (orientation:landscape){.ph{grid-template-columns:repeat(4,1fr)}}
+.rt td{overflow-wrap:break-word}
+.rate input{min-height:40px}
+.leaflet-touch .leaflet-bar a{width:36px;height:36px;line-height:36px}
 </style><style>/* required styles */
 
 .leaflet-pane,
@@ -712,17 +732,18 @@ svg.leaflet-image-layer.leaflet-interactive path {
 		}
 	}
 </style></head><body><div class="wrap">
-<p style="margin:0 0 8px"><a href="./">← 오사카 10월 여행</a></p><h1>오사카 숙소 고르기 — 위치 · 가는 길</h1>
+<p style="margin:0 0 4px"><a href="./" style="display:inline-block;padding:10px 0">← 오사카 10월 여행</a></p><h1>오사카 숙소 고르기 — 위치 · 가는 길</h1>
 <p class="stamp">지금 예약 가능한 곳만(10/9 17:37 다시 확인) · 가격 = 총액(청소비·수수료 포함, 2인) · 경로 = 평일 오전 10시 시간표 기준(대중교통 검색 transitous)</p>
 <div class="box main"><b>보는 법</b> — 맨 위 큰 지도에서 숙소(번호 핀)와 날짜별로 가는 곳(검은 이름표)의 거리를 한눈에 보고, 카드마다 <b>작은 지도 + 「가는 길」 표</b>로 어떻게 몇 분인지 봅니다.
 표의 줄을 누르면 작은 지도에 그 길이 그려집니다(걷기 = 회색 점선, 전철 = 노선 색).<br>
-<span class="sub">⚠ 에어비앤비가 보여 주는 숙소 위치는 실제와 수백 m 다를 수 있어(사생활 보호로 일부러 흐림), 걷는 시간은 몇 분씩 차이 날 수 있습니다. 정확한 주소는 예약 뒤에 나옵니다.</span></div>
+<span class="sub">⚠ 에어비앤비가 보여 주는 숙소 위치는 실제와 수백 m 다를 수 있어(사생활 보호로 일부러 흐림), 걷는 시간은 몇 분씩 차이 날 수 있습니다. 정확한 주소는 예약 뒤에 나옵니다.</span><br>
+<span class="sub">📱 폰에서는 지도를 두 손가락으로 움직이고 키워요(한 손가락은 화면 내리기).</span></div>
 <div id="omap"></div>
 <div class="leg"><span><i class="pin" style="background:#d08a00;width:16px;height:16px"></i>제 추천</span><span><i class="pin" style="background:#2f7d4f;width:16px;height:16px"></i>9/29 평점판에 있던 곳</span><span><i class="pin" style="background:#2f5d8a;width:16px;height:16px"></i>새로 나온 곳</span><span><b class="dst">이름표</b> 날짜별로 가는 곳</span></div>
 <div class="bar">
+ <button class="go" onclick="exportIt()">결과 복사</button><span class="sub" id="cnt"></span>
  <b>정렬</b><span id="sorts"></span>
  <b>보기</b><span id="flts"></span>
- <button class="go" onclick="exportIt()">결과 복사</button><span class="sub" id="cnt"></span>
 </div>
 <div id="list"></div>
 <div class="box"><b>결과</b> (「결과 복사」가 안 되면 아래 칸을 통째로 복사)<textarea id="out" readonly></textarea></div>
@@ -780,7 +801,7 @@ function card(x){const st=S[x.id]||{},s5=sum5(x);
  <div class="rate">${[1,2,3,4,5,6,7,8,9,10].map(k=>`<button class="${st.s===k?'on':''}" onclick="rate('${x.id}',${k})">${k}</button>`).join('')}<button class="x ${st.x?'on':''}" onclick="skip('${x.id}')">빼기</button><input placeholder="메모" value="${esc(st.m||'')}" onchange="memo('${x.id}',this.value)"></div>
  </div></div></div>`}
 function initMini(el){const id=el.dataset.id;if(MM[id])return;const x=D.items.find(i=>i.id===id);if(!x)return;
- const m=L.map(el,{zoomControl:true,attributionControl:false,scrollWheelZoom:false});tiles(m);
+ const m=L.map(el,{zoomControl:true,attributionControl:false,scrollWheelZoom:false,dragging:!L.Browser.mobile});tiles(m);
  L.marker([x.lat,x.lng],{icon:pinIcon(x)}).addTo(m);
  D.dest.filter(d=>d.key!=='kix').forEach(d=>L.marker([d.lat,d.lng],{icon:dstIcon(d)}).addTo(m));
  const pts=[[x.lat,x.lng]].concat(D.dest.filter(d=>d.key!=='kix').map(d=>[d.lat,d.lng]));m.fitBounds(pts,{padding:[18,18]});
@@ -804,7 +825,7 @@ let LB=null;function lb(id,i){LB={x:D.items.find(x=>x.id===id),i};showLb()}
 function showLb(){document.getElementById('lb').style.display='flex';document.getElementById('lbi').src=big(LB.x.pics[LB.i]);document.getElementById('lbt').textContent=`${LB.x.n}번 · ${LB.i+1}/${LB.x.pics.length} · 사진 누르면 다음, 바깥 누르면 닫기`}
 function lbNext(e){if(e.target.id==='lbi'){LB.i=(LB.i+1)%LB.x.pics.length;showLb()}else document.getElementById('lb').style.display='none'}
 // 큰 지도
-(function(){const m=L.map('omap',{scrollWheelZoom:false});tiles(m);const b=[];
+(function(){const m=L.map('omap',{scrollWheelZoom:false,dragging:!L.Browser.mobile});tiles(m);const b=[];
  D.items.forEach(x=>{b.push([x.lat,x.lng]);L.marker([x.lat,x.lng],{icon:pinIcon(x)}).addTo(m).bindPopup(`<b>${x.n}. ${esc(x.name).slice(0,40)}</b><br>4박 ${won(x.total)}${x.t5?' · 5박 '+won(x.t5):''}<br>5일 이동 ${sum5(x)??'—'}분 · <a href="#c${x.id}">카드로 →</a>`)});
  D.dest.filter(d=>d.key!=='kix').forEach(d=>{b.push([d.lat,d.lng]);L.marker([d.lat,d.lng],{icon:dstIcon(d)}).addTo(m)});
  m.fitBounds(b,{padding:[20,20]})})();

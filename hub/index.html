@@ -422,7 +422,7 @@ else document.getElementById('pin').focus();
     ph.innerHTML='<span class="oic"></span><span class="ovpt"></span><span class="slw">느리게 열리고 있어요 — 조금 더 기다리거나 오른쪽 위 ↗ 로 사파리에서 열 수 있어요</span>';
     ph.querySelector('.oic').style.background=g;ph.querySelector('.oic').textContent=l?l.ic:'🍀';
     ph.querySelector('.ovpt').textContent=nm+' 여는 중…';
-    var f=document.createElement('iframe');f.title=nm;f.setAttribute('allow','clipboard-write; geolocation; fullscreen');
+    var f=document.createElement('iframe');f.title=nm;f.setAttribute('allow','clipboard-write; geolocation; fullscreen; accelerometer; gyroscope; magnetometer');
     body.appendChild(ph);body.appendChild(f);
     var done=false;
     f.addEventListener('load',function(){

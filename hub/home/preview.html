@@ -1563,6 +1563,15 @@ html.ovopen,html.ovopen body{overflow:hidden}
       <button type="button" class="lc-btn" id="loginCardBtn">구글 로그인</button>
     </div>
 
+    <!-- 261009 오사카 10월 여행 — 일본 시간 10/9~10/18 동안만 «오늘» 맨 위에(지나면 저절로 숨김) -->
+    <div class="card" id="tripNow" hidden style="margin-bottom:14px">
+      <div class="ch"><div class="ct"><span class="cic" style="--c1:#c9dcc0;--c2:#a6c49a" aria-hidden="true"><svg class="ic"><use href="#i-bag"/></svg></span>오사카 10월 여행<span class="cs" id="tripNowD" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/osaka-trip/">열기 &rarr;</a></div>
+      <div class="chips" style="margin-top:6px">
+        <a class="chip on" id="tripNowDay" href="https://maydly.github.io/note/osaka-trip/?tab=day" style="text-decoration:none">🗓️ 날짜별</a><a class="chip on" href="https://maydly.github.io/note/osaka-trip/?tab=near" style="text-decoration:none">📍 가까운 곳 · 보는 방향</a><a class="chip on" href="https://maydly.github.io/note/osaka-trip/?tab=wx" style="text-decoration:none">☀️ 날씨</a>
+      </div>
+    </div>
+    <script>(function(){try{var p=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()).split('-').map(Number);var t=Date.UTC(p[0],p[1]-1,p[2]),s=Date.UTC(2026,9,9),e=Date.UTC(2026,9,18);if(t<s||t>e)return;var c=document.getElementById('tripNow');if(!c)return;c.hidden=false;var d=Math.round((Date.UTC(2026,9,12)-t)/864e5),D=document.getElementById('tripNowD');if(D)D.textContent=d>0?' · 출발까지 D-'+d:(t<=Date.UTC(2026,9,17)?' · 여행 중 · 오늘 '+p[1]+'/'+p[2]:'');var a=document.getElementById('tripNowDay');if(a&&d<=0&&t<=Date.UTC(2026,9,17))a.href='https://maydly.github.io/note/osaka-trip/?tab=day&open='+p[1]+'/'+p[2]}catch(e){}})();</script>
+
     <!-- 브리핑 — 다음 촬영 · 지금 처리할 것(누르면 아래로 펼침) · 오늘 할 일 · 납품 마감 -->
     <div class="brief">
       <a class="bf today" href="https://maydly.github.io/maydly-cal/admin.html"><div class="bl"><span class="bic" aria-hidden="true"><svg class="ic"><use href="#i-camera"/></svg></span>다음 촬영</div>
@@ -1914,7 +1923,23 @@ html.ovopen,html.ovopen body{overflow:hidden}
     </div>
 
     <!-- ══════ 여행 · 지도 ══════ -->
-    <div class="sechd"><h2>여행 &middot; 지도</h2><div class="sn">내 장소 &middot; 촬영지 &middot; 3D</div></div>
+    <div class="sechd"><h2>여행 &middot; 지도</h2><div class="sn">오사카 여행 &middot; 내 장소 &middot; 촬영지 &middot; 3D</div></div>
+    <!-- 261009 오사카 10월 여행(플래닝-005) — 폰에서 먼저 보이게 «여행·지도» 맨 위(2장 칸 밖으로 뺌) -->
+    <div class="card" style="margin-bottom:14px">
+      <div class="ch"><div class="ct"><span class="cic" style="--c1:#c9dcc0;--c2:#a6c49a" aria-hidden="true"><svg class="ic"><use href="#i-bag"/></svg></span>오사카 10월 여행</div><a class="more" href="https://maydly.github.io/note/osaka-trip/">열기 &rarr;</a></div>
+        <div class="lst">
+          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=near" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg></div><div class="bd2"><div class="lb1">가까운 곳 · 보는 방향</div>
+            <div class="lb2">지금 위치에서 걸어서 몇 분 · 폰이 향한 쪽 화살표</div></div><div class="rt">열기 &rarr;</div></a>
+          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=day" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg></div><div class="bd2"><div class="lb1">날짜별 일정</div>
+            <div class="lb2">10/12~16 · 하루씩 접어 보기 · 날마다 날씨</div></div><div class="rt">열기 &rarr;</div></a>
+          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=wx" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-sun"/></svg></div><div class="bd2"><div class="lb1">날씨 · 태풍</div>
+            <div class="lb2">일본 기상청 예보 · 열 때마다 새로</div></div><div class="rt">열기 &rarr;</div></a>
+          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=star" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg></div><div class="bd2"><div class="lb1">꼭 갈 곳</div>
+            <div class="lb2">★ 누른 곳 — 맥·폰 같이</div></div><div class="rt">열기 &rarr;</div></a>
+          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=info" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-briefcase"/></svg></div><div class="bd2"><div class="lb1">항공 · 숙소 판단</div>
+            <div class="lb2">15kg 포함 가격 · 숙소 34곳 지도</div></div><div class="rt">열기 &rarr;</div></a>
+        </div>
+    </div>
     <div class="grid2">
       <div class="card">
         <div class="ch"><div class="ct"><span class="cic" style="--c1:#a6c8e2;--c2:#80a9cf" aria-hidden="true"><svg class="ic"><use href="#i-map"/></svg></span>내 장소 분포</div><a class="more" href="https://maydly.github.io/note/travel/">여행지도 &rarr;</a></div>
@@ -1938,21 +1963,6 @@ html.ovopen,html.ovopen body{overflow:hidden}
         <div class="lst">
           <a class="li" href="https://maydly.github.io/gev/" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg></div><div class="bd2"><div class="lb1">신의눈 3D로 보기</div>
             <div class="lb2">촬영지 + 내 장소를 지구본에서</div></div><div class="rt">열기 &rarr;</div></a>
-        </div>
-      </div>
-
-      <!-- 261009 오사카 10월 여행(플래닝-005) — 독바 타일 추가에 맞춰 대시보드에도 -->
-      <div class="card">
-        <div class="ch"><div class="ct"><span class="cic" style="--c1:#c9dcc0;--c2:#a6c49a" aria-hidden="true"><svg class="ic"><use href="#i-bag"/></svg></span>오사카 10월 여행</div><a class="more" href="https://maydly.github.io/note/osaka-trip/">열기 &rarr;</a></div>
-        <div class="lst">
-          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=day" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg></div><div class="bd2"><div class="lb1">날짜별 일정</div>
-            <div class="lb2">10/12~16 · 하루씩 접어 보기 · 날마다 날씨</div></div><div class="rt">열기 &rarr;</div></a>
-          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=wx" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-sun"/></svg></div><div class="bd2"><div class="lb1">날씨 · 태풍</div>
-            <div class="lb2">일본 기상청 예보 · 열 때마다 새로</div></div><div class="rt">열기 &rarr;</div></a>
-          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=star" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg></div><div class="bd2"><div class="lb1">꼭 갈 곳</div>
-            <div class="lb2">★ 누른 곳 — 맥·폰 같이</div></div><div class="rt">열기 &rarr;</div></a>
-          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=info" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-briefcase"/></svg></div><div class="bd2"><div class="lb1">항공 · 숙소 판단</div>
-            <div class="lb2">15kg 포함 가격 · 숙소 34곳 지도</div></div><div class="rt">열기 &rarr;</div></a>
         </div>
       </div>
     </div>
@@ -2055,7 +2065,7 @@ html.ovopen,html.ovopen body{overflow:hidden}
     </div>
     </section>
 
-    <div class="foot" title="홈 v2.8.1 미리보기"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
+    <div class="foot" title="홈 v2.8.2 미리보기"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
 
   </main>
 </div>
@@ -4244,7 +4254,7 @@ D.onUser((u) => {
     var ph = ovPh(nm, c1, c2, ic);
     var f = document.createElement('iframe');
     f.title = nm;
-    f.setAttribute('allow', 'clipboard-write; geolocation; fullscreen');
+    f.setAttribute('allow', 'clipboard-write; geolocation; fullscreen; accelerometer; gyroscope; magnetometer');
     ovBody.appendChild(ph); ovBody.appendChild(f);
     var loaded = false;
     f.addEventListener('load', function () {
