@@ -1,6 +1,13 @@
 {
-  "updated": "2026-09-28T00:26:41.170626",
+  "updated": "2026-10-12T00:10:08.357713",
   "log": [
+    {
+      "id": "weekly-20261012",
+      "type": "weekly",
+      "date": "2026-10-12",
+      "status": "warn",
+      "summary": "위반 197건 · 139파일 스캔"
+    },
     {
       "id": "weekly-20260928",
       "type": "weekly",
