@@ -24,7 +24,7 @@
   // 목차의 가이드·보유현황·구매계획을 모든 페이지 상단 내비에 자동 추가
   const navBar=document.querySelector(".top-nav");
   if(navBar){
-    [["../osaka/","오사카 렌즈"],
+    [["../osaka/","일본 렌즈 직접구매"],
      ["09_보유장비현황_latest.html","보유현황"],
      ["10_구매계획리스트_latest.html","구매계획"]].forEach(function(item){
       if(!navBar.querySelector('a[href="'+item[0]+'"]')){

@@ -2,7 +2,7 @@
 <html lang="ko"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>오사카 렌즈 — 구매 최종판</title>
+<title>일본 렌즈 직접구매</title>
 <meta name="robots" content="noindex,nofollow">
 <style>
   :root{
@@ -301,6 +301,29 @@ img,svg{max-width:100%}
 .shop a.mp{display:inline-block;margin-top:8px;font-size:13px;font-weight:700;text-decoration:none;background:var(--clover);color:#fff;border-radius:9px;padding:8px 16px}
 .tm{font-weight:800;color:var(--clover);font-variant-numeric:tabular-nums;white-space:nowrap;width:52px}
 .dur{text-align:right;color:var(--sub);font-size:12px;white-space:nowrap;width:44px}
+/* 지역 */
+.rgs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 6px}
+.rg{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 13px;min-height:40px;font:inherit;font-size:13.5px;font-weight:700;color:var(--ink);cursor:pointer;transition:background .2s,border-color .2s,transform .15s}
+.rg small{font-weight:600;color:var(--sub);font-size:11px;margin-left:4px}
+.rg:active{transform:scale(.96)}
+.rg[aria-pressed="true"]{background:var(--clover);border-color:var(--clover);color:#fff}
+.rg[aria-pressed="true"] small{color:#dcebe0}
+.rg.done{border-style:dashed}
+.rgsum{background:var(--clover-soft);border-radius:11px;padding:11px 13px;font-size:13.5px;margin:6px 0 4px}
+.rgsum .nw{display:block;font-size:11.5px;color:var(--sub);margin-top:4px}
+.tierh{display:flex;align-items:center;gap:8px;margin:16px 0 7px;font-size:15px;font-weight:800}
+.tierh small{font-weight:600;color:var(--sub);font-size:12px}
+.tg{font-size:11px;font-weight:800;padding:2px 8px;border-radius:6px}
+.tg.p{background:var(--clover);color:#fff}.tg.r{background:#e6eef7;color:#3d6ea8}.tg.x{background:#eef0ed;color:var(--sub)}
+.shop .ja{display:block;font-family:'Hiragino Sans','Yu Gothic','Noto Sans JP',sans-serif;font-size:11.5px;font-weight:600;color:var(--sub);margin-top:1px}
+.op.u{background:#f3f1ea;color:#8a8576}
+.skipl li{font-size:12.5px}
+.osk{margin:18px 0 6px;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:4px 12px 10px}
+.osk>summary{cursor:pointer;font-weight:800;font-size:14px;padding:10px 0;color:var(--clover)}
+.osk>summary small{font-weight:600;color:var(--sub);font-size:12px;margin-left:4px}
+#rgbody.in{animation:rgin .35s ease}
+@keyframes rgin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#rgbody.in{animation:none}.rg{transition:none}}
 /* 말 */
 .saywrap{display:grid;gap:6px}
 .say{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:9px 12px;display:flex;flex-direction:column}
@@ -360,8 +383,8 @@ img,svg{max-width:100%}
 <div class="wrap">
   <header class="hdr">
     <div class="eyebrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12c0-3 2-5 4-5s3 1.5 3 3-1.5 3-3 3zM12 12c3 0 5 2 5 4s-1.5 3-3 3-3-1.5-3-3zM12 12c0 3-2 5-4 5s-3-1.5-3-3 1.5-3 3-3zM12 12c-3 0-5-2-5-4s1.5-3 3-3 3 1.5 3 3z"/></svg> maydly · 조사-009</div>
-    <h1>오사카 렌즈 — 구매 최종판</h1>
-    <p class="sub">2026년 10월 중순 · 100엔 = 870원 · 렌즈 28종 · 매장 10곳</p>
+    <h1>일본 렌즈 직접구매</h1>
+    <p class="sub">지역별 중고 카메라점 · 렌즈 28종 값표(100엔 = 870원 기준) · 오사카편은 2026.10 다녀옴</p>
   </header>
 </div>
 <nav class="tabbar"><div class="in"><button class="tb" id="tb-now" aria-selected="true" aria-controls="pane-now"><b>값 보고</b></button><button class="tb" id="tb-go" aria-selected="false" aria-controls="pane-go"><b>어디로</b></button><button class="tb" id="tb-pre" aria-selected="false" aria-controls="pane-pre"><b>가기 전</b></button><button class="tb" id="tb-why" aria-selected="false" aria-controls="pane-why"><b>왜</b></button></div></nav>
@@ -393,7 +416,11 @@ img,svg{max-width:100%}
 <h2>물어볼 말 <small>여섯 마디면 됩니다</small></h2>
 <div class="saywrap"><div class="say"><span class="ko">이거 볼 수 있나요</span><span class="ja">これ、見せてもらえますか</span><span class="ru">고레, 미세테 모라에마스카</span></div><div class="say"><span class="ko">곰팡이 있나요</span><span class="ja">カビはありますか</span><span class="ru">카비와 아리마스카</span></div><div class="say"><span class="ko">흐림은 없나요</span><span class="ja">クモリはありますか</span><span class="ru">쿠모리와 아리마스카</span></div><div class="say"><span class="ko">조리개 움직이나요</span><span class="ja">絞りは動きますか</span><span class="ru">시보리와 우고키마스카</span></div><div class="say"><span class="ko">면세 되나요</span><span class="ja">免税できますか</span><span class="ru">멘제이 데키마스카</span></div><div class="say"><span class="ko">조금 깎아주실 수 있나요</span><span class="ja">少し安くなりませんか</span><span class="ru">스코시 야스쿠 나리마셍카</span></div></div></section>
 <section class="pane" id="pane-go" role="tabpanel" aria-labelledby="tb-go" hidden>
-<p class="when">다음 가게로 옮길 때</p>
+<p class="when">어느 지역에 가나요</p>
+<h2>지역 고르기 <small>렌즈 사러 일부러 갈 만한 순서</small></h2>
+<div class="rgs" id="rgs" role="group" aria-label="지역"></div>
+<div id="rgbody" aria-live="polite"></div>
+<details class="osk" id="osk" hidden><summary>오사카편 원래 동선 펼치기 <small>빌딩 지도 · 지금 열려 있나 · 하루 순서</small></summary>
 <h2>가게가 어디에 있나 <small>오사카역앞 빌딩 세 동에 네 곳</small></h2>
 <div class="strip">
   <div class="sb"><div class="sn">제1빌딩</div><div class="si">1F</div><div class="sl"><b>②</b> 우메다 포토서비스</div><div class="sl"><b>③</b> 카메라노오바야시</div></div>
@@ -410,7 +437,8 @@ img,svg{max-width:100%}
 <div class="tablewrap"><table style="min-width:420px"><tbody><tr><td class="tm">08:30</td><td><b>① 역중앙점</b><span class="w">시세만. 짐은 코인로커</span></td><td class="dur">15분</td></tr><tr><td class="tm">09:00</td><td><b>② 우메다 포토서비스</b><span class="w">제1빌딩 · 값만 적고 넘어감</span></td><td class="dur">55분</td></tr><tr><td class="tm">10:00</td><td><b>③ 카메라노오바야시</b><span class="w">제1빌딩 같은 층</span></td><td class="dur">25분</td></tr><tr><td class="tm">11:00</td><td><b>⑤ 렌탈박스 캐빈</b><span class="w">제2빌딩 B2F · 11시 오픈</span></td><td class="dur">50분</td></tr><tr><td class="tm">12:00</td><td><b>⑥ 마츠모토카메라</b><span class="w">제2빌딩 2F · 12시 오픈</span></td><td class="dur">25분</td></tr><tr><td class="tm">12:30</td><td><b>점심</b><span class="w">빌딩 지하가 식당가</span></td><td class="dur">50분</td></tr><tr><td class="tm">13:30</td><td><b>④ 야오토미 본점</b><span class="w">제3빌딩 · 여기서 결정한다</span></td><td class="dur">90분</td></tr><tr><td class="tm">15:30</td><td><b>⑦ 나니와 우메다</b><span class="w">요도바시 가는 길</span></td><td class="dur">30분</td></tr><tr><td class="tm">16:10</td><td><b>⑧ 요도바시</b><span class="w">AD-E1 + 면세</span></td><td class="dur">60분</td></tr></tbody></table></div>
 <div class="add"><div class="t">길은 구글맵에 맡기세요</div>
 <p style="margin:0">각 가게의 <b>「지도」</b> 버튼은 <b>실제 좌표</b>로 열립니다. 출발 전에
-<code>1-3-3_구글맵_가져오기</code>의 KML을 「내 지도」에 한 번 넣어두면 핀 10곳이 평소 쓰는 구글맵에 그대로 뜹니다.</p></div></section>
+<code>1-3-3_구글맵_가져오기</code>의 KML을 「내 지도」에 한 번 넣어두면 핀 10곳이 평소 쓰는 구글맵에 그대로 뜹니다.</p></div>
+</details></section>
 <section class="pane" id="pane-pre" role="tabpanel" aria-labelledby="tb-pre" hidden>
 <p class="when">출발 전에 정해둘 것</p>
 <h2 id="s1">살 것 / 안 살 것 <small>한국과 비교해서</small></h2>
@@ -573,11 +601,15 @@ Rayqual은 다음 기회로 미루고 B안으로 가는 쪽을 권합니다.</p>
 <h2 id="s10">면세와 통관</h2>
 
 <div class="add">
-  <div class="t">일본 면세 &mdash; 타이밍이 좋습니다</div>
-  <p style="margin:0">면세제도가 <b>2026년 11월 1일부터 환급(리팩트) 방식</b>으로 바뀌는데,
-  <b>10월 중순은 그 전</b>이라 현행 방식입니다 &mdash; 매장에서 <b>그 자리에서 세금을 빼고</b> 결제합니다.
-  출국 때 환급 줄 설 일이 없습니다. 조건은 <b>같은 매장 하루 세전 &yen;5,000 이상</b>, 여권 지참.
-  AD-E1 하나(세전 &yen;6,000)만으로도 충족됩니다.</p>
+  <div class="t">일본 면세 &mdash; 2026년 11월 1일부터 환급 방식</div>
+  <p style="margin:0 0 6px">이제는 <b>매장에서 세금까지 다 내고</b>, <b>출국할 때 공항에서 세관 확인</b>을 받은 뒤 매장·환급업체가 돌려줍니다.
+  돌려받는 때와 방법(카드·계좌 등)은 업체마다 달라 <b>공항에서 바로 현금으로 받는다는 보장은 없습니다.</b></p>
+  <ul class="tight" style="margin:0">
+    <li><b>조건은 그대로</b> &mdash; 같은 매장·같은 날 <b>세전 &yen;5,000 이상</b>. AD-E1 하나(세전 &yen;6,000)로도 충족</li>
+    <li><b>계산 전에 「면세」라고 먼저 말하고 여권 원본</b>을 냅니다 &mdash; 구매 때 면세 등록을 해야 합니다</li>
+    <li><b>구매일부터 90일 안에 출국</b>, 공항에서는 <b>짐 맡기기 전에</b> 물건을 꺼내 보일 수 있게 세관부터</li>
+    <li>중고점: <b>키타무라는 새 방식(JPrefund) 도입을 공지</b>, 맵카메라는 면세 대응을 안내 중(11월 이후 운영은 미확인). 나머지는 계산 전에 물어볼 것</li>
+  </ul>
 </div>
 
 <div class="caution">
@@ -589,12 +621,12 @@ Rayqual은 다음 기회로 미루고 B안으로 가는 쪽을 권합니다.</p>
 <h2 id="s4">출발 전에 재고를 미리 봅니다 <small>운에 맡기지 않습니다</small></h2>
 
 <p>일본 중고 카메라 체인은 <b>점포별 재고를 온라인에 그대로 공개</b>합니다.
-가서 운을 보는 게 아니라, <b>떠나기 전에 오사카 점포에 뭐가 걸려 있는지 확인하고 갈 수 있습니다.</b></p>
+가서 운을 보는 게 아니라, <b>떠나기 전에 가는 지역 점포에 뭐가 걸려 있는지 확인하고 갈 수 있습니다.</b></p>
 
 <ol>
   <li><b>키타무라 넷중고</b> <a href="https://www.net-chuko.com/">net-chuko.com</a> 에서 <b>일본어 렌즈명으로 검색</b> (한글·영문은 잘 안 걸립니다)</li>
   <li>각 렌즈 카드의 <b>「넷중고」 버튼</b>을 누르면 그 렌즈 검색 결과로 바로 갑니다</li>
-  <li>결과에서 <b>점포명에 大阪</b>가 들어간 것만 봅니다 &mdash; <a href="https://www.net-chuko.com/searchshop/index.do">점포 검색</a></li>
+  <li>결과에서 <b>점포명에 가는 지역 이름</b>(東京·福岡·名古屋·京都·横浜·札幌)이 들어간 것만 봅니다 &mdash; <a href="https://www.net-chuko.com/searchshop/index.do">점포 검색</a></li>
   <li><b>맵카메라</b> <a href="https://www.mapcamera.com/">mapcamera.com</a> 와 <b>야후옥션 낙찰상장</b>으로 시세 감을 잡습니다</li>
   <li><b>출발 3~5일 전 한 번, 전날 한 번.</b> 중고는 팔리면 사라지니 <b>"이 값이 나오는구나"로 감 잡는 용도</b>입니다</li>
 </ol>
@@ -602,18 +634,19 @@ Rayqual은 다음 기회로 미루고 B안으로 가는 쪽을 권합니다.</p>
 <div class="check">
   <div><span class="bx"></span><span><b>K&amp;F M42-LM + MD-LM 한국에서 구매</b> (약 77,000원) &mdash; 현지 즉흥 구매 대응용</span></div>
   <div><span class="bx"></span><span><b>환율 재확인</b> &mdash; 100엔=870원은 9월 기준. 10월엔 달라집니다</span></div>
-  <div><span class="bx"></span><span><b>출발 3~5일 전 넷중고에서 오사카 점포 재고 훑기</b> (렌즈 카드의 「넷중고」 버튼)</span></div>
+  <div><span class="bx"></span><span><b>출발 3~5일 전 넷중고에서 가는 지역 점포 재고 훑기</b> (렌즈 카드의 「넷중고」 버튼)</span></div>
   <div><span class="bx"></span><span><b>전날 한 번 더 재고 확인</b> &mdash; 실제 집을 후보 추리기</span></div>
   <div><span class="bx"></span><span><b>매장 영업시간·정기휴일 확인</b> &mdash; 토키와는 셋째 일요일 휴무</span></div>
   <div><span class="bx"></span><span><b>여권 챙기기</b> &mdash; 면세에 필요</span></div>
-  <div><span class="bx"></span><span><b>렌즈는 기내 수하물로</b> &mdash; 면세·세관 확인 시 꺼낼 수 있어야 함</span></div>
+  <div><span class="bx"></span><span><b>면세품은 꺼내기 쉬운 가방에</b> &mdash; 출국 때 짐 맡기기 전에 세관 확인(렌즈는 기내로 드는 게 안전)</span></div>
   <div><span class="bx"></span><span><b>EA9는 여행과 분리</b> &mdash; 국내 구매, MarkII 여부 확인</span></div>
 </div>
-<h2 id="s15">현장 실무 <small>공항에서 나와서 매대에 서기까지</small></h2>
+<h2 id="s15">현장 실무 <small>오사카편(2026.10) &mdash; 공항에서 나와서 매대에 서기까지</small></h2>
+<p class="note">공항·교통은 오사카 기준입니다. 다른 지역에서도 <b>돈·가방·매대에서 할 말</b>은 그대로 씁니다.</p>
 
 <div class="add">
   <div class="t">📱 현장에서 켜서 보는 판</div>
-  <p><b>명진 허브에 올렸습니다.</b> 허브 타일 <b>「📷 오사카 렌즈」</b> 또는 아래 주소로 바로 들어갑니다.<br>
+  <p><b>명진 허브에 올렸습니다.</b> 허브 타일 <b>「📷 일본 렌즈 직접구매」</b> 또는 아래 주소로 바로 들어갑니다.<br>
   <a href="https://maydly.github.io/note/osaka/" target="_blank" rel="noopener"><b>https://maydly.github.io/note/osaka/</b></a><br>
   이 문서의 <b>15개 항목 전부</b>가 탭 6개(<b>가격표 · 살 것 · 동선 · 매대 · 준비 · 근거</b>)로 들어 있습니다. 376KB.</p>
   <p>이 문서는 <b>출발 전에 PC에서 읽는 판</b>입니다. 현장에서는 <b>「오사카 렌즈 가격표」</b>를 켜서 봅니다 &mdash; 비공개 링크라 명진만 열립니다.<br>
@@ -856,7 +889,7 @@ Rayqual은 다음 기회로 미루고 B안으로 가는 쪽을 권합니다.</p>
   <li><b>원/달러 환율</b> &mdash; US$800의 정확한 원화 환산 미확인</li>
   <li><b>렌즈 개별 무게·치수</b> &mdash; 제조사 통상 스펙 기반 참고치. 형번별 차이 있음</li>
   <li><b>일부 렌즈 개별 시세</b> &mdash; Oreston · Pentacon · Fujinon · Industar · Hexanon · Jupiter-9 · Takumar 135는 <b>"1만엔 이하권"만 확인</b>되고 3선은 추정</li>
-  <li><b>중고점의 면세 대응</b> &mdash; 조사한 중고점 7곳 중 <b>면세 가능 여부가 확인된 곳이 하나도 없습니다.</b> 안 된다는 뜻이 아니라 공개 정보가 없다는 뜻 &mdash; 계산 전 직접 물어볼 것</li>
+  <li><b>중고점의 면세 대응</b> &mdash; 조사한 중고점 7곳 중 <b>면세 가능 여부가 확인된 곳이 하나도 없습니다.</b> 안 된다는 뜻이 아니라 공개 정보가 없다는 뜻 &mdash; 계산 전 직접 물어볼 것 <span class="w">10-20: 키타무라·맵카메라는 면세 대응 안내 확인</span></li>
   <li><b>마츠모토카메라 10/12(월·공휴일) 영업</b> &mdash; 「매주 월요일 휴무」와 「공휴일 영업」 표기가 서로 어긋남. 전화 확인 필요</li>
   <li><b>토키와카메라 토요일 영업시간</b> &mdash; 「평일」·「일·공휴일」만 공지돼 있고 토요일이 어느 쪽인지 불명</li>
   <li><b>토키와카메라의 마운트 어댑터 재고</b> &mdash; 예전 자료의 인상이며 현재 취급 여부는 미확인. 기대하고 가지 말 것</li>
@@ -902,6 +935,7 @@ Rayqual은 다음 기회로 미루고 B안으로 가는 쪽을 권합니다.</p>
     <tr><td>09-28</td><td>사진 완성</td><td>빠졌던 <b>7종 보강</b>(위키미디어 카테고리 전수 조회) + 부실했던 <b>4종 교체.</b> Takumar 135는 <b>F2.5 사진 → F3.5로 정정.</b> 28종 전부 완료</td></tr>
     <tr><td>09-28</td><td><b>이 판</b></td><td>검증 근거 · 마운트 구조 · 예산 3안 · 이 기록까지 <b>전부 이 파일 안으로</b></td></tr>
       <tr><td>10-20</td><td><b>합침</b></td><td>「일본 빈티지 렌즈 쇼핑 가이드」(7월)를 이 페이지로 &mdash; 값표 밖 후보 4종 · 다른 마운트 링 4종과 주의 · 매대 점검 3가지(흐림·조리개 링·무한대)와 일본 중고 표기 · Techart 허브 · 만료필름 노출표를 옮김. 예전 주소는 여기로 넘어옵니다</td></tr>
+      <tr><td>10-20</td><td><b>이름 바꿈 · 지역 6곳</b></td><td>「오사카 렌즈」 → <b>「일본 렌즈 직접구매」</b>. 오사카는 다녀왔고 실구매 없음 &mdash; 다음 여행용으로 <b>도쿄·후쿠오카·나고야·요코하마·삿포로·교토</b> 중고점을 「시간 내서 갈 곳 / 지나가면 들를 곳 / 빼둠」으로 나눔(웹 확인 10-20). 면세는 11월 환급 방식으로 고침. 주소는 그대로(note/osaka/)</td></tr>
   </tbody>
 </table>
 </div></section></div>
@@ -1026,7 +1060,10 @@ var L = [
      q:'Carl Zeiss Jena Pancolar 50mm F1.8 lens'}
   ]
 var SHOPS=[{"n":1,"c":"","nm":"야오토미 오사카역중앙점","pos":"JR오사카역 지하1F 에키마르셰","note":"역 안. 도착 직후 시세만 보고 짐은 코인로커에","hr":"08:30~21:00 무휴","lat":34.702213,"lon":135.495573,"q":"八百富写真機店 大阪駅中央店","wd":[8.5,21],"we":[8.5,21]},{"n":2,"c":"","nm":"우메다 포토서비스","pos":"오사카역앞 제1빌딩 1F","note":"중고 상시 1,000점 이상. 9시에 여는 유일한 중고점","hr":"09:00~19:30 (일·공휴 10~18:30)","lat":34.698855,"lon":135.496456,"q":"梅田フォトサービス 大阪駅前第1ビル","wd":[9,19.5],"we":[9,19.5],"ho":[10,18.5]},{"n":3,"c":"m","nm":"카메라노오바야시","pos":"제1빌딩 1F 북서쪽 모서리","note":"라이카 공인점. 옆집이라 들른다","hr":"10:00~19:00 (토·일·공휴 ~18:00)","lat":34.698855,"lon":135.496456,"q":"カメラの大林 大阪駅前第1ビル","wd":[10,19],"we":[10,18],"ho":[10,18]},{"n":5,"c":"g","nm":"렌탈박스 캐빈","pos":"제2빌딩 B2F","note":"개인 위탁 정크 상자. 보증 없는 대신 싸다. 현금 준비","hr":"11:00~19:30 (일·공휴 ~18:00)","lat":34.698815,"lon":135.498009,"q":"レンタルボックスキャビン 大阪駅前第2ビル","wd":[11,19.5],"we":[11,19.5],"ho":[11,18]},{"n":6,"c":"m","nm":"마츠모토카메라","pos":"제2빌딩 2F","note":"라이카·핫셀 고가품. 구경용","hr":"12:00~19:00 · 월요일 휴무","lat":34.698815,"lon":135.498009,"q":"マツモトカメラ 大阪駅前第2ビル","wd":[12,19],"we":[12,19],"off":[1]},{"n":4,"c":"","nm":"★ 야오토미 본점","pos":"제3빌딩 B2F","note":"오사카 중고의 중심. 여기서 제일 오래 본다. 기타신치역 도보 3분","hr":"10:00~20:00 (토·일·공휴 ~19:00)","lat":34.698815,"lon":135.499286,"q":"八百富写真機店 本店 大阪駅前第3ビル","wd":[10,20],"we":[10,19],"ho":[10,19]},{"n":7,"c":"","nm":"나니와 우메다 중고","pos":"芝田1-1-25 · 요도바시 바로 앞","note":"디지털 위주. 가는 길이라 들른다","hr":"10:30~19:30 무휴","lat":34.704581,"lon":135.497502,"q":"カメラのナニワ 梅田中古買取センター","wd":[10.5,19.5],"we":[10.5,19.5]},{"n":8,"c":"b","nm":"요도바시 우메다","pos":"大深町1-1 · B2F~4F","note":"AD-E1 ¥6,600. 면세도 여기서 한 번에. 22시까지","hr":"09:30~22:00 무휴","lat":34.704207,"lon":135.496362,"q":"ヨドバシカメラ マルチメディア梅田","wd":[9.5,22],"we":[9.5,22]},{"n":9,"c":"m","nm":"나니와 신사이바시 본점","pos":"心斎橋1-3-12 2F · 미도스지선 3정거장","note":"예비. 우메다에서 못 건지면","hr":"10:30~19:30 무휴","lat":34.674517,"lon":135.500357,"q":"カメラのナニワ 心斎橋本店","wd":[10.5,19.5],"we":[10.5,19.5]},{"n":10,"c":"m","nm":"토키와카메라","pos":"日本橋1-19-8 · 5번 출구 도보 1분","note":"예비. 어댑터 재고는 확인 못 함","hr":"평일 10~19시 / 일·공휴 ~18시 · 제3일요일 휴무","lat":34.666226,"lon":135.505915,"q":"トキワカメラ 日本橋","wd":[10,19],"we":[10,19],"ho":[10,18],"third":1}];
-var HOLI={'2026-10-12':1};
+var REG=[{"id":"tokyo","nm":"도쿄","lv":"일부러 갈 만함","sum":"가게 수와 정크(보증 없는 싼 매물)가 압도적입니다. <b>신주쿠(동쪽·서쪽) + 나카노</b> 두 동네만 시간을 내면 됩니다 &mdash; 신주쿠↔나카노는 JR 주오선 5분.","shops":[{"t":"p","nm":"신주쿠 키타무라 사진기점","ja":"新宿 北村写真機店","pos":"新宿3-26-14 · 신주쿠역 동쪽 출구 2분 · 지하1층~7층","hr":"10:00~21:00 · 1/1 휴무","nt":"3층에 정크 카메라·렌즈가 상설. 한 건물에 중고가 몰려 있어 시세 잡기 좋습니다","q":"新宿 北村写真機店","cf":1,"wd":[10,21],"we":[10,21]},{"t":"p","nm":"후지야카메라 (본점 + 정크관)","ja":"フジヤカメラ 中野","pos":"中野5-61-1 · 나카노역 북쪽 출구 1분 · 정크관은 근처 5-63-5","hr":"본점 10:00~20:30 · 정크관 10:30~20:30 · 무휴","nt":"싼 올드 렌즈를 뒤지기엔 1순위 &mdash; 정크관은 보증이 없는 대신 쌉니다","q":"フジヤカメラ 中野","cf":1,"wd":[10,20.5],"we":[10,20.5]},{"t":"p","nm":"레몬사 신주쿠점","ja":"レモン社 新宿店","pos":"西新宿1-15-4 第2セイコービル3F · 서쪽 출구 5분","hr":"10:30~19:30 · 연말연시 외 무휴","nt":"외국제 카메라·올드 렌즈·중형·필름 콤팩트. 라이카 수리 상담도 받습니다","q":"レモン社 新宿店","cf":1,"wd":[10.5,19.5],"we":[10.5,19.5]},{"t":"r","nm":"맵카메라 본관","ja":"マップカメラ 本館","pos":"西新宿1-12-5 · 서쪽 출구 5분 · 레몬사 바로 근처","hr":"11:00~19:00 · 1/1 휴무","nt":"상태가 좋은 대신 비쌉니다. 값 비교 기준으로만 보고 지나가기","q":"マップカメラ 本館","cf":1,"wd":[11,19],"we":[11,19]},{"t":"r","nm":"럭키카메라","ja":"ラッキーカメラ店","pos":"新宿3-3-9 五明館ビル1F · 신주쿠산초메","hr":"10:00~20:00 · 무휴","nt":"클래식 카메라 진열장 위주, 올드 렌즈도 조금. 키타무라 가는 길","q":"ラッキーカメラ店 新宿","cf":1,"wd":[10,20],"we":[10,20]},{"t":"r","nm":"레몬사 긴자점","ja":"レモン社 銀座店","pos":"銀座4-2-1 銀座教会堂ビル8F","hr":"시간 미확인","nt":"라이카 중심. 긴자에 갈 일이 있을 때만","q":"レモン社 銀座店","cf":0}],"skip":[["아키하바라","「올드 렌즈 보물창고」라는 글이 하나 있었지만 출처가 약하고 가게 이름이 안 나옴"],["신주쿠 중고카메라시장 · 하야타카메라 · 산쿄카메라","이름은 나오지만 이번에 위치·영업을 확인하지 못함"]]},{"id":"fukuoka","nm":"후쿠오카","lv":"일부러 갈 만함","sum":"<b>텐진 두 곳 + 나카스카와바타 한 곳</b>이 지하철 한 정거장 안에 있어 반나절이면 다 봅니다. 하카타역 나니와는 공항·기차 타러 가는 길에.","shops":[{"t":"p","nm":"키타무라 미나텐진점","ja":"カメラのキタムラ ミーナ天神店","pos":"天神4-3-8 ミーナ天神2F · 텐진역 북쪽","hr":"10:00~20:00","nt":"2024년 6월 개편으로 중고 약 3,000점 &mdash; 규슈 최대급. 후쿠오카 첫 집","q":"カメラのキタムラ ミーナ天神店","cf":1,"wd":[10,20],"we":[10,20]},{"t":"p","nm":"카메라노 고고상회","ja":"カメラのゴゴー商会","pos":"博多区上川端町14-5 · 나카스카와바타역 7번 출구 2분","hr":"월~토 9:00~19:00 · 일·공휴 10:00~19:00 · 첫째·셋째 일요일 휴무","nt":"1945년 창업. 2025년에 클래식 카메라 중심으로 매장을 바꿨고, 일본제부터 러시아 렌즈까지","q":"カメラのゴゴー商会","cf":1,"wd":[9,19],"we":[9,19],"ho":[10,19],"sun":[1,3]},{"t":"p","nm":"타카치호카메라 텐진점","ja":"タカチホカメラ 天神店","pos":"天神2-3-37 FPGリンクス天神4F","hr":"10:30~19:30 · 연말연시 외 무휴","nt":"약 1,400점, 빈티지부터 미러리스까지. 나니와 계열이라 다른 지점 재고를 불러옵니다","q":"タカチホカメラ 天神店","cf":1,"wd":[10.5,19.5],"we":[10.5,19.5]},{"t":"r","nm":"카메라노 나니와 하카타마루이점","ja":"カメラのナニワ 博多マルイ店","pos":"博多駅中央街9-1 博多マルイ5F · 하카타역 직결","hr":"시간 미확인(마루이 영업시간)","nt":"작은 매장, 필름 카메라 조금. 역에서 떠나기 전에","q":"カメラのナニワ 博多マルイ店","cf":0}],"skip":[["키타무라 텐진점(天神2-8-22)","정보가 오래됐고, 미나텐진점 하나로 충분"]]},{"id":"nagoya","nm":"나고야","lv":"들를 만함","sum":"<b>사카에 ~ 야바초</b>에 모여 있어 걸어서 다 봅니다. 오스(大須) 상점가의 종합 중고점은 렌즈가 목적이면 건너뛰세요.","shops":[{"t":"p","nm":"레몬사 나고야 사카에점","ja":"レモン社 名古屋栄店","pos":"야바초역 5번 출구 2분 · 빌딩 4층 한 층","hr":"시간 미확인","nt":"중고 800점 이상. 필름·올드 렌즈·정크까지 &mdash; 나고야에서 올드 렌즈면 여기부터","q":"レモン社 名古屋栄店","cf":0},{"t":"p","nm":"톱카메라 나고야 본점","ja":"トップカメラ 名古屋本店","pos":"사카에역 바로 근처 · 3층이 중고","hr":"시간 미확인","nt":"「도카이 최대급」 카메라점. 중고가 한 층 통째로(1년 반 전 방문기)","q":"トップカメラ 名古屋本店","cf":0},{"t":"r","nm":"히다카야카메라","ja":"ヒダカヤカメラ","pos":"栄3-17-15 · 애플스토어 나고야사카에 같은 건물","hr":"시간 미확인","nt":"라이카·롤라이·핫셀 같은 고가 외국제 위주. 구경용","q":"ヒダカヤカメラ 栄","cf":0},{"t":"r","nm":"키타무라 나고야 중고매입센터","ja":"カメラのキタムラ 名古屋中古買取センター","pos":"栄3-31-6 ロイヤルビル9F · 야바초역 3분","hr":"시간 미확인","nt":"매입 중심이지만 중고 판매도. 레몬사에서 가까움","q":"カメラのキタムラ 名古屋中古買取センター","cf":0}],"skip":[["오스 종합 중고점(じゃんぱら·大黒屋·コメ兵)","렌즈 전문이 아님"],["카메라노모리(후시미)","방문기에 필름·올드 렌즈가 거의 없었다고 함"],["마쓰야카메라(이마이케) · 핫토리카메라(후시미) · 아이코도(사코)","중심에서 떨어져 있고 최근 정보가 없음"]]},{"id":"yokohama","nm":"요코하마","lv":"들를 만함","sum":"가게가 <b>요코하마역 서쪽 · 사쿠라기초 · 오구치</b>로 흩어져 있습니다. 올드 렌즈는 오누키와 펭귄, 역 근처에서 끝내려면 레몬사.","shops":[{"t":"p","nm":"오누키카메라","ja":"大貫カメラ","pos":"中区宮川町2-47 · 히노데초역 2분 · 사쿠라기초역 5분","hr":"10:00~19:00 · 수요일 휴무(게재 시점 불명)","nt":"1934년 창업. 클래식 카메라, L·S 마운트 중고 렌즈, 특이한 렌즈","q":"大貫カメラ 横浜","cf":0,"wd":[10,19],"we":[10,19],"off":[3]},{"t":"p","nm":"펭귄카메라 본점","ja":"ペンギンカメラ","pos":"神奈川区七島町127 · JR 오구치역","hr":"10:00~19:00 · 무휴","nt":"중고 카메라·올드 렌즈 전문. 도큐 하쿠라쿠역 지점도 있음(일요일 휴무)","q":"ペンギンカメラ 大口","cf":1,"wd":[10,19],"we":[10,19]},{"t":"p","nm":"레몬사 요코하마점","ja":"レモン社 横浜店","pos":"西区南幸2-17-9 島田ビル1F · 요코하마역 서쪽 출구 5분","hr":"시간 미확인","nt":"빈티지·외국제·필름, 위탁 판매도. 역에서 제일 가까운 올드 렌즈 가게","q":"レモン社 横浜店","cf":0},{"t":"r","nm":"카메라와 스즈키 조이너스점","ja":"カメラはスズキ ジョイナス店","pos":"相鉄ジョイナス1F · 요코하마역 남쪽 개찰구 1분","hr":"9:00~21:00(3년 전 기사)","nt":"필름이 대량. 싼 중고 카메라·렌즈","q":"カメラはスズキ 横浜ジョイナス","cf":0,"wd":[9,21],"we":[9,21]},{"t":"r","nm":"키타무라 요코하마 모아즈","ja":"カメラのキタムラ 横浜モアーズ中古買取センター","pos":"横浜モアーズ3F · 요코하마역 2분","hr":"시간 미확인","nt":"역 바로 앞. 중고 판매","q":"カメラのキタムラ 横浜モアーズ","cf":0},{"t":"r","nm":"왓만 마루이시티 요코하마","ja":"ワットマン マルイシティ横浜","pos":"マルイシティ横浜6F · 요코하마역 동쪽 출구 3분","hr":"시간 미확인","nt":"라이카와 마운트 어댑터가 많음 &mdash; 링 하나가 급할 때","q":"ワットマン マルイシティ横浜","cf":0}],"skip":[]},{"id":"sapporo","nm":"삿포로","lv":"한 곳이면 끝","sum":"<b>오도리역 미쓰코시 7층 카메라컬렉션</b>이 핵심입니다. 봄(4월)·여름(7월)에 같은 층에서 중고시장 행사가 열리니, 날짜가 맞으면 그때가 좋습니다.","shops":[{"t":"p","nm":"카메라컬렉션","ja":"カメラコレクション 札幌三越","pos":"南1条西3丁目8 札幌三越 本館7F · 오도리역 2분","hr":"10:00~19:00 · 휴무는 미쓰코시 따름","nt":"중고 전문. 라이카·니콘·캐논 등. 2026년엔 4월·7월에 중고시장 행사","q":"カメラコレクション 札幌三越","cf":1,"wd":[10,19],"we":[10,19]},{"t":"r","nm":"카메라노 이와모토","ja":"カメラのいわもと","pos":"버스센터마에역 근처 · 오도리 동쪽","hr":"시간 미확인","nt":"중고 카메라·렌즈, 위탁 판매. 오도리에서 동쪽으로 걸어가는 길","q":"カメラのいわもと 札幌","cf":0},{"t":"r","nm":"키타무라 삿포로 도큐점","ja":"カメラのキタムラ さっぽろ東急店","pos":"さっぽろ東急百貨店3F · 삿포로역 앞","hr":"시간 미확인","nt":"역 앞 백화점. 중고 판매","q":"カメラのキタムラ さっぽろ東急店","cf":0}],"skip":[["카메라노 이시오(니시28초메)","중심에서 떨어져 있음"],["세븐상회","영업 여부 불명"],["인헤릿카메라","필름·렌즈 전문(2024 개점)이지만 주소를 확인하지 못함 &mdash; 가기 전에 다시 찾기"]]},{"id":"kyoto","nm":"교토","lv":"관광 동선에 한 곳","sum":"사실상 <b>나니와 교토점 하나</b>입니다. 시조가와라마치 관광 동선 한가운데라 지나가면 들르면 되고, 렌즈 때문에 교토에 따로 시간을 낼 필요는 없습니다.","shops":[{"t":"r","nm":"카메라노 나니와 교토점","ja":"カメラのナニワ 京都店","pos":"四条通御幸町西入 · 한큐 교토가와라마치역 9번 출구 서쪽 3분 · 2층이 중고","hr":"10:00~19:30 또는 20:00(출처마다 다름)","nt":"교토·시가 최대급. 필름이 많고 면세·영어 직원","q":"カメラのナニワ 京都店","cf":0,"wd":[10,19.5],"we":[10,19.5]}],"skip":[["키타무라 교토 중고매입센터","위치를 확인하지 못함"],["데라마치 개인 카메라점","이번 검색에서 영업 중인 가게를 확인하지 못함"]]}];
+/* 오사카편 나눔 — 제 판단(명진 경험으로 고칠 것). p 시간 내서 · r 지나가면 · x 빼둠 */
+var OSK_T={4:"p",2:"p",1:"r",3:"r",5:"r",6:"r",7:"r",8:"r",9:"x",10:"x"};
+var HOLI={'2026-10-12':1,'2026-11-03':1,'2026-11-23':1,'2027-01-01':1,'2027-01-11':1,'2027-02-11':1,'2027-02-23':1,'2027-03-22':1,'2027-04-29':1,'2027-05-03':1,'2027-05-04':1,'2027-05-05':1,'2027-07-19':1,'2027-08-11':1,'2027-09-20':1,'2027-09-23':1,'2027-10-11':1,'2027-11-03':1,'2027-11-23':1};
 var RATE=8.7;
 function esc(x){return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
 function nmf(v){return Number(v).toLocaleString('en-US');}
@@ -1085,6 +1122,7 @@ function fmt(v){var h=Math.floor(v),m=Math.round((v-h)*60);return h+':'+(m<10?'0
 function st(s,t){
  if(s.off&&s.off.indexOf(t.dow)>=0)return ['n','정기휴무'];
  if(s.third&&t.dow===0&&t.day>=15&&t.day<=21)return ['n','제3일요일 휴무'];
+ if(s.sun&&t.dow===0&&s.sun.indexOf(Math.ceil(t.day/7))>=0)return ['n','오늘 정기휴무'];
  var hr=(HOLI[t.ymd]&&s.ho)?s.ho:(t.dow===0?(s.ho||s.we):(t.dow===6?s.we:s.wd));
  if(t.h<hr[0])return ['n',fmt(hr[0])+' 오픈'];
  if(t.h>=hr[1])return ['n','오늘 마감'];
@@ -1099,12 +1137,38 @@ function drawShops(){var t=jst();
    +'<div class="ps">'+esc(s.pos)+' · '+esc(s.hr)+'</div><div class="nt">'+esc(s.note)+'</div>'
    +'<a class="mp" href="'+mp+'" target="_blank" rel="noopener">지도</a></div>';}).join('');}
 drawShops();
-setInterval(function(){if(!document.getElementById('pane-go').hidden)drawShops();},60000);
+var RG='tokyo';try{var rv=localStorage.getItem('jplens-region');if(rv)RG=rv;}catch(e){}
+function osakaRegion(){return {id:'osaka',nm:'오사카',lv:'다녀옴',done:1,
+ sum:'2026년 10월에 다녀왔고 <b>실제로 산 것은 없습니다.</b> 아래 나눔은 <b>제 판단</b>입니다 &mdash; 시간 내서 갔는데 굳이였던 곳을 알려 주시면 그대로 옮기겠습니다.',
+ shops:SHOPS.filter(function(x){return OSK_T[x.n]!=='x';}).map(function(x){return {t:OSK_T[x.n]||'r',nm:x.nm.replace('★ ',''),ja:x.q,pos:x.pos,hr:x.hr,nt:x.note,q:x.q,lat:x.lat,lon:x.lon,wd:x.wd,we:x.we,ho:x.ho,off:x.off,third:x.third,cf:1};}),
+ skip:SHOPS.filter(function(x){return OSK_T[x.n]==='x';}).map(function(x){return [x.nm,'예비로 넣었던 곳 &mdash; 우메다에서 끝나면 갈 일 없음'];})};}
+function card(s,i,t){var o=s.wd?st(s,t):['u','시간 미확인'];if(s.wd&&!s.cf)o=[o[0],o[1]+' · 추정'];
+ var mp=s.lat?('https://www.google.com/maps/search/'+encodeURIComponent(s.q)+'/@'+s.lat+','+s.lon+',18z'):('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(s.q));
+ return '<div class="shop"><div class="hd"><span class="pin '+(s.t==='p'?'':'b')+'">'+(i+1)+'</span><h3>'+esc(s.nm)+'<span class="ja">'+esc(s.ja)+'</span></h3><span class="op '+o[0]+'">'+o[1]+'</span></div>'
+  +'<div class="ps">'+esc(s.pos)+' · '+esc(s.hr)+'</div><div class="nt">'+s.nt+'</div>'
+  +'<a class="mp" href="'+mp+'" target="_blank" rel="noopener">지도</a></div>';}
+function drawRegion(anim){var all=REG.concat([osakaRegion()]),t=jst();
+ var r=all.filter(function(x){return x.id===RG;})[0]||all[0];RG=r.id;
+ document.getElementById('rgs').innerHTML=all.map(function(x){return '<button type="button" class="rg'+(x.done?' done':'')+'" data-r="'+x.id+'" aria-pressed="'+(x.id===RG)+'">'+x.nm+'<small>'+x.lv+'</small></button>';}).join('');
+ var P=r.shops.filter(function(x){return x.t==='p';}),R=r.shops.filter(function(x){return x.t==='r';});
+ var h='<div class="rgsum">'+r.sum+'<span class="nw">일본 '+t.lab+' 기준 · 영업시간은 2026-10-20 웹 확인. 「추정」·「시간 미확인」은 가기 전에 구글맵에서 한 번 더</span></div>';
+ h+='<div class="tierh"><span class="tg p">우선</span>시간 내서 갈 곳 <small>'+P.length+'곳</small></div>';
+ h+=P.length?P.map(function(s,i){return card(s,i,t);}).join(''):'<p class="note">이 지역에는 일부러 시간을 낼 곳이 없습니다.</p>';
+ h+='<div class="tierh"><span class="tg r">경로상</span>지나가면 들를 곳 <small>'+R.length+'곳</small></div>';
+ h+=R.length?R.map(function(s,i){return card(s,i,t);}).join(''):'<p class="note">없습니다.</p>';
+ if(r.skip.length)h+='<div class="tierh"><span class="tg x">빼둠</span>안 가도 되는 곳</div><ul class="tight skipl">'+r.skip.map(function(k){return '<li><b>'+esc(k[0])+'</b> &mdash; '+k[1]+'</li>';}).join('')+'</ul>';
+ var b=document.getElementById('rgbody');b.innerHTML=h;
+ if(anim){b.classList.remove('in');void b.offsetWidth;b.classList.add('in');}
+ document.getElementById('osk').hidden=(RG!=='osaka');}
+document.getElementById('rgs').addEventListener('click',function(e){var b=e.target.closest('.rg');if(!b)return;RG=b.getAttribute('data-r');
+ try{localStorage.setItem('jplens-region',RG);}catch(e){}drawRegion(1);});
+drawRegion();
+setInterval(function(){if(!document.getElementById('pane-go').hidden){drawShops();drawRegion();}},60000);
 /* 탭 */
 var TB=["now","go","pre","why"];
 TB.forEach(function(id){document.getElementById('tb-'+id).addEventListener('click',function(){
  TB.forEach(function(x){var on=x===id;document.getElementById('tb-'+x).setAttribute('aria-selected',on);document.getElementById('pane-'+x).hidden=!on;});
- if(id==='go')drawShops();
+ if(id==='go'){drawShops();drawRegion();}
  try{localStorage.setItem('osaka-tab2',id);}catch(e){}
  window.scrollTo(0,0);});});
 try{var sv=localStorage.getItem('osaka-tab2');if(sv&&document.getElementById('tb-'+sv))document.getElementById('tb-'+sv).click();}catch(e){}
