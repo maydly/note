@@ -318,6 +318,13 @@ img,svg{max-width:100%}
 .shop .ja{display:block;font-family:'Hiragino Sans','Yu Gothic','Noto Sans JP',sans-serif;font-size:11.5px;font-weight:600;color:var(--sub);margin-top:1px}
 .op.u{background:#f3f1ea;color:#8a8576}
 .skipl li{font-size:12.5px}
+.skd{margin:10px 0 0}
+.skd>summary{cursor:pointer;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;padding:6px 0;min-height:40px}
+.skd>summary small{font-weight:600;color:var(--sub);font-size:12px}
+.tg.h{background:#fbf1dc;color:#9e6e17}
+.skd>summary::-webkit-details-marker{display:none}
+.skd>summary::before{content:'▸';color:var(--sub);font-size:12px;width:10px}
+.skd[open]>summary::before{content:'▾'}
 .osk{margin:18px 0 6px;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:4px 12px 10px}
 .osk>summary{cursor:pointer;font-weight:800;font-size:14px;padding:10px 0;color:var(--clover)}
 .osk>summary small{font-weight:600;color:var(--sub);font-size:12px;margin-left:4px}
@@ -419,6 +426,7 @@ img,svg{max-width:100%}
 <p class="when">어느 지역에 가나요</p>
 <h2>지역 고르기 <small>렌즈 사러 일부러 갈 만한 순서</small></h2>
 <div class="rgs" id="rgs" role="group" aria-label="지역"></div>
+<p class="note" style="margin:2px 0 8px"><b>나눈 기준</b> &mdash; <b>우선</b>: 값표 28종 같은 올드 수동 렌즈가 걸릴 확률이 높고(매물·정크 물량), 따로 가는 시간이 짧은 곳 · <b>경로상</b>: 고가·디지털 위주거나 작아서 지나갈 때만. <b>살 렌즈가 정해지면</b> 출발 전 넷중고에서 그 렌즈가 걸린 가게를 우선으로 올립니다.</p>
 <div id="rgbody" aria-live="polite"></div>
 <details class="osk" id="osk" hidden><summary>오사카편 원래 동선 펼치기 <small>빌딩 지도 · 지금 열려 있나 · 하루 순서</small></summary>
 <h2>가게가 어디에 있나 <small>오사카역앞 빌딩 세 동에 네 곳</small></h2>
@@ -1139,7 +1147,7 @@ function drawShops(){var t=jst();
 drawShops();
 var RG='tokyo';try{var rv=localStorage.getItem('jplens-region');if(rv)RG=rv;}catch(e){}
 function osakaRegion(){return {id:'osaka',nm:'오사카',lv:'다녀옴',done:1,
- sum:'2026년 10월에 다녀왔고 <b>실제로 산 것은 없습니다.</b> 아래 나눔은 <b>제 판단</b>입니다 &mdash; 시간 내서 갔는데 굳이였던 곳을 알려 주시면 그대로 옮기겠습니다.',
+ sum:'2026년 10월에 다녀왔고 <b>실제로 산 것은 없습니다.</b> 아래 나눔은 <b>잠정 &mdash; 제 판단</b>입니다 &mdash; 시간 내서 갔는데 굳이였던 곳을 알려 주시면 그대로 옮기겠습니다.',
  shops:SHOPS.filter(function(x){return OSK_T[x.n]!=='x';}).map(function(x){return {t:OSK_T[x.n]||'r',nm:x.nm.replace('★ ',''),ja:x.q,pos:x.pos,hr:x.hr,nt:x.note,q:x.q,lat:x.lat,lon:x.lon,wd:x.wd,we:x.we,ho:x.ho,off:x.off,third:x.third,cf:1};}),
  skip:SHOPS.filter(function(x){return OSK_T[x.n]==='x';}).map(function(x){return [x.nm,'예비로 넣었던 곳 &mdash; 우메다에서 끝나면 갈 일 없음'];})};}
 function card(s,i,t){var o=s.wd?st(s,t):['u','시간 미확인'];if(s.wd&&!s.cf)o=[o[0],o[1]+' · 추정'];
@@ -1156,7 +1164,11 @@ function drawRegion(anim){var all=REG.concat([osakaRegion()]),t=jst();
  h+=P.length?P.map(function(s,i){return card(s,i,t);}).join(''):'<p class="note">이 지역에는 일부러 시간을 낼 곳이 없습니다.</p>';
  h+='<div class="tierh"><span class="tg r">경로상</span>지나가면 들를 곳 <small>'+R.length+'곳</small></div>';
  h+=R.length?R.map(function(s,i){return card(s,i,t);}).join(''):'<p class="note">없습니다.</p>';
- if(r.skip.length)h+='<div class="tierh"><span class="tg x">빼둠</span>안 가도 되는 곳</div><ul class="tight skipl">'+r.skip.map(function(k){return '<li><b>'+esc(k[0])+'</b> &mdash; '+k[1]+'</li>';}).join('')+'</ul>';
+ var HOLD=/확인하지 못|불명|출처가 약/;
+ var sx=r.skip.filter(function(k){return !HOLD.test(k[1]);}),sh=r.skip.filter(function(k){return HOLD.test(k[1]);});
+ var li=function(a){return '<ul class="tight skipl">'+a.map(function(k){return '<li><b>'+esc(k[0])+'</b> &mdash; '+k[1]+'</li>';}).join('')+'</ul>';};
+ if(sx.length)h+='<details class="skd"><summary><span class="tg x">빼둠</span>안 가도 되는 곳 <small>'+sx.length+'</small></summary>'+li(sx)+'</details>';
+ if(sh.length)h+='<details class="skd"><summary><span class="tg h">확인 보류</span>정보가 부족해 판단 못 한 곳 <small>'+sh.length+'</small></summary>'+li(sh)+'</details>';
  var b=document.getElementById('rgbody');b.innerHTML=h;
  if(anim){b.classList.remove('in');void b.offsetWidth;b.classList.add('in');}
  document.getElementById('osk').hidden=(RG!=='osaka');}
