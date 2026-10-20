@@ -24,7 +24,7 @@
   // 목차의 가이드·보유현황·구매계획을 모든 페이지 상단 내비에 자동 추가
   const navBar=document.querySelector(".top-nav");
   if(navBar){
-    [["08_일본빈티지렌즈_쇼핑가이드_latest.html","빈티지쇼핑"],
+    [["../osaka/","오사카 렌즈"],
      ["09_보유장비현황_latest.html","보유현황"],
      ["10_구매계획리스트_latest.html","구매계획"]].forEach(function(item){
       if(!navBar.querySelector('a[href="'+item[0]+'"]')){
