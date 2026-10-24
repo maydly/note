@@ -20,6 +20,7 @@
         <a href="#how">어떻게</a>
         <a href="#script">왜 스크립트</a>
         <a href="#report">보고만</a>
+        <a href="#layers">3층 감사</a>
         <a href="#deep">📚 심화</a>
         <a href="#check">점검</a>
         <a href="#glossary">용어</a>
@@ -37,6 +38,7 @@
         <span class="pill">규칙 기반</span>
         <span class="pill">스케줄러</span>
         <span class="pill">무인 실행</span>
+        <span class="pill">2026.10 기준</span>
       </div>
     </div>
   </header>
@@ -78,9 +80,9 @@
         <p class="section-note">규칙으로 명확히 판정 가능한 것들.</p>
       </div>
       <div class="grid-3">
-        <div class="card"><span class="tag violet">업무ID</span><h3>업무ID 규칙</h3><p>산출물이 업무ID 폴더 안에 있는지, ID 형식(<code>대상-분야-번호_업무명</code>)을 지켰는지.</p></div>
+        <div class="card"><span class="tag violet">업무ID</span><h3>업무ID 규칙</h3><p>산출물이 업무ID 폴더 안에 있는지, ID 형식(<code>분야-번호_업무명</code>, 프로젝트 폴더 안에선 프로젝트 이름을 앞에 붙이지 않음 — 2026.7 개정)을 지켰는지.</p></div>
         <div class="card"><span class="tag blue">파일명</span><h3>파일명 규칙</h3><p><code>정리</code>·<code>자료</code> 같은 금지 단독 명사, 대상·유형 누락 여부.</p></div>
-        <div class="card"><span class="tag teal">버전</span><h3>버전 표기</h3><p>버전 파일의 <code>_YYMMDD_HHMM_v버전</code> 형식 준수, 최종본 위치.</p></div>
+        <div class="card"><span class="tag teal">버전</span><h3>버전 표기</h3><p>버전 파일의 <code>v버전_파일명_YYMMDD_HHMM</code> 형식(버전을 앞에 — 2026.10 확정) 준수, 최종본 위치.</p></div>
       </div>
     </section>
 
@@ -124,6 +126,35 @@
       <p style="color:var(--muted)">감사 스크립트는 <strong>직접 파일을 옮기거나 이름을 바꾸지 않는다.</strong> 위반을 찾아 보고만 하고, 실제 처리는 사람이 다음 작업 사이클에서 확인 후 한다. 자동이 잘못 판단해 멀쩡한 걸 건드리는 사고를 막고, 최종 판단을 사람이 쥔다.</p>
       <div class="callout teal" style="margin-top:14px;">
         "발견은 자동, 처리는 사람" — 이 분리가 자동화를 안전하게 만든다. 감사는 눈이지 손이 아니다.
+      </div>
+    </section>
+
+    <!-- 06 3층 감사 -->
+    <section id="layers">
+      <div class="section-head">
+        <h2>06 — 주간 · 격주 · 4주: 감사 3층과 결정판</h2>
+        <p class="section-note">7월에 주간 하나였던 감사가, 보는 범위가 다른 세 층으로 늘었다.</p>
+      </div>
+      <table class="compare">
+        <tr><th>층</th><th>언제</th><th>무엇을 보나</th></tr>
+        <tr><td>주간</td><td>매주 월요일 새벽</td><td>최근 7일 바뀐 파일의 업무ID·파일명·버전 규칙. 업무 폴더의 "여기부터 시작하기" 안내 페이지가 밀렸는지(갱신일이 폴더 변경보다 14일 이상 늦은지).</td></tr>
+        <tr><td>격주</td><td>격주 금요일 새벽</td><td>지난 14일 새로 생긴 업무 폴더. 있으면 <strong>업무분류 결정판</strong>을 만들어 새 창으로 띄운다. 큰 묶음 하나 아래 하위 일이 10개를 넘으면 재분류 결정판도 만든다.</td></tr>
+        <tr><td>4주</td><td>4주마다 토요일 새벽</td><td>에이전트 정의 두 벌(Claude용·Codex용)이 서로 맞는지, 규정 문서끼리 맞는지, 60일 넘게 멈춘 업무, 플랜 계층 위반.</td></tr>
+      </table>
+      <h3 style="margin-top:26px;">결정판 — "고르는 건 사람, 옮기는 건 AI"</h3>
+      <div class="flow" style="margin-top:10px;">
+        <div class="flow-item"><b>1. 스크립트</b><span>새 업무 목록으로 결정판 HTML을 만든다(읽기 전용)</span></div>
+        <div class="flow-item"><b>2. 사람</b><span>업무마다 완료·진행대기·폐기·유지를 고르고, 관련 업무는 같은 그룹 번호로 묶는다</span></div>
+        <div class="flow-item"><b>3. 내보내기</b><span>버튼 하나로 결정 내용을 글로 뽑는다</span></div>
+        <div class="flow-item"><b>4. AI</b><span>붙여넣은 결정대로 폴더를 옮기고 묶는다. 폐기는 지우지 않고 '삭제대기'로</span></div>
+      </div>
+      <p style="margin-top:14px;">그룹 번호는 묶음의 크기도 정한다. 5건 이상 묶이면 큰 묶음(대플랜), 2~4건이면 중간 묶음(중플랜), 혼자면 단독 작업(소플랜)이다. 위반에는 세 층 모두 같은 <strong>심각도 0~10</strong>을 붙인다. 0은 실제 피해, 1은 치명적 구조 위반, 10은 정상이다. 숫자가 낮을수록 먼저 처리한다.</p>
+      <h3 style="margin-top:26px;">실제로 걸렸던 함정</h3>
+      <div class="grid-2" style="margin-top:10px;">
+        <div class="card"><span class="tag coral">한글 이름</span><h3>업무카드가 있는데 "없음"으로 보고</h3><p>맥·구글 드라이브는 한글 이름을 자모로 풀어서 저장하기도 한다. 그러면 화면에선 같은 글자로 보여도 스크립트가 <code>*업무카드*진행중*</code> 같은 패턴으로 찾을 때 안 걸린다. <strong>이름을 비교하기 전에 한 가지 저장 방식으로 맞추는 처리</strong>를 넣어 해결한다.</p></div>
+        <div class="card"><span class="tag coral">0건</span><h3>"하나도 없음"을 "정상"으로 착각</h3><p>찾는 방식이 틀려 검사 대상이 0건이면, 위반도 0건이라 "문제없음"으로 보인다. 대상이 0건이면 정상이 아니라 <strong>"검사 실패"</strong>로 표시해야 한다.</p></div>
+        <div class="card"><span class="tag gold">띄우기</span><h3>결정판을 띄웠는데 안 보임</h3><p>파일을 그냥 열면 브라우저가 다른 화면 공간의 창에 붙어 보이지 않았다. 지금은 쓰던 창을 건드리지 않고 <strong>새 창</strong>으로 띄우는 도구로 연다.</p></div>
+        <div class="card"><span class="tag gold">권한</span><h3>무인 실행이 조용히 막힘</h3><p>OS 개인정보 보호 권한 때문에 예약 실행이 드라이브 폴더를 못 읽고 끝날 수 있다. 감사마다 "마지막 실행" 기록을 남기고, 그 날짜가 밀렸는지 본다.</p></div>
       </div>
     </section>
 
@@ -194,7 +225,7 @@
     <!-- 06 점검 -->
     <section id="check">
       <div class="section-head">
-        <h2>06 — 감사 설계 점검</h2>
+        <h2>07 — 감사 설계 점검</h2>
         <p class="section-note">자동 감사를 만들 때.</p>
       </div>
       <ul class="checklist">
@@ -202,13 +233,15 @@
         <li><span class="check">✓</span><span>전체가 아니라 "최근 변경분"만 훑어 가벼운가</span></li>
         <li><span class="check">✓</span><span>스크립트가 직접 고치지 않고 보고만 하는가</span></li>
         <li><span class="check">✓</span><span>사람이 확인할 위치에 보고서가 쌓이는가</span></li>
+        <li><span class="check">✓</span><span>한글 이름을 비교하기 전에 저장 방식을 맞추는가</span></li>
+        <li><span class="check">✓</span><span>검사 대상이 0건일 때 "정상" 대신 "검사 실패"로 알리는가</span></li>
       </ul>
     </section>
 
     <!-- 07 용어 -->
     <section id="glossary">
       <div class="section-head">
-        <h2>07 — 용어 한눈에</h2>
+        <h2>08 — 용어 한눈에</h2>
         <p class="section-note">이 노트에 나온 단어들.</p>
       </div>
       <table class="compare">
@@ -218,6 +251,9 @@
         <tr><td>무인 실행</td><td>사람이 켜지 않아도 자동으로 도는 것.</td></tr>
         <tr><td>결정적(deterministic)</td><td>같은 입력이면 항상 같은 결과.</td></tr>
         <tr><td>2층 점검</td><td>개별 작업과 별개로 도는 상위 정기 점검.</td></tr>
+        <tr><td>결정판</td><td>스크립트가 만든 선택 화면. 사람이 고르고 결과를 내보내면 AI가 그대로 처리한다.</td></tr>
+        <tr><td>심각도 0~10</td><td>위반의 급한 정도. 0이 실제 피해, 10이 정상. 세 층 감사 공통.</td></tr>
+        <tr><td>자모 분리 저장(NFD)</td><td>한글 한 글자를 ㅎ·ㅏ·ㄴ처럼 풀어서 저장하는 방식. 겉보기엔 같아도 컴퓨터는 다른 이름으로 본다.</td></tr>
       </table>
     </section>
 

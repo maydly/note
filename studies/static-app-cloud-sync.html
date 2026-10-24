@@ -20,6 +20,7 @@
         <a href="#secret">토큰 보호</a>
         <a href="#flow">동기화 흐름</a>
         <a href="#localhost">localhost 테스트</a>
+        <a href="#login">구글 로그인</a>
         <a href="#deep">📚 심화</a>
         <a href="#check">점검</a>
         <a href="#glossary">용어</a>
@@ -37,6 +38,8 @@
         <span class="pill">클라우드 동기화</span>
         <span class="pill">토큰 보호</span>
         <span class="pill">localhost</span>
+        <span class="pill">구글 로그인</span>
+        <span class="pill">2026.10 기준</span>
       </div>
     </div>
   </header>
@@ -52,9 +55,13 @@
         <li><span class="check">✓</span><span>데이터 파일을 어디에 두는 게 안전한지 안다.</span></li>
         <li><span class="check">✓</span><span>접근 토큰을 클라이언트에 두지 않는 이유를 안다.</span></li>
         <li><span class="check">✓</span><span>왜 파일을 더블클릭하면 안 되고 localhost가 필요한지 안다.</span></li>
+        <li><span class="check">✓</span><span>지금 표준인 "구글 로그인 + 로컬이 진실 원본" 방식과 데이터 안전 규칙을 안다.</span></li>
       </ul>
       <div class="callout teal" style="margin-top:14px;">
         <strong>한 줄 요약</strong> — 화면(정적 파일)은 무료 호스팅에, 데이터는 <strong>비공개 저장소</strong>에, 그 저장소에 쓰는 열쇠(토큰)는 <strong>호스팅의 환경변수</strong>에 둔다. 클라이언트엔 비밀을 두지 않는다.
+      </div>
+      <div class="callout gold" style="margin-top:12px;">
+        <strong>2026년 7월부터 표준이 바뀌었다</strong> — 01~05장은 처음 만든 "토큰 방식"의 기록이다. 지금은 토큰을 쓰지 않고 <strong>구글 계정 로그인</strong>으로 지키며, <strong>기기에 있는 기록을 진실 원본</strong>으로 둔다. 바로 06장으로 가도 된다.
       </div>
     </section>
 
@@ -89,6 +96,9 @@
       <div class="callout gold" style="margin-top:14px;">
         이건 <a href="./repo-security-commits.html" style="color:var(--blue);font-weight:700;">저장소 보안</a> 노트의 핵심과 같다 — <strong>비밀은 클라이언트에 두지 않는다.</strong> 실제 PIN·토큰 값은 이런 공개 노트에도 절대 적지 않는다(패턴만).
       </div>
+      <div class="callout" style="margin-top:12px;">
+        <strong>지금은 이렇게 안 한다</strong> — 정적 호스팅을 GitHub Pages로 통일하면서 "호스팅 쪽 함수"를 쓸 수 없게 됐다. 또 토큰은 기기마다 붙여넣고, 만료되면 다시 넣고, 새지 않게 지켜야 해서 손이 많이 갔다. 그래서 토큰 방식은 그만두고 구글 로그인으로 바꿨다(06장).
+      </div>
     </section>
 
     <section id="flow">
@@ -119,6 +129,38 @@ npx serve .        # 또는 python -m http.server
 # → http://localhost:3000 으로 열기</pre>
       <div class="callout gold" style="margin-top:14px;">
         "내 PC에선 더블클릭해도 열리던데?" — 화면은 떠도 <strong>불러오기·저장이 조용히 실패</strong>한다. 반드시 localhost로 확인.
+      </div>
+    </section>
+
+    <!-- 06 지금 표준 -->
+    <section id="login">
+      <div class="section-head">
+        <h2>06 — 지금 표준: 구글 로그인 + 로컬이 진실 원본</h2>
+        <p class="section-note">2026.7.18~19 전환. 열쇠를 나눠 주는 대신, 들어오는 사람을 확인한다.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card"><span class="tag teal">화면</span><h3>GitHub Pages (공개)</h3><p>앱 껍데기(HTML·JS)는 그대로 공개 호스팅에 둔다. 소스에 비밀키는 하나도 없다.</p></div>
+        <div class="card"><span class="tag coral">데이터</span><h3>클라우드 DB (비공개)</h3><p>기록은 비공개 클라우드 데이터베이스(예: Firebase Firestore)에 둔다. 공개 저장소에는 올리지 않는다.</p></div>
+        <div class="card"><span class="tag violet">문지기</span><h3>보안 규칙 + 구글 로그인</h3><p>DB의 보안 규칙이 "로그인한 사람이 허용된 계정인가"를 매번 확인한다. 허용된 계정만 읽고 쓴다. 사용자는 구글 로그인 한 번이면 끝이다.</p></div>
+      </div>
+      <div class="callout" style="margin-top:14px;">
+        <strong>헷갈리는 점</strong> — 화면 코드에 보이는 클라우드 설정값(apiKey 등)은 비밀번호가 아니다. "어느 프로젝트로 가는지" 알려 주는 주소 같은 것이다. 실제로 막아 주는 건 <strong>보안 규칙</strong>이다. 규칙을 "아무나 허용"으로 두면 그 순간 열린다.
+      </div>
+
+      <h3 style="margin-top:28px;">데이터 안전 규칙 — 클라우드는 "합치기"만 한다</h3>
+      <p>동기화를 처음 켜는 순간이 가장 위험하다. 클라우드는 아직 비어 있거나 옛 상태인데, 앱이 "클라우드가 정답"이라며 받아 오면 <strong>기기에 쌓인 최신 기록이 빈 데이터로 덮인다.</strong> 실제로 이런 사고가 있었고, 그 뒤 아래 규칙을 정했다.</p>
+      <ul class="checklist" style="margin-top:10px;">
+        <li><span class="check">1</span><span><strong>기기에 있는 기록이 진실 원본이다.</strong> 클라우드에서 받은 것은 덮어쓰지 않고 더하기·합치기(머지)로만 반영한다.</span></li>
+        <li><span class="check">2</span><span><strong>항목마다 고유 번호와 고친 시각을 단다.</strong> 같은 번호면 더 최근에 고친 쪽을 남기고, 한쪽에만 있으면 둘 다 남긴다.</span></li>
+        <li><span class="check">3</span><span><strong>지울 때는 바로 없애지 않고 "지움 표시"를 남긴다.</strong> 그냥 없애면 다른 기기가 "나한텐 있는데?" 하며 다시 살려 낸다.</span></li>
+        <li><span class="check">4</span><span><strong>비어 있거나 더 오래된 클라우드 데이터로는 절대 덮어쓰지 않는다.</strong> 의심스러우면 멈추고 묻는다.</span></li>
+      </ul>
+      <h3 style="margin-top:26px;">실제 데이터에 켜기 전 순서</h3>
+      <div class="timeline" style="margin-top:12px;">
+        <div class="step"><div class="step-num">1</div><div><h3>백업</h3><p>기기의 기록을 파일로 내보내 둔다. 무슨 일이 생겨도 여기로 돌아온다.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div><h3>테스트 칸에서 실제 로그인</h3><p>진짜 기록이 아닌 테스트용 칸(컬렉션)에 연결하고, 실제 구글 계정으로 로그인해서 읽기·쓰기를 해 본다.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div><h3>두 기기에서 합쳐지는지</h3><p>폰과 PC에서 각각 하나씩 추가·수정한 뒤, 양쪽 모두에 두 개가 다 보이는지 확인한다. 하나가 사라지면 아직 켜지 않는다.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div><h3>그다음에 실제 데이터</h3><p>위 셋을 통과해야 실제 칸으로 바꾼다. 바꾼 직후 기록 개수가 줄지 않았는지 한 번 더 본다.</p></div></div>
       </div>
     </section>
 
@@ -188,7 +230,7 @@ npx serve .        # 또는 python -m http.server
 
     <section id="check">
       <div class="section-head">
-        <h2>06 — 점검</h2>
+        <h2>07 — 점검</h2>
         <p class="section-note">배포 전에.</p>
       </div>
       <ul class="checklist">
@@ -196,12 +238,15 @@ npx serve .        # 또는 python -m http.server
         <li><span class="check">✓</span><span>토큰이 화면 파일에 없고 env에 있는가</span></li>
         <li><span class="check">✓</span><span>실제 PIN·토큰 값을 공개 파일에 적지 않았는가</span></li>
         <li><span class="check">✓</span><span>localhost로 불러오기·저장을 확인했는가</span></li>
+        <li><span class="check">✓</span><span>토큰 대신 구글 로그인 + 보안 규칙으로 막고 있는가</span></li>
+        <li><span class="check">✓</span><span>클라우드 데이터가 기기 기록을 덮어쓰지 않고 합치기만 하는가</span></li>
+        <li><span class="check">✓</span><span>실제 데이터에 켜기 전에 백업과 테스트 칸 로그인 시험을 했는가</span></li>
       </ul>
     </section>
 
     <section id="glossary">
       <div class="section-head">
-        <h2>07 — 용어 한눈에</h2>
+        <h2>08 — 용어 한눈에</h2>
         <p class="section-note">이 노트에 나온 단어들.</p>
       </div>
       <table class="compare">
@@ -212,6 +257,10 @@ npx serve .        # 또는 python -m http.server
         <tr><td>서버리스 함수</td><td>서버를 직접 안 두고 호스팅이 대신 돌려주는 짧은 처리.</td></tr>
         <tr><td>always-on</td><td>항상 켜져 있어 언제 접속해도 응답하는 상태.</td></tr>
         <tr><td>file:// vs localhost</td><td>더블클릭(file) vs 로컬 서버(localhost). 후자라야 정상 동작.</td></tr>
+        <tr><td>보안 규칙</td><td>클라우드 DB가 요청마다 "이 사람이 읽고 써도 되나"를 판정하는 규칙.</td></tr>
+        <tr><td>머지(합치기)</td><td>두 쪽 기록을 지우지 않고 하나로 모으는 것. 덮어쓰기의 반대.</td></tr>
+        <tr><td>진실 원본</td><td>둘이 다를 때 기준으로 삼는 쪽. 이 방식에선 기기에 있는 기록.</td></tr>
+        <tr><td>컬렉션</td><td>클라우드 DB 안에서 기록을 담는 칸. 테스트용 칸을 따로 둘 수 있다.</td></tr>
       </table>
     </section>
 

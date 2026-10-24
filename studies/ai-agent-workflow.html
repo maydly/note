@@ -20,6 +20,7 @@
         <a href="#gate">승인 게이트</a>
         <a href="#roles">역할 지도</a>
         <a href="#scale">일 크기</a>
+        <a href="#research">조사·검증</a>
         <a href="#deep">📚 심화</a>
         <a href="#check">점검</a>
         <a href="#glossary">용어</a>
@@ -37,6 +38,7 @@
         <span class="pill">워크플로우</span>
         <span class="pill">1인 운영</span>
         <span class="pill">품질 관리</span>
+        <span class="pill">2026.10 기준</span>
       </div>
     </div>
   </header>
@@ -149,6 +151,33 @@
       </div>
     </section>
 
+    <!-- 06 여러 에이전트 조사 -->
+    <section id="research">
+      <div class="section-head">
+        <h2>06 — 큰 조사는 여러 에이전트로 나누고, 4가지 관점으로 따로 검증한다</h2>
+        <p class="section-note">2026.10 사례: "내 작업 방식에 필요한 스킬·플러그인이 뭔가"를 조사한 방법.</p>
+      </div>
+      <p>질문은 하나였지만 볼 자료가 너무 많았다. 대화 기록 185개 세션, 규칙 문서 전부, 설정·자동화, 공식 마켓 플러그인 315개. 한 에이전트가 다 읽으면 앞에서 읽은 걸 잊는다. 그래서 <strong>나눠 읽고, 따로 합치고, 다른 눈으로 검증</strong>했다.</p>
+      <div class="timeline" style="margin-top:14px;">
+        <div class="step"><div class="step-num">1</div><div><h3>나눠 읽기 (에이전트 14개)</h3><p>대화 기록을 여섯 덩어리로 나눠 정독하고, 규칙 문서·설정·자동화를 따로 조사했다. 마켓 315개도 세 덩어리로 나눠 걸렀다. 각자 좁은 범위만 보니 빠뜨리는 게 줄었다.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div><h3>두 가지 안을 따로 만들고 합치기</h3><p>"무엇이 필요한가(필요 중심)"와 "어떤 수단으로 푸나(해결수단 중심)" 두 안을 서로 모르게 만든 뒤 합쳤다. 한쪽 시선에 끌려가지 않기 위해서다.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div><h3>4가지 관점으로 따로 검증</h3><p>합친 결과를 아래 네 검증자가 각자 따로 봤다. 마지막에 "빠진 게 없나"만 보는 비평을 한 번 더 거쳤다.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div><h3>고치고, 빠진 것 보태고, 일관성 점검</h3><p>수정 의견을 반영하고 빠진 항목 11개를 더해 다시 검증했다. 일관성 점검에서 나온 지적 30건도 반영했다. 남은 10건은 총괄이 직접 고쳤다.</p></div></div>
+      </div>
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="card"><span class="tag blue">관점 1</span><h3>사실·설치</h3><p>"정말 그렇게 설치되나?" 공식 문서 원문과 대조한다. 기억이나 추측으로 쓴 문장을 걸러 낸다.</p></div>
+        <div class="card"><span class="tag teal">관점 2</span><h3>대화 기록 근거</h3><p>"정말 자주 겪던 불편인가?" 실제 대화에서 몇 번, 어떤 상황이었는지 근거를 찾는다. 근거가 없으면 뺀다.</p></div>
+        <div class="card"><span class="tag coral">관점 3</span><h3>규칙·개인정보·보안</h3><p>"내 규칙과 부딪히나?" 키 발급 금지, 외부 전송 금지, 프로젝트 경계 같은 정해 둔 원칙과 대조한다.</p></div>
+        <div class="card"><span class="tag violet">관점 4</span><h3>다른 회사 AI 교차감사</h3><p>"다른 눈엔 어떻게 보이나?" 같은 결과를 다른 AI(Codex)에게 읽기 전용으로 보여 주고 독립 의견을 받는다.</p></div>
+      </div>
+      <div class="callout gold" style="margin-top:16px;">
+        <strong>비용도 기록한다</strong> — 이 조사에는 하위 에이전트 38개가 돌았고 사용량이 꽤 컸다. 이런 전체 점검은 매번이 아니라 <strong>분기에 한 번</strong> 정도가 맞다. 일이 클 때만 나누고, 작은 질문은 하나로 끝낸다(05장).
+      </div>
+      <div class="callout" style="margin-top:12px;">
+        <strong>왜 "따로"가 중요한가</strong> — 검증자에게 "이 결론 맞지?"라고 물으면 대개 맞다고 한다. 결론 대신 <strong>원자료를 주고</strong>, 관점마다 다른 검증자에게 맡겨야 진짜 빈틈이 나온다.
+      </div>
+    </section>
+
     <!-- 교육 모듈 (탭) -->
     <section id="deep">
       <div class="section-head">
@@ -217,7 +246,7 @@
     <!-- 06 점검 -->
     <section id="check">
       <div class="section-head">
-        <h2>06 — 사이클 점검</h2>
+        <h2>07 — 사이클 점검</h2>
         <p class="section-note">제대로 돌고 있는지 빠르게.</p>
       </div>
       <ul class="checklist">
@@ -225,13 +254,14 @@
         <li><span class="check">✓</span><span>검수·감사를 만든 시선과 분리했는가</span></li>
         <li><span class="check">✓</span><span>요청하지 않은 변경을 끼워넣지 않았는가</span></li>
         <li><span class="check">✓</span><span>결정·흐름을 기록으로 남겼는가</span></li>
+        <li><span class="check">✓</span><span>큰 조사라면 나눠 읽고, 관점별로 따로 검증했는가</span></li>
       </ul>
     </section>
 
     <!-- 07 용어 -->
     <section id="glossary">
       <div class="section-head">
-        <h2>07 — 용어 한눈에</h2>
+        <h2>08 — 용어 한눈에</h2>
         <p class="section-note">이 노트에 나온 단어들.</p>
       </div>
       <table class="compare">
@@ -241,6 +271,8 @@
         <tr><td>교차감사</td><td>만든 곳과 다른 독립 도구로 결과를 재검증.</td></tr>
         <tr><td>풀 사이클</td><td>검토~정리까지 전체 단계를 다 거치는 진행.</td></tr>
         <tr><td>업무 카드</td><td>업무의 개요·결정·상태를 적어두는 기록.</td></tr>
+        <tr><td>하위 에이전트</td><td>총괄 에이전트가 일을 나눠 맡기는 작은 에이전트. 각자 좁은 범위만 본다.</td></tr>
+        <tr><td>관점별 검증</td><td>같은 결과를 사실·근거·규칙·다른 AI처럼 서로 다른 기준으로 따로 확인하는 것.</td></tr>
       </table>
     </section>
 

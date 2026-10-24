@@ -20,6 +20,7 @@
         <a href="#gitignore">.gitignore</a>
         <a href="#leaked">노출됐다면</a>
         <a href="#structure">근본 구조</a>
+        <a href="#habits">커밋 습관</a>
         <a href="#deep">📚 심화</a>
         <a href="#check">점검</a>
         <a href="#glossary">용어</a>
@@ -37,6 +38,7 @@
         <span class="pill">커밋 위생</span>
         <span class="pill">.gitignore</span>
         <span class="pill">비밀키 관리</span>
+        <span class="pill">2026.10 기준</span>
       </div>
     </div>
   </header>
@@ -135,6 +137,33 @@ rdp*.txt           # 원격접속 계정</pre>
       </table>
     </section>
 
+    <!-- 06 커밋 습관 -->
+    <section id="habits">
+      <div class="section-head">
+        <h2>06 — 커밋 습관 3가지: 파일 지정 · 비밀값 형태 검사 · 공개 저장소</h2>
+        <p class="section-note">여러 창·여러 기기에서 같은 저장소를 쓰게 되면서 생긴 규칙.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card"><span class="tag blue">파일 지정</span><h3>이번 일의 파일만 커밋한다</h3><p><code>git add .</code>은 폴더 안 바뀐 걸 전부 담는다. 다른 창이 고치던 파일까지 내 커밋에 섞여 들어간다. 커밋할 파일을 끝에 직접 적는다.</p></div>
+        <div class="card"><span class="tag coral">형태 검사</span><h3>비밀처럼 생긴 글자를 찾는다</h3><p>올리기 전에 바뀐 내용에서 키 모양 문자열, 전화번호 꼴, 이메일, 내 컴퓨터 사용자 폴더 경로를 찾아본다. 값을 아는 게 아니라 <strong>모양</strong>으로 거른다.</p></div>
+        <div class="card"><span class="tag gold">공개 저장소</span><h3>지워도 이력엔 남는다</h3><p>공개 저장소는 지금 파일뿐 아니라 <strong>모든 지난 커밋</strong>이 공개다. 나중에 지워도 예전 기록에서 보인다. 그래서 처음부터 안 올리는 게 유일한 방법이다.</p></div>
+      </div>
+      <pre style="margin-top:16px;"># 1) 무엇이 바뀌었는지 먼저 본다
+git status --short
+
+# 2) 이번 작업 파일만 지정해서 커밋 ( -- 뒤에 경로 )
+git commit -m "노트 3개 갱신" -- studies/a.html studies/b.html note.css
+
+# 3) 올리기 전, 바뀐 내용에서 비밀처럼 생긴 모양 찾기(예시 패턴)
+git diff HEAD~1 | grep -nE "ghp_|sk-[A-Za-z0-9]|01[016789]-?[0-9]{3,4}-?[0-9]{4}|@[a-z0-9.-]+\.(com|net)"</pre>
+      <div class="callout" style="margin-top:14px;">
+        <strong>공개 저장소에 무엇을 두나</strong> — 공개 사이트에 필요한 파일만 둔다. 작업 메모·조사 원본·고객 정보·운영 도구는 git이 무시하는 <strong>별도 작업 폴더</strong>에 두고, 공개 저장소에 억지로 넣지 않는다. 공개 문서엔 실명·회사 이름·계정·내 컴퓨터 경로 대신 일반화한 표현을 쓴다. 이 노트 아카이브도 같은 규칙으로 쓴다.
+      </div>
+      <div class="callout teal" style="margin-top:12px;">
+        <strong>자동으로 하지 않는다</strong> — 커밋은 "되돌아갈 기준점"을 만드는 일이다. 바뀐 파일 목록과 요약을 먼저 보고 확인한 뒤에만 커밋한다. AI에게 맡길 때도 같다.
+      </div>
+    </section>
+
     <!-- 교육 모듈 (탭) -->
     <section id="deep">
       <div class="section-head">
@@ -202,7 +231,7 @@ rdp*.txt           # 원격접속 계정</pre>
     <!-- 06 점검 -->
     <section id="check">
       <div class="section-head">
-        <h2>06 — 커밋 전 보안 점검</h2>
+        <h2>07 — 커밋 전 보안 점검</h2>
         <p class="section-note">push 전에 반드시.</p>
       </div>
       <ul class="checklist">
@@ -211,13 +240,16 @@ rdp*.txt           # 원격접속 계정</pre>
         <li><span class="check">✓</span><span>실제 개인정보(전화·이름·예약)가 없는가</span></li>
         <li><span class="check">✓</span><span>비밀 파일이 <code>.gitignore</code>로 막혀 있는가</span></li>
         <li><span class="check">✓</span><span>(노출 시) 폐기부터 했는가</span></li>
+        <li><span class="check">✓</span><span>이번 작업 파일만 지정해서 커밋했는가(<code>-- 경로</code>)</span></li>
+        <li><span class="check">✓</span><span>바뀐 내용에서 키·전화번호·이메일·경로 모양을 검사했는가</span></li>
+        <li><span class="check">✓</span><span>공개 저장소라면, 지워도 이력에 남는다는 걸 감안했는가</span></li>
       </ul>
     </section>
 
     <!-- 07 용어 -->
     <section id="glossary">
       <div class="section-head">
-        <h2>07 — 용어 한눈에</h2>
+        <h2>08 — 용어 한눈에</h2>
         <p class="section-note">이 노트에 나온 단어들.</p>
       </div>
       <table class="compare">
@@ -228,6 +260,9 @@ rdp*.txt           # 원격접속 계정</pre>
         <tr><td>.gitignore</td><td>git이 추적하지 않을 파일 패턴을 적는 목록.</td></tr>
         <tr><td>revoke(폐기)</td><td>노출된 키를 발급처에서 무효화하는 것.</td></tr>
         <tr><td>플레이스홀더</td><td>실값 대신 넣는 가짜 예시값(<code>010-xxxx</code>).</td></tr>
+        <tr><td>파일 지정 커밋</td><td><code>git commit -m "…" -- 경로</code>처럼 담을 파일을 직접 적는 커밋.</td></tr>
+        <tr><td>형태 검사</td><td>실제 값을 몰라도 "키·전화번호처럼 생긴" 글자를 패턴으로 찾아내는 검사.</td></tr>
+        <tr><td>커밋 이력</td><td>저장소에 쌓인 지난 기록 전부. 공개 저장소면 이것도 공개.</td></tr>
       </table>
     </section>
 

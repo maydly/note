@@ -4,17 +4,18 @@
 
 ## 구조
 
-- `index.html`: 전체 공부 노트 목록
-- `styles.css`: 공통 디자인 스타일
+- `index.html`: 전체 공부 노트 목록(첫 화면) — 디자인은 `landing.css`
+- `note.css` · `note.js`: 공부 노트(studies) 공용 디자인·움직임 — 2026.10 애플형(하얀 바탕·굵은 글자·분야별 색·빛 번짐)
+- `styles.css`: 옛 공통 스타일(2026.10 이후 쓰는 페이지 없음 — 기록용으로 보존)
 - `03_AI에이전트운영체계/`: 작업장 AI 에이전트 운영 체계 교육용 페이지
 - `07_장비비교자료/`: 카메라, 렌즈, 필터, 조명, 악세사리, 촬영지원장비, 포토프린터 비교자료
-- `studies/collage-design.html`: 예시 공부 노트
+- `studies/collage-design.html`: 콜라주 디자인 노트(사진은 `studies/img/collage/`)
 - `studies/template.html`: 새 노트를 만들 때 복사해서 쓰는 템플릿
 
 ## 새 노트 추가 방법
 
 1. `studies/template.html`을 복사해서 `studies/새-파일명.html`로 저장합니다.
-2. 제목, 커버 문구, 챕터 내용을 수정합니다.
+2. 머리글(eyebrow)의 분야(Development·AI·Workflow·Design), 제목, 장 내용을 수정합니다. 분야에 따라 색이 자동으로 바뀝니다.
 3. `index.html`의 알맞은 섹션에 새 카드와 링크를 추가합니다.
 
 ## GitHub Pages 배포

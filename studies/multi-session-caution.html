@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude 창 여러 개를 동시에 쓸 때 주의 — maydly Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../note.css">
+</head>
+<body>
+  <div class="topbar">
+    <nav class="nav" aria-label="페이지 목차">
+      <div class="brand"><span class="brand-mark">←</span> <a href="../index.html" style="text-decoration:none">Study Archive</a></div>
+      <div class="nav-links">
+        <a href="#intro">개요</a>
+        <a href="#shared">같이 쓰는 것</a>
+        <a href="#clash">부딪히는 5가지</a>
+        <a href="#prefix">고유 이름</a>
+        <a href="#lock">잠금</a>
+        <a href="#git">git 습관</a>
+        <a href="#split">나눠 쓰기</a>
+        <a href="#deep">📚 심화</a>
+        <a href="#glossary">용어</a>
+      </div>
+    </nav>
+  </div>
+
+  <header>
+    <div class="hero-copy">
+      <p class="eyebrow">Workflow · maydly</p>
+      <h1>Claude 창 여러 개를<br>동시에 쓸 때 주의할 것</h1>
+      <p class="lead">편집기를 전체 화면으로 띄우고 Claude 창을 여러 개 열어 일하면 빠르다. 최근 30일만 해도 작업 창이 126개였다. 그런데 창들은 서로를 모른 채 같은 파일·같은 저장소·같은 브라우저를 쓴다. 실제로 부딪힌 일과 막는 방법을 정리했다.</p>
+      <div class="meta-row">
+        <span class="pill">멀티 세션</span>
+        <span class="pill">충돌 방지</span>
+        <span class="pill">git</span>
+        <span class="pill">2026.10 기준</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 00 -->
+    <section id="intro">
+      <div class="section-head">
+        <h2>이 노트를 읽고 나면</h2>
+        <p class="section-note">창끼리는 서로 대화하지 않는다.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>여러 창이 무엇을 함께 쓰고 있는지 안다.</span></li>
+        <li><span class="check">✓</span><span>실제로 부딪히는 다섯 가지 상황과 막는 법을 안다.</span></li>
+        <li><span class="check">✓</span><span>세션 고유 이름과 잠금으로 충돌을 피하는 법을 안다.</span></li>
+        <li><span class="check">✓</span><span>창마다 작업 영역을 나누는 습관을 들인다.</span></li>
+      </ul>
+    </section>
+
+    <!-- 01 -->
+    <section id="shared">
+      <div class="section-head">
+        <h2>01 — 창들이 함께 쓰는 것</h2>
+        <p class="section-note">창은 따로여도 컴퓨터는 하나.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card"><span class="tag blue">파일</span><h3>같은 폴더 · 같은 파일</h3><p>두 창이 같은 파일을 고치면 나중에 저장한 쪽이 앞의 것을 덮는다.</p></div>
+        <div class="card"><span class="tag teal">저장소</span><h3>같은 git 저장소</h3><p>올릴 준비 칸(스테이징)과 잠금 파일을 함께 쓴다.</p></div>
+        <div class="card"><span class="tag gold">임시 폴더</span><h3>같은 임시 공간</h3><p>같은 이름의 임시 파일을 쓰면 서로의 결과를 덮는다.</p></div>
+        <div class="card"><span class="tag violet">계정</span><h3>같은 로그인 상태</h3><p>GitHub 명령 도구의 "지금 계정"은 컴퓨터 전체에 하나다.</p></div>
+        <div class="card"><span class="tag coral">브라우저</span><h3>같은 크롬</h3><p>사람이 쓰는 크롬 프로필을 창들이 잡으려 하면 사고가 난다.</p></div>
+      </div>
+    </section>
+
+    <!-- 02 -->
+    <section id="clash">
+      <div class="section-head">
+        <h2>02 — 실제로 부딪히는 5가지</h2>
+        <p class="section-note">겪은 일 → 막는 법.</p>
+      </div>
+      <table class="compare">
+        <tr><th>상황</th><th>일어난 일</th><th>막는 법</th></tr>
+        <tr><td>임시 이름 충돌</td><td>여러 창이 같은 이름의 캡처 폴더를 쓰다가 다른 창의 화면이 찍혔다.</td><td>모든 임시 파일·폴더에 세션 고유 표식.</td></tr>
+        <tr><td>계정 전환 경쟁</td><td>맞지 않는 계정으로 올리면 거부(403)된다. 계정 전환은 컴퓨터 전체에 적용돼서, 한 창이 바꾸면 다른 창의 올리기에도 영향을 준다.</td><td>잠금을 건 뒤 전환 → 올리기 → 원래 계정 복원.</td></tr>
+        <tr><td>먼저 올라간 변경</td><td>다른 곳에서 먼저 올린 변경이 있어 "fetch first"로 올리기가 거부됐다.</td><td>올리기 전에 최신을 받고, 뒤처져 있으면 올리지 않는다.</td></tr>
+        <tr><td>남의 변경이 커밋에 섞임</td><td>다른 창이 준비 칸에 올려 둔 파일까지 같이 커밋될 수 있다.</td><td>커밋할 파일을 직접 지정한다.</td></tr>
+        <tr><td>크롬 프로필 공유</td><td>확인용 크롬이 사람의 프로필을 잡아 열린 창이 전부 닫혔다.</td><td>캡처 전용 브라우저 + 매번 새 임시 프로필.</td></tr>
+      </table>
+    </section>
+
+    <!-- 03 -->
+    <section id="prefix">
+      <div class="section-head">
+        <h2>03 — 세션 고유 이름</h2>
+        <p class="section-note">이름만 달라도 대부분의 충돌이 사라진다.</p>
+      </div>
+      <p>창(세션)마다 고유한 번호가 있다. 그 앞 몇 자리를 임시 폴더·결과 파일·브라우저 프로필 이름에 붙인다. 공용 이름을 쓰지 않는 것만으로 서로의 결과를 덮는 일이 없어진다.</p>
+      <pre style="margin-top:14px;">/tmp/cc_&lt;세션 앞 8자리&gt;_작업이름/      ← 임시 작업 폴더
+&lt;세션 앞 8자리&gt;_&lt;시각&gt;_화면이름.png      ← 캡처 결과
+프로필: /tmp/cc_&lt;작업&gt;_prof_&lt;표식&gt;      ← 확인용 브라우저 전용</pre>
+      <div class="callout teal" style="margin-top:14px;">
+        <strong>정리도 고유 표식으로만.</strong> 끝나고 지울 때 "크롬", "캡처" 같은 일반 이름으로 지우거나 끄면 다른 창의 것까지 사라진다. 내가 만든 표식이 붙은 것만 정리한다.
+      </div>
+    </section>
+
+    <!-- 04 -->
+    <section id="lock">
+      <div class="section-head">
+        <h2>04 — 잠금: 한 번에 한 창만</h2>
+        <p class="section-note">공용 상태를 바꾸는 일에는 줄을 세운다.</p>
+      </div>
+      <p>계정 전환처럼 컴퓨터 전체에 하나뿐인 것을 바꾸는 도구, 버전 파일을 만드는 도구에는 잠금을 걸었다. 폴더 만들기는 "이미 있으면 실패"하므로 잠금으로 쓰기 좋다.</p>
+      <pre style="margin-top:14px;">if mkdir /tmp/cc_push.lock 2&gt;/dev/null; then
+  # 계정 전환 → 올리기 → 원래 계정 복원
+  rmdir /tmp/cc_push.lock
+else
+  echo "다른 창이 올리는 중 — 잠시 뒤 다시"
+fi</pre>
+    </section>
+
+    <!-- 05 -->
+    <section id="git">
+      <div class="section-head">
+        <h2>05 — git 습관 세 가지</h2>
+        <p class="section-note">여러 창 · 여러 기기에서 공통.</p>
+      </div>
+      <div class="timeline">
+        <div class="step"><div class="step-num">1</div><div><h3>먼저 받기</h3><p>올리기 전에 원격의 최신을 받는다. 뒤처져 있으면 올리지 않고 먼저 합친다.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div><h3>파일 지정 커밋</h3><p>"전부 커밋" 대신 이번에 바꾼 파일만 지정해서 커밋한다. 다른 창의 작업이 섞이지 않는다.</p><pre>git commit -m "메시지" -- 바꾼파일1 바꾼파일2</pre></div></div>
+        <div class="step"><div class="step-num">3</div><div><h3>작업 사본은 동기화 폴더 밖에</h3><p>사이트 저장소는 클라우드 동기화 폴더가 아닌 곳에 따로 받아 작업한다. 동기화 폴더 안 저장소는 손상된 적이 있다.</p></div></div>
+      </div>
+    </section>
+
+    <!-- 06 -->
+    <section id="split">
+      <div class="section-head">
+        <h2>06 — 창마다 작업 영역 나누기</h2>
+        <p class="section-note">가장 확실한 방법은 애초에 겹치지 않게.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>창 하나에 업무 하나. 같은 파일을 두 창에서 고치지 않는다.</span></li>
+        <li><span class="check">✓</span><span>같은 저장소를 두 창이 쓰면, 올리기는 한 창에서만 한다.</span></li>
+        <li><span class="check">✓</span><span>오래 쉬었다 돌아온 창은 먼저 상태(바뀐 파일·최신 여부)를 확인하고 이어 간다.</span></li>
+        <li><span class="check">✓</span><span>새 일은 새 창에서 시작한다. 긴 대화 하나에 여러 일을 쌓지 않는다.</span></li>
+      </ul>
+    </section>
+
+    <!-- 교육 모듈 (탭) -->
+    <section id="deep">
+      <div class="section-head">
+        <h2>📚 더 깊이 — 강의용 상세</h2>
+        <p class="section-note">탭을 눌러 펼쳐 보세요.</p>
+      </div>
+      <div class="tabs">
+        <div class="tab-labels">
+          <button class="tab-label is-active" type="button">개념 깊이</button>
+          <button class="tab-label" type="button">예시로 따라가기</button>
+          <button class="tab-label" type="button">흔한 실수</button>
+          <button class="tab-label" type="button">직접 해보기</button>
+        </div>
+        <div class="tab-panels">
+          <div class="tab-panel is-active">
+            <h4>왜 창끼리 부딪히나 — '공용 상태'</h4>
+            <p>각 Claude 창은 자기 대화만 기억한다. 다른 창이 무엇을 하는지는 모른다. 그런데 파일, git 저장소, 임시 폴더, 로그인 계정, 브라우저 프로필은 <strong>컴퓨터에 하나씩만 있는 공용 상태</strong>다.</p>
+            <p>공용 상태를 두 창이 동시에 바꾸면 순서에 따라 결과가 달라진다. 해결책은 세 가지다. <strong>이름을 나누거나</strong>(고유 표식), <strong>줄을 세우거나</strong>(잠금), <strong>영역을 나누는 것</strong>(창마다 다른 일).</p>
+          </div>
+          <div class="tab-panel">
+            <h4>두 창이 같은 사이트를 고칠 때 — 안전한 순서</h4>
+            <ul class="bullets">
+              <li><strong>1)</strong> 창 A는 노트 본문, 창 B는 목차 페이지처럼 파일을 나눈다.</li>
+              <li><strong>2)</strong> 각 창은 자기 파일만 지정해서 커밋한다.</li>
+              <li><strong>3)</strong> 올리기는 한 창에서만. 올리기 전 최신을 받는다.</li>
+              <li><strong>4)</strong> 계정을 바꿔 올려야 하면 잠금 → 전환 → 올리기 → 복원 순서를 도구로 고정한다.</li>
+              <li><strong>5)</strong> 올린 뒤 실제 공개 주소에서 두 창의 변경이 모두 보이는지 확인한다.</li>
+            </ul>
+          </div>
+          <div class="tab-panel">
+            <h4>이런 데서 자주 부딪힌다</h4>
+            <ul class="bullets">
+              <li><strong>① 공용 임시 이름.</strong> /tmp/shot.png 같은 이름. → 세션 고유 표식.</li>
+              <li><strong>② 전부 커밋.</strong> 다른 창 작업까지 섞인다. → 파일 지정.</li>
+              <li><strong>③ 이름으로 정리.</strong> 다른 창의 브라우저·파일까지 지운다. → 내 표식만.</li>
+              <li><strong>④ 받지 않고 올리기.</strong> 거부되거나 남의 변경을 덮을 위험. → 먼저 받기.</li>
+              <li><strong>⑤ 오래된 창 그대로 이어 쓰기.</strong> 그사이 다른 창이 바꾼 걸 모른다. → 상태 확인부터.</li>
+            </ul>
+          </div>
+          <div class="tab-panel">
+            <h4>지금 열린 창 점검 (3분)</h4>
+            <ul class="bullets">
+              <li>지금 열린 창들이 <strong>각각 무슨 일</strong>을 하는지 한 줄씩 적을 수 있나?</li>
+              <li>같은 파일·같은 저장소를 쓰는 창이 <strong>둘 이상</strong>인가?</li>
+              <li>그렇다면 올리기를 맡을 창 <strong>하나</strong>를 정한다.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 -->
+    <section id="glossary">
+      <div class="section-head">
+        <h2>07 — 용어 한눈에</h2>
+        <p class="section-note">이 노트에 나온 단어들.</p>
+      </div>
+      <table class="compare">
+        <tr><th>용어</th><th>뜻</th></tr>
+        <tr><td>세션</td><td>Claude 창 하나의 대화 단위.</td></tr>
+        <tr><td>공용 상태</td><td>여러 창이 함께 쓰는, 컴퓨터에 하나뿐인 것(파일·계정·프로필 등).</td></tr>
+        <tr><td>잠금</td><td>한 번에 한 창만 실행되게 하는 표시.</td></tr>
+        <tr><td>스테이징</td><td>커밋하기 전 "이번에 올릴 것"을 모아 두는 칸.</td></tr>
+        <tr><td>fetch first</td><td>원격에 내가 모르는 새 변경이 있으니 먼저 받으라는 거부 메시지.</td></tr>
+      </table>
+    </section>
+
+    <div class="footer">
+      <span>Workflow · 멀티 세션</span>
+      <span>maydly study archive</span>
+    </div>
+  </main>
+  <script src="../note.js"></script>
+</body>
+</html>

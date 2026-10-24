@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>한글 파일 이름이 조용히 깨지는 이유 (NFC·NFD) — maydly Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../note.css">
+</head>
+<body>
+  <div class="topbar">
+    <nav class="nav" aria-label="페이지 목차">
+      <div class="brand"><span class="brand-mark">←</span> <a href="../index.html" style="text-decoration:none">Study Archive</a></div>
+      <div class="nav-links">
+        <a href="#intro">개요</a>
+        <a href="#two">두 가지 저장</a>
+        <a href="#symptom">증상</a>
+        <a href="#quiet">조용한 이유</a>
+        <a href="#fix">고치는 법</a>
+        <a href="#habit">습관</a>
+        <a href="#deep">📚 심화</a>
+        <a href="#check">점검</a>
+        <a href="#glossary">용어</a>
+      </div>
+    </nav>
+  </div>
+
+  <header>
+    <div class="hero-copy">
+      <p class="eyebrow">Development · maydly</p>
+      <h1>한글 파일 이름이<br>조용히 깨지는 이유</h1>
+      <p class="lead">맥과 구글 드라이브에서, 화면에는 똑같이 보이는 한글 이름이 컴퓨터 안에서는 두 가지 방식으로 저장된다. 그래서 찾기는 0건, 감사는 "문제 없음", 사이트는 404가 난다. 오류 메시지도 없이. 실제로 겪은 일과 고치는 법, 미리 막는 습관을 정리했다.</p>
+      <div class="meta-row">
+        <span class="pill">한글 파일명</span>
+        <span class="pill">NFC · NFD</span>
+        <span class="pill">GitHub Pages</span>
+        <span class="pill">2026.10 기준</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 00 -->
+    <section id="intro">
+      <div class="section-head">
+        <h2>이 노트를 읽고 나면</h2>
+        <p class="section-note">"분명 있는데 왜 못 찾지?"의 정체.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>같은 한글 이름이 두 가지(NFC·NFD)로 저장된다는 걸 안다.</span></li>
+        <li><span class="check">✓</span><span>찾기 0건·감사 오판·사이트 404가 왜 같은 원인인지 안다.</span></li>
+        <li><span class="check">✓</span><span>비교하기 전에 이름을 한 방식으로 맞추는 법을 안다.</span></li>
+        <li><span class="check">✓</span><span>올리기 전에 링크와 실제 파일 이름을 검사하는 습관을 들인다.</span></li>
+      </ul>
+      <div class="callout gold" style="margin-top:14px;">
+        <strong>한 줄 요약</strong> — 눈에 같아 보여도 컴퓨터는 다르게 본다. <strong>이름을 비교하기 전에 한 방식으로 맞추고, 0건이 나오면 "없다"가 아니라 "못 찾았다"를 먼저 의심한다.</strong>
+      </div>
+    </section>
+
+    <!-- 01 -->
+    <section id="two">
+      <div class="section-head">
+        <h2>01 — 같은 '한'이 두 가지로 저장된다</h2>
+        <p class="section-note">완성된 글자 한 덩어리 vs 자음·모음 조각.</p>
+      </div>
+      <div class="grid-2">
+        <div class="card"><span class="tag blue">NFC</span><h3>완성형 — 한 덩어리</h3><p>'한'을 글자 1개로 저장한다. 코드에 직접 친 글자, 웹 주소, 대부분의 프로그램이 이 방식이다.</p></div>
+        <div class="card"><span class="tag coral">NFD</span><h3>조합형 — 자모로 풀어서</h3><p>'한'을 ㅎ + ㅏ + ㄴ 세 조각으로 저장한다. 맥과 구글 드라이브 동기화 폴더의 파일 이름이 이렇게 저장되는 경우가 많다.</p></div>
+      </div>
+      <p style="margin-top:14px;">화면에는 둘 다 똑같이 '한'으로 보인다. 하지만 글자 단위로 비교하면 <strong>1글자와 3글자</strong>라서 서로 다른 이름이다. 작업장 드라이브를 세어 보니 자모로 풀린 이름이 약 14,600개, 완성형이 약 4,200개였다. 섞여 있는 게 정상인 상태다.</p>
+    </section>
+
+    <!-- 02 -->
+    <section id="symptom">
+      <div class="section-head">
+        <h2>02 — 실제로 겪은 증상 4가지</h2>
+        <p class="section-note">모두 같은 원인에서 나왔다.</p>
+      </div>
+      <table class="compare">
+        <tr><th>증상</th><th>실제로 있었던 일</th></tr>
+        <tr><td>찾기 0건</td><td>이름에 '업무카드'가 든 파일을 찾았더니 약 20개만 나왔다. 이름을 맞춘 뒤 다시 찾으니 128개였다.</td></tr>
+        <tr><td>감사 오판</td><td>자동 감사가 진행 중 업무카드 52개 중 12개만 찾고, 나머지는 없는 것으로 보고 "방치 0건"이라고 보고했다.</td></tr>
+        <tr><td>사이트 404</td><td>한글 이름 파일을 올린 사이트에서 90개 중 37개 링크가 404가 났다. 이런 일이 두 번 있었다.</td></tr>
+        <tr><td>내 맥에선 열림</td><td>같은 링크가 내 컴퓨터에서는 잘 열려서, 올리기 전에는 아무도 몰랐다.</td></tr>
+      </table>
+    </section>
+
+    <!-- 03 -->
+    <section id="quiet">
+      <div class="section-head">
+        <h2>03 — 왜 '조용히' 깨지나</h2>
+        <p class="section-note">오류가 아니라 '0건'으로 나오기 때문.</p>
+      </div>
+      <div class="flow">
+        <div class="flow-item"><b>1. 이름 비교</b><span>완성형으로 찾는데 파일은 자모형</span></div>
+        <div class="flow-item"><b>2. 결과 0건</b><span>오류 없이 "없음"</span></div>
+        <div class="flow-item"><b>3. 잘못된 결론</b><span>"문제 없음"으로 보고</span></div>
+        <div class="flow-item"><b>4. 늦은 발견</b><span>공개 뒤 404로 드러남</span></div>
+      </div>
+      <p style="margin-top:14px;">맥은 두 방식을 같은 이름으로 쳐 주고 파일을 열어 준다. 그런데 GitHub Pages 같은 웹 서버는 이름을 글자 그대로 비교한다. 그래서 <strong>내 컴퓨터에선 되고, 웹에선 안 되는</strong> 일이 생긴다.</p>
+      <div class="callout" style="margin-top:14px;">
+        <strong>0건은 신호다</strong> — 검사 대상이 0개면 "문제 없음"이 아니라 <strong>"검사 실패"</strong>로 표시하도록 감사 규칙을 바꿨다. 결과가 0이면 먼저 이름 방식을 의심한다.
+      </div>
+    </section>
+
+    <!-- 04 -->
+    <section id="fix">
+      <div class="section-head">
+        <h2>04 — 고치는 법: 비교하기 전에 맞춘다</h2>
+        <p class="section-note">한쪽으로 맞추면 둘이 같은 글자가 된다.</p>
+      </div>
+      <div class="timeline">
+        <div class="step"><div class="step-num">1</div><div><h3>읽은 이름을 완성형으로 맞추기</h3><p>파일 이름을 읽자마자 완성형(NFC)으로 바꾼 뒤 비교한다. 파이썬은 기본 기능으로 된다.</p><pre>import unicodedata
+N = lambda s: unicodedata.normalize("NFC", s)
+N("한") == N("한")   # 저장 방식이 달라도 True</pre></div></div>
+        <div class="step"><div class="step-num">2</div><div><h3>찾기도 맞춘 이름으로</h3><p>와일드카드 찾기(*업무카드*) 대신 폴더를 훑으며 맞춘 이름끼리 비교한다.</p><pre>for root, dirs, files in os.walk("."):
+    for f in files:
+        if "업무카드" in N(f):
+            print(os.path.join(root, f))</pre></div></div>
+        <div class="step"><div class="step-num">3</div><div><h3>링크와 실제 이름 검사</h3><p>페이지 안 링크 글자와 실제 파일 이름의 저장 방식을 비교한다. 다르면 "이름 저장 방식 불일치(웹에서 404 위험)"로 알려 주는 검사 도구를 만들어 올리기 전에 돌린다.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div><h3>올린 뒤 실제 주소로 확인</h3><p>마지막은 공개 주소를 직접 열어 보는 것. 내 컴퓨터에서 열리는 것만으로는 확인이 아니다.</p></div></div>
+      </div>
+    </section>
+
+    <!-- 05 -->
+    <section id="habit">
+      <div class="section-head">
+        <h2>05 — 미리 막는 습관</h2>
+        <p class="section-note">한 번 정하면 계속 편해진다.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span><strong>공개 사이트 파일 이름은 영어로.</strong> 이 아카이브의 공부 노트가 영어 이름(예: github-pages-deploy.html)인 이유다. 제목은 페이지 안에 한글로 쓴다.</span></li>
+        <li><span class="check">✓</span><span><strong>한글 이름을 꼭 써야 하면</strong> 올리기 전에 링크 검사를 돌린다.</span></li>
+        <li><span class="check">✓</span><span><strong>맞추는 코드는 도구 하나로.</strong> 대화 기록을 보니 같은 맞춤 코드를 그때그때 새로 짠 게 2,086번이었다. 그래서 찾기·목록·링크 검사를 하는 작은 도구로 묶었다.</span></li>
+        <li><span class="check">✓</span><span><strong>0건이 나오면 멈춘다.</strong> "없네"로 넘어가지 않고 이름 방식부터 확인한다.</span></li>
+      </ul>
+    </section>
+
+    <!-- 교육 모듈 (탭) -->
+    <section id="deep">
+      <div class="section-head">
+        <h2>📚 더 깊이 — 강의용 상세</h2>
+        <p class="section-note">탭을 눌러 펼쳐 보세요.</p>
+      </div>
+      <div class="tabs">
+        <div class="tab-labels">
+          <button class="tab-label is-active" type="button">개념 깊이</button>
+          <button class="tab-label" type="button">예시로 따라가기</button>
+          <button class="tab-label" type="button">흔한 실수</button>
+          <button class="tab-label" type="button">직접 해보기</button>
+        </div>
+        <div class="tab-panels">
+          <div class="tab-panel is-active">
+            <h4>유니코드 '정규화'란</h4>
+            <p>컴퓨터는 글자를 번호로 저장한다. 한글은 완성된 글자('한')에도 번호가 있고, 자음·모음 조각(ㅎ, ㅏ, ㄴ)에도 번호가 있다. 그래서 같은 글자를 <strong>완성된 번호 하나</strong>로도, <strong>조각 번호 여러 개</strong>로도 적을 수 있다.</p>
+            <p>둘 중 하나로 통일하는 것을 <strong>정규화</strong>라고 한다. 완성형으로 통일하면 NFC, 조각으로 통일하면 NFD다. 어느 쪽이 옳은 게 아니라, <strong>비교할 때 양쪽이 같은 방식이기만 하면</strong> 된다. 보통은 웹과 코드에서 쓰는 완성형(NFC)으로 맞춘다.</p>
+          </div>
+          <div class="tab-panel">
+            <h4>404가 나는 과정 — 한 단계씩</h4>
+            <ul class="bullets">
+              <li><strong>1)</strong> 맥에서 '사진출처.html'을 저장한다. 드라이브 폴더라 이름이 조각형으로 저장된다.</li>
+              <li><strong>2)</strong> 페이지에 &lt;a href="사진출처.html"&gt;을 친다. 키보드로 친 글자라 완성형이다.</li>
+              <li><strong>3)</strong> 내 맥에서 눌러 보면 열린다. 맥이 두 방식을 같은 이름으로 쳐 주기 때문이다.</li>
+              <li><strong>4)</strong> GitHub에 올리면 서버에는 조각형 이름의 파일이 놓인다.</li>
+              <li><strong>5)</strong> 방문자가 링크를 누르면 서버는 완성형 이름을 찾는다. 글자가 달라서 <strong>404</strong>.</li>
+            </ul>
+          </div>
+          <div class="tab-panel">
+            <h4>이런 데서 자주 헛돈다</h4>
+            <ul class="bullets">
+              <li><strong>① 0건을 믿음.</strong> "그런 파일 없네"로 결론. → 0건이면 이름 방식부터 의심.</li>
+              <li><strong>② 내 맥에서만 확인.</strong> 로컬에서 열리니 끝. → 공개 주소로 다시 확인.</li>
+              <li><strong>③ 파일 이름을 손으로 고침.</strong> 다시 저장하면 또 조각형이 될 수 있다. → 검사 도구로 확인하고, 공개용은 영어 이름으로.</li>
+              <li><strong>④ 맞춤 코드를 매번 새로 짬.</strong> 짤 때마다 조금씩 달라 실수가 생긴다. → 한 번 만든 도구를 계속 쓴다.</li>
+            </ul>
+          </div>
+          <div class="tab-panel">
+            <h4>내 폴더에 두 방식이 얼마나 섞였나 (2분 연습)</h4>
+            <p>아래 코드를 아무 폴더에서 돌리면 완성형·조각형 이름 수를 센다. 읽기만 하고 아무것도 바꾸지 않는다.</p>
+            <pre>import os, unicodedata
+nfc = nfd = 0
+for root, dirs, files in os.walk("."):
+    for name in dirs + files:
+        if any("가" &lt;= c &lt;= "힣" or "ᄀ" &lt;= c &lt;= "ᇿ" for c in name):
+            if unicodedata.is_normalized("NFC", name): nfc += 1
+            else: nfd += 1
+print("완성형", nfc, "/ 조각형", nfd)</pre>
+            <p>조각형이 하나라도 있으면, 그 폴더에서 이름으로 찾거나 링크를 걸 때는 맞춘 뒤 비교해야 한다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 -->
+    <section id="check">
+      <div class="section-head">
+        <h2>06 — 올리기 전 점검</h2>
+        <p class="section-note">한글 이름 파일이 섞인 사이트라면.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>링크 검사를 돌렸고 "저장 방식 불일치"가 0건이다.</span></li>
+        <li><span class="check">✓</span><span>검사 대상 수가 0이 아니다(0이면 검사 실패로 본다).</span></li>
+        <li><span class="check">✓</span><span>올린 뒤 공개 주소에서 한글 이름 페이지를 하나 이상 직접 열어 봤다.</span></li>
+      </ul>
+    </section>
+
+    <!-- 07 -->
+    <section id="glossary">
+      <div class="section-head">
+        <h2>07 — 용어 한눈에</h2>
+        <p class="section-note">이 노트에 나온 단어들.</p>
+      </div>
+      <table class="compare">
+        <tr><th>용어</th><th>뜻</th></tr>
+        <tr><td>NFC</td><td>완성형. '한'을 글자 하나로 저장하는 방식.</td></tr>
+        <tr><td>NFD</td><td>조합형. '한'을 ㅎ·ㅏ·ㄴ 조각으로 풀어 저장하는 방식.</td></tr>
+        <tr><td>정규화</td><td>같은 글자를 한 가지 방식으로 맞추는 일.</td></tr>
+        <tr><td>와일드카드</td><td>*업무카드* 처럼 '아무 글자'를 뜻하는 기호로 찾는 방식.</td></tr>
+        <tr><td>404</td><td>웹 서버가 "그런 파일 없음"이라고 답하는 오류.</td></tr>
+      </table>
+    </section>
+
+    <div class="footer">
+      <span>Development · 한글 파일명</span>
+      <span>maydly study archive</span>
+    </div>
+  </main>
+  <script src="../note.js"></script>
+</body>
+</html>

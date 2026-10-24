@@ -21,6 +21,7 @@
         <a href="#folder">폴더 구조</a>
         <a href="#ambiguous">애매할 때</a>
         <a href="#link">세부 규칙</a>
+        <a href="#levels">대·중·소 플랜</a>
         <a href="#deep">📚 심화</a>
         <a href="#glossary">용어</a>
       </div>
@@ -37,6 +38,7 @@
         <span class="pill">프로젝트 분리</span>
         <span class="pill">업무ID</span>
         <span class="pill">추적 체계</span>
+        <span class="pill">2026.10 기준</span>
       </div>
     </div>
   </header>
@@ -93,13 +95,13 @@
       <p style="color:var(--muted)">모든 산출물은 이 사슬 위에 놓인다. 파일 하나만 봐도 어느 단계의 무엇인지 알 수 있게.</p>
       <div class="flow" style="margin-top:12px;">
         <div class="flow-item"><b>프로젝트</b><span>어느 영역</span></div>
-        <div class="flow-item"><b>업무ID</b><span>대상-분야-번호</span></div>
+        <div class="flow-item"><b>업무ID</b><span>분야-번호</span></div>
         <div class="flow-item"><b>업무카드</b><span>개요·결정</span></div>
         <div class="flow-item"><b>플랜·산출물</b><span>실제 결과</span></div>
-        <div class="flow-item"><b>상태</b><span>진행/완료/보류</span></div>
+        <div class="flow-item"><b>상태</b><span>진행중/진행대기/완료</span></div>
       </div>
       <div class="callout teal" style="margin-top:14px;">
-        업무ID 형식 — <code>대상-분야-번호_업무명</code> (예: <code>maydly-운영-006_학습아카이브콘텐츠정비</code>). <code>플랜</code>·<code>자료</code>·<code>정리</code> 같은 일반 명사 단독 폴더명은 금지 — 뭐가 뭔지 모르니까.
+        업무ID 형식 — <code>분야-번호_업무명</code> (예: <code>운영-006_학습아카이브콘텐츠정비</code>). 프로젝트 폴더 안에 있으니 프로젝트 이름은 앞에 붙이지 않는다(2026.7 개정, 예전엔 <code>대상-분야-번호</code>). <code>플랜</code>·<code>자료</code>·<code>정리</code> 같은 일반 명사 단독 폴더명은 금지 — 뭐가 뭔지 모르니까.
       </div>
     </section>
 
@@ -113,10 +115,11 @@
 ├─ 업무ID_업무명_업무카드_상태.md   (개요·결정·상태)
 ├─ 0_원요청/                      (처음 받은 요청 보관)
 ├─ 1_대플랜/
-│  └─ 1-1_소플랜/
-│     ├─ 최종본                    (날짜·버전 없음)
-│     ├─ 1-1-1_생성버전/           (버전 파일들)
-│     └─ 1-1-2_관련보고서/         (보고서·작업기록)
+│  └─ 1-1_중플랜/                  (규모가 작으면 생략 가능)
+│     └─ 1-1-1_소플랜/
+│        ├─ 최종본                 (날짜·버전 없음)
+│        ├─ 1-1-1-1_생성버전/      (버전 파일들 — v버전_이름_날짜)
+│        └─ 1-1-1-2_관련보고서/    (보고서·작업기록)
 └─ 9_중단및폐기/                   (버린 것도 보존)</pre>
       <ul class="bullets" style="margin-top:12px;">
         <li>파생 단계는 같은 업무ID 안에서 관리하고, 너무 커지면 새 업무ID로 승격하며 원래 카드에 연결을 남긴다.</li>
@@ -151,6 +154,30 @@
       <div class="callout teal" style="margin-top:14px;">
         → <a href="./folder-naming-version.html" style="color:var(--blue);font-weight:700;">폴더·파일명·버전관리 체계</a> 노트에서 파일명·날짜·버전·발전버전 규칙을 본다.
       </div>
+    </section>
+
+    <!-- 07 대·중·소 플랜 -->
+    <section id="levels">
+      <div class="section-head">
+        <h2>07 — 대·중·소 플랜 기준과 진행대기·완료 칸</h2>
+        <p class="section-note">2026.7.25 확정. "얼마나 큰 일인가"가 폴더 모양을 정한다.</p>
+      </div>
+      <p>프로젝트마다 맨 위 칸은 같다. <code>01_진행중</code> · <code>02_운영기준</code> · <code>03_고정자료</code> · <code>04_배포결과</code> · <code>10_완료</code> · <code>88_진행대기</code> · <code>99_보존</code>. 업무ID 폴더는 <code>01_진행중</code>에서 시작한다. 끝나면 <code>10_완료</code>로, 착수 전이거나 일정이 밀리면 <code>88_진행대기</code>로 옮긴다. 예전 상태 이름 "보류"는 "진행대기"로 통일했다.</p>
+      <table class="compare" style="margin-top:14px;">
+        <tr><th>단계</th><th>언제</th><th>안쪽 모양</th></tr>
+        <tr><td>대플랜</td><td>관련 업무 5건 이상, 또는 처음부터 시스템·앱 규모</td><td>안에 다시 <code>01_진행중 · 10_완료 · 88_진행대기 · 99_보존</code> 칸을 둔다</td></tr>
+        <tr><td>중플랜</td><td>관련 업무 2~4건</td><td>대플랜과 같은 칸을 둔다</td></tr>
+        <tr><td>소플랜</td><td>혼자 서는 업무 1건</td><td>칸 없이 그냥 작업 폴더</td></tr>
+      </table>
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="card"><span class="tag teal">왜 칸을 또 두나</span><h3>큰 묶음 안에서도 "끝난 것"을 치운다</h3><p>큰 묶음 하나에 하위 일이 쌓이면, 끝난 일과 진행 중인 일이 뒤섞인다. 중플랜부터 안쪽에도 같은 칸을 두면, 끝난 하위 일을 그 안의 <code>10_완료</code>로 옮겨 지금 할 일만 남길 수 있다.</p></div>
+        <div class="card"><span class="tag coral">상한</span><h3>대플랜 하나에 하위 10개까지</h3><p>하위가 10개를 넘으면 격주 감사가 재분류 결정판을 만든다. 일부를 완료·진행대기·폐기·새 대플랜으로 나눠 10개 안으로 줄인다.</p></div>
+      </div>
+      <ul class="checklist" style="margin-top:14px;">
+        <li><span class="check">1</span><span><strong>새 업무를 만들기 전에 묶음부터 본다.</strong> 기존 대플랜·중플랜에 속하면 그 안에 만든다. 같은 번호의 업무가 두 개 생기는 걸 막는다.</span></li>
+        <li><span class="check">2</span><span><strong>작게 시작해서 키운다.</strong> 소플랜으로 시작했다가 관련 일이 늘면 중·대플랜으로 올리고 칸을 더한다. 내용은 옮기되 지우지 않는다.</span></li>
+        <li><span class="check">3</span><span><strong>폐기는 바로 지우지 않는다.</strong> <code>99_보존/_삭제대기_날짜/</code>로 옮겨 두고, 확인한 뒤에 비운다.</span></li>
+      </ul>
     </section>
 
     <!-- 교육 모듈 (탭) -->
@@ -208,7 +235,7 @@
             <ul class="bullets">
               <li><strong>프로젝트 세어보기</strong> — 지금 섞여 있는 일이 몇 개 프로젝트인지, 각각 자기 폴더·규칙을 갖고 있는지 확인하기.</li>
               <li><strong>위치맵 만들기</strong> — 없다면 <code>00_</code>으로 시작하는 지도 파일 하나를 맨 위에 두어, 어디에 뭐가 있는지 적어보기.</li>
-              <li><strong>업무ID 붙여보기</strong> — 최근 작업 하나에 <code>대상-분야-번호_업무명</code> 형식의 ID를 지어보기.</li>
+              <li><strong>업무ID 붙여보기</strong> — 최근 작업 하나에 <code>분야-번호_업무명</code> 형식의 ID를 지어보기.</li>
               <li><strong>애매한 파일 찾기</strong> — 어느 프로젝트인지 헷갈리는 파일이 있다면, 추측하지 말고 "확인 필요"로 표시해두기.</li>
             </ul>
             <p>이 점검이 끝나면, 파일이 더 쌓여도 "어디 뒀더라"가 줄어드는 게 느껴집니다.</p>
@@ -220,7 +247,7 @@
     <!-- 07 용어 -->
     <section id="glossary">
       <div class="section-head">
-        <h2>07 — 용어 한눈에</h2>
+        <h2>08 — 용어 한눈에</h2>
         <p class="section-note">이 노트에 나온 단어들.</p>
       </div>
       <table class="compare">
@@ -228,9 +255,12 @@
         <tr><td>작업장(워크스페이스)</td><td>여러 프로젝트를 담는 상위 공간.</td></tr>
         <tr><td>위치맵</td><td>어떤 프로젝트가 어디 있는지 가리키는 지도 파일.</td></tr>
         <tr><td>프로젝트 경계</td><td>프로젝트끼리 문맥·기준·비용을 섞지 않는 분리 원칙.</td></tr>
-        <tr><td>업무ID</td><td><code>대상-분야-번호_업무명</code> 형식의 업무 식별자.</td></tr>
+        <tr><td>업무ID</td><td><code>분야-번호_업무명</code> 형식의 업무 식별자(프로젝트 폴더 안에선 프로젝트 이름 생략).</td></tr>
         <tr><td>업무카드</td><td>업무 개요·결정·상태를 적은 대표 문서.</td></tr>
         <tr><td>폐기보존</td><td>버린 작업도 지우지 않고 <code>9_중단및폐기/</code>에 남기는 것.</td></tr>
+        <tr><td>대·중·소 플랜</td><td>업무 묶음의 크기. 5건 이상 대, 2~4건 중, 1건 소. 중플랜부터 안쪽에도 진행·완료 칸을 둔다.</td></tr>
+        <tr><td>진행대기(88)</td><td>착수 전이거나 일정이 밀린 업무를 두는 칸. 예전의 "보류".</td></tr>
+        <tr><td>완료(10)</td><td>완전히 끝난 업무ID 폴더를 옮겨 두는 칸.</td></tr>
       </table>
     </section>
 

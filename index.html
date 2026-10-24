@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@200;300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./landing.css">
+  <script>/* 보이면 떠오르기 준비 — 지원 안 되거나 움직임 줄이기면 그냥 보인다 */if("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("js");</script>
 </head>
 <body>
 
@@ -93,6 +94,7 @@
           <a class="note__open" href="./studies/git-drive-recovery.html">열기</a>
         </article>
         <article class="note">
+          <span class="note__badge note__badge--upd">10월 갱신</span>
           <p class="note__tag">Deploy</p>
           <div class="note__body">
             <h3>GitHub Pages 정적 사이트 배포</h3>
@@ -109,6 +111,7 @@
           <a class="note__open" href="./studies/static-site-css.html">열기</a>
         </article>
         <article class="note">
+          <span class="note__badge note__badge--upd">10월 갱신</span>
           <p class="note__tag">Security</p>
           <div class="note__body">
             <h3>저장소 보안과 커밋 관리</h3>
@@ -125,6 +128,7 @@
           <a class="note__open" href="./studies/mobile-first-webapp.html">열기</a>
         </article>
         <article class="note">
+          <span class="note__badge note__badge--upd">10월 갱신</span>
           <p class="note__tag">Sync</p>
           <div class="note__body">
             <h3>정적 앱 클라우드 동기화</h3>
@@ -147,6 +151,15 @@
             <p>스프레드시트에서 앱으로 — "앱이 데이터 원본", 초기 임포트 대조, 데이터 모델·고정 규칙.</p>
           </div>
           <a class="note__open" href="./studies/ops-management-system.html">열기</a>
+        </article>
+        <article class="note">
+          <span class="note__badge">새 글</span>
+          <p class="note__tag">Filenames</p>
+          <div class="note__body">
+            <h3>한글 파일 이름이 조용히 깨지는 이유</h3>
+            <p>맥·드라이브의 NFC·NFD 차이로 생기는 찾기 0건·감사 오판·사이트 404와 해결법. (2026.10)</p>
+          </div>
+          <a class="note__open" href="./studies/hangul-filename-nfc-nfd.html">열기</a>
         </article>
         <article class="note note--empty">
           <p class="note__tag">Next</p>
@@ -171,6 +184,7 @@
       </div>
       <div class="notes">
         <article class="note">
+          <span class="note__badge note__badge--upd">10월 갱신</span>
           <p class="note__tag">Agent System</p>
           <div class="note__body">
             <h3>작업장 AI 에이전트 운영 체계</h3>
@@ -179,18 +193,20 @@
           <a class="note__open" href="./03_AI에이전트운영체계/">열기</a>
         </article>
         <article class="note">
+          <span class="note__badge note__badge--upd">10월 갱신</span>
           <p class="note__tag">Tools</p>
           <div class="note__body">
             <h3>Claude Code 보완 도구</h3>
-            <p>1인·비용민감 워크플로우에 맞춰 조사한 보조 코딩 도구와 연동(MCP) 정리. (2026.6 기준)</p>
+            <p>1인·비용민감 워크플로우에 맞춰 조사한 보조 코딩 도구와 연동(MCP) 정리 + 나만의 스킬 3개·플러그인 0개인 이유. (2026.10 기준)</p>
           </div>
           <a class="note__open" href="./studies/claude-code-tools.html">열기</a>
         </article>
         <article class="note">
+          <span class="note__badge note__badge--upd">10월 갱신</span>
           <p class="note__tag">Usage</p>
           <div class="note__body">
             <h3>Claude Code 사용량·요금제 이해</h3>
-            <p>요금제 등급, 핵심 단위인 "5시간 창", 내 등급 적정성 판단, 사용량 추적법. (2026 기준)</p>
+            <p>요금제 등급, 핵심 단위인 "5시간 창", 사용량이 많이 드는 진짜 원인과 새 창에서 시작하기. (2026.10 기준)</p>
           </div>
           <a class="note__open" href="./studies/claude-code-usage.html">열기</a>
         </article>
@@ -209,6 +225,24 @@
             <p>같은 안내서에서 브랜드·사람 이름·폴더·주소를 가명으로 바꾸고 화면 사진을 뺀 판. 다른 사람에게 보내 같은 AI 사무실을 만들게 할 때 이 파일을 씁니다. (v7.0 · 2026.10.20)</p>
           </div>
           <a class="note__open" href="./studies/ai-virtual-office-guide-share.html">열기</a>
+        </article>
+        <article class="note">
+          <span class="note__badge">새 글</span>
+          <p class="note__tag">Skills</p>
+          <div class="note__body">
+            <h3>나만의 Claude 스킬 만들기</h3>
+            <p>대화 기록에서 반복 불편을 찾아 스킬 3개를 만들고 시험·설치한 과정. (2026.10)</p>
+          </div>
+          <a class="note__open" href="./studies/claude-custom-skills.html">열기</a>
+        </article>
+        <article class="note">
+          <span class="note__badge">새 글</span>
+          <p class="note__tag">Plugins</p>
+          <div class="note__body">
+            <h3>공식 플러그인 고르는 4가지 기준</h3>
+            <p>315개를 확인하고 0개 설치한 이유 — 토큰·데이터·중복·상시 비용. (2026.10)</p>
+          </div>
+          <a class="note__open" href="./studies/plugin-selection-criteria.html">열기</a>
         </article>
         <article class="note note--empty">
           <p class="note__tag">Next</p>
@@ -233,6 +267,7 @@
       </div>
       <div class="notes">
         <article class="note">
+          <span class="note__badge note__badge--upd">10월 갱신</span>
           <p class="note__tag">Agents</p>
           <div class="note__body">
             <h3>AI 에이전트 작업 워크플로우</h3>
@@ -241,6 +276,7 @@
           <a class="note__open" href="./studies/ai-agent-workflow.html">열기</a>
         </article>
         <article class="note">
+          <span class="note__badge note__badge--upd">10월 갱신</span>
           <p class="note__tag">Organize</p>
           <div class="note__body">
             <h3>폴더·파일명·버전관리 체계</h3>
@@ -257,6 +293,7 @@
           <a class="note__open" href="./studies/obsidian-notes.html">열기</a>
         </article>
         <article class="note">
+          <span class="note__badge note__badge--upd">10월 갱신</span>
           <p class="note__tag">Structure</p>
           <div class="note__body">
             <h3>작업장 문서구조 설계</h3>
@@ -265,6 +302,7 @@
           <a class="note__open" href="./studies/workspace-structure.html">열기</a>
         </article>
         <article class="note">
+          <span class="note__badge note__badge--upd">10월 갱신</span>
           <p class="note__tag">Audit</p>
           <div class="note__body">
             <h3>자동 구조·파일명 감사</h3>
@@ -273,6 +311,7 @@
           <a class="note__open" href="./studies/auto-structure-audit.html">열기</a>
         </article>
         <article class="note">
+          <span class="note__badge note__badge--upd">10월 갱신</span>
           <p class="note__tag">Hub</p>
           <div class="note__body">
             <h3>개인 런처 허브 설계</h3>
@@ -295,6 +334,33 @@
             <p>파일이 아니라 "진행"을 공유 — 무엇을·어디에·언제 갱신하고, 왜 원본과 분리하는지.</p>
           </div>
           <a class="note__open" href="./studies/progress-sharing-space.html">열기</a>
+        </article>
+        <article class="note">
+          <span class="note__badge">새 글</span>
+          <p class="note__tag">Safety</p>
+          <div class="note__body">
+            <h3>화면 확인은 안전하게, 결과물은 새 창으로</h3>
+            <p>크롬 창 사고 3건 뒤 정한 캡처 전용 브라우저·새 창 보여 주기 규칙. (2026.10)</p>
+          </div>
+          <a class="note__open" href="./studies/safe-screen-check.html">열기</a>
+        </article>
+        <article class="note">
+          <span class="note__badge">새 글</span>
+          <p class="note__tag">Requests</p>
+          <div class="note__body">
+            <h3>“이런 느낌으로” 요청은 해석부터 확인하기</h3>
+            <p>디자인 시안 4번의 교훈 — 네 칸 구분·실제 사이트 사진·쉬운 질문. (2026.10)</p>
+          </div>
+          <a class="note__open" href="./studies/reference-interpretation.html">열기</a>
+        </article>
+        <article class="note">
+          <span class="note__badge">새 글</span>
+          <p class="note__tag">Sessions</p>
+          <div class="note__body">
+            <h3>Claude 창 여러 개를 동시에 쓸 때 주의할 것</h3>
+            <p>같은 파일·저장소·계정·브라우저를 함께 쓰는 창들의 충돌과 막는 법. (2026.10)</p>
+          </div>
+          <a class="note__open" href="./studies/multi-session-caution.html">열기</a>
         </article>
         <article class="note note--empty">
           <p class="note__tag">Next</p>
@@ -325,6 +391,13 @@
 
 
 
+<script>
+/* 노트 칸·분야 제목이 화면에 들어오면 부드럽게 떠오른다 */
+(function(){ if(!document.documentElement.classList.contains("js")) return;
+  var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("is-in"); io.unobserve(e.target); } }); },{rootMargin:"0px 0px -6% 0px"});
+  document.querySelectorAll(".note, .topic__head").forEach(function(el){ var i=Array.prototype.indexOf.call(el.parentNode.children,el); el.style.transitionDelay=(i%2)*90+"ms"; io.observe(el); });
+})();
+</script>
 <a href="https://maydly.github.io/note/hub/" id="maydlyHubBtn" aria-label="maydly 허브로" style="position:fixed;left:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:2147483647;display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.94);color:#2e2a26;text-decoration:none;font-family:-apple-system,'Pretendard','Apple SD Gothic Neo',sans-serif;font-size:13px;line-height:1;padding:9px 15px;border-radius:22px;box-shadow:0 3px 14px rgba(0,0,0,.22);border:1px solid rgba(0,0,0,.06);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)"><span style="font-weight:800">← 허브</span><span style="width:1px;height:12px;background:rgba(0,0,0,.16)"></span><span style="font-weight:600;color:#8a8178">note 아카이브</span></a>
 </body>
 </html>

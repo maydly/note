@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>공식 플러그인 고르는 4가지 기준 — maydly Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../note.css">
+</head>
+<body>
+  <div class="topbar">
+    <nav class="nav" aria-label="페이지 목차">
+      <div class="brand"><span class="brand-mark">←</span> <a href="../index.html" style="text-decoration:none">Study Archive</a></div>
+      <div class="nav-links">
+        <a href="#intro">개요</a>
+        <a href="#result">315개 중 0개</a>
+        <a href="#criteria">4가지 기준</a>
+        <a href="#examples">뺀 사례</a>
+        <a href="#partial">부분만·잠깐만</a>
+        <a href="#revisit">다시 볼 때</a>
+        <a href="#deep">📚 심화</a>
+        <a href="#glossary">용어</a>
+      </div>
+    </nav>
+  </div>
+
+  <header>
+    <div class="hero-copy">
+      <p class="eyebrow">AI · maydly</p>
+      <h1>공식 플러그인<br>고르는 4가지 기준</h1>
+      <p class="lead">Claude Code 공식 마켓의 플러그인 315개를 하나씩 확인했다. 결론은 "지금 설치할 것은 0개". 이름만 보면 다 좋아 보였지만 네 가지 질문을 던지자 대부분 걸러졌다. 그 질문과, 남은 후보를 쓰는 방법을 정리했다.</p>
+      <div class="meta-row">
+        <span class="pill">Claude Code</span>
+        <span class="pill">플러그인</span>
+        <span class="pill">선택 기준</span>
+        <span class="pill">2026.10 기준</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 00 -->
+    <section id="intro">
+      <div class="section-head">
+        <h2>이 노트를 읽고 나면</h2>
+        <p class="section-note">"좋아 보인다"와 "나에게 맞다"는 다르다.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span>플러그인을 깔기 전에 던질 네 가지 질문을 안다.</span></li>
+        <li><span class="check">✓</span><span>실제로 어떤 플러그인이 어떤 이유로 빠졌는지 안다.</span></li>
+        <li><span class="check">✓</span><span>통째로 설치하는 대신 "필요한 부분만·필요할 때만" 쓰는 법을 안다.</span></li>
+        <li><span class="check">✓</span><span>언제 다시 살펴볼지 기준을 안다.</span></li>
+      </ul>
+    </section>
+
+    <!-- 01 -->
+    <section id="result">
+      <div class="section-head">
+        <h2>01 — 315개를 다 보고 0개</h2>
+        <p class="section-note">설치는 안 했지만 조사는 끝까지.</p>
+      </div>
+      <div class="flow">
+        <div class="flow-item"><b>1. 전부 훑기</b><span>공식 마켓 315개를 세 묶음으로 나눠 선별</span></div>
+        <div class="flow-item"><b>2. 후보 추리기</b><span>내 작업과 맞아 보이는 것만</span></div>
+        <div class="flow-item"><b>3. 네 관점 검증</b><span>사실 · 쓸모 · 비용 · 개인정보</span></div>
+        <div class="flow-item"><b>4. 결론</b><span>설치 0개, 부분 활용 몇 개</span></div>
+      </div>
+      <div class="callout gold" style="margin-top:14px;">
+        0개는 "플러그인이 나쁘다"는 뜻이 아니다. <strong>이미 쓰는 도구·규칙과 겹치거나 부딪히는 게 많았다</strong>는 뜻이다. 대신 내 불편에 딱 맞는 스킬을 직접 만드는 쪽을 골랐다.
+      </div>
+    </section>
+
+    <!-- 02 -->
+    <section id="criteria">
+      <div class="section-head">
+        <h2>02 — 깔기 전에 묻는 4가지</h2>
+        <p class="section-note">하나라도 걸리면 일단 보류.</p>
+      </div>
+      <div class="grid-2">
+        <div class="card"><span class="tag coral">질문 1</span><h3>토큰(키)을 발급해야 하나?</h3><p>개인 액세스 토큰, 봇 토큰, API 키를 만들어 붙여 넣어야 쓰는가. 토큰 발급 방식은 쓰지 않기로 정했기 때문에 여기서 가장 많이 빠졌다.</p></div>
+        <div class="card"><span class="tag violet">질문 2</span><h3>데이터가 밖으로 나가나?</h3><p>내 화면·주소·대화·사진이 외부 서버로 가는가. 사용 통계를 보내는지, 기록을 어디에 쌓는지까지 본다.</p></div>
+        <div class="card"><span class="tag blue">질문 3</span><h3>이미 있는 것과 겹치거나 부딪히나?</h3><p>내장 기능이나 직접 만든 도구가 같은 일을 이미 하는가. 또 내 규칙(확인 후 커밋, 밝은 화면, 새 창으로 보여 주기)과 반대로 동작하지 않는가.</p></div>
+        <div class="card"><span class="tag gold">질문 4</span><h3>켜 두기만 해도 비용이 드나?</h3><p>쓰지 않아도 설명문이 매번 대화에 실리거나, 대화마다 자동 검토가 돌아 사용량을 먹지 않는가.</p></div>
+      </div>
+    </section>
+
+    <!-- 03 -->
+    <section id="examples">
+      <div class="section-head">
+        <h2>03 — 실제로 뺀 사례</h2>
+        <p class="section-note">이름만 보면 맞아 보였던 것들.</p>
+      </div>
+      <table class="compare">
+        <tr><th>플러그인</th><th>걸린 질문</th><th>뺀 이유</th></tr>
+        <tr><td>github · notion · figma · slack 등 연동</td><td>1 · 3</td><td>토큰·API 키 발급이 필수. 이미 연결된 커넥터나 웹 로그인과 겹친다.</td></tr>
+        <tr><td>context7 · exa · tavily 등 조사 도구</td><td>1 · 3</td><td>무료 한도를 넘으면 키 발급·유료로 이어진다. 외부 조사는 이미 정한 방법이 있다.</td></tr>
+        <tr><td>chrome-devtools-mcp · browser-use</td><td>2 · 3</td><td>진짜 크롬을 조종하거나 사용 통계·주소를 밖으로 보낸다. "사람의 크롬은 건드리지 않는다" 규칙과 정면으로 부딪힌다.</td></tr>
+        <tr><td>playwright 플러그인</td><td>3 · 4</td><td>기본이 화면이 뜨는 브라우저·고정 프로필이고, 스크린샷이 대화에 쌓여 사용량이 크다. 같은 일을 캡처 전용 도구가 이미 한다.</td></tr>
+        <tr><td>commit-commands</td><td>3</td><td>요약 없이 바로 커밋한다. "변경 요약을 보여 주고 확인받은 뒤 커밋" 규칙과 반대다.</td></tr>
+        <tr><td>playground</td><td>3</td><td>기본이 어두운 화면이고 파일을 그냥 연다. 규칙 두 개와 부딪힌다. 아이디어(고르기 → 결과 내보내기)만 가져왔다.</td></tr>
+        <tr><td>claude-md-management</td><td>3</td><td>내장 점검 기능이 "먼저 보여 주고 확인 후 수정"까지 설치 없이 한다.</td></tr>
+        <tr><td>example-skills 묶음</td><td>4</td><td>12종 묶음으로만 설치돼 설명문만 늘 약 891토큰을 차지한다.</td></tr>
+        <tr><td>security-guidance</td><td>4</td><td>대화마다·커밋마다 검토가 돌아 사용량이 는다. 필요할 때 내장 보안 검토를 쓴다.</td></tr>
+        <tr><td>remember</td><td>2 · 3</td><td>대화 요약을 프로젝트 폴더(드라이브 동기화)에 쌓아 프로젝트끼리 기억이 섞일 수 있다.</td></tr>
+      </table>
+    </section>
+
+    <!-- 04 -->
+    <section id="partial">
+      <div class="section-head">
+        <h2>04 — 남은 후보는 '부분만·잠깐만'</h2>
+        <p class="section-note">통째로 설치보다 나았던 방법.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card"><span class="tag teal">부분만</span><h3>필요한 스크립트만 차용</h3><p>웹앱 시험 묶음을 통째로 깔지 않고, 필요한 스크립트만 라이선스 표기와 함께 가져다 쓰기로 정했다.</p></div>
+        <div class="card"><span class="tag teal">잠깐만</span><h3>큰 개편 뒤 한 번</h3><p>오래 도는 보안 스캔은 상시 설치하지 않고, 큰 개편 뒤 꼭 필요할 때만 잠깐 켠다.</p></div>
+        <div class="card"><span class="tag teal">내장 먼저</span><h3>이미 들어 있는 기능</h3><p>스킬이 제때 켜지는지 시험하는 일은 공식 도구보다 내장 시험 기능을 먼저 쓴다.</p></div>
+      </div>
+    </section>
+
+    <!-- 05 -->
+    <section id="revisit">
+      <div class="section-head">
+        <h2>05 — 언제 다시 볼까</h2>
+        <p class="section-note">0개는 지금의 답일 뿐.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span><span><strong>같은 불편이 세 번 이상 반복될 때</strong> — 직접 만든 도구로도 안 풀리면 다시 찾아본다.</span></li>
+        <li><span class="check">✓</span><span><strong>토큰 없이 쓸 수 있게 바뀌었을 때</strong> — 질문 1에서 빠졌던 연동은 이 조건이 풀리면 다시 본다.</span></li>
+        <li><span class="check">✓</span><span><strong>새 종류의 작업이 생겼을 때</strong> — 예를 들어 문서 파일 작업이 생기면 그때 문서용 스킬을 조건과 함께 본다.</span></li>
+      </ul>
+    </section>
+
+    <!-- 교육 모듈 (탭) -->
+    <section id="deep">
+      <div class="section-head">
+        <h2>📚 더 깊이 — 강의용 상세</h2>
+        <p class="section-note">탭을 눌러 펼쳐 보세요.</p>
+      </div>
+      <div class="tabs">
+        <div class="tab-labels">
+          <button class="tab-label is-active" type="button">개념 깊이</button>
+          <button class="tab-label" type="button">예시로 따라가기</button>
+          <button class="tab-label" type="button">흔한 실수</button>
+          <button class="tab-label" type="button">직접 해보기</button>
+        </div>
+        <div class="tab-panels">
+          <div class="tab-panel is-active">
+            <h4>'켜 두기만 해도' 드는 비용이란</h4>
+            <p>플러그인이나 스킬은 쓰지 않아도 <strong>이름과 설명문</strong>이 매 대화에 실린다. Claude가 "지금 이걸 쓸까?"를 판단하려면 목록을 알아야 하기 때문이다. 하나하나는 작아도, 묶음으로 수십 개가 켜지면 대화마다 그만큼 읽을 양이 는다.</p>
+            <p>더 큰 비용은 <strong>자동으로 도는 기능</strong>이다. 대화마다 검토를 돌리거나, 모든 웹 작업 전에 먼저 실행되도록 적힌 것들은 쓸 때마다 시간과 사용량을 더한다. 그래서 질문 4는 "얼마나 자주, 나도 모르게 도는가"를 묻는 질문이다.</p>
+          </div>
+          <div class="tab-panel">
+            <h4>플러그인 하나를 4가지로 걸러 보기</h4>
+            <ul class="bullets">
+              <li><strong>1) 설명서 읽기.</strong> 설치 안내에 "토큰", "API key", "personal access"가 있는가 → 질문 1.</li>
+              <li><strong>2) 어디로 보내나.</strong> 외부 주소로 보내는 기능, 통계 전송, 기록 저장 위치 → 질문 2.</li>
+              <li><strong>3) 내 것과 비교.</strong> 내장 기능·내 도구로 이미 되는가, 내 규칙과 반대로 동작하지 않는가 → 질문 3.</li>
+              <li><strong>4) 상시 비용.</strong> 설명문 길이, 자동 실행 조건 → 질문 4.</li>
+              <li><strong>5) 남았다면</strong> 통째로 대신 필요한 부분만, 필요할 때만 쓸 수 있는지 본다.</li>
+            </ul>
+          </div>
+          <div class="tab-panel">
+            <h4>이런 데서 자주 헛돈다</h4>
+            <ul class="bullets">
+              <li><strong>① 이름만 보고 설치.</strong> "github"이니 당연히 필요하겠지 → 설치해 보니 토큰 발급이 필수.</li>
+              <li><strong>② 기본값을 안 봄.</strong> 기본이 어두운 화면, 화면이 뜨는 브라우저, 바로 커밋 → 내 규칙과 정면 충돌.</li>
+              <li><strong>③ 묶음째 설치.</strong> 필요한 건 하나인데 열두 개가 따라온다.</li>
+              <li><strong>④ 한 번 정하면 끝.</strong> 조건이 바뀌면 답도 바뀐다. 다시 볼 기준을 적어 둔다.</li>
+            </ul>
+          </div>
+          <div class="tab-panel">
+            <h4>지금 깔려 있는 것 점검 (5분)</h4>
+            <ul class="bullets">
+              <li>설치된 플러그인·스킬 목록을 열고 하나씩 <strong>네 질문</strong>에 표시해 본다.</li>
+              <li>최근 한 달 동안 <strong>한 번도 안 쓴 것</strong>에 동그라미.</li>
+              <li>동그라미 중 질문 4(상시 비용)에 걸리는 것부터 꺼 본다.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 -->
+    <section id="glossary">
+      <div class="section-head">
+        <h2>06 — 용어 한눈에</h2>
+        <p class="section-note">이 노트에 나온 단어들.</p>
+      </div>
+      <table class="compare">
+        <tr><th>용어</th><th>뜻</th></tr>
+        <tr><td>플러그인</td><td>스킬·명령·연결 등을 묶어 한 번에 설치하는 확장 꾸러미.</td></tr>
+        <tr><td>공식 마켓</td><td>Anthropic이 운영하는 플러그인 목록.</td></tr>
+        <tr><td>토큰(키)</td><td>서비스가 발급하는 비밀 문자열. 붙여 넣으면 내 계정 권한으로 접근한다.</td></tr>
+        <tr><td>커넥터</td><td>로그인만으로 드라이브·노션 등을 AI에 잇는 연결.</td></tr>
+        <tr><td>상시 비용</td><td>쓰지 않아도 켜져 있다는 이유로 드는 읽기 양·사용량.</td></tr>
+      </table>
+    </section>
+
+    <div class="footer">
+      <span>AI · plugins</span>
+      <span>maydly study archive</span>
+    </div>
+  </main>
+  <script src="../note.js"></script>
+</body>
+</html>

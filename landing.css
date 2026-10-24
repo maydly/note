@@ -1,202 +1,125 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
 /* ==========================================================================
-   Maydly Study Archive — 랜딩 전용 스타일 (무인양품풍: 절제 / 정적 / 여백)
-   무드: 옅은 오프화이트, 작은 글씨, 큰 여백, 무채색, 색은 거의 쓰지 않음.
-   ※ index.html 랜딩 전용. 하위 페이지는 styles.css 사용(영향 없음).
+   Maydly Study Archive — 첫 화면(랜딩) 전용 스타일 v2.0 (261024 · 애플형)
+   공부 노트(note.css v3.0 애플형)와 같은 분위기: 하얀 바탕 · 굵고 단단한 글자 · 은은한 빛 번짐 · 둥근 회색 칸.
+   분야마다 색: Design 코랄 · Development 파랑 · AI 보라 · Workflow 초록.
+   ※ index.html 전용. 노트는 note.css, 장비 비교자료는 자체 스타일.
    ========================================================================== */
-
 :root {
-  --paper: #f6f5f1;     /* 따뜻한 오프화이트 */
-  --paper2: #fbfbf8;    /* 카드/밝은 면 */
-  --ink: #2a2620;       /* 진한 차콜 (본문 가독성↑) */
-  --soft: #565148;      /* 보조 텍스트 — 또렷하게 */
-  --faint: #7e776b;     /* 작은 라벨 (이전보다 진하게) */
-  --line: #dcd6c9;      /* 헤어라인 */
-  --line2: #e7e2d7;     /* 더 옅은 라인 */
+  --paper: #ffffff; --paper-2: #f5f5f7; --paper-3: #ececf0;
+  --ink: #1d1d1f; --soft: #515154; --faint: #86868b; --line: #e4e4e9;
+  --ease: cubic-bezier(.2,.7,.2,1);
 }
+#design      { --c:#ee3f62; --g1:#ff8f6b; --g2:#ff6fae; }
+#development { --c:#0a63f0; --g1:#5b8cff; --g2:#3fd0e0; }
+#ai          { --c:#7a3df0; --g1:#a874ff; --g2:#ff86c8; }
+#workflow    { --c:#0b8f6b; --g1:#3fd6a4; --g2:#56b9ec; }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 html { scroll-behavior: smooth; }
-
+html, body { overflow-x: clip; }
 body {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: "Noto Sans KR", sans-serif;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 1.95;
-  -webkit-font-smoothing: antialiased;
-  letter-spacing: 0.01em;
+  background: var(--paper); color: var(--ink);
+  font-family: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  font-size: 16px; line-height: 1.7; letter-spacing: -.01em; -webkit-font-smoothing: antialiased; word-break: keep-all;
 }
-
 a { color: inherit; text-decoration: none; }
+.wrap { width: min(1080px, 100%); margin: 0 auto; padding: 0 40px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .02em; color: var(--faint); }
 
-.wrap { width: min(880px, 100%); margin: 0 auto; padding: 0 40px; }
-
-.eyebrow {
-  font-size: 10px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: var(--faint);
-  font-weight: 400;
-}
-
-/* ==========================================================================
-   상단 바 — 아주 조용하게
-   ========================================================================== */
+/* ---- 상단 바(유리처럼 비치는 띠) ---- */
 .topbar {
+  position: sticky; top: 0; z-index: 20;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 26px 40px;
+  padding: 14px 40px; background: rgba(255,255,255,.78);
+  backdrop-filter: saturate(1.6) blur(18px); -webkit-backdrop-filter: saturate(1.6) blur(18px);
+  border-bottom: 1px solid rgba(0,0,0,.06);
 }
-.brand {
-  font-size: 13px; letter-spacing: 5px; text-transform: lowercase;
-  font-weight: 400; color: var(--ink);
-}
-.topnav { display: flex; gap: 28px; }
-.topnav a {
-  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--faint); font-weight: 400;
-  transition: color .3s;
-}
-.topnav a:hover { color: var(--ink); }
+.brand { font-size: 17px; font-weight: 800; letter-spacing: -.02em; }
+.topnav { display: flex; gap: 6px; }
+.topnav a { padding: 6px 12px; border-radius: 999px; font-size: 13.5px; font-weight: 600; color: var(--soft); transition: background .25s, color .25s; }
+.topnav a:hover { background: var(--paper-2); color: var(--ink); }
 
-/* ==========================================================================
-   히어로 — 여백 중심
-   ========================================================================== */
-.hero {
-  text-align: center;
-  padding: 150px 0 130px;
+/* ---- 히어로: 큰 글자 + 네 분야 색이 섞인 빛 번짐 ---- */
+.hero { position: relative; text-align: center; padding: 150px 24px 120px; isolation: isolate; }
+.hero::before, .hero::after {
+  content: ""; position: absolute; z-index: -1; border-radius: 50%; filter: blur(70px); opacity: .55; pointer-events: none;
+  animation: drift 18s ease-in-out infinite alternate;
 }
-.hero__eyebrow { margin-bottom: 40px; }
-.hero__mark {
-  font-size: clamp(34px, 6vw, 58px);
-  font-weight: 200;
-  letter-spacing: 0.22em;
-  text-transform: lowercase;
-  color: var(--ink);
-  margin-bottom: 8px;
-}
-.hero__sub-en {
-  font-size: 11px; letter-spacing: 6px; text-transform: uppercase;
-  color: var(--soft); font-weight: 400;
-  margin-bottom: 56px;
-}
-.hero__tagline {
-  font-size: clamp(17px, 2.4vw, 22px);
-  font-weight: 400; line-height: 1.9;
-  color: var(--ink);
-  max-width: 460px; margin: 0 auto 22px;
-}
-.hero__desc {
-  font-size: 14px; color: var(--soft); font-weight: 400;
-  line-height: 2; max-width: 420px; margin: 0 auto;
-}
-.hero__scroll {
-  margin-top: 76px;
-  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-  color: var(--faint);
-}
+.hero::before { width: 560px; height: 460px; left: calc(50% - 520px); top: 40px; background: radial-gradient(circle at 30% 40%, #5b8cff, transparent 62%), radial-gradient(circle at 70% 70%, #3fd6a4, transparent 60%); }
+.hero::after  { width: 560px; height: 460px; left: calc(50% - 40px); top: 90px; background: radial-gradient(circle at 40% 40%, #a874ff, transparent 62%), radial-gradient(circle at 70% 75%, #ff8f6b, transparent 60%); animation-delay: -9s; }
+@keyframes drift { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(-36px,22px) scale(1.07); } 100% { transform: translate(28px,-16px) scale(.96); } }
+.hero__eyebrow { margin-bottom: 18px; color: var(--soft); }
+.hero__mark { font-size: clamp(56px, 11vw, 128px); font-weight: 800; letter-spacing: -.055em; line-height: 1; }
+.hero__sub-en { margin-top: 10px; font-size: clamp(20px, 2.6vw, 28px); font-weight: 700; letter-spacing: -.02em;
+  background: linear-gradient(90deg, #0a63f0, #7a3df0 45%, #ee3f62 75%, #0b8f6b); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero__tagline { margin: 36px auto 14px; max-width: 560px; font-size: clamp(20px, 2.4vw, 26px); font-weight: 700; line-height: 1.45; letter-spacing: -.03em; }
+.hero__desc { max-width: 520px; margin: 0 auto; font-size: 17px; color: var(--soft); }
+.hero__scroll { margin-top: 56px; font-size: 13px; font-weight: 600; color: var(--faint); animation: bob 2.4s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(5px); } }
 
-/* ==========================================================================
-   아카이브 — 번호 + 조용한 노트 행
-   ========================================================================== */
-.archive { padding: 30px 0 40px; }
+/* ---- 분야(토픽) ---- */
+.archive { padding: 10px 0 40px; }
+.topic { padding: 88px 0 24px; scroll-margin-top: 60px; }
+.topic__head { display: grid; grid-template-columns: auto 1fr; gap: 26px; align-items: end; margin-bottom: 34px; }
+.topic__num { font-size: clamp(56px, 7vw, 84px); font-weight: 800; line-height: .9; letter-spacing: -.05em;
+  background: linear-gradient(135deg, var(--c), var(--g2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.topic__en { font-size: 13px; font-weight: 700; color: var(--c); margin-bottom: 4px; }
+.topic__title { font-size: clamp(28px, 3.6vw, 40px); font-weight: 800; letter-spacing: -.04em; line-height: 1.15; margin-bottom: 8px; }
+.topic__desc { font-size: 16px; color: var(--soft); max-width: 560px; }
 
-.topic {
-  border-top: 1px solid var(--line);
-  padding: 76px 0;
-}
-.topic__head {
-  display: grid; grid-template-columns: 90px 1fr; gap: 28px;
-  align-items: baseline; margin-bottom: 46px;
-}
-.topic__num {
-  font-size: 13px; letter-spacing: 2px; color: var(--faint); font-weight: 400;
-}
-.topic__title {
-  font-size: 21px; font-weight: 400; letter-spacing: 0.04em;
-  margin-bottom: 10px;
-}
-.topic__en {
-  font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
-  color: var(--faint); margin-bottom: 16px; font-weight: 400;
-}
-.topic__desc { font-size: 14px; color: var(--soft); font-weight: 400; max-width: 520px; }
-
-/* 노트 행 (조용한 리스트) */
-.notes { display: grid; gap: 0; }
+/* ---- 노트 칸: 둥근 회색 상자, 2열 ---- */
+.notes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .note {
-  display: grid; grid-template-columns: 90px 1fr auto; gap: 28px;
-  align-items: center;
-  padding: 28px 0;
-  border-top: 1px solid var(--line2);
-  transition: opacity .3s;
+  position: relative; display: flex; flex-direction: column; gap: 10px; min-height: 100%;
+  padding: 26px 26px 22px; border-radius: 24px; background: var(--paper-2);
+  transition: transform .5s var(--ease), background .3s, box-shadow .5s var(--ease);
 }
-.note:first-child { border-top: none; }
-.note__tag {
-  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--faint); font-weight: 400;
-}
-.note__body h3 {
-  font-size: 16px; font-weight: 500; letter-spacing: 0.02em;
-  margin-bottom: 6px;
-}
-.note__body p { font-size: 13px; color: var(--soft); font-weight: 400; line-height: 1.8; }
-.note__open {
-  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--ink); font-weight: 400; white-space: nowrap;
-  border-bottom: 1px solid var(--ink); padding-bottom: 3px;
-  transition: opacity .3s;
-}
-.note__open:hover { opacity: 0.45; }
+.note:hover { transform: translateY(-4px); background: #f0f0f3; box-shadow: 0 18px 40px -24px rgba(0,0,0,.25); }
+.note__tag { align-self: flex-start; padding: 3px 11px; border-radius: 999px; background: #fff; color: var(--c); font-size: 12px; font-weight: 700; }
+.note__body { flex: 1; }
+.note__body h3 { font-size: 19px; font-weight: 700; letter-spacing: -.025em; line-height: 1.4; margin-bottom: 6px; }
+.note__body p { font-size: 14.5px; color: var(--soft); line-height: 1.7; }
+.note__open { align-self: flex-start; font-size: 14px; font-weight: 700; color: var(--c); }
+.note__open::after { content: " →"; display: inline-block; transition: transform .3s var(--ease); }
+.note:hover .note__open::after { transform: translateX(4px); }
+.note__open::before { content: ""; position: absolute; inset: 0; border-radius: 24px; } /* 칸 전체를 눌러도 열림 */
+.note__badge { position: absolute; top: 22px; right: 22px; padding: 3px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 800; color: #fff;
+  background: linear-gradient(135deg, var(--c), var(--g2)); }
+.note__badge--upd { background: #fff; color: var(--c); box-shadow: inset 0 0 0 1px currentColor; }
+.note--empty { background: transparent; box-shadow: inset 0 0 0 1.5px var(--line); }
+.note--empty:hover { transform: none; background: transparent; box-shadow: inset 0 0 0 1.5px var(--line); }
+.note--empty .note__tag { background: var(--paper-2); color: var(--faint); }
+.note--empty .note__body h3 { color: var(--faint); }
+.note--empty .note__placeholder { font-size: 13px; font-weight: 600; color: var(--faint); }
 
-/* 비어있는 / 예정 노트 */
-.note--empty { opacity: 0.62; }
-.note--empty .note__body h3 { color: var(--soft); }
-.note--empty .note__placeholder {
-  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--faint); white-space: nowrap;
-}
+/* ---- 보이면 부드럽게 떠오르기(아래 작은 스크립트가 .is-in 을 붙임) ---- */
+.js .note, .js .topic__head { opacity: 0; transform: translateY(26px); transition: opacity .9s var(--ease), transform .9s var(--ease), background .3s, box-shadow .5s var(--ease); }
+.js .note.is-in, .js .topic__head.is-in { opacity: 1; transform: none; }
+.js .note.is-in:hover { transform: translateY(-4px); }
 
-/* ==========================================================================
-   닫는 문장
-   ========================================================================== */
-.closing {
-  text-align: center;
-  border-top: 1px solid var(--line);
-  padding: 120px 0 110px;
-}
-.closing p {
-  font-size: clamp(16px, 2.2vw, 20px);
-  font-weight: 400; line-height: 2; color: var(--ink);
-  max-width: 460px; margin: 0 auto;
-}
-.closing .eyebrow { margin-bottom: 34px; }
+/* ---- 닫는 문장·푸터 ---- */
+.closing { text-align: center; padding: 120px 24px 110px; }
+.closing p { font-size: clamp(24px, 3.4vw, 36px); font-weight: 800; line-height: 1.35; letter-spacing: -.04em; max-width: 620px; margin: 0 auto; }
+.closing .eyebrow { margin-bottom: 18px; font-size: 13px; }
+.foot { border-top: 1px solid var(--line); padding: 30px 0 70px; }
+.foot__inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.foot__inner span { font-size: 13px; color: var(--faint); }
 
-/* ==========================================================================
-   푸터
-   ========================================================================== */
-.foot {
-  border-top: 1px solid var(--line);
-  padding: 46px 0 60px;
-}
-.foot__inner {
-  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
-}
-.foot__inner span {
-  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--faint); font-weight: 400;
-}
-
-/* ==========================================================================
-   반응형
-   ========================================================================== */
-@media (max-width: 720px) {
-  .wrap { padding: 0 24px; }
-  .topbar { padding: 22px 24px; }
+@media (max-width: 760px) {
+  .wrap { padding: 0 20px; }
+  .topbar { padding: 12px 20px; }
   .topnav { display: none; }
-  .hero { padding: 110px 0 90px; }
-  .topic__head { grid-template-columns: 1fr; gap: 6px; }
-  .note { grid-template-columns: 1fr; gap: 10px; padding: 24px 0; align-items: start; }
-  .note__open, .note--empty .note__placeholder { justify-self: start; }
+  .hero { padding: 110px 20px 80px; }
+  .hero::before { width: 360px; height: 320px; left: calc(50% - 300px); }
+  .hero::after { width: 360px; height: 320px; left: calc(50% - 60px); }
+  .topic { padding-top: 64px; }
+  .topic__head { gap: 16px; }
+  .notes { grid-template-columns: 1fr; }
+  .note { padding: 22px 20px 20px; border-radius: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .hero::before, .hero::after, .hero__scroll { animation: none; }
+  .js .note, .js .topic__head { opacity: 1; transform: none; transition: none; }
 }
