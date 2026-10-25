@@ -1,6 +1,13 @@
 {
-  "updated": "2026-10-23T00:10:04.020404",
+  "updated": "2026-10-26T00:10:06.242540",
   "log": [
+    {
+      "id": "weekly-20261026",
+      "type": "weekly",
+      "date": "2026-10-26",
+      "status": "warn",
+      "summary": "위반 100건 · 0파일 스캔"
+    },
     {
       "id": "biweekly-20261023",
       "type": "biweekly",
