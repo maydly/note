@@ -6,6 +6,8 @@
 <meta name="robots" content="noindex, nofollow, noarchive">
 <title>넷이 할 게임</title>
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://maydly.github.io/note/games4/">
+<meta property="og:site_name" content="넷이 할 게임">
 <meta property="og:title" content="넷이 할 게임 — 4명이 같이 하는 PC 게임">
 <meta property="og:description" content="사진·트레일러·스팀 평가 보고, 각자 찜한 걸 링크로 주고받아 같이 고르기">
 <meta property="og:image" content="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3949040/cae24b4ed7f4531be51f0d63f785b7d253f92dc3/header.jpg?t=1789134289">
@@ -245,7 +247,7 @@ footer p{margin:4px 0}
     <label for="myName">내 이름</label><input id="myName" maxlength="10" placeholder="예: 수빈" autocomplete="off">
     <span class="mine">내 찜 <b id="mineN">0</b>개</span>
     <button class="btn pri" id="sendMine">내 찜 보내기</button>
-    <button class="btn" id="copyPage">이 페이지 링크 복사</button>
+    <button class="btn" id="copyPage">이 페이지 링크 보내기</button>
     <span class="toast" id="toast" role="status"></span>
   </div>
   <div class="banner" id="banner"></div>
@@ -758,7 +760,13 @@ $('#q').addEventListener('input', e=>{ state.q = e.target.value.trim(); renderLi
 $('#myName').addEventListener('input', e=>{ myName = e.target.value.replace(/[<>"']/g,'').trim().slice(0,10); saveAll(); renderPick(); });
 $('#myName').addEventListener('change', ()=>renderList());
 $('#sendMine').addEventListener('click', sendMine);
-$('#copyPage').addEventListener('click', ()=>copyText(pageURL(), '페이지 링크를 복사했어'));
+$('#copyPage').addEventListener('click', async ()=>{
+  const url = pageURL();
+  if (navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)){
+    try { await navigator.share({ title:'넷이 할 게임', text:'넷이 할 PC 게임 같이 고르자', url }); return; } catch(e) { if (e && e.name === 'AbortError') return; }
+  }
+  copyText('[넷이 할 게임] 같이 고르자\n' + url, '페이지 링크를 복사했어. 단톡방에 붙여넣어줘');
+});
 
 $('#modal').addEventListener('click', e=>{
   if (e.target === $('#modal')) { closeDetail(); return; }
