@@ -66,11 +66,14 @@ h2{font-size:21px;margin:0 0 4px;letter-spacing:-.01em}
 .who button{border:0;background:rgba(255,255,255,.7);width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:12px;line-height:1}
 .banner{margin-top:12px;background:#FFF6E6;border:1px solid #F4DDB3;border-radius:12px;padding:10px 14px;font-size:14px;display:none}
 .pnote{margin:10px 0 0;font-size:12.5px;color:var(--faint)}
-.toast{font-size:13px;color:#3F7A59;margin-left:4px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;max-width:calc(100% - 32px);width:max-content;background:#3B3431;color:#fff;font-size:14px;line-height:1.45;padding:10px 16px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.22);pointer-events:none;opacity:0;transition:opacity .2s}
+.toast.on{opacity:1}
+.pnote.warn{color:#A9583A;background:#FFF6E6;border:1px solid #F4DDB3;border-radius:10px;padding:8px 12px}
+.banner .adopt{border:1px solid #E3C79A;background:#fff;border-radius:999px;padding:3px 10px;font-size:13px;cursor:pointer;margin-left:4px}
 
 /* 친구들 픽 */
 .wantsec{background:#FFF8EC;border:1px solid #F4DDB3;border-radius:20px;padding:18px 20px;margin:22px 0}
-.wantgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.wantgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:12px}
 .wt{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
 .wt .ph{position:relative;aspect-ratio:460/215;cursor:pointer;background:#EFE7DD}
 .wt .ph img{width:100%;height:100%;object-fit:cover;display:block}
@@ -84,7 +87,7 @@ h2{font-size:21px;margin:0 0 4px;letter-spacing:-.01em}
 .b.soon{background:#FDEBD9;color:#A9583A}
 
 /* 우리가 추가한 게임 */
-.addgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.addgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr));gap:12px}
 .ad{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
 .ad .ph{position:relative;aspect-ratio:460/215;background:linear-gradient(135deg,#FBE7DD,#F6EFD9)}
 .ad .ph img{width:100%;height:100%;object-fit:cover;display:block}
@@ -100,7 +103,7 @@ h2{font-size:21px;margin:0 0 4px;letter-spacing:-.01em}
 /* 다듬은 목록 */
 .rankhead{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
 .tierh{font-size:15px;margin:14px 0 8px}
-.rank{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.rank{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:10px}
 .ri{display:flex;gap:10px;align-items:center;width:100%;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 12px 8px 8px;cursor:pointer;text-align:left;box-shadow:var(--shadow)}
 .ri img,.ri .ni{width:96px;aspect-ratio:460/215;border-radius:8px;object-fit:cover;flex:none;background:#EFE7DD;display:block}
 .ri .rk{flex:none;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:#A9583A;font-weight:700;font-size:12.5px;display:grid;place-items:center}
@@ -115,7 +118,7 @@ details.out,details.more{margin-top:10px}
 details.out summary,details.more summary{cursor:pointer;color:var(--sub);font-size:14px;margin:6px 0 10px}
 
 /* 먼저 이것부터 */
-.top{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.top{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(210px,100%),1fr));gap:12px}
 .tile{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);cursor:pointer;text-align:left;padding:0;display:flex;flex-direction:column;transition:transform .15s}
 .tile:hover{transform:translateY(-3px)}
 .tile .ph{position:relative;aspect-ratio:460/215;background:#EFE7DD}
@@ -147,7 +150,7 @@ details.out summary,details.more summary{cursor:pointer;color:var(--sub);font-si
 .group-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .group-head h2 .n{font-size:14px;color:var(--faint);font-weight:500;margin-left:4px}
 .group-head p{margin:0;color:var(--sub);font-size:14px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(310px,100%),1fr));gap:14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;border-top:4px solid var(--tint)}
 .card.c-y{border-color:#EBA88A;box-shadow:0 0 0 3px #FBE7DD}
 .card.c-o{border-color:#9FCFB1;box-shadow:0 0 0 3px #E8F5EC}
@@ -197,7 +200,7 @@ details.out summary,details.more summary{cursor:pointer;color:var(--sub);font-si
 .detail{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 12px;font-size:12.5px;cursor:pointer;color:#A9583A}
 .detail:hover{border-color:var(--accent)}
 .empty{text-align:center;color:var(--sub);padding:40px 0;display:none}
-.help{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.help{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:12px}
 .help div{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
 .help h3{margin:0 0 4px;font-size:14.5px}
 .help p{margin:0;font-size:13.5px;color:var(--sub)}
@@ -257,6 +260,8 @@ footer p{margin:4px 0}
   .steps{grid-template-columns:1fr}
   .pickrow input{width:120px}
   .pick{padding:16px}
+  .wantsec{padding:16px 14px}
+  .ri img,.ri .ni{width:84px}
 }
 </style>
 </head>
@@ -264,7 +269,7 @@ footer p{margin:4px 0}
 <div class="wrap">
 
 <header class="hero">
-  <div class="eyebrow">PC 게임 · 2026.11.02 스팀 공식 데이터로 확인</div>
+  <div class="eyebrow">PC 게임 · 2026.11.03 스팀 공식 데이터로 확인</div>
   <h1>넷이 할 게임 <span id="total"></span>개 <small>4명이 같이 하는 PC 게임 추천판</small></h1>
   <p class="lead">이미 후보에 올라 있는 게임(피크·오버쿡드·백룸·콘텐츠 워닝 등)은 빼고, <b>그 밖에 넷이 할 만한 게임</b>만 새로 모았어. 사진이나 제목을 누르면 트레일러·스크린샷·스팀 평가가 크게 열려. 아래 「같이 고르기」에서 게임마다 <b>🔥하자 · 👌괜춘 · 🙅빼자</b>를 고르고 링크로 주고받으면, 넷의 선택이 한 화면에 모여서 목록이 점점 다듬어져. 없는 게임은 직접 추가해도 돼.</p>
   <div class="played" id="played" aria-label="이미 해본 게임"></div>
@@ -299,7 +304,8 @@ footer p{margin:4px 0}
   </div>
   <div class="banner" id="banner"></div>
   <div class="people" id="people"></div>
-  <p class="pnote">선택은 서버에 저장되지 않고, 각자 기기와 주고받은 링크에만 담겨. 친구 선택을 보려면 친구가 보낸 링크를 한 번 눌러야 하고, 친구가 다시 보내면 최신 선택으로 바뀌어. 추가한 게임도 링크에 같이 실려 가.</p>
+  <p class="pnote warn" id="storeWarn" hidden>⚠️ 이 브라우저는 저장이 막혀 있어서 새로고침하면 고른 게 사라져. 고른 뒤 「내 선택 보내기」로 링크를 꼭 남겨 둬.</p>
+  <p class="pnote">선택은 서버에 저장되지 않고, 각자 기기와 주고받은 링크에만 담겨. 친구 선택을 보려면 친구가 보낸 링크를 한 번 눌러야 하고, 친구가 다시 보내면 최신 선택으로 바뀌어(예전 링크를 다시 눌러도 최신 건 그대로). 추가한 게임도 링크에 같이 실려 가. 다른 폰·브라우저로 옮기려면 「내 선택 보내기」 링크를 거기서 열고 「이 기기로 가져오기」를 누르면 돼. 한 기기를 둘이 같이 쓰면 이름만 바꿔 쓰면 돼 — 앞사람 선택은 따로 남겨 둘지 물어봐.</p>
 </section>
 
 <section class="sec" id="addSec" hidden>
@@ -316,7 +322,7 @@ footer p{margin:4px 0}
 
 <section class="sec">
   <h2>넷이면 먼저 이것부터</h2>
-  <p class="sec-desc">지금 후보(피크·콘텐츠 워닝·리썰·멧챠 카멜레온)랑 결이 이어지고, 넷이 할 때 특히 재밌다는 평이 많은 순서로 골랐어. 누르면 영상·사진이 열려.</p>
+  <p class="sec-desc">지금 후보(피크·콘텐츠 워닝)와 해본 게임(리썰·멧챠 카멜레온)이랑 결이 이어지고, 넷이 할 때 특히 재밌다는 평이 많은 순서로 골랐어. 누르면 영상·사진이 열려.</p>
   <div class="top" id="top"></div>
 </section>
 
@@ -327,6 +333,7 @@ footer p{margin:4px 0}
     <button class="chip tg" id="fOne" aria-pressed="false">무료·1개로 가능</button>
     <button class="chip tg" id="fCheap" aria-pressed="false">1만원 이하</button>
     <button class="chip hg" id="fTodo" aria-pressed="false">아직 안 고른 것 <span id="todoN">0</span></button>
+    <button class="chip hg" id="fMine" aria-pressed="false">🔥 내 하자 <span id="mineYN">0</span></button>
     <button class="chip hg" id="fYes" aria-pressed="false">🔥 하자 나온 것</button>
     <button class="chip hg" id="fNoHide" aria-pressed="false">🙅 빼자 나온 거 숨기기</button>
     <select class="sort" id="sort" aria-label="정렬">
@@ -354,15 +361,15 @@ footer p{margin:4px 0}
     <div><h3>원격 같이하기</h3><p>원래 한 화면에서 같이 하는 게임을, 산 사람 PC 화면을 친구들에게 실시간으로 보내서 같이 하는 스팀 기능이야. 친구들은 게임이 없어도 되고, 인터넷이 느리면 조금 끊길 수 있어.</p></div>
     <div><h3>🎙️ 마이크 필수</h3><p>공포 협동·마피아 게임은 목소리로 떠드는 게 재미의 핵심이야. 게임 안 음성채팅이나 디스코드 켜고 하자. 「가까이 있어야 들리는 음성」 게임은 멀어지면 목소리가 안 들려서 더 무서워.</p></div>
     <div><h3>스팀 평가</h3><p>산 사람들이 추천/비추천한 비율이야. "매우 긍정적"은 80% 이상, "압도적으로 긍정적"은 95% 이상에 리뷰가 아주 많다는 뜻.</p></div>
-    <div><h3>얼리 액세스 · 2026 신작</h3><p>얼리 액세스는 아직 개발 중인 걸 미리 파는 버전이라 버그나 변경이 있을 수 있어. 「2026 신작」은 올해 나온 게임이야.</p></div>
+    <div><h3>얼리 액세스 · 2026 신작</h3><p>얼리 액세스는 아직 개발 중인 걸 미리 파는 버전이라 버그나 변경이 있을 수 있어. 「2026 신작」은 올해 처음 나온 게임, 「2026 정식 출시」는 얼리 액세스로 먼저 팔다가 올해 정식판이 나온 게임이야.</p></div>
     <div><h3>싸움 주의 🫧</h3><p>서로 손발이 안 맞으면 투닥거리게 되는 게임. 그게 재미의 절반이라, 끝나고 웃을 수 있는 날에 하기.</p></div>
     <div><h3>한국어 표시</h3><p>스팀 공식 지원 언어 기준이야. 「영어만」이어도 글자가 거의 없는 게임은 설명에 따로 적어뒀어.</p></div>
   </div>
 </section>
 
 <footer>
-  <p>확인 기준: 스팀 공식 스토어 데이터(한국 지역, 2026-10-26~11-02 조회) — 한국어 지원·정가·평가·장르·출시일·공식 소개·이미지·트레일러. 가격은 세일 전 정가라 실제로는 더 쌀 때가 많아.</p>
-  <p>최대 인원은 스토어 설명 기준이야. 전부 PC(스팀) 게임이고, 이미 후보에 있는 게임과 따로 정리해 둔 2인용 목록에 있던 게임은 겹치지 않게 뺐어.</p>
+  <p>확인 기준: 스팀 공식 스토어 데이터(한국 지역, 2026-10-26~11-03 조회) — 한국어 지원·정가·평가·장르·출시일·공식 소개·이미지·트레일러. 가격은 세일 전 정가라 실제로는 더 쌀 때가 많아.</p>
+  <p>최대 인원은 스토어 설명 기준이야(휴머니츠처럼 스토어에 숫자가 없는 게임은 게임 소개 사이트 기준). 전부 PC(스팀) 게임이고, 이미 후보에 있는 게임과 따로 정리해 둔 2인용 목록에 있던 게임은 겹치지 않게 뺐어.</p>
   <p>이미지·영상은 스팀에서 바로 불러오기 때문에 인터넷이 연결돼 있어야 보여.</p>
 </footer>
 </div>
@@ -409,28 +416,28 @@ const CATS = [
 /* G: 게임 목록. sid=공유용 짧은 id, k: 1 한국어 / 0 영어만 / 2 확인필요,
    b: each 각자 구매 / free 무료 / rpt 1개+원격 같이하기 / manual 1개면 됨 / web 공식 사이트,
    pr: 스팀 정가(원), y: 출시연도, p: 인원, ea: 얼리액세스, f: 싸움주의, mic: 마이크 필수, top: 추천순위 */
-const G = [{"c":"horror","n":"포어원드","e":"FOREWARNED","sid":"xhkk","y":2024,"p":"1~4인","k":1,"b":"each","pr":13500,"m":["무서움","긴장"],"d":"고고학자 넷이 이집트 유적 깊이 내려가 보물과 유물을 챙겨 나오는 협동 공포. 안에 숨은 괴물의 정체를 단서로 알아내야 살아남아. 리썰처럼 \"챙겨서 나오기\"가 핵심이라 해본 게임이랑 결이 비슷해.","top":3,"why":"리썰·콘텐츠 워닝 결의 4인 공포","mic":1},
-{"c":"horror","n":"곤 피싱","e":"GONE Fishing","sid":"2656q","y":2026,"p":"1~8인","k":1,"b":"each","pr":10000,"m":["무서움","웃김"],"d":"호수가 계속 배고파해서, 넷이 낚시로 먹이를 바치며 버텨야 하는 생존 공포(2026년 10월 신작). 못 채우면 다음 제물은 우리.","top":9,"why":"2026 신작 · 낚시로 살아남는 공포","mic":1},
-{"c":"horror","n":"고스트 워처스","e":"Ghost Watchers","sid":"13o1g","y":2025,"p":"최대 4인","k":1,"b":"each","pr":15500,"m":["무서움"],"d":"버려진 집에서 유령의 종류를 알아내고 잡는 협동 공포. 장비로 증거를 모으는 방식이라 넷이 역할 나누기 좋아.","mic":1},
+const G = [{"c":"horror","n":"포어원드","e":"FOREWARNED","sid":"xhkk","y":2024,"p":"1~4인","k":1,"b":"each","pr":13500,"m":["무서움","긴장"],"d":"고고학자 넷이 이집트 유적 깊이 내려가 보물과 유물을 챙겨 나오는 협동 공포. 안에 숨은 괴물의 정체를 단서로 알아내야 살아남아. 리썰처럼 \"챙겨서 나오기\"가 핵심이라 해본 게임이랑 결이 비슷해.","fy":2021,"top":3,"why":"리썰·콘텐츠 워닝 결의 4인 공포","mic":1},
+{"c":"horror","n":"곤 피싱","e":"GONE Fishing","sid":"2656q","y":2026,"p":"1~8인","k":1,"b":"each","pr":10000,"m":["무서움","웃김"],"d":"호수가 계속 배고파해서, 넷이 낚시로 먹이를 바치며 버텨야 하는 생존 공포(2026년 10월 정식 출시). 못 채우면 다음 제물은 우리.","fy":2025,"top":9,"why":"2026 정식 출시 · 낚시로 살아남는 공포","mic":1},
+{"c":"horror","n":"고스트 워처스","e":"Ghost Watchers","sid":"13o1g","y":2025,"p":"최대 4인","k":1,"b":"each","pr":15500,"m":["무서움"],"d":"버려진 집에서 유령의 종류를 알아내고 잡는 협동 공포. 장비로 증거를 모으는 방식이라 넷이 역할 나누기 좋아.","fy":2022,"mic":1},
 {"c":"horror","n":"빅풋","e":"BIGFOOT","sid":"axi4","y":2017,"p":"최대 4인 협동","k":1,"b":"each","pr":21500,"m":["무서움","긴장"],"d":"숲에서 빅풋을 사냥하러 간 넷이 오히려 쫓기는 공포 협동. 카메라·덫으로 증거를 잡아야 해.","ea":1,"mic":1},
 {"c":"horror","n":"인보키어: 마의 주사위","e":"인보키어: 마의 주사위","sid":"2b8ky","y":2026,"p":"최대 6인","k":1,"b":"each","pr":11900,"m":["무서움","머리씀"],"d":"버려진 저택의 저주받은 보드게임에 갇혀, 주사위를 굴리며 소환되는 괴물에게서 살아남는 협동 공포. 마지막엔 게임마스터를 쓰러뜨려야 해.","ea":1,"mic":1},
-{"c":"horror","n":"GTFO","e":"GTFO","sid":"aksw","y":2021,"p":"최대 4인","k":1,"b":"each","pr":49990,"m":["무서움","긴장"],"d":"지하 시설에서 괴물 무리를 피해 임무를 수행하는 4인 협동 공포 슈팅. 아주 어렵고 손발이 딱 맞아야 해 — 각 잡고 하는 넷에게.","mic":1},
+{"c":"horror","n":"GTFO","e":"GTFO","sid":"aksw","y":2021,"p":"최대 4인","k":1,"b":"each","pr":49990,"m":["무서움","긴장"],"d":"지하 시설에서 괴물 무리를 피해 임무를 수행하는 4인 협동 공포 슈팅. 아주 어렵고 손발이 딱 맞아야 해 — 각 잡고 하는 넷에게.","fy":2019,"mic":1},
 {"c":"horror","n":"월드 워 Z","e":"World War Z","sid":"ezga","y":2021,"p":"최대 4인","k":1,"b":"each","pr":34900,"m":["액션","긴장"],"d":"쏟아지는 좀비 떼를 넷이 막아내는 협동 슈팅. 레프트 4 데드 같은 느낌이고 화면이 시원시원해."},
 {"c":"horror","n":"데드 바이 데이라이트","e":"Dead by Daylight","sid":"8656","y":2016,"p":"생존자 4인 + 살인마 1","k":1,"b":"each","pr":21500,"m":["무서움","긴장"],"d":"넷이 생존자 팀으로 들어가 살인마(다른 유저)에게서 도망치며 발전기를 고치는 비대칭 공포. 오래된 인기작이라 사람이 늘 많아.","mic":1},
 {"c":"deduce","n":"구스 구스 덕","e":"Goose Goose Duck","sid":"xmby","y":2021,"p":"최대 16인","k":1,"b":"free","pr":0,"m":["심리전","웃김"],"d":"거위들 사이에 숨은 오리(범인)를 찾는 무료 마피아 게임. 역할이 많아서 어몽 어스보다 변수가 많아. 무료라 넷이 바로 깔아서 해보기 좋아.","top":4,"why":"무료 · 한국어 마피아","mic":1},
 {"c":"deduce","n":"어몽 어스","e":"Among Us","sid":"k9g0","y":2018,"p":"4~15인","k":1,"b":"each","pr":5500,"m":["심리전","웃김"],"d":"우주선에서 임무를 하면서 숨은 배신자를 찾아 투표로 내쫓는 그 게임. 4명부터 할 수 있고 싸고 쉬워.","mic":1},
 {"c":"deduce","n":"내 전골에 뭐 넣었어?!","e":"내 전골에 뭐 넣었어?!","sid":"1dkug","y":2023,"p":"최대 4인","k":1,"b":"each","pr":5600,"m":["심리전","웃김"],"d":"넷이 던전에서 재료를 모아 전골을 끓이는데, 그중 하나는 몰래 이상한 걸 넣는 배신자. 최대 인원이 딱 4명이라 넷에게 맞춤.","top":6,"why":"딱 4인 배신자 심리전 · 5,600원","mic":1},
-{"c":"deduce","n":"페인","e":"Feign","sid":"usse","y":2025,"p":"최대 12인","k":1,"b":"each","pr":5500,"m":["심리전"],"d":"작은 마을에서 시민·사기꾼·중립 역할로 나뉘어 밤엔 임무, 낮엔 투표로 쫓아내는 마피아 게임. 한국어 되고 평가 91%.","mic":1},
-{"c":"deduce","n":"락다운 프로토콜","e":"LOCKDOWN Protocol","sid":"1nltg","y":2025,"p":"최대 16인","k":0,"b":"each","pr":11000,"m":["심리전","긴장"],"d":"1인칭으로 시설을 돌아다니며 임무를 하는데, 몇 명은 몰래 방해하는 배신자. 가까이 있어야 목소리가 들려서 리썰 느낌의 마피아. 영어지만 글이 적어.","mic":1},
+{"c":"deduce","n":"페인","e":"Feign","sid":"usse","y":2025,"p":"최대 12인","k":1,"b":"each","pr":5500,"m":["심리전"],"d":"작은 마을에서 시민·사기꾼·중립 역할로 나뉘어 밤엔 임무, 낮엔 투표로 쫓아내는 마피아 게임. 한국어 되고 평가 91%.","fy":2021,"mic":1},
+{"c":"deduce","n":"락다운 프로토콜","e":"LOCKDOWN Protocol","sid":"1nltg","y":2025,"p":"최대 16인","k":0,"b":"each","pr":11000,"m":["심리전","긴장"],"d":"1인칭으로 시설을 돌아다니며 임무를 하는데, 몇 명은 몰래 방해하는 배신자. 가까이 있어야 목소리가 들려서 리썰 느낌의 마피아. 영어지만 글이 적어.","fy":2024,"mic":1},
 {"c":"deduce","n":"스캠 라인","e":"Scam Line","sid":"1nwbi","y":2026,"p":"4~8인","k":1,"b":"each","pr":7850,"m":["심리전","웃김"],"d":"4~8명이 거짓말쟁이·조종자·사기꾼이 되어 서로 속이며 승자 한 명을 가리는 파티 심리전.","ea":1,"mic":1},
 {"c":"deduce","n":"프로젝트 윈터","e":"Project Winter","sid":"glvx","y":2019,"p":"최대 8인","k":1,"b":"each","pr":10500,"m":["심리전","긴장"],"d":"눈 덮인 산에서 다 같이 탈출 준비를 하는데 배신자가 섞여 있는 생존+마피아. 원래 8인용이라 친구가 더 모이면 더 재밌어.","mic":1},
-{"c":"deduce","n":"보고스 빈티드?","e":"Bogos Binted?","sid":"24wwa","y":2026,"p":"최대 4인","k":1,"b":"each","pr":6140,"m":["심리전","웃김"],"d":"괴짜 외계인이 되어 달 위의 보드게임에서 허세와 거짓말로 이기는 게임. 최대 4명."},
+{"c":"deduce","n":"보고스 빈티드?","e":"Bogos Binted?","sid":"24wwa","y":2026,"p":"최대 4인","k":1,"b":"each","pr":6140,"m":["심리전","웃김"],"d":"괴짜 외계인이 되어 달 위의 보드게임에서 허세와 거짓말로 이기는 게임. 최대 4명.","fy":2025},
 {"c":"deduce","n":"오 디어","e":"Oh Deer","sid":"1m1uq","y":2024,"p":"사냥꾼 1 + 사슴 4","k":0,"b":"each","pr":8400,"m":["심리전","웃김"],"d":"사슴 무리 속에 숨은 친구들을 사냥꾼 한 명이 찾아내는 숨바꼭질. 멧챠 카멜레온처럼 \"티 안 나게 섞이기\" 게임."},
 {"c":"deduce","n":"에어포트 시큐리티 석스!","e":"Airport Security Sucks!","sid":"2juuy","y":2026,"p":"여럿","k":1,"b":"each","pr":8700,"m":["심리전","웃김"],"d":"한 명은 공항 보안요원, 나머지는 군중 속에 숨어 밀수품을 들여오는 쪽. 목소리로 명령하며 찾아내는 숨바꼭질 심리전.","mic":1},
 {"c":"deduce","n":"데일 앤 도슨 문구점","e":"Dale & Dawson Stationery Supplies","sid":"1qliy","y":2024,"p":"여럿","k":0,"b":"each","pr":8900,"m":["심리전","웃김"],"d":"사무실에서 매니저·직원·땡땡이꾼으로 나뉘어, 일하는 척하는 땡땡이꾼을 찾아내는 심리전. 영어지만 평가 91%.","mic":1},
-{"c":"deduce","n":"트러스트 노 버니","e":"Trust No Bunny","sid":"17f0c","y":2023,"p":"여럿","k":1,"b":"each","pr":6700,"m":["심리전","웃김"],"d":"귀여운 토끼 마을에 숨은 배신자를 찾는 마피아 게임. 어몽 어스·마피아 좋아하면.","mic":1},
+{"c":"deduce","n":"트러스트 노 버니","e":"Trust No Bunny","sid":"17f0c","y":2023,"p":"여럿","k":1,"b":"each","pr":6700,"m":["심리전","웃김"],"d":"귀여운 토끼 마을에 숨은 배신자를 찾는 마피아 게임. 어몽 어스·마피아 좋아하면.","fy":2022,"mic":1},
 {"c":"party","n":"슈퍼 배틀 골프","e":"Super Battle Golf","sid":"2f828","y":2026,"p":"최대 8인","k":1,"b":"each","pr":13800,"m":["경쟁","웃김"],"d":"홀까지 누가 먼저 들어가나 겨루는데, 스윙하다가 서로 방해까지 할 수 있는 난장판 골프(2026년). 평가 93%.","top":8,"why":"2026 신작 · 방해 가능한 난장 골프"},
-{"c":"party","n":"골프 잇!","e":"Golf It!","sid":"c95o","y":2023,"p":"여럿","k":1,"b":"each","pr":9500,"m":["경쟁","웃김"],"d":"유저가 만든 맵이 끝없는 멀티 골프. 같이 치면서 수다 떨기 좋은 가벼운 게임."},
+{"c":"party","n":"골프 잇!","e":"Golf It!","sid":"c95o","y":2023,"p":"여럿","k":1,"b":"each","pr":9500,"m":["경쟁","웃김"],"d":"유저가 만든 맵이 끝없는 멀티 골프. 같이 치면서 수다 떨기 좋은 가벼운 게임.","fy":2017},
 {"c":"party","n":"골프 위드 유어 프렌즈","e":"Golf With Your Friends","sid":"98qw","y":2020,"p":"최대 12인","k":0,"b":"each","pr":15500,"m":["경쟁","편안"],"d":"미니 골프로 넷이 겨루는 고전 파티 게임. 맵이 다양하고 룰이 쉬워. 영어지만 글이 거의 없어."},
 {"c":"party","n":"스텀블 가이즈","e":"Stumble Guys","sid":"zyjw","y":2021,"p":"최대 32인","k":1,"b":"free","pr":0,"m":["경쟁","웃김"],"d":"폴 가이즈처럼 장애물 코스를 달려 살아남는 무료 배틀로얄 파티. 넷이 같이 들어가서 누가 오래 버티나."},
 {"c":"party","n":"라운즈","e":"ROUNDS","sid":"xdyk","y":2021,"p":"2~4인","k":0,"b":"each","pr":6400,"m":["경쟁","액션"],"d":"한 판 질 때마다 능력 카드를 골라 점점 말도 안 되게 강해지는 1:1~4인 총싸움. 판이 짧아서 계속 \"한 판만 더\". 영어지만 글이 적어."},
@@ -438,32 +445,32 @@ const G = [{"c":"horror","n":"포어원드","e":"FOREWARNED","sid":"xhkk","y":20
 {"c":"party","n":"어 젠틀맨스 디스퓨트","e":"A Gentlemen's Dispute","sid":"1oggs","y":2025,"p":"최대 8인","k":1,"b":"each","pr":8400,"m":["경쟁","웃김"],"d":"신사들이 함정·방망이·대포로 부서지는 아레나에서 끝까지 살아남는 파티 난투. 평가 94%.","f":1},
 {"c":"party","n":"길티 애즈 삭!","e":"Guilty as Sock!","sid":"20w6a","y":2025,"p":"여럿","k":1,"b":"each","pr":6700,"m":["웃김","심리전"],"d":"양말들이 변호사·검사·판사가 되어 말도 안 되는 증거로 재판하는 파티 게임. 말 지어내는 재미 — 역전재판 패러디 느낌.","mic":1},
 {"c":"party","n":"더 유 퀴즈","e":"The You Quiz","sid":"26nl8","y":2025,"p":"3~8인","k":1,"b":"pass","pr":11000,"m":["웃김","대화"],"d":"문제가 전부 \"나\"에 대한 것. 친구들이 나에 대해 쓴 답을 맞히고 판정하는 퀴즈 파티. 한 명만 사면 친구 7명까지 무료로 초대돼."},
-{"c":"party","n":"페더 파티","e":"Feather Party","sid":"1dava","y":2026,"p":"최대 8인","k":1,"b":"each","pr":9900,"m":["경쟁","웃김"],"d":"병아리 행성에서 여러 미니게임으로 겨루는 귀여운 파티 게임."},
+{"c":"party","n":"페더 파티","e":"Feather Party","sid":"1dava","y":2026,"p":"최대 8인","k":1,"b":"each","pr":9900,"m":["경쟁","웃김"],"d":"병아리 행성에서 여러 미니게임으로 겨루는 귀여운 파티 게임.","fy":2024},
 {"c":"party","n":"머신 파티","e":"Machine Party","sid":"2g1r4","y":2026,"p":"2~4인","k":1,"b":"each","pr":8800,"m":["경쟁","긴장"],"d":"실패하면 기계에 \"당하는\" 살벌한 미니게임 모음(2026년). 잔인한 연출이 좀 있어. 2~4인.","f":1},
-{"c":"party","n":"우당탕탕 경주","e":"우당탕탕 경주 Fling to the Finish","sid":"mllq","y":2024,"p":"2인 1팀","k":1,"b":"each","pr":24000,"m":["웃김","경쟁"],"d":"두 명이 고무줄로 묶인 채 달리는 경주. 넷이면 두 팀으로 나눠 겨뤄 — 호흡 안 맞으면 바로 싸움.","f":1},
+{"c":"party","n":"우당탕탕 경주","e":"우당탕탕 경주 Fling to the Finish","sid":"mllq","y":2024,"p":"2인 1팀","k":1,"b":"each","pr":24000,"m":["웃김","경쟁"],"d":"두 명이 고무줄로 묶인 채 달리는 경주. 넷이면 두 팀으로 나눠 겨뤄 — 호흡 안 맞으면 바로 싸움.","fy":2021,"f":1},
 {"c":"chaos","n":"디재스터 크루","e":"Disaster Crew","sid":"2s744","y":2027,"p":"최대 4인","k":1,"b":"soon","pr":null,"m":["웃김","협동"],"d":"넷이 함정투성이 재난 현장에 들어가 재료를 모으고 엉뚱한 의뢰를 해내는 물리 협동 게임. 손발이 안 맞으면 다 같이 대참사. 아직 출시 전(2027년 1분기 예정)이라 지금은 스팀에서 찜(위시리스트)만 할 수 있어.","f":1,"soon":"2027년 1분기","want":1,"similar":["2cn3k","1z1jo","ms32","1h22s","loly"]},
 {"c":"chaos","n":"RV 데어 옛?","e":"RV There Yet?","sid":"2cn3k","y":2025,"p":"최대 4인","k":1,"b":"each","pr":8900,"m":["웃김","협동"],"d":"넷이 캠핑카를 몰고 험한 길을 지나 집까지 가는 협동 게임. 운전·길 찾기·밀기를 나눠 맡는데 계속 뭔가 터져서 피크처럼 웃기게 흘러가. 스팀 리뷰 7만 개 넘는 2025년 히트작.","top":1,"why":"넷이 캠핑카 몰고 집까지 · 평가 90%","f":1},
 {"c":"chaos","n":"트래시 데이","e":"Trash Day","sid":"1z1jo","y":2026,"p":"최대 6인","k":1,"b":"each","pr":8700,"m":["웃김","협동"],"d":"라쿤이 되어 쓰레기를 뒤지고 훔친 수레를 끌고 라쿤 낙원까지 가는 물리 협동(2026년 10월). 같이 수레 밀다가 다 같이 넘어지는 맛.","top":5,"why":"라쿤 특공대 협동 · 평가 96%","f":1},
 {"c":"chaos","n":"프랫폴","e":"프랫폴","sid":"2iz32","y":2026,"p":"최대 4인","k":1,"b":"each","pr":8400,"m":["협동","긴장"],"d":"사라진 반려견을 찾아 동굴을 파고 폭파하며 계속 아래로 내려가는 협동 게임(2026년). 함정과 중력이 무서워서 서로 붙잡아줘야 해."},
-{"c":"chaos","n":"엠버","e":"Embr","sid":"ms32","y":2021,"p":"최대 4인","k":1,"b":"each","pr":20500,"m":["웃김","협동"],"d":"넷이 엉터리 소방관이 되어 불 끄고 사람 구하고 돈 버는 게임. 계획대로 되는 게 하나도 없어서 웃겨.","f":1},
+{"c":"chaos","n":"엠버","e":"Embr","sid":"ms32","y":2021,"p":"최대 4인","k":1,"b":"each","pr":20500,"m":["웃김","협동"],"d":"넷이 엉터리 소방관이 되어 불 끄고 사람 구하고 돈 버는 게임. 계획대로 되는 게 하나도 없어서 웃겨.","fy":2020,"f":1},
 {"c":"chaos","n":"토탈리 릴라이어블 딜리버리 서비스","e":"Totally Reliable Delivery Service","sid":"loly","y":2021,"p":"최대 4인","k":1,"b":"each","pr":16500,"m":["웃김"],"d":"흐물흐물한 택배 기사 넷이 이상한 탈것과 장치로 소포를 배달하는 물리 게임. 휴먼 폴 플랫 같은 난장판.","f":1},
-{"c":"chaos","n":"슈퍼 버니 맨","e":"Super Bunny Man","sid":"efva","y":2023,"p":"최대 4인","k":1,"b":"each","pr":15250,"m":["웃김","협동"],"d":"토끼 옷 입은 사람 넷이 굴러다니며 서로 붙잡고 맵을 깨는 물리 협동. 조작이 엉망이라 계속 웃게 돼.","f":1},
+{"c":"chaos","n":"슈퍼 버니 맨","e":"Super Bunny Man","sid":"efva","y":2023,"p":"최대 4인","k":1,"b":"each","pr":15250,"m":["웃김","협동"],"d":"토끼 옷 입은 사람 넷이 굴러다니며 서로 붙잡고 맵을 깨는 물리 협동. 조작이 엉망이라 계속 웃게 돼.","fy":2017,"f":1},
 {"c":"chaos","n":"SOS 옵스!","e":"SOS OPS!","sid":"1h22s","y":2023,"p":"최대 4인","k":1,"b":"each","pr":8000,"m":["웃김","협동"],"d":"넷이 구조대가 되어 도시의 사고를 수습하는 협동 게임. 캐릭터가 계속 넘어져서 미션이 엉망진창이 돼.","f":1},
 {"c":"chaos","n":"히브 호 2","e":"Heave Ho 2","sid":"1o2lw","y":2026,"p":"2~4인","k":1,"b":"each","pr":10500,"m":["웃김","협동"],"d":"팔만 달린 캐릭터끼리 손 잡고 매달려 건너가는 히브 호의 후속작(2026년). 이번엔 처음으로 온라인 협동이 돼.","f":1},
 {"c":"chaos","n":"유니사이클 투게더","e":"Unicycle Together","sid":"2jv4o","y":2026,"p":"2~4인","k":1,"b":"each","pr":5600,"m":["웃김","긴장"],"d":"외발자전거 탄 소시지들이 터지기 직전인 폭탄을 들고 산 정상까지 가는 물리 게임(2026년). 협동하거나 친구를 터뜨리거나.","f":1},
 {"c":"chaos","n":"WASD : 토리의 모험","e":"WASD : 토리의 모험","sid":"29ovy","y":2025,"p":"2~4인","k":1,"b":"each","pr":4500,"m":["웃김","협동"],"d":"각자 W·A·S·D 중 무작위로 받은 키 하나씩만 눌러서 캐릭터 하나를 같이 움직이는 우정 파괴 협동. 벽에 닿으면 바로 죽어.","f":1},
 {"c":"chaos","n":"갬블 위드 유어 프렌즈","e":"Gamble With Your Friends","sid":"2bfam","y":2026,"p":"1~6인","k":1,"b":"each","pr":8900,"m":["웃김","긴장"],"d":"계좌 하나와 엄청난 빚을 친구들과 같이 쓰면서 카지노 탑을 올라가는 협동 게임(2026년). 5분마다 갚아야 하는 돈이 있어서 다 같이 최악의 결정을 하게 돼. 한 판 2~3시간."},
 {"c":"chaos","n":"비세라 클린업 디테일","e":"Viscera Cleanup Detail","sid":"5aic","y":2015,"p":"여럿","k":0,"b":"each","pr":14500,"m":["편안","웃김"],"d":"우주 정거장에서 괴물 사건이 끝난 뒤 남은 난장판을 청소부 넷이 치우는 게임. 소재는 잔인한데 하는 건 걸레질. 영어지만 글이 적어."},
-{"c":"survive","n":"플래닛 크래프터","e":"The Planet Crafter","sid":"rivy","y":2024,"p":"최대 10인","k":1,"b":"each","pr":26900,"m":["편안","탐험"],"d":"황무지 행성에 산소·열·물을 만들어 점점 살 수 있는 별로 바꾸는 생존 건설. 무섭지 않고 느긋해서 같이 오래 하기 좋아.","top":10,"why":"넷이 행성 개조 · 평가 96%"},
-{"c":"survive","n":"휴머니츠","e":"HumanitZ","sid":"11up8","y":2026,"p":"최대 4인","k":1,"b":"each","pr":21500,"m":["긴장","탐험"],"d":"좀비로 망한 세상을 위에서 비스듬히 내려다보며 살아남는 생존 게임. 도시를 뒤져 무기·식량을 모으거나 시골에서 사냥·낚시·농사를 하고, 차에 친구들 태우고 다니며 기지를 지어. 배고픔·날씨·감염까지 챙겨야 해서 넷이 역할 나누기 좋아. 한 명이 방을 열고 나머지가 들어가는 방식이라, 방장이 나가면 다 같이 끊기고 저장도 방장 컴퓨터에 돼.","want":1},
+{"c":"survive","n":"플래닛 크래프터","e":"The Planet Crafter","sid":"rivy","y":2024,"p":"최대 10인","k":1,"b":"each","pr":26900,"m":["편안","탐험"],"d":"황무지 행성에 산소·열·물을 만들어 점점 살 수 있는 별로 바꾸는 생존 건설. 무섭지 않고 느긋해서 같이 오래 하기 좋아.","fy":2022,"top":10,"why":"넷이 행성 개조 · 평가 96%"},
+{"c":"survive","n":"휴머니츠","e":"HumanitZ","sid":"11up8","y":2026,"p":"방장 방식 최대 4인 · 서버는 더","k":1,"b":"each","pr":21500,"m":["긴장","탐험"],"d":"좀비로 망한 세상을 위에서 비스듬히 내려다보며 살아남는 생존 게임. 도시를 뒤져 무기·식량을 모으거나 시골에서 사냥·낚시·농사를 하고, 차에 친구들 태우고 다니며 기지를 지어. 배고픔·날씨·감염까지 챙겨야 해서 넷이 역할 나누기 좋아. 보통은 한 명이 방을 열고 나머지가 들어가는 방식이라 방장이 나가면 다 같이 끊기고 저장도 방장 컴퓨터에 돼. 서버를 따로 빌리면 방장 없이도 할 수 있어.","fy":2023,"want":1},
 {"c":"cozy","n":"낚시 방법","e":"낚시 방법","sid":"2drvm","y":2026,"p":"1~4인","k":1,"b":"each","pr":8400,"m":["웃김","편안"],"d":"술 마시고 보트 타다 섬에 처박혀서, 집에 가려면 낚시부터 배워야 하는 물리 낚시 게임(2026년). 스팀 리뷰 7만 개가 넘을 만큼 터졌어.","top":2,"why":"2026 히트작 · 평가 95%"},
-{"c":"survive","n":"스몰랜드","e":"Smalland: Survive the Wilds","sid":"ggqw","y":2024,"p":"최대 10인","k":1,"b":"each","pr":37500,"m":["탐험","긴장"],"d":"개미만 한 소인이 되어 거대한 숲에서 살아남는 생존. 곤충을 길들여 타고 다닐 수 있어."},
+{"c":"survive","n":"스몰랜드","e":"Smalland: Survive the Wilds","sid":"ggqw","y":2024,"p":"최대 10인","k":1,"b":"each","pr":37500,"m":["탐험","긴장"],"d":"개미만 한 소인이 되어 거대한 숲에서 살아남는 생존. 곤충을 길들여 타고 다닐 수 있어.","fy":2023},
 {"c":"survive","n":"프로젝트 좀보이드","e":"Project Zomboid","sid":"2bso","y":2013,"p":"여럿","k":1,"b":"each","pr":26500,"m":["긴장","머리씀"],"d":"좀비 세상에서 집을 고치고 식량을 모으며 최대한 오래 버티는 생존. 엄청 현실적이고 깊어서 수백 시간짜리. 평가 94%.","ea":1},
-{"c":"survive","n":"세븐 데이즈 투 다이","e":"7 Days to Die","sid":"5e42","y":2024,"p":"여럿","k":1,"b":"each","pr":47000,"m":["긴장","탐험"],"d":"낮엔 기지 짓고, 7일마다 몰려오는 좀비 떼를 밤새 막아내는 생존 건설."},
-{"c":"survive","n":"더 포레스트","e":"The Forest","sid":"57bc","y":2018,"p":"최대 8인","k":1,"b":"each","pr":20500,"m":["무서움","탐험"],"d":"비행기 추락 후 식인 부족이 사는 숲에서 살아남는 생존 공포. 선즈 오브 더 포레스트의 전작이고 평가 95%."},
+{"c":"survive","n":"세븐 데이즈 투 다이","e":"7 Days to Die","sid":"5e42","y":2024,"p":"여럿","k":1,"b":"each","pr":47000,"m":["긴장","탐험"],"d":"낮엔 기지 짓고, 7일마다 몰려오는 좀비 떼를 밤새 막아내는 생존 건설.","fy":2013},
+{"c":"survive","n":"더 포레스트","e":"The Forest","sid":"57bc","y":2018,"p":"최대 8인","k":1,"b":"each","pr":20500,"m":["무서움","탐험"],"d":"비행기 추락 후 식인 부족이 사는 숲에서 살아남는 생존 공포. 선즈 오브 더 포레스트의 전작이고 평가 95%.","fy":2014},
 {"c":"survive","n":"그린 헬","e":"Green Hell","sid":"hh56","y":2019,"p":"최대 4인","k":1,"b":"each","pr":26000,"m":["긴장","탐험"],"d":"아마존 정글에서 배고픔·상처·정신 상태까지 챙기며 버티는 하드한 생존."},
-{"c":"survive","n":"메디블 다이너스티","e":"Medieval Dynasty","sid":"o7l8","y":2021,"p":"최대 4인","k":1,"b":"each","pr":27900,"m":["편안","탐험"],"d":"중세 시대에 마을을 세우고 사람을 모아 키우는 생존+경영. 사냥·농사·건축을 넷이 나눠 하기 좋아."},
-{"c":"survive","n":"팩토리오","e":"Factorio","sid":"95vk","y":2020,"p":"여럿","k":1,"b":"each","pr":40000,"m":["머리씀"],"d":"외계 행성에 공장을 짓고 끝없이 자동화하는 게임. 계획 짜는 거 좋아하는 넷이면 시간 순삭. 평가 97%."},
+{"c":"survive","n":"메디블 다이너스티","e":"Medieval Dynasty","sid":"o7l8","y":2021,"p":"최대 4인","k":1,"b":"each","pr":27900,"m":["편안","탐험"],"d":"중세 시대에 마을을 세우고 사람을 모아 키우는 생존+경영. 사냥·농사·건축을 넷이 나눠 하기 좋아.","fy":2020},
+{"c":"survive","n":"팩토리오","e":"Factorio","sid":"95vk","y":2020,"p":"여럿","k":1,"b":"each","pr":40000,"m":["머리씀"],"d":"외계 행성에 공장을 짓고 끝없이 자동화하는 게임. 계획 짜는 거 좋아하는 넷이면 시간 순삭. 평가 97%.","fy":2016},
 {"c":"survive","n":"얼로프트","e":"Aloft","sid":"zkxc","y":2025,"p":"최대 8인","k":1,"b":"each","pr":27500,"m":["편안","탐험"],"d":"떠다니는 섬을 하늘배로 만들어 구름 사이를 여행하며 생태계를 되살리는 협동 생존.","ea":1},
 {"c":"survive","n":"룬스케이프: 드래곤와일즈","e":"RuneScape: Dragonwilds 룬스케이프: 드래곤와일즈","sid":"tgka","y":2026,"p":"여럿","k":1,"b":"each","pr":32000,"m":["탐험","액션"],"d":"룬스케이프 세계에서 기지를 짓고 스킬을 키워 드래곤 여왕에게 맞서는 협동 생존(2026년 9월 정식 출시)."},
 {"c":"cozy","n":"재패니즈 라멘 시뮬레이터","e":"Japanese Ramen Simulator","sid":"2yhts","y":2026,"p":"최대 6인","k":1,"b":"each","pr":16000,"m":["편안","협동"],"d":"넷이 라멘 가게를 차려 재료 손질·면 삶기·토핑·서빙을 나눠 맡는 경영 게임(2026년 10월). 메뉴 개발이랑 가게 꾸미기도 돼.","ea":1},
@@ -472,9 +479,9 @@ const G = [{"c":"horror","n":"포어원드","e":"FOREWARNED","sid":"xhkk","y":20
 {"c":"cozy","n":"문 스위퍼스","e":"Moon Sweepers","sid":"36cwm","y":2026,"p":"최대 16인","k":1,"b":"each","pr":9650,"m":["편안","웃김"],"d":"칫솔 하나로 달 전체를 청소하는 데서 시작해, 달 먼지를 팔아 장비와 청소차를 키우는 협동 게임(2026년 10월)."},
 {"c":"cozy","n":"스노우러너","e":"SnowRunner","sid":"veog","y":2021,"p":"최대 4인","k":1,"b":"each","pr":34800,"m":["편안","머리씀"],"d":"진흙·눈길에서 트럭을 몰아 화물을 나르는 운전 시뮬레이션. 넷이 서로 견인해주며 길을 뚫는 맛. 평가 90%."},
 {"c":"action","n":"건파이어 리본","e":"Gunfire Reborn","sid":"q338","y":2021,"p":"최대 4인","k":1,"b":"each","pr":20500,"m":["액션"],"d":"귀여운 동물 영웅들로 던전을 돌며 무기·능력을 쌓는 로그라이트 슈팅. 한 판 30~40분이라 넷이 저녁에 하기 딱.","top":7,"why":"4인 협동 슈팅 · 평가 93%"},
-{"c":"action","n":"마이코펑크: 곰팡이 버스터즈","e":"Mycopunk: 곰팡이 버스터즈","sid":"1xlza","y":2026,"p":"4인 협동","k":1,"b":"each","pr":16500,"m":["액션","웃김"],"d":"외계 곰팡이를 박멸하는 4인 협동 슈팅(2026년 10월 정식). 업그레이드가 수백 가지라 각자 개성 있게 키우는 맛."},
+{"c":"action","n":"마이코펑크: 곰팡이 버스터즈","e":"Mycopunk: 곰팡이 버스터즈","sid":"1xlza","y":2026,"p":"4인 협동","k":1,"b":"each","pr":16500,"m":["액션","웃김"],"d":"외계 곰팡이를 박멸하는 4인 협동 슈팅(2026년 10월 정식). 업그레이드가 수백 가지라 각자 개성 있게 키우는 맛.","fy":2025},
 {"c":"action","n":"셰이프 오브 드림즈","e":"Shape of Dreams","sid":"1gedq","y":2025,"p":"최대 4인","k":1,"b":"each","pr":27000,"m":["액션"],"d":"꿈속 세계를 달리는 빠른 액션 로그라이크. 넷이 서로 다른 빌드를 짜서 합을 맞춰."},
-{"c":"action","n":"뱀파이어 서바이버즈","e":"Vampire Survivors","sid":"12gs8","y":2022,"p":"한 화면 4인","k":1,"b":"rpt","pr":5000,"m":["액션","편안"],"d":"수천 마리 몬스터를 자동 공격으로 쓸어버리는 중독성 액션. 한 화면 4인 협동이라 한 명만 사고 원격 같이하기로 넷이 할 수 있어. 5,000원."},
+{"c":"action","n":"뱀파이어 서바이버즈","e":"Vampire Survivors","sid":"12gs8","y":2022,"p":"한 화면 4인","k":1,"b":"rpt","pr":5000,"m":["액션","편안"],"d":"수천 마리 몬스터를 자동 공격으로 쓸어버리는 중독성 액션. 한 화면 4인 협동이라 한 명만 사고 원격 같이하기로 넷이 할 수 있어. 5,000원.","fy":2021},
 {"c":"action","n":"그랑블루 판타지 리링크","e":"Granblue Fantasy: Relink","sid":"ivss","y":2024,"p":"4인 파티","k":1,"b":"each","pr":49800,"m":["액션"],"d":"넷이 파티를 짜서 콤보를 이어 붙이는 화려한 액션 RPG. 액션 초보도 따라가기 쉬워."},
 {"c":"action","n":"몬스터 헌터 라이즈","e":"MONSTER HUNTER RISE","sid":"v0cc","y":2022,"p":"최대 4인","k":1,"b":"each","pr":49800,"m":["액션"],"d":"거대 몬스터를 넷이 사냥하고 그걸로 장비를 만드는 몬헌. 와일즈보다 가볍고 빨라."},
 {"c":"action","n":"워프레임","e":"Warframe","sid":"4xsa","y":2013,"p":"4인 분대","k":1,"b":"free","pr":0,"m":["액션"],"d":"우주 닌자가 되어 4인 분대로 임무를 도는 무료 액션 슈팅. 콘텐츠가 엄청 많아."},
@@ -500,76 +507,113 @@ G.forEach((g, i) => g.i = i);
 const bySid = {}; G.forEach(g => bySid[g.sid] = g);
 
 /* ── 저장(이 기기에만) ──
-   my: 내 선택 {게임id: y 하자 / o 괜춘 / n 빼자}, votes: 받은 선택 {이름: {c: 선택, add: 그 사람이 가진 추가 게임}},
-   myAdds: 내가 추가한 게임, hidden: 지우거나 숨긴 추가 게임 id. 예전 찜(♥)은 하자로 옮겨 옴 */
-const K = { name:'g4_name_v1', my:'g4_my_v2', votes:'g4_votes_v2', add:'g4_add_v1', hide:'g4_addhide_v1', oldMine:'g4_mine_v1', oldVotes:'g4_votes_v1' };
+   my: 내 선택 {게임id: y 하자 / o 괜춘 / n 빼자}, myId: 이 기기 사람 표시(링크에 실려 이름이 바뀌어도 같은 사람으로 봄),
+   votes: 받은 선택 {키('u:'+사람표시, 예전 형식 링크면 'n:'+이름): {name, c: 선택, add: 그 사람이 가진 추가 게임, at: 받은 시각, t: 보낸 시각(초)}},
+   myAdds: 내가 추가한 게임, hidden: 지우거나 숨긴 추가 게임 id. 예전 찜(♥)·예전 받은 찜은 하자로 옮겨 옴 */
+const K = { name:'g4_name_v1', my:'g4_my_v2', votes:'g4_votes_v2', add:'g4_add_v1', hide:'g4_addhide_v1', uid:'g4_uid_v1', oldMine:'g4_mine_v1', oldVotes:'g4_votes_v1' };
+const storageOK = (() => { try { localStorage.setItem('g4_t', '1'); localStorage.removeItem('g4_t'); return true; } catch(e) { return false; } })();
 const load = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e) { return d; } };
 const store = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} };
 const isObj = o => !!o && typeof o === 'object' && !Array.isArray(o);
 const CH = { y:{e:'🔥', t:'하자'}, o:{e:'👌', t:'괜춘'}, n:{e:'🙅', t:'빼자'} };
 const isCh = v => v === 'y' || v === 'o' || v === 'n';
-const ID_RE = /^(?:[0-9a-z]{1,8}|-[0-9a-z]{1,8})$/;
-const cleanName = s => String(s == null ? '' : s).replace(/[<>"'`]/g, '').replace(/\s+/g, ' ').trim();
+const ID_RE = /^(?:[0-9a-z]{1,8}|-[0-9a-z]{1,8})$/, UID_RE = /^[0-9a-z]{6,12}$/;
+/* 짝 잃은 반쪽 글자(이모지 반 토막)를 없애고, 이모지를 한 글자로 세서 자름 — 반 토막이 남으면 링크 만들 때 오류가 나서 페이지가 멈췄음 */
+const wf = s => { s = String(s == null ? '' : s); if (s.toWellFormed) return s.toWellFormed(); let o = ''; for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); if (c >= 0xD800 && c <= 0xDBFF) { const d = s.charCodeAt(i + 1); if (d >= 0xDC00 && d <= 0xDFFF) { o += s[i] + s[i + 1]; i++; } else o += '�'; } else if (c >= 0xDC00 && c <= 0xDFFF) o += '�'; else o += s[i]; } return o; };
+const cut = (s, n) => Array.from(wf(s)).slice(0, n).join('');
+const cleanName = s => wf(s).replace(/[<>"'`]/g, '').replace(/\s+/g, ' ').trim();
 const normName = s => cleanName(s).toLowerCase().replace(/[\s\-_:.,!?’™®()\[\]·~]/g, '');
 const hash36 = s => { let h = 2166136261; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return h.toString(36); };
 const addId = (a, n) => a ? a.toString(36) : '-' + hash36(normName(n));
+const rid = () => { try { const a = new Uint32Array(2); crypto.getRandomValues(a); return (a[0].toString(36) + a[1].toString(36) + '000000').slice(0, 10); } catch(e) { return (Math.random().toString(36).slice(2) + '000000').slice(0, 10); } };
+const nowSec = () => Math.floor(Date.now() / 1000);
 function cleanAdd(x){
   if (!isObj(x)) return null;
   const a = /^\d{1,9}$/.test(String(x.a || '')) ? Number(x.a) : null;
-  const n = cleanName(x.n).slice(0, 40);
+  const n = cut(cleanName(x.n), 40);
   if (!n) return null;
-  return { id: addId(a, n), n, a, by: cleanName(x.by).slice(0, 10) };
+  return { id: addId(a, n), n, a, by: cut(cleanName(x.by), 10) };
 }
 const cleanCh = o => { const r = {}; if (isObj(o)) for (const [k, v] of Object.entries(o)) if (ID_RE.test(k) && isCh(v)) r[k] = v; return r; };
 
-let myName = cleanName(load(K.name, '')).slice(0, 10);
-let my = load(K.my, null);
-if (!isObj(my)) { my = {}; for (const s of (Array.isArray(load(K.oldMine, [])) ? load(K.oldMine, []) : [])) if (bySid[s]) my[s] = 'y'; }
-my = cleanCh(my);
-const la = load(K.add, []);
-let myAdds = (Array.isArray(la) ? la : []).map(cleanAdd).filter(Boolean);
-const lh = load(K.hide, []);
-let hidden = new Set((Array.isArray(lh) ? lh : []).filter(s => typeof s === 'string' && ID_RE.test(s)));
-let votes = load(K.votes, null);
-if (!isObj(votes)) {
+let myName = '', myId = '', my = {}, myAdds = [], hidden = new Set(), votes = {}, lastSig = '';
+const sig = () => { try { return [K.my, K.name, K.votes, K.add, K.hide, K.uid].map(k => localStorage.getItem(k) || '').join('|'); } catch(e) { return ''; } };
+/* 저장값 읽기 — 처음 열 때, 그리고 다른 탭에서 바꿨을 때 다시 읽음 (탭 두 개가 서로 덮어써서 선택이 사라지던 문제) */
+function loadState(){
+  myName = cut(cleanName(load(K.name, '')), 10);
+  myId = String(load(K.uid, '') || '');
+  if (!UID_RE.test(myId)) { myId = rid(); store(K.uid, myId); }
+  let m = load(K.my, null);
+  if (!isObj(m)) { m = {}; const om = load(K.oldMine, []); for (const s of (Array.isArray(om) ? om : [])) if (bySid[s]) m[s] = 'y'; }
+  my = cleanCh(m);
+  const la = load(K.add, []);
+  myAdds = (Array.isArray(la) ? la : []).map(cleanAdd).filter(Boolean);
+  const lh = load(K.hide, []);
+  hidden = new Set((Array.isArray(lh) ? lh : []).filter(s => typeof s === 'string' && ID_RE.test(s)));
+  let v = load(K.votes, null);
+  if (!isObj(v)) {
+    v = {};
+    const ov = load(K.oldVotes, {});
+    if (isObj(ov)) for (const [n, x] of Object.entries(ov)) if (x && Array.isArray(x.ids)) { const c = {}; x.ids.forEach(s => { if (bySid[s]) c[s] = 'y'; }); v['n:' + n] = { name: n, c, add: [], at: x.at || 0 }; }
+  }
   votes = {};
-  const ov = load(K.oldVotes, {});
-  if (isObj(ov)) for (const [n, v] of Object.entries(ov)) if (v && Array.isArray(v.ids)) { const c = {}; v.ids.forEach(s => { if (bySid[s]) c[s] = 'y'; }); votes[n] = { c, add: [], at: v.at || 0 }; }
+  for (const [k0, x] of Object.entries(v)) {
+    if (!isObj(x)) continue;
+    const k = /^[un]:/.test(k0) ? k0 : 'n:' + k0;   // 이름이 키였던 오늘 아침 판은 'n:'+이름 으로 옮김
+    if (k.startsWith('u:') && !UID_RE.test(k.slice(2))) continue;
+    const name = cut(cleanName(x.name || k.slice(2)), 10) || '친구';
+    votes[k] = { name, c: cleanCh(x.c), add: (Array.isArray(x.add) ? x.add : []).map(cleanAdd).filter(Boolean).slice(0, 80), at: +x.at || 0, t: +x.t || 0 };
+  }
+  const inp = document.getElementById('myName');
+  if (inp && document.activeElement !== inp) inp.value = myName;
+  lastSig = sig();
 }
-for (const n of Object.keys(votes)) { const v = votes[n]; if (!isObj(v)) { delete votes[n]; continue; } votes[n] = { c: cleanCh(v.c), add: (Array.isArray(v.add) ? v.add : []).map(cleanAdd).filter(Boolean), at: v.at || 0 }; }
-const saveAll = () => { store(K.my, my); store(K.name, myName); store(K.votes, votes); store(K.add, myAdds); store(K.hide, [...hidden]); };
+const saveAll = () => { store(K.my, my); store(K.name, myName); store(K.votes, votes); store(K.add, myAdds); store(K.hide, [...hidden]); store(K.uid, myId); lastSig = sig(); };
+loadState();
 
-const others = () => Object.keys(votes).filter(n => n !== myName);
+/* 친구 목록(키): 받은 선택 중 나 자신(같은 사람 표시, 또는 예전 형식인데 이름이 같은 것)은 뺌 */
+const others = () => Object.keys(votes).filter(k => k !== 'u:' + myId && !(k.startsWith('n:') && myName && votes[k].name === myName));
+/* 화면에 보일 이름 — 같은 이름이 둘 이상이면 뒤에 ②③ */
+function label(k){
+  const nm = votes[k].name, same = others().filter(x => votes[x].name === nm);
+  const idx = same.indexOf(k) + (myName === nm ? 1 : 0);
+  return idx > 0 ? nm + '②③④⑤⑥⑦⑧⑨'.charAt(Math.min(idx, 8) - 1) : nm;
+}
+const meLabel = () => myName || '나';
 const groupSize = () => 1 + others().length;
 /* 추가 게임 모음: 내가 추가한 것 + 친구 링크에 실려 온 것 (공식 목록에 있는 것·숨긴 것 제외) */
 function addReg(){
   const m = new Map();
-  for (const x of myAdds.concat(...others().map(n => votes[n].add)))
+  for (const x of myAdds.concat(...others().map(k => votes[k].add)))
     if (!bySid[x.id] && !hidden.has(x.id) && !m.has(x.id)) m.set(x.id, x);
   return m;
 }
 /* 게임 하나에 누가 뭘 골랐나 {y:[이름], o:[], n:[]} */
 function whoChose(id){
   const t = { y:[], o:[], n:[] };
-  if (my[id]) t[my[id]].push(myName || '나');
-  for (const n of others()) { const c = votes[n].c[id]; if (c) t[c].push(n); }
+  if (my[id]) t[my[id]].push(meLabel());
+  for (const k of others()) { const c = votes[k].c[id]; if (c) t[c].push(label(k)); }
   return t;
 }
 const nChosen = t => t.y.length + t.o.length + t.n.length;
 
-/* 친구가 보낸 링크 받기 — 새 형식 #p=이름&y=id.id&o=…&n=…&a=추가게임, 예전 형식 #v=이름~id.id(찜 → 하자) */
+/* 친구가 보낸 링크 받기 — 새 형식 #p=이름&u=사람표시&t=보낸시각&y=id.id&o=…&n=…&a=추가게임, 예전 형식 #v=이름~id.id(찜 → 하자) */
 const parseIds = s => [...new Set(String(s || '').toLowerCase().split('.').filter(x => ID_RE.test(x)))];
 function importHash(){
   const h = location.hash;
-  let raw = '', c = {}, add = [];
+  let raw = '', c = {}, add = [], u = '', t = 0, dropped = 0;
   const m = h.match(/^#v=([^~]*)~([0-9a-z.]*)$/i);
   if (m) { raw = m[1]; parseIds(m[2]).forEach(id => { if (bySid[id]) c[id] = 'y'; }); }
   else if (/^#p=/.test(h)) {
     const kv = {};
     h.slice(1).split('&').forEach(p => { const i = p.indexOf('='); if (i > 0) kv[p.slice(0, i)] = p.slice(i + 1); });
     raw = kv.p || '';
+    if (UID_RE.test(kv.u || '')) u = kv.u;
+    if (/^[0-9a-z]{1,9}$/.test(kv.t || '')) t = parseInt(kv.t, 36);
     for (const k of ['n', 'o', 'y']) parseIds(kv[k]).forEach(id => { c[id] = k; });
-    add = String(kv.a || '').split('.').filter(Boolean).slice(0, 30).map(it => {
+    const items = String(kv.a || '').split('.').filter(Boolean);
+    dropped = Math.max(0, items.length - 80);
+    add = items.slice(0, 80).map(it => {
       const [a36, n, by] = it.split(':');
       let dn = '', db = '';
       try { dn = decodeURIComponent(n || ''); db = decodeURIComponent(by || ''); } catch(e) {}
@@ -579,19 +623,42 @@ function importHash(){
   } else return null;
   let name = '';
   try { name = decodeURIComponent(raw); } catch(e) {}
-  name = cleanName(name).slice(0, 10) || '친구';
-  try { history.replaceState(null, '', location.pathname + location.search); } catch(e) {}
-  if (myName && name === myName) return { self:true, name };
+  name = cut(cleanName(name), 10) || '친구';
+  // 저장이 막힌 브라우저면 주소를 남겨 둬서 새로고침해도 다시 받게
+  if (storageOK) { try { history.replaceState(null, '', location.pathname + location.search); } catch(e) {} }
+  if (u ? u === myId : (myName && name === myName)) return { self:true, name };
+  const key = u ? 'u:' + u : 'n:' + name, prev = votes[key];
+  if (prev && prev.t && (!t || t < prev.t)) return { stale:true, name };   // 더 최신 걸 이미 받았으면 예전 링크로 되돌리지 않음
   const known = new Set(add.map(x => x.id));
   for (const id of Object.keys(c)) if (!bySid[id] && !known.has(id)) delete c[id];
-  votes[name] = { c, add, at: Date.now() };
+  if (u) delete votes['n:' + name];   // 같은 사람이 예전 형식으로 보낸 기록은 새 것으로 바꿈
+  votes[key] = { name, c, add, at: Date.now(), t };
   saveAll();
   const k = { y:0, o:0, n:0 }; Object.values(c).forEach(v => k[v]++);
-  return { name, k, add: add.length };
+  return { name, key, k, add: add.length, dropped, adopt: !!u && !myName && !Object.keys(my).length && !myAdds.length };
 }
 function bannerMsg(r){
   if (r.self) return '내가 보낸 링크라서 그대로 뒀어.';
-  return `<b>${esc(r.name)}</b>의 선택을 합쳤어 — 🔥${r.k.y} 👌${r.k.o} 🙅${r.k.n}${r.add ? ` · 추가한 게임 ${r.add}개` : ''}. 아래 「다듬은 목록」에서 같이 볼 수 있어. ${myName ? '' : '너도 이름 쓰고 골라서 보내줘!'}`;
+  if (r.stale) return `<b>${esc(r.name)}</b>의 더 최신 선택을 이미 받아 둬서, 이 예전 링크는 그대로 뒀어.`;
+  return `<b>${esc(r.name)}</b>의 선택을 합쳤어 — 🔥${r.k.y} 👌${r.k.o} 🙅${r.k.n}${r.add ? ` · 추가한 게임 ${r.add}개` : ''}${r.dropped ? ` (추가 게임이 너무 많아 ${r.dropped}개는 못 받음)` : ''}. 아래 「다듬은 목록」에서 같이 볼 수 있어. ${myName ? '' : '너도 이름 쓰고 골라서 보내줘!'}${r.adopt ? ` <button class="adopt" data-adopt="${esc(r.key)}">내가 보낸 링크면 → 이 기기로 가져오기</button>` : ''}`;
+}
+/* 내 링크를 다른 폰·브라우저에서 열었을 때: 그 선택을 이 기기의 내 선택으로 */
+function adopt(k){
+  const v = votes[k]; if (!v || !k.startsWith('u:')) return;
+  myId = k.slice(2); myName = v.name; my = { ...v.c }; myAdds = v.add.slice(0, 80);
+  delete votes[k];
+  $('#myName').value = myName; nameAtFocus = myName;
+  saveAll(); renderAll();
+  $('#banner').style.display = 'none';
+  toast(`‘${myName}’ 선택을 이 기기로 가져왔어. 여기서 이어서 고르면 돼`);
+}
+/* 한 기기를 둘이 쓸 때: 이름을 바꾸면 앞사람 선택은 친구 선택처럼 남기고 새로(또는 그 사람 기록으로 이어서) 고름 */
+function switchPerson(old, nw){
+  votes['u:' + myId] = { name: old, c: { ...my }, add: myAdds.map(x => ({ ...x })), at: Date.now(), t: nowSec() };
+  const hit = Object.keys(votes).find(k => k !== 'u:' + myId && votes[k].name === nw);
+  if (hit) { const v = votes[hit]; my = { ...v.c }; myAdds = v.add.filter(x => x.by === nw); myId = hit.startsWith('u:') ? hit.slice(2) : rid(); delete votes[hit]; }
+  else { my = {}; myAdds = []; myId = rid(); }
+  toast(`‘${old}’ 선택은 따로 남겨 두고 ‘${nw}’(으)로 ${hit ? '이어서' : '새로'} 골라`);
 }
 
 function rvClass(r){ if(!r) return 'l'; return r.p >= 70 ? 'g' : r.p >= 40 ? 'm' : 'l'; }
@@ -619,7 +686,7 @@ function buyBadges(g){
 }
 function koBadge(g){ return g.k===1 ? '<span class="b ko">한국어</span>' : g.k===0 ? '<span class="b en">영어만</span>' : '<span class="b en">한국어 확인 필요</span>'; }
 function extraBadges(g){
-  return `${g.top?`<span class="b topb">추천 ${g.top}위</span>`:''}${g.want?'<span class="b want">🙋 친구들 픽</span>':''}${g.soon?`<span class="b soon">출시 예정 · ${esc(g.soon)}</span>`:''}${g.y===2026?'<span class="b new">2026 신작</span>':''}${g.ea?'<span class="b ea">얼리 액세스</span>':''}${g.mic?'<span class="b mic">🎙️ 마이크 필수</span>':''}${g.f?'<span class="b fight">싸움 주의 🫧</span>':''}`;
+  return `${g.top?`<span class="b topb">추천 ${g.top}위</span>`:''}${g.want?'<span class="b want">🙋 친구들 픽</span>':''}${g.soon?`<span class="b soon">출시 예정 · ${esc(g.soon)}</span>`:''}${g.y===2026?`<span class="b new">${g.fy?'2026 정식 출시':'2026 신작'}</span>`:''}${g.ea?'<span class="b ea">얼리 액세스</span>':''}${g.mic?'<span class="b mic">🎙️ 마이크 필수</span>':''}${g.f?'<span class="b fight">싸움 주의 🫧</span>':''}`;
 }
 function imgTag(g, cls){
   const m = media(g);
@@ -657,13 +724,14 @@ function card(g){
 }
 
 /* ── 목록 ── */
-const state = { cat:'all', ko:false, one:false, cheap:false, todo:false, yes:false, nohide:false, q:'', sort:'pick' };
+const state = { cat:'all', ko:false, one:false, cheap:false, todo:false, mine:false, yes:false, nohide:false, q:'', sort:'pick' };
 function match(g){
   if (state.cat!=='all' && g.c!==state.cat) return false;
   if (state.ko && g.k!==1) return false;
   if (state.one && !['free','rpt','manual','pass'].includes(g.b)) return false;
   if (state.cheap && !(g.b==='free' || (g.pr!=null && g.pr<=10000))) return false;
   if (state.todo && my[g.sid]) return false;
+  if (state.mine && my[g.sid] !== 'y') return false;
   if (state.yes && !whoChose(g.sid).y.length) return false;
   if (state.nohide && whoChose(g.sid).n.length) return false;
   if (state.q){
@@ -677,8 +745,8 @@ function match(g){
 function sorted(items){
   const a = items.slice();
   const rvScore = g => { const r = media(g).rv; return r ? r.p + Math.min(Math.log10(r.n), 6) / 100 : -1; };
-  const vs = g => { const t = whoChose(g.sid); return t.y.length * 3 + t.o.length - t.n.length * 4; };
-  if (state.sort==='votes') a.sort((x,y)=>vs(y)-vs(x) || rvScore(y)-rvScore(x));
+  // 하자 많은 순: 하자 수 → 빼자 적은 순 → 괜춘 수 → 스팀 평가
+  if (state.sort==='votes') { const T = {}; a.forEach(g => { T[g.sid] = whoChose(g.sid); }); a.sort((x,y)=>{ const p = T[x.sid], q = T[y.sid]; return q.y.length-p.y.length || p.n.length-q.n.length || q.o.length-p.o.length || rvScore(y)-rvScore(x); }); }
   else if (state.sort==='rv') a.sort((x,y)=>rvScore(y)-rvScore(x));
   else if (state.sort==='price') a.sort((x,y)=>(x.b==='free'?0:x.pr==null?1e9:x.pr)-(y.b==='free'?0:y.pr==null?1e9:y.pr));
   else if (state.sort==='new') a.sort((x,y)=>y.y-x.y);
@@ -696,13 +764,17 @@ function renderList(){
   $('#list').innerHTML = html;
   $('#empty').style.display = visible.length ? 'none' : 'block';
   $('#count').textContent = `${visible.length}개 보는 중`;
+  chipCounts();
+}
+function chipCounts(){
   $('#todoN').textContent = G.filter(g => !my[g.sid]).length;
+  $('#mineYN').textContent = G.filter(g => my[g.sid] === 'y').length;
 }
 /* 카드 하나만 제자리에서 다시 그리기 (목록 전체를 다시 그리면 화면이 튀어서) */
 function updateCard(g){
   const el = document.querySelector(`#list .card[data-gi="${g.i}"]`);
   if (el) el.outerHTML = card(g);
-  $('#todoN').textContent = G.filter(x => !my[x.sid]).length;
+  chipCounts();
 }
 function renderCats(){
   const all = [{id:'all',e:'',n:'전체'}].concat(CATS);
@@ -735,19 +807,22 @@ function renderWant(){
 }
 
 /* ── 같이 고르기 ── */
+/* 내 선택 수: 공식 게임 + 지금 보이는 추가 게임만 셈 (친구를 지워 사라진 추가 게임은 빼고) */
 function mySummary(){
-  const k = { y:0, o:0, n:0 }; Object.values(my).forEach(v => k[v]++);
-  return { k, n: Object.keys(my).length, done: G.filter(g => my[g.sid]).length };
+  const reg = addReg(), k = { y:0, o:0, n:0 }; let n = 0;
+  for (const [id, v] of Object.entries(my)) if (bySid[id] || reg.has(id)) { k[v]++; n++; }
+  return { k, n, done: G.filter(g => my[g.sid]).length };
 }
 function renderPick(){
   const s = mySummary();
   $('#mySum').innerHTML = `내 선택 🔥<b>${s.k.y}</b> 👌<b>${s.k.o}</b> 🙅<b>${s.k.n}</b> · ${G.length}개 중 <b>${s.done}</b>개 고름`;
-  const names = others();
-  $('#people').innerHTML = names.length
-    ? '<span class="ph">받은 선택:</span>' + names.map(n => { const v = Object.values(votes[n].c), c = k => v.filter(x => x === k).length; return `<span class="who">${esc(n)} 🔥${c('y')} 👌${c('o')} 🙅${c('n')} <button data-rm="${esc(n)}" aria-label="${esc(n)} 선택 지우기">✕</button></span>`; }).join('')
+  const ks = others();
+  $('#people').innerHTML = ks.length
+    ? '<span class="ph">받은 선택:</span>' + ks.map(k => { const v = Object.values(votes[k].c), c = x => v.filter(y => y === x).length, lb = label(k); return `<span class="who">${esc(lb)} 🔥${c('y')} 👌${c('o')} 🙅${c('n')} <button data-rm="${esc(k)}" aria-label="${esc(lb)} 선택 지우기">✕</button></span>`; }).join('')
     : '';
 }
 const steamImg = a => `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${a}/header.jpg`;
+const enc = s => encodeURIComponent(wf(s));
 const noImgFallback = `onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'noimg',textContent:this.alt.replace(' 대표 이미지','')}))"`;
 function renderAdded(){
   const reg = [...addReg().values()];
@@ -757,8 +832,8 @@ function renderAdded(){
     const ph = x.a ? `<img src="${steamImg(x.a)}" alt="${esc(x.n)} 대표 이미지" loading="lazy" ${noImgFallback}>` : `<div class="noimg">${esc(x.n)}</div>`;
     const st = x.a
       ? `<a class="btn" href="https://store.steampowered.com/app/${x.a}/" target="_blank" rel="noopener">스팀 상점 페이지 ↗</a>`
-      : `<a class="btn" href="https://store.steampowered.com/search/?term=${encodeURIComponent(x.n)}" target="_blank" rel="noopener">스팀에서 찾아보기 ↗</a>`;
-    const yt = `<a class="btn" href="https://www.youtube.com/results?search_query=${encodeURIComponent(x.n + ' 4인 플레이')}" target="_blank" rel="noopener">유튜브 영상 ↗</a>`;
+      : `<a class="btn" href="https://store.steampowered.com/search/?term=${enc(x.n)}" target="_blank" rel="noopener">스팀에서 찾아보기 ↗</a>`;
+    const yt = `<a class="btn" href="https://www.youtube.com/results?search_query=${enc(x.n + ' 4인 플레이')}" target="_blank" rel="noopener">유튜브 영상 ↗</a>`;
     return `<div class="ad${c ? ' c-' + c : ''}" id="add-${x.id}"><div class="ph">${ph}<span class="by">➕ ${esc(x.by || '누군가')} 추가</span><button class="x" data-unadd="${x.id}" aria-label="${esc(x.n)} ${lb}" title="${lb}">✕</button></div>
       <div class="tx"><b>${esc(x.n)}</b>${choiceHTML(x.id)}${whoLine(whoChose(x.id))}<div class="lk">${st}${yt}</div></div></div>`;
   }).join('');
@@ -777,7 +852,7 @@ function renderRank(){
   const sec = $('#allSec'), { keep, out, any } = splitRank();
   if (!any) { sec.hidden = true; return; }
   sec.hidden = false;
-  const total = groupSize(), names = [myName || '나'].concat(others());
+  const total = groupSize(), names = [meLabel()].concat(others().map(label));
   $('#rankDesc').innerHTML = total < 2
     ? '아직 <b>내 선택만</b> 있어. 친구들이 보낸 링크를 누르면 여기에 합쳐져서, 넷 다 괜찮은 게임만 남아.'
     : `<b>${names.map(esc).join(' · ')}</b> ${total}명의 선택을 합쳤어. 빼자가 하나라도 나온 게임은 아래로 빼고, 하자 많은 순으로 줄 세웠어.`;
@@ -797,7 +872,7 @@ function renderRank(){
   $('#rank').innerHTML = html;
 }
 function resultText(){
-  const { keep, out } = splitRank(), total = groupSize(), names = [myName || '나'].concat(others());
+  const { keep, out } = splitRank(), total = groupSize(), names = [meLabel()].concat(others().map(label));
   const all = keep.filter(it => total >= 2 && it.t.y.length >= total), rest = keep.filter(it => !all.includes(it));
   const L = [`[넷이 할 게임] 다듬은 목록 — ${names.join('·')} (${total}명)`];
   if (all.length) L.push('🎉 전원 하자: ' + all.map(it => it.n).join(', '));
@@ -813,7 +888,7 @@ function renderAll(){ renderPick(); renderAdded(); renderRank(); renderWant(); r
 function afterChoice(id){
   saveAll();
   renderPick(); renderAdded(); renderRank(); renderWant();
-  if (state.todo || state.yes || state.nohide || state.sort === 'votes') renderList();
+  if (state.todo || state.mine || state.yes || state.nohide || state.sort === 'votes') renderList();
   else if (bySid[id]) updateCard(bySid[id]);
 }
 function setChoice(id, ch){
@@ -823,7 +898,8 @@ function setChoice(id, ch){
 }
 function flashEl(el){ if (!el) return; el.scrollIntoView({ behavior:'smooth', block:'center' }); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
 let tt;
-function toast(t){ $('#toast').textContent = t; clearTimeout(tt); tt = setTimeout(()=>{ $('#toast').textContent=''; }, 3500); }
+/* 알림은 화면 아래에 떠서 어디서 눌러도 보임 */
+function toast(t){ const el = $('#toast'); el.textContent = t; el.classList.toggle('on', !!t); clearTimeout(tt); tt = setTimeout(()=>{ el.textContent = ''; el.classList.remove('on'); }, 3500); }
 async function copyText(text, okMsg){
   try { await navigator.clipboard.writeText(text); toast(okMsg); return; } catch(e) {}
   const ta = document.createElement('textarea'); ta.value = text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
@@ -834,11 +910,12 @@ async function copyText(text, okMsg){
 const pageURL = () => location.origin + location.pathname;
 const isPhone = () => !!navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
 /* 링크에 넣을 글자: 구분자(. ~ : & =)와 겹치지 않게 전부 %로 바꿈 */
-const ue = s => encodeURIComponent(s).replace(/[.~!*'()]/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase());
+const ue = s => encodeURIComponent(wf(s)).replace(/[.~!*'()]/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase());
 function shareURL(){
-  const ids = k => Object.keys(my).filter(id => my[id] === k).sort().join('.');
-  const a = [...addReg().values()].map(x => (x.a ? x.a.toString(36) : '') + ':' + ue(x.n) + ':' + ue(x.by || '')).join('.');
-  return pageURL() + '#p=' + ue(myName) + '&y=' + ids('y') + '&o=' + ids('o') + '&n=' + ids('n') + (a ? '&a=' + a : '');
+  const reg = addReg(), live = id => bySid[id] || reg.has(id);
+  const ids = k => Object.keys(my).filter(id => my[id] === k && live(id)).sort().join('.');
+  const a = [...reg.values()].map(x => (x.a ? x.a.toString(36) : '') + ':' + ue(x.n) + ':' + ue(x.by || '')).join('.');
+  return pageURL() + '#p=' + ue(myName) + '&u=' + myId + '&t=' + nowSec().toString(36) + '&y=' + ids('y') + '&o=' + ids('o') + '&n=' + ids('n') + (a ? '&a=' + a : '');
 }
 async function sendMine(){
   if (!myName){ $('#myName').focus(); toast('먼저 내 이름을 써줘'); return; }
@@ -896,17 +973,21 @@ function unAdd(id){
 }
 
 /* ── 상세 창 ── */
-let cur = null, hls = null, hlsLoading = null;
+let cur = null, hls = null, hlsLoading = null, playTok = 0, nav = null;
+/* 트레일러 재생기: 받은 파일이 바뀌지 않았는지 확인값(integrity)으로 검사, 못 받으면 다음에 다시 시도 */
 function loadHls(){
   if (window.Hls) return Promise.resolve();
   if (!hlsLoading) hlsLoading = new Promise((res, rej) => {
     const s = document.createElement('script');
     s.src = 'https://cdn.jsdelivr.net/npm/hls.js@1.5.20/dist/hls.min.js';
-    s.onload = res; s.onerror = rej; document.head.appendChild(s);
+    s.integrity = 'sha384-V5ruNBgmYcC3SJRUQeNykAAAgde5gOFq/Hu0CZj7bygDP0yRIhkvX8+w0u/7mRvr';
+    s.crossOrigin = 'anonymous';
+    s.onload = res; s.onerror = e => { hlsLoading = null; s.remove(); rej(e); }; document.head.appendChild(s);
   });
   return hlsLoading;
 }
 function stopVideo(){
+  playTok++;   // 재생기를 받는 중이었으면 그 재생은 취소 (창을 닫았는데 늦게 소리 나던 문제)
   if (hls) { hls.destroy(); hls = null; }
   const v = $('#viewer video'); if (v) { v.pause(); v.removeAttribute('src'); v.load(); }
 }
@@ -917,7 +998,7 @@ function showShot(idx){
   if (!shots.length){
     V.innerHTML = m.img ? `<img class="${m.id?'':'contain'}" src="${esc(m.img)}" alt="${esc(g.n)} 이미지">` : `<div class="noimg" style="height:100%">${esc(g.n)}</div>`;
   } else {
-    V.innerHTML = `<img src="${esc(fullShot(shots[idx]))}" alt="${esc(g.n)} 스크린샷 ${idx+1}">` + (m.mv ? `<button class="playbig" data-play>▶ 트레일러 보기</button>` : '');
+    V.innerHTML = `<img src="${esc((window.innerWidth || 1280) > 700 ? fullShot(shots[idx]) : shots[idx])}" alt="${esc(g.n)} 스크린샷 ${idx+1}">` + (m.mv ? `<button class="playbig" data-play>▶ 트레일러 보기</button>` : '');
   }
   document.querySelectorAll('#strip button').forEach(b => b.setAttribute('aria-current', b.dataset.shot == idx ? 'true' : 'false'));
   V.dataset.idx = idx;
@@ -925,12 +1006,14 @@ function showShot(idx){
 async function playTrailer(){
   const m = media(cur), V = $('#viewer');
   stopVideo();
+  const tok = playTok;
   V.innerHTML = `<video controls playsinline poster="${m.ss&&m.ss[0]?esc(fullShot(m.ss[0])):''}"></video><div class="vmsg" id="vmsg"></div>`;
   document.querySelectorAll('#strip button').forEach(b => b.setAttribute('aria-current', b.dataset.tv ? 'true' : 'false'));
   const v = V.querySelector('video');
   const fail = () => { const x = $('#vmsg'); if (x){ x.style.display='block'; x.innerHTML = `영상을 여기서 못 불러왔어. <a href="https://store.steampowered.com/app/${m.id}/" target="_blank" rel="noopener">스팀에서 보기 ↗</a>`; } };
   if (v.canPlayType('application/vnd.apple.mpegurl')) { v.src = m.mv; v.play().catch(()=>{}); return; }
-  try { await loadHls(); } catch(e) { fail(); return; }
+  try { await loadHls(); } catch(e) { if (tok === playTok) fail(); return; }
+  if (tok !== playTok || !V.contains(v)) return;   // 받는 사이 창을 닫았거나 다른 게임으로 넘어감
   if (!window.Hls || !Hls.isSupported()) { fail(); return; }
   hls = new Hls({ capLevelToPlayerSize: true });
   hls.loadSource(m.mv); hls.attachMedia(v);
@@ -976,10 +1059,11 @@ function openDetail(i){
   $('#modal').scrollTop = 0;
   $('#mClose').focus({preventScroll:true});
 }
-function closeDetail(){ stopVideo(); $('#modal').classList.remove('open'); document.body.classList.remove('lock'); cur = null; quick = null; }
+function closeDetail(){ stopVideo(); $('#modal').classList.remove('open'); document.body.classList.remove('lock'); cur = null; if (quick && quick.timer) clearTimeout(quick.timer); quick = null; nav = null; }
+/* ‹ › : 창을 열 때의 목록 순서(nav)대로 — 고르는 순간 필터에서 빠져도 순서가 꼬이지 않게 */
 function stepGame(d){
-  const list = visible.length ? visible : G;
-  let k = list.indexOf(cur); if (k < 0) k = 0;
+  const list = nav && nav.indexOf(cur) >= 0 ? nav : (visible.indexOf(cur) >= 0 ? visible : G);
+  const k = list.indexOf(cur);
   openDetail(list[(k + d + list.length) % list.length].i);
 }
 /* 상세 창 안의 하자·괜춘·빼자 (하나씩 고르기 중이면 진행 표시 + 건너뛰기) */
@@ -998,11 +1082,14 @@ function startQuick(){
   const pool = (visible.length ? visible : G).filter(g => !my[g.sid]);
   const list = pool.length ? pool : G.filter(g => !my[g.sid]);
   if (!list.length){ toast(`${G.length}개 다 골랐어! 「내 선택 보내기」로 보내줘`); return; }
-  quick = { q: list.map(g => g.i), k: 0, busy: false };
+  if (!pool.length) toast('지금 보는 목록은 다 골라서, 전체에서 안 고른 것부터 이어서 할게');
+  nav = null;
+  quick = { q: list.map(g => g.i), k: 0, timer: null };
   openDetail(quick.q[0]);
 }
 function quickGo(d){
   if (!quick) return;
+  if (quick.timer) { clearTimeout(quick.timer); quick.timer = null; }   // 자동으로 넘어가기 전에 눌러도 한 장만 넘어감
   let k = quick.k + d;
   if (d > 0) while (k < quick.q.length && my[G[quick.q[k]].sid]) k++;
   if (k < 0) k = 0;
@@ -1017,34 +1104,67 @@ function quickGo(d){
 }
 function modalPick(ch){
   if (!cur) return;
-  if (quick && quick.busy) return;
+  if (quick && quick.timer) return;   // 다음 장으로 넘어가는 중
   const id = cur.sid;
   setChoice(id, ch);
   modalChoice();
-  if (quick && my[id]){ quick.busy = true; setTimeout(() => { if (quick){ quick.busy = false; quickGo(1); } }, 220); }
+  if (quick && my[id]) quick.timer = setTimeout(() => { if (quick){ quick.timer = null; quickGo(1); } }, 220);
 }
 
 /* ── 시작 ── */
 $('#total').textContent = G.length;
 $('#myName').value = myName;
-const got = importHash();
-renderPlayed(); renderCats(); renderTop(); renderAll();
+let nameAtFocus = myName;
+if (!storageOK) $('#storeWarn').hidden = false;
 function showBanner(r){ const bn = $('#banner'); bn.style.display = 'block'; bn.innerHTML = bannerMsg(r); }
-if (got) showBanner(got);
+let got = null;
+try { got = importHash(); } catch(e) { console.error(e); }
+/* 화면을 그리다 오류가 나도 아래 버튼·키 연결은 되게 감쌈 */
+try { renderPlayed(); renderCats(); renderTop(); renderAll(); if (got) showBanner(got); }
+catch(e) {
+  console.error(e);
+  const bn = $('#banner'); bn.style.display = 'block';
+  bn.innerHTML = '화면을 그리다 문제가 생겼어. <button class="adopt" data-reset>이 페이지에 저장된 선택만 지우고 다시 열기</button>';
+}
 
 /* ── 이벤트 ── */
 document.addEventListener('click', e=>{
   const ch = e.target.closest('[data-ch]');
   if (ch) { if (e.target.closest('#modal')) modalPick(ch.dataset.ch); else setChoice(ch.dataset.cid, ch.dataset.ch); return; }
+  const ad = e.target.closest('[data-adopt]');
+  if (ad) { adopt(ad.dataset.adopt); return; }
+  if (e.target.closest('[data-reset]')) {
+    if (confirm('이 페이지(넷이 할 게임)에 저장된 내 선택·받은 선택만 지울까? 다른 페이지 기록은 그대로야.')) {
+      try { Object.keys(localStorage).filter(k => k.indexOf('g4_') === 0).forEach(k => localStorage.removeItem(k)); } catch(err) {}
+      location.replace(location.pathname);
+    }
+    return;
+  }
   const rm = e.target.closest('[data-rm]');
-  if (rm) { const n = rm.dataset.rm; if (confirm(`${n}의 선택을 이 화면에서 지울까?`)) { delete votes[n]; saveAll(); renderAll(); } return; }
+  if (rm) {
+    const k = rm.dataset.rm, v = votes[k]; if (!v) return;
+    const reg = addReg();
+    const lost = v.add.filter(x => reg.has(x.id) && !myAdds.some(y => y.id === x.id) && !others().some(o => o !== k && votes[o].add.some(z => z.id === x.id))).length;
+    if (confirm(`${label(k)}의 선택을 이 화면에서 지울까?${lost ? `\n(${v.name}이(가) 추가한 게임 ${lost}개도 같이 안 보이게 돼)` : ''}`)) { delete votes[k]; saveAll(); renderAll(); }
+    return;
+  }
   const un = e.target.closest('[data-unadd]');
   if (un) { unAdd(un.dataset.unadd); return; }
   const ga = e.target.closest('[data-goadd]');
   if (ga) { flashEl(document.getElementById('add-' + ga.dataset.goadd)); return; }
   const o = e.target.closest('[data-open]');
-  if (o && !e.target.closest('#modal')) { openDetail(+o.dataset.open); return; }
+  if (o && !e.target.closest('#modal')) { if (quick && quick.timer) clearTimeout(quick.timer); quick = null; nav = visible.slice(); openDetail(+o.dataset.open); return; }
 });
+/* 다른 탭에서 저장하면 다시 읽어서 맞춤 (탭이 서로 덮어쓰지 않게) */
+function resync(){
+  if (!storageOK || sig() === lastSig) return;
+  loadState();
+  if (document.activeElement !== $('#myName')) nameAtFocus = myName;
+  renderAll();
+  if (cur) modalChoice();
+}
+window.addEventListener('storage', e => { if (!e.key || e.key.indexOf('g4_') === 0) resync(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) resync(); });
 $('#quick').addEventListener('click', startQuick);
 $('#addBtn').addEventListener('click', addGame);
 $('#addIn').addEventListener('keydown', e=>{ if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); addGame(); } });
@@ -1053,13 +1173,24 @@ $('#cats').addEventListener('click', e=>{
   const b = e.target.closest('[data-cat]'); if(!b) return;
   state.cat = b.dataset.cat; renderCats(); renderList();
 });
-for (const [id,key] of [['#fKo','ko'],['#fOne','one'],['#fCheap','cheap'],['#fTodo','todo'],['#fYes','yes'],['#fNoHide','nohide']]){
+for (const [id,key] of [['#fKo','ko'],['#fOne','one'],['#fCheap','cheap'],['#fTodo','todo'],['#fMine','mine'],['#fYes','yes'],['#fNoHide','nohide']]){
   $(id).addEventListener('click', ()=>{ state[key]=!state[key]; $(id).setAttribute('aria-pressed', state[key]); renderList(); });
 }
 $('#sort').addEventListener('change', e=>{ state.sort = e.target.value; renderList(); });
 $('#q').addEventListener('input', e=>{ state.q = e.target.value.trim(); renderList(); });
-$('#myName').addEventListener('input', e=>{ myName = cleanName(e.target.value).slice(0,10); myAdds.forEach(x => { x.by = myName; }); saveAll(); renderPick(); });
-$('#myName').addEventListener('change', ()=>renderAll());
+$('#myName').addEventListener('focus', ()=>{ nameAtFocus = myName; });
+$('#myName').addEventListener('input', e=>{ myName = cut(cleanName(e.target.value), 10); saveAll(); renderPick(); });
+/* 이름을 다 바꾸고 나면: 이미 고른 게 있으면 "다른 사람이야?(한 기기를 같이 씀) / 이름만 고치기" 확인 */
+$('#myName').addEventListener('change', ()=>{
+  const old = nameAtFocus, nw = myName;
+  nameAtFocus = myName;
+  if (old && nw && old !== nw) {
+    const has = Object.keys(my).length || myAdds.length;
+    if (has && confirm(`‘${old}’이(가) 고른 건 그대로 남겨 두고 ‘${nw}’(으)로 따로 고를까?\n\n확인 = 한 기기를 둘이 같이 쓰는 경우 (‘${old}’ 선택은 친구 선택처럼 남아)\n취소 = 이름만 고치기`)) switchPerson(old, nw);
+    else myAdds.forEach(x => { if (x.by === old) x.by = nw; });
+  }
+  saveAll(); renderAll();
+});
 $('#sendMine').addEventListener('click', sendMine);
 $('#copyPage').addEventListener('click', async ()=>{
   const url = pageURL();
@@ -1081,14 +1212,14 @@ $('#modal').addEventListener('click', e=>{
 document.addEventListener('keydown', e=>{
   if (!cur) return;
   if (e.key === 'Escape') closeDetail();
-  else if (e.key === '1' || e.key === '2' || e.key === '3') modalPick({ 1:'y', 2:'o', 3:'n' }[e.key]);
+  else if ((e.key === '1' || e.key === '2' || e.key === '3') && !e.ctrlKey && !e.metaKey && !e.altKey && !e.repeat && !/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '')) modalPick({ 1:'y', 2:'o', 3:'n' }[e.key]);
   else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
     const shots = media(cur).ss || []; if (!shots.length) return;
     const idx = +($('#viewer').dataset.idx || 0), d = e.key === 'ArrowRight' ? 1 : -1;
     showShot((idx + d + shots.length) % shots.length);
   }
 });
-window.addEventListener('hashchange', ()=>{ const r = importHash(); if (r) { renderAll(); showBanner(r); } });
+window.addEventListener('hashchange', ()=>{ let r = null; try { r = importHash(); } catch(e) { console.error(e); } if (r) { renderAll(); showBanner(r); } });
 </script>
 </body>
 </html>
