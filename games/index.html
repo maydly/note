@@ -573,6 +573,8 @@ function loadHls(){
   if (!hlsLoading) hlsLoading = new Promise((res, rej) => {
     const s = document.createElement('script');
     s.src = 'https://cdn.jsdelivr.net/npm/hls.js@1.5.20/dist/hls.min.js';
+    s.integrity = 'sha384-V5ruNBgmYcC3SJRUQeNykAAAgde5gOFq/Hu0CZj7bygDP0yRIhkvX8+w0u/7mRvr';   // 받은 파일이 바뀌지 않았는지 확인 (261103 점검)
+    s.crossOrigin = 'anonymous';
     s.onload = res; s.onerror = rej; document.head.appendChild(s);
   });
   return hlsLoading;
