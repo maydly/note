@@ -9,7 +9,7 @@
 <meta property="og:url" content="https://maydly.github.io/note/games4/">
 <meta property="og:site_name" content="넷이 할 게임">
 <meta property="og:title" content="넷이 할 게임 — 4명이 같이 하는 PC 게임">
-<meta property="og:description" content="사진·트레일러·스팀 평가 보고, 각자 찜한 걸 링크로 주고받아 같이 고르기">
+<meta property="og:description" content="사진·트레일러·스팀 평가 보고, 게임마다 하자·괜춘·빼자 골라서 링크로 주고받으며 같이 다듬기">
 <meta property="og:image" content="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3949040/cae24b4ed7f4531be51f0d63f785b7d253f92dc3/header.jpg?t=1789134289">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">
 <style>
@@ -56,7 +56,13 @@ h2{font-size:21px;margin:0 0 4px;letter-spacing:-.01em}
 .mine b{color:#C45A7B;font-size:16px}
 .people{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .people .ph{font-size:13px;color:var(--sub);align-self:center}
-.who{display:inline-flex;align-items:center;gap:6px;background:var(--heart-soft);color:#A9506F;border-radius:999px;padding:4px 6px 4px 12px;font-size:13px}
+.who{display:inline-flex;align-items:center;gap:6px;background:#F5F0EA;color:#554B45;border-radius:999px;padding:4px 6px 4px 12px;font-size:13px}
+.mysum{font-size:14px;color:var(--sub);margin:0 4px}
+.mysum b{color:var(--ink);font-size:15px}
+.addrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.addrow .lbl{font-size:14px;color:var(--sub)}
+.addrow input{flex:1 1 240px;min-width:0;border:1px solid var(--line);border-radius:999px;padding:8px 14px;outline:none;background:#fff}
+.addrow input:focus{border-color:var(--accent)}
 .who button{border:0;background:rgba(255,255,255,.7);width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:12px;line-height:1}
 .banner{margin-top:12px;background:#FFF6E6;border:1px solid #F4DDB3;border-radius:12px;padding:10px 14px;font-size:14px;display:none}
 .pnote{margin:10px 0 0;font-size:12.5px;color:var(--faint)}
@@ -77,14 +83,36 @@ h2{font-size:21px;margin:0 0 4px;letter-spacing:-.01em}
 .b.want{background:#FFF1C9;color:#8A6A10}
 .b.soon{background:#FDEBD9;color:#A9583A}
 
-/* 모두의 찜 */
-.rank{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
-.ri{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 12px 8px 8px;cursor:pointer;text-align:left;box-shadow:var(--shadow)}
-.ri img,.ri .ni{width:96px;aspect-ratio:460/215;border-radius:8px;object-fit:cover;flex:none;background:#EFE7DD}
+/* 우리가 추가한 게임 */
+.addgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.ad{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.ad .ph{position:relative;aspect-ratio:460/215;background:linear-gradient(135deg,#FBE7DD,#F6EFD9)}
+.ad .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ad .by{position:absolute;left:8px;top:8px;background:rgba(255,255,255,.95);border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:700;color:#A9583A;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.ad .x{position:absolute;right:8px;top:8px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(255,255,255,.95);cursor:pointer;font-size:13px;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.ad .tx{padding:10px 14px 14px;display:flex;flex-direction:column;gap:8px}
+.ad b{font-size:16px}
+.ad .lk{display:flex;gap:6px;flex-wrap:wrap}
+.ad.c-n{opacity:.55}
+.flash{animation:fl 1.8s ease}
+@keyframes fl{0%,100%{box-shadow:var(--shadow)}25%,60%{box-shadow:0 0 0 4px var(--accent)}}
+
+/* 다듬은 목록 */
+.rankhead{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.tierh{font-size:15px;margin:14px 0 8px}
+.rank{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.ri{display:flex;gap:10px;align-items:center;width:100%;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 12px 8px 8px;cursor:pointer;text-align:left;box-shadow:var(--shadow)}
+.ri img,.ri .ni{width:96px;aspect-ratio:460/215;border-radius:8px;object-fit:cover;flex:none;background:#EFE7DD;display:block}
+.ri .rk{flex:none;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:#A9583A;font-weight:700;font-size:12.5px;display:grid;place-items:center}
 .ri b{display:block;font-size:14.5px;line-height:1.3}
-.ri .nm{font-size:12.5px;color:#A9506F}
-.ri .ct{margin-left:auto;flex:none;font-weight:800;color:#C45A7B;font-size:15px;white-space:nowrap}
-.ri.all4{border-color:#F6C3D1;background:#FFF8FA}
+.ri b small{font-weight:500;color:var(--faint)}
+.ri .nm{display:block;font-size:12.5px;color:var(--sub);line-height:1.5}
+.ri .ct{margin-left:auto;flex:none;font-weight:800;color:#A9482A;font-size:14px;white-space:nowrap}
+.ri.all{border-color:#EBA88A;background:#FFF7F2}
+.nm i{font-style:normal;margin-right:6px}
+.nm i.y{color:#A9482A} .nm i.o{color:#2F6E4B} .nm i.n{color:#7F7670}
+details.out,details.more{margin-top:10px}
+details.out summary,details.more summary{cursor:pointer;color:var(--sub);font-size:14px;margin:6px 0 10px}
 
 /* 먼저 이것부터 */
 .top{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
@@ -121,7 +149,10 @@ h2{font-size:21px;margin:0 0 4px;letter-spacing:-.01em}
 .group-head p{margin:0;color:var(--sub);font-size:14px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;border-top:4px solid var(--tint)}
-.card.hearted{border-color:#F6C3D1;box-shadow:0 0 0 3px var(--heart-soft)}
+.card.c-y{border-color:#EBA88A;box-shadow:0 0 0 3px #FBE7DD}
+.card.c-o{border-color:#9FCFB1;box-shadow:0 0 0 3px #E8F5EC}
+.card.c-n{opacity:.55}
+.card.c-n .thumb img{filter:grayscale(.9)}
 .thumb{position:relative;display:block;width:100%;aspect-ratio:460/215;background:var(--tint);border:0;padding:0;cursor:pointer;overflow:hidden}
 .thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s}
 .thumb img.contain{object-fit:contain;padding:8px}
@@ -133,16 +164,21 @@ h2{font-size:21px;margin:0 0 4px;letter-spacing:-.01em}
 .ttl{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
 .ttl h3{margin:0;font-size:16.5px;line-height:1.35;letter-spacing:-.01em;cursor:pointer}
 .ttl .en{display:block;font-size:12.5px;color:var(--faint);font-weight:500;margin-top:1px}
-.heart{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;height:32px;padding:0 10px;font-size:12.5px;color:var(--sub);cursor:pointer;display:flex;align-items:center;gap:4px}
-.heart .i{font-size:15px;line-height:1;color:var(--faint)}
-.heart[aria-pressed="true"]{background:var(--heart-soft);border-color:#F6C3D1;color:#C45A7B}
-.heart[aria-pressed="true"] .i{color:var(--heart)}
+.choice{display:flex;gap:6px}
+.choice button{flex:1;border:1px solid var(--line);background:var(--card);border-radius:999px;height:34px;padding:0 8px;font-size:13.5px;cursor:pointer;color:var(--sub);display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
+.choice button:hover{border-color:var(--accent)}
+.choice button[data-ch="y"][aria-pressed="true"]{background:#FBE1D3;border-color:#EBA88A;color:#A9482A;font-weight:700}
+.choice button[data-ch="o"][aria-pressed="true"]{background:#DFF1E5;border-color:#9FCFB1;color:#2F6E4B;font-weight:700}
+.choice button[data-ch="n"][aria-pressed="true"]{background:#ECE8E5;border-color:#C9C0B9;color:#5E5550;font-weight:700}
+.choice.big button{height:46px;font-size:16px}
 .rvline{font-size:13px;color:var(--sub);display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
 .rv{font-weight:600;border-radius:6px;padding:1px 7px;font-size:12.5px}
 .rv.g{background:#E3F2E8;color:#3F7A59}
 .rv.m{background:#F6EFD9;color:#8A6D2A}
 .rv.l{background:#F1EEEC;color:#7F7670}
-.vt{font-size:13px;color:#A9506F;background:#FFF5F8;border-radius:8px;padding:4px 9px;align-self:flex-start}
+.vt{font-size:13px;background:#FBF7F1;border-radius:8px;padding:4px 9px;align-self:flex-start;display:flex;flex-wrap:wrap;gap:2px 10px}
+.vt b{font-weight:600}
+.vt b.y{color:#A9482A} .vt b.o{color:#2F6E4B} .vt b.n{color:#7F7670}
 .badges{display:flex;flex-wrap:wrap;gap:5px}
 .b{font-size:12px;border-radius:6px;padding:2px 7px;background:#F5F0EA;color:#6E635C;white-space:nowrap}
 .b.ko{background:var(--ok-soft);color:#3F7A59}
@@ -168,6 +204,11 @@ h2{font-size:21px;margin:0 0 4px;letter-spacing:-.01em}
 .btn{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;font-size:13.5px;cursor:pointer;text-decoration:none;color:var(--ink);display:inline-flex;align-items:center;gap:5px}
 .btn:hover{border-color:var(--accent)}
 .btn.pri{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.go{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+.mchoice{padding:12px 14px;border-bottom:1px solid var(--line);background:#FFFCF8}
+.mchoice .q{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13.5px;color:var(--sub);margin-bottom:8px}
+.mchoice .q b{color:var(--ink)}
+.skip{border:0;background:none;color:var(--sub);text-decoration:underline;cursor:pointer;font-size:13.5px;padding:4px}
 footer{color:var(--faint);font-size:12.5px;padding:26px 0 48px;border-top:1px solid var(--line);margin-top:36px}
 footer p{margin:4px 0}
 
@@ -225,7 +266,7 @@ footer p{margin:4px 0}
 <header class="hero">
   <div class="eyebrow">PC 게임 · 2026.11.02 스팀 공식 데이터로 확인</div>
   <h1>넷이 할 게임 <span id="total"></span>개 <small>4명이 같이 하는 PC 게임 추천판</small></h1>
-  <p class="lead">이미 후보에 올라 있는 게임(피크·오버쿡드·백룸·콘텐츠 워닝 등)은 빼고, <b>그 밖에 넷이 할 만한 게임</b>만 새로 모았어. 사진이나 제목을 누르면 트레일러·스크린샷·스팀 평가가 크게 열려. 아래 「같이 고르기」로 각자 찜한 걸 링크로 주고받으면, 누가 뭘 골랐는지 한 화면에 모여.</p>
+  <p class="lead">이미 후보에 올라 있는 게임(피크·오버쿡드·백룸·콘텐츠 워닝 등)은 빼고, <b>그 밖에 넷이 할 만한 게임</b>만 새로 모았어. 사진이나 제목을 누르면 트레일러·스크린샷·스팀 평가가 크게 열려. 아래 「같이 고르기」에서 게임마다 <b>🔥하자 · 👌괜춘 · 🙅빼자</b>를 고르고 링크로 주고받으면, 넷의 선택이 한 화면에 모여서 목록이 점점 다듬어져. 없는 게임은 직접 추가해도 돼.</p>
   <div class="played" id="played" aria-label="이미 해본 게임"></div>
 </header>
 
@@ -239,26 +280,38 @@ footer p{margin:4px 0}
   <h2 id="pickH">🗳️ 같이 고르기</h2>
   <ol class="steps">
     <li>아래에 <b>내 이름</b> 쓰기</li>
-    <li>하고 싶은 게임에 <b>♡ 찜하기</b></li>
-    <li><b>「내 찜 보내기」</b> 눌러서 단톡방에 링크 붙여넣기</li>
-    <li>친구가 보낸 링크를 누르면 <b>내 화면에 합쳐져서</b> 몇 명이 골랐는지 보여</li>
+    <li>게임마다 <b>🔥하자 · 👌괜춘 · 🙅빼자</b> 고르기 — <b>「⚡ 하나씩 고르기」</b>를 누르면 한 장씩 넘기며 빠르게</li>
+    <li><b>「내 선택 보내기」</b> 눌러서 단톡방에 링크 붙여넣기</li>
+    <li>친구 링크를 누르면 내 화면에 합쳐져서 <b>「다듬은 목록」</b>에 모여 — 빼자 나온 건 빠지고 하자 많은 순으로</li>
   </ol>
   <div class="pickrow">
     <label for="myName">내 이름</label><input id="myName" maxlength="10" placeholder="예: 수빈" autocomplete="off">
-    <span class="mine">내 찜 <b id="mineN">0</b>개</span>
-    <button class="btn pri" id="sendMine">내 찜 보내기</button>
+    <span class="mysum" id="mySum"></span>
+    <button class="btn go" id="quick">⚡ 하나씩 고르기</button>
+    <button class="btn pri" id="sendMine">내 선택 보내기</button>
     <button class="btn" id="copyPage">이 페이지 링크 보내기</button>
     <span class="toast" id="toast" role="status"></span>
   </div>
+  <div class="addrow">
+    <span class="lbl">➕ 목록에 없는 게임</span>
+    <input id="addIn" maxlength="200" placeholder="게임 이름이나 스팀 상점 링크" autocomplete="off" aria-label="추가할 게임 이름이나 스팀 상점 링크">
+    <button class="btn" id="addBtn">추가</button>
+  </div>
   <div class="banner" id="banner"></div>
   <div class="people" id="people"></div>
-  <p class="pnote">찜은 서버에 저장되지 않고, 각자 기기와 주고받은 링크에만 담겨. 그래서 친구 찜을 보려면 친구가 보낸 링크를 한 번 눌러야 하고, 친구가 다시 보내면 최신 찜으로 바뀌어.</p>
+  <p class="pnote">선택은 서버에 저장되지 않고, 각자 기기와 주고받은 링크에만 담겨. 친구 선택을 보려면 친구가 보낸 링크를 한 번 눌러야 하고, 친구가 다시 보내면 최신 선택으로 바뀌어. 추가한 게임도 링크에 같이 실려 가.</p>
+</section>
+
+<section class="sec" id="addSec" hidden>
+  <h2>➕ 우리가 추가한 게임</h2>
+  <p class="sec-desc">목록에 없어서 직접 추가한 게임이야. 여기서도 하자·괜춘·빼자를 고를 수 있고, 내 선택을 보낼 때 같이 실려 가. 스팀 링크로 추가하면 사진이 뜨고(최근에 나온 게임은 안 뜰 수 있어), 이름만 쓰면 「스팀에서 찾아보기」가 붙어.</p>
+  <div class="addgrid" id="addList"></div>
 </section>
 
 <section class="sec" id="allSec" hidden>
-  <h2>💗 모두의 찜</h2>
-  <p class="sec-desc">여러 명이 고른 게임부터 보여줘. 넷 다 고른 게임이 있으면 그걸로 정하면 돼.</p>
-  <div class="rank" id="rank"></div>
+  <div class="rankhead"><h2>🧺 다듬은 목록</h2><button class="btn" id="copyResult">정리 결과 보내기</button></div>
+  <p class="sec-desc" id="rankDesc"></p>
+  <div id="rank"></div>
 </section>
 
 <section class="sec">
@@ -273,11 +326,12 @@ footer p{margin:4px 0}
     <button class="chip tg" id="fKo" aria-pressed="false">한국어만</button>
     <button class="chip tg" id="fOne" aria-pressed="false">무료·1개로 가능</button>
     <button class="chip tg" id="fCheap" aria-pressed="false">1만원 이하</button>
-    <button class="chip hg" id="fHeart" aria-pressed="false">♥ 내 찜 <span id="hc">0</span></button>
-    <button class="chip hg" id="fVoted" aria-pressed="false">♥ 누군가 찜한 것</button>
+    <button class="chip hg" id="fTodo" aria-pressed="false">아직 안 고른 것 <span id="todoN">0</span></button>
+    <button class="chip hg" id="fYes" aria-pressed="false">🔥 하자 나온 것</button>
+    <button class="chip hg" id="fNoHide" aria-pressed="false">🙅 빼자 나온 거 숨기기</button>
     <select class="sort" id="sort" aria-label="정렬">
       <option value="pick">추천순</option>
-      <option value="votes">찜 많은 순</option>
+      <option value="votes">하자 많은 순</option>
       <option value="rv">스팀 평가 높은순</option>
       <option value="price">가격 낮은순</option>
       <option value="new">최신순</option>
@@ -293,6 +347,8 @@ footer p{margin:4px 0}
 <section class="sec">
   <h2>알아두면 좋은 말</h2>
   <div class="help">
+    <div><h3>🔥하자 · 👌괜춘 · 🙅빼자</h3><p>하자는 "이거 꼭 하고 싶어", 괜춘은 "같이 하면 할게", 빼자는 "이건 별로". 「다듬은 목록」은 빼자가 하나도 없는 게임만 남겨서 하자 많은 순으로 보여줘. 고른 걸 한 번 더 누르면 취소돼.</p></div>
+    <div><h3>➕ 게임 추가</h3><p>목록에 없는 게임은 「같이 고르기」 아래 칸에 이름이나 스팀 상점 링크를 넣으면 돼. 내가 추가한 건 자동으로 하자로 표시되고, 내 선택을 보낼 때 친구들 화면에도 같이 떠.</p></div>
     <div><h3>각자 구매 · 「넷이면」</h3><p>온라인 협동 게임은 보통 4명이 각자 하나씩 사야 해. 가격 옆 「넷이면」은 4명이 다 샀을 때 합계야. 스팀은 세일이 잦아서 찜해 두고 세일 때 같이 사면 이득.</p></div>
     <div><h3>무료 · 1개로 가능</h3><p>무료 게임은 바로 깔아서 해볼 수 있어. 「1개면 됨」 게임은 한 명만 사도 되는 게임이야 — 원격 같이하기를 쓰거나, 나머지는 설명서만 보면 되는 식.</p></div>
     <div><h3>원격 같이하기</h3><p>원래 한 화면에서 같이 하는 게임을, 산 사람 PC 화면을 친구들에게 실시간으로 보내서 같이 하는 스팀 기능이야. 친구들은 게임이 없어도 되고, 인터넷이 느리면 조금 끊길 수 있어.</p></div>
@@ -323,6 +379,7 @@ footer p{margin:4px 0}
     </div>
     <div class="viewer" id="viewer"></div>
     <div class="strip" id="strip"></div>
+    <div class="mchoice" id="mChoice"></div>
     <div class="minfo">
       <div>
         <h2 id="mName"></h2>
@@ -442,37 +499,99 @@ const media = g => M[g.e] || {};
 G.forEach((g, i) => g.i = i);
 const bySid = {}; G.forEach(g => bySid[g.sid] = g);
 
-/* ── 저장(이 기기에만) ── */
-const K = { mine:'g4_mine_v1', name:'g4_name_v1', votes:'g4_votes_v1' };
+/* ── 저장(이 기기에만) ──
+   my: 내 선택 {게임id: y 하자 / o 괜춘 / n 빼자}, votes: 받은 선택 {이름: {c: 선택, add: 그 사람이 가진 추가 게임}},
+   myAdds: 내가 추가한 게임, hidden: 지우거나 숨긴 추가 게임 id. 예전 찜(♥)은 하자로 옮겨 옴 */
+const K = { name:'g4_name_v1', my:'g4_my_v2', votes:'g4_votes_v2', add:'g4_add_v1', hide:'g4_addhide_v1', oldMine:'g4_mine_v1', oldVotes:'g4_votes_v1' };
 const load = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e) { return d; } };
 const store = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} };
-let mine = new Set((load(K.mine, []) || []).filter(s => bySid[s]));
-let myName = String(load(K.name, '') || '').slice(0, 10);
-let votes = load(K.votes, {});
-if (!votes || typeof votes !== 'object' || Array.isArray(votes)) votes = {};
-for (const n of Object.keys(votes)) { const v = votes[n]; if (!v || !Array.isArray(v.ids)) delete votes[n]; else v.ids = v.ids.filter(s => bySid[s]); }
-const saveAll = () => { store(K.mine, [...mine]); store(K.name, myName); store(K.votes, votes); };
-function pickers(g){
-  const a = [];
-  if (mine.has(g.sid)) a.push(myName || '나');
-  for (const [n, v] of Object.entries(votes)) if (v.ids.includes(g.sid) && n !== myName) a.push(n);
-  return a;
+const isObj = o => !!o && typeof o === 'object' && !Array.isArray(o);
+const CH = { y:{e:'🔥', t:'하자'}, o:{e:'👌', t:'괜춘'}, n:{e:'🙅', t:'빼자'} };
+const isCh = v => v === 'y' || v === 'o' || v === 'n';
+const ID_RE = /^(?:[0-9a-z]{1,8}|-[0-9a-z]{1,8})$/;
+const cleanName = s => String(s == null ? '' : s).replace(/[<>"'`]/g, '').replace(/\s+/g, ' ').trim();
+const normName = s => cleanName(s).toLowerCase().replace(/[\s\-_:.,!?’™®()\[\]·~]/g, '');
+const hash36 = s => { let h = 2166136261; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return h.toString(36); };
+const addId = (a, n) => a ? a.toString(36) : '-' + hash36(normName(n));
+function cleanAdd(x){
+  if (!isObj(x)) return null;
+  const a = /^\d{1,9}$/.test(String(x.a || '')) ? Number(x.a) : null;
+  const n = cleanName(x.n).slice(0, 40);
+  if (!n) return null;
+  return { id: addId(a, n), n, a, by: cleanName(x.by).slice(0, 10) };
 }
-const groupSize = () => 1 + Object.keys(votes).filter(n => n !== myName).length;
+const cleanCh = o => { const r = {}; if (isObj(o)) for (const [k, v] of Object.entries(o)) if (ID_RE.test(k) && isCh(v)) r[k] = v; return r; };
 
-/* 친구가 보낸 링크(#v=이름~id.id…) 받기 */
+let myName = cleanName(load(K.name, '')).slice(0, 10);
+let my = load(K.my, null);
+if (!isObj(my)) { my = {}; for (const s of (Array.isArray(load(K.oldMine, [])) ? load(K.oldMine, []) : [])) if (bySid[s]) my[s] = 'y'; }
+my = cleanCh(my);
+const la = load(K.add, []);
+let myAdds = (Array.isArray(la) ? la : []).map(cleanAdd).filter(Boolean);
+const lh = load(K.hide, []);
+let hidden = new Set((Array.isArray(lh) ? lh : []).filter(s => typeof s === 'string' && ID_RE.test(s)));
+let votes = load(K.votes, null);
+if (!isObj(votes)) {
+  votes = {};
+  const ov = load(K.oldVotes, {});
+  if (isObj(ov)) for (const [n, v] of Object.entries(ov)) if (v && Array.isArray(v.ids)) { const c = {}; v.ids.forEach(s => { if (bySid[s]) c[s] = 'y'; }); votes[n] = { c, add: [], at: v.at || 0 }; }
+}
+for (const n of Object.keys(votes)) { const v = votes[n]; if (!isObj(v)) { delete votes[n]; continue; } votes[n] = { c: cleanCh(v.c), add: (Array.isArray(v.add) ? v.add : []).map(cleanAdd).filter(Boolean), at: v.at || 0 }; }
+const saveAll = () => { store(K.my, my); store(K.name, myName); store(K.votes, votes); store(K.add, myAdds); store(K.hide, [...hidden]); };
+
+const others = () => Object.keys(votes).filter(n => n !== myName);
+const groupSize = () => 1 + others().length;
+/* 추가 게임 모음: 내가 추가한 것 + 친구 링크에 실려 온 것 (공식 목록에 있는 것·숨긴 것 제외) */
+function addReg(){
+  const m = new Map();
+  for (const x of myAdds.concat(...others().map(n => votes[n].add)))
+    if (!bySid[x.id] && !hidden.has(x.id) && !m.has(x.id)) m.set(x.id, x);
+  return m;
+}
+/* 게임 하나에 누가 뭘 골랐나 {y:[이름], o:[], n:[]} */
+function whoChose(id){
+  const t = { y:[], o:[], n:[] };
+  if (my[id]) t[my[id]].push(myName || '나');
+  for (const n of others()) { const c = votes[n].c[id]; if (c) t[c].push(n); }
+  return t;
+}
+const nChosen = t => t.y.length + t.o.length + t.n.length;
+
+/* 친구가 보낸 링크 받기 — 새 형식 #p=이름&y=id.id&o=…&n=…&a=추가게임, 예전 형식 #v=이름~id.id(찜 → 하자) */
+const parseIds = s => [...new Set(String(s || '').toLowerCase().split('.').filter(x => ID_RE.test(x)))];
 function importHash(){
-  const m = location.hash.match(/^#v=([^~]*)~([0-9a-z.]*)$/i);
-  if (!m) return null;
+  const h = location.hash;
+  let raw = '', c = {}, add = [];
+  const m = h.match(/^#v=([^~]*)~([0-9a-z.]*)$/i);
+  if (m) { raw = m[1]; parseIds(m[2]).forEach(id => { if (bySid[id]) c[id] = 'y'; }); }
+  else if (/^#p=/.test(h)) {
+    const kv = {};
+    h.slice(1).split('&').forEach(p => { const i = p.indexOf('='); if (i > 0) kv[p.slice(0, i)] = p.slice(i + 1); });
+    raw = kv.p || '';
+    for (const k of ['n', 'o', 'y']) parseIds(kv[k]).forEach(id => { c[id] = k; });
+    add = String(kv.a || '').split('.').filter(Boolean).slice(0, 30).map(it => {
+      const [a36, n, by] = it.split(':');
+      let dn = '', db = '';
+      try { dn = decodeURIComponent(n || ''); db = decodeURIComponent(by || ''); } catch(e) {}
+      const a = /^[0-9a-z]{1,7}$/.test(a36 || '') ? parseInt(a36, 36) : null;
+      return cleanAdd({ a, n: dn, by: db });
+    }).filter(Boolean);
+  } else return null;
   let name = '';
-  try { name = decodeURIComponent(m[1]); } catch(e) {}
-  name = name.replace(/[<>"']/g, '').trim().slice(0, 10) || '친구';
-  const ids = [...new Set(m[2].toLowerCase().split('.').filter(s => bySid[s]))];
+  try { name = decodeURIComponent(raw); } catch(e) {}
+  name = cleanName(name).slice(0, 10) || '친구';
   try { history.replaceState(null, '', location.pathname + location.search); } catch(e) {}
-  if (myName && name === myName) return { self:true, name, n:ids.length };
-  votes[name] = { ids, at: Date.now() };
+  if (myName && name === myName) return { self:true, name };
+  const known = new Set(add.map(x => x.id));
+  for (const id of Object.keys(c)) if (!bySid[id] && !known.has(id)) delete c[id];
+  votes[name] = { c, add, at: Date.now() };
   saveAll();
-  return { name, n: ids.length };
+  const k = { y:0, o:0, n:0 }; Object.values(c).forEach(v => k[v]++);
+  return { name, k, add: add.length };
+}
+function bannerMsg(r){
+  if (r.self) return '내가 보낸 링크라서 그대로 뒀어.';
+  return `<b>${esc(r.name)}</b>의 선택을 합쳤어 — 🔥${r.k.y} 👌${r.k.o} 🙅${r.k.n}${r.add ? ` · 추가한 게임 ${r.add}개` : ''}. 아래 「다듬은 목록」에서 같이 볼 수 있어. ${myName ? '' : '너도 이름 쓰고 골라서 보내줘!'}`;
 }
 
 function rvClass(r){ if(!r) return 'l'; return r.p >= 70 ? 'g' : r.p >= 40 ? 'm' : 'l'; }
@@ -508,16 +627,27 @@ function imgTag(g, cls){
   const contain = m.id ? '' : ' contain';
   return `<img src="${esc(m.img)}" alt="${esc(g.n)} 대표 이미지" loading="lazy" class="${(cls||'')+contain}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'noimg',textContent:this.alt.replace(' 대표 이미지','')}))">`;
 }
+/* 하자·괜춘·빼자 버튼, 누가 골랐나 줄, 사진 위 개수 */
+function choiceHTML(id, big){
+  const c = my[id] || '';
+  return `<div class="choice${big ? ' big' : ''}" role="group" aria-label="내 선택">${['y','o','n'].map(k => `<button data-ch="${k}" data-cid="${id}" aria-pressed="${c === k}">${CH[k].e} ${CH[k].t}</button>`).join('')}</div>`;
+}
+function whoLine(t){
+  const p = ['y','o','n'].filter(k => t[k].length).map(k => `<b class="${k}">${CH[k].e} ${t[k].map(esc).join('·')}</b>`);
+  return p.length ? `<div class="vt">${p.join('')}</div>` : '';
+}
+const whoTxt = t => { const p = ['y','o','n'].filter(k => t[k].length).map(k => `${CH[k].e} ${t[k].map(esc).join(' · ')}`); return p.length ? p.join(' &nbsp; ') : '아직 없음'; };
+const tallyTxt = (t, ks) => (ks || ['y','o','n']).filter(k => t[k].length).map(k => CH[k].e + t[k].length).join(' ');
 function card(g){
-  const m = media(g), on = mine.has(g.sid), who = pickers(g);
+  const m = media(g), c = my[g.sid] || '', t = whoChose(g.sid), tl = tallyTxt(t);
   const nShots = m.ss ? m.ss.length : 0;
-  return `<article class="card${on?' hearted':''}" style="--tint:var(--${g.c})">
-    <button class="thumb" data-open="${g.i}" aria-label="${esc(g.n)} 자세히 보기">${imgTag(g)}${who.length?`<span class="vcount">♥ ${who.length}명</span>`:''}${(nShots||m.mv)?`<span class="more">${m.mv?'▶ 영상 · ':''}사진 ${nShots}</span>`:''}</button>
+  return `<article class="card${c ? ' c-' + c : ''}" data-gi="${g.i}" style="--tint:var(--${g.c})">
+    <button class="thumb" data-open="${g.i}" aria-label="${esc(g.n)} 자세히 보기">${imgTag(g)}${tl?`<span class="vcount">${tl}</span>`:''}${(nShots||m.mv)?`<span class="more">${m.mv?'▶ 영상 · ':''}사진 ${nShots}</span>`:''}</button>
     <div class="body">
-      <div class="ttl"><h3 data-open="${g.i}">${esc(g.n)}<span class="en">${esc(g.e)} · ${g.y}</span></h3>
-        <button class="heart" data-heart="${g.i}" aria-pressed="${on}" aria-label="${esc(g.n)} 찜하기"><span class="i">${on?'♥':'♡'}</span>${on?'찜':'찜하기'}</button></div>
+      <div class="ttl"><h3 data-open="${g.i}">${esc(g.n)}<span class="en">${esc(g.e)} · ${g.y}</span></h3></div>
+      ${choiceHTML(g.sid)}
       ${m.rv?`<div class="rvline"><span class="rv ${rvClass(m.rv)}">${esc(m.rv.d)} ${m.rv.p}%</span><span>스팀 리뷰 ${cnt(m.rv.n)}개</span></div>`:''}
-      ${who.length?`<div class="vt">♥ ${who.map(esc).join(' · ')}</div>`:''}
+      ${whoLine(t)}
       <div class="badges">${koBadge(g)}<span class="b">${esc(g.p)}</span>${buyBadges(g)}${extraBadges(g)}</div>
       <p class="desc">${esc(g.d)}</p>
       <div class="foot"><div class="moods">${(m.gen||[]).concat(g.m).filter((x,i,a)=>a.indexOf(x)===i).map(x=>`<span>${esc(x)}</span>`).join('')}</div>
@@ -527,14 +657,15 @@ function card(g){
 }
 
 /* ── 목록 ── */
-const state = { cat:'all', ko:false, one:false, cheap:false, heart:false, voted:false, q:'', sort:'pick' };
+const state = { cat:'all', ko:false, one:false, cheap:false, todo:false, yes:false, nohide:false, q:'', sort:'pick' };
 function match(g){
   if (state.cat!=='all' && g.c!==state.cat) return false;
   if (state.ko && g.k!==1) return false;
   if (state.one && !['free','rpt','manual','pass'].includes(g.b)) return false;
   if (state.cheap && !(g.b==='free' || (g.pr!=null && g.pr<=10000))) return false;
-  if (state.heart && !mine.has(g.sid)) return false;
-  if (state.voted && !pickers(g).length) return false;
+  if (state.todo && my[g.sid]) return false;
+  if (state.yes && !whoChose(g.sid).y.length) return false;
+  if (state.nohide && whoChose(g.sid).n.length) return false;
   if (state.q){
     const m = media(g);
     const q = state.q.toLowerCase().replace(/\s/g,'');
@@ -546,7 +677,8 @@ function match(g){
 function sorted(items){
   const a = items.slice();
   const rvScore = g => { const r = media(g).rv; return r ? r.p + Math.min(Math.log10(r.n), 6) / 100 : -1; };
-  if (state.sort==='votes') a.sort((x,y)=>pickers(y).length-pickers(x).length || rvScore(y)-rvScore(x));
+  const vs = g => { const t = whoChose(g.sid); return t.y.length * 3 + t.o.length - t.n.length * 4; };
+  if (state.sort==='votes') a.sort((x,y)=>vs(y)-vs(x) || rvScore(y)-rvScore(x));
   else if (state.sort==='rv') a.sort((x,y)=>rvScore(y)-rvScore(x));
   else if (state.sort==='price') a.sort((x,y)=>(x.b==='free'?0:x.pr==null?1e9:x.pr)-(y.b==='free'?0:y.pr==null?1e9:y.pr));
   else if (state.sort==='new') a.sort((x,y)=>y.y-x.y);
@@ -564,7 +696,13 @@ function renderList(){
   $('#list').innerHTML = html;
   $('#empty').style.display = visible.length ? 'none' : 'block';
   $('#count').textContent = `${visible.length}개 보는 중`;
-  $('#hc').textContent = mine.size;
+  $('#todoN').textContent = G.filter(g => !my[g.sid]).length;
+}
+/* 카드 하나만 제자리에서 다시 그리기 (목록 전체를 다시 그리면 화면이 튀어서) */
+function updateCard(g){
+  const el = document.querySelector(`#list .card[data-gi="${g.i}"]`);
+  if (el) el.outerHTML = card(g);
+  $('#todoN').textContent = G.filter(x => !my[x.sid]).length;
 }
 function renderCats(){
   const all = [{id:'all',e:'',n:'전체'}].concat(CATS);
@@ -591,32 +729,99 @@ function renderWant(){
       <div class="badges" style="margin-top:6px">${koBadge(g)}<span class="b">${esc(g.p)}</span>${buyBadges(g)}</div>
       <p class="desc" style="margin-top:6px">${esc(g.d)}</p>
       ${sims.length?`<div class="sim">기다리는 동안 지금 할 수 있는 비슷한 게임:<br>${sims.map(x=>`<button data-open="${x.i}">${esc(x.n)}</button>`).join('')}</div>`:''}
+      <div style="margin-top:10px">${choiceHTML(g.sid)}</div>
       <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn" data-open="${g.i}">영상·사진 보기</button>${m.id?`<a class="btn" href="https://store.steampowered.com/app/${m.id}/" target="_blank" rel="noopener">${g.soon?'스팀에서 찜하기 ↗':'스팀 상점 페이지 ↗'}</a>`:''}</div></div></div>`;
   }).join('');
 }
 
 /* ── 같이 고르기 ── */
-function renderPick(){
-  $('#mineN').textContent = mine.size;
-  const names = Object.keys(votes).filter(n => n !== myName);
-  $('#people').innerHTML = names.length
-    ? '<span class="ph">받은 찜:</span>' + names.map(n=>`<span class="who">${esc(n)} ${votes[n].ids.length}개 <button data-rm="${esc(n)}" aria-label="${esc(n)} 찜 지우기">✕</button></span>`).join('')
-    : '';
-  // 모두의 찜
-  const ranked = G.map(g=>({g, w:pickers(g)})).filter(x=>x.w.length).sort((a,b)=>b.w.length-a.w.length || (media(b.g).rv?media(b.g).rv.p:0)-(media(a.g).rv?media(a.g).rv.p:0));
-  const sec = $('#allSec');
-  if (!ranked.length || (names.length===0)) { sec.hidden = true; }
-  else {
-    sec.hidden = false;
-    const total = groupSize();
-    $('#rank').innerHTML = ranked.slice(0, 18).map(({g,w})=>{
-      const m = media(g);
-      const img = m.img ? `<img src="${esc(m.img)}" alt="" loading="lazy">` : '<span class="ni"></span>';
-      return `<button class="ri${w.length>=total&&total>=2?' all4':''}" data-open="${g.i}">${img}<div><b>${esc(g.n)}</b><span class="nm">♥ ${w.map(esc).join(' · ')}</span></div><span class="ct">${w.length}명${w.length>=total&&total>=2?' · 전원':''}</span></button>`;
-    }).join('');
-  }
+function mySummary(){
+  const k = { y:0, o:0, n:0 }; Object.values(my).forEach(v => k[v]++);
+  return { k, n: Object.keys(my).length, done: G.filter(g => my[g.sid]).length };
 }
-function renderAll(){ renderPick(); renderList(); }
+function renderPick(){
+  const s = mySummary();
+  $('#mySum').innerHTML = `내 선택 🔥<b>${s.k.y}</b> 👌<b>${s.k.o}</b> 🙅<b>${s.k.n}</b> · ${G.length}개 중 <b>${s.done}</b>개 고름`;
+  const names = others();
+  $('#people').innerHTML = names.length
+    ? '<span class="ph">받은 선택:</span>' + names.map(n => { const v = Object.values(votes[n].c), c = k => v.filter(x => x === k).length; return `<span class="who">${esc(n)} 🔥${c('y')} 👌${c('o')} 🙅${c('n')} <button data-rm="${esc(n)}" aria-label="${esc(n)} 선택 지우기">✕</button></span>`; }).join('')
+    : '';
+}
+const steamImg = a => `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${a}/header.jpg`;
+const noImgFallback = `onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'noimg',textContent:this.alt.replace(' 대표 이미지','')}))"`;
+function renderAdded(){
+  const reg = [...addReg().values()];
+  $('#addSec').hidden = !reg.length;
+  $('#addList').innerHTML = reg.map(x => {
+    const c = my[x.id] || '', mineAdd = myAdds.some(y => y.id === x.id), lb = mineAdd ? '지우기' : '이 화면에서 숨기기';
+    const ph = x.a ? `<img src="${steamImg(x.a)}" alt="${esc(x.n)} 대표 이미지" loading="lazy" ${noImgFallback}>` : `<div class="noimg">${esc(x.n)}</div>`;
+    const st = x.a
+      ? `<a class="btn" href="https://store.steampowered.com/app/${x.a}/" target="_blank" rel="noopener">스팀 상점 페이지 ↗</a>`
+      : `<a class="btn" href="https://store.steampowered.com/search/?term=${encodeURIComponent(x.n)}" target="_blank" rel="noopener">스팀에서 찾아보기 ↗</a>`;
+    const yt = `<a class="btn" href="https://www.youtube.com/results?search_query=${encodeURIComponent(x.n + ' 4인 플레이')}" target="_blank" rel="noopener">유튜브 영상 ↗</a>`;
+    return `<div class="ad${c ? ' c-' + c : ''}" id="add-${x.id}"><div class="ph">${ph}<span class="by">➕ ${esc(x.by || '누군가')} 추가</span><button class="x" data-unadd="${x.id}" aria-label="${esc(x.n)} ${lb}" title="${lb}">✕</button></div>
+      <div class="tx"><b>${esc(x.n)}</b>${choiceHTML(x.id)}${whoLine(whoChose(x.id))}<div class="lk">${st}${yt}</div></div></div>`;
+  }).join('');
+}
+/* 다듬은 목록: 빼자가 하나도 없는 게임만 남기고 하자 → 괜춘 → 스팀 평가 순 */
+function splitRank(){
+  const reg = addReg();
+  const items = G.map(g => ({ id:g.sid, g, n:g.n, img:media(g).img, rv:media(g).rv ? media(g).rv.p : 0 }))
+    .concat([...reg.values()].map(x => ({ id:x.id, x, n:x.n, img:x.a ? steamImg(x.a) : null, rv:0 })))
+    .map(it => ({ ...it, t: whoChose(it.id) })).filter(it => nChosen(it.t));
+  const keep = items.filter(it => !it.t.n.length).sort((a, b) => b.t.y.length - a.t.y.length || b.t.o.length - a.t.o.length || b.rv - a.rv);
+  const out = items.filter(it => it.t.n.length).sort((a, b) => a.t.n.length - b.t.n.length || b.t.y.length - a.t.y.length);
+  return { keep, out, any: items.length };
+}
+function renderRank(){
+  const sec = $('#allSec'), { keep, out, any } = splitRank();
+  if (!any) { sec.hidden = true; return; }
+  sec.hidden = false;
+  const total = groupSize(), names = [myName || '나'].concat(others());
+  $('#rankDesc').innerHTML = total < 2
+    ? '아직 <b>내 선택만</b> 있어. 친구들이 보낸 링크를 누르면 여기에 합쳐져서, 넷 다 괜찮은 게임만 남아.'
+    : `<b>${names.map(esc).join(' · ')}</b> ${total}명의 선택을 합쳤어. 빼자가 하나라도 나온 게임은 아래로 빼고, 하자 많은 순으로 줄 세웠어.`;
+  const row = (it, k) => {
+    const all = total >= 2 && it.t.y.length >= total;
+    const miss = total >= 2 ? names.filter(n => !it.t.y.includes(n) && !it.t.o.includes(n) && !it.t.n.includes(n)) : [];
+    const img = it.img ? `<img src="${esc(it.img)}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'ni'}))">` : '<span class="ni"></span>';
+    const who = ['y','o','n'].filter(c => it.t[c].length).map(c => `<i class="${c}">${CH[c].e} ${it.t[c].map(esc).join('·')}</i>`).join('');
+    return `<button class="ri${all ? ' all' : ''}" ${it.g ? `data-open="${it.g.i}"` : `data-goadd="${it.id}"`}>${k != null ? `<span class="rk">${k}</span>` : ''}${img}<div><b>${esc(it.n)}${it.x ? ' <small>추가</small>' : ''}</b><span class="nm">${who}</span>${miss.length ? `<span class="nm">아직 안 고름: ${miss.map(esc).join('·')}</span>` : ''}</div><span class="ct">${all ? '🎉 전원 하자' : tallyTxt(it.t)}</span></button>`;
+  };
+  const SHOW = 12;
+  let html = keep.length
+    ? `<h3 class="tierh">남은 후보 ${keep.length}개</h3><div class="rank">${keep.slice(0, SHOW).map((it, k) => row(it, k + 1)).join('')}</div>`
+      + (keep.length > SHOW ? `<details class="more"><summary>남은 후보 ${keep.length - SHOW}개 더 보기</summary><div class="rank">${keep.slice(SHOW).map((it, k) => row(it, k + SHOW + 1)).join('')}</div></details>` : '')
+    : '<p class="sec-desc">아직 남은 후보가 없어. 하자나 괜춘을 골라줘.</p>';
+  if (out.length) html += `<details class="out"><summary>🙅 빼자 나온 게임 ${out.length}개 (눌러서 보기)</summary><div class="rank">${out.map(it => row(it, null)).join('')}</div></details>`;
+  $('#rank').innerHTML = html;
+}
+function resultText(){
+  const { keep, out } = splitRank(), total = groupSize(), names = [myName || '나'].concat(others());
+  const all = keep.filter(it => total >= 2 && it.t.y.length >= total), rest = keep.filter(it => !all.includes(it));
+  const L = [`[넷이 할 게임] 다듬은 목록 — ${names.join('·')} (${total}명)`];
+  if (all.length) L.push('🎉 전원 하자: ' + all.map(it => it.n).join(', '));
+  if (rest.length) L.push('🔥 남은 후보: ' + rest.slice(0, 10).map(it => `${it.n}(${tallyTxt(it.t, ['y','o']).replace(/ /g, '')})`).join(', ') + (rest.length > 10 ? ` 외 ${rest.length - 10}개` : ''));
+  if (out.length) L.push('🙅 빼기로 한 것: ' + out.map(it => it.n).join(', '));
+  const reg = [...addReg().values()];
+  if (reg.length) L.push('➕ 추가한 게임: ' + reg.map(x => `${x.n}(${x.by || '?'})`).join(', '));
+  L.push('보러 가기: ' + pageURL());
+  return L.join('\n');
+}
+function renderAll(){ renderPick(); renderAdded(); renderRank(); renderWant(); renderList(); }
+/* 선택 하나가 바뀌었을 때: 목록이 선택에 따라 걸러지거나 줄 세워져 있으면 전체, 아니면 그 카드만 */
+function afterChoice(id){
+  saveAll();
+  renderPick(); renderAdded(); renderRank(); renderWant();
+  if (state.todo || state.yes || state.nohide || state.sort === 'votes') renderList();
+  else if (bySid[id]) updateCard(bySid[id]);
+}
+function setChoice(id, ch){
+  if (!isCh(ch) || !(bySid[id] || addReg().has(id))) return;
+  if (my[id] === ch) delete my[id]; else my[id] = ch;
+  afterChoice(id);
+}
+function flashEl(el){ if (!el) return; el.scrollIntoView({ behavior:'smooth', block:'center' }); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
 let tt;
 function toast(t){ $('#toast').textContent = t; clearTimeout(tt); tt = setTimeout(()=>{ $('#toast').textContent=''; }, 3500); }
 async function copyText(text, okMsg){
@@ -627,15 +832,67 @@ async function copyText(text, okMsg){
   if (ok) toast(okMsg); else prompt('아래 내용을 복사해서 보내줘', text);
 }
 const pageURL = () => location.origin + location.pathname;
+const isPhone = () => !!navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+/* 링크에 넣을 글자: 구분자(. ~ : & =)와 겹치지 않게 전부 %로 바꿈 */
+const ue = s => encodeURIComponent(s).replace(/[.~!*'()]/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase());
+function shareURL(){
+  const ids = k => Object.keys(my).filter(id => my[id] === k).sort().join('.');
+  const a = [...addReg().values()].map(x => (x.a ? x.a.toString(36) : '') + ':' + ue(x.n) + ':' + ue(x.by || '')).join('.');
+  return pageURL() + '#p=' + ue(myName) + '&y=' + ids('y') + '&o=' + ids('o') + '&n=' + ids('n') + (a ? '&a=' + a : '');
+}
 async function sendMine(){
   if (!myName){ $('#myName').focus(); toast('먼저 내 이름을 써줘'); return; }
-  if (!mine.size){ toast('먼저 하고 싶은 게임에 ♡를 눌러줘'); return; }
-  const url = pageURL() + '#v=' + encodeURIComponent(myName) + '~' + [...mine].sort().join('.');
-  const text = `[넷이 할 게임] ${myName}의 찜 ${mine.size}개 — 눌러서 같이 고르자`;
-  if (navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)){
+  const s = mySummary();
+  if (!s.n && !myAdds.length){ toast('먼저 게임 몇 개를 하자·괜춘·빼자로 골라줘'); return; }
+  const url = shareURL();
+  const text = `[넷이 할 게임] ${myName}의 선택 🔥${s.k.y} 👌${s.k.o} 🙅${s.k.n} — 눌러서 합쳐 보자`;
+  if (isPhone()){
     try { await navigator.share({ title:'넷이 할 게임', text, url }); return; } catch(e) { if (e && e.name === 'AbortError') return; }
   }
-  copyText(text + '\n' + url, `복사했어 (${mine.size}개). 단톡방에 붙여넣어줘`);
+  copyText(text + '\n' + url, `복사했어 (${s.n}개 선택). 단톡방에 붙여넣어줘`);
+}
+async function sendResult(){
+  const text = resultText();
+  if (isPhone()){
+    try { await navigator.share({ title:'넷이 할 게임 — 다듬은 목록', text }); return; } catch(e) { if (e && e.name === 'AbortError') return; }
+  }
+  copyText(text, '정리 결과를 복사했어. 단톡방에 붙여넣어줘');
+}
+
+/* ── 게임 추가: 이름 또는 스팀 상점 링크 ── */
+const decodeSlug = s => { try { s = decodeURIComponent(s); } catch(e) {} return s.replace(/_/g, ' ').trim(); };
+function addGame(){
+  const raw = $('#addIn').value.trim();
+  if (!raw){ $('#addIn').focus(); toast('게임 이름이나 스팀 상점 링크를 넣어줘'); return; }
+  if (!myName){ $('#myName').focus(); toast('먼저 내 이름을 써줘 (누가 추가했는지 보여)'); return; }
+  let a = null, n = raw;
+  const m = raw.match(/store\.steampowered\.com\/app\/(\d{1,9})(?:\/([^\/?#\s]+))?/i) || raw.match(/s\.team\/a\/(\d{1,9})/i);
+  if (m) { a = Number(m[1]); n = m[2] ? decodeSlug(m[2]) : ''; }
+  else if (/^https?:\/\//i.test(raw)) { toast('스팀 상점 링크나 게임 이름만 넣을 수 있어'); return; }
+  const hit = a ? bySid[a.toString(36)] : G.find(g => normName(g.n) === normName(n) || normName(g.e) === normName(n));
+  $('#addIn').value = '';
+  if (hit){
+    my[hit.sid] = 'y'; saveAll(); renderAll();
+    toast(`「${hit.n}」은(는) 이미 목록에 있어서 🔥하자로 표시했어`);
+    flashEl(document.querySelector(`#list .card[data-gi="${hit.i}"]`));
+    return;
+  }
+  const x = cleanAdd({ a, n: n || ('스팀 게임 ' + a), by: myName });
+  if (!x){ toast('게임 이름을 다시 확인해줘'); return; }
+  hidden.delete(x.id);
+  const had = addReg().get(x.id);
+  if (!had && myAdds.length >= 20){ toast('추가는 20개까지야. 안 할 건 지우고 넣어줘'); return; }
+  if (!had) myAdds.push(x);
+  my[x.id] = 'y'; saveAll(); renderAll();
+  toast(had ? `「${had.n}」은(는) ${had.by || '친구'}이(가) 이미 추가했어. 🔥하자로 표시했어` : `「${x.n}」 추가했어 (🔥하자로 표시)`);
+  flashEl(document.getElementById('add-' + x.id));
+}
+function unAdd(id){
+  const x = addReg().get(id); if (!x) return;
+  const mineAdd = myAdds.some(y => y.id === id);
+  if (!confirm(mineAdd ? `「${x.n}」을(를) 지울까?` : `「${x.n}」을(를) 이 화면에서 숨길까?`)) return;
+  myAdds = myAdds.filter(y => y.id !== id); hidden.add(id); delete my[id];
+  saveAll(); renderAll();
 }
 
 /* ── 상세 창 ── */
@@ -682,7 +939,7 @@ async function playTrailer(){
 }
 function openDetail(i){
   cur = G[i];
-  const g = cur, m = media(g), c = catOf(g.c), who = pickers(g);
+  const g = cur, m = media(g), c = catOf(g.c);
   $('#sheet').style.setProperty('--tint', `var(--${g.c})`);
   $('#mCat').textContent = `${c.e} ${c.n}`;
   $('#mName').textContent = g.n;
@@ -693,7 +950,7 @@ function openDetail(i){
   $('#mSdH').style.display = m.sd ? '' : 'none';
   const r = m.rv;
   const rows = [
-    ['찜한 사람', who.length ? '♥ ' + who.map(esc).join(' · ') : '아직 없음'],
+    ['고른 사람', whoTxt(whoChose(g.sid))],
     ['인원', esc(g.p)],
     ['구매', buyText(g)],
     ['정가', g.pr ? won(g.pr) + (g.b==='each' ? ` · 넷이면 <b>${man(g.pr*4)}</b>` : '') + ' <span style="color:var(--faint)">(세일 자주 함)</span>' : (g.b==='free' ? '무료' : g.b==='soon' ? '출시 전이라 아직 없음' : '—')],
@@ -705,10 +962,9 @@ function openDetail(i){
     ['분위기', esc(g.m.join(' · '))]
   ].filter(Boolean);
   $('#mFacts').innerHTML = rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('');
-  const on = mine.has(g.sid);
+  modalChoice();
   const yt = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(g.n + ' 4인 플레이');
-  $('#mAct').innerHTML = `<button class="btn ${on?'':'pri'}" data-mheart>${on?'♥ 찜했어':'♡ 찜하기'}</button>`
-    + (m.id ? `<a class="btn" href="https://store.steampowered.com/app/${m.id}/" target="_blank" rel="noopener">${g.soon ? '스팀에서 찜하기 ↗' : '스팀 상점 페이지 ↗'}</a>` : m.wiki ? `<a class="btn" href="${esc(m.wiki)}" target="_blank" rel="noopener">위키백과 ↗</a>` : '')
+  $('#mAct').innerHTML = (m.id ? `<a class="btn" href="https://store.steampowered.com/app/${m.id}/" target="_blank" rel="noopener">${g.soon ? '스팀에서 찜하기 ↗' : '스팀 상점 페이지 ↗'}</a>` : m.wiki ? `<a class="btn" href="${esc(m.wiki)}" target="_blank" rel="noopener">위키백과 ↗</a>` : '')
     + `<a class="btn" href="${yt}" target="_blank" rel="noopener">유튜브 플레이 영상 ↗</a>`;
   const shots = m.ss || [];
   $('#strip').innerHTML = (m.mv ? `<button data-tv="1" aria-label="트레일러"><span class="tv">▶ 트레일러</span></button>` : '')
@@ -720,46 +976,90 @@ function openDetail(i){
   $('#modal').scrollTop = 0;
   $('#mClose').focus({preventScroll:true});
 }
-function closeDetail(){ stopVideo(); $('#modal').classList.remove('open'); document.body.classList.remove('lock'); cur = null; }
+function closeDetail(){ stopVideo(); $('#modal').classList.remove('open'); document.body.classList.remove('lock'); cur = null; quick = null; }
 function stepGame(d){
   const list = visible.length ? visible : G;
   let k = list.indexOf(cur); if (k < 0) k = 0;
   openDetail(list[(k + d + list.length) % list.length].i);
 }
-function toggleMine(g){ mine.has(g.sid) ? mine.delete(g.sid) : mine.add(g.sid); saveAll(); renderAll(); }
+/* 상세 창 안의 하자·괜춘·빼자 (하나씩 고르기 중이면 진행 표시 + 건너뛰기) */
+function modalChoice(){
+  if (!cur) return;
+  const t = whoChose(cur.sid);
+  $('#mChoice').innerHTML = (quick
+    ? `<div class="q"><span>⚡ 하나씩 고르기 · <b>${quick.k + 1}</b> / ${quick.q.length}</span><button class="skip" data-skip>건너뛰기 →</button></div>`
+    : `<div class="q"><span>나는 이 게임…</span><span>${nChosen(t) ? whoTxt(t) : ''}</span></div>`) + choiceHTML(cur.sid, true);
+  const dd = document.querySelector('#mFacts dd'); if (dd) dd.innerHTML = whoTxt(t);
+}
+
+/* ── 하나씩 고르기: 아직 안 고른 게임을 한 장씩 (지금 보는 분류·필터 순서대로) ── */
+let quick = null;
+function startQuick(){
+  const pool = (visible.length ? visible : G).filter(g => !my[g.sid]);
+  const list = pool.length ? pool : G.filter(g => !my[g.sid]);
+  if (!list.length){ toast(`${G.length}개 다 골랐어! 「내 선택 보내기」로 보내줘`); return; }
+  quick = { q: list.map(g => g.i), k: 0, busy: false };
+  openDetail(quick.q[0]);
+}
+function quickGo(d){
+  if (!quick) return;
+  let k = quick.k + d;
+  if (d > 0) while (k < quick.q.length && my[G[quick.q[k]].sid]) k++;
+  if (k < 0) k = 0;
+  if (k >= quick.q.length){
+    const n = quick.q.length;
+    closeDetail();
+    toast(`${n}개 다 봤어! 「내 선택 보내기」로 친구들한테 보내줘`);
+    $('#pick').scrollIntoView({ behavior:'smooth', block:'start' });
+    return;
+  }
+  quick.k = k; openDetail(quick.q[k]);
+}
+function modalPick(ch){
+  if (!cur) return;
+  if (quick && quick.busy) return;
+  const id = cur.sid;
+  setChoice(id, ch);
+  modalChoice();
+  if (quick && my[id]){ quick.busy = true; setTimeout(() => { if (quick){ quick.busy = false; quickGo(1); } }, 220); }
+}
 
 /* ── 시작 ── */
 $('#total').textContent = G.length;
 $('#myName').value = myName;
 const got = importHash();
-renderPlayed(); renderWant(); renderCats(); renderTop(); renderAll();
-if (got){
-  const bn = $('#banner'); bn.style.display = 'block';
-  bn.innerHTML = got.self
-    ? `내가 보낸 링크라서 그대로 뒀어.`
-    : `<b>${esc(got.name)}</b>이(가) 고른 게임 <b>${got.n}개</b>를 합쳤어. 카드에 「♥ ${esc(got.name)}」로 보여. ${myName ? '' : '너도 이름 쓰고 골라서 보내줘!'}`;
-}
+renderPlayed(); renderCats(); renderTop(); renderAll();
+function showBanner(r){ const bn = $('#banner'); bn.style.display = 'block'; bn.innerHTML = bannerMsg(r); }
+if (got) showBanner(got);
 
 /* ── 이벤트 ── */
 document.addEventListener('click', e=>{
+  const ch = e.target.closest('[data-ch]');
+  if (ch) { if (e.target.closest('#modal')) modalPick(ch.dataset.ch); else setChoice(ch.dataset.cid, ch.dataset.ch); return; }
   const rm = e.target.closest('[data-rm]');
-  if (rm) { const n = rm.dataset.rm; if (confirm(`${n}의 찜을 이 화면에서 지울까?`)) { delete votes[n]; saveAll(); renderAll(); } return; }
+  if (rm) { const n = rm.dataset.rm; if (confirm(`${n}의 선택을 이 화면에서 지울까?`)) { delete votes[n]; saveAll(); renderAll(); } return; }
+  const un = e.target.closest('[data-unadd]');
+  if (un) { unAdd(un.dataset.unadd); return; }
+  const ga = e.target.closest('[data-goadd]');
+  if (ga) { flashEl(document.getElementById('add-' + ga.dataset.goadd)); return; }
   const o = e.target.closest('[data-open]');
   if (o && !e.target.closest('#modal')) { openDetail(+o.dataset.open); return; }
-  const h = e.target.closest('[data-heart]');
-  if (h) { toggleMine(G[+h.dataset.heart]); return; }
 });
+$('#quick').addEventListener('click', startQuick);
+$('#addBtn').addEventListener('click', addGame);
+$('#addIn').addEventListener('keydown', e=>{ if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); addGame(); } });
+$('#copyResult').addEventListener('click', sendResult);
 $('#cats').addEventListener('click', e=>{
   const b = e.target.closest('[data-cat]'); if(!b) return;
   state.cat = b.dataset.cat; renderCats(); renderList();
 });
-for (const [id,key] of [['#fKo','ko'],['#fOne','one'],['#fCheap','cheap'],['#fHeart','heart'],['#fVoted','voted']]){
+for (const [id,key] of [['#fKo','ko'],['#fOne','one'],['#fCheap','cheap'],['#fTodo','todo'],['#fYes','yes'],['#fNoHide','nohide']]){
   $(id).addEventListener('click', ()=>{ state[key]=!state[key]; $(id).setAttribute('aria-pressed', state[key]); renderList(); });
 }
 $('#sort').addEventListener('change', e=>{ state.sort = e.target.value; renderList(); });
 $('#q').addEventListener('input', e=>{ state.q = e.target.value.trim(); renderList(); });
-$('#myName').addEventListener('input', e=>{ myName = e.target.value.replace(/[<>"']/g,'').trim().slice(0,10); saveAll(); renderPick(); });
-$('#myName').addEventListener('change', ()=>renderList());
+$('#myName').addEventListener('input', e=>{ myName = cleanName(e.target.value).slice(0,10); myAdds.forEach(x => { x.by = myName; }); saveAll(); renderPick(); });
+$('#myName').addEventListener('change', ()=>renderAll());
 $('#sendMine').addEventListener('click', sendMine);
 $('#copyPage').addEventListener('click', async ()=>{
   const url = pageURL();
@@ -772,22 +1072,23 @@ $('#copyPage').addEventListener('click', async ()=>{
 $('#modal').addEventListener('click', e=>{
   if (e.target === $('#modal')) { closeDetail(); return; }
   if (e.target.closest('#mClose')) { closeDetail(); return; }
-  if (e.target.closest('#mPrev')) { stepGame(-1); return; }
-  if (e.target.closest('#mNext')) { stepGame(1); return; }
+  if (e.target.closest('#mPrev')) { quick ? quickGo(-1) : stepGame(-1); return; }
+  if (e.target.closest('#mNext')) { quick ? quickGo(1) : stepGame(1); return; }
+  if (e.target.closest('[data-skip]')) { quickGo(1); return; }
   if (e.target.closest('[data-play]') || e.target.closest('[data-tv]')) { playTrailer(); return; }
   const s = e.target.closest('[data-shot]'); if (s) { showShot(+s.dataset.shot); return; }
-  if (e.target.closest('[data-mheart]')) { const i = cur.i; toggleMine(cur); openDetail(i); }
 });
 document.addEventListener('keydown', e=>{
   if (!cur) return;
   if (e.key === 'Escape') closeDetail();
+  else if (e.key === '1' || e.key === '2' || e.key === '3') modalPick({ 1:'y', 2:'o', 3:'n' }[e.key]);
   else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
     const shots = media(cur).ss || []; if (!shots.length) return;
     const idx = +($('#viewer').dataset.idx || 0), d = e.key === 'ArrowRight' ? 1 : -1;
     showShot((idx + d + shots.length) % shots.length);
   }
 });
-window.addEventListener('hashchange', ()=>{ const r = importHash(); if (r) { renderAll(); const bn = $('#banner'); bn.style.display='block'; bn.innerHTML = r.self ? '내가 보낸 링크라서 그대로 뒀어.' : `<b>${esc(r.name)}</b>이(가) 고른 게임 <b>${r.n}개</b>를 합쳤어.`; } });
+window.addEventListener('hashchange', ()=>{ const r = importHash(); if (r) { renderAll(); showBanner(r); } });
 </script>
 </body>
 </html>
