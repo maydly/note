@@ -281,11 +281,31 @@ export function dueText(n) { return n < 0 ? `${-n}일 지남` : n === 0 ? "오�
 function isDelivTarget(e) {
   return !!e && !isExt(e) && stActive(e.status) && SHOOT_LABELS.includes(e.label) && e.date >= DELIV_SINCE;
 }
+// (261103) 관리자 캘린더 운영-003 18번과 같게 — 수빈이 보내는 기본 보정본·구매분은 고객 기한 7일 전이 «보낼 날»(admin.html sendDayOf).
+// 규칙을 정한 날(11/3)부터 이어지게: 보낼 날 = max(고객 기한 − 7일, min(고객 기한, 11/9)). 긴급·명진 «보낼 계획»·고객 10장 셀렉 기다림은 그대로.
+const SEND_EARLY_DAYS = 7, SEND_EARLY_FROM = "2026-11-03";
+const SEND_EARLY_CAP = addDays(SEND_EARLY_FROM, SEND_EARLY_DAYS - 1);   // 2026-11-09
+function sendDayOf(due) {
+  if (!due) return due;
+  const a = addDays(due, -SEND_EARLY_DAYS), b = due < SEND_EARLY_CAP ? due : SEND_EARLY_CAP;
+  return a > b ? a : b;
+}
+// 줄 세우기도 관리자와 같게(admin.html alertCmp) — ① 고객 기한(긴급은 약속 기한, 상담 고객은 원래 기한)까지 이미 지난 건(많이 지난 순)
+//  ② 보낼 날만 지난 건 ③ 나머지 — ②③은 보낼 날 순
+const alertCustOf = (a) => a.cust || a.orig || a.due;
+const alertTier = (a, today) => (dDiff(today, alertCustOf(a)) < 0 ? 0 : a.left < 0 ? 1 : 2);
+const alertCmp = (today) => (a, b) => {
+  const ta = alertTier(a, today), tb = alertTier(b, today);
+  if (ta !== tb) return ta - tb;
+  if (ta === 0) { const d = dDiff(today, alertCustOf(a)) - dDiff(today, alertCustOf(b)); if (d) return d; }
+  return a.left - b.left || String(alertCustOf(a)).localeCompare(String(alertCustOf(b))) || String(a.due).localeCompare(String(b.due));
+};
 
 /**
  * 지금 챙겨야 할 일 — 관리자 캘린더 buildAlerts 를 읽기만 하도록 옮긴 것.
  * kind: outfit(의상확인) · rush(긴급 보정본) · basic(기본 보정본) · buy(구매분)
- * 결과: [{kind, title, e, due, left, urgent}] — left 가 작은(급한) 순
+ * 결과: [{kind, title, e, due, left, urgent, cust?, early?, plan?}] — 고객 쪽 날짜가 급한 순(관리자 alertCmp)
+ * (261103) 기본 보정본·구매분의 due/left 는 «보낼 날»(고객 기한 7일 전) 기준, cust = 고객 기한. 상담 고객 «보낼 계획»은 계획일, 셀렉 기다림은 뺌.
  */
 export function buildAlerts(evs, today = todayISO()) {
   const out = [];
@@ -301,16 +321,27 @@ export function buildAlerts(evs, today = todayISO()) {
     }
     if (!isDelivTarget(e) || e.date > today) return;
     if (!e.dlvBasic) {
-      const due = addDue(e.date, BASIC_DUE), left = dDiff(today, due);
-      out.push({ kind: "basic", title: DLV_TITLE.basic, e, due, left, urgent: left <= ALERT_LEAD });
+      if (e.planBasic) {   // (261103) 16번 상담 고객 «보낼 계획»(명진) — 계획일 기준, 7일 앞당기지 않음
+        const left = dDiff(today, e.planBasic);
+        out.push({ kind: "basic", title: DLV_TITLE.basic + " (내 계획)", e, due: e.planBasic, left, urgent: left <= ALERT_LEAD, plan: true, orig: e.pickWait ? null : addDue(e.date, BASIC_DUE) });
+      } else if (!e.pickWait) {   // (261103) 15번 고객 10장 셀렉 기다림은 기한 없음(admin.html basicDueOf, PICK_DUE 미정) — 정해지면 여기도
+        const cust = addDue(e.date, BASIC_DUE), due = sendDayOf(cust), left = dDiff(today, due);
+        out.push({ kind: "basic", title: DLV_TITLE.basic + (due !== cust ? " (보낼 날)" : ""), e, due, left, urgent: left <= ALERT_LEAD, cust, early: due !== cust });
+      }
     }
     const bd = BUY_DUE[e.status] ? addDue(e.date, BUY_DUE[e.status]) : null;
     if (bd && !e.dlvBuy) {
-      const left = dDiff(today, bd);
-      out.push({ kind: "buy", title: DLV_TITLE[e.status] || "구매분", e, due: bd, left, urgent: left <= ALERT_LEAD });
+      const t = DLV_TITLE[e.status] || "구매분";
+      if (e.planBuy) {   // (261103) 16번 상담 고객 «보낼 계획»(명진)
+        const left = dDiff(today, e.planBuy);
+        out.push({ kind: "buy", title: t + " (내 계획)", e, due: e.planBuy, left, urgent: left <= ALERT_LEAD, plan: true, orig: bd });
+      } else {
+        const due = sendDayOf(bd), left = dDiff(today, due);
+        out.push({ kind: "buy", title: t + (due !== bd ? " (보낼 날)" : ""), e, due, left, urgent: left <= ALERT_LEAD, cust: bd, early: due !== bd });
+      }
     }
   });
-  return out.sort((a, b) => a.left - b.left || String(a.due).localeCompare(String(b.due)));
+  return out.sort(alertCmp(today));
 }
 /** 납품(보정본 전달)만 — 의상확인은 뺀다 */
 export const isDelivery = (a) => a && (a.kind === "basic" || a.kind === "buy" || a.kind === "rush");
@@ -347,7 +378,7 @@ export function stageItems(evs, tod, today = todayISO()) {
   if (tod && Array.isArray(tod.dated)) {
     tod.dated.forEach((x) => add({ kind: "todo", title: String(x.text || "").trim() || "할 일", todo: x, due: x.due, left: dDiff(today, x.due) }));
   }
-  const ord = (a, b) => a.left - b.left || String(a.due).localeCompare(String(b.due));
+  const ord = alertCmp(today);   // (261103) 관리자와 같은 줄 세우기
   S.over.sort(ord); S.d3.sort(ord); S.d7.sort(ord);
   return S;
 }
