@@ -285,6 +285,14 @@ export function evMoney(e) {
   r.extra = ret + wm + Math.max(0, Number(e.rushAmt) || 0);
   return r;
 }
+/** 노쇼 예약비 (admin.html noshKeep 과 같은 계산) — 노쇼 사유로 정한다:
+ *  환불 사유(고객·내 사유)의 «80%» = 예약비 20%가 수익 · «100%» = 0원 · 그 밖의 사유 = 예약비 전부(환불 없음). */
+const NOSH_REFUND = { "고객 사유 환불(80%)": 0.8, "고객 사유 환불(100%)": 1, "내 사유 환불(80%)": 0.8, "내 사유 환불(100%)": 1 };
+export function noshKeep(e) {
+  if (!e || e.status !== "nosh") return null;
+  const fee = evAmount(e), reason = String(e.noshReason || "").split(" — ")[0], rf = NOSH_REFUND[reason] || 0;
+  return { fee, keep: fee == null ? null : Math.round(fee * (1 - rf)), rule: rf >= 1 ? "full" : rf > 0 ? "80" : "none", reason };
+}
 
 // 전달 기한 (admin.html:744-805)
 const DELIV_SINCE = "2026-07-14";   // 이 날짜 이전 촬영은 이미 전달한 것으로 본다
@@ -489,6 +497,11 @@ export function calStats(evs, now = new Date()) {
     if (mo.wmPending) noAmt++;
     if (isLaterShoot(e, now)) { planN++; if (a == null) planNoAmt++; else planSum += a; }
     else doneN++;
+  });
+  // (운영-003 17) 노쇼 예약비 — 촬영 건수엔 안 넣고 남는 예약비만 이번 달 수익에(관리자와 같게)
+  evs.forEach((e) => {
+    if (!e || !SHOOT_LABELS.includes(e.label) || String(e.date).slice(0, 7) !== mk) return;
+    const k = noshKeep(e); if (k && k.keep) sum += k.keep;
   });
   return {
     today, wkFrom, wkTo, weekCount: week.length, weekTarget: WEEK_TARGET,
