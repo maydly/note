@@ -237,14 +237,28 @@ export const isShootEv = (e) => !!e && SHOOT_LABELS.includes(e.label) && stActiv
 export const WEEK_TARGET = 10;          // 이번 주 촬영 10명
 export const MONTH_TARGET = 3200000;    // 이번 달 수익 320만원
 
-// 촬영 금액 (admin.html:836-852 PRICE_TABLE · evAmount)
+// 촬영 금액 (admin.html PRICE_TABLE · evAmount) — 금액은 소스에 적지 않는다(공개 저장소, 운영-003 17)
+//  관리자 캘린더와 같은 금액표(mj_cal/prices)를 로그인해서 읽는다(calEvents 가 일정과 함께 읽음).
+//  같은 주소라 관리자 캘린더가 이 기기에 기억해 둔 금액표(maydly_prices_v1)로 먼저 시작한다.
 const PRICE_TABLE = [
-  { from: "2026-01-01", p: { studio_f: 80000, studio_m: 80000 } }
+  { from: "2026-01-01", p: { studio_f: "studio", studio_m: "studio" } }   // 값 = 금액표 이름
 ];
+const PRICE_KEYS = ["studio", "buy_raw", "buy_color", "ret", "wm"];
+function cleanPrices(o) {
+  if (!o || typeof o !== "object") return null;
+  const n = (v) => { v = Number(v); return Number.isFinite(v) && v >= 1000 && v <= 100000000 ? Math.round(v) : null; };
+  const p = {};
+  PRICE_KEYS.forEach((k) => { const v = n(o[k]); if (v != null) p[k] = v; });
+  const sel = (Array.isArray(o.sel) ? o.sel : []).map(n).filter((v) => v != null);
+  if (sel.length) p.sel = sel.slice(0, 2);
+  return Object.keys(p).length ? p : null;
+}
+let PRICES = cleanPrices(lsJSON("maydly_prices_v1"));
 function fixedPriceOf(label, ds) {
   let hit = null;
   PRICE_TABLE.forEach((r) => { if (String(ds) >= r.from) hit = r; });
-  return hit && hit.p[label] != null ? hit.p[label] : null;
+  const k = hit && hit.p[label];
+  return k && PRICES && PRICES[k] != null ? PRICES[k] : null;
 }
 /** 일정에 적은 금액 > 고정 단가(½ 반값) > 미입력(null) */
 export function evAmount(e) {
@@ -256,6 +270,20 @@ export function evAmount(e) {
   const p = fixedPriceOf(e.label, e.date);
   if (p == null) return null;
   return e.half ? Math.round(p / 2) : p;
+}
+/** 사진 구매 · 추가 요청 (admin.html evMoney 와 같은 계산) — 금액표가 없으면 0.
+ *  2번 색보정은 일정마다 고른 금액(buyAmt), 워터마크 제거는 유료로 고른 것(wmPay)만 센다. 안 고른 건 «확인 필요». */
+export function evMoney(e) {
+  const r = { buy: 0, buyPending: false, wmPending: false, extra: 0 };
+  if (!e || !PRICES) return r;
+  const pr = (k) => (PRICES[k] != null ? PRICES[k] : 0);
+  if (e.status === "buy_select") { const v = Number(e.buyAmt) || 0; if (v > 0) r.buy = v; else r.buyPending = true; }
+  else if (e.status === "buy_raw" || e.status === "buy_color") r.buy = pr(e.status);
+  const ret = Math.max(0, parseInt(e.extraRet, 10) || 0) * pr("ret");
+  let wm = 0;
+  if (e.wm) { if (e.wmPay === "paid") wm = pr("wm"); else if (e.wmPay !== "free") r.wmPending = true; }
+  r.extra = ret + wm + Math.max(0, Number(e.rushAmt) || 0);
+  return r;
 }
 
 // 전달 기한 (admin.html:744-805)
@@ -394,6 +422,11 @@ export function calEvents() {
       const j = JSON.parse(b);
       const list = Array.isArray(j) ? j : j.events;
       if (!Array.isArray(list)) return null;
+      // 금액표도 같이 읽는다(운영-003 17) — 없으면 금액표 없음, 못 읽으면 이 기기에 기억된 것 그대로
+      try {
+        const ps = await getDoc(doc(db, "mj_cal", "prices"));
+        PRICES = ps.exists() && ps.data().blob ? cleanPrices(JSON.parse(ps.data().blob)) : null;
+      } catch (e) { /* 그대로 */ }
       // 관리자 캘린더가 불러올 때와 같게(admin.html:1361, 685):
       //  id 90000 이상(구글 캘린더에서 온 임시 일정)은 빼고, 옛 라벨(holiday→rest, nopay→studio_f)은 바꿔 읽는다.
       //  원본은 건드리지 않고 복사본만 바꾼다.
@@ -449,8 +482,11 @@ export function calStats(evs, now = new Date()) {
   const month = evs.filter((e) => isShootEv(e) && String(e.date).slice(0, 7) === mk);
   let sum = 0, noAmt = 0, planSum = 0, planNoAmt = 0, planN = 0, doneN = 0;
   month.forEach((e) => {
-    const a = evAmount(e);
+    const a = evAmount(e), mo = evMoney(e);
     if (a == null) noAmt++; else sum += a;
+    sum += mo.buy + mo.extra;                          // (운영-003 17) 사진 구매·추가 요청도 — 관리자 «이번 달 수익»과 같게
+    if (mo.buyPending) noAmt++;                        // 관리자: 미입력 = 금액 미입력 + 2번 금액·워터마크 확인 필요
+    if (mo.wmPending) noAmt++;
     if (isLaterShoot(e, now)) { planN++; if (a == null) planNoAmt++; else planSum += a; }
     else doneN++;
   });
