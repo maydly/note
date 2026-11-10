@@ -108,7 +108,8 @@ function initMap(){if(MAP||!window.L)return;MAP=L.map('lmap',{zoomControl:true,a
   var hasGL=(function(){try{var c=document.createElement('canvas');return !!(c.getContext('webgl2')||c.getContext('webgl'));}catch(e){return false;}})();
   if(hasGL&&window.maplibregl&&L.maplibreGL&&window.fetch){
     fetch('https://tiles.openfreemap.org/styles/positron').then(function(r){if(!r.ok)throw new Error('style');return r.json();}).then(function(st){
-      (st.layers||[]).forEach(function(l){if(l.type==='symbol'&&l.layout&&l.layout['text-field']&&l.id.indexOf('shield')<0){l.layout['text-field']=['coalesce',['get','name:ko'],['get','name']];}});
+      (st.layers||[]).forEach(function(l){if(l.type==='symbol'&&l.layout&&l.layout['text-field']&&l.id.indexOf('shield')<0){l.layout['text-field']=['coalesce',['get','name:ko'],['get','name']];}
+        if(l['source-layer']==='boundary'&&l.id!=='boundary_2'){l.layout=Object.assign({},l.layout||{},{visibility:'none'});}});
       L.maplibreGL({style:st,attribution:'&copy; OpenFreeMap · OSM'}).addTo(MAP);
     }).catch(function(){esri();});
   }else{esri();}
