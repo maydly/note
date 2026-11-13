@@ -203,7 +203,7 @@ function prow(it,lead,btns,extra){var ph='<div class="ph">'+poster(it)+'</div>';
 function renderPick(msg){var h='<div class="pk">';
   h+='<div class="how">① 이름을 넣고 ② 리스트에서 테마 카드의 <b>♡</b>를 눌러 가고 싶은 테마를 고르고 ③ 아래에서 <b>내 순위 10개</b>를 ▲▼로 정한 뒤 ④ <b>단톡에 보낼 링크</b>를 만들어 보내요. 친구가 보낸 링크를 열면 <b>모두의 순위</b>에 합쳐져요(1위 10점 … 10위 1점).</div>';
   if(msg)h+='<div class="note">'+esc(msg)+'</div>';
-  h+='<h2>내 이름</h2><input id="pkname" maxlength="12" placeholder="예: 명진" value="'+esc(ME.name)+'" oninput="setName(this.value)">';
+  h+='<h2>내 이름</h2><input id="pkname" maxlength="12" placeholder="예: 내 이름" value="'+esc(ME.name)+'" oninput="setName(this.value)">';
   h+='<h2>내 순위 10개 <small class="muted">'+ME.rank.length+'/10</small></h2>';
   h+=ME.rank.length?ME.rank.map(function(id,i){var it=BYID[id];return it?prow(it,i+1,'<div class="ctl"><button class="pb" onclick="mv(\''+id+'\',-1)">▲</button><button class="pb" onclick="mv(\''+id+'\',1)">▼</button></div><div class="ctl"><button class="pb" onclick="outTop(\''+id+'\')" title="10위에서 빼기">✕</button></div>'):'';}).join(''):'<p class="muted">리스트에서 ♡를 누르면 여기에 차례로 들어와요.</p>';
   var rest=ME.picks.filter(function(i){return ME.rank.indexOf(i)<0&&BYID[i];});
