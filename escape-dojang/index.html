@@ -162,7 +162,7 @@ body{word-break:keep-all;overflow-wrap:break-word}
 <div class="pg">도장<b>0</b>/ 438<br><br>재도전<b class="o">2</b></div></nav>
 <div class="wrap"><header><h1>방탈출 도장깨기</h1><p class="lead">전국 438개 · 넷이 도장깨기(75분 이상) + 커플끼리 둘이(60~74분은 평점 9.0 이상만)</p></header>
 <main>
-<section class="pane on" id="p-list"><div class="bar reg" id="regbar"></div><div class="bar"><button class="on" data-v="rec">추천순(평점)</button><button data-v="easy">쉬운 것부터</button><button id="long">75분 이상만</button><button id="pair">둘이 가능</button><button id="thr">스릴러·공포만</button><button id="left">남은 것만</button></div>
+<section class="pane on" id="p-list"><div class="bar reg" id="regbar"></div><div class="bar"><button class="on" data-v="rec">추천순</button><button id="pair">둘이 가능</button><button id="long">75분 이상만</button><button data-v="easy">쉬운 것부터</button><button id="thr">스릴러·공포만</button><button id="left">남은 것만</button></div>
 <p class="muted" style="font-size:12px;margin:2px 0">지금 보이는 테마 <span id="cnt"></span>개 · 테마를 누르면 줄거리·정보·다른 사람 리뷰가 펼쳐져요</p><div id="list"></div></section>
 <section class="pane" id="p-map"><div class="bar reg" id="mapreg"></div><div class="mapwrap"><div id="lmap"></div><div id="gulist"></div></div></section>
 <section class="pane" id="p-rec"><div id="recs"></div></section>
@@ -196,7 +196,7 @@ function detail(it){var h='<h4>어떤 방탈출인가요</h4>'+(it.story?'<div c
   return h;}
 function row(it,nextIt){
   var st=it.done?'<div class="stamp"><b>깼다!</b><span>'+esc(it.done)+'</span></div>':(it.retry?'<div class="stamp re"><b>재도전</b><span>'+esc(it.retry)+'</span></div>':'');
-  var nx=(it===nextIt)?'<div class="nx">다음 차례</div>':'';
+  var nx=(it===nextIt)?'<div class="nx">넷이 다음 차례 · 75분 이상</div>':'';
   var meta=[esc(it.gu),it.time+'분',esc(it.pp||''),esc(it.genre)].filter(Boolean).join(' · ');
   var rt=it.rating?'<span class="star"><b>★</b> '+it.rating.toFixed(2)+'</span>':'<span class="muted">평점 없음</span>';
   var df=it.diff?'<span class="lv">난이도 <span class="dots">'+[1,2,3,4,5].map(function(k){return '<i class="'+(k<=Math.round(it.diff/2)?'on':'')+'"></i>';}).join('')+'</span> '+it.diff+'/10</span>':'';
