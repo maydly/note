@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>고독스 순간광 구매 판단표</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --bg:#faf8f2; --card:#ffffff; --line:#e4e0d6; --line2:#efece3;
+  --ink:#2f3a34; --ink2:#5b665f; --muted:#8b948d;
+  --green:#2e7d55; --green-soft:#e9f2ec; --green-line:#cfe3d7;
+  --warm:#a8761a; --warm-soft:#fdf3ec; --warm-line:#f0dcc6;
+  --red:#b4473a; --red-soft:#fbeeec;
+  --blue:#4f6f99; --blue-soft:#eef2f7;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  font-size:15px;line-height:1.7}
+.clv{position:fixed;opacity:.055;pointer-events:none;z-index:0}
+.wrap{max-width:1040px;margin:0 auto;padding:34px 16px 90px;position:relative;z-index:1}
+h1{font-size:26px;font-weight:800;margin:0;display:flex;align-items:center;gap:9px;letter-spacing:-.4px;line-height:1.35}
+h1 svg{flex:none}
+.sub{color:var(--muted);font-size:13px;margin:8px 0 0}
+h2{font-size:19px;font-weight:800;margin:46px 0 6px;display:flex;align-items:center;gap:8px;letter-spacing:-.3px}
+h2::before{content:'';width:4px;height:17px;background:var(--green);border-radius:2px;flex:none}
+h2 .num{color:var(--green)}
+.lead{color:var(--ink2);margin:0 0 16px;font-size:14.5px}
+h3{font-size:15.5px;font-weight:800;margin:26px 0 10px}
+b{font-weight:800;color:var(--ink)}
+a{color:var(--green);font-weight:700;text-decoration:none;border-bottom:1px solid var(--green-line)}
+a:hover{border-bottom-color:var(--green)}
+
+/* 결론 */
+.verdict{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 24px;margin-top:22px;
+  box-shadow:0 1px 3px rgba(61,72,66,.05)}
+.verdict .tag{display:inline-block;background:var(--green-soft);color:var(--green);border:1px solid var(--green-line);
+  border-radius:99px;padding:2px 12px;font-size:12px;font-weight:800;margin-bottom:10px}
+.verdict ol{margin:0;padding-left:22px}
+.verdict li{margin:7px 0;font-size:15.5px}
+.verdict li b{color:var(--green)}
+.fork{margin-top:16px;background:var(--warm-soft);border:1px solid var(--warm-line);border-radius:12px;padding:13px 16px;font-size:14.5px}
+.fork b{color:var(--warm)}
+
+/* 달라진 것 */
+.diff{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:10px;margin-top:12px}
+.diff div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-size:14px}
+.diff .was{display:block;color:var(--muted);font-size:12.5px;text-decoration:line-through;text-decoration-color:#c9a9a3}
+.diff .now{display:block;font-weight:700;color:var(--ink)}
+
+/* 카드 */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.card.pick{border-color:var(--green);box-shadow:0 0 0 2px var(--green-soft)}
+.card .ph{height:150px;background:#f1efe8;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card .ph img{width:100%;height:100%;object-fit:cover}
+.card .ph.noimg{color:var(--muted);font-size:13px;font-weight:700}
+.card .bd{padding:14px 16px 15px;display:flex;flex-direction:column;flex:1}
+.card .nm{font-size:17px;font-weight:800;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.chip{display:inline-block;border-radius:6px;padding:1px 8px;font-size:11.5px;font-weight:800}
+.c-new{background:var(--green-soft);color:var(--green)}
+.c-hot{background:var(--warm-soft);color:var(--warm)}
+.c-gray{background:#f0eee8;color:var(--ink2)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 10px}
+.st{background:#faf9f5;border:1px solid var(--line2);border-radius:10px;padding:8px 10px}
+.st .k{font-size:11.5px;color:var(--muted);font-weight:700}
+.st .v{font-size:19px;font-weight:800;line-height:1.25;letter-spacing:-.3px}
+.st .v small{font-size:12px;font-weight:700;color:var(--ink2)}
+.st .v s{font-size:12px;color:var(--muted);font-weight:600;margin-right:4px}
+.st.price .v{color:var(--green)}
+.spec{font-size:12.5px;color:var(--ink2);margin:0 0 8px}
+.pro,.con{font-size:13.5px;margin:3px 0;padding-left:22px;position:relative}
+.pro::before,.con::before{position:absolute;left:0;top:0}
+.pro::before{content:'👍'}
+.con::before{content:'👎'}
+
+/* 표 */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:720px}
+th{background:#f4f2ea;text-align:left;padding:10px 12px;font-weight:800;font-size:12.5px;color:#6b756e;white-space:nowrap}
+td{padding:10px 12px;border-top:1px solid var(--line2);vertical-align:top}
+td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+td.big{font-weight:800;font-size:15px}
+td.ok{color:var(--green);font-weight:800}
+td.mid{color:var(--warm);font-weight:800}
+tr.mine td{background:#fbfaf6}
+tr.sep td{background:#f7f5ee;font-weight:800;color:var(--ink2);font-size:12.5px;padding:7px 12px}
+.note{font-size:12.5px;color:var(--muted);margin:8px 2px 0}
+.est{display:inline-block;font-size:11px;font-weight:800;color:var(--warm);background:var(--warm-soft);border-radius:5px;padding:0 6px;margin-left:4px}
+
+/* 그래프 */
+.viz{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 18px 14px;position:relative}
+.viz .ttl{font-weight:800;font-size:15px}
+.viz .cap{font-size:12.5px;color:var(--muted);margin:2px 0 14px}
+.bars{display:grid;grid-template-columns:minmax(118px,170px) 1fr;column-gap:12px;row-gap:5px;align-items:center}
+.bl{font-size:13px;font-weight:700;text-align:right;white-space:nowrap;line-height:1.25}
+.bl small{display:block;font-size:11px;font-weight:700;color:var(--muted)}
+.track{position:relative;height:22px}
+.grid-line{position:absolute;top:-3px;bottom:-3px;width:1px;background:var(--line2)}
+.bar{position:absolute;left:0;top:3px;height:16px;background:var(--green);border-radius:0 4px 4px 0;cursor:default}
+.bar.used{background:repeating-linear-gradient(135deg,var(--green) 0 3px,#7fb497 3px 6px)}
+.bar.base{width:3px!important;background:var(--ink2);border-radius:1px}
+.bv{position:absolute;top:2px;font-size:12px;font-weight:800;color:var(--ink);white-space:nowrap;line-height:18px}
+.axis .ticks span{white-space:nowrap}
+td.nw,th.nw{white-space:nowrap}
+td:first-child{white-space:nowrap}
+
+td.c{text-align:center;color:var(--muted);font-weight:700}
+.axis{display:grid;grid-template-columns:minmax(118px,170px) 1fr;column-gap:12px;margin-top:6px}
+.axis .ticks{position:relative;height:16px;font-size:11px;color:var(--muted)}
+.axis .ticks span{position:absolute;transform:translateX(-50%)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2);margin-top:12px}
+.legend i{display:inline-block;width:18px;height:11px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.tip{position:absolute;pointer-events:none;background:#fff;border:1px solid var(--line);border-radius:10px;
+  box-shadow:0 4px 14px rgba(47,58,52,.12);padding:8px 11px;font-size:12.5px;line-height:1.5;display:none;z-index:5;max-width:260px}
+.tip b{display:block;font-size:13.5px}
+
+/* 시나리오 */
+.scn{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.sc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.sc .t{font-size:12px;font-weight:800;color:var(--muted)}
+.sc .m{font-weight:800;font-size:15px;margin:2px 0 8px;line-height:1.4}
+.sc .cost{font-size:22px;font-weight:800;color:var(--green);letter-spacing:-.4px}
+.sc .cost small{font-size:12.5px;color:var(--ink2);font-weight:700}
+.sc ul{margin:8px 0 0;padding-left:18px;font-size:13px;color:var(--ink2)}
+.sc li{margin:2px 0}
+
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-top:12px}
+.box ul{margin:4px 0;padding-left:20px}
+.box li{margin:4px 0;font-size:14px}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 18px;margin-top:12px}
+summary{cursor:pointer;font-weight:800;font-size:15px}
+details ul{margin:10px 0 4px;padding-left:20px}
+details li{margin:5px 0;font-size:14px}
+.src{font-size:12.5px;color:var(--ink2)}
+.src li{margin:3px 0}
+.foot{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+@media (max-width:560px){
+  h1{font-size:22px}
+  .verdict{padding:18px 16px}
+  .bars,.axis{grid-template-columns:104px 1fr;column-gap:8px}
+  .bl{font-size:12px}
+  .st .v{font-size:17px}
+  .bv .ws{display:none}
+}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.toc a{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:4px 14px;font-size:13px;color:var(--ink)}
+.toc a:hover{border-color:var(--green);color:var(--green)}
+.six{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
+.six div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.six div>b{display:block;font-size:14.5px;margin-bottom:3px;color:var(--green)}
+.six span{font-size:13.5px;color:var(--ink2)}
+.gl{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gl>div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 16px}
+.gl h4{margin:0 0 6px;font-size:14.5px}
+.gl .gain h4{color:var(--green)}
+.gl .loss h4{color:var(--red)}
+.gl ul{margin:0;padding-left:18px}
+.gl li{font-size:13.5px;margin:4px 0}
+.vs{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px 18px;margin-bottom:14px}
+.vs h4{margin:0 0 10px;font-size:15.5px}
+.vs .tw{border-radius:10px}
+.vs table{min-width:520px}
+.vs td small{color:var(--muted);font-weight:700}
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pc>div{background:#faf9f5;border:1px solid var(--line2);border-radius:10px;padding:9px 12px;font-size:13.5px;color:var(--ink2)}
+.pc b{display:block;color:var(--ink);font-size:13px;margin-bottom:2px}
+.verd{margin-top:10px;background:var(--green-soft);border-radius:10px;padding:10px 13px;font-size:14px}
+@media (max-width:560px){.gl,.pc{grid-template-columns:1fr}}
+.nm-mean{font-size:13.5px;color:var(--ink2);margin:0 0 10px}
+.vs th.g1,.vs td.g1{background:#faf9f5;color:var(--ink2)}
+.vs td.bad{color:var(--red);font-weight:800}
+.verd ul{margin:6px 0 8px;padding-left:20px}
+.verd li{margin:4px 0}
+.bought{background:var(--blue-soft);border:1px solid #d6e0ec;border-radius:10px;padding:9px 13px;font-size:14px;margin:0 0 12px;color:var(--ink)}
+.bought b{color:var(--blue)}
+.back{display:inline-block;font-size:13px;margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="clv" style="top:6%;left:2%"><svg viewBox="0 0 24 24" width="44" height="44" aria-hidden="true"><path fill="#2e7d55" d="M12 12c0-2.2-1.3-4-3.5-4S5 9.8 5 12s1.3 4 3.5 4S12 14.2 12 12zM12 12c2.2 0 4-1.3 4-3.5S14.2 5 12 5 8 6.3 8 8.5 9.8 12 12 12zM12 12c0 2.2 1.3 4 3.5 4S19 14.2 19 12s-1.3-4-3.5-4S12 9.8 12 12zM12 12c-2.2 0-4 1.3-4 3.5S9.8 19 12 19s4-1.3 4-3.5S14.2 12 12 12z"/></svg></div><div class="clv" style="top:24%;right:2.5%"><svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path fill="#2e7d55" d="M12 12c0-2.2-1.3-4-3.5-4S5 9.8 5 12s1.3 4 3.5 4S12 14.2 12 12zM12 12c2.2 0 4-1.3 4-3.5S14.2 5 12 5 8 6.3 8 8.5 9.8 12 12 12zM12 12c0 2.2 1.3 4 3.5 4S19 14.2 19 12s-1.3-4-3.5-4S12 9.8 12 12zM12 12c-2.2 0-4 1.3-4 3.5S9.8 19 12 19s4-1.3 4-3.5S14.2 12 12 12z"/></svg></div><div class="clv" style="top:48%;left:1.6%"><svg viewBox="0 0 24 24" width="54" height="54" aria-hidden="true"><path fill="#2e7d55" d="M12 12c0-2.2-1.3-4-3.5-4S5 9.8 5 12s1.3 4 3.5 4S12 14.2 12 12zM12 12c2.2 0 4-1.3 4-3.5S14.2 5 12 5 8 6.3 8 8.5 9.8 12 12 12zM12 12c0 2.2 1.3 4 3.5 4S19 14.2 19 12s-1.3-4-3.5-4S12 9.8 12 12zM12 12c-2.2 0-4 1.3-4 3.5S9.8 19 12 19s4-1.3 4-3.5S14.2 12 12 12z"/></svg></div><div class="clv" style="top:70%;right:2%"><svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true"><path fill="#2e7d55" d="M12 12c0-2.2-1.3-4-3.5-4S5 9.8 5 12s1.3 4 3.5 4S12 14.2 12 12zM12 12c2.2 0 4-1.3 4-3.5S14.2 5 12 5 8 6.3 8 8.5 9.8 12 12 12zM12 12c0 2.2 1.3 4 3.5 4S19 14.2 19 12s-1.3-4-3.5-4S12 9.8 12 12zM12 12c-2.2 0-4 1.3-4 3.5S9.8 19 12 19s4-1.3 4-3.5S14.2 12 12 12z"/></svg></div><div class="clv" style="top:89%;left:3%"><svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true"><path fill="#2e7d55" d="M12 12c0-2.2-1.3-4-3.5-4S5 9.8 5 12s1.3 4 3.5 4S12 14.2 12 12zM12 12c2.2 0 4-1.3 4-3.5S14.2 5 12 5 8 6.3 8 8.5 9.8 12 12 12zM12 12c0 2.2 1.3 4 3.5 4S19 14.2 19 12s-1.3-4-3.5-4S12 9.8 12 12zM12 12c-2.2 0-4 1.3-4 3.5S9.8 19 12 19s4-1.3 4-3.5S14.2 12 12 12z"/></svg></div>
+<div class="wrap">
+<a class="back" href="index.html">← 장비 비교자료 목차</a>
+
+<h1><svg viewBox="0 0 24 24" width="27" height="27" aria-hidden="true"><path fill="#2e7d55" d="M12 12c0-2.2-1.3-4-3.5-4S5 9.8 5 12s1.3 4 3.5 4S12 14.2 12 12zM12 12c2.2 0 4-1.3 4-3.5S14.2 5 12 5 8 6.3 8 8.5 9.8 12 12 12zM12 12c0 2.2 1.3 4 3.5 4S19 14.2 19 12s-1.3-4-3.5-4S12 9.8 12 12zM12 12c-2.2 0-4 1.3-4 3.5S9.8 19 12 19s4-1.3 4-3.5S14.2 12 12 12z"/></svg>고독스 순간광 — 새 제품 라인업과 중고 적정가</h1>
+<p class="sub">maydly 조명 구매 판단 · 기준일 2026-11-16 · 국내 신품가 = 국내 정품 총판(가우포토) 블랙프라이데이 기획전 표시가 · 사양 = 고독스 공식 자료</p>
+
+<div class="verdict">
+  <span class="tag">먼저 결론</span>
+  <div class="bought"><b>구매 현황 (261116)</b> — AD600Pro 구매 완료 → 「AD600Pro 필수 1대」 조건 해결. 남은 것: 일반 순간광 나머지 3대 · 링라이트 1대 · 지속광 최대 2대.</div>
+  <ol>
+    <li><b>1세대 AD300Pro·AD400Pro·AD600Pro는 공식 단종</b>이라 새로 사면 전부 II(2세대)입니다. II는 최저 출력이 <b>1/512</b>까지 내려가서, 같은 600Ws라도 1세대보다 1스톱 더 약하게 쏩니다.</li>
+    <li><b>블랙프라이데이는 이미 진행 중</b>입니다(가우포토, 11/30까지). AD400Pro II 95→<b>85만</b>, AD600Pro II 125→<b>115만</b>, AD300Pro II 69→<b>65만</b>, AD600BM II 79→<b>69만</b>. 할인 폭은 5~13%로, 예상하던 15~20%보다 작습니다.</li>
+    <li><b>중고 목표가는 이전 기준보다 올려야 현실적</b>입니다. 지금 호가가 AD400Pro 45~50만, AD300Pro 40~45만, AD600Pro 64.5~70만, AD600Pro II 80~88만입니다.</li>
+  </ol>
+  <div class="fork"><b>판단이 갈리는 곳</b> — 교체 이유가 「QS600II는 최저 출력도 세다」라면, <b>1세대 중고 AD400Pro만으로도 QS보다 3.6스톱 낮아져</b>(18.75 → 1.56Ws) 문제는 풀립니다. II 신품은 거기서 <b>1스톱 더</b>(0.78Ws) + 보증 + 바이컬러 모델링 + 배터리 20% 더. 그 차이에 <b>대당 약 40만 원</b>(중고 45 vs 신품 85)을 낼지가 핵심입니다.</div>
+</div>
+
+<nav class="toc"><a href="#s1">① 새 제품 라인업</a><a href="#s2">② 차이·장단점</a><a href="#probm">Pro vs BM</a><a href="#s3">③ 중고 적정가</a><a href="#s4">④ 4대 조합 비용</a></nav>
+
+<h2>지난번 정리(ChatGPT)와 달라진 것</h2>
+<p class="lead">인수인계 문서에 「재확인 필요」로 남아 있던 것들을 공식 자료와 국내 판매 페이지로 확인했습니다.</p>
+<div class="diff">
+  <div><span class="was">1세대 AD400Pro·AD600Pro를 신품으로 비교</span><span class="now">1세대 AD300·400·600Pro는 고독스가 공식 단종 처리 — 중고로만 삼</span></div>
+  <div><span class="was">II 세대 최저 출력 「재확인」</span><span class="now">II는 전부 1/512 — AD400Pro II 0.78Ws, AD600Pro II 1.17Ws</span></div>
+  <div><span class="was">블프는 11/27에 시작</span><span class="now">가우포토는 이미 진행 중(11/13 공지, 11/30까지)</span></div>
+  <div><span class="was">블프 15~20% 할인 기대</span><span class="now">실제 5~13% (AD600BM II 12.7% · AD400Pro II 10.5% · AD600Pro II 8%)</span></div>
+  <div><span class="was">AD400Pro 보웬스 어댑터 「확인 필요」</span><span class="now">1세대·II 모두 기본 포함 / AD300Pro·II는 별매(S2·S3 브래킷)</span></div>
+  <div><span class="was">송신기 「XPro V2 S」</span><span class="now">정식 이름은 XPro II S — 아래 조명 전부 그룹 제어 가능(TTL은 조명마다 다름)</span></div>
+  <div><span class="was">(언급 없음)</span><span class="now">AD600Pro 1세대와 II는 배터리(WB26)·AC 어댑터(AC26)를 같이 씀</span></div>
+  <div><span class="was">(언급 없음)</span><span class="now">신모델 AD800Pro(800Ws) 출시 — AD600Pro 튜브와 호환 안 됨</span></div>
+  <div><span class="was">중고 적극 구매 AD400Pro 38만 · AD300Pro 28만</span><span class="now">지금 호가 45~50만 · 40~45만 → 기준 상향(아래 ③)</span></div>
+</div>
+
+<h2 id="s1"><span class="num">①</span> 새 제품으로 살 수 있는 라인업</h2>
+<p class="lead">고독스 공식 현행 목록과 국내 정품 판매 목록을 맞대어 본 결과입니다. 가격은 <b>블프가</b>(취소선은 정가)입니다.</p>
+
+<h3>배터리형 AD 시리즈 — 실내·야외 겸용 (현행 8종)</h3>
+<div class="cards">
+<div class="card pick"><div class="ph"><img src="data:image/jpeg;base64,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" alt="AD400Pro II 제품 사진" loading="lazy"></div><div class="bd">
+<div class="nm">AD400Pro II<span class="chip c-hot">나머지 3대 표준 후보</span></div>
+<div class="stats">
+<div class="st"><div class="k">최저 출력 (1/512)</div><div class="v">0.78<small>Ws</small></div></div>
+<div class="st"><div class="k">최대 출력</div><div class="v">400<small>Ws</small></div></div>
+<div class="st price"><div class="k">블프 신품가</div><div class="v"><s>95만</s>85<small>만</small></div></div>
+<div class="st"><div class="k">무게</div><div class="v" style="font-size:16px">약 2.0kg</div></div>
+</div>
+<p class="spec">배터리 460회 · 풀파워 1.0초 · TTL·HSS ○ · 고독스 마운트 + <b>보웬스 어댑터 동봉</b> · 바이컬러 모델링 30W</p>
+<div class="pro">QS보다 4.6스톱 낮게 · 보웬스 모디파이어 바로 사용 · 무게와 출력의 균형</div>
+<div class="con">블프가도 85만 — 1세대 중고(40~45만)의 두 배</div>
+</div></div>
+<div class="card pick"><div class="ph"><img src="data:image/jpeg;base64,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" alt="AD600Pro II 제품 사진" loading="lazy"></div><div class="bd">
+<div class="nm">AD600Pro II<span class="chip c-hot">필수 1대 후보</span></div>
+<div class="stats">
+<div class="st"><div class="k">최저 출력 (1/512)</div><div class="v">1.17<small>Ws</small></div></div>
+<div class="st"><div class="k">최대 출력</div><div class="v">600<small>Ws</small></div></div>
+<div class="st price"><div class="k">블프 신품가</div><div class="v"><s>125만</s>115<small>만</small></div></div>
+<div class="st"><div class="k">무게</div><div class="v" style="font-size:16px">약 3.0kg</div></div>
+</div>
+<p class="spec">배터리 360회 · 풀파워 0.9초 · TTL·HSS ○ · <b>보웬스 기본</b> · 바이컬러 모델링 40W · 1세대와 배터리(WB26) 공용</p>
+<div class="pro">600Ws인데 최저 1.17Ws · 리사이클 가장 빠름 · 큰 파라볼릭·야외 역광에 여유</div>
+<div class="con">「AD600Pro 필수」가 II로 충족되는지 먼저 확인 · 115만</div>
+</div></div>
+<div class="card"><div class="ph"><img src="data:image/jpeg;base64,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" alt="AD300Pro II 제품 사진" loading="lazy"></div><div class="bd">
+<div class="nm">AD300Pro II</div>
+<div class="stats">
+<div class="st"><div class="k">최저 출력 (1/512)</div><div class="v">0.59<small>Ws</small></div></div>
+<div class="st"><div class="k">최대 출력</div><div class="v">300<small>Ws</small></div></div>
+<div class="st price"><div class="k">블프 신품가</div><div class="v"><s>69만</s>65<small>만</small></div></div>
+<div class="st"><div class="k">무게</div><div class="v" style="font-size:16px">약 1.2kg</div></div>
+</div>
+<p class="spec">배터리 350회 · 풀파워 1.5초 · TTL·HSS ○ · 고독스 마운트(보웬스는 S3 브래킷 <b>별매</b>) · 모델링 12W</p>
+<div class="pro">신품 중 가장 싸게 최저 0.59Ws · 가벼워서 야외·림·배경등에 좋음</div>
+<div class="con">보웬스 쓰려면 브래킷 추가 · 큰 박스 메인으론 출력 여유 적음</div>
+</div></div>
+<div class="card"><div class="ph"><img src="data:image/jpeg;base64,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" alt="AD600BM II 제품 사진" loading="lazy"></div><div class="bd">
+<div class="nm">AD600BM II</div>
+<div class="stats">
+<div class="st"><div class="k">최저 출력 (1/512)</div><div class="v">1.17<small>Ws</small></div></div>
+<div class="st"><div class="k">최대 출력</div><div class="v">600<small>Ws</small></div></div>
+<div class="st price"><div class="k">블프 신품가</div><div class="v"><s>79만</s>69<small>만</small></div></div>
+<div class="st"><div class="k">무게</div><div class="v" style="font-size:16px">약 2.9kg</div></div>
+</div>
+<p class="spec">배터리 500회 · 풀파워 1.9초 · <b>TTL 없음</b> · HSS ○ · 보웬스 기본 · 모델링 40W(색온도 고정)</p>
+<div class="pro">600Ws 신품 중 가장 쌈(69만) · 배터리 오래 감</div>
+<div class="con">수동 전용 · 리사이클이 Pro II의 두 배 — 빠른 패션 연사엔 아쉬움</div>
+</div></div>
+<div class="card"><div class="ph"><img src="data:image/jpeg;base64,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" alt="AD800Pro 제품 사진" loading="lazy"></div><div class="bd">
+<div class="nm">AD800Pro<span class="chip c-new">2026 신모델</span></div>
+<div class="stats">
+<div class="st"><div class="k">최저 출력 (1/512)</div><div class="v">1.56<small>Ws</small></div></div>
+<div class="st"><div class="k">최대 출력</div><div class="v">800<small>Ws</small></div></div>
+<div class="st price"><div class="k">블프 신품가</div><div class="v"><s>149만</s>125<small>만</small></div></div>
+<div class="st"><div class="k">무게</div><div class="v" style="font-size:16px">약 3.7kg*</div></div>
+</div>
+<p class="spec">배터리 300회 · 풀파워 1.5초 · TTL·HSS ○ · 보웬스 기본 · 모델링 40W · *배터리·튜브·반사갓 포함 무게</p>
+<div class="pro">800Ws에 최저 1.56Ws · 한낮 야외에서 여유</div>
+<div class="con">AD600Pro 튜브·연장헤드 튜브와 호환 안 됨 · 무겁고 125만 — 지금 조건엔 과함</div>
+</div></div>
+<div class="card"><div class="ph"><img src="data:image/jpeg;base64,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" alt="AD200Pro II 제품 사진" loading="lazy"></div><div class="bd">
+<div class="nm">AD200Pro II</div>
+<div class="stats">
+<div class="st"><div class="k">최저 출력 (1/512)</div><div class="v">0.39<small>Ws</small></div></div>
+<div class="st"><div class="k">최대 출력</div><div class="v">200<small>Ws</small></div></div>
+<div class="st price"><div class="k">블프 신품가</div><div class="v"><s>55만</s>49.9<small>만</small></div></div>
+<div class="st"><div class="k">무게</div><div class="v" style="font-size:16px">약 0.99kg</div></div>
+</div>
+<p class="spec">배터리 500회 · 풀파워 1.8초 · TTL·HSS ○ · 헤드 교체식(원형·사각·링 R200) · 보웬스 별매</p>
+<div class="pro">작고 싸고 아주 약하게까지 · 헤어·소품 포인트·여행</div>
+<div class="con">200Ws라 큰 소프트박스 메인으론 부족 — 4대 후보 아님</div>
+</div></div>
+<div class="card"><div class="ph"><img src="data:image/jpeg;base64,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" alt="AD100Pro II 제품 사진" loading="lazy"></div><div class="bd">
+<div class="nm">AD100Pro II<span class="chip c-new">2026 신모델</span></div>
+<div class="stats">
+<div class="st"><div class="k">최저 출력 (1/256)</div><div class="v">0.39<small>Ws</small></div></div>
+<div class="st"><div class="k">최대 출력</div><div class="v">100<small>Ws</small></div></div>
+<div class="st price"><div class="k">블프 신품가</div><div class="v"><s>35만</s>33<small>만</small></div></div>
+<div class="st"><div class="k">무게</div><div class="v" style="font-size:16px">약 564g</div></div>
+</div>
+<p class="spec">배터리 490회 · 풀파워 1.5초 · TTL·HSS ○ · 원형 자석 헤드(보웬스 S3 별매)</p>
+<div class="pro">손바닥 크기 · 포인트 조명</div>
+<div class="con">100Ws — 메인·필로 쓰기엔 약함</div>
+</div></div>
+<div class="card"><div class="ph noimg">AD1200Pro (공식 사진 없음)</div><div class="bd">
+<div class="nm">AD1200Pro</div>
+<div class="stats">
+<div class="st"><div class="k">최저 출력 (1/256)</div><div class="v">4.69<small>Ws</small></div></div>
+<div class="st"><div class="k">최대 출력</div><div class="v">1200<small>Ws</small></div></div>
+<div class="st price"><div class="k">블프 신품가</div><div class="v"><s>210만</s>199<small>만</small></div></div>
+<div class="st"><div class="k">무게</div><div class="v" style="font-size:16px">키트 약 8.25kg</div></div>
+</div>
+<p class="spec">분리형(파워팩+헤드) · 배터리 500회 · 풀파워 2초 · TTL·HSS ○ · 보웬스 · 링 헤드 R1200 연결 가능</p>
+<div class="pro">한낮 태양과 정면으로 싸울 때</div>
+<div class="con">199만 · 8kg 넘음 · 최저 출력도 오히려 높음 — 계획 밖</div>
+</div></div>
+</div>
+<p class="note">「최저 출력」은 최대 Ws × 최저 비율로 계산한 명목값입니다(실제 밝기는 반사갓·모디파이어·거리에 따라 달라짐). 풀파워 발광 횟수·리사이클은 제조사 공칭값입니다.</p>
+
+<h3>최저 출력 비교 — 보유 중인 QS600II보다 몇 스톱 더 약하게 쏠 수 있나</h3>
+<div class="viz" id="viz">
+  <div class="ttl">QS600II(최저 18.75Ws)를 0으로 놓고, 몇 스톱 더 내려가는지</div>
+  <div class="cap">가로축 단위는 스톱(1스톱 = 빛 절반). 막대가 길수록 더 약하게 쏠 수 있음 = 개방 조리개·작은 공간·저광량 촬영에 유리. 막대에 마우스를 올리면 수치가 나옵니다.</div>
+  <div class="bars" id="bars"></div>
+  <div class="axis"><div></div><div class="ticks" id="ticks"></div></div>
+  <div class="legend"><span><i style="background:var(--green)"></i>지금 신품으로 살 수 있음</span><span><i style="background:repeating-linear-gradient(135deg,var(--green) 0 3px,#7fb497 3px 6px)"></i>단종 — 중고로만</span><span><i style="background:var(--ink2);width:3px"></i>기준(보유)</span></div>
+  <div class="tip" id="tip"></div>
+</div>
+
+<h3>스튜디오형 — 콘센트 전용 (현행)</h3>
+<p class="lead">배터리가 없어 야외에서는 못 씁니다. 최저 출력이 높은 계열(MS·SK·DP·QS)은 이번 교체 목적과 맞지 않습니다.</p>
+<div class="tw"><table>
+<thead><tr><th>계열</th><th>모델</th><th>최저 비율</th><th>최저 출력</th><th>HSS</th><th>블프가</th><th>한 줄 판단</th></tr></thead>
+<tbody>
+<tr><td><b>QT III</b> 고속</td><td>QT400IIIM · QT600IIIM · QT1200IIIM</td><td>1/256</td><td class="n big">1.56 · 2.34 · 4.69Ws</td><td>○ (TTL ✕)</td><td class="n">63만 · 69만 · 109만</td><td>스튜디오형 중 유일하게 낮게 내려감. <b>실내 전용이면</b> QT600IIIM(69만)이 AD600Pro II(115만)보다 46만 쌈</td></tr>
+<tr><td><b>DP III-V</b> 중급</td><td>DP400 · DP600 · DP1000 IIIV</td><td>1/64</td><td class="n">6.25 · 9.38 · 15.6Ws</td><td>✕</td><td class="n">DP600 29.9만 · DP1000 45만</td><td>QS보다 1~1.6스톱 낮을 뿐 — 추가 구매 비추천. DP400 단품 블프가·DP800 국내 판매는 확인 못 함</td></tr>
+<tr><td><b>SK III-V</b> 보급 신형</td><td>SK300IIIV · SK400IIIV</td><td>1/32</td><td class="n">9.38 · 12.5Ws</td><td>✕</td><td class="n">국내 미확인</td><td>2026년 3월 해외 출시(미국 $149~). 국내 정식 판매는 아직 못 찾음</td></tr>
+<tr><td><b>SK II-V</b> 보급</td><td>SK300IIV · SK400IIV</td><td>1/16</td><td class="n">18.75 · 25Ws</td><td>✕</td><td class="n">17.9만 · 21만</td><td>최저 출력이 QS600II와 같거나 더 셈 — 해당 없음</td></tr>
+<tr><td><b>MS-V</b> 입문</td><td>MS200V · MS300V</td><td>1/32</td><td class="n">6.25 · 9.38Ws</td><td>✕</td><td class="n">13.9만 · 15.9만</td><td>가장 쌈. 배경등 정도</td></tr>
+<tr class="mine"><td><b>QS II</b> (보유 계열)</td><td>QS400II · <b>QS600II</b> · QS800II</td><td>1/32</td><td class="n">QS600II 18.75Ws</td><td>✕</td><td class="n">국내 미확인</td><td>해외 현행 목록엔 있으나 국내 정품 판매처에선 못 찾음</td></tr>
+</tbody></table></div>
+<p class="note">QT400·QT1200의 1/256은 QT600IIIM 공식 사양을 시리즈 공통으로 본 값. 해외 목록의 GS II·DS II·SG400IIV·E250/E300 등은 국내 정식 판매가 확인되지 않아 뺐습니다.</p>
+
+<h3>링플래시 · 카메라 위 스피드라이트</h3>
+<div class="tw"><table>
+<thead><tr><th>종류</th><th>모델</th><th>출력 · 최저</th><th>국내 신품</th><th>메모</th></tr></thead>
+<tbody>
+<tr><td>링 (배터리 일체형)</td><td><b>AR400</b></td><td class="n">400Ws · 1/128 (3.13Ws)</td><td>국내 판매 확인 못 함</td><td>무선 수신기가 내장돼 있지 않음 — XPro II S로 쓰려면 XTR16 수신기를 따로 달아야 함. 배터리는 전용(AD600Pro와 공용 아님)</td></tr>
+<tr><td>링 헤드</td><td>R200</td><td class="n">200Ws</td><td class="n">35만 (본체 별도)</td><td>AD200Pro·II에 끼우는 헤드</td></tr>
+<tr><td>링 헤드</td><td>R1200</td><td class="n">1200Ws</td><td class="n">85만 (품절 표시 엇갈림)</td><td>AD1200Pro 전용 헤드</td></tr>
+<tr><td>링 헤드</td><td>R2400</td><td class="n">2400Ws</td><td class="n">160~189만</td><td>P2400(콘센트 팩) 전용</td></tr>
+<tr><td>접사용 링</td><td>MF-R76 / MF-R76 TTL</td><td class="n">76Ws</td><td class="n">19.9만 / 29만</td><td>접사·제품용 — 인물용 아님</td></tr>
+<tr class="sep"><td colspan="5">스피드라이트 (카메라 위 소형) — 4대 계획과 다른 계열이라 가격만</td></tr>
+<tr><td>원형 헤드</td><td>V100 · V1</td><td colspan="2" class="n">42만 · 27.9만</td><td>V1 Pro 가격은 이번에 확인 못 함</td></tr>
+<tr><td>사각 헤드</td><td>V860III · V480 · TT350</td><td colspan="2" class="n">27.9만 · 19.9만 · 10.9만</td><td>TT685II 가격은 이번에 확인 못 함</td></tr>
+<tr><td>초소형</td><td>iT30 Pro · iT32 · iT20/iT22</td><td colspan="2" class="n">8.9만 · 8.9만 · 4.9만</td><td></td></tr>
+</tbody></table></div>
+
+<h2 id="s2"><span class="num">②</span> 순간광끼리 — 차이와 장단점</h2>
+<p class="lead">사양표의 숫자 중 실제로 사진과 촬영 흐름을 바꾸는 건 여섯 가지입니다. 그다음, 헷갈리는 것끼리 맞대어 봤습니다.</p>
+<div class="six">
+  <div><b>① 최대 출력</b><span>밖에서 해를 이기거나, 큰 박스를 멀리 둘 때 필요. 300→400은 <b>0.4스톱</b>, 400→600은 <b>0.6스톱</b>, 300→600이 1스톱 — 숫자 차이보다 작습니다.</span></div>
+  <div><b>② 최저 출력</b><span>실내·개방 조리개·좁은 공간에서 필요. 2세대 1/512 · 1세대 1/256 · QS600II 1/32. <b>명진님 교체 이유의 핵심.</b></span></div>
+  <div><b>③ 리사이클</b><span>다시 터질 준비가 되는 시간. 풀파워 기준 0.9초(AD600Pro II) ~ 1.9초(AD600BM II). 출력을 낮춰 쓰면 차이가 크게 줄어듭니다.</span></div>
+  <div><b>④ 무게</b><span>1.2kg(300) · 2.0kg(400) · 3.0kg(600) · 3.7kg(800). 붐 끝에 달 때, 야외로 들고 다닐 때 차이가 납니다.</span></div>
+  <div><b>⑤ 마운트</b><span>보웬스 바로(600·800·BM) / 어댑터 동봉(400) / 브래킷 따로 사야 함(300·200·100). 지금 쓰는 보웬스 소프트박스를 그대로 끼울 수 있는지가 갈립니다.</span></div>
+  <div><b>⑥ 모델링 램프</b><span>터지기 전에 켜 두는 미리보기 등. QS600II는 <b>150W</b>, AD는 <b>12~40W</b>. 바꾸면 어두운 스튜디오에서 초점·그림자 미리보기가 확 어두워집니다.</span></div>
+</div>
+
+<h3>지금 QS600II에서 배터리형 AD로 바꾸면</h3>
+<div class="gl">
+  <div class="gain"><h4>얻는 것</h4><ul>
+    <li>최저 출력이 <b>3~5스톱</b> 더 낮아짐 (1세대 3~3.6 · 2세대 4~5)</li>
+    <li>전선 없이 어디서나 — 야외·로케이션</li>
+    <li>HSS(고속동조) — 낮에 조리개를 열고 찍기</li>
+    <li>TTL 자동 노출 (Pro 모델)</li>
+    <li>2세대는 Freeze 모드 — 머리카락·천의 움직임을 멈춰 찍기(1/20,000초대)</li>
+  </ul></div>
+  <div class="loss"><h4>잃는 것</h4><ul>
+    <li>모델링 램프 150W → 12~40W — 미리보기 빛이 약해짐</li>
+    <li>콘센트로 무한히 터지던 것 → 배터리 관리(예비 배터리·충전)</li>
+    <li>무게는 비슷 — QS600II 2.91kg vs AD600Pro II 3.0kg</li>
+    <li>3대 동시 미발광은 조명을 바꾼다고 저절로 사라진다는 근거가 없음 — 송신기 설정부터 점검(아래 곁가지)</li>
+  </ul></div>
+</div>
+
+<h3>헷갈리는 것끼리</h3>
+<div class="vs">
+  <h4>AD300Pro II · AD400Pro II · AD600Pro II — 나머지 3대를 무엇으로 할까</h4>
+  <div class="tw"><table>
+  <thead><tr><th>항목</th><th>AD300Pro II</th><th>AD400Pro II</th><th>AD600Pro II</th></tr></thead>
+  <tbody>
+  <tr><td>최대 출력</td><td>300Ws</td><td>400Ws <small>(+0.4스톱)</small></td><td>600Ws <small>(+1스톱)</small></td></tr>
+  <tr><td>최저 출력</td><td class="ok">0.59Ws</td><td>0.78Ws</td><td>1.17Ws</td></tr>
+  <tr><td>풀파워 리사이클</td><td>1.5초</td><td>1.0초</td><td class="ok">0.9초</td></tr>
+  <tr><td>풀파워 발광 수</td><td>350회</td><td class="ok">460회</td><td>360회</td></tr>
+  <tr><td>무게</td><td class="ok">1.2kg</td><td>2.0kg</td><td>3.0kg</td></tr>
+  <tr><td>보웬스 모디파이어</td><td>브래킷(S3) 별매</td><td>어댑터 동봉</td><td class="ok">본체가 보웬스</td></tr>
+  <tr><td>모델링 램프</td><td>12W</td><td>30W</td><td class="ok">40W</td></tr>
+  <tr><td>블프가</td><td class="ok">65만</td><td>85만</td><td>115만</td></tr>
+  </tbody></table></div>
+  <div class="verd">출력 차이보다 <b>무게·마운트·모델링 램프</b> 차이가 더 큽니다. 지금 쓰는 보웬스 소프트박스를 그대로 쓰면서 실내·야외를 겸하려면 <b>400</b>이 가장 무난합니다. 가볍게 다니며 가장 낮게까지 쓰려면 <b>300</b>, 큰 파라볼릭 메인·야외 역광이면 <b>600</b>입니다.</div>
+</div>
+
+<div class="vs" id="probm">
+  <h4>Pro vs BM — 같은 600Ws, 무엇이 다른가 (1세대·2세대 모두)</h4>
+  <p class="nm-mean"><b>이름 뜻</b> — <b>Pro</b> = TTL(자동 노출)·HSS(고속동조)가 다 되는 상위판. <b>BM</b> = <b>B</b>owens 마운트 + <b>M</b>anual(수동 전용)판. 같은 계열에 고독스 마운트 수동판인 AD600M도 있습니다.</p>
+  <div class="tw"><table>
+  <thead><tr><th>항목</th><th>AD600Pro II</th><th>AD600BM II</th><th class="g1">AD600Pro <small>1세대</small></th><th class="g1">AD600BM <small>1세대</small></th></tr></thead>
+  <tbody>
+  <tr><td>최대 출력</td><td>600Ws</td><td>600Ws</td><td class="g1">600Ws</td><td class="g1">600Ws</td></tr>
+  <tr><td>최저 출력</td><td>1/512 · 1.17Ws</td><td>1/512 · 1.17Ws</td><td class="g1">1/256 · 2.34Ws</td><td class="g1">1/256 · 2.34Ws</td></tr>
+  <tr><td>TTL 자동 노출</td><td class="ok">○</td><td class="bad">✕</td><td class="g1 ok">○</td><td class="g1 bad">✕</td></tr>
+  <tr><td>HSS 고속동조</td><td>○ (1/8000초)</td><td>○ (1/8000초)</td><td class="g1">○</td><td class="g1">○</td></tr>
+  <tr><td>풀파워 리사이클</td><td class="ok">0.9초</td><td>1.9초</td><td class="g1 ok">0.9초</td><td class="g1 bad">2.5초</td></tr>
+  <tr><td>배터리 / 풀파워 발광</td><td>28.8V 2600mAh · 360회</td><td class="ok">10.8V 8940mAh · 500회</td><td class="g1">28.8V 2600mAh · 360회</td><td class="g1">10.8V 대용량 · 500회</td></tr>
+  <tr><td>배터리 같이 쓰기</td><td colspan="2">Pro끼리(1세대·II)는 공용(WB26) · <b>Pro와 BM은 전압이 달라 못 바꿔 씀</b></td><td class="g1" colspan="2">같음</td></tr>
+  <tr><td>모델링 램프</td><td class="ok">40W 바이컬러(2800~6000K)</td><td>40W 색온도 고정</td><td class="g1">38W (4800K)</td><td class="g1 bad">10W</td></tr>
+  <tr><td>마운트</td><td>보웬스</td><td>보웬스</td><td class="g1">보웬스</td><td class="g1">보웬스</td></tr>
+  <tr><td>무게(배터리 포함)</td><td>약 3.0kg</td><td>약 2.9kg</td><td class="g1">3.0kg</td><td class="g1">약 2.7kg</td></tr>
+  <tr><td>값</td><td>신품 블프 115만</td><td class="ok">신품 블프 69만</td><td class="g1">중고 55~62만</td><td class="g1 ok">중고 30~35만</td></tr>
+  </tbody></table></div>
+  <div class="pc" style="margin-top:10px">
+    <div><b>BM이 나은 것</b>값(신품 46만 원 · 중고 25만 원 안팎 쌈) · 배터리가 커서 발광 수가 더 많음 · 약간 가벼움</div>
+    <div><b>BM이 못한 것</b>TTL 없음 · 리사이클이 2배 이상 느림(풀파워) · 모델링 램프(II는 색온도 고정, 1세대는 10W로 매우 약함) · Pro 배터리와 호환 안 됨</div>
+  </div>
+  <div class="verd">
+    <b>명진님 기준으로 보면</b> — 지금 쓰시는 QS600II도 TTL이 없어서 이미 수동으로 찍고 계십니다. 그래서 <b>TTL이 없는 건 큰 손해가 아닙니다.</b> 실제로 갈리는 건 세 가지입니다.
+    <ul>
+      <li><b>연사 템포</b> — 풀파워에서 1.9초(1세대 2.5초)는 느립니다. 출력을 낮춰 쓰는 실내에서는 차이가 크게 줄어듭니다.</li>
+      <li><b>배터리</b> — 이미 사신 AD600Pro와 BM은 배터리가 달라 서로 바꿔 끼울 수 없습니다. AD600Pro·AD600Pro II끼리만 배터리(WB26)를 같이 씁니다. AD400Pro도 전용 배터리라, 기종을 섞을수록 예비 배터리·충전기 종류가 늘어납니다.</li>
+      <li><b>모델링 램프</b> — QS600II(150W)에서 넘어오면 Pro II·BM II의 40W도 약하게 느껴집니다. 1세대 BM의 10W는 미리보기용으로 거의 의미가 없습니다.</li>
+    </ul>
+    <b>나머지 3대를 BM II로 하면</b> 신품 블프 3대에 207만 원입니다(AD400Pro II 3대는 255만 원 — <b>48만 원 절약</b>). 대신 대당 0.9kg 무겁고, 리사이클이 약 2배 느리고, 최저 출력이 0.6스톱 높습니다(1.17 vs 0.78Ws). <b>1세대 BM 중고는 모델링 10W·리사이클 2.5초라 권하지 않습니다.</b>
+  </div>
+</div>
+
+<div class="vs">
+  <h4>AD600Pro II vs AD800Pro — 신모델이 나을까</h4>
+  <div class="pc"><div><b>AD800Pro가 나은 것</b>최대 출력 +0.4스톱 · 모델링 램프 색 재현(CRI 97)</div>
+  <div><b>AD800Pro가 못한 것</b>최저 1.56Ws(오히려 0.4스톱 높음) · 리사이클 1.5초 · 발광 300회 · 3.7kg · 10만 원 더(125만) · AD600Pro 튜브와 호환 안 됨</div></div>
+  <div class="verd">낮게 쏘는 게 목적인 지금은 얻는 게 없습니다. 한낮 야외 촬영 비중이 커지면 그때 볼 모델입니다.</div>
+</div>
+
+<div class="vs">
+  <h4>1세대 vs 2세대(II) — 중고 1세대로 아껴도 될까</h4>
+  <div class="pc"><div><b>II에서 좋아진 것</b>최저 출력 1스톱 더(1/256→1/512) · 바이컬러 모델링(400·600) · 컬러 화면·16그룹 · Freeze 모드 · 발광 수(400: 380→460회 · 300: 320→350회)</div>
+  <div><b>그대로인 것</b>최대 출력 · 풀파워 리사이클 · 배터리(600은 1세대와 공용) · 보웬스 구성</div></div>
+  <div class="verd">교체 이유가 저출력이라 II의 1스톱은 실제로 의미가 있습니다. 다만 1세대도 QS보다 3~3.6스톱 낮아집니다. 「그 정도면 충분히 낮다」면 1세대 중고로 대당 약 40만 원을 아끼는 것도 맞는 선택입니다.</div>
+</div>
+
+<div class="vs">
+  <h4>배터리형 AD vs 스튜디오형 QT600IIIM — 실내에만 둘 자리라면</h4>
+  <div class="pc"><div><b>QT600IIIM</b>600Ws · 최저 2.34Ws(1세대 AD600Pro와 같음) · 리사이클 0.9초 · HSS ○ TTL ✕ · 모델링 40W · 69만(AD600Pro II보다 46만 쌈)</div>
+  <div><b>대신</b>콘센트 전용이라 야외 불가 · 3.33kg</div></div>
+  <div class="verd">배경등처럼 실내에 고정해 둘 자리엔 가성비가 좋습니다. 다만 「실내외 겸용」 조건에는 맞지 않습니다.</div>
+</div>
+
+<h3>4대 안에서 누가 무엇을 맡나 (예시)</h3>
+<div class="tw"><table>
+<thead><tr><th>자리</th><th>잘 맞는 조명</th><th>이유</th></tr></thead>
+<tbody>
+<tr><td>키(메인) — 120 파라볼릭 · 대형 옥타</td><td><b>AD600Pro</b> (필수 1대)</td><td>큰 박스는 빛을 많이 먹어서 출력 여유가 가장 필요한 자리</td></tr>
+<tr><td>필(보조) — 직사각 · 옥타</td><td><b>AD400Pro / II</b></td><td>약하게 깔아야 하는 자리 — 최저 출력이 중요</td></tr>
+<tr><td>림·엣지 — 1×4 스트립</td><td>AD400Pro / II 또는 AD300Pro / II</td><td>보통 인물 가까이 두고 약하게 쓰는 자리</td></tr>
+<tr><td>배경·헤어 — 그리드 · 스누트</td><td>AD300Pro / II</td><td>가볍고 가장 낮게 내려감 — 붐에 달기 쉬움</td></tr>
+</tbody></table></div>
+<p class="note">예시일 뿐입니다. 실제 배치는 촬영마다 다릅니다. AD300Pro 계열로 보웬스 모디파이어를 쓰려면 브래킷이 따로 필요합니다.</p>
+
+<h2 id="s3"><span class="num">③</span> 중고로 산다면 — 대당 얼마까지</h2>
+<p class="lead">기준: <b>정상 작동 + 배터리 + 충전기 포함</b>, 대당 가격(만 원). 「적극 구매」 이하면 바로 잡고, 「허용 상한」까지는 상태 확인 후 OK, 그 위는 패스.</p>
+<div class="tw used"><table>
+<thead><tr><th>모델</th><th>적극 구매</th><th>허용 상한</th><th>지금 중고 호가</th><th>상태</th><th>이전 기준<br>(적극/상한)</th><th>왜 이 선인가</th></tr></thead>
+<tbody>
+<tr class="sep"><td colspan="7">「필수 1대」 후보 — 600Ws</td></tr>
+<tr><td><b>AD600Pro</b> 1세대</td><td class="n ok">≤ 55</td><td class="n mid">≤ 62</td><td class="n">64.5~70</td><td class="nw">단종</td><td class="n">48 / 55</td><td>중고 II가 80~85인데 1세대가 63을 넘으면, 20만 안쪽 차이로 1스톱 더 낮은 II가 나음</td></tr>
+<tr><td><b>AD600Pro II</b></td><td class="n ok">≤ 78</td><td class="n mid">≤ 85</td><td class="n">80~88<br><small>판매완료 100(예비 배터리 포함)</small></td><td class="nw">현행</td><td class="n">75 / 85</td><td>신품 블프 115만(보증 포함). 86을 넘으면 신품과 차이가 30만 아래로 좁혀짐</td></tr>
+<tr class="sep"><td colspan="7">나머지 3대 후보 — 300~400Ws</td></tr>
+<tr><td><b>AD400Pro</b> 1세대</td><td class="n ok">≤ 40</td><td class="n mid">≤ 45</td><td class="n">45~50</td><td class="nw">단종</td><td class="n">38 / 45</td><td>보웬스 어댑터 동봉이 정상 구성. 신품 II(85만)의 절반 선</td></tr>
+<tr><td><b>AD400Pro II</b></td><td class="n ok">≤ 54<span class="est">추정</span></td><td class="n mid">≤ 60<span class="est">추정</span></td><td class="n">매물 거의 없음</td><td class="nw">현행</td><td class="n">—</td><td>신품 블프 85만의 70% (같은 세대 중고는 신품의 70~77%에 나옴 — AD600Pro II 호가 기준)</td></tr>
+<tr><td><b>AD300Pro</b> 1세대</td><td class="n ok">≤ 35</td><td class="n mid">≤ 40</td><td class="n">40~45</td><td class="nw">단종</td><td class="n">28 / 35</td><td>신품 II가 65만. 보웬스 브래킷까지 들어 있으면 +3~5 OK</td></tr>
+<tr><td><b>AD300Pro II</b></td><td class="n ok">≤ 41<span class="est">추정</span></td><td class="n mid">≤ 46<span class="est">추정</span></td><td class="n">매물 거의 없음</td><td class="nw">현행</td><td class="n">—</td><td>신품 블프 65만의 70%. 보웬스 브래킷(S3) 별매 감안</td></tr>
+<tr class="sep"><td colspan="7">참고 — 지금 계획 밖이지만 매물이 자주 보이는 것</td></tr>
+<tr><td>AD600BM 1세대</td><td class="n ok">≤ 30</td><td class="n mid">≤ 35</td><td class="n">35~40</td><td class="nw">단종</td><td class="n">28 / 33</td><td>TTL 없음 · 리사이클 2.5초 · 모델링 10W. 신품 BM II가 69만</td></tr>
+<tr><td>AD600BM II</td><td class="n ok">≤ 44<span class="est">추정</span></td><td class="n mid">≤ 48<span class="est">추정</span></td><td class="n">매물 거의 없음</td><td class="nw">현행</td><td class="n">—</td><td>신품 블프 69만의 70%</td></tr>
+<tr><td>QT600IIIM</td><td class="n ok">≤ 44<span class="est">추정</span></td><td class="n mid">≤ 48<span class="est">추정</span></td><td class="n">이번 조사 없음</td><td class="nw">현행</td><td class="n">32 / 40</td><td>신품 블프 69만의 70%. 콘센트 전용</td></tr>
+<tr><td>AD1200Pro</td><td colspan="2" class="c">판단 보류</td><td class="n">95~140</td><td class="nw">현행</td><td class="n">—</td><td>구성 확인된 매물이 없음. 계획에도 없음</td></tr>
+<tr class="mine"><td>QS600II (팔 때)</td><td colspan="2" class="c">매각 참고</td><td class="n">대당 약 17.5~18</td><td class="nw">보유</td><td class="n">—</td><td>정상 단품 매물이 적어 자료 약함. 3대 팔면 약 50만 안팎</td></tr>
+</tbody></table></div>
+<p class="note">중고 호가는 중고나라·번개장터에서 찾은 매물 기준이며 대부분 게시일이 안 보입니다. 당근은 접근이 막혀 못 봤습니다. 「판매완료」 표시 가격은 실제 입금액과 다를 수 있습니다. 매물을 볼 때: 배터리 상태(충전 후 풀파워 연사) · 충전기 · 모델링 램프 · 튜브 · 송신기 TEST 발광 · AD300Pro는 보웬스 브래킷 포함 여부.</p>
+
+<h2 id="s4"><span class="num">④</span> 4대 조합으로 보면 — 얼마나 드나</h2>
+<p class="lead">조건: 일반 순간광 4대 · 그중 AD600Pro 계열 1대 필수. 중고는 위 「적극 구매 ~ 허용 상한」, 신품은 블프가.</p>
+<div class="bought"><b>AD600Pro는 이미 구매</b> — 아래 금액에서 AD600Pro 몫(중고 55~62만 / 신품 115만)을 빼면 남은 3대 비용입니다. 예: 나머지를 AD400Pro 1세대 중고 3대로 → 120~135만 · AD400Pro II 신품 3대 → 255만 · AD600BM II 신품 3대 → 207만.</div>
+<div class="scn">
+  <div class="sc"><div class="t">A · 전부 중고 1세대</div><div class="m">AD600Pro + AD400Pro ×3</div><div class="cost">175~197<small>만</small></div><ul><li>나머지 3대 최저 1.56Ws (QS보다 3.6스톱↓)</li><li>보웬스 어댑터 동봉 → 기존 모디파이어 그대로</li><li>보증 없음 · 배터리 상태 운</li></ul></div>
+  <div class="sc"><div class="t">B · 중고, 300 섞기</div><div class="m">AD600Pro + AD400Pro + AD300Pro ×2</div><div class="cost">165~187<small>만</small></div><ul><li>가장 쌈 · 가벼움(AD300Pro 1.25kg)</li><li>AD300Pro에 보웬스 브래킷 없으면 추가비</li><li>300은 큰 박스 메인으론 여유 적음</li></ul></div>
+  <div class="sc"><div class="t">C · 필수만 중고 + 나머지 신품 II</div><div class="m">AD600Pro(중고) + AD400Pro II ×3(블프)</div><div class="cost">310~317<small>만</small></div><ul><li>3대 최저 0.78Ws (QS보다 4.6스톱↓)</li><li>3대는 보증 · 같은 세대로 통일</li><li>A보다 약 120~135만 더</li></ul></div>
+  <div class="sc"><div class="t">D · 전부 신품 블프</div><div class="m">AD600Pro II + AD400Pro II ×3</div><div class="cost">370<small>만</small></div><ul><li>4대 모두 1/512 · 보증 · 화면·그룹 표시 통일</li><li>「AD600Pro 필수」가 II로 충족되는지 먼저 확인</li></ul></div>
+</div>
+<p class="note">빠진 비용: 스탠드·샌드백·추가 배터리·배송/이동. QS600II 3대를 팔면 약 50만 안팎을 돌려받을 수 있음(자료 약함). AD600Pro 1세대와 II는 배터리를 같이 쓰므로 섞어 사도 예비 배터리를 돌려 쓸 수 있습니다.</p>
+
+<h2>블프 기간에 확인할 것</h2>
+<div class="box"><ul>
+  <li><b>가우포토 블프는 11/30까지</b>(공지 11/13). 정확한 시작일과 11/27(금)에 추가 할인이 붙는지는 확인 못 했습니다. 다른 정품 유통처인 <b>시네몰</b>은 아직 행사 공지가 없습니다.</li>
+  <li>표시가는 행사 페이지 기준 — <b>결제 단계의 쿠폰·카드 할인·배송비</b>는 직접 확인. AD300Pro II는 목록 65만 / 상세 69만으로 서로 다르게 보입니다.</li>
+  <li>소프트박스도 같이 할인 중: SB-FW 30×120(스트립) 59,000→<b>50,000원</b> · SB-FW 옥타 120 76,000원 · QR-P90T 그리드 등. 파라볼릭 QR-P 시리즈는 일부 품절 표시.</li>
+  <li>유쾌한생각은 고독스를 팔지만 공식 유통사 목록엔 없고, AS는 가우포토로 안내합니다. 같은 제품이 가우포토보다 비쌉니다(AD400Pro II 95만 vs 85만).</li>
+</ul></div>
+
+<details>
+  <summary>곁가지로 확인된 것 (지속광 · 소프트박스 규격 · QS600II 미발광)</summary>
+  <ul>
+    <li><b>「1×1.3」 소프트박스</b> — 국내에서 쓰이는 이 이름은 프로포토식 <b>피트</b> 표기로, 약 <b>30×40cm</b> 소형입니다. 「1×4」(30×120cm 스트립)도 같은 방식이라 앞뒤가 맞습니다. 고독스에는 30×40cm 동일 제품이 없고, 80×120cm와는 전혀 다른 크기입니다.</li>
+    <li><b>지속광</b> — LA300R(RGB)·LA600R(RGB)·LE300Bi(<b>바이컬러, RGB 아님</b>) 모두 실제 제품. 국내: LA300R 68.3만(품절 표시) · LE300Bi 33만(품절) · <b>SL300R(RGB) 블프 55만</b>(정가 79.9만, 31% 할인) · amaran 300c 54.7만(재입고 미정). 고독스 지속광은 XPro 송신기로 제어되지 않고 별도 앱(Godox Light)입니다.</li>
+    <li><b>QS600II 3대 중 1대가 가끔 안 터질 때</b> — 송신기 ID를 OFF · SCAN으로 빈 채널 찾기 · 가까이서 쏘면 DIST를 0–30m로 · 광동조(S1/S2) 끄기 · 문제 조명과 정상 조명의 자리·콘센트를 맞바꿔서 문제가 조명을 따라가면 기기, 자리를 따라가면 환경. 이 증상을 고친 공개 펌웨어는 없습니다(XPro II S 최신 V1.39, 2026-03-30).</li>
+  </ul>
+</details>
+
+<h2>확실하지 않은 것</h2>
+<div class="box"><ul>
+  <li>신품가는 행사 페이지 표시가이며, 부가세 포함 문구와 실제 결제가는 확인하지 못했습니다.</li>
+  <li>II 세대 중고(AD400Pro II·AD300Pro II·AD600BM II)와 QT600IIIM의 기준은 매물이 거의 없어 <b>신품 블프가의 70%</b>로 계산한 추정입니다.</li>
+  <li>SK III-V·DP800III-V·QS II·AR400의 국내 신품 판매는 찾지 못했습니다(없다는 뜻은 아님).</li>
+  <li>「AD600Pro 필수」가 1세대만 뜻하는지 II도 되는지는 문서에 없었습니다 — 명진님 확인이 필요합니다.</li>
+</ul></div>
+
+<h2>출처</h2>
+<ul class="src">
+  <li>국내 신품가·블프: <a href="https://gauphoto1.cafe24.com/product/project.html?cate_no=388">가우포토 블랙프라이데이 기획전</a> · <a href="https://www.godox.com/authorized-distributor/?ext_country=513">고독스 한국 공인 유통사(가우포토·시네몰)</a></li>
+  <li>현행·단종 목록: <a href="https://godox.com/outdoor-flashes/">고독스 아웃도어 플래시</a> · <a href="https://godox.com/studio-flash/">고독스 스튜디오 플래시</a></li>
+  <li>사양: <a href="https://godox.com/product-e/AD400ProII.html">AD400Pro II</a> · <a href="https://godox.com/product-b/Flash/AD600ProII.html">AD600Pro II</a> · <a href="https://godox.com/product-e/AD300ProII.html">AD300Pro II</a> · <a href="https://godox.com/product-b/Flash/AD600BMII.html">AD600BM II</a> · <a href="https://godox.com/product-e/AD800Pro.html">AD800Pro</a> · <a href="https://godox.com/product-b/Flash/AD200ProII.html">AD200Pro II</a> · <a href="https://godox.com/product-e/AD100ProII.html">AD100Pro II</a> · <a href="https://godox.com/static/upload/file/20241210/1733815581554791.pdf">AD600Pro 설명서</a> · <a href="https://godox.com/static/upload/file/20230302/1677739890411562.pdf">QT600IIIM 설명서</a> · <a href="https://godox.com/static/upload/file/20240411/1712803382917937.pdf">DP III-V 설명서</a> · <a href="https://godox.com/Downloads/Godox_QSII_Series_French.pdf">QS II 설명서</a> · <a href="https://www.godox.com/product-d/AR400.html">AR400</a></li>
+  <li>SK 계열: <a href="https://petapixel.com/2026/03/02/godox-introduces-entry-level-studio-strobes-starting-at-149/">SK III-V 출시 기사(2026-03-02)</a> · <a href="https://www.bhphotovideo.com/c/product/1724912-REG/godox_sk400ii_v_400ws_studio_flash.html">SK400II-V</a></li>
+  <li>중고 매물 예: <a href="https://m.bunjang.co.kr/products/443945490">AD400Pro 50만</a> · <a href="https://m.bunjang.co.kr/products/434697102">AD400Pro 45만</a> · <a href="https://web.joongna.com/product/230487836">AD600Pro 64.5만</a> · <a href="https://web.joongna.com/product/233188919">AD600Pro II 85만</a> · <a href="https://web.joongna.com/product/228979343">AD300Pro 45만</a> · <a href="https://web.joongna.com/product/229349996">AD600Pro II 판매완료 100만</a></li>
+</ul>
+
+<div class="foot">명진 노트 · 장비 비교자료 13 · v2.1 · 사양·가격은 2026-11-16 웹 확인 기준이며 바뀔 수 있음</div>
+</div>
+
+<script>
+(function(){
+  // 최저 출력(명목 Ws). QS600II = 18.75Ws 기준, 스톱 = log2(18.75 / 최저Ws)
+  var D=[
+    ['AD200Pro II','신품 49.9만',200,'1/512',0.390625,'new'],
+    ['AD100Pro II','신품 33만',100,'1/256',0.390625,'new'],
+    ['AD300Pro II','신품 65만',300,'1/512',0.5859375,'new'],
+    ['AD400Pro II','신품 85만',400,'1/512',0.78125,'new'],
+    ['AD600Pro II','신품 115만',600,'1/512',1.171875,'new'],
+    ['AD600BM II','신품 69만',600,'1/512',1.171875,'new'],
+    ['AD300Pro','중고 35~40만',300,'1/256',1.171875,'used'],
+    ['AD800Pro','신품 125만',800,'1/512',1.5625,'new'],
+    ['AD400Pro','중고 40~45만',400,'1/256',1.5625,'used'],
+    ['QT600IIIM','신품 69만 · 콘센트',600,'1/256',2.34375,'new'],
+    ['AD600Pro','중고 55~62만',600,'1/256',2.34375,'used'],
+    ['AD1200Pro','신품 199만',1200,'1/256',4.6875,'new'],
+    ['DP600III-V','신품 29.9만 · 콘센트',600,'1/64',9.375,'new'],
+    ['MS300V','신품 15.9만 · 콘센트',300,'1/32',9.375,'new'],
+    ['QS600II','보유 중',600,'1/32',18.75,'base']
+  ];
+  var MAX=7, bars=document.getElementById('bars'), ticks=document.getElementById('ticks'), tip=document.getElementById('tip'), viz=document.getElementById('viz');
+  function fmt(n){return (Math.round(n*100)/100).toString();}
+  for(var t=0;t<=MAX;t++){var s=document.createElement('span');s.style.left=(t/MAX*100)+'%';s.textContent=t===0?'0':'+'+t;ticks.appendChild(s);}
+  D.forEach(function(d){
+    var st=Math.log(18.75/d[4])/Math.LN2;
+    var l=document.createElement('div');l.className='bl';l.innerHTML=d[0]+'<small>'+d[1]+'</small>';
+    var tr=document.createElement('div');tr.className='track';
+    for(var t=1;t<=MAX;t++){var g=document.createElement('div');g.className='grid-line';g.style.left=(t/MAX*100)+'%';tr.appendChild(g);}
+    var b=document.createElement('div');b.className='bar'+(d[5]==='used'?' used':'')+(d[5]==='base'?' base':'');
+    b.style.width=Math.max(st,0)/MAX*100+'%';tr.appendChild(b);
+    var v=document.createElement('div');v.className='bv';
+    var pct=Math.max(st,0)/MAX*100;
+    v.style.left='calc('+pct+'% + 6px)';
+    v.innerHTML=d[5]==='base'?'기준 <span class="ws">(18.75Ws)</span>':'+'+(Math.round(st*10)/10)+'<span class="ws"> · '+fmt(d[4])+'Ws</span>';
+    tr.appendChild(v);
+    var html='<b>'+d[0]+'</b>최대 '+d[2]+'Ws · 최저 '+d[3]+' = '+fmt(d[4])+'Ws<br>'+(d[5]==='base'?'비교 기준(보유 중)':'QS600II보다 '+(Math.round(st*10)/10)+'스톱 더 약하게')+'<br>'+d[1];
+    function show(e){var r=viz.getBoundingClientRect();tip.innerHTML=html;tip.style.display='block';
+      var x=e.clientX-r.left+14, y=e.clientY-r.top+14; if(x+260>r.width) x=r.width-270; tip.style.left=x+'px';tip.style.top=y+'px';}
+    [b,l,tr].forEach(function(el){el.addEventListener('mousemove',show);el.addEventListener('mouseleave',function(){tip.style.display='none';});});
+    bars.appendChild(l);bars.appendChild(tr);
+  });
+})();
+</script>
+</body>
+</html>
