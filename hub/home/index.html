@@ -960,7 +960,7 @@ button.bf{font:inherit;color:inherit;text-align:left;border:0;width:100%;cursor:
 
 /* ══ 폰(≤900px) ══ */
 @media(max-width:900px){
-  body.tabs-on .tabs{grid-template-columns:repeat(5,minmax(0,1fr))}
+  body.tabs-on .tabs{grid-template-columns:repeat(6,minmax(0,1fr))}   /* 261116 «타일» 탭 더해 6칸 */
   .tab .tn{top:-1px;left:calc(50% + 7px);height:18px;min-width:18px;font-size:12px;padding:0 5px}
   .tab{font-size:var(--f-sub)}
   /* 브리핑: 다음 촬영(한 줄 전체) → 오늘 할 일 · 납품 마감(반씩) → 지금 처리할 것(한 줄 전체, 바로 아래 패널) */
@@ -1043,6 +1043,8 @@ html,body{background:#f0f6ef url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2
 [data-tab="apps"]{--k1:#d3bfe0;--k2:#b79bd4;--kc:#9677c0;--ki:#5d3e86;--kt1:#f3ecf9;--kt2:#e5d8f2}
 [data-tab="library"]{--k1:#a6c8e2;--k2:#80a9cf;--kc:#4f86ba;--ki:#245887;--kt1:#e8f1f9;--kt2:#d3e3f3}
 [data-tab="more"]{--k1:#e3cf9d;--k2:#d0b97e;--kc:#b08c34;--ki:#6b510f;--kt1:#faf3df;--kt2:#f1e3bd}
+[data-tab="tiles"]{--k1:#bfe0cc;--k2:#98c9ab;--kc:#3f8f61;--ki:#1f5f39;--kt1:#eaf6ee;--kt2:#d4ecdc}
+.tilesframe{display:block;width:100%;height:560px;border:0;background:transparent;color-scheme:normal}
 .tab .ti,.tab:hover .ti{color:var(--kc)}
 .tab.on .ti{color:var(--ki)}
 @media(min-width:901px){
@@ -1442,7 +1444,7 @@ html.ovopen,html.ovopen body{overflow:hidden}
     </div>
     <button type="button" class="abtn" id="refreshBtn" title="다시 불러오기 — 읽기만 합니다(저장 없음)" aria-label="다시 불러오기"><svg class="ic" aria-hidden="true"><use href="#i-refresh"/></svg><span class="lbl-w">마지막 갱신</span><span class="upd" id="upd-t">--:--</span></button>
     <button type="button" class="abtn" id="privacyBtn" aria-pressed="false" title="현장 모드 — 돈·이름을 흐리게 가립니다" aria-label="현장 모드"><svg class="ic" aria-hidden="true"><use href="#i-eye-off"/></svg><span class="lbl">현장 모드</span></button>
-    <a class="abtn dock" href="../?dock" title="타일 독바 — 새 탭으로 열림" aria-label="타일 독바 (새 탭)"><svg class="ic" aria-hidden="true"><use href="#i-dock"/></svg><span class="lbl">타일 독바</span><svg class="ic ext" aria-hidden="true"><use href="#i-ext"/></svg></a>
+    <a class="abtn dock" href="#tiles" target="_self" title="타일 — 이 화면의 «타일» 탭" aria-label="타일 탭"><svg class="ic" aria-hidden="true"><use href="#i-dock"/></svg><span class="lbl">타일 독바</span></a>
     <button type="button" class="abtn login out" id="loginChip" title="구글 계정으로 로그인" aria-label="구글 로그인"><svg class="ic" aria-hidden="true"><use href="#i-log-in"/></svg><span class="lbl"><span class="g">구글 </span>로그인</span></button>
     <div class="acctmenu" id="acctMenu" role="dialog" aria-label="계정" hidden>
       <div class="am-who" id="acctWho"></div>
@@ -1471,7 +1473,7 @@ html.ovopen,html.ovopen body{overflow:hidden}
     <a class="nav on" style="--c1:#a9cfae;--c2:#7fb489" href="#today" target="_self" aria-current="page" title="홈 대시보드"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg></span><span class="nm">홈 대시보드</span></a>
     <div class="sidecap" title="누르면 새 탭으로 열립니다">바로가기 <svg class="ic sm" aria-hidden="true"><use href="#i-ext"/></svg></div>
 
-    <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>촬영 · 고객<span class="n">9</span></summary>
+    <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>촬영 · 고객<span class="n">10</span></summary>
       <a class="nav" style="--c1:#e7bcb4;--c2:#dda79d" href="https://maydly.github.io/maydly-cal/admin.html" title="명진 캘린더 — 지남·긴급(3일 이내)"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg></span><span class="nm">명진 캘린더</span><span class="bdg" id="nv-cal"></span></a>
       <a class="nav" style="--c1:#a8d3a0;--c2:#7fb877" href="https://maydly.github.io/maydly-cal/" title="협업 캘린더"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg></span><span class="nm">협업 캘린더</span></a>
       <a class="nav" style="--c1:#ddd0b4;--c2:#c3b08c" href="https://maydly.github.io/collab/" title="협업 안내 — 협업 문의에 보낼 안내서 · 필독 공지 포함"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg></span><span class="nm">협업 안내</span></a>
@@ -1481,6 +1483,7 @@ html.ovopen,html.ovopen body{overflow:hidden}
       <a class="nav" style="--c1:#d9b8c4;--c2:#c59db0" href="https://maydly.github.io/note/hub/시안/" title="촬영 시안 4종"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-images"/></svg></span><span class="nm">촬영 시안</span></a>
       <a class="nav" style="--c1:#ecd3ab;--c2:#dcbd8d" href="https://maydly.github.io/note/hub/photomap/" title="대표 사진맵"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg></span><span class="nm">대표 사진맵</span></a>
       <a class="nav" style="--c1:#e6b8c8;--c2:#d59fb3" href="https://maydly.github.io/?owner=1" title="maydly 시안(고객용)"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-sparkle"/></svg></span><span class="nm">maydly 시안(고객용)</span></a>
+      <a class="nav" style="--c1:#cfe0c4;--c2:#a9c79a" href="https://maydly.github.io/note/hub/관리개선방향/" title="관리 개선방향 — 검색 결과 관리 · 명진 로그인"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg></span><span class="nm">관리 개선방향</span></a>
     </details>
 
     <details class="grp" open><summary><span class="ar"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></span>명진앱<span class="n">7</span></summary>
@@ -1517,7 +1520,7 @@ html.ovopen,html.ovopen body{overflow:hidden}
       <a class="nav" style="--c1:#a6c8e2;--c2:#80a9cf" href="https://maydly.github.io/note/travel/" title="여행지도 — 내 장소"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg></span><span class="nm">여행지도</span></a>
       <a class="nav" style="--c1:#aac5e6;--c2:#86a6d4" href="https://maydly.github.io/note/travel-kr/" title="여행지도 한국"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-flag"/></svg></span><span class="nm">여행지도 한국</span></a>
       <a class="nav" style="--c1:#a3bde0;--c2:#7f9ccc" href="https://maydly.github.io/gev/" title="신의눈 3D"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg></span><span class="nm">신의눈 3D</span></a>
-      <a class="nav" style="--c1:#c9dcc0;--c2:#a6c49a" href="https://maydly.github.io/note/osaka-trip/" title="오사카 10월 여행 — 날짜별 일정 · 날씨 · 꼭 갈 곳 · 항공·숙소"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-bag"/></svg></span><span class="nm">오사카 10월 여행</span></a>
+      <a class="nav" style="--c1:#c9dcc0;--c2:#a6c49a" href="https://maydly.github.io/note/osaka-trip/" title="오사카 10월 여행(10월 다녀옴) — 날짜별 일정 · 날씨 · 꼭 갈 곳 · 항공·숙소"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-bag"/></svg></span><span class="nm">오사카 10월 여행</span></a>
       <a class="nav" style="--c1:#c3d6b8;--c2:#9dbb8e" href="https://maydly.github.io/note/osaka/" title="일본 렌즈 직접구매 — 올드렌즈 28종 값표 · 지역별 중고점(도쿄·후쿠오카 등)"><span class="e"><svg class="ic" aria-hidden="true"><use href="#i-lens"/></svg></span><span class="nm">일본 렌즈 직접구매</span></a>
     </details>
 
@@ -1553,6 +1556,7 @@ html.ovopen,html.ovopen body{overflow:hidden}
       <a class="tab" role="tab" id="tab-apps" href="#apps" target="_self" data-tab="apps" aria-selected="false" aria-controls="pane-apps" title="앱 창 — 단축키 3"><span class="ti"><svg class="ic" aria-hidden="true"><use href="#i-grid"/></svg></span><span class="tx">앱 창</span></a>
       <a class="tab" role="tab" id="tab-library" href="#library" target="_self" data-tab="library" aria-selected="false" aria-controls="pane-library" title="자료실 — 단축키 4"><span class="ti"><svg class="ic" aria-hidden="true"><use href="#i-library"/></svg></span><span class="tx">자료실</span></a>
       <a class="tab" role="tab" id="tab-more" href="#more" target="_self" data-tab="more" aria-selected="false" aria-controls="pane-more" title="더보기 — 바로가기 · 알림 · 수빈 · 둘이 할 게임 · 점검 · 단축키 5"><span class="ti"><svg class="ic" aria-hidden="true"><use href="#i-more"/></svg></span><span class="tx">더보기</span></a>
+      <a class="tab" role="tab" id="tab-tiles" href="#tiles" target="_self" data-tab="tiles" aria-selected="false" aria-controls="pane-tiles" title="타일 — 타일 독바 그대로 · 단축키 6"><span class="ti"><svg class="ic" aria-hidden="true"><use href="#i-dock"/></svg></span><span class="tx">타일</span></a>
     </nav>
 
     <section class="tabpane on" data-tab="today" id="pane-today" role="tabpanel" aria-labelledby="tab-today">
@@ -1565,6 +1569,16 @@ html.ovopen,html.ovopen body{overflow:hidden}
         <div class="lc-s">명진 · 수빈 계정만 읽을 수 있고, 홈은 읽기만 해요.</div></div>
       <button type="button" class="lc-btn" id="loginCardBtn">구글 로그인</button>
     </div>
+
+    <!-- 261116 12월 말 일본 여행(명진: 12/29~30쯤 일본 또 감 · 행선지 미정) — 일본 시간 2027-01-05까지 «오늘» 맨 위에(지나면 저절로 숨김). 출발일·귀국일·행선지 정해지면 여기 날짜만 고친다 -->
+    <div class="card" id="tripNext" hidden style="margin-bottom:14px">
+      <div class="ch"><div class="ct"><span class="cic" style="--c1:#c9dcc0;--c2:#a6c49a" aria-hidden="true"><svg class="ic"><use href="#i-bag"/></svg></span>12월 말 일본 여행<span class="cs" id="tripNextD" style="margin-left:6px"></span></div><a class="more" href="https://maydly.github.io/note/osaka/">준비 &rarr;</a></div>
+      <div class="cs" style="margin-top:2px">12/29~30 출발 예정 · 행선지가 정해지면 그 지역 가게 시간부터 다시 확인</div>
+      <div class="chips" style="margin-top:9px">
+        <a class="chip on" href="https://maydly.github.io/note/osaka/" style="text-decoration:none">📷 일본 렌즈 직접구매</a><a class="chip on" href="https://maydly.github.io/note/travel/" style="text-decoration:none">🗺️ 여행지도</a><span class="chip">⚠️ 12/31~1/3 연말연시 · 가게 휴무·단축 많음</span>
+      </div>
+    </div>
+    <script>(function(){try{var p=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()).split('-').map(Number);var t=Date.UTC(p[0],p[1]-1,p[2]);if(t>Date.UTC(2027,0,5))return;var c=document.getElementById('tripNext');if(!c)return;c.hidden=false;var d=Math.round((Date.UTC(2026,11,29)-t)/864e5),D=document.getElementById('tripNextD');if(D)D.textContent=d>0?'D-'+d:(d>=-1?'출발':'여행 중');}catch(x){}})();</script>
 
     <!-- 261009 오사카 10월 여행 — 일본 시간 10/9~10/18 동안만 «오늘» 맨 위에(지나면 저절로 숨김) -->
     <div class="card" id="tripNow" hidden style="margin-bottom:14px">
@@ -1932,21 +1946,17 @@ html.ovopen,html.ovopen body{overflow:hidden}
     </div>
 
     <!-- ══════ 여행 · 지도 ══════ -->
-    <div class="sechd"><h2>여행 &middot; 지도</h2><div class="sn">오사카 여행 &middot; 내 장소 &middot; 촬영지 &middot; 3D</div></div>
-    <!-- 261009 오사카 10월 여행(플래닝-005) — 폰에서 먼저 보이게 «여행·지도» 맨 위(2장 칸 밖으로 뺌) -->
+    <div class="sechd"><h2>여행 &middot; 지도</h2><div class="sn">12월 일본 여행 &middot; 내 장소 &middot; 촬영지 &middot; 3D</div></div>
+    <!-- 261116 12월 말 일본 여행 — «여행·지도» 맨 위(행선지 정해지면 이 카드에 그 지역을 채운다) -->
     <div class="card" style="margin-bottom:14px">
-      <div class="ch"><div class="ct"><span class="cic" style="--c1:#c9dcc0;--c2:#a6c49a" aria-hidden="true"><svg class="ic"><use href="#i-bag"/></svg></span>오사카 10월 여행</div><a class="more" href="https://maydly.github.io/note/osaka-trip/">열기 &rarr;</a></div>
+      <div class="ch"><div class="ct"><span class="cic" style="--c1:#c9dcc0;--c2:#a6c49a" aria-hidden="true"><svg class="ic"><use href="#i-bag"/></svg></span>12월 말 일본 여행<span class="cs" style="margin-left:6px">12/29~30 출발 예정</span></div></div>
         <div class="lst">
-          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=near" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg></div><div class="bd2"><div class="lb1">가까운 곳 · 보는 방향</div>
-            <div class="lb2">지금 위치에서 걸어서 몇 분 · 폰이 향한 쪽 화살표</div></div><div class="rt">열기 &rarr;</div></a>
-          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=day" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg></div><div class="bd2"><div class="lb1">날짜별 일정</div>
-            <div class="lb2">10/12~16 · 하루씩 접어 보기 · 날마다 날씨</div></div><div class="rt">열기 &rarr;</div></a>
-          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=wx" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-sun"/></svg></div><div class="bd2"><div class="lb1">날씨 · 태풍</div>
-            <div class="lb2">일본 기상청 예보 · 열 때마다 새로</div></div><div class="rt">열기 &rarr;</div></a>
-          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=star" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg></div><div class="bd2"><div class="lb1">꼭 갈 곳</div>
-            <div class="lb2">★ 누른 곳 — 맥·폰 같이</div></div><div class="rt">열기 &rarr;</div></a>
-          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=info" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-briefcase"/></svg></div><div class="bd2"><div class="lb1">항공 · 숙소 판단</div>
-            <div class="lb2">15kg 포함 가격 · 숙소 지도 · 명진·수빈 점수 같이</div></div><div class="rt">열기 &rarr;</div></a>
+          <a class="li" href="https://maydly.github.io/note/osaka/" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-lens"/></svg></div><div class="bd2"><div class="lb1">일본 렌즈 직접구매</div>
+            <div class="lb2">지역별 중고점(우선 · 경로상) · 렌즈 28종 값표 · 11월부터 바뀐 면세</div></div><div class="rt">열기 &rarr;</div></a>
+          <a class="li" href="https://maydly.github.io/note/travel/" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg></div><div class="bd2"><div class="lb1">여행지도</div>
+            <div class="lb2">내 장소 · 촬영지 · 도시별 정보</div></div><div class="rt">열기 &rarr;</div></a>
+          <div class="li"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg></div><div class="bd2"><div class="lb1">연말연시 주의</div>
+            <div class="lb2">12/31~1/3은 가게마다 쉬거나 시간이 바뀜 · 행선지가 정해지면 그 지역 가게 시간 다시 확인</div></div></div>
         </div>
     </div>
     <div class="grid2">
@@ -1974,6 +1984,22 @@ html.ovopen,html.ovopen body{overflow:hidden}
             <div class="lb2">촬영지 + 내 장소를 지구본에서</div></div><div class="rt">열기 &rarr;</div></a>
         </div>
       </div>
+    </div>
+    <!-- 261009 오사카 10월 여행(플래닝-005) — 261116 다녀와서 «여행·지도» 맨 아래로 옮김(지운 것 없음) -->
+    <div class="card" style="margin-top:14px">
+      <div class="ch"><div class="ct"><span class="cic" style="--c1:#c9dcc0;--c2:#a6c49a" aria-hidden="true"><svg class="ic"><use href="#i-bag"/></svg></span>오사카 10월 여행<span class="cs" style="margin-left:6px">10월 다녀옴</span></div><a class="more" href="https://maydly.github.io/note/osaka-trip/">열기 &rarr;</a></div>
+        <div class="lst">
+          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=near" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg></div><div class="bd2"><div class="lb1">가까운 곳 · 보는 방향</div>
+            <div class="lb2">지금 위치에서 걸어서 몇 분 · 폰이 향한 쪽 화살표</div></div><div class="rt">열기 &rarr;</div></a>
+          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=day" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg></div><div class="bd2"><div class="lb1">날짜별 일정</div>
+            <div class="lb2">10/12~16 · 하루씩 접어 보기 · 날마다 날씨</div></div><div class="rt">열기 &rarr;</div></a>
+          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=wx" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-sun"/></svg></div><div class="bd2"><div class="lb1">날씨 · 태풍</div>
+            <div class="lb2">일본 기상청 예보 · 열 때마다 새로</div></div><div class="rt">열기 &rarr;</div></a>
+          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=star" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg></div><div class="bd2"><div class="lb1">꼭 갈 곳</div>
+            <div class="lb2">★ 누른 곳 — 맥·폰 같이</div></div><div class="rt">열기 &rarr;</div></a>
+          <a class="li" href="https://maydly.github.io/note/osaka-trip/?tab=info" style="text-decoration:none;color:inherit"><div class="ii"><svg class="ic" aria-hidden="true"><use href="#i-briefcase"/></svg></div><div class="bd2"><div class="lb1">항공 · 숙소 판단</div>
+            <div class="lb2">15kg 포함 가격 · 숙소 지도 · 명진·수빈 점수 같이</div></div><div class="rt">열기 &rarr;</div></a>
+        </div>
     </div>
 
     <!-- ══════ 기록 · 학습 ══════ -->
@@ -2084,7 +2110,13 @@ html.ovopen,html.ovopen body{overflow:hidden}
     </div>
     </section>
 
-    <div class="foot" title="홈 v2.8.5"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
+    <!-- 261116 명진 «독바가 개인허브에 탭으로» — 타일 독바(../?dock)를 그대로 끼워 보인다. 타일 목록은 독바 LINKS 한 곳만 고치면 여기도 같이 바뀐다 -->
+    <section class="tabpane" data-tab="tiles" id="pane-tiles" role="tabpanel" aria-labelledby="tab-tiles">
+    <div class="tier"><span class="tchip" aria-hidden="true"><svg class="ic"><use href="#i-dock"/></svg></span><h2>타일</h2><div class="ts">타일 독바 그대로 · 누르면 새 탭으로</div></div>
+    <iframe id="tilesFrame" class="tilesframe" title="타일 독바" data-src="../?dock&amp;embed=home"></iframe>
+    </section>
+
+    <div class="foot" title="홈 v2.9"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
 
   </main>
 </div>
@@ -3684,8 +3716,17 @@ D.onUser((u) => {
 // v2.3 앱 구조 — 구역 탭(주소 #) · 「지금 처리할 것」 접기 · 링크 새 탭 · 현장 모드 · 앱 카드 · 바로가기.
 // 아무것도 저장하지 않는다 — 지금 보는 구역은 주소 끝의 #today·#biz·#apps·#library·#more 로만 기억한다.
 (function () {
-  var TABS = ['today', 'biz', 'apps', 'library', 'more'];
-  var NAMES = { today: '오늘', biz: '사업', apps: '앱 창', library: '자료실', more: '더보기' };
+  var TABS = ['today', 'biz', 'apps', 'library', 'more', 'tiles'];
+  var NAMES = { today: '오늘', biz: '사업', apps: '앱 창', library: '자료실', more: '더보기', tiles: '타일' };
+  // 261116 «타일» 탭 — 처음 열 때만 독바를 불러오고, 끼운 화면 높이에 맞춰 늘린다(안쪽 스크롤 없음 · 같은 주소라 높이를 직접 잰다)
+  var tilesOn = false;
+  function loadTiles() {
+    if (tilesOn) return; tilesOn = true;
+    var f = document.getElementById('tilesFrame'); if (!f) return;
+    var fit = function () { try { var b = f.contentDocument && f.contentDocument.body; if (!b) return; var h = Math.ceil(b.getBoundingClientRect().height); if (h > 40) f.style.height = h + 'px'; } catch (e) {} };
+    f.addEventListener('load', function () { fit(); setTimeout(fit, 300); setTimeout(fit, 1500); try { new ResizeObserver(fit).observe(f.contentDocument.body); } catch (e) {} });
+    f.setAttribute('src', f.getAttribute('data-src'));
+  }
   var ALIAS = { personal: 'more', system: 'more', links: 'more', notify: 'more' };   // 옛 주소(#personal·#system)와 바로가기(#links)·알림(#notify) → 더보기 안 그 자리
   // v2.5 아이폰 홈 화면 앱: 구역을 바꿀 때 방문 기록을 쌓지 않는다(주소만 바꿔 끼움) — 쓸어서 뒤로 가기가 탭을 거슬러 올라가지 않게. 웹은 지금처럼
   var SA = !!window.__standalone;
@@ -3727,7 +3768,7 @@ D.onUser((u) => {
       box.appendChild(c);
     });
     var d = document.createElement('a');
-    d.className = 'nav dockrow'; d.href = '../?dock'; d.title = window.__standalone ? '타일 독바로 돌아가기' : '타일 독바 — 새 탭으로 열림'; d.style.cssText = '--c1:#c9d6c3;--c2:#a3b69c';
+    d.className = 'nav dockrow'; d.href = '#tiles'; d.setAttribute('target', '_self'); d.title = '타일 독바 — 이 화면의 «타일» 탭'; d.style.cssText = '--c1:#c9d6c3;--c2:#a3b69c';
     d.innerHTML = '<span class="e"><svg class="ic" aria-hidden="true"><use href="#i-dock"/></svg></span><span class="nm">타일 독바</span>';
     box.appendChild(d);
   })();
@@ -3911,6 +3952,7 @@ D.onUser((u) => {
       a.classList.toggle('on', on); a.setAttribute('aria-selected', on ? 'true' : 'false'); a.tabIndex = on ? 0 : -1;
     });
     document.title = (t === 'today' ? '' : NAMES[t] + ' · ') + baseTitle;
+    if (t === 'tiles') loadTiles();
     if (t === 'apps') loadApps();
     else arr(document.querySelectorAll('#pane-apps .frame.live')).forEach(function (x) { x.classList.remove('live'); });   // v2.5: 다른 구역으로 가면 «조작 중» 창은 다시 덮는다
     if (t !== curTab) { curTab = t; animPane(t); }
@@ -4226,7 +4268,7 @@ D.onUser((u) => {
   });
   { var sc = document.querySelector('.sidecap'); if (sc) sc.title = '누르면 이 앱 안에서 크게 열립니다'; }
   { var lc = document.querySelector('#links .cs'); if (lc) lc.textContent = '누르면 이 앱 안에서 크게 열려요'; }
-  { var db = document.querySelector('.abtn.dock'); if (db) { db.title = '타일 독바로 돌아가기'; db.setAttribute('aria-label', '타일 독바로 돌아가기'); } }
+  { var db = document.querySelector('.abtn.dock'); if (db) { db.title = '타일 — 이 화면의 «타일» 탭'; db.setAttribute('aria-label', '타일 탭'); } }
 
   // ── «크게 열기» 창 — 같은 주소(maydly.github.io)의 앱은 사파리 겹창(저장소가 따로라 PIN·구글 로그인을 다시 해야 함) 대신
   //    이 창 안에 화면 전체로 끼워 연다 → 같은 저장소라 PIN·통합 로그인이 이어지고, «‹ 홈»이 돌아오는 길이 된다.
@@ -4267,6 +4309,7 @@ D.onUser((u) => {
     ph.querySelector('.ovpt').textContent = nm + ' 여는 중…';
     return ph;
   }
+  window.__mhOpenTile = function (url) { openOv(url, null); };   // 261116 «타일» 탭(끼운 독바)에서 부른다
   function openOv(url, from) {
     closeOv(true);
     var nf = info(url) || {};

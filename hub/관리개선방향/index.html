@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>관리 개선방향 · maydly</title>
+<style>
+:root{--ink:#2b2b26;--muted:#78766c;--line:#e6e1d3;--bg:#fbf8f1;--green:#2f7d52}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif;word-break:keep-all;padding:20px}
+.clv{position:fixed;color:#5f9e74;opacity:.1;pointer-events:none} .clv svg{width:100%;height:100%}
+.card{position:relative;max-width:380px;width:100%;background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 24px;text-align:center}
+.mk{width:34px;height:34px;color:var(--green)}
+h1{font-size:21px;margin:8px 0 4px}
+p{margin:6px 0;color:var(--muted);font-size:14px}
+button{margin-top:14px;width:100%;border:0;border-radius:12px;padding:12px;font:inherit;font-weight:700;background:var(--green);color:#fff;cursor:pointer}
+button[hidden]{display:none}
+a{display:inline-block;margin-top:14px;color:var(--green);font-size:14px;font-weight:600;text-decoration:none}
+</style></head><body>
+<span class="clv" style="top:8%;right:8%;width:52px;transform:rotate(18deg)"><svg viewBox="0 0 40 40"><g fill="currentColor"><circle cx="14" cy="14" r="7.4"/><circle cx="26" cy="14" r="7.4"/><circle cx="14" cy="26" r="7.4"/><circle cx="26" cy="26" r="7.4"/></g></svg></span>
+<span class="clv" style="bottom:10%;left:7%;width:40px;transform:rotate(-22deg)"><svg viewBox="0 0 40 40"><g fill="currentColor"><circle cx="14" cy="14" r="7.4"/><circle cx="26" cy="14" r="7.4"/><circle cx="14" cy="26" r="7.4"/><circle cx="26" cy="26" r="7.4"/></g></svg></span>
+<div class="card">
+  <svg class="mk" viewBox="0 0 40 40" aria-hidden="true"><g fill="currentColor"><circle cx="14" cy="14" r="7.4"/><circle cx="26" cy="14" r="7.4"/><circle cx="14" cy="26" r="7.4"/><circle cx="26" cy="26" r="7.4"/></g><path d="M20 21 C22 28 25 33 30 37" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
+  <h1>관리 개선방향</h1>
+  <p id="msg">확인하는 중…</p>
+  <button id="login" type="button" hidden>구글로 로그인</button>
+  <a href="https://maydly.github.io/note/hub/home/" target="_self">← 허브 홈</a>
+</div>
+<script type="module">
+  // 이 페이지(공개 저장소)에는 글 내용이 없다. 명진 구글 로그인 뒤 비공개 저장소(Firestore)에서 받아 그린다.
+  // 저장 위치 maydly_office/private_docs/items/search_mgmt — 보안 규칙상 명진 계정만 읽기(로그인 없이는 403).
+  // 로그인은 홈 대시보드와 같은 기본 이름표라, 홈에서 로그인돼 있으면 바로 열린다.
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const cfg = { apiKey:"AIzaSyBfyRE7CNENjgSfe25xHAdr87gOllpYtvM", authDomain:"subin-routine.firebaseapp.com", projectId:"subin-routine" };
+  const ALLOWED = "bucket0825@gmail.com";
+  const app = initializeApp(cfg);
+  const auth = getAuth(app), db = getFirestore(app);
+  const msg = (t) => { document.getElementById('msg').textContent = t; };
+  const btn = document.getElementById('login');
+
+  getRedirectResult(auth).catch(() => {});
+  btn.addEventListener('click', async () => {
+    const p = new GoogleAuthProvider();
+    try { await signInWithPopup(auth, p); }
+    catch (e) {
+      if (['auth/popup-blocked', 'auth/operation-not-supported-in-this-environment', 'auth/cancelled-popup-request'].includes(e.code)) {
+        await signInWithRedirect(auth, p);
+      } else if (e.code !== 'auth/popup-closed-by-user') { msg('로그인하지 못했어요 (' + e.code + ')'); }
+    }
+  });
+
+  onAuthStateChanged(auth, async (u) => {
+    if (!u) { msg('명진 구글 계정으로 로그인하면 보여요.'); btn.hidden = false; return; }
+    btn.hidden = true;
+    // 다른 계정은 로그아웃시키지 않는다(같은 기본 이름표라 홈 로그인까지 풀리므로) — 안내만
+    if (u.email !== ALLOWED) { msg('명진 계정만 볼 수 있는 문서예요.'); return; }
+    msg('불러오는 중…');
+    try {
+      const s = await getDoc(doc(db, 'maydly_office', 'private_docs', 'items', 'search_mgmt'));
+      if (!s.exists()) { msg('아직 올라온 내용이 없어요.'); return; }
+      const html = s.data().html || '';
+      document.open(); document.write(html); document.close();
+    } catch (e) { msg('불러오지 못했어요 (' + (e.code || e.message) + ')'); }
+  });
+</script>
+</body></html>

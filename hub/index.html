@@ -7,6 +7,11 @@
    그 밖의 길(즐겨찾기·다른 앱의 «← 허브»·홈 화면 아이콘·옛 주소)은 곧바로 대시보드로 — 방문 기록을 쌓지 않는다(replace) */
 (function(){try{if(!/[?&]dock(?:[=&]|$)/.test(location.search))location.replace('home/'+location.search+location.hash);}catch(e){}})();
 </script>
+<script id="mh-embed">
+/* 261116 명진 «독바가 개인허브에 탭으로» — 홈 대시보드 «타일» 탭 안에 끼워질 때만(?embed=home 이고 홈이 감쌀 때): 머리·홈 타일·바닥 안내를 숨기고 PIN 없이 타일만 보인다.
+   홈 왼쪽 목차에 같은 링크가 이미 PIN 없이 있어 새로 드러나는 것은 없다. PIN 세션 열쇠(maydly_hub_session)는 읽지도 쓰지도 않는다. 주소로 직접 열면 지금처럼 PIN. */
+(function(){try{if(/[?&]embed=home(?:&|$)/.test(location.search)&&window.parent!==window&&/\/hub\/home\//.test(parent.location.pathname))document.documentElement.classList.add('embed');}catch(e){}})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#f0f6ef">
@@ -121,6 +126,12 @@ html.ovopen,html.ovopen body{overflow:hidden}
   .tile .lb{font-size:11.5px;line-height:1.15;word-break:keep-all;overflow-wrap:anywhere}
   .tile .sm{font-size:10px;line-height:1.25;margin-top:2px}
 }
+
+/* 261116 홈 «타일» 탭 안(html.embed) — 홈 바탕이 비치게 · 폰은 지금처럼 4칸, 넓은 화면은 칸 수를 늘린다 */
+html.embed,html.embed body{min-height:0;background:transparent}
+html.embed body{max-width:none;margin:0;padding:2px 2px 6px}
+html.embed .head,html.embed .foot,html.embed .gate{display:none!important}
+@media(min-width:600px){html.embed .grid{grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}html.embed .tile{padding:12px}html.embed .tile .lb{font-size:13px}html.embed .tile .sm{font-size:10px}html.embed .tile .ic{width:44px;height:44px;font-size:24px}}
 </style>
 </head>
 <body>
@@ -165,7 +176,7 @@ var LINKS=[
   {ic:'🌱', g:['#bcd0ac','#a3bd90'], lb:'수빈 앱', sm:'수빈 루틴', url:'https://maydly.github.io/note/subin/'},
   {ic:'🔮', g:['#e6c9a8','#d4ad82'], lb:'수빈 사주', sm:'사주·별자리·MBTI 통합', url:'https://subin-routine.web.app/saju/'},
   {ic:'🖼️', g:['#d9b8c4','#c59db0'], lb:'촬영 시안', sm:'우중·바다·바다커플·새내기', url:'https://maydly.github.io/note/hub/시안/'},
-  {ic:'🗺️', g:['#a6c8e2','#80a9cf'], lb:'여행지도', sm:'도시 965 · 촬영지 10,997 · 내 장소', url:'https://maydly.github.io/note/travel/'},
+  {ic:'🗺️', g:['#a6c8e2','#80a9cf'], lb:'여행지도', sm:'도시 965 · 촬영지 10,525 · 내 장소', url:'https://maydly.github.io/note/travel/'},
   {ic:'🎮', g:['#efc2b3','#dfa28f'], lb:'둘이 할 게임', sm:'2인 협동 · 1인 추리 129개', url:'https://maydly.github.io/note/games/'},
   {ic:'📱', g:['#d3bfe0','#b79bd4'], lb:'명진앱', sm:'할일·구매·보유·가계부', url:'https://maydly.github.io/note/myapp/'},
   // 2줄
@@ -187,16 +198,18 @@ var LINKS=[
   {ic:'🧭', g:['#b7c9b0','#94ae8c'], lb:'독립 준비 점검표', sm:'6개 기둥 · 자가진단 18 · 사진대회 · 구글 🔒', url:'https://maydly.github.io/note/prep/'},
   {ic:'🏛️', g:['#9ab5a8','#7a9e90'], lb:'거버넌스', sm:'주간·격주·4주 점검', url:'https://maydly.github.io/note/hub/governance/'},
   {ic:'📷', g:['#c3d6b8','#9dbb8e'], lb:'일본 렌즈 직접구매', sm:'올드렌즈 28종 값표 · 지역별 중고점 · 도쿄·후쿠오카 등', url:'https://maydly.github.io/note/osaka/'},
-  {ic:'🧳', g:['#c9dcc0','#a6c49a'], lb:'오사카 10월 여행', sm:'날짜별 일정 · 날씨 · 꼭 갈 곳 · 항공·숙소', url:'https://maydly.github.io/note/osaka-trip/'},
+  {ic:'🧳', g:['#c9dcc0','#a6c49a'], lb:'오사카 10월 여행', sm:'10월 다녀옴 · 날짜별 일정 · 꼭 갈 곳 · 항공·숙소', url:'https://maydly.github.io/note/osaka-trip/'},
   {ic:'🕹️', g:['#c9d6ee','#a7b9df'], lb:'넷이 할 게임', sm:'4인 PC 게임 75개 · 친구들과 같이 고르기', url:'https://maydly.github.io/note/games4/'},
   {ic:'🔦', g:['#e0d3b0','#c9b78e'], lb:'3D 조명 테스트', sm:'셋업 미리 보기 · 계획도', url:'https://maydly.github.io/note/light3d/'},
-   {ic:'🖥️', g:['#c6d3e8','#a3b5d6'], lb:'둘이 갈 PC방', sm:'둘만의 방 · 주차 · 가격 비교 13곳', url:'https://maydly.github.io/note/pcbang/'}
+   {ic:'🖥️', g:['#c6d3e8','#a3b5d6'], lb:'둘이 갈 PC방', sm:'둘만의 방 · 주차 · 가격 비교 13곳', url:'https://maydly.github.io/note/pcbang/'},
+  {ic:'🧭', g:['#cfe0c4','#a9c79a'], lb:'관리 개선방향', sm:'검색 결과 관리 · 구글 🔒', url:'https://maydly.github.io/note/hub/관리개선방향/'}
 ];
 var PW_HASH='9923e00231428d5272881c78ed1ffe7340dd73f4792d45ad24b5ab469fcc1a4b';
 
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function render(){
-  document.getElementById('grid').innerHTML=LINKS.map(function(l){
+  var EMB=document.documentElement.classList.contains('embed');
+  document.getElementById('grid').innerHTML=LINKS.filter(function(l){return !(EMB&&l.self);}).map(function(l){
     var g='linear-gradient(150deg,'+l.g[0]+','+l.g[1]+')';
     var sm=l.sm?sm:'';  // 부제 비면 빈 줄 안 생기게
     if(l.soon){
@@ -313,8 +326,16 @@ function sha256(ascii){
   }catch(e){}
 })();
 // ===== 블록 끝: maydly 통합 로그인 (260929) =====
-if(localStorage.getItem('maydly_hub_session')==='1')enter();
+if(document.documentElement.classList.contains('embed')||localStorage.getItem('maydly_hub_session')==='1')enter();
 else document.getElementById('pin').focus();
+// 261116 홈 «타일» 탭 안 — 홈이 아이폰 홈 화면 앱이면(홈이 __mhOpenTile 을 둠) 같은 주소 타일은 홈의 «크게 열기» 창으로. 그 밖(웹)은 지금처럼 새 탭
+document.addEventListener('click',function(ev){
+  if(!document.documentElement.classList.contains('embed')||ev.defaultPrevented)return;
+  var a=ev.target&&ev.target.closest?ev.target.closest('a.tile[target="_blank"]'):null;if(!a)return;
+  var f=null;try{f=parent.__mhOpenTile;}catch(e){}if(typeof f!=='function')return;
+  var u;try{u=new URL(a.href,location.href);}catch(e){return;}if(u.origin!==location.origin)return;
+  ev.preventDefault();f(u.href);
+},true);
 </script>
 <script>
 // ===== v2.5 아이폰 홈 화면 앱 (260930) — 추가 블록. 저장 없음(localStorage·IndexedDB 에 쓰지 않는다) =====
