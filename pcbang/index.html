@@ -1,0 +1,195 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>둘이 갈 PC방</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf7f0;--card:#fff;--ink:#2b2a26;--sub:#6b675d;--line:#e7e1d3;--clover:#4f8a4b}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans KR","Malgun Gothic",sans-serif;line-height:1.55;font-size:15.5px;overflow-x:hidden}
+.sc{position:fixed;pointer-events:none;color:var(--clover);opacity:.1;z-index:0}
+.wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:30px 16px 56px}
+.top{display:flex;gap:12px;align-items:center}.top svg{color:var(--clover);flex:none}
+h1{font-size:24px;margin:0}
+.sub{color:var(--sub);font-size:14px;margin:4px 0 16px 52px}
+.bases{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bx{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.bx b{font-size:15.5px}.bx .t{display:inline-block;font-size:12px;border-radius:999px;padding:1px 8px;margin-left:6px;background:#fbeee2;color:#8a4f1f}
+.bx p{margin:4px 0 0;font-size:13.5px;color:var(--sub)}
+.quick{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 16px;display:grid;gap:6px;margin-top:10px}
+.quick div{display:flex;gap:10px;align-items:baseline}.quick span{color:var(--sub);font-size:14px;width:170px;flex:none}.quick b{color:var(--clover)}.quick i{font-style:normal;color:var(--sub);font-size:13px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--sub);margin:10px 0 0}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:-1px;margin-right:4px}
+h2{font-size:18px;margin:32px 0 4px}
+.h2s{color:var(--sub);font-size:13.5px;margin:0 0 12px}
+.c{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:16px;scroll-margin-top:10px}
+.c.base{border:2px solid #e6c9a8}
+.c header{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.rk{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#c9783a;color:#fff;font-weight:700;font-size:14px}
+h3{margin:0;font-size:20px}.al{color:var(--sub);font-size:13px}
+.chip{border-radius:999px;padding:2px 10px;font-size:13px;border:1px solid var(--line);background:var(--bg)}
+.chip.drive{background:#e8f1f8;border-color:#c6dcec;color:#2a5f86;font-weight:500}
+.chip.tagc{background:#fbeee2;border-color:#f0d3b8;color:#8a4f1f;font-weight:500}
+.b4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.b{border-radius:12px;padding:8px 10px;display:grid;grid-template-columns:auto 1fr;column-gap:8px;align-items:center}
+.b .ic{grid-row:span 2;font-size:19px}.b .lb{font-size:11.5px;color:var(--sub)}.b b{font-size:14px;font-weight:700;line-height:1.35}
+.b.g{background:#e9f3e5}.b.g b{color:#2f5e2c}.b.y{background:#fbf3df}.b.y b{color:#7a5a12}.b.r{background:#f1eee8}.b.r b{color:#8a857a;font-weight:500}
+.gal{display:grid;gap:6px}.gal.g3{grid-template-columns:1fr 1fr 1fr}.gal.g2{grid-template-columns:1fr 1fr}
+.gal figure{margin:0;position:relative;border-radius:12px;overflow:hidden;cursor:zoom-in;background:#eee;height:220px}
+.gal img{width:100%;height:100%;object-fit:cover;display:block}
+.gal .mapt img{object-position:50% 45%}
+.gal figcaption{position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.9);font-size:12.5px;padding:4px 8px}
+.pc,.cn{margin:8px 0 0;font-size:14.5px}.cn{margin-top:3px;color:#6b5a4a}
+.addr{margin:8px 0 0;font-size:13.5px;color:var(--sub)}
+.ln{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.ln a.go{background:#e8f1f8;border-color:#c6dcec;color:#2a5f86;font-weight:500}
+.ln a{font-size:13.5px;color:var(--clover);text-decoration:none;border:1px solid #cfe0c9;border-radius:8px;padding:5px 12px;background:#fff}
+.ex{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 18px}
+.ex li{margin:4px 0;font-size:14px}.ex b{font-weight:500}
+#zoom{position:fixed;inset:0;background:rgba(20,18,14,.88);display:none;align-items:center;justify-content:center;z-index:10;cursor:zoom-out;padding:16px}
+#zoom img{max-width:100%;max-height:86vh;border-radius:8px}#zoom p{color:#fff;text-align:center;font-size:14px;margin:8px 0 0}
+footer{margin-top:28px;color:var(--sub);font-size:12.5px;text-align:center}
+@media (max-width:760px){.bases{grid-template-columns:1fr}.b4{grid-template-columns:1fr 1fr}.gal.g3{grid-template-columns:1fr 1fr}.gal.g3 .mapt{grid-column:span 2}.gal figure{height:170px}.sub{margin-left:0}.quick div{flex-direction:column;gap:0}.quick span{width:auto}}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs><symbol id="cl" viewBox="-24 -24 48 56"><g fill="currentColor"><path id="lf" d="M0 0 C-7 -6 -11 -10 -11 -14 a5.5 5.5 0 0 1 11 -2.5 a5.5 5.5 0 0 1 11 2.5 c0 4 -4 8 -11 14z"/><use href="#lf" transform="rotate(90)"/><use href="#lf" transform="rotate(180)"/><use href="#lf" transform="rotate(270)"/></g><path d="M1 2 C4 12 8 20 14 28" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round"/></symbol></defs></svg>
+<svg class="sc" style="top:18px;right:22px;width:44px;transform:rotate(18deg)"><use href="#cl"/></svg>
+<svg class="sc" style="top:46%;left:8px;width:32px;transform:rotate(-24deg)"><use href="#cl"/></svg>
+<svg class="sc" style="bottom:70px;right:14px;width:38px;transform:rotate(36deg)"><use href="#cl"/></svg>
+<svg class="sc" style="bottom:16px;left:26px;width:26px;transform:rotate(-8deg)"><use href="#cl"/></svg>
+<div class="wrap">
+<div class="top"><svg width="40" height="46"><use href="#cl"/></svg><h1>둘이 가기 좋은 PC방</h1></div>
+<p class="sub">차로 3~16분 거리 · 22곳 조사해서 13곳 · 사진·지도를 누르면 크게 보여요</p>
+<div class="bases">
+  <div class="bx"><b>아이센스 블랙라벨 서창점</b><span class="t">컨디션 기준</span><p>문 닫히는 2인룸 · 1만원 약 9시간 · 지하 3~4시간 무료주차 · 차로 12분</p></div>
+  <div class="bx"><b>하이PC 구월</b><span class="t">가격 기준</span><p>1만원 20시간(이벤트 30시간) · 2인 플스석 · RTX 3070 · 차로 10분</p></div>
+</div>
+<div class="quick">
+  <div><span>둘만의 방 + 좋은 컨디션</span><b>욜로PC방 인천연수점</b><i>3인룸을 둘이 · 주차는 유료</i></div>
+  <div><span>가깝고 주차 무료</span><b>5스타피씨</b><i>차로 8분 · 지하 4시간 무료 · 커플석</i></div>
+  <div><span>주차 시간 걱정 없이</span><b>블랙PC카페 · 놀이터PC 2호점</b><i>게임한 만큼 무료 / 무료 · 커플석</i></div>
+  <div><span>싸게</span><b>하이PC 3호점 · 긱스타 (이벤트)</b><i>1만원 20시간 / 24시간</i></div>
+</div>
+<div class="legend"><span><i style="background:#e9f3e5"></i>좋음</span><span><i style="background:#fbf3df"></i>보통</span><span><i style="background:#f1eee8"></i>아쉬움</span><span>· 차 시간은 카카오맵 기준 · 요금은 회원 기준</span></div>
+<h2>🚪 문 닫히는 둘만의 방</h2><p class="h2s">둘이 들어갈 수 있는 방이 확인된 곳이에요.</p><article class="c base" id="isens">
+  <header><span class="rk">1</span><h3>아이센스 블랙라벨 서창점</h3><span class="chip tagc">컨디션 기준 · 가봄</span>
+    <span class="chip">서창동</span><span class="chip drive">🚗 차로 12분</span></header>
+  <div class="b4"><div class="b g"><span class="ic">🚪</span><span class="lb">둘만의 공간</span><b>문 닫히는 2인룸 + 커플존</b></div><div class="b y"><span class="ic">🅿️</span><span class="lb">주차</span><b>건물 지하 3~4시간 무료</b></div><div class="b y"><span class="ic">💳</span><span class="lb">가격 (하이PC 1만원 20시간)</span><b>1만원 약 9시간</b></div><div class="b g"><span class="ic">✨</span><span class="lb">컨디션 (아이센스 대비)</span><b>기준 — 2026.6 오픈 · RTX 5060</b></div></div>
+  <div class="gal g3"><figure onclick="zoom(this)"><img src="img/isens_1.jpg" alt="2인룸 안 — 유리문 닫으면 둘만" loading="lazy"><figcaption>2인룸 안 — 유리문 닫으면 둘만</figcaption></figure><figure onclick="zoom(this)"><img src="img/isens_2.jpg" alt="핑크 커플존 — 2인 소파" loading="lazy"><figcaption>핑크 커플존 — 2인 소파</figcaption></figure><figure class="mapt" onclick="zoom(this)"><img src="img/map_isens.jpg" alt="매장 위치" loading="lazy"><figcaption>📍 매장 위치 (카카오맵)</figcaption></figure></div>
+  <p class="pc">👍 2인룸은 유리문이 닫히고 방마다 에어컨이 따로 있어요</p><p class="cn">👎 주차가 불편했던 곳 · 주말엔 자리가 모자라요</p>
+  <p class="addr">📍 인천 남동구 서창남로 81 투엠프라자 2층 202~203호 (서창동)</p>
+  <div class="ln"><a href="https://map.naver.com/p/entry/place/2031948736" target="_blank" rel="noopener">네이버 지도 · 전화</a><a href="https://place.map.kakao.com/1007415873" target="_blank" rel="noopener">카카오맵</a><a class="go" href="https://map.kakao.com/link/to/%EC%95%84%EC%9D%B4%EC%84%BC%EC%8A%A4%20%EB%B8%94%EB%9E%99%EB%9D%BC%EB%B2%A8%20%EC%84%9C%EC%B0%BD%EC%A0%90,37.426287122941226,126.74804877581774" target="_blank" rel="noopener">🧭 지금 위치에서 길찾기</a></div>
+</article>
+<article class="c" id="yolo">
+  <header><span class="rk">2</span><h3>욜로PC방 인천연수점</h3>
+    <span class="chip">연수동 · 연수역</span><span class="chip drive">🚗 차로 16분</span></header>
+  <div class="b4"><div class="b g"><span class="ic">🚪</span><span class="lb">둘만의 공간</span><b>3인룸을 둘이 사용 · 방값 없음</b></div><div class="b r"><span class="ic">🅿️</span><span class="lb">주차</span><b>공영주차장 1시간 1,200원</b></div><div class="b y"><span class="ic">💳</span><span class="lb">가격 (하이PC 1만원 20시간)</span><b>1만원 9시간 · 유료게임 차감 없음</b></div><div class="b g"><span class="ic">✨</span><span class="lb">컨디션 (아이센스 대비)</span><b>아이센스와 같은 급 — 2026.4 · RTX 5060</b></div></div>
+  <div class="gal g3"><figure onclick="zoom(this)"><img src="img/yolo_1.jpg" alt="둘이 쓰는 3인룸 안" loading="lazy"><figcaption>둘이 쓰는 3인룸 안</figcaption></figure><figure onclick="zoom(this)"><img src="img/yolo_2.jpg" alt="방이 찼을 때 앉는 2인석" loading="lazy"><figcaption>방이 찼을 때 앉는 2인석</figcaption></figure><figure class="mapt" onclick="zoom(this)"><img src="img/map_yolo.jpg" alt="매장 위치" loading="lazy"><figcaption>📍 매장 위치 (카카오맵)</figcaption></figure></div>
+  <p class="pc">👍 문 닫히는 방을 둘이 쓰고, 조명·에어컨을 방에서 따로 켜고 꺼요</p><p class="cn">👎 주말 저녁엔 방이 차서 기다려요(예약 안 됨) · 주차 유료</p>
+  <p class="addr">📍 인천 연수구 용담로118번길 21 2층 (연수동) · 연수역 1번 출구 도보 10분</p>
+  <div class="ln"><a href="https://map.naver.com/p/entry/place/2074485131" target="_blank" rel="noopener">네이버 지도 · 전화</a><a href="https://place.map.kakao.com/120290717" target="_blank" rel="noopener">카카오맵</a><a class="go" href="https://map.kakao.com/link/to/%EC%9A%9C%EB%A1%9CPC%EB%B0%A9%20%EC%9D%B8%EC%B2%9C%EC%97%B0%EC%88%98%EC%A0%90,37.41377812865377,126.67717471513032" target="_blank" rel="noopener">🧭 지금 위치에서 길찾기</a></div>
+</article>
+<article class="c" id="rgg">
+  <header><span class="rk">3</span><h3>RG PC 구월점</h3><span class="al">알지PC방 구월점</span>
+    <span class="chip">구월동 · 길병원 뒤</span><span class="chip drive">🚗 차로 11분</span></header>
+  <div class="b4"><div class="b g"><span class="ic">🚪</span><span class="lb">둘만의 공간</span><b>커플룸 여러 개 (6번까지) — 유리벽 방</b></div><div class="b r"><span class="ic">🅿️</span><span class="lb">주차</span><b>건물 주차 30분 2,000원</b></div><div class="b y"><span class="ic">💳</span><span class="lb">가격 (하이PC 1만원 20시간)</span><b>요금표 미공개 · 좌석 추가요금 없음</b></div><div class="b g"><span class="ic">✨</span><span class="lb">컨디션 (아이센스 대비)</span><b>아이센스와 같은 급 — 2026.7 · 300Hz</b></div></div>
+  <div class="gal g3"><figure onclick="zoom(this)"><img src="img/rgg_1.jpg" alt="커플룸 문" loading="lazy"><figcaption>커플룸 문</figcaption></figure><figure onclick="zoom(this)"><img src="img/rgg_2.jpg" alt="커플룸 안 — 모니터 2대" loading="lazy"><figcaption>커플룸 안 — 모니터 2대</figcaption></figure><figure class="mapt" onclick="zoom(this)"><img src="img/map_rgg.jpg" alt="매장 위치" loading="lazy"><figcaption>📍 매장 위치 (카카오맵)</figcaption></figure></div>
+  <p class="pc">👍 문 닫히는 커플룸, 가장 새 매장</p><p class="cn">👎 벽이 유리라 밖에서 보이고 방 안 에어컨이 없어요 · 주차비 비쌈</p>
+  <p class="addr">📍 인천 남동구 구월남로 198 (구월동) · 석천사거리역 3번 출구 도보 10분</p>
+  <div class="ln"><a href="https://map.naver.com/p/entry/place/2087488617" target="_blank" rel="noopener">네이버 지도 · 전화</a><a href="https://place.map.kakao.com/718349423" target="_blank" rel="noopener">카카오맵</a><a class="go" href="https://map.kakao.com/link/to/RG%20PC%20%EA%B5%AC%EC%9B%94%EC%A0%90,37.4526283248442,126.71144209433437" target="_blank" rel="noopener">🧭 지금 위치에서 길찾기</a></div>
+</article>
+<h2>🛋 커플석 + 주차 무료</h2><p class="h2s">방은 없지만 칸막이 커플석이 있고 주차가 편한 곳이에요.</p><article class="c" id="five">
+  <header><span class="rk">4</span><h3>5스타피씨</h3>
+    <span class="chip">구월동 (선수촌공원로)</span><span class="chip drive">🚗 차로 8분</span></header>
+  <div class="b4"><div class="b y"><span class="ic">🚪</span><span class="lb">둘만의 공간</span><b>Couple Zone 칸막이 커플석</b></div><div class="b g"><span class="ic">🅿️</span><span class="lb">주차</span><b>건물 지하 무료 (최대 4시간)</b></div><div class="b y"><span class="ic">💳</span><span class="lb">가격 (하이PC 1만원 20시간)</span><b>1만원 9시간</b></div><div class="b y"><span class="ic">✨</span><span class="lb">컨디션 (아이센스 대비)</span><b>2025년 PC 전부 교체</b></div></div>
+  <div class="gal g3"><figure onclick="zoom(this)"><img src="img/five_1.jpg" alt="Couple Zone 줄" loading="lazy"><figcaption>Couple Zone 줄</figcaption></figure><figure onclick="zoom(this)"><img src="img/five_2.jpg" alt="둘이 나란히 앉은 커플석" loading="lazy"><figcaption>둘이 나란히 앉은 커플석</figcaption></figure><figure class="mapt" onclick="zoom(this)"><img src="img/map_five.jpg" alt="매장 위치" loading="lazy"><figcaption>📍 매장 위치 (카카오맵)</figcaption></figure></div>
+  <p class="pc">👍 차로 8분, 무료 주차, 커플석이어도 시간 차감 없어요</p><p class="cn">👎 방은 없어요 (안쪽 방은 3인 이상 단체석)</p>
+  <p class="addr">📍 인천 남동구 선수촌공원로 37 중앙프라자 3층 303~305호 (구월동) · 인천터미널역 2번 출구 도보 17분</p>
+  <div class="ln"><a href="https://map.naver.com/p/entry/place/2039555337" target="_blank" rel="noopener">네이버 지도 · 전화</a><a href="https://place.map.kakao.com/1870969686" target="_blank" rel="noopener">카카오맵</a><a class="go" href="https://map.kakao.com/link/to/5%EC%8A%A4%ED%83%80%ED%94%BC%EC%94%A8,37.442158105412226,126.70977823394821" target="_blank" rel="noopener">🧭 지금 위치에서 길찾기</a></div>
+</article>
+<article class="c" id="black">
+  <header><span class="rk">5</span><h3>블랙PC카페</h3>
+    <span class="chip">논현동 · 인천논현역</span><span class="chip drive">🚗 차로 13분</span></header>
+  <div class="b4"><div class="b y"><span class="ic">🚪</span><span class="lb">둘만의 공간</span><b>칸막이 커플석 12개 · 예약석</b></div><div class="b g"><span class="ic">🅿️</span><span class="lb">주차</span><b>게임한 시간만큼 무료 (지하)</b></div><div class="b y"><span class="ic">💳</span><span class="lb">가격 (하이PC 1만원 20시간)</span><b>1만원 9시간</b></div><div class="b y"><span class="ic">✨</span><span class="lb">컨디션 (아이센스 대비)</span><b>비슷 — 2025.8 오픈 · 커플석 모니터는 한 단계 아래</b></div></div>
+  <div class="gal g3"><figure onclick="zoom(this)"><img src="img/black_1.jpg" alt="옆·뒤가 막힌 커플석" loading="lazy"><figcaption>옆·뒤가 막힌 커플석</figcaption></figure><figure onclick="zoom(this)"><img src="img/black_2.jpg" alt="커플존 다른 자리" loading="lazy"><figcaption>커플존 다른 자리</figcaption></figure><figure class="mapt" onclick="zoom(this)"><img src="img/map_black.jpg" alt="매장 위치" loading="lazy"><figcaption>📍 매장 위치 (카카오맵)</figcaption></figure></div>
+  <p class="pc">👍 주차 시간 제한이 없고, 커플석이 옆·뒤까지 막혀 있어요</p><p class="cn">👎 방은 3인부터 · 흡연실 옆은 담배냄새 후기</p>
+  <p class="addr">📍 인천 남동구 논고개로123번길 17 (논현동) · 인천논현역 4번 출구 도보 6분</p>
+  <div class="ln"><a href="https://map.naver.com/p/entry/place/2074673532" target="_blank" rel="noopener">네이버 지도 · 전화</a><a href="https://place.map.kakao.com/87112701" target="_blank" rel="noopener">카카오맵</a><a class="go" href="https://map.kakao.com/link/to/%EB%B8%94%EB%9E%99PC%EC%B9%B4%ED%8E%98,37.401683988197455,126.72308528888865" target="_blank" rel="noopener">🧭 지금 위치에서 길찾기</a></div>
+</article>
+<article class="c" id="nol2">
+  <header><span class="rk">6</span><h3>놀이터PC방 2호점</h3>
+    <span class="chip">만수동 · 모래내시장역</span><span class="chip drive">🚗 차로 13분</span></header>
+  <div class="b4"><div class="b y"><span class="ic">🚪</span><span class="lb">둘만의 공간</span><b>창가 칸막이 커플석 · 예약석</b></div><div class="b g"><span class="ic">🅿️</span><span class="lb">주차</span><b>무료 · 편하다는 후기</b></div><div class="b y"><span class="ic">💳</span><span class="lb">가격 (하이PC 1만원 20시간)</span><b>1만원 9시간 · 유료게임 차감 없음</b></div><div class="b g"><span class="ic">✨</span><span class="lb">컨디션 (아이센스 대비)</span><b>비슷 — 2025 리모델링 · RTX 5060</b></div></div>
+  <div class="gal g3"><figure onclick="zoom(this)"><img src="img/nol2_1.jpg" alt="창가 커플석" loading="lazy"><figcaption>창가 커플석</figcaption></figure><figure onclick="zoom(this)"><img src="img/nol2_2.jpg" alt="커플존 칸막이 자리" loading="lazy"><figcaption>커플존 칸막이 자리</figcaption></figure><figure class="mapt" onclick="zoom(this)"><img src="img/map_nol2.jpg" alt="매장 위치" loading="lazy"><figcaption>📍 매장 위치 (카카오맵)</figcaption></figure></div>
+  <p class="pc">👍 주차가 편하고, 리모델링해서 장비가 새것이에요</p><p class="cn">👎 방은 4인부터 · 여름 더위·불친절 후기(2026)</p>
+  <p class="addr">📍 인천 남동구 구월로 301 2층 (만수동) · 모래내시장역 2번 출구 도보 6분</p>
+  <div class="ln"><a href="https://map.naver.com/p/entry/place/1796829992" target="_blank" rel="noopener">네이버 지도 · 전화</a><a href="https://place.map.kakao.com/203839975" target="_blank" rel="noopener">카카오맵</a><a class="go" href="https://map.kakao.com/link/to/%EB%86%80%EC%9D%B4%ED%84%B0PC%EB%B0%A9%202%ED%98%B8%EC%A0%90,37.45583405519742,126.72424655532296" target="_blank" rel="noopener">🧭 지금 위치에서 길찾기</a></div>
+</article>
+<article class="c" id="rgm">
+  <header><span class="rk">7</span><h3>알지PC방 만수점</h3>
+    <span class="chip">만수동 · 만수역</span><span class="chip drive">🚗 차로 12분</span></header>
+  <div class="b4"><div class="b y"><span class="ic">🚪</span><span class="lb">둘만의 공간</span><b>커플석 부스 — 양옆 막힘</b></div><div class="b y"><span class="ic">🅿️</span><span class="lb">주차</span><b>상가 앞 길가 무료 · 건물 뒤 시간당 400원</b></div><div class="b g"><span class="ic">💳</span><span class="lb">가격 (하이PC 1만원 20시간)</span><b>1만원 10시간 30분 · 차감 없음</b></div><div class="b g"><span class="ic">✨</span><span class="lb">컨디션 (아이센스 대비)</span><b>비슷 — 2026.2 오픈 · RTX 5060</b></div></div>
+  <div class="gal g3"><figure onclick="zoom(this)"><img src="img/rgm_1.jpg" alt="커플석 부스" loading="lazy"><figcaption>커플석 부스</figcaption></figure><figure onclick="zoom(this)"><img src="img/rgm_2.jpg" alt="유리벽 팀룸 줄" loading="lazy"><figcaption>유리벽 팀룸 줄</figcaption></figure><figure class="mapt" onclick="zoom(this)"><img src="img/map_rgm.jpg" alt="매장 위치" loading="lazy"><figcaption>📍 매장 위치 (카카오맵)</figcaption></figure></div>
+  <p class="pc">👍 새로 연 큰 매장(151석)이고, 요금이 아이센스보다 조금 넉넉해요</p><p class="cn">👎 커플석 뒤가 트여 있어요 · 길가 주차는 자리 운</p>
+  <p class="addr">📍 인천 남동구 백범로 132 지하1층 (만수동) · 만수역 2번 출구 도보 3분</p>
+  <div class="ln"><a href="https://place.map.kakao.com/1325659979" target="_blank" rel="noopener">카카오맵</a><a class="go" href="https://map.kakao.com/link/to/%EC%95%8C%EC%A7%80PC%EB%B0%A9%20%EB%A7%8C%EC%88%98%EC%A0%90,37.455637268797076,126.7327149202209" target="_blank" rel="noopener">🧭 지금 위치에서 길찾기</a></div>
+</article>
+<article class="c" id="theone">
+  <header><span class="rk">8</span><h3>더원PC</h3>
+    <span class="chip">논현동 · 인천논현역</span><span class="chip drive">🚗 차로 13분</span></header>
+  <div class="b4"><div class="b y"><span class="ic">🚪</span><span class="lb">둘만의 공간</span><b>유리 칸막이 커플석</b></div><div class="b g"><span class="ic">🅿️</span><span class="lb">주차</span><b>게임한 시간만큼 무료 · 넓음</b></div><div class="b y"><span class="ic">💳</span><span class="lb">가격 (하이PC 1만원 20시간)</span><b>1만원 10시간 (2023~24 사진)</b></div><div class="b r"><span class="ic">✨</span><span class="lb">컨디션 (아이센스 대비)</span><b>낮음 — 2070·60Hz, 렉 후기</b></div></div>
+  <div class="gal g3"><figure onclick="zoom(this)"><img src="img/theone_1.jpg" alt="커플석 표지판" loading="lazy"><figcaption>커플석 표지판</figcaption></figure><figure onclick="zoom(this)"><img src="img/theone_2.jpg" alt="커플석 안 — 모니터 2대" loading="lazy"><figcaption>커플석 안 — 모니터 2대</figcaption></figure><figure class="mapt" onclick="zoom(this)"><img src="img/map_theone.jpg" alt="매장 위치" loading="lazy"><figcaption>📍 매장 위치 (카카오맵)</figcaption></figure></div>
+  <p class="pc">👍 주차 걱정이 없어요 (블랙PC카페와 같은 건물)</p><p class="cn">👎 장비가 오래됐어요 — 같은 건물이면 블랙이 더 나아요</p>
+  <p class="addr">📍 인천 남동구 논고개로123번길 17 8층 811,812호 (논현동) · 인천논현역 4번 출구 도보 6분</p>
+  <div class="ln"><a href="https://map.naver.com/p/entry/place/38455529" target="_blank" rel="noopener">네이버 지도 · 전화</a><a href="https://place.map.kakao.com/462715680" target="_blank" rel="noopener">카카오맵</a><a class="go" href="https://map.kakao.com/link/to/%EB%8D%94%EC%9B%90PC,37.401683988197455,126.72308528888865" target="_blank" rel="noopener">🧭 지금 위치에서 길찾기</a></div>
+</article>
+<h2>💸 싸게 가는 곳</h2><p class="h2s">하이PC처럼 가격이 장점인 곳이에요.</p><article class="c base" id="hipc">
+  <header><span class="rk">9</span><h3>하이PC 구월 3호점</h3><span class="chip tagc">가격 기준 · 가봄</span>
+    <span class="chip">구월동 · 로데오 (1·2·3호점 한 아이디)</span><span class="chip drive">🚗 차로 10분</span></header>
+  <div class="b4"><div class="b y"><span class="ic">🚪</span><span class="lb">둘만의 공간</span><b>2인 플스석 (65인치 TV) · 칸막이</b></div><div class="b r"><span class="ic">🅿️</span><span class="lb">주차</span><b>주차 정보 적음 (2호점 건물 30분 무료)</b></div><div class="b g"><span class="ic">💳</span><span class="lb">가격 (하이PC 1만원 20시간)</span><b>기준 — 1만원 20시간 (이벤트 30)</b></div><div class="b r"><span class="ic">✨</span><span class="lb">컨디션 (아이센스 대비)</span><b>아이센스보다 낮음 — RTX 3070</b></div></div>
+  <div class="gal g3"><figure onclick="zoom(this)"><img src="img/hipc_1.jpg" alt="2인 플스석" loading="lazy"><figcaption>2인 플스석</figcaption></figure><figure onclick="zoom(this)"><img src="img/hipc_2.jpg" alt="플스석 옆모습 — 뒤는 트임" loading="lazy"><figcaption>플스석 옆모습 — 뒤는 트임</figcaption></figure><figure class="mapt" onclick="zoom(this)"><img src="img/map_hipc.jpg" alt="매장 위치" loading="lazy"><figcaption>📍 매장 위치 (카카오맵)</figcaption></figure></div>
+  <p class="pc">👍 지금 3천원에 5시간, 둘이 65인치 TV로 플스도 할 수 있어요</p><p class="cn">👎 방은 없어요 · 여름엔 덥다는 후기</p>
+  <p class="addr">📍 인천 남동구 인하로489번길 28 로데오프라자 7층 1호 (구월동) · 예술회관역 6번 출구 도보 6분</p>
+  <div class="ln"><a href="https://map.naver.com/p/entry/place/1268695326" target="_blank" rel="noopener">네이버 지도 · 전화</a><a href="https://place.map.kakao.com/295132909" target="_blank" rel="noopener">카카오맵</a><a class="go" href="https://map.kakao.com/link/to/%ED%95%98%EC%9D%B4PC%20%EA%B5%AC%EC%9B%94%203%ED%98%B8%EC%A0%90,37.44485492888341,126.70149576534507" target="_blank" rel="noopener">🧭 지금 위치에서 길찾기</a></div>
+</article>
+<article class="c" id="geek">
+  <header><span class="rk">10</span><h3>긱스타PC방 구월동점</h3>
+    <span class="chip">구월동 · 로데오</span><span class="chip drive">🚗 차로 10분</span></header>
+  <div class="b4"><div class="b y"><span class="ic">🚪</span><span class="lb">둘만의 공간</span><b>커플석 — 벽 없이 나란히</b></div><div class="b r"><span class="ic">🅿️</span><span class="lb">주차</span><b>전용 주차 없음 (근처 공영 30분 400원)</b></div><div class="b g"><span class="ic">💳</span><span class="lb">가격 (하이PC 1만원 20시간)</span><b>지금 이벤트 1만원 24시간</b></div><div class="b y"><span class="ic">✨</span><span class="lb">컨디션 (아이센스 대비)</span><b>조금 낮음 — 2022 오픈</b></div></div>
+  <div class="gal g3"><figure onclick="zoom(this)"><img src="img/geek_2.jpg" alt="나란히 앉는 두 자리" loading="lazy"><figcaption>나란히 앉는 두 자리</figcaption></figure><figure onclick="zoom(this)"><img src="img/geek_1.jpg" alt="기둥 뒤 커플석 (2023 사진)" loading="lazy"><figcaption>기둥 뒤 커플석 (2023 사진)</figcaption></figure><figure class="mapt" onclick="zoom(this)"><img src="img/map_geek.jpg" alt="매장 위치" loading="lazy"><figcaption>📍 매장 위치 (카카오맵)</figcaption></figure></div>
+  <p class="pc">👍 하이PC 옆 건물이고, 이벤트로 하이PC만큼 싸요</p><p class="cn">👎 이벤트 시간은 한 달 뒤 자동 삭제 · 주차 불편</p>
+  <p class="addr">📍 인천 남동구 인하로 497-23 반도프라자 7층 701호 (구월동) · 예술회관역 6번 출구 도보 7분</p>
+  <div class="ln"><a href="https://map.naver.com/p/entry/place/1526170478" target="_blank" rel="noopener">네이버 지도 · 전화</a><a href="https://place.map.kakao.com/720809158" target="_blank" rel="noopener">카카오맵</a><a class="go" href="https://map.kakao.com/link/to/%EA%B8%B1%EC%8A%A4%ED%83%80PC%EB%B0%A9%20%EA%B5%AC%EC%9B%94%EB%8F%99%EC%A0%90,37.444538312428904,126.70170947390923" target="_blank" rel="noopener">🧭 지금 위치에서 길찾기</a></div>
+</article>
+<article class="c" id="maison">
+  <header><span class="rk">11</span><h3>메종드PC</h3>
+    <span class="chip">남촌동</span><span class="chip drive">🚗 차로 3분</span></header>
+  <div class="b4"><div class="b r"><span class="ic">🚪</span><span class="lb">둘만의 공간</span><b>커플석 없음 (일반석)</b></div><div class="b g"><span class="ic">🅿️</span><span class="lb">주차</span><b>걸어서 갈 거리</b></div><div class="b g"><span class="ic">💳</span><span class="lb">가격 (하이PC 1만원 20시간)</span><b>1만원 13시간 (가게 등록 가격)</b></div><div class="b r"><span class="ic">✨</span><span class="lb">컨디션 (아이센스 대비)</span><b>낮음 — 2022 · 청결 불만</b></div></div>
+  <div class="gal g3"><figure onclick="zoom(this)"><img src="img/maison_1.jpg" alt="매장 안 일반석" loading="lazy"><figcaption>매장 안 일반석</figcaption></figure><figure onclick="zoom(this)"><img src="img/maison_2.jpg" alt="줄지어 놓인 자리" loading="lazy"><figcaption>줄지어 놓인 자리</figcaption></figure><figure class="mapt" onclick="zoom(this)"><img src="img/map_maison.jpg" alt="매장 위치" loading="lazy"><figcaption>📍 매장 위치 (카카오맵)</figcaption></figure></div>
+  <p class="pc">👍 차로 3분 거리, 리스트에서 가장 싸요</p><p class="cn">👎 커플석이 없고, 키보드·책상이 더럽다는 후기(2025)</p>
+  <p class="addr">📍 인천 남동구 남촌동로25번길 11 2층 (남촌동)</p>
+  <div class="ln"><a href="https://map.naver.com/p/entry/place/1997571971" target="_blank" rel="noopener">네이버 지도 · 전화</a><a href="https://place.map.kakao.com/752363163" target="_blank" rel="noopener">카카오맵</a><a class="go" href="https://map.kakao.com/link/to/%EB%A9%94%EC%A2%85%EB%93%9CPC,37.431598925001616,126.71599709453683" target="_blank" rel="noopener">🧭 지금 위치에서 길찾기</a></div>
+</article>
+<h2>🅿️ 주차만 좋은 곳</h2><p class="h2s">둘만 앉는 자리는 없지만 주차가 아주 편한 곳이에요.</p><article class="c" id="buff">
+  <header><span class="rk">12</span><h3>버프PC</h3>
+    <span class="chip">서창동 · 아이센스 근처</span><span class="chip drive">🚗 차로 12분</span></header>
+  <div class="b4"><div class="b r"><span class="ic">🚪</span><span class="lb">둘만의 공간</span><b>커플석 없음 (나란히 앉기만)</b></div><div class="b g"><span class="ic">🅿️</span><span class="lb">주차</span><b>지상 주차 4시간 무료</b></div><div class="b g"><span class="ic">💳</span><span class="lb">가격 (하이PC 1만원 20시간)</span><b>가격 평 1등 (손님 투표 35%)</b></div><div class="b y"><span class="ic">✨</span><span class="lb">컨디션 (아이센스 대비)</span><b>조금 낮음 — RTX 4060 · 180Hz</b></div></div>
+  <div class="gal g2"><figure onclick="zoom(this)"><img src="img/buff_2.jpg" alt="유리 칸막이 개인석 줄" loading="lazy"><figcaption>유리 칸막이 개인석 줄</figcaption></figure><figure class="mapt" onclick="zoom(this)"><img src="img/map_buff.jpg" alt="매장 위치" loading="lazy"><figcaption>📍 매장 위치 (카카오맵)</figcaption></figure></div>
+  <p class="pc">👍 아이센스와 같은 동네인데 주차가 지상이라 편해요</p><p class="cn">👎 둘만 앉는 자리가 없어요</p>
+  <p class="addr">📍 인천 남동구 서창남순환로215번길 20 2층 202~203호 (서창동)</p>
+  <div class="ln"><a href="https://map.naver.com/p/entry/place/1642013644" target="_blank" rel="noopener">네이버 지도 · 전화</a><a href="https://place.map.kakao.com/383534817" target="_blank" rel="noopener">카카오맵</a><a class="go" href="https://map.kakao.com/link/to/%EB%B2%84%ED%94%84PC,37.425306738749846,126.74801138934991" target="_blank" rel="noopener">🧭 지금 위치에서 길찾기</a></div>
+</article>
+<article class="c" id="field">
+  <header><span class="rk">13</span><h3>필드스타 PC카페</h3>
+    <span class="chip">연수동 · 연수역</span><span class="chip drive">🚗 차로 15분</span></header>
+  <div class="b4"><div class="b r"><span class="ic">🚪</span><span class="lb">둘만의 공간</span><b>커플석 없음</b></div><div class="b g"><span class="ic">🅿️</span><span class="lb">주차</span><b>있는 동안 시간 제한 없이 무료</b></div><div class="b y"><span class="ic">💳</span><span class="lb">가격 (하이PC 1만원 20시간)</span><b>회원 가입하면 훨씬 이득 (후기)</b></div><div class="b r"><span class="ic">✨</span><span class="lb">컨디션 (아이센스 대비)</span><b>많이 낮음 — 대부분 60Hz 후기</b></div></div>
+  <div class="gal g3"><figure onclick="zoom(this)"><img src="img/field_1.jpg" alt="일반석 줄" loading="lazy"><figcaption>일반석 줄</figcaption></figure><figure onclick="zoom(this)"><img src="img/field_2.jpg" alt="유리 칸막이 일반석" loading="lazy"><figcaption>유리 칸막이 일반석</figcaption></figure><figure class="mapt" onclick="zoom(this)"><img src="img/map_field.jpg" alt="매장 위치" loading="lazy"><figcaption>📍 매장 위치 (카카오맵)</figcaption></figure></div>
+  <p class="pc">👍 주차 걱정이 전혀 없어요 (2026.3 리모델링)</p><p class="cn">👎 장비가 오래됐고 둘만 앉는 자리가 없어요</p>
+  <p class="addr">📍 인천 연수구 벚꽃로 114 204호 (연수동) · 연수역 1번 출구 도보 3분</p>
+  <div class="ln"><a href="https://map.naver.com/p/entry/place/322442242" target="_blank" rel="noopener">네이버 지도 · 전화</a><a href="https://place.map.kakao.com/535676329" target="_blank" rel="noopener">카카오맵</a><a class="go" href="https://map.kakao.com/link/to/%ED%95%84%EB%93%9C%EC%8A%A4%ED%83%80%20PC%EC%B9%B4%ED%8E%98,37.41708915613655,126.67809133024645" target="_blank" rel="noopener">🧭 지금 위치에서 길찾기</a></div>
+</article>
+<h2>리스트에서 뺀 곳</h2>
+<div class="ex"><ul><li><b>NOBLE PC CAFE (만수동)</b> — 양옆 막힌 커플석과 음식은 좋지만, 요금·주차·전화번호가 모두 공개돼 있지 않아요</li><li><b>알지PC방 선학점</b> — 차로 7분으로 가깝지만 커플석에 추가요금이 있고, 주차는 평일 저녁·주말 길가뿐이에요</li><li><b>선학동피찌방</b> — 1만원 10시간 30분으로 싸지만 커플석이 없고 지하 주차가 좁아요</li><li><b>제로백 피씨 연수역점</b> — 장비는 좋지만(RTX 5070) 주차가 1시간 3,600원이에요</li><li><b>베스트피씨카페 연수점</b> — 장비 최고(RTX 5080)지만 주차장이 없고, 둘이 팀룸을 쓸 수 있는지 말이 엇갈려요</li><li><b>욜로PC방 인천서창점</b> — 팀룸이 정원을 꼭 채워야 해서(3인룸은 3명) 둘이서는 못 써요</li><li><b>듀오PC방 인천서창점</b> — 커플석이 없고 냉난방을 안 튼다는 불만이 여러 번 있어요</li><li><b>레벨업 피시방 연수점</b> — 최근(2026.9~10) 별점 1점 후기가 몰려 있어요</li><li><b>잘생겼다PC몰</b> — 2023년에 폐업했어요</li><li><b>펄스PC 구월점</b> — 가봤는데 비싸기만 하고 별로였어요</li></ul></div>
+<footer>2026년 11월 확인 · 차 시간은 카카오맵 기준 · 요금·이벤트·주차 조건은 바뀔 수 있어요</footer>
+</div>
+<div id="zoom" onclick="this.style.display='none'"><div><img alt=""><p></p></div></div>
+<script>function zoom(f){var z=document.getElementById('zoom');z.querySelector('img').src=f.querySelector('img').src;z.querySelector('p').textContent=f.querySelector('figcaption').textContent;z.style.display='flex';}</script>
+</body></html>
