@@ -7,7 +7,7 @@
 <style>
   :root{
     --bg:#faf8f3; --card:#ffffff; --ink:#2f3a33; --sub:#6b7a70;
-    --line:#e4e0d6; --clover:#4a7c59; --clover-soft:#eef4ef;
+    --line:#e4e0d6; --clover:#4f9a6a; --clover-soft:#eef4ef;
     --ok:#2f7d4f; --ok-bg:#e8f4ec;
     --warn:#a8710f; --warn-bg:#fdf3e0;
     --bad:#a8402f; --bad-bg:#fbeceb;
@@ -278,24 +278,24 @@ img,svg{max-width:100%}
 /* 빌딩 띠 */
 .strip{display:flex;align-items:stretch;gap:0;margin:12px 0 6px;flex-wrap:wrap}
 .sb{flex:1 1 168px;min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 11px}
-.sb.hot{border-color:#8fc0a3;background:#eaf3ec;border-width:2px}
+.sb.hot{border-color:#9cc5ad;background:#e7f1ea;border-width:2px}
 .sn{font-size:13.5px;font-weight:800;color:var(--clover)}
-.sb.hot .sn{color:#2e6440}
+.sb.hot .sn{color:#3f7d57}
 .si{font-size:10.5px;color:var(--sub);margin-bottom:5px}
 .sl{font-size:12.5px;line-height:1.5}
 .sl b{color:var(--clover)}
 .sl.mut{color:var(--sub);font-size:11.5px}
 .sg{flex:0 0 58px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--sub)}
 .sg span{font-weight:600;font-size:10px;opacity:.8}
-.sg::before{content:'→';font-size:15px;color:#b9c4bb;margin-bottom:1px}
+.sg::before{content:'→';font-size:15px;color:#cfd9d1;margin-bottom:1px}
 /* 매장 */
 .shop{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:11px 12px;margin-bottom:6px}
 .shop .hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .pin{width:25px;height:25px;border-radius:50%;background:var(--clover);color:#fff;display:grid;place-items:center;font-size:12.5px;font-weight:800;flex:0 0 auto}
-.pin.b{background:#3d6ea8}.pin.g{background:#b57c22}.pin.m{background:#8b958f}
+.pin.b{background:#3d6ea8}.pin.g{background:#2f7d4f}.pin.m{background:#8b958f}
 .shop h3{margin:0;font-size:14.5px;font-weight:700;flex:1;min-width:0}
 .op{font-size:11px;font-weight:800;padding:2px 8px;border-radius:6px}
-.op.y{background:#e9f1eb;color:var(--clover)}.op.n{background:#eef0ed;color:var(--sub)}.op.s{background:#fbf1dc;color:#9e6e17}
+.op.y{background:#e7f1ea;color:var(--clover)}.op.n{background:#eef0ed;color:var(--sub)}.op.s{background:#dff0e5;color:#2f7d4f}
 .shop .ps{font-size:12px;color:var(--sub);margin-top:5px}
 .shop .nt{font-size:12.5px;margin-top:3px}
 .shop a.mp{display:inline-block;margin-top:8px;font-size:13px;font-weight:700;text-decoration:none;background:var(--clover);color:#fff;border-radius:9px;padding:8px 16px}
@@ -321,7 +321,7 @@ img,svg{max-width:100%}
 .skd{margin:10px 0 0}
 .skd>summary{cursor:pointer;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;padding:6px 0;min-height:40px}
 .skd>summary small{font-weight:600;color:var(--sub);font-size:12px}
-.tg.h{background:#fbf1dc;color:#9e6e17}
+.tg.h{background:#dff0e5;color:#2f7d4f}
 .skd>summary::-webkit-details-marker{display:none}
 .skd>summary::before{content:'▸';color:var(--sub);font-size:12px;width:10px}
 .skd[open]>summary::before{content:'▾'}
@@ -354,12 +354,12 @@ img,svg{max-width:100%}
 .lsub{font-size:11.5px;color:var(--sub);margin-top:2px;font-variant-numeric:tabular-nums}
 .lpv{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;font-size:15px;align-self:center;line-height:1.2}
 .lpv small{display:block;font-size:9.5px;font-weight:600;opacity:.72;margin-top:1px}
-.lpv.s{color:#9e6e17}.lpv.p{color:#a63a34}
+.lpv.s{color:#2f7d4f}.lpv.p{color:#c2564b}
 .vd{display:inline-block;font-size:11px;font-weight:800;padding:1px 7px;border-radius:5px;margin-left:5px}
-.vd.a{background:#fbf1dc;color:#9e6e17}.vd.b{background:#e9f1eb;color:var(--clover)}
-.vd.c{background:#eef0ed;color:var(--sub)}.vd.d{background:#faeae8;color:#a63a34}
-.ltier{display:inline-block;font-size:10px;font-weight:800;padding:1px 5px;border-radius:4px;margin-right:4px;background:#eef1ee;color:var(--sub)}
-.ltier.S{background:var(--clover);color:#fff}.ltier.A{background:#e9f1eb;color:var(--clover)}
+.vd.a{background:#dff0e5;color:#2f7d4f}.vd.b{background:#e7f1ea;color:var(--clover)}
+.vd.c{background:#eef0ed;color:var(--sub)}.vd.d{background:#f7e7e4;color:#c2564b}
+.ltier{display:inline-block;font-size:10px;font-weight:800;padding:1px 5px;border-radius:4px;margin-right:4px;background:#e3e9e0;color:var(--sub)}
+.ltier.S{background:var(--clover);color:#fff}.ltier.A{background:#e7f1ea;color:var(--clover)}
 .lmore{border-top:1px solid var(--line);padding:11px 12px;display:none;gap:11px}
 .lrow.open .lmore{display:flex}
 .lmore img{width:96px;height:96px;object-fit:cover;border-radius:9px;border:1px solid var(--line);flex:0 0 auto}
@@ -385,8 +385,36 @@ img,svg{max-width:100%}
   .sg::before{content:'↓';margin:0}
 }
 @media print{.tabbar{display:none}.pane[hidden]{display:block!important}}
+
+/* ===== DESIGN.md 「명진 도구」 기준 (261117) ===== */
+:root{
+  --bg:#f0f6ef !important; --card:#ffffff !important;
+  --ink:#26302a !important; --sub:#6b7a70 !important;
+  --line:#e3e9e0 !important; --clover:#4f9a6a !important; --clover-soft:#e7f1ea !important;
+}
+body{
+  background:#f0f6ef !important;
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(79,154,106,.035) 0 11px, transparent 12px),
+    radial-gradient(circle at 78% 42%, rgba(79,154,106,.035) 0 14px, transparent 15px),
+    radial-gradient(circle at 36% 74%, rgba(79,154,106,.03) 0 9px, transparent 10px),
+    radial-gradient(circle at 90% 88%, rgba(79,154,106,.03) 0 12px, transparent 13px);
+  background-attachment:fixed;
+}
+/* 여백 클로버 — 로고 옆 1개 + 몇 개 은은하게 (DESIGN.md 1장) */
+.clv-field{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.clv-field svg{position:absolute;color:#4f9a6a;opacity:.05}
+.wrap,.tabbar{position:relative;z-index:1}
+/* 버튼·카드 모서리·그림자 기준값 */
+.tb{border-radius:14px !important}
+.sbt,.shop a.mp,.lmore a{border-radius:14px !important}
+.lrow,.shop,.say,.sb{border-radius:16px !important;
+  box-shadow:0 5px 13px rgba(90,70,50,.14) !important}
+.vd,.ltier{border-radius:999px !important}
+.pricetool input{border-radius:14px !important}
 </style>
 </head><body>
+<div class="clv-field" aria-hidden="true"><svg style="top:84px;right:-6px;width:92px" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c0-3 2-5 4-5s3 1.5 3 3-1.5 3-3 3zM12 12c3 0 5 2 5 4s-1.5 3-3 3-3-1.5-3-3zM12 12c0 3-2 5-4 5s-3-1.5-3-3 1.5-3 3-3zM12 12c-3 0-5-2-5-4s1.5-3 3-3 3 1.5 3 3z"/></svg><svg style="top:38%;left:-10px;width:112px" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c0-3 2-5 4-5s3 1.5 3 3-1.5 3-3 3zM12 12c3 0 5 2 5 4s-1.5 3-3 3-3-1.5-3-3zM12 12c0 3-2 5-4 5s-3-1.5-3-3 1.5-3 3-3zM12 12c-3 0-5-2-5-4s1.5-3 3-3 3 1.5 3 3z"/></svg><svg style="bottom:16%;right:14px;width:58px" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c0-3 2-5 4-5s3 1.5 3 3-1.5 3-3 3zM12 12c3 0 5 2 5 4s-1.5 3-3 3-3-1.5-3-3zM12 12c0 3-2 5-4 5s-3-1.5-3-3 1.5-3 3-3zM12 12c-3 0-5-2-5-4s1.5-3 3-3 3 1.5 3 3z"/></svg><svg style="bottom:6%;left:26px;width:44px" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c0-3 2-5 4-5s3 1.5 3 3-1.5 3-3 3zM12 12c3 0 5 2 5 4s-1.5 3-3 3-3-1.5-3-3zM12 12c0 3-2 5-4 5s-3-1.5-3-3 1.5-3 3-3zM12 12c-3 0-5-2-5-4s1.5-3 3-3 3 1.5 3 3z"/></svg></div>
 <div class="wrap">
   <header class="hdr">
     <div class="eyebrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12c0-3 2-5 4-5s3 1.5 3 3-1.5 3-3 3zM12 12c3 0 5 2 5 4s-1.5 3-3 3-3-1.5-3-3zM12 12c0 3-2 5-4 5s-3-1.5-3-3 1.5-3 3-3zM12 12c-3 0-5-2-5-4s1.5-3 3-3 3 1.5 3 3z"/></svg> maydly · 조사-009</div>
