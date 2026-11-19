@@ -510,6 +510,19 @@ export function calStats(evs, now = new Date()) {
   };
 }
 
+/** 최근 n개월 캘린더 예상 수익 — 달마다 calStats 와 같은 계산(관리자 대시보드 달별 수익과 같은 값).
+ *  돈 › 수입·지출 그래프의 «예상 수입(캘린더)» 막대. 가계부(입금 확인)와 따로 본다.
+ *  pending = 금액 미입력 + 2번 구매 금액·워터마크 확인 필요(예상에서 빠진 건수). */
+export function calMonthly(evs, n = 6, mk = monthPrefix()) {
+  const out = [];
+  for (let i = n - 1; i >= 0; i--) {
+    const k = addMonthKey(mk, -i), ym = k.split("-").map(Number);
+    const s = calStats(evs, new Date(ym[0], ym[1] - 1, 15, 12));   // 그 달 한가운데 — 달 합계는 날짜와 무관
+    out.push({ mk: k, month: ym[1], sum: s.monthSum, n: s.monthN, pending: s.monthNoAmt });
+  }
+  return out;
+}
+
 // 사람 묶기 기준 (admin.html:1739 — 띄어쓰기·괄호·끝의 '님' 을 뗀다)
 export const personKey = (s) => String(s || "").replace(/\s+/g, "").replace(/\(.*?\)/g, "").replace(/(님)+$/, "");
 
