@@ -424,7 +424,7 @@ a.chip:hover{background:#eef4ec}
 .lctip.lt-tight .lt-h{font-size:12.5px}
 .lctip.lt-tight .lt-r{gap:5px}
 .lctip.lt-tight .lt-r b{padding-left:8px}
-.lctip.lt-tight .lt-f{font-size:10.5px}
+.lctip.lt-tight .lt-f{font-size:10.5px;max-width:170px}
 .lctip.lt-tight .lt-y{padding:0 5px}
 .lctip.lt-tight .lt-f.lt-nd{max-width:150px}
 .lctip .lt-f.lt-nd{margin-top:2px;padding-top:0;border-top:0}   /* 폰 크기 규칙(.lt-sm .lt-f)에 밀리지 않게 */
@@ -2123,7 +2123,7 @@ html.ovopen,html.ovopen body{overflow:hidden}
     <iframe id="tilesFrame" class="tilesframe" title="타일 독바" data-src="../?dock&amp;embed=home"></iframe>
     </section>
 
-    <div class="foot" title="홈 v2.9.2"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
+    <div class="foot" title="홈 v2.9.3"><svg class="footclv" viewBox="0 0 40 40" aria-hidden="true"><use href="#clvd"/></svg>maydly · 명진 · 수빈 전용</div>
 
   </main>
 </div>
@@ -2640,7 +2640,9 @@ function paintLoggedOut() {
 
 // ══ 수입·지출 선그래프 (최근 6개월) ══
 // led: undefined = 로그인 전, null = 불러오기 실패, 배열 = 가계부
-function paintLineChart(led, evs) {   // evs: 캘린더 일정(있으면 달마다 예상 수입 막대)
+function paintLineChart(led, evs) {
+  window.__lcArgs = [led, evs];   // (261120) 화면 폭이 900px 경계를 넘으면(회전·창 크기) 같은 자료로 다시 그린다 — 폰 글자 크기에 맞춰 «예상» 글자 자리를 다시 잡게
+  if (window.matchMedia && !window.__lcMq) { window.__lcMq = 1; const mq = matchMedia('(max-width:900px)'), fn = () => { const a = window.__lcArgs; if (a) try { paintLineChart(a[0], a[1]); } catch (_) {} }; if (mq.addEventListener) mq.addEventListener('change', fn); else if (mq.addListener) mq.addListener(fn); }   // evs: 캘린더 일정(있으면 달마다 예상 수입 막대)
   const svg = $('lc'); if (!svg) return;
   const X = (i) => 76 + i * 108;
   const now = new Date();
@@ -2651,7 +2653,12 @@ function paintLineChart(led, evs) {   // evs: 캘린더 일정(있으면 달마�
   // 캘린더 예상 수입(관리자 대시보드 달별 수익과 같은 계산) — 가계부(입금 확인)가 아직 없는 달에도 보인다
   const exp = Array.isArray(evs) ? D.calMonthly(evs, 6, mk) : null;
   months.forEach((m, i) => { const x = exp && exp[i]; m.exp = x ? x.sum : null; m.expPend = x ? x.pending : 0; m.expN = x ? x.n : 0; });
-  const lastLed = Array.isArray(led) && led.length ? led.reduce((a, t) => (t.date > a ? t.date : a), '') : '';
+  // 가계부 마지막 날(오늘 뒤로 미리 적어 둔 줄은 빼고) — «가계부는 M/D까지»와 달 중간에 끊긴 달 표시에 쓴다 (261120)
+  const todayS = D.todayISO();
+  const lastLed = Array.isArray(led) && led.length ? led.reduce((a, t) => (t.date <= todayS && t.date > a ? t.date : a), '') : '';
+  const lastMk = lastLed.slice(0, 7), lastDay = Number(lastLed.slice(8, 10)) || 0;
+  const ledMD = (ds) => `${ds.slice(0, 4) !== mk.slice(0, 4) ? ds.slice(0, 4) + '/' : ''}${Number(ds.slice(5, 7))}/${Number(ds.slice(8, 10))}`;
+  const inSum = (list) => list.reduce((a, t) => a + (t.type === 'in' && !D.isMove(t) ? (Number(t.amt) || 0) : 0), 0);
   // 거래 건수도 금액과 같은 기준(이체·충전 제외)으로 센다 — 말풍선 «거래 N건»
   if (Array.isArray(led)) months.forEach((m) => { m.n = led.filter((t) => t.date.slice(0, 7) === m.mk && !D.isMove(t)).length; });
   const vals = [];
@@ -2660,6 +2667,15 @@ function paintLineChart(led, evs) {   // evs: 캘린더 일정(있으면 달마�
   const lyMk = `${Number(mk.slice(0, 4)) - 1}${mk.slice(4)}`;
   const prev = Array.isArray(led) ? D.ledgerMonthly(led, 6, lyMk) : null;
   const prevVals = prev ? prev.filter((m) => m.in != null).map((m) => m.in) : [];
+  // 가계부가 달 중간에 끊긴 지난달(예: 9/11까지) — 말풍선에 «M/D까지», 작년 비교도 같은 날까지로 (261120)
+  if (Array.isArray(led) && lastMk && lastMk < mk) months.forEach((m, i) => {
+    if (m.mk !== lastMk || m.in == null) return;
+    const dim = new Date(Number(m.mk.slice(0, 4)), Number(m.mk.slice(5, 7)), 0).getDate();
+    if (lastDay >= dim) return;
+    m.cut = lastDay;
+    const pm = prev && prev[i] && prev[i].in != null ? prev[i].mk : '';
+    m.lyCut = pm ? inSum(led.filter((t) => t.date.slice(0, 7) === pm && t.date <= `${pm}-${String(lastDay).padStart(2, '0')}`)) : null;
+  });
   const max = vals.length ? Math.max(...vals, ...prevVals) : 0;
   let top = 1000000;
   if (max > 0) { const mag = Math.pow(10, Math.floor(Math.log10(max))); top = Math.ceil(max / mag * 2) / 2 * mag; }
@@ -2676,7 +2692,6 @@ function paintLineChart(led, evs) {   // evs: 캘린더 일정(있으면 달마�
       if (!m.exp) return;
       const x0 = X(i) - 15, y0 = Math.min(Y(m.exp), 172), r = Math.min(5, 176 - y0);
       h += `<path class="lc-bar" d="M${x0},176 L${x0},${(y0 + r).toFixed(1)} Q${x0},${y0.toFixed(1)} ${x0 + r},${y0.toFixed(1)} L${x0 + 30 - r},${y0.toFixed(1)} Q${x0 + 30},${y0.toFixed(1)} ${x0 + 30},${(y0 + r).toFixed(1)} L${x0 + 30},176 Z" fill="#d3e8cc"/>`;
-      if (m.in == null) h += `<text x="${X(i)}" y="${(y0 - 6).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="#6f9a66">예상</text>`;
     });
     // 작년 같은 달 수입 — 연한 초록 동그란 점선 + 속 빈 점(올해 선 뒤에 깔림)
     if (prev) {
@@ -2700,11 +2715,20 @@ function paintLineChart(led, evs) {   // evs: 캘린더 일정(있으면 달마�
       if (m.out != null) h += `<circle cx="${X(i)}" cy="${Y(m.out).toFixed(1)}" r="${i === 5 ? 4.5 : 3.4}" fill="#dda79d" stroke="#fff" stroke-width="2"/>`;
       if (m.in == null && !m.exp) h += `<text x="${X(i)}" y="170" text-anchor="middle" font-size="11" fill="#c3cebf" font-weight="700">—</text>`;
     });
+    // «예상» 글자는 선·점 위에(흰 테두리) — 안내선은 lcShow 가 이 글자 위에서 멈춘다 (261120)
+    const exFs = window.matchMedia && matchMedia('(max-width:900px)').matches ? 20 : 10;   // 폰은 그래프 글자가 20(#lc text)
+    months.forEach((m, i) => {
+      if (!m.exp || m.in != null) return;
+      const y0 = Math.min(Y(m.exp), 172), pp = prev && prev[i] && prev[i].in != null ? Y(prev[i].in) : null;
+      const fl = exFs + 2; let ly = Math.max(fl, y0 - 6);
+      if (pp != null && pp > ly - exFs - 4 && pp < ly + 6) { const inside = Math.max(y0 + exFs + 2, pp + exFs + 6); ly = inside <= 174 ? inside : Math.max(fl, pp - 7); }   // 작년 점과 겹치면 막대 안·점 아래로(자리가 없으면 점 위)
+      h += `<text class="lc-exl" data-i="${i}" x="${X(i)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="#6f9a66" stroke="#fff" stroke-width="3" stroke-linejoin="round" paint-order="stroke">예상</text>`;
+    });
     // 마우스를 올리면 그 달 강조 + 금액 말풍선(lcShow) — 예전 회색 기본 말풍선(title 태그) 대신 (v2.7).
     // 말풍선이 열린 채 다시 그리면(새로고침·앱 복귀) 강조를 켠 채로 넣어 깜빡이지 않게
     h += lcIdx >= 0 ? LC_HL.replace('class="lc-hl"', 'class="lc-hl on jump"') : LC_HL;
   } else {
-    const msg = led === undefined ? LOGIN : led === null ? '가계부를 불러오지 못했습니다' : '최근 6개월 가계부·캘린더 금액이 없습니다';
+    const msg = led === undefined ? LOGIN : led === null ? (evs === null ? '가계부·캘린더를 불러오지 못했습니다' : '가계부를 불러오지 못했습니다') : evs === null ? '최근 6개월 가계부 내역이 없습니다 · 캘린더를 불러오지 못했습니다' : '최근 6개월 가계부·캘린더 금액이 없습니다';
     h += `<text x="330" y="100" text-anchor="middle" class="lcmsg">${esc(msg)}</text>`;
   }
   h += '<g font-size="10.5" fill="#a7b1a4" font-family="Pretendard" text-anchor="middle">'
@@ -2713,13 +2737,15 @@ function paintLineChart(led, evs) {   // evs: 캘린더 일정(있으면 달마�
   const cur = months[5];
   // 이번 달은 아직 진행 중 — 작년 한 달 전체가 아니라 «같은 기간(1일~오늘 날짜)»끼리 비교한다.
   // 올해 쪽도 오늘까지만 센다(가계부에 뒷날짜로 미리 적어 둔 기록이 있어도 %가 틀어지지 않게)
+  const cutDay = lastMk === mk && lastDay && lastDay < now.getDate() ? lastDay : now.getDate();   // 이번 달 가계부가 오늘보다 앞에서 끊겼으면 그날까지 비교 (261120)
+  const cutLbl = cutDay === now.getDate() ? '오늘까지' : `${Number(mk.slice(5, 7))}/${cutDay}까지`;
   let yoy = '', lySame = null, curSame = null;
+  const curPast = Array.isArray(led) && led.some((t) => t.date.slice(0, 7) === mk && t.date <= todayS);   // 이번 달에 오늘까지 줄이 없으면(미리 적어 둔 줄만) 비교하지 않음 (261120)
   if (Array.isArray(led) && prev && cur.in != null) {
-    const dd = String(now.getDate()).padStart(2, '0'), lyMonth = prev[5].mk, cut = `${lyMonth}-${dd}`, cutNow = `${mk}-${dd}`;
-    const inSum = (list) => list.reduce((a, t) => a + (t.type === 'in' && !D.isMove(t) ? (Number(t.amt) || 0) : 0), 0);
+    const dd = String(cutDay).padStart(2, '0'), lyMonth = prev[5].mk, cut = `${lyMonth}-${dd}`, cutNow = `${mk}-${dd}`;
     curSame = inSum(led.filter((t) => t.date.slice(0, 7) === mk && t.date <= cutNow));
-    const lyList = led.filter((t) => t.date.slice(0, 7) === lyMonth);
-    if (lyList.length) {
+    const lyList = curPast ? led.filter((t) => t.date.slice(0, 7) === lyMonth) : null;   // 이번 달에 오늘까지 줄이 없으면 작년 비교는 하지 않는다 (261120)
+    if (!lyList) { /* 비교 없음 */ } else if (lyList.length) {
       lySame = inSum(lyList.filter((t) => t.date <= cut));
       if (lySame > 0) {
         const r = lcDelta(curSame, lySame);
@@ -2731,14 +2757,21 @@ function paintLineChart(led, evs) {   // evs: 캘린더 일정(있으면 달마�
     } else yoy = ' · 작년 같은 달 기록 없음';
   }
   // 뒷날짜로 미리 적어 둔 수입이 있으면 비교에 쓴 «오늘까지» 금액도 함께 적는다(보이는 숫자와 %가 어긋나지 않게)
-  const inTxt = curSame != null && curSame !== cur.in ? `${D.manwon(cur.in)}(오늘까지 ${D.manwon(curSame)})` : D.manwon(cur.in);
-  const expTxt = cur.exp != null ? `${cur.month}월 예상 ${D.manwon(cur.exp)}(캘린더${cur.expPend ? ` · 금액 확인 필요 ${cur.expPend}건 빠짐` : ''})` : '';
-  const ledTxt = Array.isArray(led) ? (cur.in == null ? (lastLed ? `가계부는 ${Number(lastLed.slice(5, 7))}/${Number(lastLed.slice(8, 10))}까지` : '가계부 내역 없음') : `가계부 수입 ${inTxt} · 지출 ${D.manwon(cur.out)}${yoy}`) : '';
-  set('lc-note', [expTxt, ledTxt].filter(Boolean).join(' · '));
+  const inTxt = curSame != null && curSame !== cur.in ? `${D.manwon(cur.in)}(${cutLbl} ${D.manwon(curSame)})` : D.manwon(cur.in);
+  // 요약줄 — 현장 모드에서 금액만 가리고 «가계부는 M/D까지»·못 불러옴 같은 상태 글은 늘 보이게 · 가운데 문구가 있으면 같은 말을 두 번 하지 않음 (261120)
+  const note = [];
+  if (cur.exp != null) note.push([`${cur.month}월 예상 ${D.manwon(cur.exp)}(캘린더${cur.expPend ? ` · 금액 확인 필요 ${cur.expPend}건 빠짐` : ''})`, 1]);
+  else if (evs === null && hasData) note.push(['캘린더를 불러오지 못했습니다', 0]);
+  if (Array.isArray(led)) {
+    if (cur.in == null) { if (lastLed) note.push([`가계부는 ${ledMD(lastLed)}까지`, 0]); else if (hasData) note.push(['가계부 내역 없음', 0]); }
+    else { note.push([`가계부 수입 ${inTxt} · 지출 ${D.manwon(cur.out)}${yoy}`, 1]); if (lastLed && lastLed < todayS) note.push([`가계부는 ${ledMD(lastLed)}까지`, 0]); }
+  } else if (led === null && hasData) note.push(['가계부를 불러오지 못했습니다', 0]);
+  put('lc-note', note.map(([t, k]) => (k ? `<span class="mask">${esc(t)}</span>` : esc(t))).join(' · '));
   const lyLeg = $('lc-ly'); if (lyLeg) lyLeg.style.opacity = (prev && prevVals.length) || !Array.isArray(led) ? '' : '.45';   // 작년 기록이 하나도 없으면 범례만 흐리게
-  const ln = $('lc-note'); if (ln) ln.classList.add('mask');
+  const exLeg = $('lc-exp'); if (exLeg) exLeg.style.opacity = evs === null ? '.45' : '';   // 캘린더를 못 불러오면 «예상» 범례만 흐리게 (261120)
+  const ln = $('lc-note'); if (ln) ln.classList.remove('mask');   // 가림은 금액 span 에만 (261120)
   // 금액 말풍선이 읽을 값 — 그래프를 다시 그리면(로그인 뒤 데이터 도착 등) 열려 있던 달을 새 값으로 다시 띄운다
-  lcState = { has: hasData, months, prev, X, Y, lySame, curSame, day: now.getDate(), led: Array.isArray(led) };
+  lcState = { has: hasData, months, prev, X, Y, lySame, curSame, day: cutDay, cutLbl, led: Array.isArray(led) };
   svg.setAttribute('tabindex', hasData ? '0' : '-1');
   svg.setAttribute('aria-label', hasData ? '최근 6개월 수입과 지출, 작년 같은 달 수입. 화살표 키로 달별 금액 보기' : '최근 6개월 수입과 지출, 작년 같은 달 수입');
   if (hasData) { if (lcIdx >= 0) lcShow(lcIdx, 'repaint'); }
@@ -2786,21 +2819,23 @@ function lcTipHTML(i) {
   const st = lcState, m = st.months[i], p = st.prev ? st.prev[i] : null, isCur = i === st.months.length - 1;
   const val = (k, v) => `<b class="mask" data-k="${k}" data-v="${v}">${esc(D.won(v))}</b>`;
   const span = lcSpan(st);
-  let h = `<div class="lt-h">${m.month}월<small>${isCur ? '이번 달 · 진행 중' : esc(String(m.mk || '').slice(0, 4)) + '년'}</small></div>`;
+  let h = `<div class="lt-h">${m.month}월<small>${isCur ? '이번 달 · 진행 중' : esc(String(m.mk || '').slice(0, 4)) + '년' + (m.cut ? ` · 가계부 ${m.month}/${m.cut}까지` : '')}</small></div>`;
   if (m.exp != null) h += `<div class="lt-r"><i class="lt-x"></i>예상(캘린더)${val('exp', m.exp)}</div>`;
   if (m.in == null) h += `<div class="lt-f lt-nd">${st.led ? '이 달 가계부 내역 없음 — 입금 확인 전일 수 있음' : '가계부를 불러오지 못했습니다'}</div>`;
   else h += `<div class="lt-r"><i style="background:#4f9a6a"></i>수입(가계부)${val('in', m.in)}</div>`
           + `<div class="lt-r"><i style="background:#dda79d"></i>지출${val('out', m.out)}</div>`;
-  if (p) h += `<div class="lt-r"><i class="lt-o"></i>작년 ${p.month}월${isCur && p.in != null ? '<small>한 달 전체</small>' : ''}`
+  if (p) h += `<div class="lt-r"><i class="lt-o"></i>작년 ${p.month}월${(isCur || m.cut) && p.in != null ? '<small>한 달 전체</small>' : ''}`
           + `${p.in == null ? '<b class="lt-nb">기록 없음</b>' : val('ly', p.in)}</div>`;
   const f = [];
   // 이번 달에 뒷날짜로 미리 적어 둔 수입이 있으면 «오늘까지» 금액도 — 아래 요약줄과 같게(작년 기록 유무와 상관없이)
-  if (isCur && m.in != null && st.curSame != null && st.curSame !== m.in) f.push(`오늘까지(${span}) 수입 <span class="mask">${esc(D.won(st.curSame))}</span>`);
+  if (isCur && m.in != null && st.curSame != null && st.curSame !== m.in) f.push(`${st.cutLbl || '오늘까지'}(${span}) 수입 <span class="mask">${esc(D.won(st.curSame))}</span>`);
   if (m.in != null && p) {
     if (isCur) {   // 이번 달은 진행 중 — 올해·작년 모두 1일~오늘 날짜까지로 비교(아래 요약과 같은 계산)
       if (st.lySame != null)
         f.push(st.lySame > 0 ? `작년 같은 기간(${span}) <span class="mask">${esc(D.won(st.lySame))}</span> 대비 ${lcChip(lcDelta(st.curSame, st.lySame))}`
                              : `작년 같은 기간(${span}) 수입 <span class="mask">0원</span>${st.curSame > 0 ? ' ' + lcChip({ kind: 'new' }) : ''}`);
+    } else if (m.cut) {   // 가계부가 달 중간에 끊긴 달 — 작년도 같은 날까지로 (261120)
+      if (m.lyCut != null) { const cs = m.cut === 1 ? '1일' : `1~${m.cut}일`; f.push(m.lyCut > 0 ? `작년 ${cs} <span class="mask">${esc(D.won(m.lyCut))}</span> ${lcChip(lcDelta(m.in, m.lyCut))}` : `작년 ${cs} 수입 <span class="mask">0원</span>${m.in > 0 ? ' ' + lcChip({ kind: 'new' }) : ''}`); }
     } else { const c = lcChip(lcDelta(m.in, p.in)); if (c) f.push(`작년 대비 수입 ${c}`); }
   }
   if (m.in != null) f.push(`거래 ${m.n != null ? m.n : m.count}건`);
@@ -2813,13 +2848,15 @@ function lcSRText(i) {   // 키보드·손가락으로 고른 달을 화면낭�
   const head = `${m.month}월(${isCur ? '이번 달, 진행 중' : String(m.mk || '').slice(0, 4) + '년'})`;
   if (document.body.classList.contains('privacy')) return `${head} — 현장 모드라 금액을 가렸습니다`;
   const span = lcSpan(st), won = D.won;
-  let s = `${head}, ` + (m.exp != null ? `예상 수입(캘린더) ${won(m.exp)}${m.expPend ? `, 금액 확인 필요 ${m.expPend}건 빠짐` : ''}, ` : '') + (m.in == null ? '가계부 내역 없음' : `가계부 수입 ${won(m.in)}, 지출 ${won(m.out)}`);
-  if (p) s += p.in == null ? `, 작년 ${p.month}월 기록 없음` : `, 작년 ${p.month}월${isCur ? ' 한 달 전체' : ''} 수입 ${won(p.in)}`;
-  if (isCur && m.in != null && st.curSame != null && st.curSame !== m.in) s += `, 오늘까지(${span}) 수입 ${won(st.curSame)}`;
+  let s = `${head}, ` + (m.exp != null ? `예상 수입(캘린더) ${won(m.exp)}, 예상 촬영 ${m.expN}건${m.expPend ? `, 금액 확인 필요 ${m.expPend}건 빠짐` : ''}, ` : '') + (m.in == null ? (st.led ? '가계부 내역 없음' : '가계부를 불러오지 못했습니다') : `가계부 수입${m.cut ? `(${m.month}/${m.cut}까지)` : ''} ${won(m.in)}, 지출 ${won(m.out)}`);
+  if (p) s += p.in == null ? `, 작년 ${p.month}월 기록 없음` : `, 작년 ${p.month}월${isCur || m.cut ? ' 한 달 전체' : ''} 수입 ${won(p.in)}`;
+  if (isCur && m.in != null && st.curSame != null && st.curSame !== m.in) s += `, ${st.cutLbl || '오늘까지'}(${span}) 수입 ${won(st.curSame)}`;
   if (m.in != null && p) {
     if (isCur && st.lySame != null) {
       if (st.lySame > 0) { const r = lcDelta(st.curSame, st.lySame); s += `, 작년 같은 기간(${span}) ${won(st.lySame)}` + (r.kind === 'eq' ? '과 같음' : `보다 ${lcPct(r)} ${r.kind === 'up' ? '많음' : '적음'}`); }
       else s += `, 작년 같은 기간(${span}) 수입 0원${st.curSame > 0 ? ', 작년엔 없던 수입' : ''}`;
+    } else if (!isCur && m.cut) {   // 달 중간에 끊긴 달 — 같은 날까지 (261120)
+      if (m.lyCut != null) { const cs = m.cut === 1 ? '1일' : `1~${m.cut}일`; if (m.lyCut > 0) { const r = lcDelta(m.in, m.lyCut); s += `, 작년 같은 기간(${cs}) ${won(m.lyCut)}` + (r.kind === 'eq' ? '과 같음' : `보다 ${lcPct(r)} ${r.kind === 'up' ? '많음' : '적음'}`); } else s += `, 작년 같은 기간(${cs}) 수입 0원${m.in > 0 ? ', 작년엔 없던 수입' : ''}`; }
     } else if (!isCur) {
       const r = lcDelta(m.in, p.in);
       if (r) s += r.kind === 'eq' ? ', 수입이 작년과 같음' : r.kind === 'new' ? ', 작년엔 없던 수입' : `, 작년보다 수입 ${lcPct(r)} ${r.kind === 'up' ? '많음' : '적음'}`;
@@ -2909,6 +2946,7 @@ function lcPlace(i, o) {   // o: first(처음 나타남) · keepW(스크롤 — 
     else if (dn <= Math.min(cardMax, barMax) || (up < minTy && dn <= barMax)) { ty = dn; below = true; }   // ② x축 아래 — 카드 안, 또는 위가 막대에 막히면 카드 바닥을 조금 넘더라도(점을 덮는 것보다 낫다)
     else ty = up;                                                                                 // ③ 그래프 위 — 카드 위로 조금
     ty = Math.min(below ? barMax : Math.min(cardMax, barMax), Math.max(minTy, ty));
+    ty = Math.max(cardTop, Math.min(ty, cardMax));   // (261120) 카드 안으로만 — 아이폰 사파리는 카드(.lccard) 밖으로 나간 말풍선을 잘라 내용이 안 보였다
     if (below) to = 'center top'; else { kv = 1; ty += th; to = 'center bottom'; }               // 위쪽은 아랫변 기준(내용이 길어져도 그래프 쪽으로 안 내려옴)
   }
   const v = { ax: Math.round(ax) + 'px', k: String(k), kv: String(kv), ty: Math.round(ty) + 'px' }, st = tip.style;
@@ -2983,7 +3021,8 @@ function lcShow(i, how) {   // how: 'key'·'touch'(낭독 줄을 새로 씀) · 
   lcMove('lc-hl-in', x, m.in == null ? null : st.Y(m.in));
   lcMove('lc-hl-out', x, m.out == null ? null : st.Y(m.out));
   lcMove('lc-hl-ly', x, p && p.in != null ? st.Y(p.in) : null);
-  const gl = hl.querySelector('line'); if (gl) gl.setAttribute('y2', m.in == null ? '154' : '176');   // 내역 없는 달은 바닥 «—» 위에서 멈춘다(+ 모양 방지)
+  const gl = hl.querySelector('line'); if (gl) gl.setAttribute('y2', m.in == null && !m.exp ? '154' : '176');   // 내역 없는 달은 바닥 «—» 위에서 멈춘다(+ 모양 방지)
+  svg.querySelectorAll('.lc-exl').forEach((t) => { t.style.opacity = +t.dataset.i === i ? '0' : ''; });   // 고른 달의 «예상» 글자는 잠시 숨김 — 말풍선에 «예상(캘린더)»가 있다 (261120)
   if (instant) { void hl.getBoundingClientRect(); hl.classList.remove('jump'); }
   hl.classList.add('on'); hl.dataset.placed = '1';
   if (changed && how !== 'repaint' && !reduce) hl.querySelectorAll('.ring').forEach((c) => { c.classList.remove('pop'); void c.getBoundingClientRect(); c.classList.add('pop'); });
@@ -3008,6 +3047,7 @@ function lcHide() {
   if (tip) { tip.classList.remove('on'); tip._fresh = false; }
   if (hl) hl.classList.remove('on');
   if (svg) svg.querySelectorAll('.lc-ml.on').forEach((tx) => tx.classList.remove('on'));
+  if (svg) svg.querySelectorAll('.lc-exl').forEach((t) => { t.style.opacity = ''; });
   lcIdx = -1; lcTouch = null;
   set('lc-sr', '');
   // 다 사라진 뒤엔 위치·폭을 처음으로 — 숨은 말풍선이 옛 자리(가로 화면 폭 등)에 남아 있지 않게
