@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <!-- (261005 배포전검토2 C4-3) 화면 판 — 배포할 때마다 바꾼다. 아이폰 메뉴 「다시 불러오기」 줄과 배포 파일 확인에 쓴다(README 21-6c 9-③④) -->
-<meta name="mdo-hub-build" content="261117">
+<meta name="mdo-hub-build" content="261120">
 <meta name="theme-color" content="#FAF8F3">
 <title>maydly 사무실</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -25,7 +25,7 @@
   - 대표 계정 = 전체, 열람 계정 = 열람 전용(조작 버튼 없음). 최종 방어선은 저장소 보안규칙(쓰기는 대표 계정만).
   - 이름·폴더명·규칙표 같은 글은 이 파일에 적지 않고, 로그인한 뒤 저장소에서 받아 그린다.
   - 연락처·금액은 사무실 PC 가 가려서 올린다(●●● · ●●●원). 모든 글은 HTML 로 해석하지 않고 글로만 넣는다(esc).
-  - 폰: 홈 화면에 추가한 앱에서 설정 → [폰 알림 받기] → 결재 요청·긴급·개발 결정 요청·작업 완료만 알림(이름·장소·연락처·금액 없음 · 누르면 그 카드로).
+  - 폰: 홈 화면에 추가한 앱에서 설정 → [폰 알림 받기] → 결재 요청·긴급·개발 소식·연락 정리·리마인드·PC 다시 켜짐 알림(이름·장소·연락처·금액 없음 · 누르면 그 카드로).
   - 외부 요청: 구글 로그인·저장소 부품(gstatic firebasejs 10.12.0)만. 글꼴은 기기 기본, 아이콘은 이 파일 안의 SVG.
   - 보고 읽음 표시는 이 기기에만 저장(서버 변경 없음).
 -->
@@ -841,6 +841,11 @@ body[data-r="home"] .bnr-off{display:none!important}
 .t-info .ti{background:var(--blue-bg);color:var(--blue)}
 .t-err .ti{background:var(--red-bg);color:var(--red)}
 @media(min-width:1024px){.toast{left:calc(50% + 116px);top:16px}}
+/* (261120 새 화면 알아서 받기) 사무실에 새 판을 넣었는데 폰이 예전 화면에 머물면 위에 작은 띠 — 누르면 새 화면. 톡 화면에서도 보이게(배너 칸은 톡에서 숨겨지므로 따로) */
+.hubup{position:fixed;left:50%;top:calc(var(--sat) + 116px + var(--vvt,0px));z-index:85;transform:translate(-50%,-10px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:8px;padding:9px 15px 9px 11px;border:0;border-radius:999px;background:rgba(255,255,255,.98);box-shadow:0 12px 28px -12px rgba(29,37,32,.32),0 0 0 1px rgba(29,37,32,.07);font:inherit;font-size:13.5px;font-weight:600;color:var(--ink);width:max-content;max-width:calc(100% - 24px);line-height:1.4;cursor:pointer;transition:opacity .2s,transform .25s var(--ease)}
+.hubup.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.hubup .ic{width:16px;height:16px;flex:0 0 16px;color:var(--g-600)}
+@media(min-width:1024px){.hubup{left:calc(50% + 116px);top:68px}}
 
 /* 결재 시트 (폰) · 상세 칸 */
 .sheet-dim{display:none}
@@ -1417,7 +1422,7 @@ html.tk-kb .tk-inp{padding-bottom:10px}
           <div class="pane-l">
             <div class="pghead">
               <div class="row nw" style="align-items:flex-end"><h1 class="lt">보고함</h1><button type="button" class="btn btn-s btn-sm ml" data-mark-read>모두 읽음</button></div>
-              <p class="lts" id="repLede">보고는 모아서 하루 두 번(12:00 브리핑 · 00:00 업무일지) + 월요일 주간보고. 폰은 결재·긴급·개발 결정 요청·작업 완료만 울립니다.</p>
+              <p class="lts" id="repLede">보고는 모아서 하루 두 번(12:00 브리핑 · 00:00 업무일지) + 월요일 주간보고. 폰은 결재·긴급·개발 소식·연락 정리·리마인드·PC 다시 켜짐만 울려요(연락 정리는 밤이면 아침에).</p>
             </div>
             <div class="chips" role="group" aria-label="보고 종류" id="repChips"></div>
             <div id="repPin"></div>
@@ -1564,7 +1569,7 @@ html.tk-kb .tk-inp{padding-bottom:10px}
           <div>
             <div class="cd prof" id="setProfile"><span class="av av-me s52" data-ui="meAvatar"></span><div><b data-ui="meLabel"></b><span id="setDevice"></span></div><button type="button" class="btn btn-q btn-sm" data-logout><svg class="ic"><use href="#i-logout"/></svg>로그아웃</button></div>
             <div class="own">
-              <p class="gt2"><svg class="ic"><use href="#i-bell"/></svg>이 기기 폰 알림 · 결재·긴급·개발 결정 요청·작업 완료만</p>
+              <p class="gt2"><svg class="ic"><use href="#i-bell"/></svg>이 기기 폰 알림 · 결재·긴급·개발 소식·연락 정리·리마인드·PC 다시 켜짐</p>
               <div id="setPush"></div>
             </div>
             <p class="gt2"><svg class="ic"><use href="#i-lock"/></svg>사무실 — 사무실 PC에서 바꿉니다</p>
@@ -1605,8 +1610,9 @@ html.tk-kb .tk-inp{padding-bottom:10px}
       <li><a href="#ledger/prop"><svg class="ic"><use href="#i-bulb"/></svg>제안함 · 기기 바꿈 메모<span class="small" id="moreProp"></span></a></li>
       <li class="sub"><a href="#order"><svg class="ic"><use href="#i-pen"/></svg>최근 지시 진행 상태</a></li>
       <li><a href="#preview"><svg class="ic"><use href="#i-eye"/></svg>결과물 미리보기</a></li>
+      <li><a href="#rules"><svg class="ic"><use href="#i-bulb"/></svg>여기서 할 수 있는 일<span class="small">직원마다 무엇을 맡길 수 있는지</span></a></li>
       <li><a href="#rules"><svg class="ic"><use href="#i-sliders"/></svg>설정 · 규칙<span class="small">읽기 전용</span></a></li>
-      <li><a href="#" data-reload><svg class="ic"><use href="#i-refresh"/></svg>다시 불러오기<span class="small">새 화면 받기 · 화면 판 261117</span></a></li>
+      <li><a href="#" data-reload><svg class="ic"><use href="#i-refresh"/></svg>다시 불러오기<span class="small">새 화면 받기 · 화면 판 261120</span></a></li>
       <li><a href="#login" data-logout><svg class="ic"><use href="#i-logout"/></svg>로그아웃</a></li>
     </ul>
     <p class="note" style="margin-top:12px">로그인한 구글 계정으로 대표·열람이 정해집니다. 화면의 자료는 사무실 PC 가 올린 것이고, 조작은 사무실 PC 가 가져가 처리합니다.</p>
@@ -1655,6 +1661,7 @@ html.tk-kb .tk-inp{padding-bottom:10px}
 </div>
 
 <div class="toast t-ok" id="toast" role="status" aria-live="polite"><span class="ti"><svg class="ic"><use id="toastIc" href="#i-check"/></svg></span><span id="toastTxt"></span></div>
+<button type="button" class="hubup" id="hubUp" aria-live="polite"><svg class="ic"><use href="#i-refresh"/></svg><span>새 화면이 나왔어요 · 눌러서 바꾸기</span></button>
 
 <script>
 // 저장소 연결 부품을 받지 못했을 때(인터넷 끊김 등) 안내
@@ -2911,7 +2918,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     var badge={question:openQuestions().length,approval:pendingApprovals().length,urgent:activeUrgent().length};
     setHTML($('#repChips'),RF.map(function(f){var n=f[0]==='all'?all.length:(badge[f[0]]!=null?badge[f[0]]:cnt[f[0]]||0);return '<button type="button" class="chip'+(ui.rf===f[0]?' on':'')+'" data-rf="'+f[0]+'">'+esc(f[1])+(n?' <span class="n">'+n+'</span>':'')+'</button>'}).join(''));
     var unread=all.filter(isUnread).length;
-    setHTML($('#repLede'),(ui.role?'안 읽음 '+unread+' · ':'')+'12:00·00:00 모아서 + 월요일 주간 · 폰은 결재·긴급·개발 결정 요청·작업 완료만 울립니다. '+(srvRead()?'읽음은 폰·맥북 어디서 읽어도 같이 줄어듭니다.':'읽음 표시는 이 기기에만 남습니다.'));
+    setHTML($('#repLede'),(ui.role?'안 읽음 '+unread+' · ':'')+'12:00·00:00 모아서 + 월요일 주간 · 폰은 결재·긴급·개발 소식·연락 정리·리마인드·PC 다시 켜짐만 울려요. '+(srvRead()?'읽음은 폰·맥북 어디서 읽어도 같이 줄어듭니다.':'읽음 표시는 이 기기에만 남습니다.'));
     var list=all.filter(function(r){return ui.rf==='all'||rtype(r)[0]===ui.rf});
     // 맨 위 최신 브리핑 고정
     var pin=['all','brief','log','weekly'].indexOf(ui.rf)>=0?list.filter(function(x){return BRIEF_TYPES.indexOf(x.type)>=0})[0]:null;
@@ -3457,13 +3464,13 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     var vv=window.visualViewport, el=$('#tkRoom'), de=document.documentElement, ts=$('#toast');
     if(!el) return;
     var on=!!vv&&!isDesk()&&document.body.classList.contains('tk-in')&&!el.hidden;
-    if(!on){if(vvLast){el.style.removeProperty('height');el.style.removeProperty('top');de.classList.remove('tk-kb');if(ts)ts.style.removeProperty('--vvt');vvLast='';}return;}
+    if(!on){if(vvLast){el.style.removeProperty('height');el.style.removeProperty('top');de.classList.remove('tk-kb');if(ts)ts.style.removeProperty('--vvt');var hu0=$('#hubUp');if(hu0)hu0.style.removeProperty('--vvt');vvLast='';}return;}
     var kb=window.innerHeight-vv.height>120, h=Math.round(vv.height), top=Math.round(vv.offsetTop), key=h+'|'+top+'|'+(kb?1:0);
     if(key===vvLast) return;
     var resized=vvLast.split('|')[0]!==String(h);
     vvLast=key;
     el.style.height=h+'px'; el.style.top=top+'px';
-    de.classList.toggle('tk-kb',kb); if(ts) ts.style.setProperty('--vvt',top+'px');
+    de.classList.toggle('tk-kb',kb); if(ts) ts.style.setProperty('--vvt',top+'px'); var hu=$('#hubUp'); if(hu) hu.style.setProperty('--vvt',top+'px'); // (261120) 새 화면 띠도 키보드를 따라감
     if(resized) tkKeepBottom();
   }
   function tkKeepBottom(){var sc=$('#tkScroll');if(sc&&tk.atBottom)sc.scrollTop=sc.scrollHeight;}
@@ -3879,7 +3886,9 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     if(!room){if(el._h)setHTML(el,'');return;}
     // (261117 부드러운 입력) 안내글은 한 줄로 짧게(자세한 보낼 곳은 아래 #tkDest 줄이 보여 줌). 방 틀(문자열)은 방 이름에만 기대고,
     //  안내글·글자 수는 그린 뒤 입력칸에 직접 넣는다 — 방 정보가 잠깐 비어도 틀이 바뀌어 입력칸이 새로 만들어지며 한글 조합·키보드가 끊기지 않게.
-    var grp=isGrp(r), dv=isDev(r), ph=grp?'지시 입력':dv?'Claude에게 보내기':'메시지 입력', phl=grp?'지시 입력 — '+LS()+'이 받아 나눕니다':dv?'Claude에게 보내는 글 — 직원에게는 가지 않습니다':'메시지 입력 — 질문 답·결재 메모·대화';
+    // (261120) 안내 글은 실제로 가는 곳대로 — 작업 대화가 켜져 있으면 단톡방 평글은 비서 직원이 먼저 답하고, 1:1방 글은 그 직원이 바로 답한다(없으면 예전 안내)
+    var asx=base&&base.assist, asG=!!(asx&&asx.group), asD=!!(asx&&(asx.dm===true||(asx.dm==null&&asx.on===true))), afr=asx&&asx.front?String(asx.front):'비서'; // 공개 파일엔 사람 이름을 적지 않음 — 이름은 서버가 보냄
+    var grp=isGrp(r), dv=isDev(r), ph=grp?(asG?'메시지 입력':'지시 입력'):dv?'Claude에게 보내기':'메시지 입력', phl=grp?(asG?afr+iGa(afr)+' 먼저 답해요 — 일이 필요하면 '+LS()+'에게 넘겨요':'지시 입력 — '+LS()+'이 받아 나눕니다'):dv?'Claude에게 보내는 글 — 직원에게는 가지 않습니다':(asD?'메시지 입력 — 이 방 직원이 바로 답해요':'메시지 입력 — 질문 답·결재 메모·대화');
     setHTML(el,'<header class="tk-rh"><a class="bk m" href="#talk" aria-label="톡 목록으로">'+IC('i-chev-l')+'</a><span id="tkRhAv"></span><h2 id="tkRhT"></h2></header>'+
       '<div class="tk-scroll" id="tkScroll"><div class="tk-msgs" id="tkMsgs"></div></div>'+
       '<div class="tk-sb" id="tkSb"></div>'+
@@ -3920,10 +3929,12 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     setHTML($('#tkChips'),grp&&!b?'<button type="button" class="urg'+(ch.urg?' on':'')+'" data-act="chip" data-id="urg" aria-pressed="'+(ch.urg?'true':'false')+'">⚡ 긴급</button><button type="button"'+(ch.apr?' class="on"':'')+' data-act="chip" data-id="apr" aria-pressed="'+(ch.apr?'true':'false')+'">✔ 결재로 받기</button><button type="button"'+(ch.workId?' class="on"':'')+' data-act="chip" data-id="work"># '+esc(ch.workId||'업무 지정')+'</button><button type="button"'+(ch.hint?' class="on"':'')+' data-act="chip" data-id="hint">@ '+esc(ch.hint?(nameOf(ch.hint)||ch.hint)+' 추천':'담당 추천')+'</button>':'');
     setHTML($('#tkQb'),b?'<span><b>↩ '+esc(grp&&b.mode==='answer'?LS()+' 질문에 답':isDev(roomById(room))&&b.mode==='answer'?'결정 요청에 답':BAND_LB[b.mode]||'')+'</b> · '+txt(clip(b.text,40))+'</span><button type="button" data-act="band" data-id="'+esc(room)+'" aria-label="인용 떼기">'+IC('i-x')+'</button>':'');
     var dm=tk.dest[room]==='note'?'note':'order', dest, rr=roomById(room);
+    // (261120 검토 반영) 보이는 「보낼 곳」 줄도 실제로 가는 곳대로 — 작업 대화가 켜져 있으면 칩 없는 단톡방 글은 비서가 먼저, 1:1방 글은 그 직원이 바로 답
+    var asx2=base&&base.assist, asG2=!!(asx2&&asx2.group), asD2=!!(asx2&&(asx2.dm===true||(asx2.dm==null&&asx2.on===true))), afr2=asx2&&asx2.front?String(asx2.front):'비서', chOn=!!(ch.urg||ch.apr||ch.workId||ch.hint);
     if(isDev(rr)) dest='<span>'+esc(String((rr.author&&rr.author.name)||''))+(b&&b.mode==='answer'?'에게 결정 답':'에게만')+' · 직원에게는 가지 않습니다</span>';
     else if(b&&b.mode!=='reply') dest='<span>'+esc(BAND_LB[b.mode]||'')+'</span>';
-    else if(grp) dest='<span>'+esc(LS())+'에게 지시</span>';
-    else dest='<button type="button" data-act="dest" data-id="'+esc(room)+'" aria-label="보낼 곳 바꾸기">'+esc(dm==='note'?'메모만 남기기(일 아님)':LS()+'에게 새 지시')+' ▾</button>';
+    else if(grp) dest='<span>'+(asG2&&!chOn?esc(afr2)+iGa(afr2)+' 먼저 답 · 일이 필요하면 '+esc(LS())+'에게':esc(LS())+'에게 지시')+'</span>';
+    else dest='<button type="button" data-act="dest" data-id="'+esc(room)+'" aria-label="보낼 곳 바꾸기">'+esc(dm==='note'?'메모만 남기기(일 아님)':asD2?'이 방 직원이 바로 답 · 일이 필요하면 '+LS()+'에게':LS()+'에게 새 지시')+' ▾</button>';
     setHTML($('#tkDest'),dest);
   }
   // ── 보고서 화면(목업 ④) — 받은 HTML 은 sandbox="" iframe 의 srcdoc 에만 ──
@@ -4036,6 +4047,8 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
   // ── 입력·카드 동작 ──
   var DMOK_KEY='mdo.talk.dmOrderOk.v1';
   function tkOrderOk(){
+    // (261120) 작업 대화가 켜져 있으면 1:1방 글은 그 직원이 바로 답한다(서버가 그렇게 돌림) — 「새 지시로 갑니다」 창 없이 보냄(PC 허브 261116 과 같게)
+    var asx=base&&base.assist; if(asx&&(asx.dm===true||(asx.dm==null&&asx.on===true))) return Promise.resolve(true);
     var ok=false; try{ok=localStorage.getItem(DMOK_KEY)==='1'}catch(e){ok=false}
     if(ok) return Promise.resolve(true);
     return ask({pill:'새 지시',pillCls:'b-info',title:'이 글은 '+LS()+'에게 새 지시로 갑니다',body:'<p>1:1방은 질문 답·결재 메모를 쓰는 곳입니다. 그 밖의 글은 '+esc(LS())+'이 받아 알맞은 직원에게 나누는 <b>새 지시</b>가 되고, 단톡방에도 보입니다(이 방 직원은 추천으로만 — 최종 배분은 '+esc(LS())+').</p><p style="margin-top:6px">일이 아니라 메모만 남기려면 보낼 곳을 「메모만 남기기」로 바꾸세요. 확인하시면 다음부터는 묻지 않습니다.</p>',ok:'새 지시로 보내기'})
@@ -4044,7 +4057,8 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
   function tkClearInput(room,b){var ta=$('#tkTxt');if(ta){ta.value='';tkGrow(ta);}draftDrop();draftSet(room,'');if(b&&b.msgId)tk.bandOff[room]=b.msgId;tk.band[room]=null;tk.dest[room]='order';tk.bandLost[room]=false;}
   // (261002 재감사 R2-01) 답하던 질문이 다른 기기에서 처리돼 띠가 떨어진 뒤 보낼 때 — 새 지시로 바로 가지 않게 고르게 한다(기본 = 보내지 않음)
   function tkChooseLost(p,grp){
-    var ch=grp?[{mode:'keep',label:'보내지 않고 글 남겨 두기'},{mode:'order',label:'새 지시로 보내기'}]:[{mode:'keep',label:'보내지 않고 글 남겨 두기'},{mode:'note',label:'메모만 남기기(일 아님)'},{mode:'order',label:LS()+'에게 새 지시'}];
+    var asx4=base&&base.assist, gOrd=asx4&&asx4.group&&!(tk.chips.urg||tk.chips.apr||tk.chips.workId||tk.chips.hint)?'새 글로 보내기 — 비서가 먼저 답해요':'새 지시로 보내기', dOrd=asx4&&(asx4.dm===true||(asx4.dm==null&&asx4.on===true))?'이 방 직원에게 보내기(바로 답)':LS()+'에게 새 지시'; // (261120) 실제로 가는 곳대로
+    var ch=grp?[{mode:'keep',label:'보내지 않고 글 남겨 두기'},{mode:'order',label:gOrd}]:[{mode:'keep',label:'보내지 않고 글 남겨 두기'},{mode:'note',label:'메모만 남기기(일 아님)'},{mode:'order',label:dOrd}];
     ask({pill:'보낼 곳',pillCls:'b-warn',title:'답하던 질문이 이미 처리됐습니다',body:'<p>쓰던 글이 답하려던 질문은 다른 기기에서 먼저 처리됐습니다. 그대로 보내면 새 지시가 되므로 먼저 여쭙니다.</p><p class="tk-quote">'+esc(clip(p.text,160))+'</p>',choices:ch.map(function(c,i){return {value:String(i),label:c.label}}),choiceDefault:'0',ok:'고르기'}).then(function(r){
       if(r===null) return; var c=ch[+r.choice]; if(!c||c.mode==='keep') return;
       if(c.mode==='note'&&p.text.length>300){toast('메모는 300자까지입니다 — 줄여서 다시 보내 주세요','info');return;}
@@ -4070,7 +4084,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
   }
   function tkChooseGroup(p,qs){
     var ch=qs.slice(0,3).map(function(m){return {mode:'answer',replyTo:String(m.id),label:LS()+' 질문에 답: '+clip((m.card||{}).title||'',30),rt:(m.card||{}).title,mid:m.id}});
-    ch.push({mode:'order',label:'새 지시로 보내기'});
+    var asx3=base&&base.assist; ch.push({mode:'order',label:asx3&&asx3.group&&!(tk.chips.urg||tk.chips.apr||tk.chips.workId||tk.chips.hint)?'새 글로 보내기 — 비서가 먼저 답해요':'새 지시로 보내기'}); // (261120) 실제로 가는 곳대로
     ask({pill:'보낼 곳',pillCls:'b-info',title:'어느 쪽으로 보낼까요?',body:'<p>'+esc(LS())+'이 답을 기다리는 질문이 있습니다. 글이 어디로 갈지 골라 주세요.</p><p class="tk-quote">'+esc(clip(p.text,160))+'</p>',choices:ch.map(function(c,i){return {value:String(i),label:c.label}}),choiceDefault:'0',ok:'보내기'}).then(function(r){
       if(r===null) return; var c=ch[+r.choice]; if(!c) return;
       if(c.mode==='answer'){var m=tkMsg(p.room,c.mid);if(!m||m.state!=='open'){toast('그 질문은 이미 처리됐습니다 — 다시 골라 주세요','info');return;}tkSendNow({room:p.room,text:p.text,mode:'answer',replyTo:c.replyTo},{msgId:c.mid,text:c.rt});return;}
@@ -4275,12 +4289,12 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     else if(!sp.ok) h=gi('i-bell','it-n','폰 알림',esc(sp.why),'');
     else if(window.Notification&&Notification.permission==='denied') h=gi('i-bell','it-r','알림이 거부돼 있습니다','이 기기 <b>설정 → 알림 → maydly 사무실</b>에서 허용한 뒤 다시 여세요.','');
     else if(pushSub&&!sameKey(pushSub,key)) h=gi('i-refresh','it-a','알림을 다시 켜야 합니다','사무실 알림 키가 바뀌었습니다. 끈 뒤 다시 켜 주세요.','<button type="button" class="btn btn-s btn-sm" data-push-off'+(pushBusy?' disabled':'')+'>알림 끄기</button>');
-    else if(pushSub) h=gi('i-bell','it-g','폰 알림 받기 · 켜짐','결재 요청·긴급·개발 결정 요청·작업 완료만 · 문구에 이름·장소·연락처·금액 없음 · 누르면 그 화면으로','<button type="button" class="sw on" data-push-off role="switch" aria-checked="true" aria-label="이 기기 알림 끄기"'+(pushBusy?' disabled':'')+'></button>')+
+    else if(pushSub) h=gi('i-bell','it-g','폰 알림 받기 · 켜짐','결재 요청·긴급·개발 소식·연락 정리·리마인드·PC 다시 켜짐 · 문구에 이름·장소·연락처·금액 없음 · 누르면 그 화면으로','<button type="button" class="sw on" data-push-off role="switch" aria-checked="true" aria-label="이 기기 알림 끄기"'+(pushBusy?' disabled':'')+'></button>')+
       gi('i-send','it-n','시험 알림 보내기','사무실이 켜져 있으면 15초 안팎','<button type="button" class="btn btn-s btn-sm" data-push-test>'+IC('i-send')+'보내기</button>');
-    else h=gi('i-bell','it-n','폰 알림 받기','이 기기에서 결재 요청·긴급·개발 결정 요청·작업 완료 알림을 받으려면 켜 주세요. 허용 창이 뜨면 <b>허용</b>을 누르시면 됩니다.'+(key?'':' · 사무실 PC 연결 뒤 켤 수 있습니다'),'<button type="button" class="sw" data-push-on role="switch" aria-checked="false" aria-label="이 기기 알림 켜기"'+(pushBusy||!key?' disabled':'')+'></button>');
+    else h=gi('i-bell','it-n','폰 알림 받기','이 기기에서 결재 요청·긴급·개발 소식·연락 정리·리마인드·PC 다시 켜짐 알림을 받으려면 켜 주세요. 허용 창이 뜨면 <b>허용</b>을 누르시면 됩니다.'+(key?'':' · 사무실 PC 연결 뒤 켤 수 있습니다'),'<button type="button" class="sw" data-push-on role="switch" aria-checked="false" aria-label="이 기기 알림 켜기"'+(pushBusy||!key?' disabled':'')+'></button>');
     setHTML(el,'<div class="cd">'+h+'</div>');
     var mini='';
-    if(!pushSub&&!(base&&base.config&&base.config.pushEnabled===false)&&session.checked) mini='<a class="cd pmini" href="#rules"><span class="it it-g">'+IC('i-bell')+'</span><span class="qb"><b class="qt" style="font-size:14px">이 기기 폰 알림 켜기</b><span class="qs">'+(sp.install?'홈 화면에 추가한 앱에서 켤 수 있습니다':'결재 요청·긴급·개발 결정 요청·작업 완료만 울립니다 · 설정 · 규칙에서')+'</span></span>'+IC('i-chev-r')+'</a>';
+    if(!pushSub&&!(base&&base.config&&base.config.pushEnabled===false)&&session.checked) mini='<a class="cd pmini" href="#rules"><span class="it it-g">'+IC('i-bell')+'</span><span class="qb"><b class="qt" style="font-size:14px">이 기기 폰 알림 켜기</b><span class="qs">'+(sp.install?'홈 화면에 추가한 앱에서 켤 수 있습니다':'결재 요청·긴급·개발 소식·연락 정리·리마인드·PC 다시 켜짐을 알려요 · 설정 · 규칙에서')+'</span></span>'+IC('i-chev-r')+'</a>';
     setHTML($('#homePushMini'),mini);
   }
 
@@ -4323,7 +4337,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     // (1-10) 톡·근무·대기 창 버튼 — 동작 이름은 허용 목록, 번호는 모양 검사 뒤에만
     el=t.closest('[data-act]'); if(el&&el.closest('#tk,#powerSheet')){e.preventDefault();var act=el.getAttribute('data-act')||'',aid=el.getAttribute('data-id')||'';if(TK_ACTS.indexOf(act)<0||!/^[^\s<>"'`]{0,80}$/.test(aid))return;tkAct(act,aid,el);return;}
     el=t.closest('a[href="#power"]'); if(el&&ui.cur==='power'){e.preventDefault();openPower();return;}
-    el=t.closest('[data-reload]'); if(el){e.preventDefault();location.reload();return;}
+    el=t.closest('[data-reload]'); if(el){e.preventDefault();hubUp.go('');return;} // (261120) 「다시 불러오기」 = 저장된 옛 화면이 아니라 새로 받기
     el=t.closest('[data-logout]'); if(el){e.preventDefault();closeAll();try{localStorage.removeItem(DRAFT_KEY)}catch(_){}signOut(auth).then(function(){toast('로그아웃했습니다');}).catch(function(){});return;}
     el=t.closest('[data-push-on]'); if(el){enablePush();return;}
     el=t.closest('[data-push-off]'); if(el){disablePush();return;}
@@ -4450,6 +4464,54 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
       try{var u=new URL(d.url);if(u.origin===location.origin&&base(u.pathname)===base(location.pathname)&&u.hash){if(location.hash===u.hash){tk.hl='';go();}else location.hash=u.hash;}}catch(_){}
     });
   }
+  // ── (261120 새 화면 알아서 받기) 사무실에 새 판을 넣은 뒤에도 폰이 예전 화면에 머물러 그림 보고서가 안 열리던 문제(261118 「내용만 있는데?」) ──
+  //  켤 때 · 30초 넘게 다른 앱에 있다가 돌아올 때 · 15분마다 공개 화면 맨 앞 2KB 만 받아 「화면 판」을 견준다(큰 파일 전체를 받지 않음).
+  //  더 새 판이면: 막 켰거나 돌아온 때(글을 치는 중·창이 열린 중이 아니면) → 바로 새 화면으로. 쓰던 글은 초안으로 저장돼 그대로 돌아온다.
+  //              그 밖 → 위에 작은 띠 「새 화면이 나왔어요 · 눌러서 바꾸기」.
+  //  같은 판으로 한 번 넘어갔는데도 그대로면(공개 쪽 저장 시간 10분) 다시 넘기지 않고 띠만 — 되풀이 새로고침을 막는다.
+  var hubUp=(function(){
+    var BUILD_RE=/^[0-9]{6}[a-z]?$/;
+    var mine=String((document.querySelector('meta[name="mdo-hub-build"]')||{}).content||'').trim();
+    var lastAt=0,hiddenAt=0;
+    function newer(a,b){return BUILD_RE.test(a)&&BUILD_RE.test(b)&&a>b;}
+    function tried(nb){try{return sessionStorage.getItem('mdo.hub.upTried')===nb;}catch(_){return false;}}
+    function markTried(nb){try{sessionStorage.setItem('mdo.hub.upTried',nb);}catch(_){}}
+    // (261120 검토 반영) 「쓰는 중·고르는 중」을 넓게 — 어느 칸이든 쓰는 중 · 보이는 칸에 쓰다 만 글(지시창·답하기·기기 바꿈 메모 등은 저장되지 않음) · 창 열림 · 톡에서 보낼 곳·칩·인용을 골라 둠
+    function busy(){
+      var a=document.activeElement;
+      if(a&&(a.tagName==='INPUT'||a.tagName==='TEXTAREA'||a.tagName==='SELECT'||a.isContentEditable)) return true;
+      if(document.querySelector('.ov.open')) return true;
+      if([].slice.call(document.querySelectorAll('textarea,input[type=text],input:not([type])')).some(function(x){return x.id!=='tkSearch'&&x.offsetParent!==null&&String(x.value||'').trim();})) return true;
+      try{ if(tk&&tk.room&&(tk.dest[tk.room]==='note'||tk.band[tk.room]||tk.chips.urg||tk.chips.apr||tk.chips.workId||tk.chips.hint)) return true; }catch(_){}
+      return false;
+    }
+    function base(){return location.origin+location.pathname.replace(/index\.html$/,'');} // (261120 검토 반영) 같은 출처 절대 주소 — 「//」로 시작하는 경로가 다른 호스트로 읽히지 않게
+    function goNew(nb){try{draftFlush();}catch(_){} if(nb)markTried(nb); location.replace(base()+'?v='+encodeURIComponent(nb||'r')+'&t='+Date.now().toString(36)+location.hash);} // 시각 표식(t) — 같은 주소로 가면 브라우저가 새로 받지 않으므로 매번 다른 주소
+    function pill(nb){var b=$('#hubUp');if(!b)return;b.classList.add('show');b.onclick=function(){goNew(nb);};}
+    function check(why){
+      var now=Date.now(); if(why!=='boot'&&now-lastAt<60000) return; lastAt=now;
+      if(!BUILD_RE.test(mine)||!window.fetch) return;
+      var ctl=('AbortController' in window)?new AbortController():null, to=setTimeout(function(){try{ctl&&ctl.abort();}catch(_){}},8000);
+      fetch(base()+'?hb='+now,{cache:'no-store',headers:{Range:'bytes=0-2047'},signal:ctl?ctl.signal:undefined})
+        .then(function(r){return (r.ok||r.status===206)?r.text():'';})
+        .then(function(t){
+          clearTimeout(to);
+          var m=/<meta name="mdo-hub-build" content="([0-9]{6}[a-z]?)"/.exec(t||''),nb=m?m[1]:'';
+          if(!nb||!newer(nb,mine)) return;
+          if((why==='boot'||why==='resume')&&!tried(nb)&&!busy()) goNew(nb); else pill(nb);
+        })
+        .catch(function(){clearTimeout(to);});
+    }
+    document.addEventListener('visibilitychange',function(){
+      if(document.visibilityState==='hidden'){hiddenAt=Date.now();return;}
+      if(document.visibilityState==='visible'){var away=hiddenAt?Date.now()-hiddenAt:0;hiddenAt=0;check(away>=30000?'resume':'peek');}
+    });
+    window.addEventListener('pageshow',function(e){if(e&&e.persisted)check('resume');});
+    setInterval(function(){if(document.visibilityState==='visible')check('timer');},15*60000);
+    return {check:check,go:goNew,build:mine};
+  })();
+  hubUp.check('boot');
+  window.__hubUp=hubUp; // 화면 시험용(비밀 없음 — __fbApp · __hubReady 와 같은 방식)
   $('#installHint').hidden=!(isIOS()&&!isStandalone());
   var lastStatus=null;
   go();
