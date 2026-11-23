@@ -435,6 +435,12 @@ export function calEvents() {
         const ps = await getDoc(doc(db, "mj_cal", "prices"));
         PRICES = ps.exists() && ps.data().blob ? cleanPrices(JSON.parse(ps.data().blob)) : null;
       } catch (e) { /* 그대로 */ }
+      // 블랙 목록도 같이 읽는다(운영-003 26 — 관리자 캘린더 «블랙으로 두기», mj_cal/black). 못 읽으면 지난번 것 그대로
+      try {
+        const bs = await getDoc(doc(db, "mj_cal", "black"));
+        const bo = bs.exists() && bs.data().blob ? JSON.parse(bs.data().blob) : null;
+        BLACK = bo && Array.isArray(bo.list) ? bo.list.filter((b) => b && b.on) : [];
+      } catch (e) { /* 그대로 */ }
       // 관리자 캘린더가 불러올 때와 같게(admin.html:1361, 685):
       //  id 90000 이상(구글 캘린더에서 온 임시 일정)은 빼고, 옛 라벨(holiday→rest, nopay→studio_f)은 바꿔 읽는다.
       //  원본은 건드리지 않고 복사본만 바꾼다.
@@ -526,11 +532,12 @@ export function calMonthly(evs, n = 6, mk = monthPrefix()) {
 // 사람 묶기 기준 (admin.html:1739 — 띄어쓰기·괄호·끝의 '님' 을 뗀다)
 export const personKey = (s) => String(s || "").replace(/\s+/g, "").replace(/\(.*?\)/g, "").replace(/(님)+$/, "");
 
-/** 노쇼 이력 — 사람별 {name, cnt, last, reasons[]} */
+/** 노쇼 이력 — 사람별 {name, cnt, last, reasons[]} · «내 사유 환불»은 거르는 기준이 아니라 뺀다(운영-003 26, 관리자 캘린더와 같게) */
 export function noshHistory(evs) {
   const map = Object.create(null);   // 이름이 constructor·toString 같은 내부 단어여도 안전하게(상속값 없음)
   evs.forEach((e) => {
     if (!e || e.status !== "nosh") return;
+    if (/^내 사유 환불/.test(String(e.noshReason || ""))) return;
     const k = personKey(e.client); if (!k) return;
     const o = map[k] || (map[k] = { name: e.client, cnt: 0, last: "", reasons: [] });
     o.cnt++;
@@ -539,6 +546,31 @@ export function noshHistory(evs) {
     if (r && o.reasons.indexOf(r) < 0) o.reasons.push(r);
   });
   return map;
+}
+
+// 블랙 (운영-003 26 — admin.html r26Same 과 같은 기준)
+//  인스타·전화가 같거나 블랙으로 둔 그 일정이면 같은 분(lv 2) · 이름만 같으면 «같은 분인지 확인»(lv 1) · 둘 다 적혀 있는데 다르면 다른 분
+let BLACK = [];
+const bkPhone = (s) => { let d = String(s || "").replace(/\D/g, ""); if (/^82/.test(d)) d = "0" + d.slice(2); return d.length >= 9 && d.length <= 12 ? d : ""; };
+const bkNum = (s) => /^[\d\s\-+().]+$/.test(String(s || "").trim());
+const bkInsta = (s) => {
+  s = String(s || "").trim().toLowerCase(); if (!s || bkNum(s)) return ""; s = s.replace(/^https?:\/\//, "");
+  const m = s.match(/^((www|m)\.)?(instagram\.com|instagr\.am)(\/+(.*))?$/);
+  if (m) { const seg = (m[5] || "").split(/[\/?#]/).filter(Boolean); if (seg[0] === "stories") seg.shift(); if (!seg.length || /^(p|reel|reels|tv|explore|accounts|direct)$/.test(seg[0])) return ""; s = seg[0]; }
+  return s.replace(/^@+/, "").replace(/[\/?#].*$/, "").replace(/[^a-z0-9._]/g, "");
+};
+const bkId = (name, insta, phone) => ({ name: personKey(name), insta: bkInsta(insta), phone: bkPhone(phone) || (bkNum(insta) ? bkPhone(insta) : "") });
+function bkSame(a, b) {
+  if ((a.insta && b.insta && a.insta === b.insta) || (a.phone && b.phone && a.phone === b.phone)) return 2;
+  if ((a.insta && b.insta) || (a.phone && b.phone)) return 0;
+  return a.name && a.name.length >= 2 && a.name === b.name ? 1 : 0;
+}
+/** 이 일정의 분이 블랙인지 — {lv:2|1} 또는 null */
+export function blackOf(e) {
+  if (!e || !BLACK.length) return null;
+  const id = bkId(e.client, e.insta, e.phone); let lv = 0;
+  BLACK.forEach((b) => { let s = bkSame(bkId(b.name, b.insta, b.phone), id); if (b.ev != null && b.ev === e.id) s = 2; if (s > lv) lv = s; });   // 블랙으로 둔 바로 그 일정도
+  return lv ? { lv } : null;
 }
 
 // ══════════════════════════════════════════════════════════════

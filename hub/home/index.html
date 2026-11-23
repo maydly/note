@@ -3251,7 +3251,7 @@ async function paintCloudRun() {
   // 짝 없는 입금(이번 달) — 기한이 없어 단계는 없지만 «긴급» 묶음 맨 아래에 둔다 (시안 문의=설문 데이터는 기록용이라 넣지 않음 — 명진 260928)
   const noneMonth = match ? safeCalc('짝 없는 입금', () => match.R.none.filter(inMonth), null) : null;
   // 오늘 촬영인데 노쇼 이력이 있는 고객 — 오늘 판단할 일이라 «긴급» 묶음 맨 아래(짝 없는 입금과 같은 자리)
-  const noshToday = evs ? safeCalc('오늘 노쇼 이력', () => evs.filter((e) => D.isShootEv(e) && e.date === today && noshOf(e)).sort((a, b) => D.evStartMs(a) - D.evStartMs(b)), null) : null;
+  const noshToday = evs ? safeCalc('오늘 노쇼 이력', () => evs.filter((e) => D.isShootEv(e) && e.date === today && (noshOf(e) || D.blackOf(e))).sort((a, b) => D.evStartMs(a) - D.evStartMs(b)), null) : null;
 
   try {
   // 날짜줄 · 목차 배지 — 캘린더 배지는 홈과 같은 기준(지남 + 긴급 3일 이내, 캘린더 쪽 일만)
@@ -3286,6 +3286,7 @@ async function paintCloudRun() {
     if (TIME(e) && e.dur) parts.push(esc(e.dur) + '시간');
     parts.push(amt == null ? '금액 미입력' : mask(D.won(amt)));
     parts.push(esc(rel));
+    const bk = D.blackOf(e); if (bk) parts.push(`<span style="color:var(--warn)">${bk.lv === 2 ? '블랙인 분' : '블랙과 같은 이름'}</span>`);   // (운영-003 26)
     const nh = noshOf(e); if (nh) parts.push(`<span style="color:var(--warn)">노쇼 이력 ${nh.cnt}회</span>`);
     put('b-next-sub', items(parts));
   }
@@ -3367,9 +3368,10 @@ async function paintCloudRun() {
     // 긴급 묶음 맨 아래 — 기한은 없지만 오늘 확인할 것: 오늘 촬영 고객의 노쇼 이력 · 예약과 짝이 없는 입금
     let x = '';
     if (noshToday) noshToday.forEach((e) => {
-      const nh = noshOf(e);
-      x += nowItem({ ic: ico('alert'), href: CAL, n1: `오늘 ${esc(TIME(e) || '시간 미정')} ${mask(nmCal(e.client))} 촬영 — 노쇼 이력 ${nh.cnt}회`,
-        n2: `사유: ${esc((nh.reasons && nh.reasons[0]) || '사유 없음')} · 마지막 ${esc(md(nh.last))} — 촬영 전 확인할지 판단`, nr: '캘린더 →' });
+      const nh = noshOf(e), bk = D.blackOf(e);   // (운영-003 26) 블랙도 — 관리자 캘린더 «블랙으로 두기»
+      const what = [bk ? (bk.lv === 2 ? '블랙인 분' : '블랙과 같은 이름') : '', nh ? `노쇼 이력 ${nh.cnt}회` : ''].filter(Boolean).join(' · ');
+      x += nowItem({ ic: ico('alert'), href: CAL, n1: `오늘 ${esc(TIME(e) || '시간 미정')} ${mask(nmCal(e.client))} 촬영 — ${what}`,
+        n2: nh ? `사유: ${esc((nh.reasons && nh.reasons[0]) || '사유 없음')} · 마지막 ${esc(md(nh.last))} — 촬영 전 확인할지 판단` : (bk.lv === 2 ? '캘린더에서 블랙으로 둔 분 — 촬영 전 확인' : '블랙과 이름이 같아요 — 같은 분인지 캘린더에서 확인'), nr: '캘린더 →' });
     });
     else x += emptyLn('— 캘린더를 못 읽어 오늘 촬영 노쇼 이력을 확인하지 못했습니다', true);
     if (noneMonth) {
