@@ -159,6 +159,7 @@ details li{font-size:15px;line-height:1.55;margin:5px 0}
 .leaflet-tooltip.aplab{background:none;border:0;box-shadow:none;font-size:12px;font-weight:700;color:#4c5650;padding:0;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff}
 .leaflet-tooltip.plab:before,.leaflet-tooltip.aplab:before{display:none}
 #bigmap.nolab .plab,#bigmap.nolab .aplab{display:none}
+.apw{background:none;border:0}.apw .apin{transition:transform .2s}#bigmap.zlow .apw .apin{transform:scale(.42);font-size:0;opacity:.8}
 .selc{position:absolute;left:10px;right:10px;bottom:26px;z-index:1000;background:#fff;border-radius:14px;box-shadow:0 4px 16px rgba(20,40,20,.24);padding:10px 40px 10px 10px}
 .selin{display:flex;gap:10px;align-items:center;text-decoration:none}
 .selin img{width:72px;height:72px;border-radius:10px;object-fit:cover;flex:0 0 auto}
@@ -240,11 +241,11 @@ function loadLibs(){if(LIBP)return LIBP;const add=(t,a)=>new Promise((ok,no)=>{c
 function hasGL(){try{const c=document.createElement('canvas');return !!(c.getContext('webgl2')||c.getContext('webgl'))}catch(e){return false}}
 function addBase(map){const esri=()=>L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'지도 &copy; Esri'}).addTo(map);
  if(hasGL()&&window.maplibregl&&L.maplibreGL&&window.fetch){
-  STYLEP=STYLEP||fetch('https://tiles.openfreemap.org/styles/positron').then(r=>{if(!r.ok)throw new Error('style');return r.json()}).then(st=>{(st.layers||[]).forEach(l=>{if(l.type==='symbol'&&l.layout&&l.layout['text-field']&&l.id.indexOf('shield')<0)l.layout['text-field']=['coalesce',['get','name:ko'],['get','name']]});return JSON.stringify(st)});
+  STYLEP=STYLEP||fetch('https://tiles.openfreemap.org/styles/positron').then(r=>{if(!r.ok)throw new Error('style');return r.json()}).then(st=>{(st.layers||[]).forEach(l=>{if(l.type==='symbol'&&l.layout&&l.layout['text-field']&&l.id.indexOf('shield')<0)l.layout['text-field']=['coalesce',['get','name:ko'],['get','name']];if(l.id==='water')l.paint=Object.assign({},l.paint,{'fill-color':'#b9d6ea'});if(l.id==='waterway')l.paint=Object.assign({},l.paint,{'line-color':'#9cc3df'})});return JSON.stringify(st)});
   STYLEP.then(t=>{if(map!==BIG&&map!==MM)return;const g=L.maplibreGL({style:JSON.parse(t),attribution:'&copy; OpenFreeMap · OSM'}).addTo(map);let gm=null;try{gm=g.getMaplibreMap()}catch(e){}if(gm&&gm.once){let ok=false;gm.once('load',()=>{ok=true});setTimeout(()=>{if(!ok&&(map===BIG||map===MM)){try{map.removeLayer(g)}catch(e){}esri()}},9000)}}).catch(()=>{STYLEP=null;if(map===BIG||map===MM)esri()})}
  else esri()}
 function pinIcon(h){const z=PSZ[h.grp];return L.divIcon({className:'pin '+PCLS[h.grp],html:String(h.i+1),iconSize:[z,z],iconAnchor:[z/2,z/2]})}
-function apIcon(){return L.divIcon({className:'apin',html:'\u2708\uFE0E',iconSize:[22,22],iconAnchor:[11,11]})}
+function apIcon(){return L.divIcon({className:'apw',html:'<i class="apin">\u2708\uFE0E</i>',iconSize:[22,22],iconAnchor:[11,11]})}
 function goMap(){history.pushState({fromList:1},'','#map');route()}
 function goList(){if(history.state&&history.state.fromList){history.back()}else{history.replaceState(null,'',location.pathname+location.search);route()}}
 function mapFocus(k){sessionStorage.setItem('p7focus',k);history.pushState({fromDetail:k},'','#map');route()}
@@ -252,15 +253,15 @@ function renderMap(from){
  let x=headHTML('map')+`<div class="mapw"><div id="bigmap" class="nolab"></div><div class="mzb"><button onclick="mz(0)">세토·규슈</button><button onclick="mz(1)">일본 전체</button></div><div class="selc" id="selc" hidden></div></div>`+
  `<p class="mlg"><span><i class="pin p-top"></i>1순위</span><span><i class="pin p-bal"></i>경치에 가게·교통도</span><span><i class="pin p-ex"></i>명진이 보낸 집</span><span><i class="pin p-old"></i>점수 주신 집</span><span><i class="pin p-mini"></i>짧게 본 곳</span><span><i class="apin"></i>공항</span></p>`+
  `<p class="grp">번호로 찾기</p><div class="list">${H.map(h=>`<a class="lrow" href="#h=${h.key}" data-m="${h.key}"><i class="pin ${PCLS[h.grp]}">${h.i+1}</i><span class="ln">${esc(h.name)}</span><small>${esc(h.region)}</small></a>`).join('')}</div>`+
- `<p class="src">핀을 누르면 그 집 카드가 떠요. 지도를 넓히면(두 손가락) 이름이 보여요.<br>숙소 위치는 에어비앤비가 보여 주는 대략 위치예요(몇백 m 차이 날 수 있어요). 지바·삿포로는 ‘일본 전체’를 누르면 보여요.</p>`;
+ `<p class="src">핀을 누르면 그 집 카드가 떠요. 핀이 겹친 곳은 누르면 그 자리로 커져요. 더 넓히면(두 손가락) 이름과 공항이 보여요.<br>숙소 위치는 에어비앤비가 보여 주는 대략 위치예요(몇백 m 차이 날 수 있어요). 지바·삿포로는 ‘일본 전체’를 누르면 보여요.</p>`;
  $('#app').innerHTML=x;window.scrollTo(0,0);
  loadLibs().then(()=>{if(location.hash!=='#map'||!$('#bigmap'))return;
   BIG=L.map('bigmap',{zoomControl:true,attributionControl:true,zoomSnap:.25,tap:false});addBase(BIG);
   Object.keys(AP).forEach(c=>{const a=AP[c];L.marker([a[1],a[2]],{icon:apIcon(),zIndexOffset:-1000,keyboard:false,interactive:false}).addTo(BIG).bindTooltip(a[0],{permanent:true,direction:'bottom',offset:[0,9],className:'aplab'})});
   H.forEach(h=>{const m=L.marker(h.ll,{icon:pinIcon(h),zIndexOffset:PZ[h.grp]+(19-h.i),riseOnHover:true,title:h.name}).addTo(BIG);
-   m.bindTooltip(h.sn,{permanent:true,direction:'right',offset:[PSZ[h.grp]/2,0],className:'plab'});m.on('click',()=>sel(h.key))});
+   m.bindTooltip(h.sn,{permanent:true,direction:'right',offset:[PSZ[h.grp]/2,0],className:'plab'});m.on('click',()=>{const p=BIG.latLngToContainerPoint(h.ll),near=H.filter(o=>o!==h&&BIG.latLngToContainerPoint(o.ll).distanceTo(p)<32);if(near.length&&BIG.getZoom()<11)BIG.flyToBounds(L.latLngBounds([h.ll].concat(near.map(o=>o.ll))),Object.assign({maxZoom:Math.min(BIG.getZoom()+3,12),duration:.6},FP));sel(h.key)})});
   BIG._wb=L.latLngBounds(H.filter(h=>h.key!=='chiba'&&h.key!=='s2').map(h=>h.ll));BIG._ab=L.latLngBounds(H.map(h=>h.ll));
-  const lab=()=>{const c=$('#bigmap');if(c&&BIG)c.classList.toggle('nolab',BIG.getZoom()<8.5)};BIG.on('zoomend',lab);
+  const lab=()=>{const c=$('#bigmap');if(c&&BIG){c.classList.toggle('nolab',BIG.getZoom()<8.5);c.classList.toggle('zlow',BIG.getZoom()<7.5)}};BIG.on('zoomend',lab);
   const fk=sessionStorage.getItem('p7focus')||from;sessionStorage.removeItem('p7focus');
   if(fk&&byKey[fk]){BIG.setView(byKey[fk].ll,10);sel(fk)}else BIG.fitBounds(BIG._wb,FP);
   lab();setTimeout(()=>{if(BIG)BIG.invalidateSize()},80)
