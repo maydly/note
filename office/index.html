@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <!-- (261005 배포전검토2 C4-3) 화면 판 — 배포할 때마다 바꾼다. 아이폰 메뉴 「다시 불러오기」 줄과 배포 파일 확인에 쓴다(README 21-6c 9-③④) -->
-<meta name="mdo-hub-build" content="261124d">
+<meta name="mdo-hub-build" content="261124e">
 <meta name="theme-color" content="#F4F3EE">
 <title>maydly 사무실</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -2870,7 +2870,7 @@ section[data-route="reports"].on .rv-doc{animation:v6fade var(--t-mid) var(--e-o
       <li><a href="#rules"><svg class="ic"><use href="#i-bulb"/></svg>여기서 할 수 있는 일<span class="small">직원마다 무엇을 맡길 수 있는지</span></a></li>
       <li class="own"><a href="#" data-gripe><svg class="ic"><use href="#i-pen"/></svg>불편해요<span class="small">보던 화면과 함께 Claude에게 바로</span></a></li>
       <li><a href="#rules"><svg class="ic"><use href="#i-sliders"/></svg>설정 · 규칙<span class="small">읽기 전용</span></a></li>
-      <li><a href="#" data-reload><svg class="ic"><use href="#i-refresh"/></svg>다시 불러오기<span class="small">새 화면 받기 · 화면 판 261124d</span></a></li>
+      <li><a href="#" data-reload><svg class="ic"><use href="#i-refresh"/></svg>다시 불러오기<span class="small">새 화면 받기 · 화면 판 261124e</span></a></li>
       <li><a href="#login" data-logout><svg class="ic"><use href="#i-logout"/></svg>로그아웃</a></li>
     </ul>
     <p class="note" style="margin-top:12px">로그인한 구글 계정으로 대표·열람이 정해집니다. 화면의 자료는 사무실 PC 가 올린 것이고, 조작은 사무실 PC 가 가져가 처리합니다.</p>
@@ -4767,7 +4767,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     var groups={},order=[];
     f.forEach(function(x){var w=x.job.workId||'업무ID 미정';if(!groups[w]){groups[w]=[];order.push(w);}groups[w].push(x)});
     var h=order.map(function(w){return '<p class="rgp">'+IC('i-folder')+esc(w)+'</p><div class="cd">'+groups[w].map(function(x){
-      return '<a class="rr'+(ui.cur==='preview'&&ui.id===x.rel?' act':'')+'" href="#preview/'+enc(x.rel)+'" data-lid="'+esc(x.rel)+'"><span class="it it-n" style="width:36px;height:36px;flex-basis:36px">'+IC('i-file')+'</span><div class="rb"><div class="rtags" style="margin-top:0">'+outTags(x)+'</div><p class="rt" style="font-weight:650;font-size:13.5px;color:var(--ink)">'+esc(x.name)+'</p><div class="rm"><span class="rm-f">'+esc(short(x.by)||'')+' · '+esc(x.job.id)+'</span><time>'+esc(when(x.at))+'</time></div></div></a>'}).join('')+'</div>'}).join('');
+      return '<a class="rr'+(ui.cur==='preview'&&ui.id===x.rel?' act':'')+'" href="#preview/'+enc(x.rel)+'" data-lid="'+esc(x.rel)+'"><span class="it it-n" style="width:36px;height:36px;flex-basis:36px">'+IC('i-file')+'</span><div class="rb"><div class="rtags" style="margin-top:0">'+outTags(x)+'</div><p class="rt" style="font-weight:600;font-size:13.5px;color:var(--ink)" title="'+esc(x.name)+'">'+esc(pvTitle(x.name))+'</p><div class="rm"><span class="rm-f">'+(pvVer(x.name)?esc(pvVer(x.name))+' · ':'')+esc(short(x.by)||'')+' · '+esc(x.job.id)+'</span><time>'+esc(when(x.at))+'</time></div></div></a>'}).join('')+'</div>'}).join('');
     if(!f.length) h='<div class="rempty" style="margin-top:12px">'+(idx.length?'이 조건의 결과물은 없습니다.':'아직 만든 결과물이 없습니다.<span class="s12">지시가 한 바퀴 돌면 직원이 만든 새 버전 파일이 여기에 쌓입니다.</span>')+'</div>';
     setHTML($('#plist'),h);
     var on=ui.cur==='preview'&&!!ui.id;
@@ -4795,6 +4795,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
   // (261124 미리보기) 위쪽 머리(태그 · 일감 · 완료보고·결재 줄 · 파일 이름 · 경로 · 버전 칩 · 가림 안내) — 글 화면과 정리된 화면(html)이 같이 씀.
   //  버전 칩에서 업무카드 머리말 갱신(kind header)은 뺌 · 최종본 칩은 그대로. nv = 정리된 화면(파일 이름 줄을 차분한 굵기로 — 글 화면은 예전 그대로)
   // (261124 미리보기) 파일 이름 → 읽기 쉬운 제목(v1.0_ · 날짜_시각 · 업무 번호 · 확장자를 떼고 _ 는 · 로) — 서버 preview-html 의 제목과 같은 규칙
+  function pvVer(name){var m=/^v(\d+(?:\.\d+)*)_/.exec(String(name||''));return m?'v'+m[1]:''}
   function pvTitle(name){var s=String(name||'').replace(/\.[A-Za-z0-9]{1,5}$/,'').replace(/^v\d+(?:\.\d+)*_/,'').replace(/_\d{6}_\d{4}$/,'').replace(/^[가-힣A-Za-z]{1,8}-\d{1,4}_/,'');return s.split('_').filter(Boolean).join(' · ')||String(name||'')}
   function prevTop(rel,x,nv){
     var h='<div class="meta">'+(x?outTags(x)+'<span>'+esc(x.job.id)+'</span>'+(x.job.completionReportId?'<a href="#reports/'+enc(x.job.completionReportId)+'">완료보고 '+esc(x.job.completionReportId)+' →</a>':'')+(x.apr?'<a href="#approvals/'+enc(x.apr.id)+'">결재 '+esc(x.apr.id)+' →</a>':''):'<span class="tg tg-n">복사본 파일</span>')+'</div>'+
