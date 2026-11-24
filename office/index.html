@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <!-- (261005 배포전검토2 C4-3) 화면 판 — 배포할 때마다 바꾼다. 아이폰 메뉴 「다시 불러오기」 줄과 배포 파일 확인에 쓴다(README 21-6c 9-③④) -->
-<meta name="mdo-hub-build" content="261124e">
+<meta name="mdo-hub-build" content="261124f">
 <meta name="theme-color" content="#F4F3EE">
 <title>maydly 사무실</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -2390,6 +2390,25 @@ section[data-route="reports"].on .rv-doc{animation:v6fade var(--t-mid) var(--e-o
    정리된 화면이 없으면(옛 사무실 · 너무 큼) 예전 글 화면 그대로 */
 .pv-doc{display:flex;flex-direction:column;gap:12px;min-width:0}
 .pv-h{margin-top:10px;font-size:17px;font-weight:600;line-height:1.4;letter-spacing:-.02em;color:var(--ink);word-break:break-all}
+/* (261124 사진) 개발 진행 방 사진 넣기 — 입력칸 단추 · 미리보기 줄 · 말풍선 사진 · 크게 보기 · 끌어다 놓을 때 */
+.tk-att-b{flex:0 0 auto;display:grid;place-items:center;width:40px;height:40px;margin-right:4px;border:0;border-radius:999px;background:transparent;color:var(--ink-3);cursor:pointer}
+.tk-att-b:hover{background:rgba(23,33,29,.05);color:var(--ink-2)}.tk-att-b .ic{width:20px;height:20px}
+.tk-atts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 10px 2px}
+.tk-att{position:relative;width:56px;height:56px;border-radius:12px;overflow:hidden;background:var(--sunken,#EFEEE8);box-shadow:inset 0 0 0 1px rgba(23,33,29,.08)}
+.tk-att img{width:100%;height:100%;object-fit:cover;display:block}.tk-att.prep{animation:tkPulse 1.2s ease-in-out infinite alternate}
+.tk-att-x{position:absolute;top:3px;right:3px;display:grid;place-items:center;width:20px;height:20px;border:0;border-radius:999px;background:rgba(23,33,29,.55);color:#fff;cursor:pointer}.tk-att-x .ic{width:12px;height:12px}
+.tk-atts-n,.tk-atts-st{font-size:12px;color:var(--ink-3)}.tk-atts-st{flex-basis:100%;color:var(--accent,#2B6A5A)}
+.tk-pics{display:grid;gap:4px;max-width:260px;width:100%}.tk-pics.n2,.tk-pics.n3,.tk-pics.n4{grid-template-columns:1fr 1fr}
+.tk-pic{display:block;padding:0;border:0;border-radius:14px;overflow:hidden;background:var(--sunken,#EFEEE8);cursor:zoom-in;aspect-ratio:4/3;max-height:320px}
+.tk-pics.n1 .tk-pic{aspect-ratio:auto}.tk-pic img{display:block;width:100%;height:100%;object-fit:cover}
+.tk-pic-ph{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:100%;min-height:90px;font-size:12px;color:var(--ink-3)}.tk-pic-ph .ic{width:18px;height:18px}
+.tk-pchip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(23,33,29,.06);font-size:12.5px;color:var(--ink-2)}.tk-pchip .ic{width:14px;height:14px}
+.tk-pv{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));background:rgba(244,243,238,.97)}
+.tk-pv-in img{display:block;max-width:92vw;max-height:86vh;border-radius:12px;box-shadow:0 18px 40px -24px rgba(23,33,29,.45)}.tk-pv-st{font-size:14px;color:var(--ink-2,#48534E)}
+.tk-pv-x{position:absolute;top:max(14px,env(safe-area-inset-top));right:14px;display:grid;place-items:center;width:40px;height:40px;border:0;border-radius:999px;background:#fff;color:var(--ink,#17211D);box-shadow:0 0 0 1px rgba(23,33,29,.12);cursor:pointer}
+#tk.tk-drop .tk-inp{outline:2px dashed var(--accent,#2B6A5A);outline-offset:-6px;border-radius:18px}
+@keyframes tkPulse{from{opacity:.55}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.tk-att.prep{animation:none}}
 .pv-loc{margin-top:6px}.pv-loc summary{display:inline-block;cursor:pointer;list-style:none;font-size:12.5px;color:var(--ink-3)}.pv-loc summary::-webkit-details-marker{display:none}.pv-loc summary::after{content:" ›"}.pv-loc[open] summary::after{content:" ⌄"}.pv-loc:not([open]) .path{display:none}.pv-loc[open] .path{display:block;margin-top:6px}
 .pv-cut{margin-top:8px;font-size:12.5px;line-height:1.5;color:var(--ink-3)}
 .pv-frame{position:relative;min-width:0;height:calc(100vh - 150px - var(--sat) - var(--sab));height:calc(100dvh - 150px - var(--sat) - var(--sab));min-height:420px;border-radius:20px;overflow:hidden;background:var(--paper);box-shadow:0 0 0 .5px var(--line-2),0 14px 30px -24px rgba(23,33,29,.25)}
@@ -2870,7 +2889,7 @@ section[data-route="reports"].on .rv-doc{animation:v6fade var(--t-mid) var(--e-o
       <li><a href="#rules"><svg class="ic"><use href="#i-bulb"/></svg>여기서 할 수 있는 일<span class="small">직원마다 무엇을 맡길 수 있는지</span></a></li>
       <li class="own"><a href="#" data-gripe><svg class="ic"><use href="#i-pen"/></svg>불편해요<span class="small">보던 화면과 함께 Claude에게 바로</span></a></li>
       <li><a href="#rules"><svg class="ic"><use href="#i-sliders"/></svg>설정 · 규칙<span class="small">읽기 전용</span></a></li>
-      <li><a href="#" data-reload><svg class="ic"><use href="#i-refresh"/></svg>다시 불러오기<span class="small">새 화면 받기 · 화면 판 261124e</span></a></li>
+      <li><a href="#" data-reload><svg class="ic"><use href="#i-refresh"/></svg>다시 불러오기<span class="small">새 화면 받기 · 화면 판 261124f</span></a></li>
       <li><a href="#login" data-logout><svg class="ic"><use href="#i-logout"/></svg>로그아웃</a></li>
     </ul>
     <p class="note" style="margin-top:12px">로그인한 구글 계정으로 대표·열람이 정해집니다. 화면의 자료는 사무실 PC 가 올린 것이고, 조작은 사무실 PC 가 가져가 처리합니다.</p>
@@ -5128,8 +5147,8 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
   // - 방 목록 = 상태 문서 chat(요약) · 연 방 하나만 chat/{방} 문서를 구독 · 보고서는 report_html/{보고번호} 를 열 때 한 번 읽음.
   // - 대표님 글은 명령 chatSend 로(사무실 PC 가 가져가 처리). 보낸 글 원문은 이 기기에만(mdo.talk.out.v1) — 말풍선은 그 원문으로.
   // - 방·직원 이름은 이 파일에 적지 않고 데이터(rooms[])로만 그린다. 서버 글은 모두 esc/txt · class 는 표로만 · 보고서 HTML 은 sandbox iframe 에만.
-  var tk={room:'',sub:'',subId:'',docs:{},roomSub:'',roomUnsub:null,band:{},bandOff:{},dest:{},chips:{urg:false,apr:false,workId:'',hint:''},opt:{},hl:'',scrollKey:'',readT:{},readQ:{},sendingNow:{},bandLost:{},html:{},view:{},out:{},queued:{},w:{},power:null,q:'',stale:{},composing:false};
-  var TK_ACTS=['opt','approve','revise','reject','answer','direct','summary','arch','prop','band','dest','chip','pend','out','pmode','dl','reply'];
+  var tk={att:[],attBusy:'',outThumb:{},picT:{},room:'',sub:'',subId:'',docs:{},roomSub:'',roomUnsub:null,band:{},bandOff:{},dest:{},chips:{urg:false,apr:false,workId:'',hint:''},opt:{},hl:'',scrollKey:'',readT:{},readQ:{},sendingNow:{},bandLost:{},html:{},view:{},out:{},queued:{},w:{},power:null,q:'',stale:{},composing:false};
+  var TK_ACTS=['opt','approve','revise','reject','answer','direct','summary','arch','prop','band','dest','chip','pend','out','pmode','dl','reply','attpick','attdel','pic'];
   var CHAT_MODES=['auto','answer','revise','reject','order','note'];
   function chatV(){return (base&&base.chat&&typeof base.chat==='object')?base.chat:null}
   function rooms(){var c=chatV();return c&&Array.isArray(c.rooms)?c.rooms.filter(function(r){return r&&typeof r.id==='string'}):[]}
@@ -5325,6 +5344,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     if(!guard()) return null;
     var rid=newRid();
     outAll()[rid]={room:p.room,text:p.text,mode:p.mode,replyTo:p.replyTo||null,chip:!!p.chip,ci:(p.chip&&typeof p.ci==='number')?p.ci:null,urgency:p.urgency||null,workId:p.workId||null,hint:p.hint||null,replyText:(o&&o.replyText)?String(o.replyText).slice(0,80):null,sig:(o&&typeof o.sig==='string')?o.sig.slice(0,4000):null,at:new Date().toISOString(),state:'sending',cmd:null};
+    if(Array.isArray(p.att)&&p.att.length){outAll()[rid].att=p.att.slice(0,10);tk.outThumb[rid]=(p.attThumbs||[]).slice(0,10);} // (261124 사진) 번호만 저장 · 작은 그림은 이 창에만
     outSave(); tkCmd(rid); renderTalk(); tkToEnd();
     return rid;
   }
@@ -5332,6 +5352,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     var e=outAll()[rid]; if(!e) return;
     tkUnwatch(rid); e.state='sending'; e.err=null; e.cmd=null; outSave(); tk.sendingNow[rid]=1;
     var pl={room:e.room,text:e.text,mode:e.mode,requestId:rid};
+    if(Array.isArray(e.att)&&e.att.length) pl.att=e.att.slice(0,10); // (261124 사진)
     if(e.replyTo) pl.replyTo=e.replyTo; if(e.chip) pl.chip=true; if(e.chip&&typeof e.ci==='number') pl.ci=e.ci; if(e.urgency) pl.urgency=e.urgency; if(e.workId) pl.workId=e.workId; if(e.hint) pl.hint=e.hint;
     // (261002 검토 C2-02) 보낸 시각(sentAt)을 남겨 둔다 — 명령 문서를 쓰기 전에 창이 닫히면 cmd 가 비므로, 다시 열 때(tkResume) 오래된 'sending' 은 실패로 바꿔 [다시][지우기]를 보인다
     e.sentAt=Date.now(); outSave();
@@ -5424,6 +5445,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     tkOutPrune();
     if(tk.room) tkAutoBand(tk.room);
     renderRoom(); renderTalkList(); renderDoc(); renderPowerSheet(); tkBadges();
+    tkAttRender(); tkPicLoad(); // (261124 사진)
   }
   // (261124a 디자인) wk = 일하는 직원(테두리가 천천히 숨 쉼) · 개발 진행 방은 글자 대신 「< >」 그림 — 모양만(자료·동작 그대로)
   function roomAv(r,sz,wk){
@@ -5501,7 +5523,8 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     // (261117 읽음 「1」) 새 사무실 프로그램(chat.rd)은 담당자가 읽기 전까지 「1」(unseen = 그 담당자) — 옛 프로그램이면 예전처럼 배분 전 지시만(pending)
     var cv=chatV(), rd=!!(cv&&cv.rd), one=rd?!!m.unseen:!!m.pending, who=rd&&m.unseen?tkWho(m.unseen):'';
     var tm='<span class="tk-tm">'+(one?'<button type="button" class="tk-rd" data-act="pend" data-id="'+esc(m.id||'')+'" aria-label="'+esc(rd?(who||'담당자')+' 아직 안 읽음':'아직 배분 전')+'">1</button>':'')+esc(hm(m.at))+'</span>';
-    return '<div class="tk-m tk-me" data-mid="'+esc(m.id||'')+'"'+(m.rid?' data-rid="'+esc(m.rid)+'"':'')+'><div class="tk-w"><div class="tk-row"><div class="tk-bub">'+rq+txt(m.text||'')+'</div>'+tm+'</div>'+(mini.length?'<div class="tk-mini">'+mini.join('<span aria-hidden="true">·</span>')+'</div>':'')+'</div></div>';
+    var pics=tkPicsHtml(m.att), bub=(m.text||rq)?'<div class="tk-bub">'+rq+txt(m.text||'')+'</div>':''; // (261124 사진)
+    return '<div class="tk-m tk-me" data-mid="'+esc(m.id||'')+'"'+(m.rid?' data-rid="'+esc(m.rid)+'"':'')+'><div class="tk-w">'+(pics?'<div class="tk-row">'+pics+(bub?'':tm)+'</div>':'')+(bub||!pics?'<div class="tk-row">'+(bub||'<div class="tk-bub"></div>')+tm+'</div>':'')+(mini.length?'<div class="tk-mini">'+mini.join('<span aria-hidden="true">·</span>')+'</div>':'')+'</div></div>';
   }
   // (261124 빼기) 닫힌 질문 카드의 한 마디 — 보고 자료로 정한다(대표님 답 있음 = 사무실 글 그대로 · 뺌 · 닫음 + 닫힌 때).
   //  보고를 아직 못 받았으면 사무실 글(「닫힘 — …」)로 · 보고 번호가 없는 카드(개발 진행 방 결정 등)는 건드리지 않음(null = 예전 그대로)
@@ -5596,7 +5619,8 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     if(st0==='choose'){info='보낼 곳을 골라 주세요';act='<button type="button" class="pr" data-act="out" data-id="'+k+'" data-op="pick">고르기</button><button type="button" data-act="out" data-id="'+k+'" data-op="del">지우기</button>';}
     else if(st0==='fail'){info='보내지 못했습니다 — '+(e.err||'');act='<button type="button" class="pr" data-act="out" data-id="'+k+'" data-op="retry">다시</button><button type="button" data-act="out" data-id="'+k+'" data-op="del">지우기</button>';}
     else info=st0==='done'?'사무실 PC 가 받았습니다':'PC로 보내는 중';
-    return '<div class="tk-m tk-me'+cls+'" data-mid="out:'+k+'" data-out="'+esc(st0)+'"><div class="tk-w"><div class="tk-row"><button type="button" class="tk-bub" data-act="out" data-id="'+k+'" data-op="info">'+(e.replyText?'<span class="tk-rq">↩ '+txt(clip(e.replyText,40))+'</span>':'')+esc(e.text)+'</button><span class="tk-tm">'+esc(hm(e.at))+'</span></div><div class="tk-oinfo">'+(st0==='sending'||st0==='done'?IC('i-clock'):'')+esc(info)+'</div>'+(act?'<div class="tk-oact">'+act+'</div>':'')+'</div></div>';
+    var oth=tk.outThumb[rid]||[], opics=oth.length?'<div class="tk-row"><div class="tk-pics n'+Math.min(oth.length,4)+'">'+oth.map(function(u){return '<span class="tk-pic"><img alt="보내는 사진" src="'+esc(u)+'"></span>'}).join('')+'</div></div>':(Array.isArray(e.att)&&e.att.length?'<div class="tk-row"><span class="tk-pchip">'+IC('i-camera')+'사진 '+e.att.length+'장</span></div>':''); // (261124 사진)
+    return '<div class="tk-m tk-me'+cls+'" data-mid="out:'+k+'" data-out="'+esc(st0)+'"><div class="tk-w">'+opics+'<div class="tk-row"><button type="button" class="tk-bub" data-act="out" data-id="'+k+'" data-op="info">'+(e.replyText?'<span class="tk-rq">↩ '+txt(clip(e.replyText,40))+'</span>':'')+esc(e.text)+'</button><span class="tk-tm">'+esc(hm(e.at))+'</span></div><div class="tk-oinfo">'+(st0==='sending'||st0==='done'?IC('i-clock'):'')+esc(info)+'</div>'+(act?'<div class="tk-oact">'+act+'</div>':'')+'</div></div>';
   }
   function tkMsgsHtml(room,o){
     var ms=tkMsgs(room), h='', lastDay='', prevFrom='', prevAt=0, rids={};
@@ -5647,8 +5671,8 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     setHTML(el,'<header class="tk-rh"><a class="bk m" href="#talk" aria-label="톡 목록으로">'+IC('i-chev-l')+'</a><span id="tkRhAv"></span><h2 id="tkRhT"></h2></header>'+
       '<div class="tk-scroll" id="tkScroll"><div class="tk-msgs" id="tkMsgs"></div></div>'+
       '<div class="tk-sb" id="tkSb"></div>'+
-      '<div class="tk-inp own" id="tkInp"><div class="tk-chips" id="tkChips"></div><div class="tk-qb" id="tkQb"></div><div class="tk-dest" id="tkDest"></div>'+
-      '<form class="tk-ib" id="tkForm" autocomplete="off"><textarea id="tkTxt" data-keep="tk-txt-'+esc(room)+'" rows="1"></textarea><button type="submit" class="tk-send" aria-label="보내기">'+IC('i-send')+'</button></form></div>'+
+      '<div class="tk-inp own" id="tkInp"><div class="tk-chips" id="tkChips"></div><div class="tk-qb" id="tkQb"></div><div class="tk-dest" id="tkDest"></div>'+(room==='dev'?'<div class="tk-atts" id="tkAtts" hidden></div>':'')+
+      '<form class="tk-ib" id="tkForm" autocomplete="off">'+(room==='dev'?'<button type="button" class="tk-att-b" data-act="attpick" aria-label="사진 넣기" title="사진 넣기 — 끌어다 놓거나 붙여 넣어도 돼요">'+IC('i-camera')+'</button><input type="file" id="tkFile" accept="image/*" multiple hidden>':'')+'<textarea id="tkTxt" data-keep="tk-txt-'+esc(room)+'" rows="1"></textarea><button type="submit" class="tk-send" aria-label="보내기">'+IC('i-send')+'</button></form></div>'+
       '<div class="tk-ro sub">읽기 전용 — 연락처·금액은 가려져 있습니다</div>');
     var ta1=$('#tkTxt'); if(ta1){var ml=grp?4000:2000;if(ta1.maxLength!==ml)ta1.maxLength=ml;if(ta1.placeholder!==ph)ta1.placeholder=ph;if(ta1.getAttribute('aria-label')!==phl)ta1.setAttribute('aria-label',phl);tkWatchTa(ta1);}
     // (IOS-03) 새로 그린 입력칸이 비었으면 이 방 초안을 되살린다(같은 방 다시 그리기는 data-keep 이 지킴)
@@ -5924,11 +5948,12 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     if(!guard()) return;
     var room=tk.room, r=roomById(room), ta=$('#tkTxt'); if(!r||!ta) return;
     var text=ta.value.trim(), grp=isGrp(r), b=tk.band[room]||null, max=grp?4000:2000;
-    if(!text){toast('보낼 글을 적어 주세요','info');tkFocus();return;}
+    if(!text&&!(isDev(r)&&tk.att.length)){toast('보낼 글을 적어 주세요','info');tkFocus();return;}
     if(text.length>max){toast('글이 너무 깁니다('+max+'자까지)','info');return;}
     if(isDev(r)){
-      if(b&&b.mode==='answer'&&b.replyTo){tkSendNow({room:room,text:text,mode:'answer',replyTo:b.replyTo},b);return;}
-      tkSendNow(Object.assign({room:room,text:text,mode:'note'},b&&b.replyTo?{replyTo:b.replyTo}:{}),b);return;
+      var dp=(b&&b.mode==='answer'&&b.replyTo)?{room:room,text:text,mode:'answer',replyTo:b.replyTo}:Object.assign({room:room,text:text,mode:'note'},b&&b.replyTo?{replyTo:b.replyTo}:{});
+      if(tk.att.length){tkAttSend(dp,b);return;} // (261124 사진)
+      tkSendNow(dp,b);return;
     }
     if(grp){
       if(b&&b.mode==='answer'&&b.replyTo){tkSendNow({room:room,text:text,mode:'answer',replyTo:b.replyTo},b);return;}
@@ -6020,9 +6045,124 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
       ask({pill:'@ 담당 추천',pillCls:'b-info',title:'누구에게 맡기면 좋을까요?',body:'<p>추천은 힌트입니다 — 최종 배분은 '+esc(LS())+'이 합니다. 결과물을 만드는 직원만 고를 수 있습니다.</p>',choices:[{value:'',label:'추천 없음'}].concat(WRITERS().map(function(id){return {value:id,label:short(id)||id}})),choiceDefault:ch.hint||'',ok:'고르기'}).then(function(r){if(r===null)return;ch.hint=r.choice||'';renderTalk();});
     }
   }
+  // ── (261124 사진) 개발 진행 방 사진 넣기 — 대표 「바탕화면에서 드래그해서 넣거나 복사 붙여넣기로 넣거나 관계없이」 ──
+  //  고른 사진은 이 창에서 보기 좋은 크기(긴 변 2048px · JPEG)로 줄여(위치 정보는 빠짐) 온라인 저장소 uploads/{번호}(+ 조각 parts/{n})에 올리고,
+  //  톡 명령(chatSend)에는 사진 번호만 싣는다 → 사무실 PC 가 받아 이 PC 에 저장 → Claude 가 직접 열어 봄. 사진은 한 번에 10장까지.
+  function tkAttOk(){var r=roomById(tk.room);return !!r&&isDev(r)&&ui.role==='owner';}
+  function tkHex(n){var a=new Uint8Array(n);crypto.getRandomValues(a);return Array.prototype.map.call(a,function(x){return ('0'+x.toString(16)).slice(-2)}).join('').slice(0,n*2);}
+  function tkImgPrep(file){
+    return new Promise(function(ok,bad){
+      var u=URL.createObjectURL(file), im=document.createElement('img');
+      im.onload=function(){
+        try{
+          var W=im.naturalWidth||im.width, H=im.naturalHeight||im.height; if(!W||!H) throw new Error('빈 사진');
+          var sc=Math.min(1,2048/Math.max(W,H)), w=Math.max(1,Math.round(W*sc)), h=Math.max(1,Math.round(H*sc));
+          var c=document.createElement('canvas'); c.width=w; c.height=h; var x=c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,w,h); x.drawImage(im,0,0,w,h);
+          var ts=Math.min(1,360/Math.max(w,h)), tc=document.createElement('canvas'); tc.width=Math.max(1,Math.round(w*ts)); tc.height=Math.max(1,Math.round(h*ts)); tc.getContext('2d').drawImage(c,0,0,tc.width,tc.height);
+          var thumb=tc.toDataURL('image/jpeg',0.72);
+          c.toBlob(function(bl){URL.revokeObjectURL(u); if(!bl) return bad(new Error('사진을 줄이지 못했어요')); ok({blob:bl,w:w,h:h,thumb:thumb,name:String(file.name||'사진').slice(0,120)});},'image/jpeg',0.86);
+        }catch(e){URL.revokeObjectURL(u);bad(e);}
+      };
+      im.onerror=function(){URL.revokeObjectURL(u);bad(new Error('이 사진은 열 수 없어요(사진 파일인지 확인해 주세요)'));};
+      im.src=u;
+    });
+  }
+  function tkAttAdd(files){
+    if(!tkAttOk()||tk.attBusy) return;
+    var L=Array.prototype.slice.call(files||[]).filter(function(f){return f&&/^image\//.test(f.type||'')});
+    if(!L.length){toast('사진 파일만 넣을 수 있어요','info');return;}
+    var room=Math.max(0,10-tk.att.length); if(L.length>room) toast('사진은 한 번에 10장까지예요 — 앞의 '+room+'장만 넣었어요','info');
+    L=L.slice(0,room).filter(function(f){if(f.size>40*1024*1024){toast('너무 큰 사진은 뺐어요(40MB 넘음)','info');return false;}return true;});
+    L.forEach(function(f){
+      var key='a'+tkHex(5), ph={key:key,name:String(f.name||'사진'),prep:true};
+      tk.att.push(ph); tkAttRender();
+      tkImgPrep(f).then(function(o){var a=tk.att.filter(function(x){return x.key===key})[0]; if(!a) return; a.prep=false; a.blob=o.blob; a.w=o.w; a.h=o.h; a.thumb=o.thumb; a.name=o.name; tkAttRender();},
+        function(e){tk.att=tk.att.filter(function(x){return x.key!==key}); toast(e&&e.message?e.message:'사진을 넣지 못했어요','info'); tkAttRender();});
+    });
+  }
+  function tkAttRender(){
+    var box=$('#tkAtts'); if(!box) return;
+    if(!tkAttOk()||!tk.att.length){if(!box.hidden){box.hidden=true;setHTML(box,'');}return;}
+    box.hidden=false;
+    setHTML(box,(tk.attBusy?'<span class="tk-atts-st">'+esc(tk.attBusy)+'</span>':'')+tk.att.map(function(a){
+      return '<span class="tk-att'+(a.prep?' prep':'')+'">'+(a.thumb?'<img alt="" src="'+esc(a.thumb)+'">':'<i aria-hidden="true"></i>')+(tk.attBusy?'':'<button type="button" class="tk-att-x" data-act="attdel" data-id="'+esc(a.key)+'" aria-label="이 사진 빼기">'+IC('i-x')+'</button>')+'</span>';
+    }).join('')+'<span class="tk-atts-n">사진 '+tk.att.length+'장 · 글은 함께 적어도 되고 비워도 돼요</span>');
+  }
+  function tkB64(blob){return new Promise(function(ok,bad){var fr=new FileReader();fr.onload=function(){var s=String(fr.result||''),i=s.indexOf(',');ok(i>=0?s.slice(i+1):'');};fr.onerror=function(){bad(fr.error||new Error('읽기 실패'));};fr.readAsDataURL(blob);});}
+  function tkSha(blob){return blob.arrayBuffer().then(function(ab){return crypto.subtle.digest('SHA-256',ab);}).then(function(h){return Array.prototype.map.call(new Uint8Array(h),function(x){return ('0'+x.toString(16)).slice(-2)}).join('');});}
+  function tkUpOne(a){
+    var id='u'+tkHex(12);
+    return Promise.all([tkB64(a.blob),tkSha(a.blob)]).then(function(r){
+      var b64=r[0], sh=r[1], CH=700000, parts=[]; for(var i=0;i<b64.length;i+=CH) parts.push(b64.slice(i,i+CH));
+      var chain=Promise.resolve();
+      parts.forEach(function(d,n){chain=chain.then(function(){return setDoc(doc(db,ROOT[0],ROOT[1],'uploads',id,'parts',String(n)),{d:d,n:n});});});
+      return chain.then(function(){return setDoc(doc(db,ROOT[0],ROOT[1],'uploads',id),{status:'ready',name:a.name||'사진',type:'image/jpeg',bytes:a.blob.size,w:a.w,h:a.h,parts:parts.length,sha256:sh,thumb:a.thumb,createdAt:serverTimestamp()});}).then(function(){tk.picT[id]=a.thumb;return id;});
+    });
+  }
+  function tkAttSend(p,b){
+    if(!guard()||tk.attBusy) return;
+    if(tk.att.some(function(a){return a.prep})){toast('사진을 준비하는 중이에요 — 잠깐 뒤에 보내 주세요','info');return;}
+    var A=tk.att.slice(), ids=[], i=0;
+    function next(){
+      if(i>=A.length){tk.attBusy=''; tk.att=[]; tkAttRender(); var q=Object.assign({},p,{att:ids,attThumbs:A.map(function(a){return a.thumb})}); tkSendNow(q,b); return;}
+      tk.attBusy='올리는 중 '+(i+1)+'/'+A.length; tkAttRender();
+      tkUpOne(A[i]).then(function(id){ids.push(id);i++;next();},function(){tk.attBusy='';tkAttRender();toast('사진을 올리지 못했어요 — 인터넷 연결을 확인하고 다시 보내 주세요','info');});
+    }
+    next();
+  }
+  function tkPicsHtml(att){
+    if(!Array.isArray(att)||!att.length) return '';
+    return '<div class="tk-pics n'+Math.min(att.length,4)+'">'+att.slice(0,10).map(function(a){
+      var id=String((a&&a.id)||''); if(!/^u[a-f0-9]{24}$/.test(id)) return '';
+      var t=tk.picT[id], ar=a.w&&a.h?' style="aspect-ratio:'+(+a.w)+'/'+(+a.h)+'"':'';
+      return '<button type="button" class="tk-pic" data-act="pic" data-id="'+id+'"'+ar+' aria-label="사진 크게 보기">'+(t&&t!=='x'?'<img alt="사진" src="'+esc(t)+'">':'<span class="tk-pic-ph">'+IC('i-camera')+(t==='x'?'사진':'')+'</span>')+'</button>';
+    }).join('')+'</div>';
+  }
+  function tkPicLoad(){
+    $$('#tk .tk-pic[data-id]').forEach(function(bn){
+      var id=bn.getAttribute('data-id'); if(!id||tk.picT[id]!==undefined) return;
+      tk.picT[id]=null; // 불러오는 중
+      getDoc(doc(db,ROOT[0],ROOT[1],'uploads',id)).then(function(d){var o=d.exists()?d.data():null;tk.picT[id]=o&&typeof o.thumb==='string'&&/^data:image\/(jpeg|png|webp);base64,/.test(o.thumb)?o.thumb:'x';})
+        .catch(function(){tk.picT[id]='x';}).then(function(){renderTalk();});
+    });
+  }
+  function tkPicOpen(id){
+    if(!/^u[a-f0-9]{24}$/.test(id||'')) return;
+    var ov=document.createElement('div'); ov.className='tk-pv'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-label','사진 크게 보기');
+    setHTML(ov,'<button type="button" class="tk-pv-x" aria-label="닫기">'+IC('i-x')+'</button><div class="tk-pv-in"><span class="tk-pv-st">사진을 불러오는 중…</span></div>');
+    document.body.appendChild(ov);
+    var url='', close=function(){if(url)URL.revokeObjectURL(url);ov.remove();document.removeEventListener('keydown',esc1);}, esc1=function(e){if(e.key==='Escape')close();};
+    ov.addEventListener('click',function(e){if(e.target===ov||e.target.closest('.tk-pv-x'))close();}); document.addEventListener('keydown',esc1);
+    getDoc(doc(db,ROOT[0],ROOT[1],'uploads',id)).then(function(d){
+      var m=d.exists()?d.data():null, n=m&&Number(m.parts); if(!m||!(n>=1&&n<=30)) throw new Error('사진을 찾지 못했어요');
+      var ps=[]; for(var i=0;i<n;i++) ps.push(getDoc(doc(db,ROOT[0],ROOT[1],'uploads',id,'parts',String(i))));
+      return Promise.all(ps).then(function(L){
+        var b64=L.map(function(x){var o=x.exists()?x.data():null;return o&&typeof o.d==='string'?o.d:''}).join(''), bin=atob(b64), u8=new Uint8Array(bin.length);
+        for(var k=0;k<bin.length;k++) u8[k]=bin.charCodeAt(k);
+        url=URL.createObjectURL(new Blob([u8],{type:'image/jpeg'}));
+        var box=ov.querySelector('.tk-pv-in'); if(box) setHTML(box,'<img alt="사진" src="'+esc(url)+'">');
+      });
+    }).catch(function(e){var box=ov.querySelector('.tk-pv-in'); if(box) setHTML(box,'<span class="tk-pv-st">'+esc((e&&e.message)||'사진을 불러오지 못했어요')+'</span>');});
+  }
+  // 붙여넣기(맥북 ⌘V · 폰 붙여넣기) · 끌어다 놓기(바탕화면 · 파인더) · 파일 고르기 — 개발 진행 방이 열려 있고 대표일 때만
+  document.addEventListener('paste',function(e){
+    if(!tkAttOk()||ui.cur!=='talk') return;
+    var cd=e.clipboardData, L=cd&&cd.files?Array.prototype.slice.call(cd.files):[];
+    if(!L.length&&cd&&cd.items) Array.prototype.forEach.call(cd.items,function(it){if(it.kind==='file'&&/^image\//.test(it.type)){var f=it.getAsFile();if(f)L.push(f);}});
+    L=L.filter(function(f){return /^image\//.test(f.type||'')});
+    if(L.length){e.preventDefault();tkAttAdd(L);}
+  });
+  function tkDragFiles(e){var dt=e.dataTransfer;return !!dt&&Array.prototype.indexOf.call(dt.types||[],'Files')>=0;}
+  document.addEventListener('dragover',function(e){if(!tkAttOk()||ui.cur!=='talk'||!tkDragFiles(e)) return; e.preventDefault(); try{e.dataTransfer.dropEffect='copy';}catch(x){} var t=$('#tk'); if(t) t.classList.add('tk-drop');});
+  document.addEventListener('dragleave',function(e){if(e.target===document.documentElement||!e.relatedTarget){var t=$('#tk'); if(t) t.classList.remove('tk-drop');}});
+  document.addEventListener('drop',function(e){var t=$('#tk'); if(t) t.classList.remove('tk-drop'); if(!tkAttOk()||ui.cur!=='talk'||!tkDragFiles(e)) return; e.preventDefault(); tkAttAdd(e.dataTransfer.files);});
+  document.addEventListener('change',function(e){var f=e.target; if(f&&f.id==='tkFile'){tkAttAdd(f.files); f.value='';}});
   function tkAct(act,id,el){
     var room=tk.room, m;
     switch(act){
+      case 'attpick': {var fi=$('#tkFile'); if(fi&&!tk.attBusy) fi.click(); return;} // (261124 사진)
+      case 'attdel': if(tk.attBusy) return; tk.att=tk.att.filter(function(a){return a.key!==id}); tkAttRender(); return;
+      case 'pic': tkPicOpen(id); return;
       case 'opt': var lb=el.getAttribute('data-opt')||''; if(lb.length>12||!id) return; tk.opt[id]=lb; renderTalk(); return;
       case 'approve': tkApprove(id); return;
       case 'revise': m=tkMsg(room,id); if(!m||!guard()) return; tk.band[room]=tkBandFor(m,'revise'); renderTalk(); tkFocus(); return;
