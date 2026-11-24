@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <!-- (261005 배포전검토2 C4-3) 화면 판 — 배포할 때마다 바꾼다. 아이폰 메뉴 「다시 불러오기」 줄과 배포 파일 확인에 쓴다(README 21-6c 9-③④) -->
-<meta name="mdo-hub-build" content="261124c">
+<meta name="mdo-hub-build" content="261124d">
 <meta name="theme-color" content="#F4F3EE">
 <title>maydly 사무실</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -2359,6 +2359,44 @@ section[data-route="reports"].on .rv-doc{animation:v6fade var(--t-mid) var(--e-o
   section[data-route="reports"] .pane-l .rv-turn .rv-row:not(.act):hover{background:rgba(255,255,255,.45)}
   .hs-j:hover{box-shadow:inset 0 0 0 1px var(--line-2)}
 }
+/* ── (261124 빼기) 결재함 「빼기」 — 차례 줄 · 보고서 아래 줄 · 결재함의 조용한 빼기(초록 아님) · 1주 넘은 질문 한 번에 빼기 · 뺀 질문 한 줄 + 되살리기 ──
+   재료는 2차 층 그대로(굵기 600 이하 · 11.5px 이상 · 작은 글자 ink-3 이상 진하게) · 진한 초록은 답하기·승인 단추에만 */
+.td-wsh{flex-wrap:wrap;row-gap:0}
+.td-wsh>a{order:1}
+.td-bx{order:2;flex:1 1 100%;display:flex;min-width:0}
+.td-bx:empty{display:none}
+.td-bulk{display:inline-flex;align-items:center;min-height:32px;padding:0 2px;font-size:13px;font-weight:500;line-height:1.4;color:var(--ink-2);text-align:left;text-decoration:underline;text-decoration-color:rgba(23,33,29,.28);text-underline-offset:3px}
+.td-bulk:active{color:var(--ink)}
+@media(min-width:600px){.td-wsh>.td-bx{order:1;flex:0 1 auto;margin-left:auto}.td-wsh>a{order:2}}
+.tw-b.gh,.rv-b.gh{background:transparent;box-shadow:none;color:var(--ink-3);font-weight:500;padding:0 12px}
+.tw-b.gh:active,.rv-b.gh:active{background:var(--fill)}
+.tw-pd,.rv-pd{display:inline-flex;align-items:center;min-height:40px;padding:0 6px;font-size:13px;line-height:1.4;color:var(--ink-3)}
+.rv-pd{min-height:44px}
+.rv-qx{flex:1 1 100%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px 10px;min-width:0}
+.rv-qx>span:first-child{min-width:0;font-size:13px;line-height:1.5;color:var(--ink-2)}
+.rv-hc{flex:none;font-size:12.5px;line-height:1.4}
+.btn-g{background:transparent;color:var(--ink-2);font-weight:500;box-shadow:inset 0 0 0 1px var(--line-2)}
+.btn-g:active{background:var(--fill)}
+.acts3.x3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(min-width:1024px){.pane-d .acts3.x3{flex-wrap:wrap;gap:6px}.pane-d .acts3.x3>.btn:not(.btn-big){padding:0 13px}.pane-d .acts3.x3>.btn-big{padding:0 15px}} /* 넓은 화면 가운데 칸이 좁아도(1280) 네 단추가 칸 밖으로 잘리지 않게 — 더 좁으면 줄바꿈 */
+.ask-q{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);font-size:13.5px;line-height:1.55;color:var(--ink);overflow-wrap:anywhere}
+.modal .mb .ask-ql{margin-top:10px;padding-left:0;list-style:none}
+.ask-ql li{padding:8px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.5;color:var(--ink);overflow-wrap:anywhere}
+.ask-ql li:first-child{border-top:0}
+.ask-ql small{display:block;margin-top:1px;font-size:12.5px;color:var(--ink-3)}
+.ask-ql li.ask-qn{font-size:13px;color:var(--ink-3)}
+@media(hover:hover){.tw-b.gh:hover,.rv-b.gh:hover,.btn-g:hover{background:var(--fill);color:var(--ink-2)}.td-bulk:hover{color:var(--ink)}}
+/* ── (261124 미리보기) 결과물 미리보기 — 사무실이 정리한 화면(html)을 보고서와 같은 sandbox 틀에(미색 바탕 · 폰은 꽉 찬 폭 · 넓은 화면은 가운데 칸) ──
+   정리된 화면이 없으면(옛 사무실 · 너무 큼) 예전 글 화면 그대로 */
+.pv-doc{display:flex;flex-direction:column;gap:12px;min-width:0}
+.pv-h{margin-top:10px;font-size:17px;font-weight:600;line-height:1.4;letter-spacing:-.02em;color:var(--ink);word-break:break-all}
+.pv-loc{margin-top:6px}.pv-loc summary{display:inline-block;cursor:pointer;list-style:none;font-size:12.5px;color:var(--ink-3)}.pv-loc summary::-webkit-details-marker{display:none}.pv-loc summary::after{content:" ›"}.pv-loc[open] summary::after{content:" ⌄"}.pv-loc:not([open]) .path{display:none}.pv-loc[open] .path{display:block;margin-top:6px}
+.pv-cut{margin-top:8px;font-size:12.5px;line-height:1.5;color:var(--ink-3)}
+.pv-frame{position:relative;min-width:0;height:calc(100vh - 150px - var(--sat) - var(--sab));height:calc(100dvh - 150px - var(--sat) - var(--sab));min-height:420px;border-radius:20px;overflow:hidden;background:var(--paper);box-shadow:0 0 0 .5px var(--line-2),0 14px 30px -24px rgba(23,33,29,.25)}
+.pv-frame iframe{position:absolute;inset:0;display:block;width:100%;height:100%;border:0;background:var(--paper)}
+@media(min-width:1024px){
+  section[data-route="preview"] .pv-frame{height:calc(100vh - 120px);min-height:480px;border-radius:16px}
+}
 /* 260930 아이폰: 입력 글씨 16px 미만이면 누를 때 화면이 확대됨 → 모바일 화면(1023px 이하)·터치 기기에서만 16px. 데스크톱 모양 그대로 */
 /*  (261004 배포전검토1 M1) 9/30 라이브에 직접 넣은 수정(maydly/note 03919ac)을 코드 원본으로 옮기고, 1-10 톡 입력칸(.tk-ib textarea · .tk-search input)과
     그 밖 입력·선택칸 전부로 넓혔다. 톡 칸 규칙보다 뒤에 두어야 이긴다(그래서 스타일 맨 끝 — 톡 CSS 묶음 밖이라 tk- 접두어 검사 대상 아님). maximum-scale 은 쓰지 않는다(손가락 확대는 그대로). */
@@ -2558,7 +2596,8 @@ section[data-route="reports"].on .rv-doc{animation:v6fade var(--t-mid) var(--e-o
               <div class="cd td-flow" id="homeFlow"></div>
             </div>
             <div class="td-sec">
-              <div class="sh"><h2 id="homeWaitH">차례</h2><a href="#approvals">결재함<svg class="ic"><use href="#i-chev-r"/></svg></a></div>
+              <!-- (261124 빼기) 머리 줄에 「1주 넘은 질문 N건 한 번에 빼기」(대표만 · 2건 이상일 때) — 폰은 둘째 줄로 -->
+              <div class="sh td-wsh"><h2 id="homeWaitH">차례</h2><span class="td-bx own" id="homeWaitX"></span><a href="#approvals">결재함<svg class="ic"><use href="#i-chev-r"/></svg></a></div>
               <div id="homeWait"></div>
             </div>
             <div class="hcols">
@@ -2758,7 +2797,7 @@ section[data-route="reports"].on .rv-doc{animation:v6fade var(--t-mid) var(--e-o
           <div class="pane-l">
             <div class="pghead">
               <h1 class="lt">결과물 미리보기</h1>
-              <p class="lts">글만 보여 드립니다. 사진·영상은 허브에서 보지 않고, 연락처·금액은 가립니다. 최근 결과물만 온라인에 올라옵니다.</p>
+              <p class="lts">사무실이 보기 좋게 정리한 화면으로 보여 드려요(정리된 화면이 아직 없으면 글로). 사진·영상은 허브에서 보지 않고, 연락처·금액은 가립니다. 최근 결과물만 온라인에 올라옵니다.</p><!-- (261124 미리보기) 예전 「글만 보여 드립니다」 → 정리된 화면 -->
             </div>
             <div class="chips" role="group" aria-label="결과물 필터">
               <button type="button" class="chip sel" data-pf="all">전체</button><button type="button" class="chip" data-pf="today">오늘 만든 것</button><button type="button" class="chip" data-pf="appr">결재 연결</button>
@@ -2831,7 +2870,7 @@ section[data-route="reports"].on .rv-doc{animation:v6fade var(--t-mid) var(--e-o
       <li><a href="#rules"><svg class="ic"><use href="#i-bulb"/></svg>여기서 할 수 있는 일<span class="small">직원마다 무엇을 맡길 수 있는지</span></a></li>
       <li class="own"><a href="#" data-gripe><svg class="ic"><use href="#i-pen"/></svg>불편해요<span class="small">보던 화면과 함께 Claude에게 바로</span></a></li>
       <li><a href="#rules"><svg class="ic"><use href="#i-sliders"/></svg>설정 · 규칙<span class="small">읽기 전용</span></a></li>
-      <li><a href="#" data-reload><svg class="ic"><use href="#i-refresh"/></svg>다시 불러오기<span class="small">새 화면 받기 · 화면 판 261124c</span></a></li>
+      <li><a href="#" data-reload><svg class="ic"><use href="#i-refresh"/></svg>다시 불러오기<span class="small">새 화면 받기 · 화면 판 261124d</span></a></li>
       <li><a href="#login" data-logout><svg class="ic"><use href="#i-logout"/></svg>로그아웃</a></li>
     </ul>
     <p class="note" style="margin-top:12px">로그인한 구글 계정으로 대표·열람이 정해집니다. 화면의 자료는 사무실 PC 가 올린 것이고, 조작은 사무실 PC 가 가져가 처리합니다.</p>
@@ -2944,7 +2983,10 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
   function isToday(v){var k=kp(v),t=kp(now());return !!(k&&t&&k.key===t.key)}
   function when(v){var k=kp(v);if(!k)return '';return isToday(v)?hm(v):k.M+'/'+k.D+' '+hm(v)}
   function agoText(ms){var s=Math.max(0,Math.round(ms/1000));if(s<60)return s+'초 전';var m=Math.floor(s/60);if(m<60)return m+'분 전';var h=Math.floor(m/60);return h+'시간 '+(m%60)+'분 전'}
-  function durText(ms){var m=Math.max(0,Math.floor(ms/60000));if(m<1)return '방금';if(m<60)return m+'분째';var h=Math.floor(m/60);return h+'시간'+(m%60?' '+(m%60)+'분':'')+'째'}
+  // (261124 빼기) 하루 넘게 기다린 것은 「N일째」 — 1~2주 기다린 질문이 「216시간째」로 보이던 것
+  function durText(ms){var m=Math.max(0,Math.floor(ms/60000));if(m<1)return '방금';if(m<60)return m+'분째';var h=Math.floor(m/60);if(h>=24)return Math.floor(h/24)+'일째';return h+'시간'+(m%60?' '+(m%60)+'분':'')+'째'}
+  // (261124 빼기) 「M/D HH:MM」 — 오늘이어도 날짜까지(뺀 질문 한 줄)
+  function mdhm(v){var k=kp(v);return k?k.M+'/'+k.D+' '+p2(k.h)+':'+p2(k.m):''}
   function durShort(t){var m=Math.max(0,Math.floor((now()-new Date(t))/60000));if(m<60)return m+'분';var h=Math.floor(m/60);return h+'시간'+(m%60?' '+(m%60)+'분':'')}
   function leftText(t){var m=Math.max(0,Math.round((new Date(t)-now())/60000));if(m<60)return m+'분 후';var h=Math.floor(m/60);return h+'시간'+(m%60?' '+(m%60)+'분':'')+' 후'}
   function sigSpan(){return '<span data-ago="signal">'+(conn.lastOkAt?agoText(Date.now()-conn.lastOkAt):'—')+'</span>'}
@@ -3311,7 +3353,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
         inboxDocs=[];
         snap.forEach(function(d){var x=d.data();x.id=d.id;inboxDocs.push(x);
           if((x.status==='done'||x.status==='err')&&pending[d.id]){var p=pending[d.id];delete pending[d.id];try{p.cb(x.result||{ok:x.status==='done'})}catch(e){}}});
-        renderChrome(); renderPending();
+        renderChrome(); renderPending(); qPendSync(); // (261124 빼기) 빼기·되살리기 대기가 바뀌면 오늘·보고서 다시(「빼는 중」)
       },function(){}));
       // (1-10) 톡 글 전용 — 아직 사무실 PC 가 가져가지 않은 chatSend 만(정렬은 기기에서 · 복합 색인 불필요).
       //  위 최근 20건 창 밖으로 밀려 결과를 놓치지 않게, 보낸 요청 ID 의 명령 문서는 따로 구독한다(tkWatch).
@@ -3531,7 +3573,8 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
   function nextBrief(){var rv=st().routines,nx=null;if(rv&&rv.list)rv.list.filter(function(x){return x.kind==='brief'||x.kind==='daily-log'||x.kind==='weekly'}).forEach(function(x){if(x.next&&(!nx||x.next<nx.next))nx=x;});return nx}
   function newsCls(t){t=String(t||'');return /정지|긴급|위반|실패/.test(t)?'t-r':/결재|질문/.test(t)?'t-a':/검수/.test(t)?'t-b':/퇴근|꺼졌|꺼짐/.test(t)?'t-n':/정기|브리핑|업무일지|주간보고|점검/.test(t)?'t-t':/제안/.test(t)?'t-v':''}
   function newsTl(n,empty){var nw=st().news.slice(0,n);return nw.length?nw.map(function(x){return '<li class="'+newsCls(x.text)+'"><time>'+esc(when(x.at))+'</time><p>'+txt(x.text)+'</p></li>'}).join(''):'<li class="tl-e">'+(empty||'아직 소식이 없습니다.')+'</li>'}
-  var CMD_LB={order:['지시','i-send','it-g'],approval:['결재','i-stamp','it-a'],answer:['질문 답','i-msg','it-b'],staffLeave:['퇴근시키기','i-moon','it-n'],staffReturn:['출근시키기','i-power','it-g'],officeStop:['긴급정지','i-stop','it-r'],officeStart:['확인하고 출근','i-power','it-g'],chatSend:['톡','i-chat','it-g'],chatRead:['톡 읽음','i-check','it-n'],power:['근무·대기','i-power','it-n'],pushTest:['시험 알림','i-bell','it-n'],proposalStart:['제안 착수','i-play','it-v'],handoffNote:['기기 바꿈 메모','i-swap','it-t']};
+  var CMD_LB={order:['지시','i-send','it-g'],approval:['결재','i-stamp','it-a'],answer:['질문 답','i-msg','it-b'],staffLeave:['퇴근시키기','i-moon','it-n'],staffReturn:['출근시키기','i-power','it-g'],officeStop:['긴급정지','i-stop','it-r'],officeStart:['확인하고 출근','i-power','it-g'],chatSend:['톡','i-chat','it-g'],chatRead:['톡 읽음','i-check','it-n'],power:['근무·대기','i-power','it-n'],pushTest:['시험 알림','i-bell','it-n'],proposalStart:['제안 착수','i-play','it-v'],handoffNote:['기기 바꿈 메모','i-swap','it-t'],
+    questionDismiss:['질문 빼기','i-x','it-n'],questionRestore:['질문 되살리기','i-refresh','it-n']}; // (261124 빼기)
   function cmdLine(x){
     var p=x.payload||{}, t=CMD_LB[x.type]||[String(x.type||''),'i-send','it-n'], d='';
     if(x.type==='order') d=clip(p.body,40);
@@ -3542,6 +3585,8 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     else if(x.type==='staffLeave'||x.type==='staffReturn') d=nameOf(p.staffId);
     else if(x.type==='proposalStart') d=p.proposalId||'';
     else if(x.type==='handoffNote') d=p.workId||'';
+    else if(x.type==='questionDismiss') d=(p.reportId||'')+(Array.isArray(p.also)&&p.also.length?' 외 '+p.also.length+'건':''); // (261124 빼기)
+    else if(x.type==='questionRestore') d=p.reportId||'';
     var at=x.createdAt&&x.createdAt.toMillis?x.createdAt.toMillis():null;
     return '<div class="pend"><span class="it '+t[2]+'">'+IC(t[1])+'</span><div><b>'+esc(t[0])+(d?' · '+txt(d):'')+'</b><span>'+(at?esc(when(new Date(at)))+' 보냄':'방금 보냄')+' · 사무실 확인 대기</span></div><span class="spin"></span></div>';
   }
@@ -3680,6 +3725,9 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     setHTML($('#homeFlow'),todayFlowHtml(tday));
     // (3) 대표님 차례 — 풀리지 않은 긴급 → 결재(오래된 것부터) → 질문 → 안 읽은 연락 정리 · 열람 계정은 같은 목록을 단추 없이
     setHTML($('#homeWaitH'),esc(on)+'님 차례'+(nWait?'<span class="td-n">'+nWait+'건</span>':''));
+    // (261124 빼기) 1주 넘게 답을 기다린 질문이 2건 이상이면 머리 줄에 「한 번에 빼기」(대표만 그림 · 빼는 중인 것은 세지 않음)
+    var oldq=owner?oldQuestions():[];
+    setHTML($('#homeWaitX'),oldq.length>=2?'<button type="button" class="td-bulk own" data-q-all>1주 넘은 질문 '+oldq.length+'건 한 번에 빼기</button>':'');
     var tw='';
     urg.forEach(function(r){
       var act=(s==='stopped'||s==='limit')?'<button type="button" class="tw-b p" data-office-start>'+IC('i-power')+'확인하고 출근</button>':'<a class="tw-b" href="#reports/'+enc(r.id)+'">보기</a>';
@@ -3689,10 +3737,13 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
       var r=repById(a.id), rec=recOf(a), d=aprDeadline(a), sel=aprSel(a);
       var sub=(rec?'추천 '+esc(rec.label)+' '+txt(rec.text)+' · ':'')+(d?'<span class="due">기한 '+txt(d)+'</span>':'기한 없음')+(a.agentTrial?' '+trialTag(a):'');
       tw+=turnRow('apr','#approvals/'+enc(a.id),txt(aprTitle(a)),[esc(a.kind),r&&r.assignee?'담당 '+esc(short(r.assignee)):esc(LS())+' 올림',esc(durText(now()-new Date(a.createdAt)))],sub,
-        '<a class="tw-b" href="#approvals/'+enc(a.id)+'">자세히</a><button type="button" class="tw-b p" data-apr-approve="'+esc(a.id)+'">'+IC('i-check')+'승인 · '+esc(sel)+'안</button>');
+        (owner?'<button type="button" class="tw-b gh own" data-apr-x="'+esc(a.id)+'">빼기</button>':'')+'<a class="tw-b" href="#approvals/'+enc(a.id)+'">자세히</a><button type="button" class="tw-b p" data-apr-approve="'+esc(a.id)+'">'+IC('i-check')+'승인 · '+esc(sel)+'안</button>'); // (261124 빼기) 조용한 빼기(대표만 그림)
     });
     oq.forEach(function(r){
-      tw+=turnRow('q','#reports/'+enc(r.id),txt(r.lead||r.firstLine),[esc(r.fromTitle||short(r.from)),esc(durText(now()-new Date(r.at)))],(r.jobId?esc(r.jobId)+' · ':'')+'답하시면 이어서 해요','<a class="tw-b p" href="#reports/'+enc(r.id)+'">'+IC('i-msg')+'답하기</a>');
+      // (261124 빼기) 질문 줄 = 조용한 「빼기」 + 답하기 · 빼기를 보내 사무실 처리를 기다리는 동안은 「빼는 중」 한 마디만
+      var qp=owner?qPend(r.id):'';
+      tw+=turnRow('q','#reports/'+enc(r.id),txt(r.lead||r.firstLine),[esc(r.fromTitle||short(r.from)),esc(durText(now()-new Date(r.at)))],(r.jobId?esc(r.jobId)+' · ':'')+'답하시면 이어서 해요',
+        qp==='x'?'<span class="tw-pd own">빼는 중 — 사무실이 처리하면 사라져요</span>':(owner?'<button type="button" class="tw-b gh own" data-q-x="'+esc(r.id)+'">빼기</button>':'')+'<a class="tw-b p" href="#reports/'+enc(r.id)+'">'+IC('i-msg')+'답하기</a>');
     });
     ct.forEach(function(r){
       var n=r.data&&+r.data.todoCount>0?+r.data.todoCount:0;
@@ -4406,7 +4457,8 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
   // 찾기 — 제목 · 결론 · 첫 줄 · 나머지 글 · 보낸 사람 · 종류 · 번호(띄어 쓴 낱말이 모두 들어 있으면)
   function rvFind(r){return [rvTitle(r),r.firstLine,r.lead,r.leadMore,rvWho(r),r.fromTitle,rvK(r)[0],r.type,r.jobId,r.id].join(' ').toLowerCase()}
   function rvChip(r){
-    if(r.type==='질문') return r.open?'<span class="rv-chip du">답 기다림</span>':'<span class="rv-chip ok">'+IC('i-check')+'답함</span>';
+    // (261124 빼기) 질문 상태 한 마디 — 답 기다림 · 답함(체크) · 뺌(대표님이 답 없이 뺌) · 닫음(답 없이 닫힘 — 「그만 묻기」 등). 답 없는 닫힌 질문에 「답함」을 붙이지 않는다
+    if(r.type==='질문') return r.open?'<span class="rv-chip du">답 기다림</span>':r.answered?'<span class="rv-chip ok">'+IC('i-check')+'답함</span>':'<span class="rv-chip nt">'+(r.closed&&r.closed.dismissed?'뺌':'닫음')+'</span>';
     if(r.type==='결재 요청'){var a=aprById(r.id);if(!a)return '';if(a.status==='대기'){var d=aprDeadline(a);return '<span class="rv-chip du">'+IC('i-clock')+(d?'기한 '+txt(d):'결재 대기')+'</span>';}
       return a.status==='승인'?'<span class="rv-chip ok">'+IC('i-check')+'승인'+(a.option?' '+esc(a.option):'')+'</span>':'<span class="rv-chip nt">'+esc(a.status==='수정지시'?'수정 지시':a.status)+'</span>';}
     if(r.type==='긴급') return activeUrgent().indexOf(r)>=0?'<span class="rv-chip ur">확인 필요</span>':'';
@@ -4519,6 +4571,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     if(hs.obj) delete rvNoHtml[id]; else if(hs.none&&!rvNoHtml[id]) rvNoHtml[id]=Date.now();
     setHTML($('#repDetail'),'<div class="rv-doc" data-rv="'+esc(id)+'"><div class="rv-dh" id="repHead"></div><div id="repOwn"></div><div id="repNote"></div><div class="rv-frame" id="repFrame"></div><div class="rv-bar" id="repBar"></div></div>');
     setHTML($('#repHead'),av(r.from,'s36')+'<div class="rv-dt"><b>'+esc(k[0]+' · '+(r.from==='office'?'사무실 프로그램':(r.fromTitle||short(r.from))))+'</b><small>'+txt(rvTitle(r))+'</small></div>'+
+      (r.type==='질문'?'<span class="rv-hc">'+rvChip(r)+'</span>':'')+ // (261124 빼기) 질문은 머리에도 상태 한 마디(답 기다림 · 답함 · 뺌 · 닫음)
       (hs.obj?'<button type="button" class="rv-dl" data-rep-dl="'+esc(id)+'" aria-label="보고서 파일 받기" title="파일 받기">'+IC('i-share')+'</button>':''));
     setHTML($('#repOwn'),owner&&hs.obj&&Array.isArray(r.ownerLines)&&r.ownerLines.length?'<div class="rv-own own">대표님만 · '+r.ownerLines.slice(0,3).map(txt).join(' · ')+'</div>':'');
     setHTML($('#repNote'),hs.obj&&hs.obj.truncated?'<div class="rv-note">보고서가 길어 뒷부분을 줄였습니다 — 전문은 PC 허브·드라이브 파일에서</div>':'');
@@ -4543,7 +4596,13 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     if(r.type==='긴급'&&(s==='stopped'||s==='limit')) h+='<a class="rv-b" href="#office">직원 보기</a>'+(owner?'<button type="button" class="rv-b p own" data-office-start>'+IC('i-power')+'확인하고 출근</button>':'');
     if(oap) h+=owner?'<a class="rv-b p own" href="#approvals/'+enc(oap.id)+'">'+IC('i-stamp')+'결재하기</a>':'<a class="rv-b" href="#approvals/'+enc(oap.id)+'">'+IC('i-stamp')+'결재 보기</a>';
     else if(r.type==='결재 요청'&&a) h+='<a class="rv-b" href="#approvals/'+enc(r.id)+'">'+IC('i-stamp')+'결재 보기</a>';
-    if(r.type==='질문'&&r.open) h+=owner?'<form class="quick rv-ans own" data-answer="'+esc(r.id)+'"><input class="inp" data-keep="ans-'+esc(r.id)+'" maxlength="2000" placeholder="한 줄로 답하기" aria-label="'+esc('답하기 — '+short(r.from)+'에게 전달되고 '+(r.jobId||'일감')+'에 붙습니다')+'"><button type="submit" class="rv-b p">'+IC('i-msg')+'답하기</button></form>':'<p class="rv-ro">열람 전용 — 답은 '+esc(ownerNm())+'님만 할 수 있습니다</p>';
+    //  (261124 빼기) 열린 질문: 답하기 옆 조용한 「빼기」(제출 단추 뒤 — 제출 단추가 폼의 첫 단추) · 뺀 질문: 한 줄 + 「되살리기」 · 답 없이 닫힌 질문: 한 줄
+    var qp=owner&&r.type==='질문'?qPend(r.id):'';
+    if(r.type==='질문'&&r.open) h+=owner?'<form class="quick rv-ans own" data-answer="'+esc(r.id)+'"><input class="inp" data-keep="ans-'+esc(r.id)+'" maxlength="2000" placeholder="한 줄로 답하기" aria-label="'+esc('답하기 — '+short(r.from)+'에게 전달되고 '+(r.jobId||'일감')+'에 붙습니다')+'"><button type="submit" class="rv-b p">'+IC('i-msg')+'답하기</button>'+
+      (qp==='x'?'<span class="rv-pd own">빼는 중</span>':'<button type="button" class="rv-b gh own" data-q-x="'+esc(r.id)+'">빼기</button>')+'</form>':'<p class="rv-ro">열람 전용 — 답은 '+esc(ownerNm())+'님만 할 수 있습니다</p>';
+    else if(r.type==='질문'&&r.closed&&r.closed.dismissed) h+='<div class="rv-qx"><span>'+esc(ownerNm())+'님이 뺀 질문이에요'+(r.closed.at?' · '+esc(mdhm(r.closed.at)):'')+'</span>'+
+      (owner?(qp==='r'?'<span class="rv-pd own">되살리는 중</span>':'<button type="button" class="rv-b own" data-q-back="'+esc(r.id)+'">'+IC('i-refresh')+'되살리기</button>'):'')+'</div>';
+    else if(r.type==='질문'&&!r.answered) h+='<p class="rv-ro">답 없이 닫은 질문이에요'+(r.closed&&r.closed.at?' · '+esc(mdhm(r.closed.at)):'')+'</p>';
     return h;
   }
   function splitState(route,has){var sec=$('section[data-route="'+route+'"]'),sp=sec&&$('.split',sec);if(sp)sp.classList.toggle('has-d',has)}
@@ -4651,7 +4710,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     if(r) h+=phoneHtml(r);
     h+='<div class="ro sub">'+IC('i-eye')+'열람 전용 — 결재는 대표님만 할 수 있습니다</div>';
     if(wait) h+='<div class="sh-act own"><label class="memo">'+IC('i-note')+'<input data-keep="am-'+esc(a.id)+'" data-apr-memo="'+esc(a.id)+'" maxlength="1000" placeholder="메모 (선택) — 예) 제목은 그대로" aria-label="결재 메모"></label>'+
-      '<div class="acts3"><button type="button" class="btn btn-q" data-apr-reject="'+esc(a.id)+'">반려</button><button type="button" class="btn btn-q" data-apr-revise="'+esc(a.id)+'">수정 지시</button><button type="button" class="btn btn-p btn-big" data-apr-approve="'+esc(a.id)+'">'+IC('i-check')+'<span>승인 · <span data-approve-label>'+esc(sel)+'</span>안</span><span class="kbd only-d">'+(IS_MAC?'⌘↵':'Ctrl↵')+'</span></button></div></div>';
+      '<div class="acts3'+(viewer?'':' x3')+'"><button type="button" class="btn btn-q" data-apr-reject="'+esc(a.id)+'">반려</button>'+(viewer?'':'<button type="button" class="btn btn-g own" data-apr-x="'+esc(a.id)+'">빼기</button>')+'<button type="button" class="btn btn-q" data-apr-revise="'+esc(a.id)+'">수정 지시</button><button type="button" class="btn btn-p btn-big" data-apr-approve="'+esc(a.id)+'">'+IC('i-check')+'<span>승인 · <span data-approve-label>'+esc(sel)+'</span>안</span><span class="kbd only-d">'+(IS_MAC?'⌘↵':'Ctrl↵')+'</span></button></div></div>';
     return h+'</article>';
   }
   function emptyApr(nd){return '<div class="cd empty"><div class="eb"><svg class="clvi"><use href="#clover"/></svg><span class="ck">'+IC('i-check')+'</span></div><h3>기다리는 결재가 없습니다</h3><p>결재선 4종 — 최종본 교체 · 새 업무ID ·<br>폴더 이동 · 외부 문안 확정 — 에 해당하는<br>일만 여기에 올라옵니다.</p>'+(nd?'<button type="button" class="btn btn-s" data-tab="done">처리 완료 '+nd+'건 보기'+IC('i-chev-r')+'</button>':'')+'</div>'}
@@ -4702,7 +4761,8 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     return t;
   }
   function renderPreview(){
-    var idx=outputsIndex(), f=idx.filter(function(x){return ui.pf==='all'||(ui.pf==='today'&&isToday(x.at))||(ui.pf==='appr'&&x.apr)});
+    // (261124 미리보기) 업무카드 머리말 갱신(kind header)은 목록에서 뺌 — 주소로 바로 연 경우의 머리 정보(태그 · 일감)는 전체(all)에서 찾음
+    var all=outputsIndex(), idx=all.filter(function(x){return x.kind!=='머리말 갱신'}), f=idx.filter(function(x){return ui.pf==='all'||(ui.pf==='today'&&isToday(x.at))||(ui.pf==='appr'&&x.apr)});
     $$('[data-pf]').forEach(function(c){c.classList.toggle('sel',c.getAttribute('data-pf')===ui.pf)});
     var groups={},order=[];
     f.forEach(function(x){var w=x.job.workId||'업무ID 미정';if(!groups[w]){groups[w]=[];order.push(w);}groups[w].push(x)});
@@ -4716,8 +4776,10 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
       var c=fileCache[ui.id], ent=((base&&base.previewIndex)||[]).filter(function(x){return x.rel===ui.id})[0];
       if(c&&!c.loading&&ent&&c.v!==ent.v) c=null; // 내용이 바뀜 → 다시 읽기
       if(!c){fileCache[ui.id]={loading:true};c=fileCache[ui.id];fetchFile(ui.id);}
-      setHTML($('#prevDetail'),prevDoc(ui.id,c,idx));
-      var px=idx.filter(function(y){return y.rel===ui.id})[0];
+      // (261124 미리보기) 사무실이 정리한 화면(html)이 있으면 보고서와 같은 sandbox 틀에 · 없으면(옛 사무실 · 너무 큼) 예전 글 화면 그대로
+      if(c.data&&typeof c.data.html==='string'&&c.data.html) prevHtmlView(ui.id,c,all);
+      else setHTML($('#prevDetail'),prevDoc(ui.id,c,all));
+      var px=all.filter(function(y){return y.rel===ui.id})[0];
       setHTML($('#prevAct'),actHtml(px?px.job:null,px?relLinks(px.job):''));
     } else {setHTML($('#prevDetail'),'');setHTML($('#prevAct'),actHtml(null,''));}
     splitState('preview',on);
@@ -4730,23 +4792,40 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     getDoc(doc(db,ROOT[0],ROOT[1],'previews',ent.key)).then(function(d){var o=d.exists()?parseJson(d):null;fileCache[rel]=!o?{error:'미리보기를 불러오지 못했습니다',v:ent.v}:o.ok===false?{error:o.error||'미리보기를 만들지 못했습니다',v:ent.v}:{data:o,v:ent.v};})
       .catch(function(e){fileCache[rel]={error:errText(e),v:ent.v};}).then(done);
   }
-  function prevDoc(rel,c,idx){
-    var x=idx.filter(function(y){return y.rel===rel})[0];
-    var h='<article class="doc"><div class="meta">'+(x?outTags(x)+'<span>'+esc(x.job.id)+'</span>'+(x.job.completionReportId?'<a href="#reports/'+enc(x.job.completionReportId)+'">완료보고 '+esc(x.job.completionReportId)+' →</a>':'')+(x.apr?'<a href="#approvals/'+enc(x.apr.id)+'">결재 '+esc(x.apr.id)+' →</a>':''):'<span class="tg tg-n">복사본 파일</span>')+'</div>'+
+  // (261124 미리보기) 위쪽 머리(태그 · 일감 · 완료보고·결재 줄 · 파일 이름 · 경로 · 버전 칩 · 가림 안내) — 글 화면과 정리된 화면(html)이 같이 씀.
+  //  버전 칩에서 업무카드 머리말 갱신(kind header)은 뺌 · 최종본 칩은 그대로. nv = 정리된 화면(파일 이름 줄을 차분한 굵기로 — 글 화면은 예전 그대로)
+  // (261124 미리보기) 파일 이름 → 읽기 쉬운 제목(v1.0_ · 날짜_시각 · 업무 번호 · 확장자를 떼고 _ 는 · 로) — 서버 preview-html 의 제목과 같은 규칙
+  function pvTitle(name){var s=String(name||'').replace(/\.[A-Za-z0-9]{1,5}$/,'').replace(/^v\d+(?:\.\d+)*_/,'').replace(/_\d{6}_\d{4}$/,'').replace(/^[가-힣A-Za-z]{1,8}-\d{1,4}_/,'');return s.split('_').filter(Boolean).join(' · ')||String(name||'')}
+  function prevTop(rel,x,nv){
+    var h='<div class="meta">'+(x?outTags(x)+'<span>'+esc(x.job.id)+'</span>'+(x.job.completionReportId?'<a href="#reports/'+enc(x.job.completionReportId)+'">완료보고 '+esc(x.job.completionReportId)+' →</a>':'')+(x.apr?'<a href="#approvals/'+enc(x.apr.id)+'">결재 '+esc(x.apr.id)+' →</a>':''):'<span class="tg tg-n">복사본 파일</span>')+'</div>'+
+      // (261124 미리보기 · 대표 「md파일이 아니라」) 정리된 화면이면 파일 이름 대신 읽기 쉬운 제목 · 파일 이름·경로는 「파일 위치」를 눌러야 보임
+      (nv?'<h2 class="pv-h">'+esc(pvTitle(rel.split('/').pop()))+'</h2><details class="pv-loc"><summary>파일 위치</summary><span class="path">'+esc(rel)+' (읽기 전용)</span></details>':
       '<h2 style="font-size:17px;font-weight:800;margin-top:10px;word-break:break-all;letter-spacing:-.3px">'+esc(rel.split('/').pop())+'</h2>'+
-      '<span class="path">'+esc(rel)+' (읽기 전용)</span>';
+      '<span class="path">'+esc(rel)+' (읽기 전용)</span>');
     if(x){
-      var sib=(x.job.outputs||[]).filter(function(o){return o.relPath}).map(function(o){var v=/^v(\d+\.\d+)_/.exec(o.name);return '<a class="chip'+(o.relPath===rel?' sel':'')+'" href="#preview/'+enc(o.relPath)+'">'+(o.kind==='header'?'머리말':'v'+esc(v?v[1]:'?'))+(o.stageIdx!=null&&isFinite(+o.stageIdx)?' · '+((+o.stageIdx)+1)+'단계':'')+'</a>'}).join('');
+      var sib=(x.job.outputs||[]).filter(function(o){return o.relPath&&o.kind!=='header'}).map(function(o){var v=/^v(\d+\.\d+)_/.exec(o.name);return '<a class="chip'+(o.relPath===rel?' sel':'')+'" href="#preview/'+enc(o.relPath)+'">v'+esc(v?v[1]:'?')+(o.stageIdx!=null&&isFinite(+o.stageIdx)?' · '+((+o.stageIdx)+1)+'단계':'')+'</a>'}).join('');
       if(x.job.finalRelPath) sib+='<a class="chip'+(x.job.finalRelPath===rel?' sel':'')+'" href="#preview/'+enc(x.job.finalRelPath)+'">최종본</a>';
       h+='<div class="row" style="margin-top:10px"><span class="s12 mut">버전</span>'+sib+'<span class="s12 mut">만든 사람 '+esc(titleOf(x.by)||'')+' · '+esc(mdw(x.at))+' '+esc(hm(x.at))+'</span></div>';
     }
-    h+='<div class="note" style="margin-top:10px">'+LOCK.replace('class="ic"','class="ic" style="width:13px;height:13px;vertical-align:-2px"')+' 연락처·금액은 허브에서 가립니다. 원본은 복사본 파일에서 확인하세요.</div>';
+    return h+'<div class="note" style="margin-top:10px">'+LOCK.replace('class="ic"','class="ic" style="width:13px;height:13px;vertical-align:-2px"')+' 연락처·금액은 허브에서 가립니다. 원본은 복사본 파일에서 확인하세요.</div>';
+  }
+  function prevFix(rel,x){return x?'<div class="acts own"><button type="button" class="btn btn-s btn-sm" data-fix-file="'+esc(rel)+'" data-fix-work="'+esc(x.job.workId||'')+'">'+IC('i-pen')+'이 파일로 수정 지시</button></div>':''}
+  // (261124 미리보기) 정리된 화면 — 머리(위와 같음 + 「이 파일로 수정 지시」) 아래 보고서와 같은 sandbox 틀(tkFrameSet · 스크립트 없음 · 바깥 주소 안 보냄)
+  //  틀 자리(#pvFrame)는 같은 파일이면 다시 만들지 않는다(바뀐 판이면 v 가 달라 새로)
+  function prevHtmlView(rel,c,idx){
+    var x=idx.filter(function(y){return y.rel===rel})[0], d=c.data;
+    setHTML($('#prevDetail'),'<div class="pv-doc" data-pv="'+esc(rel)+'"><div id="pvTop"></div><div class="pv-frame" id="pvFrame"></div></div>');
+    setHTML($('#pvTop'),'<article class="doc">'+prevTop(rel,x,true)+(d.truncated?'<p class="pv-cut">길어서 앞부분만 보여 드려요 — 전체는 사무실 PC에서 볼 수 있어요</p>':'')+prevFix(rel,x)+'</article>');
+    var box=$('#pvFrame'); if(box) tkFrameSet(box,d.html,'pv|'+rel+'|'+String(c.v||''),false,'결과물');
+  }
+  function prevDoc(rel,c,idx){
+    var x=idx.filter(function(y){return y.rel===rel})[0];
+    var h='<article class="doc">'+prevTop(rel,x,false);
     if(c.loading) h+='<div class="blk"><h4>본문 미리보기</h4><span class="sk" style="height:12px;width:90%"></span><span class="sk" style="height:12px;width:70%;margin-top:8px"></span><span class="sk" style="height:12px;width:80%;margin-top:8px"></span></div>';
     else if(c.error) h+='<div class="blk"><div class="rempty">'+esc(c.error)+'</div></div>';
     else {var d=c.data;
       h+='<div class="blk"><h4>본문 미리보기 · '+esc(fmtBytes(d.bytes))+(d.truncated?' · 앞 300KB만':'')+(d.kind==='html'?' · HTML은 글만':'')+'</h4><div class="md">'+(d.kind==='md'?mdHtml(d.text):d.kind==='html'?String(d.text||'').split('\n').map(function(l){return '<p>'+txt(l)+'</p>'}).join(''):'<pre class="pre">'+txt(d.text)+'</pre>')+'</div></div>';}
-    if(x) h+='<div class="acts own"><button type="button" class="btn btn-s btn-sm" data-fix-file="'+esc(rel)+'" data-fix-work="'+esc(x.job.workId||'')+'">'+IC('i-pen')+'이 파일로 수정 지시</button></div>';
-    return h+'</article>';
+    return h+prevFix(rel,x)+'</article>';
   }
   // 간단한 마크다운 → 글 (모든 글자는 먼저 esc — 파일 속 HTML 은 해석하지 않는다)
   function inl(s){return txt(s).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/`([^`]+)`/g,'<code>$1</code>')}
@@ -4910,7 +4989,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     extra=extra||{};
     return cmd('approval',{reportId:id,decision:decision,memo:extra.memo,option:extra.option,close:extra.close?true:undefined},function(r){
       if(!r.ok){toast('결재를 처리하지 못했습니다 — '+(r.message||''));return;}
-      toast(r.convertedToRevise?'추천안이 아닌 안이라 수정 지시로 처리했습니다. 새 버전으로 고쳐 다시 올립니다.':decision==='승인'?(ap&&ap.structure?'승인했습니다 — 사무실이 복사본에 「'+ap.structure.workId+'」 폴더를 만들고 이 일감을 그 자리로 다시 배분합니다(실제 드라이브에는 만들지 않음).':applies?'승인했습니다 — 담당이 바로 최종본을 바꿉니다.':'승인했습니다 — 데모에서는 이 결재 종류를 기록만 남깁니다(적용 없음).'):decision==='반려'?(extra.close?'반려했습니다 — 이 일감을 닫았습니다. 최종본은 그대로입니다.':'반려했습니다 — 사유대로 새 버전으로 고쳐 다시 올립니다.'):'수정 지시를 보냈습니다 — 새 버전으로 고쳐 다시 올립니다.');
+      toast(r.convertedToRevise?'추천안이 아닌 안이라 수정 지시로 처리했습니다. 새 버전으로 고쳐 다시 올립니다.':extra.okMsg?extra.okMsg:decision==='승인'?(ap&&ap.structure?'승인했습니다 — 사무실이 복사본에 「'+ap.structure.workId+'」 폴더를 만들고 이 일감을 그 자리로 다시 배분합니다(실제 드라이브에는 만들지 않음).':applies?'승인했습니다 — 담당이 바로 최종본을 바꿉니다.':'승인했습니다 — 데모에서는 이 결재 종류를 기록만 남깁니다(적용 없음).'):decision==='반려'?(extra.close?'반려했습니다 — 이 일감을 닫았습니다. 최종본은 그대로입니다.':'반려했습니다 — 사유대로 새 버전으로 고쳐 다시 올립니다.'):'수정 지시를 보냈습니다 — 새 버전으로 고쳐 다시 올립니다.');
     }).then(function(sent){if(sent){var m=memoEl(id);if(m)m.value='';if(ui.cur==='approvals'&&ui.id===id&&!isDesk())location.hash='#approvals';}return sent;});
   }
   function memoEl(id){return $$('[data-apr-memo]').filter(function(x){return x.getAttribute('data-apr-memo')===id})[0]||null}
@@ -4961,6 +5040,87 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     if(!guard()) return;
     var p=staffById(id);
     cmd('staffReturn',{staffId:id},function(r){toast(r.ok?(p?p.title:'직원')+' 출근했습니다. 쌓인 일감이 있으면 이어서 합니다.':'출근시키지 못했습니다 — '+(r.message||''));});
+  }
+
+  // ══ (261124 빼기) 결재함 「빼기」 — 같은 안건이 브리핑·업무일지에 계속 오지 않게 ═════════════════
+  //  질문 빼기 = 답 없이 닫기(지우지 않음 · 보고서에서 「되살리기」) → cmd('questionDismiss',{reportId, also:[같이 뺄 번호 ≤19]})
+  //  되살리기 → cmd('questionRestore',{reportId}) · 결재 빼기 = 예전 반려 + 「이 일감 닫기」(새 명령 없음 · 메모 「○○님이 뺌」)
+  //  보내고 사무실이 처리하기 전까지는 「빼는 중」 — 이 기기에서 보낸 것(qBusy) + 명령함에 아직 「새로」 남은 것(다른 기기 · 다시 연 화면)
+  var Q_X_TXT='답 없이 닫고, 브리핑 · 업무일지의 기다림 숫자에서도 빠져요. 지우지 않으니 보고서에서 「되살리기」로 돌릴 수 있어요.';
+  var qBusy={}, qPendSig='';
+  function qPend(id){
+    var b=qBusy[id];
+    //  처리 결과가 왔고 질문 상태도 바뀌었으면(빼기 → 닫힘 · 되살리기 → 열림) 끝 · 결과가 오고 20초가 지나도 그대로면 놓아 줌
+    if(b&&b.ok){var r=repById(id);if((r&&(b.k==='x'?!r.open:!!r.open))||Date.now()-b.t>20000){delete qBusy[id];b=null;}}
+    if(b) return b.k;
+    for(var i=0;i<inboxDocs.length;i++){var x=inboxDocs[i],p=x.payload||{};if(x.status!=='new')continue;
+      if(x.type==='questionDismiss'&&(p.reportId===id||(Array.isArray(p.also)&&p.also.indexOf(id)>=0)))return 'x';
+      if(x.type==='questionRestore'&&p.reportId===id)return 'r';}
+    return '';
+  }
+  function qPendSync(){var s=inboxDocs.filter(function(x){return x.status==='new'&&(x.type==='questionDismiss'||x.type==='questionRestore')}).map(function(x){return x.id}).join(',');if(s!==qPendSig){qPendSig=s;renderHome();renderReports();}}
+  function qRedraw(){renderChrome();renderHome();renderReports();}
+  // 1주(7일) 넘게 답을 기다린 열린 질문 — 오래된 것부터 · 빼는 중인 것은 뺌
+  function oldQuestions(){var lim=now().getTime()-7*864e5;return openQuestions().filter(function(r){var t=Date.parse(r.at);return isFinite(t)&&t<lim&&!qPend(r.id)}).sort(function(a,b){var x=String(a.at),y=String(b.at);return x<y?-1:x>y?1:(String(a.id)<String(b.id)?-1:1)})}
+  function qDismissAsk(id){
+    if(!guard()) return;
+    var r=repById(id); if(!r||r.type!=='질문'||!r.open){toast('이미 닫힌 질문이에요','info');return;}
+    ask({pill:'질문 빼기',pillCls:'b-neutral',title:'이 질문을 뺄까요?',body:'<p>'+Q_X_TXT+'</p><p class="ask-q">'+txt(clip(r.firstLine||rvLine(r),200))+'</p>',ok:'빼기'}).then(function(v){if(v===null)return;qDismiss([id],false);});
+  }
+  function qDismissOld(){
+    if(!guard()) return;
+    var a=oldQuestions(); if(a.length<2){toast('1주 넘게 기다린 질문이 없어요','info');return;}
+    var li=a.slice(0,5).map(function(r){return '<li>'+txt(clip(rvLine(r),80))+'<small>'+esc(rvWho(r)+' · '+mdw(r.at))+'</small></li>'}).join('')+(a.length>5?'<li class="ask-qn">외 '+(a.length-5)+'건</li>':'');
+    ask({pill:'질문 빼기',pillCls:'b-neutral',title:'1주 넘은 질문 '+a.length+'건을 뺄까요?',body:'<p>'+Q_X_TXT+'</p><ul class="ask-ql">'+li+'</ul>',ok:a.length+'건 빼기'}).then(function(v){if(v===null)return;qDismiss(a.map(function(r){return r.id}),true);});
+  }
+  //  한 번에 20건씩(첫 번호 + also 19건) · 더 많으면 앞 묶음을 명령함에 쓴 뒤 차례로 · 결과가 다 오면 알림 한 번
+  function qDismiss(ids,bulk){
+    if(!guard()) return;
+    var a=[]; (ids||[]).forEach(function(x){if(typeof x==='string'&&x&&a.indexOf(x)<0)a.push(x)});
+    if(!a.length) return;
+    var ch=[]; for(var i=0;i<a.length;i+=20) ch.push(a.slice(i,i+20));
+    var g={left:ch.length,n:0,sk:0,err:''};
+    function fin(){
+      if(g.n) toast((bulk?'질문 '+g.n+'건을 뺐어요':'질문을 뺐어요')+(g.sk?' · 이미 닫힌 '+g.sk+'건은 그대로 뒀어요':'')+(g.err?' · 나머지는 빼지 못했어요 — '+g.err:''));
+      else if(g.err) toast('질문을 빼지 못했어요 — '+g.err);
+      else toast('이미 닫힌 질문이라 그대로 뒀어요','info');
+    }
+    a.forEach(function(x){qBusy[x]={k:'x'};}); qRedraw();
+    (function step(k){
+      if(k>=ch.length) return;
+      var c=ch[k], pl={reportId:c[0]}; if(c.length>1) pl.also=c.slice(1);
+      cmd('questionDismiss',pl,function(r){
+        var ok=!!(r&&r.ok);
+        c.forEach(function(x){if(ok)qBusy[x]={k:'x',ok:true,t:Date.now()};else delete qBusy[x];});
+        if(ok){g.n+=Array.isArray(r.dismissed)?r.dismissed.length:c.length;g.sk+=Array.isArray(r.skipped)?r.skipped.length:0;}
+        else g.err=(r&&r.message)||'사무실 처리 오류';
+        if(--g.left===0) fin();
+        qRedraw();
+      },k>0).then(function(cid){
+        if(cid){step(k+1);return;}
+        //  명령함에 쓰지 못함(cmd 가 이미 알림) — 이 묶음과 남은 묶음은 보내지 않음 · 앞 묶음 결과가 이미 다 왔으면 여기서 알림
+        for(var m=k;m<ch.length;m++) ch[m].forEach(function(x){delete qBusy[x];});
+        g.left-=ch.length-k; if(k>0&&g.left<=0) fin();
+        qRedraw();
+      });
+    })(0);
+  }
+  function qRestore(id){
+    if(!guard()) return;
+    var r=repById(id); if(!r||!(r.closed&&r.closed.dismissed)){toast('뺀 질문만 되살릴 수 있어요','info');return;}
+    qBusy[id]={k:'r'}; qRedraw();
+    cmd('questionRestore',{reportId:id},function(res){
+      if(res&&res.ok){qBusy[id]={k:'r',ok:true,t:Date.now()};toast('질문을 되살렸어요');}
+      else{delete qBusy[id];toast('질문을 되살리지 못했어요 — '+((res&&res.message)||'사무실 처리 오류'));}
+      qRedraw();
+    }).then(function(cid){if(!cid){delete qBusy[id];qRedraw();}});
+  }
+  // 결재 빼기 = 반려하고 이 일감 닫기(다시 올리지 않음) — 예전 반려 처리(decide) 그대로 · 결재함 「처리 완료」에 남음
+  function aprDismissAsk(id){
+    if(!guard()) return;
+    var a=aprById(id); if(!a||a.status!=='대기'){toast('이미 처리된 결재예요','info');return;}
+    ask({pill:'결재 빼기',pillCls:'b-neutral',title:'이 결재를 뺄까요?',body:'<p>반려하고 이 일감을 닫아요(다시 올리지 않음). 결재함 처리 완료에 남아요.</p><p class="ask-q">'+txt(aprTitle(a))+'</p>',ok:'빼기',okCls:'btn-d'})
+    .then(function(v){if(v===null)return;decide(id,'반려',{close:true,memo:ownerNm()+'님이 뺌',okMsg:'결재를 뺐어요 — 반려하고 이 일감을 닫았어요'});});
   }
 
   // ══ 톡 (1-10 · 메신저형 보고·지시 — 261001 대표님 결정) ═══════════════════════
@@ -5342,6 +5502,16 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     var tm='<span class="tk-tm">'+(one?'<button type="button" class="tk-rd" data-act="pend" data-id="'+esc(m.id||'')+'" aria-label="'+esc(rd?(who||'담당자')+' 아직 안 읽음':'아직 배분 전')+'">1</button>':'')+esc(hm(m.at))+'</span>';
     return '<div class="tk-m tk-me" data-mid="'+esc(m.id||'')+'"'+(m.rid?' data-rid="'+esc(m.rid)+'"':'')+'><div class="tk-w"><div class="tk-row"><div class="tk-bub">'+rq+txt(m.text||'')+'</div>'+tm+'</div>'+(mini.length?'<div class="tk-mini">'+mini.join('<span aria-hidden="true">·</span>')+'</div>':'')+'</div></div>';
   }
+  // (261124 빼기) 닫힌 질문 카드의 한 마디 — 보고 자료로 정한다(대표님 답 있음 = 사무실 글 그대로 · 뺌 · 닫음 + 닫힌 때).
+  //  보고를 아직 못 받았으면 사무실 글(「닫힘 — …」)로 · 보고 번호가 없는 카드(개발 진행 방 결정 등)는 건드리지 않음(null = 예전 그대로)
+  function tkQDone(m){
+    var rid=m&&m.ref&&typeof m.ref.reportId==='string'?m.ref.reportId:'', d=String((m&&m.done)||'');
+    if(!rid) return null;
+    var r=repById(rid);
+    if(r&&r.type==='질문'){if(r.open||r.answered)return null;var t=r.closed&&r.closed.at?' · '+mdhm(r.closed.at):'';return (r.closed&&r.closed.dismissed?'뺌':'닫음')+t;}
+    if(/^닫힘/.test(d)) return /뺌/.test(d)?'뺌':'닫음';
+    return null;
+  }
   function tkCardFoot(room,m,c,acts,rid,owner,open){
     var kind=m.kind, mid=esc(m.id||''), b=[];
     if(kind==='report'){
@@ -5354,6 +5524,8 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
       return b.length?'<div class="tk-ft">'+b.join('')+'</div>':'';
     }
     var oeb=kind==='approval'?tkOutOf(m):null, oeh=oeb?'<a class="tk-vbtn" href="'+tkHref(room,'o',oeb.key)+'">결과물 보기</a>':''; // (261120 2차) 결재 카드 — 끝난 뒤에도 결과물은 볼 수 있게
+    // (261124 빼기) 답 없이 닫힌 질문 카드 = 체크 없이 회색 한 마디(뺌 · 닫음) — 「답함」은 대표님이 답한 질문에만
+    if(!open&&kind==='question'){var qd=tkQDone(m);if(qd)return '<div class="tk-st"><span>'+esc(qd)+'</span></div>';}
     // (261124a 디자인) 처리한 카드 = 아래에 체크 한 줄(지난 카드는 체크 없이) — 글은 그대로
     if(!open) return kind==='alert'&&(!m.done||m.done==='알림')?'':(m.state==='void'?'<div class="tk-st">':'<div class="tk-st tk-dn">'+IC('i-check'))+'<span>'+txt(m.done||(m.state==='void'?'지난 카드':'처리됨'))+'</span></div>'+(oeh?'<div class="tk-ft">'+oeh+'</div>':'');
     if(!owner){var vx=oeh+(kind==='approval'&&c.online===true?'<a class="no" href="'+tkHref(room,'r',rid)+'">결재 요청서 자세히</a>':'');return '<div class="tk-st">'+esc(kind==='approval'?ownerNm()+'님 결재 대기 중':kind==='question'?ownerNm()+'님 답을 기다리는 중':'확인 필요')+'</div>'+(vx?'<div class="tk-ft">'+vx+'</div>':'');}
@@ -5584,7 +5756,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     if(!ent){tk.out[key]={none:true};return;}
     var cur=tk.out[key]; if(cur&&(cur.loading||cur.obj)&&cur.v===ent.v) return;
     tk.out[key]={loading:true,obj:cur&&cur.obj||null,v:ent.v};
-    getDoc(doc(db,ROOT[0],ROOT[1],'previews',key)).then(function(d){var o=d.exists()?parseJson(d):null;tk.out[key]=o&&o.ok!==false&&typeof o.text==='string'?{obj:o,v:ent.v}:{none:true,err:o&&o.error?String(o.error):'',v:ent.v};})
+    getDoc(doc(db,ROOT[0],ROOT[1],'previews',key)).then(function(d){var o=d.exists()?parseJson(d):null;tk.out[key]=o&&o.ok!==false&&(typeof o.text==='string'||typeof o.html==='string')?{obj:o,v:ent.v}:{none:true,err:o&&o.error?String(o.error):'',v:ent.v};}) // (261124 미리보기) 정리된 화면(html)만 있어도 엶
       .catch(function(e){tk.out[key]={err:errText(e),v:ent.v};}).then(function(){if(tk.sub==='o'&&tk.subId===key)renderDoc();});
   }
   function tkRenderOut(el){
@@ -5595,21 +5767,25 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
       chips=(j.outputs||[]).filter(function(o){return o&&o.relPath&&o.kind!=='header'}).map(function(o){var e=tkOutByRel(o.relPath),v=/^v(\d+\.\d+)_/.exec(o.name||'');return e?'<a class="chip'+(e.key===key?' sel':'')+'" href="'+tkHref(room,'o',e.key)+'">v'+esc(v?v[1]:'?')+'</a>':''}).join('');
       var fe=j.finalRelPath?tkOutByRel(j.finalRelPath):null; if(fe) chips+='<a class="chip'+(fe.key===key?' sel':'')+'" href="'+tkHref(room,'o',fe.key)+'">최종본</a>';
     }
-    var body;
-    if(os.obj){var d=os.obj;body='<div class="tk-md md">'+(d.kind==='md'?mdHtml(d.text):d.kind==='html'?String(d.text||'').split('\n').map(function(l){return '<p>'+txt(l)+'</p>'}).join(''):'<pre class="pre">'+txt(d.text)+'</pre>')+(d.truncated?'<p class="s12 mut">길어서 앞부분만 보여 드려요 — 전체는 사무실 PC에서 볼 수 있어요</p>':'')+'</div>';}
+    var body, hv=os.obj&&typeof os.obj.html==='string'&&os.obj.html?os.obj.html:''; // (261124 미리보기) 사무실이 정리한 화면이 있으면 그것을 sandbox 틀에(아래)
+    if(hv) body='';
+    else if(os.obj){var d=os.obj;body='<div class="tk-md md">'+(d.kind==='md'?mdHtml(d.text):d.kind==='html'?String(d.text||'').split('\n').map(function(l){return '<p>'+txt(l)+'</p>'}).join(''):'<pre class="pre">'+txt(d.text)+'</pre>')+(d.truncated?'<p class="s12 mut">길어서 앞부분만 보여 드려요 — 전체는 사무실 PC에서 볼 수 있어요</p>':'')+'</div>';}
     else body='<div class="rempty">'+(os.loading?'<span class="spin"></span> 결과물을 여는 중…':!ent?'이 결과물은 온라인에 올라와 있지 않아요(최근 결과물만 올라와요) — 사무실 PC 허브에서 볼 수 있어요.':'결과물을 불러오지 못했어요'+(os.err?'<span class="s12">'+esc(os.err)+'</span>':''))+'</div>';
     var acts=(j&&j.completionReportId?'<a href="'+tkHref(room,'r',j.completionReportId)+'">보고서 열기</a>':'')+(owner&&ent&&j?'<button type="button" class="no" data-fix-file="'+esc(ent.rel)+'" data-fix-work="'+esc(j.workId||'')+'">이 파일로 고쳐 달라고 하기</button>':'');
     setHTML(el,'<header class="tk-dh"><a class="bk" href="'+tkHref(room)+'" aria-label="방으로 돌아가기">'+IC('i-chev-l')+'</a><h2>결과물<small>'+esc(nm)+' · '+esc((r&&r.title)||'')+'에서 열림</small></h2></header>'+
-      (chips?'<div class="tk-vrow">'+chips+'</div>':'')+'<div class="tk-note">연락처·금액은 가렸어요'+(x?' · 만든 사람 '+esc(titleOf(x.by)||'')+' · '+esc(mdw(x.at))+' '+esc(hm(x.at)):'')+'</div><div class="tk-frame tk-oframe">'+body+'</div>'+(acts?'<div class="tk-dact">'+acts+'</div>':''));
+      (chips?'<div class="tk-vrow">'+chips+'</div>':'')+'<div class="tk-note">연락처·금액은 가렸어요'+(x?' · 만든 사람 '+esc(titleOf(x.by)||'')+' · '+esc(mdw(x.at))+' '+esc(hm(x.at)):'')+(hv&&os.obj.truncated?' · 길어서 앞부분만 보여 드려요':'')+'</div>'+
+      (hv?'<div class="tk-frame" id="tkOutFrame"></div>':'<div class="tk-frame tk-oframe">'+body+'</div>')+(acts?'<div class="tk-dact">'+acts+'</div>':''));
+    if(hv){var fb=$('#tkOutFrame');if(fb)tkFrameSet(fb,hv,'o|'+key+'|'+String(os.v||''),false,'결과물');}
   }
-  function tkFrameSet(box,html,key,run){
+  //  (261124 미리보기) ttl = 틀의 읽는 이름(결과물 미리보기는 「결과물」) — 없으면 예전대로 시안·보고서
+  function tkFrameSet(box,html,key,run,ttl){
     if(box._k===key) return;
     box._k=key; box._h=null;
     while(box.firstChild) box.removeChild(box.firstChild);
     var f=document.createElement('iframe');
     f.setAttribute('sandbox',run?'allow-scripts allow-forms':'');
     f.setAttribute('referrerpolicy','no-referrer');
-    f.setAttribute('title',run?'시안':'보고서');
+    f.setAttribute('title',ttl||(run?'시안':'보고서'));
     if(run){
       f.className='tk-vframe';
       // (261117 검토 반영) 시안이 틀을 바깥 주소로 옮기면(두 번째 load = 받은 시안을 떠남) 틀을 닫는다 — 허브 화면 안에 바깥 페이지가 뜨지 않게
@@ -6030,6 +6206,11 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     el=t.closest('[data-apr-approve]'); if(el){approve(el.getAttribute('data-apr-approve'));return;}
     el=t.closest('[data-apr-reject]'); if(el){reject(el.getAttribute('data-apr-reject'));return;}
     el=t.closest('[data-apr-revise]'); if(el){revise(el.getAttribute('data-apr-revise'));return;}
+    // (261124 빼기) 질문 빼기 · 1주 넘은 질문 한 번에 빼기 · 뺀 질문 되살리기 · 결재 빼기(반려하고 닫기) — 대표만(guard)
+    el=t.closest('[data-q-x]'); if(el){e.preventDefault();qDismissAsk(el.getAttribute('data-q-x'));return;}
+    el=t.closest('[data-q-all]'); if(el){e.preventDefault();qDismissOld();return;}
+    el=t.closest('[data-q-back]'); if(el){e.preventDefault();qRestore(el.getAttribute('data-q-back'));return;}
+    el=t.closest('[data-apr-x]'); if(el){e.preventDefault();aprDismissAsk(el.getAttribute('data-apr-x'));return;}
     el=t.closest('[data-prop-start]'); if(el){startProposal(el.getAttribute('data-prop-start'));return;}
     el=t.closest('[data-archive-retry]'); if(el){archiveRetry(el.getAttribute('data-archive-retry'));return;}
     el=t.closest('[data-ho-dev]'); if(el){var dv=el.getAttribute('data-ho-dev'),fr=$('#hoFrom'),to=$('#hoTo');if(fr&&to){if(!fr.value.trim())fr.value=dv;else to.value=dv;}return;}
