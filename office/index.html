@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <!-- (261005 배포전검토2 C4-3) 화면 판 — 배포할 때마다 바꾼다. 아이폰 메뉴 「다시 불러오기」 줄과 배포 파일 확인에 쓴다(README 21-6c 9-③④) -->
-<meta name="mdo-hub-build" content="261124a">
+<meta name="mdo-hub-build" content="261124b">
 <meta name="theme-color" content="#F4F3EE">
 <title>maydly 사무실</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -1112,7 +1112,7 @@ body[data-r="home"] .bnr-off{display:none!important}
 .tk-down .ic{width:18px;height:18px}
 .tk-own{flex:0 0 auto;padding:7px 14px;font-size:12px;color:var(--amber-ink);background:var(--amber-bg);overflow-wrap:anywhere}
 .tk-note{flex:0 0 auto;padding:6px 14px;font-size:11.5px;color:var(--ink-3);background:var(--sunken)}
-.tk-frame{flex:1;min-height:0;display:flex;background:#fff;padding:0 var(--sar) 0 var(--sal)}
+.tk-frame{flex:1;min-height:0;display:flex;background:var(--paper,#F4F3EE);padding:0 var(--sar) 0 var(--sal)}
 .tk-frame iframe{flex:1;width:100%;min-height:0;border:0;display:block;background:#fff}
 /* (261117 채팅창 안에서 보기) 시안 틀 — 아이폰이 틀 폭을 내용 폭으로 늘리지 않게(1px + min-width) · 카드의 「시안 보기」는 옅은 초록 칸 */
 .tk-frame iframe.tk-vframe{width:1px;min-width:100%}
@@ -1903,6 +1903,459 @@ details.fold>summary .ic{transition:transform var(--t-mid) var(--e-out)}
   .split{grid-template-columns:360px minmax(0,1fr) 320px}
   .tk{grid-template-columns:380px minmax(0,1fr)}
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   (디자인 261124b) 2차 — 아래 탭 5개(오늘 · 톡 · 현황 · 보고서 · 직원) · 오늘 · 직원 · 넓은 화면 고른 줄
+   - 재료는 위 261124a 층 그대로 — 미색 바탕 · 흰 칸 · 옅은 바다색은 「대표님 차례」만 · 진한 초록은 승인·답하기 단추와 탭 점·숫자만 · 빨강 대신 테라코타
+   - 숫자는 명조 500 · 28px 까지 · 굵기 600 까지 · 11.5px 아래 글자 없음 · 작은 글자는 ink-3(#646E69)보다 연하지 않게
+   - 움직임은 화면을 처음 열 때만(0.3~0.6초 · 채움 backwards) · 「움직임 줄이기」면 위 규칙(* animation:none)이 모두 멈춤
+   ═══════════════════════════════════════════════════════════════════════════════ */
+/* ── 아래 탭 — 고르지 않은 글자 ink-3 · 숫자 알약 12px/600(빨강 없음) ── */
+.tabbar a{color:var(--ink-3)}
+.tabbar a.on{color:var(--ink)}
+.tabbar .ic{width:24px;height:24px}
+.tabbar .bdg{top:-4px;left:calc(50% + 3px);min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--accent);color:#fff;font:600 12px/18px var(--f);font-variant-numeric:tabular-nums}
+/* 넓은 화면 왼쪽 메뉴 — 큰 묶음(오늘~직원) 아래 조용한 제목 · 작은 글자 진하게 */
+.nav .nav-g{margin:14px 11px 4px}
+.nav-g{font-size:12px;color:var(--ink-3)}
+.nav a .c{font-size:12px}
+.team a em{font-size:11.5px;color:var(--ink-3)}
+.ucard>div span{font-size:11.5px}
+.ucard .av{font-size:12px}
+
+/* ── 오늘(#home) — 한 줄 상태 · 오늘 흐름 · 대표님 차례 · 한눈에 · 지금 일하는 직원 · 최근 브리핑 ── */
+.td-hello{padding:2px 2px 0}
+.td-date{margin-top:8px;font-size:13px;font-weight:500;color:var(--ink-3);letter-spacing:.01em}
+.td-say{margin-top:6px;font-family:var(--serif);font-size:25px;font-weight:500;line-height:1.42;letter-spacing:-.035em;color:var(--ink)}
+.td-say em{font-style:normal;color:var(--accent)}
+.td-say em.a{color:var(--ochre-text)}
+.td-say em.r{color:var(--red-ink)}
+.td-live{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;margin-top:8px;font-size:14px;line-height:1.55;color:var(--ink-3)}
+.td-live a{color:var(--ink-2);font-weight:500}
+.td-live a.lk{color:var(--accent);font-weight:560}
+.td-live .sep{color:var(--ink-3)}
+.td-live .dt{margin-right:4px;vertical-align:1px}
+.td-view{margin-top:8px;font-size:13px;color:var(--ink-3)}
+.td-n{margin-left:6px;font-size:15px;font-weight:500;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.td-none{padding:16px 18px;border-radius:20px;background:var(--surface);box-shadow:var(--sh1);font-size:14px;line-height:1.55;color:var(--ink-3)}
+/* 오늘 흐름 — 0~24시 한 줄 · 끝낸 일 점 · 「지금」 표시(지난 시간은 실선, 남은 시간은 점선) */
+.td-flow{padding:12px 20px 10px}
+.fl{position:relative;height:74px}
+.fl-ln{position:absolute;left:0;right:0;top:44px;border-top:1.2px dashed rgba(23,33,29,.26)}
+.fl-past{position:absolute;left:0;top:43.3px;height:1.4px;border-radius:1px;background:var(--ink)}
+.fl-d{position:absolute;top:44px;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--surface)}
+.fl-now{position:absolute;top:22px;height:22px;margin-left:-.7px;border-left:1.4px solid var(--ink)}
+.fl-now::after{content:"";position:absolute;left:-3.7px;bottom:-3px;width:6px;height:6px;border-radius:50%;background:var(--ink)}
+.fl-now b{position:absolute;bottom:100%;left:0;margin-bottom:3px;transform:translateX(-50%);font-size:12px;font-weight:600;line-height:1.3;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+.fl-now.l b{left:-4px;transform:none}
+.fl-now.r b{left:4px;transform:translateX(-100%)}
+.fl-h{position:absolute;top:54px;transform:translateX(-50%);font-size:12px;line-height:1.3;color:var(--ink-3);white-space:nowrap}
+.fl-h.f{transform:none}
+.fl-h.r{transform:translateX(-100%)}
+.fl-e{margin:2px 0 4px;font-size:13px;color:var(--ink-3)}
+/* 대표님 차례 — 바다색 칸(대표) 안 흰 유리 카드 · 종류 점 · 결재는 기존 확인창 승인 단추 그대로(data-apr-approve) */
+#homeWait>.cd{padding:12px 12px 4px}
+.tw{position:relative;display:flex;flex-direction:column;min-width:0;border-radius:16px;background:rgba(255,255,255,.86);box-shadow:inset 0 0 0 1px rgba(255,255,255,.9),0 1px 2px rgba(23,50,40,.04),0 12px 24px -20px rgba(23,70,55,.3)}
+.tw+.tw{margin-top:8px}
+.tw-a{display:block;flex:1;padding:13px 15px 12px;color:var(--ink)}
+.tw-m{display:flex;align-items:center;flex-wrap:wrap;gap:2px 6px;font-size:13px;line-height:1.45;color:var(--ink-3)}
+.tw-m .sep{font-style:normal;color:var(--ink-3)}
+.tw-k{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--ink)}
+.tw-k::before{content:"";flex:0 0 6px;width:6px;height:6px;border-radius:50%;background:var(--g-500)}
+.k-apr .tw-k::before{background:var(--ochre)}
+.k-q .tw-k::before{background:var(--blue)}
+.k-urg .tw-k::before{background:var(--red)}
+.k-ct .tw-k::before{background:var(--teal)}
+.tw-t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:6px;font-size:16px;font-weight:580;line-height:1.45;letter-spacing:-.02em;color:var(--ink)}
+.tw-s{display:block;margin-top:4px;font-size:13px;line-height:1.5;color:var(--ink-3)}
+.tw-s .due{font-weight:600;color:var(--ochre-text)}
+.tw-acts{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;padding:0 12px 12px}
+.tw-b{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:40px;padding:0 16px;border-radius:999px;background:var(--surface);color:var(--ink);font-size:14px;font-weight:600;box-shadow:inset 0 0 0 1px var(--line-2);transition:transform var(--t-mid) var(--e-spring),background var(--t-mid) ease}
+.tw-b .ic{width:16px;height:16px}
+.tw-b:active{transform:scale(.96)}
+.tw-b.p{background:var(--accent);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 8px 18px -10px rgba(43,106,90,.6)}
+.tw-b.p:hover{background:#245A4C}
+#homeWait .qf{padding:11px 6px 10px;border-top:0;font-weight:560;color:var(--accent)}
+/* 열람 계정 — 같은 목록을 흰 칸에 줄로(단추 없음) */
+.role-viewer #homeWait>.cd{padding:2px 4px}
+.role-viewer .tw{background:none;box-shadow:none;border-radius:0}
+.role-viewer .tw+.tw{margin-top:0;border-top:1px solid var(--line)}
+/* 한눈에 — 작은 칸 셋(작업 중 · 검수 대기 · 사용량) */
+.td-gl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.gl{display:flex;flex-direction:column;min-width:0;min-height:116px;padding:13px 13px 12px;border-radius:20px;background:var(--surface);box-shadow:var(--sh1);color:var(--ink);transition:transform var(--t-mid) var(--e-out)}
+.gl:active{transform:scale(.98)}
+.gl-k{font-size:12.5px;font-weight:500;line-height:1.35;color:var(--ink-3)}
+.gl-v{display:flex;align-items:baseline;gap:2px;margin-top:6px;font-family:var(--serif);font-size:28px;font-weight:500;line-height:1.1;letter-spacing:-.03em;color:var(--ink);font-variant-numeric:lining-nums tabular-nums}
+.gl-v small{font-family:var(--f);font-size:13px;font-weight:500;letter-spacing:0;color:var(--ink-3)}
+.gl-s{margin-top:auto;padding-top:8px;font-size:12px;line-height:1.45;color:var(--ink-3)}
+.gl-bar{position:relative;display:block;height:4px;margin-top:10px;border-radius:2px;background:rgba(23,33,29,.09);overflow:hidden}
+.gl-bar i{position:absolute;top:0;bottom:0;left:0;border-radius:2px;background:var(--accent)}
+/* 4칸(배분 · 작업 · 검수 · 보고) — 이름 줄 · 막대(지난 칸 실선 · 남은 칸 점선) · 지금 칸 표시 */
+.sh4{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;font-size:12px;font-weight:600;letter-spacing:.02em;color:var(--ink-3)}
+.sh4 .on{color:var(--accent)}
+.trk4{position:relative;height:26px}
+.trk4::before{content:"";position:absolute;left:12.5%;right:12.5%;top:50%;border-top:1.5px dashed rgba(23,33,29,.17)}
+.trk4 .fill{position:absolute;left:12.5%;top:50%;height:2px;margin-top:-1px;border-radius:2px;background:var(--accent)}
+.trk4 .s{position:absolute;top:50%;width:7px;height:7px;border-radius:50%;transform:translate(-50%,-50%);background:var(--surface);box-shadow:inset 0 0 0 1.5px rgba(23,33,29,.22)}
+.trk4 .s.done{background:var(--accent);box-shadow:0 0 0 2px var(--surface)}
+.trk4 .p1{left:12.5%}.trk4 .p2{left:37.5%}.trk4 .p3{left:62.5%}.trk4 .p4{left:87.5%}
+.trk4 .cur{position:absolute;top:50%;display:grid;place-items:center;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%);background:var(--surface);box-shadow:inset 0 0 0 2.5px var(--accent);font-style:normal}
+.trk4 .cur::after{content:"";position:absolute;inset:0;border-radius:50%;animation:v6pulse 2.4s ease-in-out infinite} /* 퍼지는 테는 그림자로만(칸 크기·넘침에 들어가지 않게) */
+.trk4 .cur.q{box-shadow:inset 0 0 0 2.5px var(--ochre)}
+.trk4 .cur.q::after{display:none}
+.trk4 .cur.ini{width:26px;height:26px;background:var(--accent-tint);box-shadow:0 0 0 1px var(--accent-soft);color:var(--accent);font-size:12px;font-weight:600}
+.trk4 .cur.ini.q{background:var(--ochre-tint);box-shadow:0 0 0 1px rgba(176,138,69,.45);color:var(--ochre-text)}
+.s4{display:inline-flex;align-items:center;gap:5px;height:10px}
+.s4 i{width:6px;height:6px;border-radius:50%;background:#D9DDD8}
+.s4 i.d{background:var(--accent)}
+.s4 i.c,.s4 i.q{width:9px;height:9px;background:var(--surface);box-shadow:inset 0 0 0 1.8px var(--accent)}
+.s4 i.q{box-shadow:inset 0 0 0 1.8px var(--ochre)}
+/* 지금 일하는 직원 — 사람 · 이름 · 지금 하는 일 · 4칸 막대(누르면 그 직원 1:1방) */
+.td-crew{padding:2px 16px 4px}
+.cw{display:flex;align-items:flex-start;gap:12px;padding:12px 0 6px;color:var(--ink)}
+.cw+.cw{border-top:1px solid var(--line)}
+.cw>.av{margin-top:1px}
+.cw-b{flex:1;min-width:0;display:flex;flex-direction:column}
+.cw-t{display:flex;align-items:baseline;gap:8px;min-width:0}
+.cw-t b{min-width:0;font-size:15.5px;font-weight:580;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cw-st{flex:none;margin-left:auto;font-size:13px;font-weight:600;color:var(--accent)}
+.cw-st.q{color:var(--ochre-text)}
+.cw-j{margin-top:1px;font-size:14px;line-height:1.45;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cw-h{display:flex;gap:12px;padding:12px 0 8px;border-bottom:1px solid var(--line)}
+.cw-h .cw-sp{flex:0 0 36px}
+.cw-h .sh4{flex:1}
+.cw-h+.cw{border-top:0}
+#homeBrief .br{padding-top:16px}
+
+/* ── 직원(#office) — 목록(일하는 중 → 대기 → 퇴근) · 누르면 자세히(넓은 화면은 오른쪽) ── */
+.sf-list{padding:4px 0;border-radius:24px;background:var(--surface);box-shadow:var(--sh1);overflow:hidden}
+.sf-row{position:relative;display:flex;align-items:center;gap:12px;min-height:78px;padding:12px 14px;color:var(--ink);transition:background var(--t-fast) ease}
+.sf-row+.sf-row::before{content:"";position:absolute;top:0;left:70px;right:14px;height:1px;background:var(--line)}
+.sf-row:active{background:rgba(23,33,29,.035)}
+.sf-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.sf-t{display:flex;align-items:baseline;gap:6px;min-width:0}
+.sf-t b{flex:none;font-size:16px;font-weight:580;letter-spacing:-.02em}
+.sf-t span{min-width:0;font-size:13px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sf-j{font-size:13.5px;line-height:1.45;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sf-j.wk{color:var(--ink-2);font-weight:500}
+.sf-m{font-size:12px;line-height:1.4;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sf-x{flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:52px}
+.sf-w{font-size:12px;font-weight:600;line-height:1.2;color:var(--accent);white-space:nowrap}
+.sf-w.n{font-weight:500;color:var(--ink-3)}
+.sf-w.q{color:var(--ochre-text)}
+.sf-hero{display:flex;align-items:center;gap:16px;padding:4px 2px 2px}
+.sf-hero>.av{--s:60px;font-size:17px}
+.sf-ht{flex:1;min-width:0}
+.sf-ht h2{font-size:22px;font-weight:580;line-height:1.3;letter-spacing:-.03em}
+.sf-ht p{margin-top:3px;font-size:14px;line-height:1.5;color:var(--ink-3)}
+.sf-ht .sf-hs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px;font-size:13px}
+.sf-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+.sf-gr{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:16px}
+.sf-c{min-width:0;padding:16px 18px 14px;border-radius:20px;background:var(--surface);box-shadow:var(--sh1)}
+.sf-c h3{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px;font-size:15px;font-weight:600;letter-spacing:-.02em}
+.sf-c h3 small{min-width:0;font-size:12.5px;font-weight:500;color:var(--ink-3);text-align:right}
+.sf-jt{margin-bottom:10px;font-size:15.5px;font-weight:580;line-height:1.45;letter-spacing:-.02em}
+.sf-c .sh4{margin-top:2px}
+.sf-note{margin-top:8px;font-size:13.5px;line-height:1.55;color:var(--ink-2)}
+.sf-note b{margin-right:6px;font-weight:600;color:var(--ink)}
+.sf-calls{display:flex;align-items:baseline;gap:5px;font-size:13px;color:var(--ink-3)}
+.sf-calls b{font-family:var(--serif);font-size:24px;font-weight:500;letter-spacing:-.03em;color:var(--ink);font-variant-numeric:lining-nums tabular-nums}
+.sf-cells{display:grid;grid-template-columns:repeat(var(--n,20),minmax(0,1fr));gap:3px;margin-top:8px}
+.sf-cells i{height:10px;border-radius:2.5px;background:#EEF0EC}
+.sf-cells i.on{background:var(--accent)}
+.sf-sm{margin-top:10px;font-size:12.5px;line-height:1.5;color:var(--ink-3)}
+.sf-c .rtl{font-size:12.5px}
+.sf-done p{display:flex;align-items:center;gap:8px;min-height:40px;padding:6px 0;border-top:1px solid var(--line);font-size:14px;color:var(--ink-2)}
+.sf-done p:first-child{border-top:0}
+.sf-done .ic{width:15px;height:15px;flex:none;color:var(--accent)}
+.sf-done .ic.no{color:var(--red-ink)}
+.sf-done span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sf-done time{flex:none;font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.sf-none{padding:4px 0;font-size:14px;color:var(--ink-3)}
+.sf-c .chief4{margin-top:0}
+.sf-c .chief4 span{font-size:12px}
+.sf-c .colab{margin-top:10px}
+section[data-route="office"] .pane-d .back{margin-top:4px}
+section[data-route="office"].on .pane-l>#officeList{animation:v6up var(--t-slow) 60ms var(--e-out) backwards}
+section[data-route="office"].on .pane-d{animation:v6fade var(--t-mid) 80ms var(--e-out) backwards}
+section[data-route="home"] .smc span,section[data-route="home"] .sc-meta span{font-size:12px}
+/* 오늘 · 직원 화면의 작은 글자 — 11.5px 아래 없음 · 흐린 회색(ink-4) 글자 없음(사용량 칸 링 글자·기준 꼬리표 · 가림 표시 · 사이 점 · 협업 동그라미 글자 · 정기 「예정」) */
+section[data-route="home"] .ringc span,section[data-route="home"] .ringc b small,section[data-route="home"] .dtag{font-size:12px}
+section[data-route="home"] .mask .ml,section[data-route="office"] .mask .ml{font-size:11.5px}
+.sf-c .colab .av{--s:26px;font-size:11.5px}
+.sf-c .rtl .skip{color:var(--ink-3)}
+
+/* ── 넓은 화면(1024px 이상) — 오늘 2단 · 직원 목록|자세히 · 고른 줄 = 떠 있는 흰 카드 ── */
+@media(min-width:1024px){
+  .td-say{font-size:28px}
+  body:not(.role-viewer) #homeWait .tw-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+  body:not(.role-viewer) #homeWait .tw-g>.tw+.tw{margin-top:0}
+  section[data-route="office"] .split{grid-template-columns:clamp(300px,27vw,380px) minmax(0,1fr)}
+  section[data-route="office"] .pane-d{background:transparent;box-shadow:none}
+  section[data-route="office"] .pane-d .sheet-scroll{max-width:880px;margin:0 auto;padding:22px 32px 40px}
+  .sf-list{padding:2px 0;background:none;box-shadow:none;border-radius:0;overflow:visible}
+  .tk-rooms{background:none;box-shadow:none;overflow:visible}
+  .tk-rooms .tk-rm,.sf-row{border-radius:18px}
+  section[data-route="reports"] #rlist>.cd{background:none;box-shadow:none;overflow:visible}
+  .pane-l .rr{border-radius:18px}
+  .tk-rooms .tk-rm.on,.sf-row.on,.pane-l .rr.act,.pane-l .rv-row.act{z-index:1;background:var(--surface);box-shadow:0 0 0 .5px rgba(23,33,29,.07),0 1px 2px rgba(23,33,29,.03),0 14px 30px -20px rgba(23,33,29,.28)}
+  .tk-rooms .tk-rm.on::before,.tk-rooms .tk-rm.on+.tk-rm::before,.sf-row.on::before,.sf-row.on+.sf-row::before,.pane-l .rr.act::before,.pane-l .rr.act+.rr::before,.pane-l .rv-row.act::before,.pane-l .rv-row.act+.rv-row::before{opacity:0}
+}
+@media(min-width:1024px) and (hover:hover){
+  .tk-rooms .tk-rm:not(.on):hover,.sf-row:not(.on):hover,.pane-l .rr:not(.act):hover,.pane-l .rv-row:not(.act):hover{background:rgba(23,33,29,.035)}
+}
+@media(min-width:1240px){
+  .sf-gr{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+  .sf-gr .wide{grid-column:1/-1}
+}
+
+/* ── (디자인 261124b) 현황(#stat) — 기간 알약 · 끝낸 일 날짜별 · 직원별 · 이번 주 사용량 · 일감 한눈에 · 최근 소식 · 오늘 정기업무 ──
+   그래프는 한 가지 뜻 = 한 색: 지난 날 막대 #98B1A4(흰 칸·미색 바탕 모두 2:1 넘음) · 오늘 막대만 진한 초록 · 직원별·사용량 = 차분한 초록 #4F8A79
+   숫자·이름은 늘 글자색 · 숫자 직접 표시는 오늘·가장 큰 날만 · 누르거나 올리면 숫자 띠 · 「표로 보기」 = 같은 숫자 표 · 눈금은 흐린 실선 */
+section[data-route="stat"]{position:relative}
+.hs-top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.hs-tt{min-width:0}
+.hs-sum b{font-weight:600;color:var(--ink)}
+.hs-fb{font-weight:500;color:var(--ochre-text)}
+.hs-pseg{flex:none;display:flex;gap:2px;margin-bottom:2px;padding:3px;border-radius:999px;background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 1px var(--line-2)}
+.hs-pseg button{min-width:54px;height:34px;padding:0 12px;border-radius:999px;font-size:13.5px;font-weight:500;color:var(--ink-2);transition:background var(--t-mid) var(--e-out),box-shadow var(--t-mid) var(--e-out),color var(--t-mid) ease}
+.hs-pseg button.on{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 0 0 .5px rgba(23,33,29,.08),0 6px 14px -8px rgba(23,33,29,.22)}
+.hs-grid{display:flex;flex-direction:column;gap:14px}
+.hs-cw{display:contents}
+.hs-o1{order:1}.hs-o2{order:2}.hs-o3{order:3}.hs-o4{order:4}.hs-o5{order:5}.hs-o6{order:6}
+.hs-card{position:relative;min-width:0;padding:16px 16px 14px;border-radius:24px;background:var(--surface);box-shadow:var(--sh1)}
+.hs-card.hs-fl{padding:16px 0 4px}
+.hs-fl>.hs-h{padding:0 16px}
+.hs-h{display:flex;align-items:center;gap:8px;min-height:32px}
+.hs-h h3{min-width:0;font-size:16px;font-weight:600;letter-spacing:-.02em;color:var(--ink)}
+.hs-h a{display:inline-flex;align-items:center;gap:2px;margin-left:auto;font-size:13px;font-weight:560;color:var(--accent)}
+.hs-h a .ic{width:15px;height:15px}
+.hs-tot{font-size:13px;font-weight:500;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap}
+.hs-tb{flex:none;height:32px;margin:0 -8px 0 auto;padding:0 10px;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--accent);transition:background var(--t-fast) ease}
+.hs-tb:active,.hs-tb[aria-pressed="true"]{background:var(--accent-tint)}
+.hs-sub{margin-top:2px;font-size:12.5px;line-height:1.5;color:var(--ink-3)}
+.hs-sub:empty{display:none}
+.hs-body{position:relative;margin-top:14px}
+.hs-none{padding:6px 0 4px;font-size:13.5px;line-height:1.55;color:var(--ink-3)}
+/* 끝낸 일 — 날짜별 세로 막대(바닥에서 자람 · 끝 4px 둥글게 · 사이 2px) */
+.hs-cols{position:relative;display:flex;align-items:flex-end;gap:2px;height:150px;margin-top:22px;padding-left:30px}
+.hs-gl{position:absolute;left:30px;right:0;height:1px;background:#EEF0EC;pointer-events:none}
+.hs-yt{position:absolute;left:0;width:24px;text-align:right;font-size:11.5px;line-height:1;color:var(--ink-3);transform:translateY(50%);font-variant-numeric:tabular-nums;pointer-events:none}
+.hs-col{position:relative;flex:1 1 0;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;border-radius:6px;-webkit-tap-highlight-color:transparent}
+.hs-col i{display:block;width:min(22px,72%);border-radius:4px 4px 0 0;background:#98B1A4;transform-origin:50% 100%;animation:hsGrowY .55s var(--e-out) backwards;animation-delay:var(--d,0ms);transition:filter var(--t-fast) ease}
+.hs-col.em i{background:var(--accent)}
+.hs-col b{position:absolute;left:50%;margin-bottom:4px;transform:translateX(-50%);font-size:12px;font-weight:600;line-height:1;color:var(--ink);white-space:nowrap;pointer-events:none;font-variant-numeric:tabular-nums}
+.hs-col.hot i{filter:brightness(1.07)}
+.hs-col:focus-visible{outline:2px solid var(--accent-soft);outline-offset:-1px}
+.hs-base{height:1px;margin-left:30px;background:var(--line-3)}
+.hs-x{display:flex;gap:2px;height:18px;margin-top:6px;padding-left:30px}
+.hs-x span{position:relative;flex:1 1 0;min-width:0}
+.hs-x em{position:absolute;top:0;left:50%;transform:translateX(-50%);font-style:normal;font-size:11.5px;line-height:1.4;color:var(--ink-3);white-space:nowrap}
+.hs-x .l em{left:auto;right:0;transform:none}
+.hs-x .now em{font-weight:600;color:var(--ink)}
+/* 직원별 끝낸 일 — 가로 막대(많은 순 · 왼쪽 바닥에서 자람) */
+.hs-hb{display:grid;gap:2px}
+.hs-hr{display:grid;grid-template-columns:56px minmax(0,1fr);align-items:center;gap:10px;width:100%;min-height:36px;border-radius:10px;text-align:left;-webkit-tap-highlight-color:transparent}
+.hs-hr .nm{font-size:13.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hs-tr{display:flex;align-items:center;min-width:0;height:20px}
+.hs-tr i{flex:none;display:block;height:12px;border-radius:0 4px 4px 0;background:#4F8A79;transform-origin:0 50%;animation:hsGrowX .55s var(--e-out) backwards;animation-delay:var(--d,0ms);transition:filter var(--t-fast) ease}
+.hs-tr b{margin-left:7px;font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+.hs-hr.z .nm,.hs-hr.z .hs-tr b{font-weight:500;color:var(--ink-3)}
+.hs-hr.hot .hs-tr i{filter:brightness(1.08)}
+.hs-hr:focus-visible{outline:2px solid var(--accent-soft);outline-offset:1px}
+.hs-more{display:inline-flex;align-items:center;min-height:36px;margin-top:4px;font-size:13px;font-weight:560;color:var(--accent)}
+/* 이번 주 사용량 — 눈금 막대(쉬는 선) · 다시 채워지는 때 · 오늘 통로별 호출 · 자세히(예전 사용량 칸 글 그대로) */
+.hs-mt{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 10px;margin-top:10px}
+.hs-big{font-family:var(--serif);font-size:28px;font-weight:500;line-height:1.1;letter-spacing:-.03em;color:var(--ink);font-variant-numeric:lining-nums}
+.hs-big small{margin-left:2px;font-family:var(--f);font-size:14px;font-weight:500;letter-spacing:0;color:var(--ink-3)}
+.hs-mt>span{font-size:12.5px;line-height:1.5;color:var(--ink-3)}
+.hs-meter{position:relative;height:10px;margin:36px 0 6px;border-radius:5px;background:var(--accent-tint)}
+.hs-meter>i{position:absolute;left:0;top:0;bottom:0;max-width:100%;border-radius:5px;background:#4F8A79;transform-origin:0 50%;animation:hsGrowX .7s var(--e-out) .12s backwards}
+.hs-meter.a>i{background:var(--ochre)}
+.hs-meter.r>i{background:var(--red)}
+.hs-stop{position:absolute;top:-8px;bottom:-8px;width:0}
+.hs-stop::before{content:"";position:absolute;top:0;bottom:0;left:-.75px;width:1.5px;border-radius:1px;background:var(--ink-3)}
+.hs-stop em{position:absolute;bottom:100%;right:-3px;margin-bottom:5px;font-style:normal;font-size:12px;line-height:1.2;color:var(--ink-2);white-space:nowrap}
+.hs-stop.lf em{right:auto;left:-3px}
+.hs-ln{margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+.hs-lh{margin-bottom:4px;font-size:12.5px;font-weight:600;color:var(--ink-3)}
+.hs-lr{display:grid;grid-template-columns:34px minmax(0,1fr) 46px;align-items:center;gap:10px;min-height:28px}
+.hs-lr>span:first-child{font-size:13.5px;color:var(--ink-2)}
+.hs-lt{position:relative;height:6px;border-radius:3px;background:#EEF0EC;overflow:hidden}
+.hs-lt i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:#4F8A79}
+.hs-lr b{font-size:12.5px;font-weight:600;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
+.hs-ud{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:12.5px;line-height:1.6;color:var(--ink-3)}
+.hs-ud p+p{margin-top:4px}
+.hs-ud .urule{margin-top:8px;padding-top:8px;font-size:12px}
+.hs-ud .use-more{margin-top:8px;padding:0;font-size:12.5px}
+.hs-ud b{font-weight:600}
+section[data-route="stat"] .dtag,section[data-route="reports"] .dtag{font-size:12px}
+section[data-route="stat"] .mask .ml,section[data-route="reports"] .mask .ml{font-size:11.5px}
+/* 일감 한눈에 — 넷(진행 · 결재 대기 · 질문 대기 · 제안) · 누르면 일감 대장 */
+.hs-jobs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
+.hs-j{display:flex;flex-direction:column;gap:6px;min-width:0;padding:12px 10px 11px;border-radius:16px;background:#F7F7F3;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);transition:transform var(--t-mid) var(--e-out)}
+.hs-j:active{transform:scale(.97)}
+.hs-j span{font-size:12.5px;line-height:1.3;color:var(--ink-3)}
+.hs-j b{font-family:var(--serif);font-size:26px;font-weight:500;line-height:1.05;letter-spacing:-.03em;color:var(--ink);font-variant-numeric:lining-nums}
+.hs-j b.a{color:var(--ochre-text)}
+/* 최근 소식 · 오늘 정기업무 — 목록이 칸 안 여백을 갖는다 */
+.hs-fl .tl{padding:12px 16px 6px}
+#statRtn{margin-top:6px}
+#statRtn li:last-child{border-bottom:0!important}
+/* 숫자 띠(막대를 누르거나 올리거나 키보드로 고르면) — 값이 먼저 · 이름은 글자색 · 색은 짧은 줄 표시로만 */
+.hs-tip{position:absolute;z-index:6;left:0;top:0;padding:8px 11px;border-radius:12px;background:rgba(255,255,255,.97);box-shadow:0 0 0 .5px var(--line-2),0 12px 28px -12px rgba(23,33,29,.32);font-size:12.5px;line-height:1.4;color:var(--ink-2);white-space:nowrap;pointer-events:none;opacity:0;visibility:hidden;transform:translate(-50%,-100%) translateY(-4px);transition:opacity var(--t-fast) ease,transform var(--t-mid) var(--e-out),visibility 0s linear var(--t-mid)}
+.hs-tip.on{opacity:1;visibility:visible;transform:translate(-50%,-100%) translateY(-10px);transition:opacity var(--t-fast) ease,transform var(--t-mid) var(--e-out)}
+.hs-tip b{display:block;font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--ink)}
+.hs-tip i{display:inline-block;width:12px;height:2px;margin-right:6px;border-radius:1px;vertical-align:3px;background:#98B1A4}
+.hs-tip i.em{background:var(--accent)}
+.hs-tip i.g{background:#4F8A79}
+/* 표로 보기 — 그래프와 같은 숫자 */
+.hs-tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.hs-tbl th{padding:6px 4px;border-bottom:1px solid var(--line-2);font-size:12px;font-weight:600;color:var(--ink-3);text-align:left}
+.hs-tbl td{padding:8px 4px;border-bottom:1px solid var(--line);color:var(--ink);font-variant-numeric:tabular-nums}
+.hs-tbl tr:last-child td{border-bottom:0}
+.hs-tbl .n{text-align:right}
+.hs-tbl .m{color:var(--ink-3)}
+/* 처음 열 때만 — 칸이 차례로 떠오르고 막대가 바닥에서 자람(움직임 줄이기면 위 규칙이 모두 멈추고 막대는 다 자란 모습) */
+section[data-route="stat"].on .hs-top,section[data-route="stat"].on .hs-card{animation:v6up var(--t-slow) var(--e-out) backwards}
+section[data-route="stat"].on .hs-o2,section[data-route="stat"].on .hs-o3{animation-delay:50ms}
+section[data-route="stat"].on .hs-o4,section[data-route="stat"].on .hs-o5,section[data-route="stat"].on .hs-o6{animation-delay:100ms}
+@keyframes hsGrowY{from{transform:scaleY(0)}}
+@keyframes hsGrowX{from{transform:scaleX(0)}}
+
+/* ── (디자인 261124b) 보고서(#reports) — 찾기 · 거르기 · 대표님 차례(옅은 바다색 · 결재 줄은 결재함으로) · 날짜 묶음 · 안 읽음 점 ──
+   연 보고 = 사무실이 만든 보고서 HTML 을 톡과 같은 sandbox 틀에 · 아래 할 일 줄(답하기 · 결재하기 · 결과물 보기 · 일감 대장) */
+.rv-search{display:flex;align-items:center;gap:8px;height:46px;padding:0 4px 0 16px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line-2);color:var(--ink-3);transition:box-shadow var(--t-mid) ease}
+.rv-search:focus-within{box-shadow:inset 0 0 0 1px var(--accent-soft),0 0 0 4px rgba(43,106,90,.08)}
+.rv-search>.ic{flex:none;width:18px;height:18px}
+.rv-search input{flex:1;min-width:0;height:44px;padding:0;border:0;outline:0;background:none;font:inherit;font-size:15px;color:var(--ink);-webkit-appearance:none;appearance:none}
+.rv-search input::placeholder{color:var(--ink-3)}
+.rv-search input::-webkit-search-cancel-button{display:none}
+.rv-sx{flex:none;display:grid;place-items:center;width:38px;height:38px;border-radius:50%;color:var(--ink-3)}
+.rv-sx .ic{width:16px;height:16px}
+.rv-sx[hidden]{display:none}
+.rv-seg{display:flex;gap:0;margin-top:10px;padding:4px;border-radius:999px;background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 1px var(--line-2);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.rv-seg::-webkit-scrollbar{display:none}
+.rv-seg button{flex:1 0 auto;height:36px;padding:0 9px;border-radius:999px;font-size:14px;font-weight:500;color:var(--ink-2);white-space:nowrap;transition:background var(--t-mid) var(--e-out),box-shadow var(--t-mid) var(--e-out),color var(--t-mid) ease}
+.rv-seg button.on{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 0 0 .5px rgba(23,33,29,.08),0 6px 14px -8px rgba(23,33,29,.22)}
+.rv-seg .n{margin-left:3px;font-size:12px;font-weight:500;color:var(--ink-3);font-variant-numeric:tabular-nums}
+/* 대표님 차례 — 옅은 바다색 칸 + 뷰파인더 모서리 · 안의 줄은 흰 유리 카드(열람 계정은 흰 칸에 줄로) */
+.rv-turn{position:relative;margin-top:14px;padding:4px 8px 8px;border-radius:24px;background:var(--sea);box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+.rv-turn::before{content:"";position:absolute;inset:6px;border:1.5px solid rgba(43,106,90,.42);border-radius:7px;pointer-events:none;
+  -webkit-mask:linear-gradient(#000 0 0) top left/13px 13px no-repeat,linear-gradient(#000 0 0) top right/13px 13px no-repeat,linear-gradient(#000 0 0) bottom left/13px 13px no-repeat,linear-gradient(#000 0 0) bottom right/13px 13px no-repeat;
+  mask:linear-gradient(#000 0 0) top left/13px 13px no-repeat,linear-gradient(#000 0 0) top right/13px 13px no-repeat,linear-gradient(#000 0 0) bottom left/13px 13px no-repeat,linear-gradient(#000 0 0) bottom right/13px 13px no-repeat}
+.rv-th{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:12px 10px 4px}
+.rv-th b{font-size:16px;font-weight:600;letter-spacing:-.02em;color:var(--ink)}
+.rv-th small{font-size:12.5px;color:var(--ink-2)}
+.rv-turn .rv-row{margin-top:6px;border-radius:18px;background:rgba(255,255,255,.88);box-shadow:inset 0 0 0 1px rgba(255,255,255,.9),0 1px 2px rgba(23,50,40,.04),0 12px 24px -20px rgba(23,70,55,.3)}
+.rv-turn .rv-row::before{display:none}
+.rv-turn .rv-row:active{background:rgba(255,255,255,.7)}
+.rv-turn .rv-s{color:#5A645F} /* 바다색 위 작은 글자도 대비 4.5 넘게(넓은 화면은 줄 바탕이 투명) */
+.role-viewer .rv-turn{background:var(--surface);box-shadow:var(--sh1)}
+.role-viewer .rv-turn::before{display:none}
+.role-viewer .rv-turn .rv-row{margin-top:0;border-radius:14px;background:none;box-shadow:none}
+.role-viewer .rv-turn .rv-row+.rv-row::before{display:block}
+/* 날짜 묶음(오늘 · 어제 · 11월 22일 (토)) · 보고 한 줄 = 종류 칩 · 제목 · 누가 · 몇 시 · 상태 · 안 읽음 점 */
+.rv-day{margin-top:20px}
+.rv-dhd{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:0 4px;margin-bottom:8px}
+.rv-dhd h2{font-size:18px;font-weight:600;letter-spacing:-.01em;line-height:1.3;color:var(--ink)}
+.rv-dhd span{font-size:13px;font-weight:500;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.rv-card{border-radius:22px;background:var(--surface);box-shadow:var(--sh1)}
+.rv-card>.rv-row:first-child{border-top-left-radius:22px;border-top-right-radius:22px}
+.rv-card>.rv-row:last-child{border-bottom-left-radius:22px;border-bottom-right-radius:22px}
+.rv-row{position:relative;display:flex;align-items:flex-start;gap:12px;min-height:72px;padding:13px 30px 13px 14px;color:var(--ink);transition:background var(--t-fast) ease}
+.rv-row+.rv-row::before{content:"";position:absolute;top:0;left:66px;right:16px;height:1px;background:var(--line)}
+.rv-row:active{background:rgba(23,33,29,.035)}
+.rv-kb{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;font-size:12px;font-weight:600;letter-spacing:-.02em;background:#EEEFEA;color:#56605B}
+.rv-ap,.rv-q{background:var(--ochre-tint);color:var(--ochre-text)}
+.rv-dn{background:var(--accent-tint);color:var(--accent)}
+.rv-ct{background:#E6EEF0;color:#466069}
+.rv-ur{background:var(--red-bg);color:var(--red-ink)}
+.rv-m{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;padding-top:1px}
+.rv-t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:15px;font-weight:580;line-height:1.45;letter-spacing:-.02em;color:var(--ink);overflow-wrap:anywhere}
+.rv-row.rd .rv-t{font-weight:500;color:var(--ink-2)}
+.rv-s{display:flex;align-items:center;flex-wrap:wrap;gap:2px 6px;min-width:0;font-size:12.5px;line-height:1.5;color:var(--ink-3)}
+.rv-s .sep{font-style:normal}
+.rv-s time{font-variant-numeric:tabular-nums}
+.rv-who{font-weight:500;color:var(--ink-2)}
+.rv-chip{display:inline-flex;align-items:center;gap:3px;font-weight:600;white-space:nowrap}
+.rv-chip .ic{width:13px;height:13px}
+.rv-chip.ok{color:var(--accent)}
+.rv-chip.du{color:var(--ochre-text)}
+.rv-chip.ur{color:var(--red-ink)}
+.rv-chip.nt{font-weight:500;color:var(--ink-2)}
+.rv-tags{display:flex;flex-wrap:wrap;gap:4px;min-width:0;margin-top:3px}
+.rv-ud{position:absolute;top:19px;right:14px;width:7px;height:7px;border-radius:50%;background:#4F8A79}
+.rv-none{margin-top:14px;padding:16px 18px;border-radius:20px;background:var(--surface);box-shadow:var(--sh1);font-size:14px;line-height:1.55;color:var(--ink-3)}
+.rv-none button{margin-left:4px;font-weight:560;color:var(--accent)}
+.rv-foot{margin:18px 6px 4px;font-size:12.5px;line-height:1.6;color:var(--ink-3)}
+/* 연 보고 — 머리(누가 · 무엇) · 대표님만 금액 줄 · 보고서 틀 · 아래 할 일 줄(폰은 아래 탭 바로 위에 붙음) */
+.rv-doc{display:flex;flex-direction:column;min-width:0}
+.rv-dh{display:flex;align-items:center;gap:12px;min-height:56px;padding:2px 0 12px}
+.rv-dt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.rv-dt b{font-size:16px;font-weight:600;letter-spacing:-.02em;line-height:1.35;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rv-dt small{font-size:12.5px;line-height:1.45;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rv-dl{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--surface);color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line-2)}
+.rv-dl .ic{width:18px;height:18px}
+.rv-own{margin:0 0 10px;padding:9px 14px;border-radius:14px;background:var(--ochre-tint);font-size:12.5px;line-height:1.5;color:var(--ochre-text);overflow-wrap:anywhere}
+.rv-note{margin:0 0 10px;padding:8px 14px;border-radius:14px;background:var(--sunken);font-size:12.5px;line-height:1.5;color:var(--ink-2)}
+.rv-frame{position:relative;min-width:0}
+.rv-frame.is-ifr{height:calc(100vh - 330px - var(--sat) - var(--sab));height:calc(100dvh - 330px - var(--sat) - var(--sab));min-height:380px;border-radius:20px;overflow:hidden;background:var(--paper);box-shadow:0 0 0 .5px var(--line-2),0 14px 30px -24px rgba(23,33,29,.25)}
+.rv-frame.is-ifr iframe{position:absolute;inset:0;display:block;width:100%;height:100%;border:0;background:var(--paper)}
+.rv-frame .rempty{margin:0}
+.rv-bar{position:sticky;bottom:calc(62px + var(--sab));z-index:4;display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px;margin:12px -16px 0;padding:10px 16px;background:rgba(244,243,238,.9);-webkit-backdrop-filter:saturate(1.4) blur(18px);backdrop-filter:saturate(1.4) blur(18px);box-shadow:0 -.5px 0 var(--line-2)}
+.rv-bar:empty{display:none}
+.rv-b{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 16px;border-radius:999px;background:var(--surface);color:var(--ink);font-size:14px;font-weight:600;white-space:nowrap;box-shadow:inset 0 0 0 1px var(--line-2);transition:transform var(--t-mid) var(--e-spring)}
+.rv-b:active{transform:scale(.96)}
+.rv-b .ic{width:16px;height:16px}
+.rv-b.p{background:var(--accent);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 8px 18px -10px rgba(43,106,90,.6)}
+.rv-ans{display:flex;align-items:center;gap:8px;flex:1 1 100%;min-width:0;margin:0}
+.rv-ans .inp{flex:1;min-width:0;height:44px;border-radius:999px}
+.rv-ro{flex:1 1 100%;font-size:12.5px;line-height:1.5;color:var(--ink-3)}
+/* 넓은 화면 오른쪽 활동 칸(예전 그대로)의 단계 글자 — 이 화면에서도 11.5px 아래 · 흐린 글자 없게 */
+section[data-route="reports"] .pane-a .stp.lb span{font-size:11.5px}
+section[data-route="reports"] .pane-a .stp.lb span:not(.d):not(.c):not(.q):not(.r){color:var(--ink-3)}
+section[data-route="reports"].on .pane-l>.rv-search,section[data-route="reports"].on .pane-l>.rv-seg{animation:v6up var(--t-slow) 40ms var(--e-out) backwards}
+section[data-route="reports"].on #rlist{animation:v6up var(--t-slow) 80ms var(--e-out) backwards}
+section[data-route="reports"].on .rv-doc{animation:v6fade var(--t-mid) var(--e-out) backwards}
+
+/* ── 넓은 화면(1024px 이상) — 현황 두 줄기 · 보고서 목록|연 보고(보고서 틀이 오른쪽 칸을 다 씀) ── */
+@media(min-width:1024px){
+  /* 오늘 오른쪽 칸(오늘 정기업무 · 최근 소식)은 현황으로 옮김 — 오늘은 넓게 한 칸(시험판 넓은 화면 오늘과 같게) */
+  section[data-route="home"] .hgrid{grid-template-columns:minmax(0,1fr)}
+  .hs-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start}
+  .hs-cw{display:flex;flex-direction:column;gap:16px;min-width:0}
+  .hs-card{padding:18px 20px 16px}
+  .hs-card.hs-fl{padding:18px 0 6px}
+  .hs-fl>.hs-h{padding:0 20px}
+  .hs-fl .tl{padding:12px 20px 6px}
+  .hs-cols{height:170px}
+  section[data-route="reports"] .pane-l .rv-card{background:none;box-shadow:none}
+  section[data-route="reports"] .pane-l .rv-row{border-radius:18px}
+  section[data-route="reports"] .pane-l .rv-turn{margin-top:12px;padding:4px 6px 6px}
+  section[data-route="reports"] .pane-l .rv-turn .rv-row:not(.act){margin-top:2px;background:transparent;box-shadow:none}
+  section[data-route="reports"] .pane-l .rv-turn .rv-row.act{margin-top:2px}
+  .rv-dhd h2{font-size:15px}
+  section[data-route="reports"] .pane-d{background:transparent;box-shadow:inset .5px 0 0 var(--line-2)}
+  section[data-route="reports"] .pane-d .sheet-scroll{display:flex;flex-direction:column;min-height:100%;max-width:none;margin:0;padding:0}
+  section[data-route="reports"] #repPh{margin:24px 28px}
+  section[data-route="reports"] #repDetail{flex:1 1 auto;display:flex;flex-direction:column;min-height:0}
+  section[data-route="reports"] #repDetail>.rempty{margin:24px 28px}
+  .rv-doc{flex:1 1 auto}
+  .rv-dh{position:sticky;top:0;z-index:5;min-height:64px;padding:10px 28px;background:rgba(244,243,238,.86);-webkit-backdrop-filter:saturate(1.4) blur(18px);backdrop-filter:saturate(1.4) blur(18px);box-shadow:0 .5px 0 var(--line-2)}
+  .rv-own,.rv-note{margin:12px 28px 0}
+  .rv-frame.is-ifr{flex:1 1 auto;height:auto;min-height:440px;border-radius:0;box-shadow:none}
+  .rv-frame.is-doc,.rv-frame.is-wait{flex:1 1 auto;padding:18px 28px 24px}
+  /* 좁은 목록 칸(300~360px)에는 거르기 여섯 개가 한 줄에 다 들어가지 않는다 — 세 칸씩 두 줄(잘리거나 옆으로 숨지 않게) */
+  section[data-route="reports"] .rv-seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;border-radius:20px;overflow:visible}
+  section[data-route="reports"] .rv-seg button{min-width:0;padding:0 6px;border-radius:16px}
+  section[data-route="reports"] .rv-frame .doc{padding:20px 22px;border-radius:22px;background:var(--surface);box-shadow:var(--sh1)}
+  .rv-bar{bottom:0;margin:0;padding:12px 28px}
+}
+@media(min-width:1024px) and (hover:hover){
+  section[data-route="reports"] .pane-l .rv-turn .rv-row:not(.act):hover{background:rgba(255,255,255,.45)}
+  .hs-j:hover{box-shadow:inset 0 0 0 1px var(--line-2)}
+}
 /* 260930 아이폰: 입력 글씨 16px 미만이면 누를 때 화면이 확대됨 → 모바일 화면(1023px 이하)·터치 기기에서만 16px. 데스크톱 모양 그대로 */
 /*  (261004 배포전검토1 M1) 9/30 라이브에 직접 넣은 수정(maydly/note 03919ac)을 코드 원본으로 옮기고, 1-10 톡 입력칸(.tk-ib textarea · .tk-search input)과
     그 밖 입력·선택칸 전부로 넓혔다. 톡 칸 규칙보다 뒤에 두어야 이긴다(그래서 스타일 맨 끝 — 톡 CSS 묶음 밖이라 tk- 접두어 검사 대상 아님). maximum-scale 은 쓰지 않는다(손가락 확대는 그대로). */
@@ -1976,6 +2429,14 @@ details.fold>summary .ic{transition:transform var(--t-mid) var(--e-out)}
 <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 3.5v11"/><path d="m7.5 8 4.5-4.5L16.5 8"/><path d="M5.5 12.5v6a1.5 1.5 0 0 0 1.5 1.5h10a1.5 1.5 0 0 0 1.5-1.5v-6"/></symbol>
 <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><circle cx="18.5" cy="12" r="1.4" fill="currentColor"/></symbol>
 <symbol id="i-code" viewBox="0 0 24 24"><path d="M9 7.5 4.5 12 9 16.5"/><path d="m15 7.5 4.5 4.5-4.5 4.5"/></symbol>
+<!-- (디자인 261124b) 아래 탭·왼쪽 메뉴 그림 5개 — 오늘 · 톡 · 현황 · 보고서 · 직원 -->
+<symbol id="i-tb-today" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.1"/><path d="M12 2.9v2.2M12 18.9v2.2M2.9 12h2.2M18.9 12h2.2M5.6 5.6l1.55 1.55M16.85 16.85l1.55 1.55M5.6 18.4l1.55-1.55M16.85 7.15l1.55-1.55"/></symbol>
+<symbol id="i-tb-talk" viewBox="0 0 24 24"><path d="M5.5 4.5h13a2 2 0 0 1 2 2v8.5a2 2 0 0 1-2 2H11l-4.6 3.4V17H5.5a2 2 0 0 1-2-2V6.5a2 2 0 0 1 2-2z"/><path d="M8 9.3h8M8 12.7h5"/></symbol>
+<symbol id="i-tb-stat" viewBox="0 0 24 24"><path d="M4 20h16M7 20v-6M12 20V7M17 20v-9"/></symbol>
+<symbol id="i-tb-report" viewBox="0 0 24 24"><path d="M7 3.5h7.2L18.5 8v11.5a1 1 0 0 1-1 1h-10.5a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1z"/><path d="M14 3.8V8h4.2M9 12.5h6M9 16h4"/></symbol>
+<symbol id="i-tb-staff" viewBox="0 0 24 24"><circle cx="9.2" cy="8.4" r="3.2"/><path d="M3.6 19.5a5.6 5.6 0 0 1 11.2 0M15.6 5.4a3.2 3.2 0 0 1 0 6.1M17.6 14.2a5.6 5.6 0 0 1 2.9 5.3"/></symbol>
+<!-- (디자인 261124b) 보고서 찾기 돋보기 -->
+<symbol id="i-find" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.6 15.6 4.6 4.6"/></symbol>
 </defs></svg>
 
 <p class="note bootfail" id="bootFail" hidden>화면을 불러오지 못했습니다 — 인터넷 연결을 확인하고 다시 불러와 주세요. <button type="button" class="btn btn-q btn-sm" onclick="location.reload()" style="margin-top:6px">다시 불러오기</button></p>
@@ -1993,11 +2454,14 @@ details.fold>summary .ic{transition:transform var(--t-mid) var(--e-out)}
     <a class="bm" href="#home"><svg class="clvi"><use href="#clover"/></svg>maydly<i>.</i><small>사무실</small></a>
     <div class="sofc" id="sideOffice"></div>
     <nav class="nav" aria-label="메뉴">
-      <a href="#talk" data-nav="talk"><svg class="ic"><use href="#i-chat"/></svg>톡<span class="c r" data-cnt="talk" hidden></span></a>
-      <a href="#home" data-nav="home"><svg class="ic"><use href="#i-home"/></svg>현황판</a>
-      <a href="#office" data-nav="office"><svg class="ic"><use href="#i-team"/></svg>평면도</a>
+      <!-- (디자인 261124b) 큰 묶음 = 아래 탭과 같은 다섯(오늘 · 톡 · 현황 · 보고서 · 직원) · 그 밖 화면은 아래 조용한 묶음에 그대로 -->
+      <a href="#home" data-nav="home"><svg class="ic"><use href="#i-tb-today"/></svg>오늘<span class="c r own" data-cnt="today" hidden></span></a>
+      <a href="#talk" data-nav="talk"><svg class="ic"><use href="#i-tb-talk"/></svg>톡<span class="c r" data-cnt="talk" hidden></span></a>
+      <a href="#stat" data-nav="stat"><svg class="ic"><use href="#i-tb-stat"/></svg>현황</a>
+      <a href="#reports" data-nav="reports"><svg class="ic"><use href="#i-tb-report"/></svg>보고서<span class="c r" data-cnt="rep" hidden></span></a>
+      <a href="#office" data-nav="office"><svg class="ic"><use href="#i-tb-staff"/></svg>직원</a>
+      <p class="nav-g">더 보기</p>
       <a href="#approvals" data-nav="approvals"><svg class="ic"><use href="#i-stamp"/></svg>결재함<span class="c r own" data-cnt="apr" hidden></span></a>
-      <a href="#reports" data-nav="reports"><svg class="ic"><use href="#i-inbox"/></svg>보고함<span class="c r own" data-cnt="rep" hidden></span></a>
       <a href="#ledger" data-nav="ledger" data-navtab="main"><svg class="ic"><use href="#i-board"/></svg>일감 대장<span class="c" data-cnt="led"></span></a>
       <a href="#order" data-nav="order" class="own"><svg class="ic"><use href="#i-pen"/></svg>지시하기</a>
       <a href="#order" data-nav="order" class="sub"><svg class="ic"><use href="#i-pen"/></svg>최근 지시 진행</a>
@@ -2022,7 +2486,7 @@ details.fold>summary .ic{transition:transform var(--t-mid) var(--e-out)}
         <span class="top-r">
           <a class="qchip own" id="topQueue" href="#home" hidden></a>
           <span id="topPill"></span>
-          <a class="ib" href="#reports" aria-label="보고함"><svg class="ic"><use href="#i-bell"/></svg><b class="nb own" data-cnt="rep" hidden></b></a>
+          <a class="ib" href="#reports" aria-label="보고서"><svg class="ic"><use href="#i-bell"/></svg><b class="nb own" data-cnt="rep" hidden></b></a>
           <a class="btn btn-p btn-sm only-d own" href="#order" style="min-height:36px"><svg class="ic"><use href="#i-pen"/></svg>지시하기</a>
           <button type="button" class="av av-me s36 mebtn only-m" data-open-more data-ui="meAvatar" aria-label="메뉴 열기"></button>
         </span>
@@ -2075,37 +2539,37 @@ details.fold>summary .ic{transition:transform var(--t-mid) var(--e-out)}
         </div>
       </section>
 
-      <!-- ═════ 홈 (현황판 먼저) ═════ -->
-      <section data-route="home" aria-label="홈">
+      <!-- ═════ 오늘 (디자인 261124b — 예전 현황판 자리 · 주소 #home 그대로 · #today 도 여기로) ═════ -->
+      <section data-route="home" aria-label="오늘">
         <div class="hgrid">
           <div class="hmain">
-            <p class="eyb only-m" data-now></p>
-            <h1 class="hero" id="homeHero"></h1>
-            <p class="hero-s own" id="homeLede"></p>
-            <p class="hero-s sub">열람 전용 화면입니다. 지시·결재·조작 버튼은 보이지 않습니다.</p>
+            <div class="td-hello">
+              <p class="td-date only-m" data-now></p>
+              <h1 class="td-say" id="homeHero"></h1>
+              <p class="td-live" id="homeLede"></p>
+              <p class="td-view sub">열람 전용 화면입니다. 지시·결재·조작 버튼은 보이지 않습니다.</p>
+            </div>
             <div id="homeOff"></div>
-            <div id="homeBoard"></div>
-            <div class="g2" id="homeTiles"></div>
+            <div class="td-sec">
+              <div class="sh"><h2>오늘 흐름</h2><span class="mut" id="homeFlowN"></span></div>
+              <div class="cd td-flow" id="homeFlow"></div>
+            </div>
+            <div class="td-sec">
+              <div class="sh"><h2 id="homeWaitH">차례</h2><a href="#approvals">결재함<svg class="ic"><use href="#i-chev-r"/></svg></a></div>
+              <div id="homeWait"></div>
+            </div>
             <div class="hcols">
               <div>
-                <div class="own">
-                  <div class="sh"><h2>기다리는 일 <span id="homeWaitN"></span></h2><a href="#approvals">결재함<svg class="ic"><use href="#i-chev-r"/></svg></a></div>
-                  <div id="homeWait"></div>
-                </div>
-                <div class="sh"><h2>오늘의 브리핑</h2><a href="#reports">보고함<svg class="ic"><use href="#i-chev-r"/></svg></a></div>
-                <div id="homeBrief"></div>
-                <div class="sh"><h2>일감 한눈에</h2><a href="#ledger">일감 대장<svg class="ic"><use href="#i-chev-r"/></svg></a></div>
-                <div class="sumr" id="homeJobs"></div>
+                <div class="sh"><h2>한눈에</h2><span class="mut" id="homeTilesAt"></span></div>
+                <div class="td-gl" id="homeTiles"></div>
+                <div class="sh"><h2 id="homeCrewH">지금 일하는 직원</h2><a href="#office">직원<svg class="ic"><use href="#i-chev-r"/></svg></a></div>
+                <div id="homeCrew"></div>
               </div>
               <div>
-                <div class="sh"><h2>오늘 사용량</h2><span class="lk mut" style="display:flex;align-items:center;gap:4px"><svg class="ic" style="width:15px;height:15px"><use href="#i-info"/></svg>임시 한도</span></div>
-                <div class="cd" id="homeUsage"></div>
-                <div class="only-d">
-                  <div class="sh"><h2>지금 사무실</h2><a href="#office">평면도<svg class="ic"><use href="#i-chev-r"/></svg></a></div>
-                  <div class="floor" style="padding:10px"><div class="desks" id="homeFloor" style="grid-template-columns:repeat(4,minmax(0,1fr))"></div></div>
-                </div>
+                <div class="sh"><h2>최근 브리핑</h2><a href="#reports">보고서<svg class="ic"><use href="#i-chev-r"/></svg></a></div>
+                <div id="homeBrief"></div>
                 <div class="own only-d">
-                  <div class="sh"><h2><span data-ui="leaderShort"></span>에게 바로 지시</h2><a href="#order">지시하기<svg class="ic"><use href="#i-chev-r"/></svg></a></div>
+                  <div class="sh"><h2><span><span data-ui="leaderShort"></span>에게 바로 지시</span></h2><a href="#order">지시하기<svg class="ic"><use href="#i-chev-r"/></svg></a></div>
                   <div class="cd pd">
                     <form class="quick" id="quickForm" autocomplete="off" style="margin-top:0"><input class="inp" id="quickTxt" maxlength="4000" placeholder="예) 다음 주 촬영 준비물 안내 만들어줘" aria-label="빠른 지시"><button type="submit" class="btn btn-p">보내기</button></form>
                     <p class="s12 mut" id="quickNote" style="margin-top:8px"></p>
@@ -2113,61 +2577,74 @@ details.fold>summary .ic{transition:transform var(--t-mid) var(--e-out)}
                 </div>
               </div>
             </div>
-            <div class="only-m">
-              <div class="sh"><h2>최근 소식</h2><a href="#office">사무실<svg class="ic"><use href="#i-chev-r"/></svg></a></div>
-              <div class="cd"><ol class="tl" id="homeNews"></ol></div>
-            </div>
+            <!-- (디자인 261124b) 예전 현황판 칸(일감 한눈에 · 사용량 · 최근 소식 · 오늘 정기업무)은 「현황」 화면으로 옮김 -->
             <div class="own" id="homePushMini"></div>
             <div class="own ctl" id="homeStop"></div>
           </div>
-          <aside class="hact only-d" aria-label="오늘 정기업무와 최근 소식">
-            <div class="cd" style="overflow:hidden">
-              <div class="pane-h" style="padding:14px 16px 10px;box-shadow:inset 0 -1px 0 var(--line)"><h2>오늘 정기업무</h2></div>
-              <div id="homeRtn"></div>
-              <div class="pane-h" style="padding:14px 16px 4px"><h2>최근 소식</h2></div>
-              <ol class="tl" id="homeFeed"></ol>
-            </div>
-          </aside>
         </div>
       </section>
 
-      <!-- ═════ 사무실 (평면도) ═════ -->
-      <section data-route="office" aria-label="사무실">
-        <div class="pghead">
-          <div class="row nw" style="align-items:flex-end"><h1 class="lt">사무실</h1><button type="button" class="btn btn-do btn-sm ml own" data-open-stop id="officeStopBtn"><svg class="ic"><use href="#i-stop"/></svg>긴급정지</button></div>
-          <p class="lts" id="officeLede"></p>
-          <div class="flegend" id="officeLegend" aria-label="상태 색 안내"></div>
-        </div>
-        <div class="ogrid">
-          <div>
-            <div class="floor" id="officeFloor"></div>
-          </div>
-          <div>
-            <div id="officeSel"></div>
-            <div class="sh"><h2>모두의 지금</h2><span class="lk mut">경과</span></div>
-            <div class="cd sl" id="officeList"></div>
-          </div>
-        </div>
-        <div class="sh"><h2>사무실 소식</h2><span class="lk mut">최근 움직임</span></div>
-        <div class="cd"><ol class="tl" id="officeFeed"></ol></div>
-        <div class="own ctl" id="officeCtl"></div>
-      </section>
-
-      <!-- ═════ 보고함 ═════ -->
-      <section data-route="reports" aria-label="보고함">
+      <!-- ═════ 직원 (디자인 261124b — 예전 평면도 자리 · 주소 #office 그대로 · #office/<직원> = 그 사람 자세히 · #staff 도 여기로) ═════ -->
+      <section data-route="office" aria-label="직원">
         <div class="split">
           <div class="pane-l">
             <div class="pghead">
-              <div class="row nw" style="align-items:flex-end"><h1 class="lt">보고함</h1><button type="button" class="btn btn-s btn-sm ml" data-mark-read>모두 읽음</button></div>
-              <p class="lts" id="repLede">보고는 모아서 하루 두 번(12:00 브리핑 · 00:00 업무일지) + 월요일 주간보고. 폰은 결재·긴급·개발 소식·연락 정리·리마인드·PC 다시 켜짐만 울려요(연락 정리는 밤이면 아침에).</p>
+              <div class="row nw" style="align-items:flex-end"><h1 class="lt">직원</h1><button type="button" class="btn btn-do btn-sm ml own" data-open-stop id="officeStopBtn"><svg class="ic"><use href="#i-stop"/></svg>긴급정지</button></div>
+              <p class="lts" id="officeLede"></p>
             </div>
-            <div class="chips" role="group" aria-label="보고 종류" id="repChips"></div>
-            <div id="repPin"></div>
+            <div id="officeList"></div>
+            <div class="sh"><h2>사무실 소식</h2><span class="lk mut">최근 움직임</span></div>
+            <div class="cd"><ol class="tl" id="officeFeed"></ol></div>
+          </div>
+          <div class="pane-d">
+            <div class="sheet-scroll">
+              <a class="back" href="#office"><svg class="ic"><use href="#i-chev-l"/></svg>직원</a>
+              <div id="officeSel"></div>
+              <div class="own ctl" id="officeCtl"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═════ 현황 (디자인 261124b — 새 화면 · 기간 7일·30일 · 끝낸 일 날짜별 · 직원별 · 이번 주 사용량 · 일감 한눈에 · 최근 소식 · 오늘 정기업무) ═════
+           칸 안은 renderStat() 이 채운다 · 폰은 위 순서대로 한 줄, 넓은 화면은 두 줄기(왼쪽 날짜별·직원별·소식 | 오른쪽 사용량·일감·정기업무) -->
+      <section data-route="stat" aria-label="현황">
+        <div id="statView">
+          <div class="pghead hs-top">
+            <div class="hs-tt"><h1 class="lt">현황</h1><p class="lts hs-sum" id="statSum"></p></div>
+            <div class="hs-pseg" role="group" aria-label="기간" id="statPer"></div>
+          </div>
+          <div class="hs-grid">
+            <div class="hs-cw">
+              <div class="hs-card hs-o1"><div class="hs-h" id="statDaysH"></div><p class="hs-sub" id="statDaysS"></p><div class="hs-body" id="statDays"></div></div>
+              <div class="hs-card hs-o2"><div class="hs-h" id="statStaffH"></div><p class="hs-sub" id="statStaffS"></p><div class="hs-body" id="statStaff"></div></div>
+              <div class="hs-card hs-o5 hs-fl"><div class="hs-h"><h3>최근 소식</h3><a href="#office">직원<svg class="ic"><use href="#i-chev-r"/></svg></a></div><ol class="tl" id="statNews"></ol></div>
+            </div>
+            <div class="hs-cw">
+              <div class="hs-card hs-o3"><div id="statMeter"></div><div id="statUsage"></div></div>
+              <div class="hs-card hs-o4"><div class="hs-h"><h3>일감 한눈에</h3><a href="#ledger">일감 대장<svg class="ic"><use href="#i-chev-r"/></svg></a></div><div class="hs-jobs" id="statJobs"></div></div>
+              <div class="hs-card hs-o6 hs-fl"><div class="hs-h"><h3>오늘 정기업무</h3></div><div id="statRtn"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="hs-tip" id="statTip" aria-hidden="true"></div>
+      </section>
+
+      <!-- ═════ 보고서 (예전 보고함 · 아래 탭 「보고서」 · 디자인 261124b — 찾기 · 거르기 · 대표님 차례(결재 줄 → 결재함) · 날짜 묶음 · 연 보고 = 사무실이 만든 보고서 그대로) ═════ -->
+      <section data-route="reports" aria-label="보고서">
+        <div class="split">
+          <div class="pane-l">
+            <div class="pghead">
+              <div class="row nw" style="align-items:flex-end"><h1 class="lt">보고서</h1><button type="button" class="btn btn-s btn-sm ml" data-mark-read>모두 읽음</button></div>
+              <p class="lts" id="repLede"></p>
+            </div>
+            <label class="rv-search"><svg class="ic" aria-hidden="true"><use href="#i-find"/></svg><input type="search" id="repQ" maxlength="40" placeholder="제목·내용·보낸 사람으로 찾기" aria-label="보고 찾기" autocomplete="off" enterkeyhint="search"><button type="button" class="rv-sx" data-rep-clear aria-label="찾는 글 지우기" hidden><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button></label>
+            <div class="rv-seg" role="group" aria-label="보고 거르기" id="repChips"></div>
             <div id="rlist"></div>
           </div>
           <div class="pane-d">
             <div class="sheet-scroll">
-              <a class="back" href="#reports"><svg class="ic"><use href="#i-chev-l"/></svg>보고함</a>
+              <a class="back" href="#reports"><svg class="ic"><use href="#i-chev-l"/></svg>보고서</a>
               <div class="ph" id="repPh">보고를 고르면 여기에 열립니다.</div>
               <div id="repDetail"></div>
             </div>
@@ -2326,13 +2803,13 @@ details.fold>summary .ic{transition:transform var(--t-mid) var(--e-out)}
   </div>
 </div>
 
-<!-- 폰 아래 탭 5개 — 톡(첫 화면) · 현황판 · 평면도 · 결재함 · 대장 (261001 대표님 결정) -->
+<!-- (디자인 261124b) 폰 아래 탭 5개 — 오늘(첫 화면) · 톡 · 현황 · 보고서 · 직원. 결재함·일감 대장·지시하기 등은 오른쪽 위 메뉴(내 프로필)에 그대로 -->
 <nav class="tabbar" aria-label="아래 메뉴">
-  <a href="#talk" data-nav="talk"><svg class="ic"><use href="#i-chat"/></svg>톡<b class="bdg" data-cnt="talk" hidden></b></a>
-  <a href="#home" data-nav="home"><svg class="ic"><use href="#i-home"/></svg>현황판</a>
-  <a href="#office" data-nav="office"><svg class="ic"><use href="#i-team"/></svg>평면도</a>
-  <a href="#approvals" data-nav="approvals"><svg class="ic"><use href="#i-stamp"/></svg>결재함<b class="bdg own" data-cnt="apr" hidden></b></a>
-  <a href="#ledger" data-nav="ledger"><svg class="ic"><use href="#i-board"/></svg>대장</a>
+  <a href="#home" data-nav="home" aria-label="오늘"><svg class="ic" aria-hidden="true"><use href="#i-tb-today"/></svg>오늘<b class="bdg own" data-cnt="today" aria-hidden="true" hidden></b></a>
+  <a href="#talk" data-nav="talk" aria-label="톡"><svg class="ic" aria-hidden="true"><use href="#i-tb-talk"/></svg>톡<b class="bdg" data-cnt="talk" aria-hidden="true" hidden></b></a>
+  <a href="#stat" data-nav="stat" aria-label="현황"><svg class="ic" aria-hidden="true"><use href="#i-tb-stat"/></svg>현황</a>
+  <a href="#reports" data-nav="reports" aria-label="보고서"><svg class="ic" aria-hidden="true"><use href="#i-tb-report"/></svg>보고서<b class="bdg" data-cnt="rep" aria-hidden="true" hidden></b></a>
+  <a href="#office" data-nav="office" aria-label="직원"><svg class="ic" aria-hidden="true"><use href="#i-tb-staff"/></svg>직원</a>
 </nav>
 
 <!-- 메뉴 시트 (내 프로필) -->
@@ -2341,16 +2818,17 @@ details.fold>summary .ic{transition:transform var(--t-mid) var(--e-out)}
     <div class="grab"></div>
     <div class="prof" style="padding:4px 4px 12px"><span class="av av-me s44" data-ui="meAvatar"></span><div><b data-ui="meLabel"></b><span>구글 로그인</span></div><a class="btn btn-s btn-sm" href="#rules"><svg class="ic"><use href="#i-sliders"/></svg>설정</a></div>
     <ul class="menu">
-      <li><a href="#reports"><svg class="ic"><use href="#i-inbox"/></svg>보고함<span class="small" id="moreRep"></span></a></li>
-      <li class="own"><a href="#order"><svg class="ic"><use href="#i-pen"/></svg>지시하기<span class="small">톡 단톡방에서도 됩니다</span></a></li>
+      <!-- (디자인 261124b) 보고서는 아래 탭으로 · 결재함이 이 메뉴 맨 위로(아래 탭에서 빠진 화면) -->
+      <li><a href="#approvals"><svg class="ic"><use href="#i-stamp"/></svg>결재함<span class="small" id="moreApr"></span></a></li>
       <li><a href="#ledger"><svg class="ic"><use href="#i-board"/></svg>일감 대장<span class="small" id="moreLedger"></span></a></li>
       <li><a href="#ledger/prop"><svg class="ic"><use href="#i-bulb"/></svg>제안함 · 기기 바꿈 메모<span class="small" id="moreProp"></span></a></li>
+      <li class="own"><a href="#order"><svg class="ic"><use href="#i-pen"/></svg>지시하기<span class="small">톡 단톡방에서도 됩니다</span></a></li>
       <li class="sub"><a href="#order"><svg class="ic"><use href="#i-pen"/></svg>최근 지시 진행 상태</a></li>
       <li><a href="#preview"><svg class="ic"><use href="#i-eye"/></svg>결과물 미리보기</a></li>
       <li><a href="#rules"><svg class="ic"><use href="#i-bulb"/></svg>여기서 할 수 있는 일<span class="small">직원마다 무엇을 맡길 수 있는지</span></a></li>
       <li class="own"><a href="#" data-gripe><svg class="ic"><use href="#i-pen"/></svg>불편해요<span class="small">보던 화면과 함께 Claude에게 바로</span></a></li>
       <li><a href="#rules"><svg class="ic"><use href="#i-sliders"/></svg>설정 · 규칙<span class="small">읽기 전용</span></a></li>
-      <li><a href="#" data-reload><svg class="ic"><use href="#i-refresh"/></svg>다시 불러오기<span class="small">새 화면 받기 · 화면 판 261124a</span></a></li>
+      <li><a href="#" data-reload><svg class="ic"><use href="#i-refresh"/></svg>다시 불러오기<span class="small">새 화면 받기 · 화면 판 261124b</span></a></li>
       <li><a href="#login" data-logout><svg class="ic"><use href="#i-logout"/></svg>로그아웃</a></li>
     </ul>
     <p class="note" style="margin-top:12px">로그인한 구글 계정으로 대표·열람이 정해집니다. 화면의 자료는 사무실 PC 가 올린 것이고, 조작은 사무실 PC 가 가져가 처리합니다.</p>
@@ -2411,9 +2889,11 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRe
 import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot, setDoc, deleteDoc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 (function(){
   'use strict';
-  var ROUTES=['login','talk','power','home','office','reports','approvals','order','ledger','preview','rules'];
-  var TITLES={login:'로그인',talk:'톡',power:'근무·대기',home:'현황판',office:'평면도',reports:'보고함',approvals:'결재함',order:'지시하기',ledger:'일감 대장',preview:'결과물 미리보기',rules:'설정·규칙'};
-  var SPLIT=['reports','approvals','preview'];
+  // (디자인 261124b) 아래 탭 = 오늘(home) · 톡(talk) · 현황(stat · 새 화면) · 보고서(reports) · 직원(office) — 주소 이름 home·office 는 그대로(알림·책갈피 주소 보존)
+  var ROUTES=['login','talk','power','home','stat','office','reports','approvals','order','ledger','preview','rules'];
+  var TITLES={login:'로그인',talk:'톡',power:'근무·대기',home:'오늘',stat:'현황',office:'직원',reports:'보고서',approvals:'결재함',order:'지시하기',ledger:'일감 대장',preview:'결과물 미리보기',rules:'설정·규칙'};
+  var SPLIT=['reports','approvals','preview','office'];
+  var ROUTE_ALIAS={today:'home',staff:'office'}; // (디자인 261124b) 다른 이름 주소 #today · #staff 도 받는다(주소는 진짜 이름으로 바로잡음)
   var B=document.body;
   var $=function(s,r){return (r||document).querySelector(s)};
   var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
@@ -2426,7 +2906,8 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
   var S=null;                 // 서버에서 받은 마지막 상태
   var ver=-1, skew=0;         // 상태 버전 · 서버-브라우저 시계 차이
   var conn={ok:false,tried:false,everOk:false,fails:0,lastOkAt:0};
-  var ui={role:null,cur:'home',id:'',rf:'all',lf:'all',pf:'all',aprTab:'wait',ltab:'all',lview:'',who:'',when:'지금',workId:'',seat:'',aprOpt:{},later:{}};
+  var ui={role:null,cur:'home',id:'',rf:'all',lf:'all',pf:'all',aprTab:'wait',ltab:'all',lview:'',who:'',when:'지금',workId:'',seat:'',aprOpt:{},later:{},
+    sp:7,stb:{},sAll:false,rq:''}; // (디자인 261124b) 현황 기간(7·30일) · 표로 보기(그래프마다) · 직원별 모두 보기 · 보고서 찾는 글
   var workIds=null;
   var fileCache={};           // 미리보기 파일 { 경로: {loading|data|error} }
 
@@ -2801,8 +3282,8 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
       else {deny('이 구글 계정은 maydly 사무실에 들어올 수 없습니다.');return;}
       session.checked=true; startSubListeners(); assemble();
       // 로그인 전에 열려 있던 주소(알림으로 연 결재함 등)로. 주소가 이미 같으면 hashchange 가 안 나므로 직접 그린다
-      //  (1-10 · 261001 대표님 결정) 첫 화면 = 톡 목록
-      if(ui.cur==='login'){var to=session.after||'#talk';session.after=null;if(location.hash!==to)location.hash=to;go();} else render();
+      //  (디자인 261124b) 첫 화면 = 오늘(#home) — 예전(1-10 · 261001)은 톡 목록
+      if(ui.cur==='login'){var to=session.after||'#home';session.after=null;if(location.hash!==to)location.hash=to;go();} else render();
     });
   }
   function startSubListeners(){
@@ -2945,7 +3426,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     ['on','off','stopped','limit'].forEach(function(k){B.classList.toggle('office-'+k,s===k)});
     B.classList.toggle('role-viewer',ui.role!=='owner');
     fillUi(); renderLogin(); renderRules(); renderSettings();
-    renderChrome(); renderTalk(); renderBanners(); renderHome(); renderOffice(); renderOrderForm(); renderOrderList(); renderLedger(); renderReports(); renderApprovals(); renderPreview(); renderPushCard();
+    renderChrome(); renderTalk(); renderBanners(); renderHome(); renderStat(); renderOffice(); renderOrderForm(); renderOrderList(); renderLedger(); renderReports(); renderApprovals(); renderPreview(); renderPushCard();
     var na=pendingApprovals().length;
     document.title=(ui.role==='owner'&&na?'(결재 '+na+') ':'')+'maydly 사무실 · '+(TITLES[ui.cur]||'');
     B.classList.toggle('sheet-open',ui.cur==='approvals'&&!!ui.id&&!isDesk());
@@ -2976,8 +3457,13 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     var nq=openQuestions().length, nu=activeUrgent().length, nr=ui.role?st().reports.filter(isUnread).length:0;
     tkBadges(); var mr=$('#moreRep'); if(mr){mr.textContent=(nr?'안 읽음 '+nr:'')+(nr&&(nq+nu)?' · ':'')+((nq+nu)?'답할 질문·긴급 '+(nq+nu):'');}
     var rc=nr, ac=pendingApprovals().length;
-    $$('[data-cnt="rep"]').forEach(function(c){c.hidden=!rc;c.textContent=rc;c.title='안 읽은 보고 '+nr+(nq?' · 답할 질문 '+nq:'')+(nu?' · 긴급 '+nu:'')});
-    $$('[data-cnt="apr"]').forEach(function(c){c.hidden=!ac;c.textContent=ac;c.title='결재 대기'});
+    $$('[data-cnt="rep"]').forEach(function(c){c.hidden=!rc;c.textContent=rc>99?'99+':String(rc);c.title='안 읽은 보고 '+nr+(nq?' · 답할 질문 '+nq:'')+(nu?' · 긴급 '+nu:'')});
+    $$('[data-cnt="apr"]').forEach(function(c){c.hidden=!ac;c.textContent=ac>99?'99+':String(ac);c.title='결재 대기'});
+    // (디자인 261124b) 오늘 탭 숫자 = 대표님 차례(결재 대기 + 답할 질문 + 풀리지 않은 긴급) — 대표 계정만 · 99 넘으면 99+ · 0 이면 숨김
+    var tc=ui.role==='owner'?ac+nq+nu:0, tu=tkUnreadTotal(), tn=(tu.n||0)+(tu.dots||0);
+    $$('[data-cnt="today"]').forEach(function(c){c.hidden=!tc;c.textContent=tc>99?'99+':String(tc);c.title=ownerNm()+'님 차례 '+tc+'건';});
+    tabLabel('home','오늘',tc?ownerNm()+'님 차례 '+tc+'건':''); tabLabel('talk','톡',tn?'안 읽은 글 '+(tn>99?'99+':tn)+'건':''); tabLabel('reports','보고서',rc?'안 읽은 보고 '+(rc>99?'99+':rc)+'건':'');
+    var ma=$('#moreApr'); if(ma) ma.textContent=ac?'대기 '+ac:'';
     var act=st().jobs.filter(function(j){return ACTIVE.indexOf(j.stage)>=0}).length, wait=st().jobs.filter(function(j){return j.stage==='결재대기'||j.stage==='질문대기'}).length;
     $('#moreLedger').textContent='진행 '+act+' · 대기 '+wait;
     $$('[data-cnt="led"]').forEach(function(c){c.textContent=act||'';});
@@ -2985,8 +3471,10 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     $$('[data-cnt="prop"]').forEach(function(c){c.hidden=!pw;c.textContent=pw;c.title='착수 대기 제안'});
     $('#moreProp').textContent=pw?'착수 대기 '+pw:'';
     var qn=queuedCount(), q=$('#topQueue'); if(q){q.hidden=!qn;setHTML(q,qn?IC('i-clock')+'<span class="rc-t">처리 대기 </span>'+qn:'');q.title='사무실 PC 가 아직 가져가지 않은 명령 '+qn+'건';}
-    setHTML($('#sideTeam'),staff.map(function(p){return '<a href="#office" data-seat-go="'+esc(p.id)+'">'+av(p.id,'s20',pres(p))+'<span>'+esc(p.name)+'</span><em>'+esc(deskStatus(p))+'</em></a>'}).join(''));
+    setHTML($('#sideTeam'),staff.map(function(p){return '<a href="#office/'+enc(p.id)+'" data-seat-go="'+esc(p.id)+'">'+av(p.id,'s20',pres(p))+'<span>'+esc(p.name)+'</span><em>'+esc(deskStatus(p))+'</em></a>'}).join(''));
   }
+  // (디자인 261124b) 아래 탭 읽는 이름 — 예) 「오늘, 대표님 차례 3건」 · 숫자가 없으면 탭 이름만
+  function tabLabel(r,lb,x){var a=$('.tabbar [data-nav="'+r+'"]'),v=lb+(x?', '+x:'');if(a&&a.getAttribute('aria-label')!==v)a.setAttribute('aria-label',v);}
 
   function lastUrgentLink(){var u=st().reports.filter(function(r){return r.type==='긴급'})[0];return u?'<a class="btn btn-s btn-sm" href="#reports/'+enc(u.id)+'">내용 보기</a>':''}
   function renderBanners(){
@@ -3062,29 +3550,116 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     return pend;
   }
 
+  // ══ (디자인 261124b) 오늘 · 직원 공통 도우미 ═════════════════════════════════
+  // 일감 단계 → 4칸(배분 · 작업 · 검수 · 보고) 중 몇째(0~3) · 모르면 -1. 질문대기는 묻기 바로 전 단계 자리(대개 작업)에 둔다
+  var STEP4=['배분','작업','검수','보고'];
+  var ST4={'접수':0,'배분중':0,'작업대기':1,'작업중':1,'검수대기':2,'검수중':2,'결재대기':3,'적용대기':3,'발행대기':3,'완료':3};
+  function st4(stage){return Object.prototype.hasOwnProperty.call(ST4,stage)?ST4[stage]:-1}
+  function step4Of(j){
+    if(!j) return -1;
+    if(j.stage==='질문대기'){var h=(j.history||[]).slice().reverse().filter(function(x){return x&&st4(x.stage)>=0})[0];var s=h?st4(h.stage):1;return s>2?1:s;}
+    return st4(j.stage);
+  }
+  // 이 직원이 지금 붙잡고 있는 일감(now) · 대표님 답을 기다리는 일감(ask) · 없으면 다음 차례 일감
+  function staffJob(p){
+    var j=p.jobId?jobById(p.jobId):null, k=pres(p);
+    if(j&&(k==='work'||k==='rev'||(!k&&(p.state==='작업중'||p.state==='검수중')))) return {j:j,now:true};
+    if(p.state==='질문대기'){var q=questionOf(p.id),qj=q&&q.jobId?jobById(q.jobId):j;if(qj)return {j:qj,now:true,ask:true};}
+    var nj=nextJobFor(p.id); return nj?{j:nj,now:false}:null;
+  }
+  // 지금 상태 한 마디 — 배분 중 · 작업 중 · 검수 중 · 답 기다림 · 대기 · 퇴근 · 정지
+  function staffWord(p){
+    if(status()==='off') return '신호 없음';
+    var k=pres(p);
+    if(k==='work'){var sj=staffJob(p);return sj&&step4Of(sj.j)===0?'배분 중':'작업 중';}
+    return {rev:'검수 중',ask:'답 기다림',idle:'대기',home:'퇴근',stop:'정지'}[k]||'대기';
+  }
+  // 그 직원의 1:1방(톡) — 없으면 null
+  function staffRoom(id){var a=rooms();for(var i=0;i<a.length;i++){var r=a[i];if(!isGrp(r)&&!isDev(r)&&(r.staffId===id||r.id===id))return r;}return null}
+  // 일하는 사람 동그라미 = 테가 천천히 숨 쉼(.av.wk)
+  function avw(id,size,pr,on){var h=av(id,size,pr);return on?h.replace('<span class="av ','<span class="av wk '):h}
+  // 4칸 — 목록 줄의 작은 점(끝난 칸 초록 점 · 지금 칸 초록 테 · 대표님 답을 기다리면 황토 테) · 이름 줄 · 막대
+  function dots4(i,q){
+    if(i<0) return '';
+    var h='';for(var x=0;x<4;x++)h+='<i'+(x<i?' class="d"':x===i?(q?' class="q"':' class="c"'):'')+'></i>';
+    return '<span class="s4" role="img" aria-label="'+esc('4단계 중 '+(i+1)+'단계 '+STEP4[i]+(q?' · '+ownerNm()+'님 답 기다림':''))+'">'+h+'</span>';
+  }
+  function head4(i){return '<div class="sh4" aria-hidden="true">'+STEP4.map(function(x,n){return '<span'+(n===i?' class="on"':'')+'>'+x+'</span>'}).join('')+'</div>'}
+  function track4(i,q,ini){
+    if(i<0) return '';
+    var h='<span class="fill" style="width:'+(i*25)+'%"></span>';
+    for(var x=0;x<4;x++) h+=x===i?'<i class="cur'+(ini?' ini':'')+(q?' q':'')+'" style="left:'+(12.5+25*x)+'%">'+esc(ini||'')+'</i>':'<i class="s p'+(x+1)+(x<i?' done':'')+'"></i>';
+    return '<div class="trk4" role="img" aria-label="'+esc('4단계 중 '+(i+1)+'단계 '+STEP4[i]+(q?' · '+ownerNm()+'님 답 기다림':''))+'">'+h+'</div>';
+  }
+  // 끝낸 일 — 사무실이 올린 stats(최근 30일 · 서버 계산)가 있으면 그것 · 없으면 이 화면이 받은 일감(최근 100건)으로
+  function doneJobsOf(id){return st().jobs.filter(function(j){return statDone(j)&&(j.assignee===id||(j.routine&&j.routine.staff===id))}).sort(byDesc('doneAt'))}
+  function dayKeys(n){var a=[],t=now().getTime();for(var i=n-1;i>=0;i--){var k=kp(new Date(t-i*864e5));if(k)a.push(k.key);}return a}
+  function done7(id){
+    var s=st().stats, a=s&&s.byStaff&&Array.isArray(s.byStaff['7'])?s.byStaff['7']:null;
+    if(a){var f=a.filter(function(x){return x&&x.id===id})[0];return f?Math.max(0,+f.done||0):0;}
+    var ks=dayKeys(7);return doneJobsOf(id).filter(function(j){var k=kp(j.doneAt);return !!k&&ks.indexOf(k.key)>=0}).length;
+  }
+  // 이번 주 사용량 = 요금제 7일 창(sevenDay.pctNow) · 못 읽으면 null · 다시 채워지는 때 「토 오전 9시」(한국시간)
+  function weekPct(u){var w=u&&u.plan&&u.plan.sevenDay,v=w&&w.pctNow!=null?+w.pctNow:NaN;return isFinite(v)?Math.max(0,Math.round(v)):null}
+  function resetShort(v){var k=kp(v);if(!k)return '';return k.dow+' '+(k.h<12?'오전':'오후')+' '+((k.h%12)||12)+'시'+(k.m?' '+k.m+'분':'')}
+  // 안 읽은 연락 정리(보고) — 대표님 차례 맨 끝
+  function contactUnread(){return st().reports.filter(function(r){return r.type==='연락 정리'&&isUnread(r)})}
+  // 오늘 흐름 — 0~24시 한 줄 · 오늘 끝낸 일 점 · 「지금」 (글자는 HTML 로 — 화면이 좁아져도 12px 그대로)
+  function todayFlowHtml(list){
+    var nk=kp(now()); if(!nk) return '';
+    var pos=function(k){return Math.max(0,Math.min(100,(k.h*60+k.m)/1440*100))}, np=pos(nk), nt=p2(nk.h)+':'+p2(nk.m);
+    var dots=list.map(function(j){var k=kp(j.doneAt);if(!k)return '';return '<i class="fl-d" style="left:'+pos(k).toFixed(2)+'%" title="'+esc(p2(k.h)+':'+p2(k.m)+' · '+clip(j.title,40))+'"></i>'}).join('');
+    var aria='오늘 끝낸 일 '+list.length+'건'+(list.length?' — '+list.map(function(j){return hm(j.doneAt)}).join(' · '):'')+' · 지금 '+nt;
+    return '<div class="fl" role="img" aria-label="'+esc(aria)+'"><span class="fl-ln" style="left:'+np.toFixed(2)+'%"></span><span class="fl-past" style="width:'+np.toFixed(2)+'%"></span>'+dots+
+      '<span class="fl-now'+(np<14?' l':np>86?' r':'')+'" style="left:'+np.toFixed(2)+'%"><b>지금 '+nt+'</b></span>'+
+      '<span class="fl-h f" style="left:0">0시</span><span class="fl-h" style="left:25%">6시</span><span class="fl-h" style="left:50%">12시</span><span class="fl-h" style="left:75%">18시</span><span class="fl-h r" style="left:100%">24시</span></div>'+
+      (list.length?'':'<p class="fl-e">오늘 끝낸 일은 아직 없어요</p>');
+  }
+  // 대표님 차례 한 줄 — 종류 · 누가 · 얼마나 · 제목 · 할 일 단추(대표만 · 결재는 기존 확인창 승인 · 그 밖은 보고서·결재함으로)
+  var TW_K={apr:['결재','k-apr'],q:['질문','k-q'],urg:['긴급','k-urg'],ct:['연락','k-ct']};
+  function turnRow(k,href,title,meta,sub,acts){
+    var t=TW_K[k];
+    return '<div class="tw '+t[1]+'"><a class="tw-a" href="'+href+'"><span class="tw-m"><b class="tw-k">'+t[0]+'</b>'+meta.filter(function(x){return x}).map(function(x){return '<i class="sep" aria-hidden="true">·</i><span>'+x+'</span>'}).join('')+'</span>'+
+      '<span class="tw-t">'+title+'</span>'+(sub?'<span class="tw-s">'+sub+'</span>':'')+'</a>'+(acts?'<div class="tw-acts own">'+acts+'</div>':'')+'</div>';
+  }
+  // 지금 일하는 직원 한 줄 — 누르면 그 직원 1:1방(방이 없으면 직원 화면)
+  function crewRow(p){
+    var k=pres(p), q=k==='ask', sj=staffJob(p), j=sj&&sj.j, i=step4Of(j), room=staffRoom(p.id), job=j?txt(j.title):txt(p.task||'');
+    return '<a class="cw" href="'+(room?tkHref(room.id):'#office/'+enc(p.id))+'">'+avw(p.id,'s36',q?'ask':'',!q)+
+      '<span class="cw-b"><span class="cw-t"><b>'+esc(short(p.id))+'</b><span class="cw-st'+(q?' q':'')+'">'+esc(staffWord(p))+'</span></span>'+
+      '<span class="cw-j">'+(job||'&nbsp;')+'</span>'+track4(i,q,'')+'</span></a>';
+  }
+
+  // ── (디자인 261124b) 오늘 — 한 줄 상태 · 오늘 흐름 · 대표님 차례 · 한눈에 · 지금 일하는 직원 · 최근 브리핑 ──
+  //  예전 현황판(#home) 자리 · 주소 그대로. 결재 승인은 예전 확인창(approve) · 답하기는 보고서 답하기 칸으로 — 새 처리 없음
   function renderHome(){
-    var s=status(), o=st().office, staff=st().staff, total=staff.length||7;
-    var pa=pendingSorted(), oq=openQuestions(), urg=activeUrgent(), u=U();
-    var owner=ui.role==='owner', nm=owner?((u.owner||{}).name||''):((u.viewer||{}).name||'');
+    var s=status(), o=st().office, staff=st().staff, w0=ws(), sb=w0==='standby';
+    var pa=pendingSorted(), oq=openQuestions(), urg=activeUrgent(), ct=contactUnread(), u=U();
+    var owner=ui.role==='owner', on=ownerNm(), nm=owner?on:((u.viewer||{}).name||'');
+    var nWait=urg.length+pa.length+oq.length+ct.length;
+    var working=staff.filter(function(p){var k=pres(p);return k==='work'||k==='rev'});
+    // (1) 한 줄 상태(명조) + 작은 줄
     var hero;
-    if(!owner) hero=esc(nm)+'님, 오늘 사무실 현황입니다';
-    else if(s==='off') hero=esc(nm)+' 대표님, '+(ws()==='progoff'?'사무실 프로그램이 <em class="a">꺼져 있습니다</em>':'<em class="a">PC 가 꺼져 있습니다</em>');
-    else if(s==='stopped') hero=esc(nm)+' 대표님, <em class="r">울타리 정지</em> — 확인이 필요합니다';
-    else if(s==='limit') hero=esc(nm)+' 대표님, <em class="a">한도 정지</em> — 확인이 필요합니다';
-    else if(urg.length) hero=esc(nm)+' 대표님, <em class="r">긴급 '+urg.length+'건</em>을 확인해 주세요';
-    else if(ws()==='standby') hero=esc(nm)+' 대표님, 사무실은 <em class="a">대기 중</em>입니다';
-    else hero=esc(nm)+' 대표님, 사무실이 <em>잘 돌고 있습니다</em>';
+    if(s==='off') hero=esc(nm)+'님, '+(w0==='progoff'?'사무실 프로그램이 <em class="a">꺼져 있어요</em>':'<em class="a">PC가 꺼져 있어요</em>');
+    else if(s==='stopped') hero=esc(nm)+'님, <em class="r">울타리 정지</em> — 확인이 필요해요';
+    else if(s==='limit') hero=esc(nm)+'님, <em class="a">한도 정지</em> — 확인이 필요해요';
+    else if(urg.length) hero=esc(nm)+'님, <em class="r">긴급 '+urg.length+'건</em>을 먼저 봐 주세요';
+    else if(sb) hero=esc(nm)+'님, 사무실은 <em class="a">대기 중</em>이에요';
+    else if(!owner) hero=esc(nm)+'님, 오늘 사무실 모습이에요';
+    else if(nWait) hero=esc(nm)+'님, 정하실 일이 <em>'+nWait+'건</em> 있어요';
+    else hero=esc(nm)+'님, 사무실이 <em>잘 돌고 있어요</em>';
     setHTML($('#homeHero'),hero);
-    // 머리 문장
-    var parts=[]; if(urg.length) parts.push('긴급 '+urg.length+'건'); if(pa.length) parts.push('결재 '+pa.length+'건'); if(oq.length) parts.push('질문 '+oq.length+'건');
-    var active=activeCount(), lede;
-    if(s==='off') lede=(parts.length?parts.join(' · ')+'이 대표님을 기다립니다(마지막으로 받은 상태). ':'')+offTxt()+' — 지금 상태는 알 수 없습니다(지시·결재는 쌓아 두면 켜질 때 처리).';
-    else if(s==='stopped') lede=(parts.length?parts.join(' · ')+'이 대표님을 기다립니다. ':'')+esc(hm(o.since))+' 울타리 정지 중이라, [확인하고 출근]을 누르시기 전까지 직원은 아무도 일하지 않습니다.';
-    else if(s==='limit') lede=(parts.length?parts.join(' · ')+'이 대표님을 기다립니다. ':'')+esc(hm(o.since))+' 한도 정지 중이라, [확인하고 출근]을 누르시기 전까지 직원은 아무도 일하지 않습니다.';
-    else if(ws()==='standby') lede=(parts.length?parts.join(' · ')+'이 대표님을 기다립니다. ':'')+'대기 중 — 새 일·정기업무·AI 호출은 멈췄고, 지시·톡·결재는 받아 두었다가 근무로 바꾸면 처리합니다.';
-    else lede=parts.length?parts.join(' · ')+'이 대표님을 기다립니다. '+(active?'나머지 '+active+'건은 직원들이 처리하고 있습니다.':''):'지금 대표님을 기다리는 결재·질문은 없습니다.'+(active?' 진행 중 일감 '+active+'건은 직원들이 처리하고 있습니다.':' 새 일은 지시하기에서 맡기시면 됩니다.');
+    var lede;
+    if(s==='off') lede='지금 상태는 알 수 없어요 — '+(conn.lastOkAt?'아래는 마지막으로 받은 상태예요. ':'')+'지시·결재는 쌓아 두면 켜질 때 처리해요.';
+    else if(s==='stopped') lede=esc(hm(o.since))+' 울타리 정지 중 — [확인하고 출근]을 누르시기 전까지 직원은 아무도 일하지 않아요.';
+    else if(s==='limit') lede=esc(hm(o.since))+' 한도 정지 중 — [확인하고 출근]을 누르시기 전까지 직원은 아무도 일하지 않아요.';
+    else if(sb) lede='<span>대기 중 — 새 일·정기업무·AI 호출은 멈췄고, 지시·톡·결재는 받아 두었다가 근무로 바꾸면 처리해요.</span><a class="lk" href="#power">근무로 바꾸기</a>';
+    else{
+      var bz=o.busy&&o.busy.staffId?staffById(o.busy.staffId):null, lead=bz&&working.indexOf(bz)>=0?bz:working[0];
+      lede=working.length?'<a href="#office"><span class="dt dt-work"></span>지금 '+working.length+'명 일하는 중</a>'+(lead?'<span class="sep">·</span><span>'+esc(short(lead.id))+' '+esc(staffWord(lead))+'</span>':''):'<span>지금은 모두 쉬는 중 — 할 일이 생기면 바로 시작해요</span>';
+    }
     setHTML($('#homeLede'),lede);
-    // 사무실 꺼짐 — 무엇이 쌓였는지(처리 대기 명령) + 가능한 이유
+    // 사무실 꺼짐 — 무엇이 쌓였는지(처리 대기 명령) + 가능한 이유(예전 그대로)
     var off='';
     if(s==='off'){
       var pend=inboxDocs.filter(function(x){return x.status==='new'&&x.type!=='chatRead'&&x.type!=='reportRead'});
@@ -3096,50 +3671,194 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
         (conn.lastOkAt?'<div class="sh"><h2>마지막으로 받은 상태</h2><span class="lk mut">'+esc(hm(new Date(conn.lastOkAt)))+' 기준</span></div>':'');
     }
     setHTML($('#homeOff'),off);
-    // 현황판 — 사무실 상태와 직원 얼굴이 먼저
-    // (1-10 E-1) 근무·대기 우선순위로 표시 — 대기면 "24시간 근무 · N명 출근" 대신 "대기 중"
-    var w0=ws(), sb=w0==='standby';
-    var pill={on:sb?'<span class="st st-home"><span class="dt dt-home"></span>대기 중 · 신호 '+sigSpan()+'</span>':'<span class="st st-work"><span class="dt dt-work"></span>근무 중 · 신호 '+sigSpan()+'</span>',stopped:'<span class="st st-stop"><span class="dt dt-stop"></span>울타리 정지 — 확인 필요</span>',limit:'<span class="st st-ask"><span class="dt dt-ask"></span>한도 정지 — 확인 필요</span>',off:'<span class="st st-home"><span class="dt dt-home"></span>'+(w0==='progoff'?'사무실 프로그램 꺼짐':'PC 꺼짐')+' · 마지막 상태</span>'}[s];
-    var ms={on:sb?'대기 중 — 새 일·정기업무·AI 호출은 멈췄습니다. 지시는 받아 두었다가 근무로 바꾸면 처리합니다.':stateSummary()+' — 할 일이 없는 직원은 AI를 부르지 않아 사용량이 나가지 않습니다.',stopped:'울타리 정지('+esc(hm(o.since))+') — 대표님이 [확인하고 출근]을 누르시면 다시 출근합니다.',limit:'한도 정지('+esc(hm(o.since))+') — 대표님이 [확인하고 출근]을 누르시면 다시 출근합니다.',off:(w0==='progoff'?'사무실 프로그램이 꺼져 있어':'PC 가 꺼져 있어')+' 좌석 상태를 알 수 없습니다.'}[s];
-    var big=s==='off'?'신호 없음 · '+esc(total)+'명':s==='stopped'?'울타리 정지 · 일감 '+active+'건 멈춤':s==='limit'?'한도 정지 · 일감 '+active+'건 대기':sb?'대기 중 · 일감 '+active+'건 멈춤':onDutyCount()+'명 출근 · 일감 '+active+'건 진행';
-    var avs=staff.map(function(p){return '<a href="#office" data-seat-go="'+esc(p.id)+'" aria-label="'+esc(p.title)+' · '+esc(p.state)+'">'+av(p.id,'s36',pres(p))+'</a>'}).join('');
-    setHTML($('#homeBoard'),'<div class="hb'+(s==='stopped'?' stop':s==='limit'||sb?' warn':'')+(s==='off'?' stale':'')+'"><svg class="wmclv clvi" style="width:90px;height:90px;right:-14px;top:-18px;opacity:.1;transform:rotate(20deg)" aria-hidden="true"><use href="#clover"/></svg>'+
-      '<div class="hb-top">'+pill+'<span class="s12 mut ml">'+(sb?'<a class="lk" href="#power">근무로 바꾸기</a>':'24시간 근무'+(o.overrides&&o.overrides.demoAnytime?' · 시연 모드':''))+'</span></div>'+
-      '<div class="hb-big">'+big+'</div><p class="hb-s">'+ms+'</p>'+(staff.length?'<div class="hb-avs">'+avs+'</div>':'<p class="hb-s">직원 정보를 아직 받지 못했습니다.</p>')+'</div>');
-    // 숫자 4칸
-    var uu=st().usageToday||EMPTY.usageToday, pct=Math.round(jr(uu)*100), w80=Math.round((uu.stopNewWorkAtRatio||0.8)*100), allP=Math.round((uu.stopAllAtRatio||1)*100), proj=projection(uu);
-    var oldest=pa[0], dl=oldest?aprDeadline(oldest):null;
-    var doneToday=st().jobs.filter(function(j){return j.stage==='완료'&&isToday(j.doneAt)}).length;
-    var qJobs=st().jobs.filter(function(j){return j.stage==='질문대기'}).length;
-    var nb=nextBrief();
+    // (2) 오늘 흐름 — 오늘(한국시간) 끝낸 일의 끝난 시각
+    var tday=st().jobs.filter(function(j){return statDone(j)&&isToday(j.doneAt)}).sort(function(a,b){return String(a.doneAt)<String(b.doneAt)?-1:1});
+    setHTML($('#homeFlowN'),tday.length?'끝낸 일 '+tday.length+'건':'');
+    setHTML($('#homeFlow'),todayFlowHtml(tday));
+    // (3) 대표님 차례 — 풀리지 않은 긴급 → 결재(오래된 것부터) → 질문 → 안 읽은 연락 정리 · 열람 계정은 같은 목록을 단추 없이
+    setHTML($('#homeWaitH'),esc(on)+'님 차례'+(nWait?'<span class="td-n">'+nWait+'건</span>':''));
+    var tw='';
+    urg.forEach(function(r){
+      var act=(s==='stopped'||s==='limit')?'<button type="button" class="tw-b p" data-office-start>'+IC('i-power')+'확인하고 출근</button>':'<a class="tw-b" href="#reports/'+enc(r.id)+'">보기</a>';
+      tw+=turnRow('urg','#reports/'+enc(r.id),txt(r.lead||r.firstLine),[esc(r.fromTitle||'사무실 프로그램'),esc(when(r.at))],r.phone?txt(phoneState(r)):'',act);
+    });
+    pa.forEach(function(a){
+      var r=repById(a.id), rec=recOf(a), d=aprDeadline(a), sel=aprSel(a);
+      var sub=(rec?'추천 '+esc(rec.label)+' '+txt(rec.text)+' · ':'')+(d?'<span class="due">기한 '+txt(d)+'</span>':'기한 없음')+(a.agentTrial?' '+trialTag(a):'');
+      tw+=turnRow('apr','#approvals/'+enc(a.id),txt(aprTitle(a)),[esc(a.kind),r&&r.assignee?'담당 '+esc(short(r.assignee)):esc(LS())+' 올림',esc(durText(now()-new Date(a.createdAt)))],sub,
+        '<a class="tw-b" href="#approvals/'+enc(a.id)+'">자세히</a><button type="button" class="tw-b p" data-apr-approve="'+esc(a.id)+'">'+IC('i-check')+'승인 · '+esc(sel)+'안</button>');
+    });
+    oq.forEach(function(r){
+      tw+=turnRow('q','#reports/'+enc(r.id),txt(r.lead||r.firstLine),[esc(r.fromTitle||short(r.from)),esc(durText(now()-new Date(r.at)))],(r.jobId?esc(r.jobId)+' · ':'')+'답하시면 이어서 해요','<a class="tw-b p" href="#reports/'+enc(r.id)+'">'+IC('i-msg')+'답하기</a>');
+    });
+    ct.forEach(function(r){
+      var n=r.data&&+r.data.todoCount>0?+r.data.todoCount:0;
+      tw+=turnRow('ct','#reports/'+enc(r.id),txt(r.lead||r.firstLine),[esc(r.fromTitle||short(r.from)),esc(when(r.at))],n?'처리할 것 '+n+'건 · 보내는 건 '+esc(on)+'님':'','<a class="tw-b" href="#reports/'+enc(r.id)+'">보기</a>');
+    });
+    setHTML($('#homeWait'),tw?'<div class="cd"><div class="tw-g">'+tw+'</div><a class="qf" href="#approvals">결재함 · 보고서에서 모두 보기'+IC('i-chev-r')+'</a></div>':'<p class="td-none">'+(owner?'지금 정하실 일은 없어요 — 결재·질문이 오면 여기에 먼저 보여요.':'지금 '+esc(on)+'님 차례인 일은 없어요.')+'</p>');
+    // (4) 한눈에 — 작업 중 · 검수 대기 · 이번 주 사용량(요금제 7일 창 · 요금제를 못 읽으면 오늘 사용량)
+    var jobs=st().jobs, WK=['접수','배분중','작업대기','작업중','적용대기'];
+    var jw=jobs.filter(function(j){return WK.indexOf(j.stage)>=0}), jv=jobs.filter(function(j){return j.stage==='검수대기'||j.stage==='검수중'});
+    var nD=jw.filter(function(j){return j.stage==='접수'||j.stage==='배분중'}).length, nA=jw.filter(function(j){return j.stage==='적용대기'}).length, nW=jw.length-nD-nA;
+    var uu=st().usageToday||EMPTY.usageToday, plan=isPlan(uu), wp=plan?weekPct(uu):Math.round(jr(uu)*100), rs=plan&&uu.plan&&uu.plan.sevenDay?uu.plan.sevenDay.resetsAt:null;
+    setHTML($('#homeTilesAt'),esc(hm(now()))+' 기준');
     setHTML($('#homeTiles'),
-      '<a class="mt'+(s==='off'?' stale':'')+'" href="#rules"><span class="kl">'+(isPlan(uu)?'요금제 사용량':'오늘 사용량')+'</span><div class="mt-ring"><div class="ringbox">'+ringSvg(jr(uu),w80,pct>=allP?'r':pct>=w80?'a':'')+'<div class="ringc"><b>'+pct+'<small>%</small></b></div></div><p>'+(proj!=null?'자정 예상<br><b>약 '+proj+'%</b>':'직원 호출<br><b>'+(uu.calls||0)+'회</b>')+'</p></div><span class="ks">'+w80+'%면 새 작업 멈춤</span></a>'+
-      '<a class="mt'+(pa.length?' w':'')+'" href="#approvals"><span class="kl">결재 대기</span><b class="kv">'+pa.length+'<small>건</small></b><span class="ks">'+(oldest?'가장 오래 '+esc(durText(now()-new Date(oldest.createdAt)))+(dl?' · 기한 '+txt(dl):' · 기한 없음'):'기다리는 결재 없음')+'</span></a>'+
-      '<a class="mt" href="#ledger"><span class="kl">진행 중 일감</span><b class="kv">'+active+'<small>건</small></b><span class="ks">질문대기 '+qJobs+' · 오늘 완료 '+doneToday+'</span></a>'+
-      '<a class="mt" href="#reports"><span class="kl">다음 보고</span><b class="kv">'+(nb?esc(nb.publish&&/^\d{1,2}:\d{2}$/.test(nb.publish)?nb.publish:hm(nb.next)):'—')+'</b><span class="ks">'+(nb?esc(nb.title)+' · '+esc(leftText(nb.next))+' 취합':'정기업무 일정표 정보 없음')+'</span></a>');
-    // 기다리는 일(대표 전용)
-    var w='';
-    urg.forEach(function(r){w+='<a class="qi" href="#reports/'+enc(r.id)+'"><span class="it it-r">'+IC('i-alert')+'</span><span class="qb"><span class="qm"><span class="tg tg-r">긴급</span><span class="mut">'+esc(when(r.at))+(r.phone?' · '+txt(phoneState(r)):'')+'</span></span><b class="qt">'+txt(r.firstLine)+'</b><span class="qs">사무실 프로그램 자동 알림 · '+esc(r.id)+'</span></span><span class="btn btn-s btn-sm">보기</span></a>'});
-    pa.forEach(function(a){var r=repById(a.id),rec=recOf(a),d=aprDeadline(a);
-      w+='<a class="qi" href="#approvals/'+enc(a.id)+'"><span class="it it-a">'+IC('i-stamp')+'</span><span class="qb"><span class="qm"><span class="tg tg-a">'+esc(a.kind)+'</span><span class="mut">'+esc(durText(now()-new Date(a.createdAt)))+'</span></span><b class="qt">'+txt(aprTitle(a))+'</b><span class="qs">'+(rec?'추천 '+esc(rec.label)+' '+txt(rec.text)+' · ':'')+(d?'기한 '+txt(d):'기한 없음')+(r&&r.assignee?' · 담당 '+esc(short(r.assignee)):'')+'</span></span><span class="btn btn-p btn-sm">결재</span></a>'});
-    oq.forEach(function(r){w+='<a class="qi" href="#reports/'+enc(r.id)+'"><span class="it it-b">'+IC('i-msg')+'</span><span class="qb"><span class="qm"><span class="tg tg-b">질문</span><span class="mut">'+esc(r.fromTitle||short(r.from))+' · '+esc(durText(now()-new Date(r.at)))+'</span></span><b class="qt">'+txt(r.firstLine)+'</b><span class="qs">'+(r.jobId?esc(r.jobId)+' · ':'')+'답하시면 이어서 합니다</span></span><span class="btn btn-s btn-sm">답하기</span></a>'});
-    var wn=urg.length+pa.length+oq.length;
-    setHTML($('#homeWaitN'),wn?'<span class="tg tg-a">'+wn+'</span>':'');
-    setHTML($('#homeWait'),w?'<div class="cd">'+w+'<a class="qf" href="#approvals">결재함 · 보고함에서 모두 보기'+IC('i-chev-r')+'</a></div>':'<div class="rempty">지금 대표님을 기다리는 결재·질문이 없습니다.<span class="s12">결재 요청·질문이 올라오면 여기에 먼저 보입니다.</span></div>');
-    // 브리핑 · 일감 · 사용량 · 소식
+      '<a class="gl" href="#office"><span class="gl-k">작업 중</span><b class="gl-v">'+jw.length+'<small>건</small></b><span class="gl-s">'+(jw.length?[nD?'배분 '+nD:'',nW?'작업 '+nW:'',nA?'적용 '+nA:''].filter(function(x){return x}).join(' · '):'지금은 없어요')+'</span></a>'+
+      '<a class="gl" href="#office"><span class="gl-k">검수 대기</span><b class="gl-v">'+jv.length+'<small>건</small></b><span class="gl-s">'+(jv.length?(jv.some(function(j){return j.stage==='검수중'})?esc(nameOf(R())||'검수 담당')+' 확인 중':'검수 차례 기다림'):'지금은 없어요')+'</span></a>'+
+      '<a class="gl" href="#stat"><span class="gl-k">'+(plan?'이번 주 사용량':'오늘 사용량')+'</span><b class="gl-v">'+(wp==null?'—':wp+'<small>%</small>')+'</b><span class="gl-bar" aria-hidden="true"><i style="width:'+Math.min(100,wp||0)+'%"></i></span><span class="gl-s">'+(plan?(wp==null?'주간 값 확인 불가':rs?esc(resetShort(rs))+' 다시 채움':'요금제 7일 기준'):'하루 달러 기준')+'</span></a>');
+    // (5) 지금 일하는 직원 — 일하는 중(작업·검수) 먼저 · 답 기다림 다음 · 4칸 막대
+    var crew=staff.filter(function(p){var k=pres(p);return k==='work'||k==='rev'||k==='ask'}).sort(function(a,b){return (pres(a)==='ask'?1:0)-(pres(b)==='ask'?1:0)});
+    setHTML($('#homeCrewH'),'지금 일하는 직원'+(crew.length?'<span class="td-n">'+crew.length+'명</span>':''));
+    setHTML($('#homeCrew'),crew.length?'<div class="cd td-crew"><div class="cw-h" aria-hidden="true"><span class="cw-sp"></span>'+head4(-1)+'</div>'+crew.map(crewRow).join('')+'</div>':
+      '<p class="td-none">'+(s==='off'?'사무실이 꺼져 있어 지금 모습은 알 수 없어요.':s==='stopped'||s==='limit'?'정지 중이라 지금 일하는 직원은 없어요.':sb?'대기 중이라 지금 일하는 직원은 없어요.':'지금 일하는 직원은 없어요 — 할 일이 생기면 바로 시작해요.')+'</p>');
+    // (6) 최근 브리핑 · 그 밖(빠른 지시 · 사무실 조작) — 예전 그대로
+    //  (디자인 261124b) 일감 한눈에 · 사용량 · 최근 소식 · 오늘 정기업무는 「현황」(renderStat)으로 옮김
     setHTML($('#homeBrief'),briefCardHtml());
-    var jobs=st().jobs, c=function(f){return jobs.filter(f).length};
-    var pw=(st().proposals||[]).filter(function(p){return p.status==='착수대기'}).length;
-    setHTML($('#homeJobs'),'<a class="smc" href="#ledger"><b>'+active+'</b><span>진행</span></a><a class="smc" href="#ledger"><b style="color:var(--amber-ink)">'+c(function(j){return j.stage==='결재대기'})+'</b><span>결재대기</span></a><a class="smc" href="#ledger"><b style="color:var(--amber-ink)">'+qJobs+'</b><span>질문대기</span></a><a class="smc" href="#ledger"><b style="color:var(--g-700)">'+doneToday+'</b><span>오늘 완료</span></a><a class="smc" href="#ledger/prop"><b style="color:var(--violet-ink)">'+pw+'</b><span>제안 착수대기</span></a>');
-    setHTML($('#homeUsage'),usageHtml(s));
-    setHTML($('#homeNews'),newsTl(5));
-    setHTML($('#homeFeed'),newsTl(8));
-    setHTML($('#homeRtn'),routinesHtml());
-    setHTML($('#homeFloor'),staff.filter(function(p){var k=pres(p);return k==='work'||k==='rev'||k==='ask'||k==='stop'}).concat(staff.filter(function(p){var k=pres(p);return !(k==='work'||k==='rev'||k==='ask'||k==='stop')})).slice(0,4).map(function(p){return deskHtml(p,false,true)}).join(''));
     // 빠른 지시 안내
     $('#quickNote').textContent=s==='off'?offTxt()+'. 보내면 쌓아 두었다가 켜지면 처리합니다.':s==='stopped'?'울타리 정지 중이라 지시는 접수만 해 두고, [확인하고 출근] 뒤 처리합니다.':s==='limit'?'한도 정지 중이라 지시는 접수만 해 두고, [확인하고 출근] 뒤 처리합니다.':ws()==='standby'?'대기 중이라 지시는 받아 두었다가 근무로 바꾸면 처리합니다.':'보내면 '+LS()+'이 배분을 시작합니다(직원 호출 = 사용량 발생).';
     setHTML($('#homeStop'),'<div class="ctl-h"><b>사무실 조작</b><span class="s12 mut" style="margin:0">대표 전용</span></div>'+stopCardHtml('home'));
     var qb=$('#quickForm button'); if(qb) qb.disabled=false;
+  }
+  // ══ (디자인 261124b) 현황(#stat) ═════════════════════════════════════════════
+  //  기간 7일·30일 · 끝낸 일 날짜별(오늘 막대만 진하게 · 숫자는 오늘·가장 많은 날만) · 직원별(많은 순) · 이번 주 사용량(쉬는 선 · 다시 채워지는 때 · 통로별)
+  //  · 일감 한눈에 · 최근 소식 · 오늘 정기업무(예전 현황판 칸을 여기로). 숫자는 사무실이 상태와 함께 올린 stats(서버가 센 최근 30일) —
+  //  stats 를 올리지 않는 옛 사무실 프로그램이면 이 화면이 받은 일감(최근 100건까지)으로 세고 「최근 N건 기준」이라고 밝힌다
+  var SUM_K=['brief','daily-log','weekly'];
+  // 끝낸 일 = 완료 · 끝난 시각 있음 · 「이상 없음」으로 끝난 정기 점검과 브리핑·업무일지·주간보고 일감 자체는 뺌(서버 stats 와 같은 기준)
+  function statDone(j){return !!j&&j.stage==='완료'&&!!j.doneAt&&!j.noop&&!(j.channel==='정기'&&j.routine&&['brief','daily-log','weekly'].indexOf(j.routine.kind)>=0)}
+  function ymd(k){return k.Y+'-'+p2(k.M)+'-'+p2(k.D)}
+  function statOk(s){return !!s&&typeof s==='object'&&Array.isArray(s.days)&&!!s.byStaff&&typeof s.byStaff==='object'}
+  // n 일(오늘 포함 · 한국 날짜) → {days:[{k,d,v}] 옛날 → 오늘, by:{직원:건수}, fb: null | 받은 일감 수(옛 사무실)}
+  function statData(n){
+    var t=now().getTime(), ks=[], i;
+    for(i=n-1;i>=0;i--){var k=kp(new Date(t-i*864e5));if(k)ks.push(k);}
+    var s=st().stats, cnt={}, by={}, fb=null;
+    if(statOk(s)){
+      s.days.forEach(function(x){if(x&&typeof x.d==='string')cnt[x.d]=Math.max(0,Math.round(+x.done||0));});
+      var a=s.byStaff[String(n)];
+      (Array.isArray(a)?a:[]).forEach(function(x){if(x&&typeof x.id==='string')by[x.id]=Math.max(0,Math.round(+x.done||0));});
+    } else {
+      var keys={}; ks.forEach(function(k){keys[ymd(k)]=1;});
+      st().jobs.forEach(function(j){
+        if(!statDone(j)) return; var k=kp(j.doneAt); if(!k||!keys[ymd(k)]) return;
+        cnt[ymd(k)]=(cnt[ymd(k)]||0)+1;
+        var w=j.assignee||(j.assignment&&j.assignment.assignee)||(j.routine&&j.routine.staff);
+        if(typeof w==='string'&&staffById(w)) by[w]=(by[w]||0)+1;
+      });
+      fb=st().jobs.length;
+    }
+    return {days:ks.map(function(k){return {k:k,d:ymd(k),v:cnt[ymd(k)]||0}}),by:by,fb:fb};
+  }
+  function niceMax(v){var s=[2,4,6,8,10,20,30,40,50,60,80,100];for(var i=0;i<s.length;i++)if(v<=s[i])return s[i];return Math.ceil(v/50)*50}
+  function dayFull(k){return k.M+'/'+k.D+'('+k.dow+')'}
+  function resetLong(v){var k=kp(v);if(!k)return '';return k.dow+'요일 '+(k.h<12?'오전':'오후')+' '+((k.h%12)||12)+'시'+(k.m?' '+k.m+'분':'')}
+  function tblBtn(key,on){return '<button type="button" class="hs-tb" data-hs-tbl="'+key+'" aria-pressed="'+(on?'true':'false')+'">'+(on?'그래프로':'표로 보기')+'</button>'}
+  // 끝낸 일 — 날짜별 세로 막대(막대마다 누르면 숫자 띠 · 읽는 이름 「11/24(화) 3건」)
+  function statDaysHtml(D,n,sum){
+    var vals=D.days.map(function(x){return x.v}), mx=Math.max.apply(null,vals.concat([0])), top=niceMax(Math.max(1,mx)), last=vals.length-1, maxI=mx>0?vals.indexOf(mx):-1;
+    var h='<div class="hs-cols" role="group" aria-label="'+esc('끝낸 일 날짜별 막대 그래프 — 최근 '+n+'일 '+sum+'건 · 가장 많은 날 '+mx+'건')+'">';
+    [0,.5,1].forEach(function(f){h+=(f?'<span class="hs-gl" style="bottom:'+(f*100)+'%"></span>':'')+'<span class="hs-yt" style="bottom:'+(f*100)+'%">'+Math.round(top*f)+'</span>';});
+    D.days.forEach(function(x,i){
+      var hp=(x.v/top*100).toFixed(1), td=i===last, lb=dayFull(x.k)+(td?' · 오늘':'');
+      h+='<button type="button" class="hs-col'+(td?' em':'')+'" data-tip-v="'+x.v+'건" data-tip-l="'+esc(lb)+'" aria-label="'+esc(lb+' '+x.v+'건')+'" style="--d:'+(i*(n>7?14:45))+'ms">'+
+        (x.v>0&&(td||i===maxI)?'<b style="bottom:'+hp+'%">'+x.v+'</b>':'')+'<i style="height:'+hp+'%"></i></button>';
+    });
+    h+='</div><div class="hs-base"></div><div class="hs-x" aria-hidden="true">'+D.days.map(function(x,i){
+      var show=n<=7||(last-i)%7===0, c=(i===last?'now':'')+(n>7&&i===last?' l':'');
+      return '<span'+(c?' class="'+c+'"':'')+'>'+(show?'<em>'+esc(n<=7?x.k.D+' '+x.k.dow:x.k.M+'/'+x.k.D)+'</em>':'')+'</span>';
+    }).join('')+'</div>';
+    return h;
+  }
+  function statDaysTbl(D){
+    var last=D.days.length-1;
+    return '<table class="hs-tbl"><thead><tr><th scope="col">날짜</th><th scope="col" class="n">끝낸 일</th></tr></thead><tbody>'+D.days.map(function(x,i){return '<tr><td>'+esc(dayFull(x.k))+(i===last?'<span class="m"> · 오늘</span>':'')+'</td><td class="n">'+x.v+'건</td></tr>'}).join('')+'</tbody></table>';
+  }
+  // 직원별 끝낸 일 — 이름은 받은 상태(staff)에서 · 많은 순 · 7명 이상이면 끝낸 일이 없는 직원은 「모두 보기」 뒤
+  function statStaffRows(D){
+    var a=st().staff.map(function(p,i){return {id:p.id,nm:String(p.name||nameOf(p.id)||p.id),v:D.by[p.id]||0,i:i}});
+    return a.sort(function(x,y){return y.v-x.v||x.i-y.i});
+  }
+  function statStaffHtml(rows,n){
+    var mx=Math.max.apply(null,rows.map(function(r){return r.v}).concat([1])), many=rows.length>6, hide=many&&!ui.sAll, vis=hide?rows.filter(function(r){return r.v>0}):rows, nz=rows.length-vis.length;
+    var h=vis.length?'<div class="hs-hb" role="group" aria-label="'+esc('직원별 끝낸 일 가로 막대 그래프 — 최근 '+n+'일')+'">'+vis.map(function(r,i){
+      return '<button type="button" class="hs-hr'+(r.v?'':' z')+'" data-tip-v="'+r.v+'건" data-tip-l="'+esc(r.nm+' · 최근 '+n+'일')+'" aria-label="'+esc(r.nm+' '+r.v+'건')+'" style="--d:'+(i*45)+'ms">'+
+        '<span class="nm">'+esc(r.nm)+'</span><span class="hs-tr">'+(r.v?'<i style="width:'+(r.v/mx*84).toFixed(1)+'%"></i>':'')+'<b>'+r.v+'건</b></span></button>';
+    }).join('')+'</div>':'<p class="hs-none">이 기간에 끝낸 일이 없어요.</p>';
+    if(many&&hide&&nz) h+='<button type="button" class="hs-more" data-hs-all="1">끝낸 일이 없는 직원 '+nz+'명도 보기</button>';
+    else if(many&&!hide&&rows.some(function(r){return !r.v})) h+='<button type="button" class="hs-more" data-hs-all="0">끝낸 일이 있는 직원만 보기</button>';
+    return h;
+  }
+  function statStaffTbl(rows){
+    return '<table class="hs-tbl"><thead><tr><th scope="col">직원</th><th scope="col" class="n">끝낸 일</th></tr></thead><tbody>'+rows.map(function(r){return '<tr><td>'+esc(r.nm)+'</td><td class="n">'+r.v+'건</td></tr>'}).join('')+'</tbody></table>';
+  }
+  // 사용량 위 칸 — 이번 주(요금제 7일 창 pctNow · 요금제를 못 읽으면 오늘 달러 기준) · 쉬는 선(새 작업 멈춤 기준) · 다시 채워지는 때(한국시간)
+  function statMeterHtml(u,tbl){
+    var plan=isPlan(u), wp=plan?weekPct(u):Math.round(jr(u)*100), stopP=Math.round(((+u.stopNewWorkAtRatio)||0.9)*100), rs=plan&&u.plan&&u.plan.sevenDay?u.plan.sevenDay.resetsAt:null;
+    var lv=wp==null?'':wp>=stopP?' r':wp>=stopP-10?' a':'', lc=laneCalls();
+    var when2=plan?(wp==null?'주간 값을 지금은 확인할 수 없어요':rs?resetLong(rs)+'에 다시 채워져요':'요금제 7일 기준'):'요금제 사용률을 읽지 못해 하루 달러 한도 기준이에요';
+    var head='<div class="hs-h"><h3>'+(plan?'이번 주 사용량':'오늘 사용량')+'</h3>'+tblBtn('use',tbl)+'</div><p class="hs-sub">'+esc(ownerNm())+'님 Claude 요금제와 같은 통이에요 · '+stopP+'%가 되면 직원이 쉬어요</p>';
+    if(tbl) return head+'<div class="hs-body"><table class="hs-tbl"><tbody>'+
+      '<tr><td>'+(plan?'이번 주 사용량':'오늘 사용량')+'</td><td class="n">'+(wp==null?'확인 불가':wp+'%')+'</td></tr>'+
+      '<tr><td>직원이 쉬는 선</td><td class="n">'+stopP+'%</td></tr>'+
+      (plan&&rs?'<tr><td>다시 채워지는 때</td><td class="n">'+esc(resetLong(rs))+'</td></tr>':'')+
+      ['지시','정기','제안'].map(function(k){return '<tr><td>오늘 '+k+' 호출'+(lc.exact?'':' (대략)')+'</td><td class="n">'+lc.o[k]+'회</td></tr>'}).join('')+'</tbody></table></div>';
+    return head+'<div class="hs-mt"><b class="hs-big">'+(wp==null?'—':wp+'<small>%</small>')+'</b><span>'+esc(when2)+(wp!=null&&wp<stopP?' · 쉬는 선까지 '+(stopP-wp)+'%':'')+'</span></div>'+
+      '<div class="hs-meter'+lv+'" role="img" aria-label="'+esc((plan?'이번 주 사용량 ':'오늘 사용량 ')+(wp==null?'확인 불가':wp+'%')+' · '+stopP+'%에서 직원이 쉬어요')+'"><i style="width:'+Math.min(100,wp||0)+'%"></i><span class="hs-stop'+(stopP<40?' lf':'')+'" style="left:'+Math.min(100,stopP)+'%"><em>'+stopP+'%에서 쉬어요</em></span></div>';
+  }
+  // 사용량 아래 칸 — 오늘 통로별 호출(지시 · 정기 · 제안) + 예전 사용량 칸 글(요금제 5시간·주간 · 호출 수 · 금액은 대표만 · 한도 규칙 · 로컬 AI)
+  function usageHtml(s,tbl){
+    var u=st().usageToday||EMPTY.usageToday, w80=Math.round((u.stopNewWorkAtRatio||0.8)*100), allP=Math.round((u.stopAllAtRatio||1)*100), same=w80>=allP, proj=projection(u);
+    var lc=laneCalls(), tot=lc.o['지시']+lc.o['정기']+lc.o['제안'];
+    var lanes=tbl?'':'<div class="hs-ln"><p class="hs-lh">오늘 통로별 직원 호출'+(lc.exact?' '+tot+'회':' · 오늘 움직인 일감 기준 · 대략')+'</p>'+(tot?['지시','정기','제안'].map(function(k){var v=lc.o[k];return '<div class="hs-lr" role="img" aria-label="'+esc(k+' '+v+'회')+'"><span>'+k+'</span><span class="hs-lt"><i style="width:'+(v/tot*100).toFixed(1)+'%"></i></span><b>'+v+'회</b></div>'}).join(''):'<p class="hs-none">오늘은 아직 직원 호출이 없어요.</p>')+'</div>';
+    return lanes+'<div class="hs-ud">'+(s==='off'?'<p>사무실이 꺼져 있어 마지막으로 받은 값이에요.</p>':'')+
+      '<p>'+planText(u)+' · 오늘 직원 호출 '+(u.calls||0)+'회<span class="own"> · $'+(u.costUsd||0).toFixed(3)+' / $'+(+u.limitUsd||0).toFixed(2)+'</span>'+(proj!=null?' · 이 속도면 자정에 약 '+proj+'%(지금 속도 그대로 본 단순 추정)':'')+'</p>'+
+      '<p class="urule">'+(same?'<span><span class="tg tg-r">'+allP+'%</span>새 작업 멈춤·한도 정지</span>':'<span><span class="tg tg-a">'+w80+'%</span>새 작업 멈춤</span><span><span class="tg tg-r">'+allP+'%</span>한도 정지</span>')+'<span class="dtag">'+(u.basis==='plan'?'Claude 요금제 기준(5시간·주간 중 큰 값)':u.basis==='plan+달러보조'?'Claude 요금제 기준 + 확인 못 한 창은 달러 보조':'요금제 사용률 확인 불가 — 하루 달러 한도 기준')+'</span></p>'+
+      '<div class="use-more">'+(u.overLimitToday?'<p><b style="color:var(--amber-ink)">'+esc(ovText(u))+'</b></p>':'')+
+      '<p class="own">'+(u.externalUsd?'대장 밖 호출(스모크 등) $'+(+u.externalUsd).toFixed(3)+' 포함 · ':'')+(u.estimatedUsd?'비용을 몰라 상한으로 추정한 몫 $'+(+u.estimatedUsd).toFixed(3)+' 포함 · ':'')+'</p>'+
+      '<p>할 일 없는 직원은 AI를 부르지 않습니다. 새 작업 멈춤·한도 정지 판단('+(same?allP+'%':w80+'%·'+allP+'%')+')은 Claude 요금제 사용률(5시간·주간 중 큰 값)로 하고, 읽지 못하면 하루 달러 한도로 대신합니다. 직원 사용량은 대표님 Claude 요금제 한도와 같은 통에서 나갑니다.</p>'+localAiLine(s)+'</div></div>';
+  }
+  function renderStat(){
+    if(!$('#statView')) return;
+    var n=ui.sp===30?30:7, D=statData(n), s=status(), u=st().usageToday||EMPTY.usageToday, tb=ui.stb||{};
+    var sum=D.days.reduce(function(a,x){return a+x.v},0), on=D.days.filter(function(x){return x.v>0}), last=D.days[D.days.length-1];
+    var fbTxt=D.fb!=null?'최근 '+D.fb+'건 기준':'';
+    setHTML($('#statPer'),[7,30].map(function(p){return '<button type="button" data-hs-p="'+p+'" aria-pressed="'+(p===n?'true':'false')+'"'+(p===n?' class="on"':'')+'>'+p+'일</button>'}).join(''));
+    setHTML($('#statSum'),'최근 '+n+'일 끝낸 일 <b>'+sum+'건</b>'+(last?' · 오늘 <b>'+last.v+'건</b>':'')+(fbTxt?' · <span class="hs-fb">'+fbTxt+'</span>':''));
+    // (1) 끝낸 일 — 날짜별
+    var mxD=D.days.reduce(function(m,x){return x.v>m.v?x:m},{v:0});
+    setHTML($('#statDaysH'),'<h3>끝낸 일 — 날짜별</h3><span class="hs-tot">'+sum+'건</span>'+tblBtn('days',tb.days));
+    setHTML($('#statDaysS'),(sum?'하루 평균 '+String(Math.round(sum/n*10)/10)+'건 · 가장 많은 날 '+esc(dayFull(mxD.k))+' '+mxD.v+'건'+(on.length<n?' · 끝낸 일이 없는 날 '+(n-on.length)+'일':''):'이 기간에 끝낸 일이 없어요')+(fbTxt?' · '+fbTxt:''));
+    setHTML($('#statDays'),tb.days?statDaysTbl(D):statDaysHtml(D,n,sum));
+    // (2) 직원별 끝낸 일
+    var rows=statStaffRows(D), top=rows.length&&rows[0].v?rows.filter(function(r){return r.v===rows[0].v}).slice(0,2).map(function(r){return r.nm}):[], rv=R()&&staffById(R())?nameOf(R()):'';
+    setHTML($('#statStaffH'),'<h3>직원별 끝낸 일</h3><span class="hs-tot">최근 '+n+'일</span>'+tblBtn('staff',tb.staff));
+    setHTML($('#statStaffS'),(top.length?esc(top.join('·'))+iGa(top[top.length-1])+' 가장 많이 끝냈어요':'이 기간에 끝낸 일이 없어요')+(rv?' · 검수는 '+esc(rv)+iGa(rv)+' 따로 해요':'')+(fbTxt?' · '+fbTxt:''));
+    setHTML($('#statStaff'),tb.staff?statStaffTbl(rows):statStaffHtml(rows,n));
+    // (3) 이번 주 사용량 — 위(눈금 막대)와 아래(통로별 · 자세히)를 나눠 그린다: 호출 수만 바뀔 때 막대가 다시 자라지 않게
+    setHTML($('#statMeter'),statMeterHtml(u,tb.use));
+    setHTML($('#statUsage'),usageHtml(s,tb.use));
+    // (4) 일감 한눈에 — 진행 · 결재 대기 · 질문 대기 · 제안(착수 대기)
+    var jobs=st().jobs, cj=function(f){return jobs.filter(f).length}, pw=(st().proposals||[]).filter(function(p){return p.status==='착수대기'}).length;
+    setHTML($('#statJobs'),[['진행',activeCount(),'#ledger',0],['결재 대기',cj(function(j){return j.stage==='결재대기'}),'#ledger',1],['질문 대기',cj(function(j){return j.stage==='질문대기'}),'#ledger',1],['제안',pw,'#ledger/prop',0]].map(function(x){
+      return '<a class="hs-j" href="'+x[2]+'" aria-label="'+esc(x[0]+(x[0]==='제안'?'(착수 대기) ':' ')+x[1]+'건')+'"><span>'+x[0]+'</span><b'+(x[3]&&x[1]?' class="a"':'')+'>'+x[1]+'</b></a>'}).join(''));
+    // (5) 최근 소식 · (6) 오늘 정기업무 — 예전 현황판 칸 그대로
+    setHTML($('#statNews'),newsTl(8));
+    setHTML($('#statRtn'),routinesHtml());
+  }
+  // 숫자 띠 — 막대를 누르거나(손가락) 올리거나(마우스) 키보드로 고르면 날짜·이름과 숫자 · 2.6초 뒤·스크롤하면 사라짐(글은 textContent 로만)
+  var hsTipT=0, hsHot=null;
+  function hsTipOff(){var tp=$('#statTip');if(tp)tp.classList.remove('on');if(hsHot){hsHot.classList.remove('hot');hsHot=null;}clearTimeout(hsTipT);}
+  function hsTipOn(el){
+    var tp=$('#statTip'), sec=$('section[data-route="stat"]'); if(!tp||!sec||!el) return;
+    while(tp.firstChild) tp.removeChild(tp.firstChild);
+    var b=document.createElement('b'), k=document.createElement('i');
+    b.textContent=el.getAttribute('data-tip-v')||''; k.className=el.classList.contains('hs-hr')?'g':el.classList.contains('em')?'em':'';
+    tp.appendChild(b); tp.appendChild(k); tp.appendChild(document.createTextNode(el.getAttribute('data-tip-l')||''));
+    var sr=sec.getBoundingClientRect(), mk=el.querySelector('i')||el, r=mk.getBoundingClientRect(), hr=el.classList.contains('hs-hr');
+    var x=hr?Math.max(r.right,r.left+12)-sr.left:r.left+r.width/2-sr.left, y=(r.height?r.top:el.getBoundingClientRect().bottom-8)-sr.top-(hr?0:16); // 세로 막대는 위 숫자 글자를 가리지 않게 조금 더 위
+    tp.style.left=Math.max(76,Math.min(sr.width-76,x)).toFixed(0)+'px'; tp.style.top=y.toFixed(0)+'px'; tp.classList.add('on');
+    if(hsHot&&hsHot!==el) hsHot.classList.remove('hot'); hsHot=el; el.classList.add('hot');
+    clearTimeout(hsTipT); hsTipT=setTimeout(hsTipOff,2600);
   }
   // 오늘 정기업무(맥 홈 오른쪽)
   function routinesHtml(){
@@ -3166,24 +3885,15 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
       repLeadHtml(r,'br-lead','a','#reports/'+enc(r.id))+(list?'<ul class="br-list">'+list+'</ul>':'')+
       '<div class="br-f"><span class="mut">'+(nextTxt||'&nbsp;')+'</span><a href="#reports/'+enc(r.id)+'">전체 읽기 →</a></div></div>';
   }
-  // 사용량 카드 — 링 + 통로별 막대 + 한도 규칙 + 로컬 AI 한 줄
+  // 오늘 통로별 직원 호출(지시 · 정기 · 제안) — 서버 값(byLane)이 있으면 그것 · 없으면 오늘 움직인 일감으로 대략
   function laneCalls(){
     var o={'지시':0,'정기':0,'제안':0}, srv=st().usageToday&&st().usageToday.byLane;
     if(srv&&typeof srv==='object'){['지시','정기','제안'].forEach(function(k){o[k]=+((srv[k]||{}).calls)||0});return {o:o,exact:true};}
     st().jobs.forEach(function(j){var l=laneOf(j);if(j.usage&&j.usage.calls&&(isToday(j.updatedAt)||isToday(j.createdAt))&&o[l]!=null)o[l]+=(+j.usage.calls||0);});
     return {o:o,exact:false};
   }
-  function usageHtml(s){
-    var u=st().usageToday||EMPTY.usageToday, pct=Math.round(jr(u)*100), w80=Math.round((u.stopNewWorkAtRatio||0.8)*100), allP=Math.round((u.stopAllAtRatio||1)*100), same=w80>=allP, proj=projection(u);
-    var lc=laneCalls(), tot=lc.o['지시']+lc.o['정기']+lc.o['제안'];
-    var bar=tot?'<div class="ubar"><i class="t" style="width:'+(lc.o['정기']/tot*100).toFixed(1)+'%"></i><i class="g" style="width:'+(lc.o['지시']/tot*100).toFixed(1)+'%"></i><i class="p" style="width:'+(lc.o['제안']/tot*100).toFixed(1)+'%"></i></div><div class="ulg"><span><i style="background:var(--teal)"></i>정기 '+lc.o['정기']+'회</span><span><i style="background:var(--g-500)"></i>지시 '+lc.o['지시']+'회</span>'+(lc.o['제안']?'<span><i style="background:var(--violet)"></i>제안 '+lc.o['제안']+'회</span>':'')+(lc.exact?'':'<span class="mut">오늘 움직인 일감 기준 · 대략</span>')+'</div>':'';
-    return '<div class="use'+(s==='off'?' stale':'')+'"><div class="ringbox">'+ringSvg(jr(u),w80,pct>=allP?'r':pct>=w80?'a':'')+'<div class="ringc"><b>'+pct+'<small>%</small></b><span>'+(isPlan(u)?'요금제':'오늘')+'</span></div></div>'+
-      '<div class="use-d"><h4>'+(isPlan(u)?'요금제 사용량 '+pct+'%':proj!=null?'이 속도면 자정에 약 '+proj+'%':'오늘 '+pct+'% 사용')+'</h4><p class="s12 mut" style="margin-top:2px">'+planText(u)+' · 오늘 직원 호출 '+(u.calls||0)+'회<span class="own"> · $'+(u.costUsd||0).toFixed(3)+' / $'+(+u.limitUsd||0).toFixed(2)+'</span>'+(proj!=null?' · 자정 값은 지금 속도 그대로 본 단순 추정':'')+'</p>'+bar+
-      '<p class="urule">'+(same?'<span><span class="tg tg-r">'+allP+'%</span>새 작업 멈춤·한도 정지</span>':'<span><span class="tg tg-a">'+w80+'%</span>새 작업 멈춤</span><span><span class="tg tg-r">'+allP+'%</span>한도 정지</span>')+'<span class="dtag">'+(u.basis==='plan'?'Claude 요금제 기준(5시간·주간 중 큰 값)':u.basis==='plan+달러보조'?'Claude 요금제 기준 + 확인 못 한 창은 달러 보조':'요금제 사용률 확인 불가 — 하루 달러 한도 기준')+'</span></p></div></div>'+
-      '<div class="use-more">'+(u.overLimitToday?'<p><b style="color:var(--amber-ink)">'+esc(ovText(u))+'</b></p>':'')+
-      '<p class="own">'+(u.externalUsd?'대장 밖 호출(스모크 등) $'+(+u.externalUsd).toFixed(3)+' 포함 · ':'')+(u.estimatedUsd?'비용을 몰라 상한으로 추정한 몫 $'+(+u.estimatedUsd).toFixed(3)+' 포함 · ':'')+'</p>'+
-      '<p>할 일 없는 직원은 AI를 부르지 않습니다. 새 작업 멈춤·한도 정지 판단('+(same?allP+'%':w80+'%·'+allP+'%')+')은 Claude 요금제 사용률(5시간·주간 중 큰 값)로 하고, 읽지 못하면 하루 달러 한도로 대신합니다. 직원 사용량은 대표님 Claude 요금제 한도와 같은 통에서 나갑니다.</p>'+localAiLine(s)+'</div>';
-  }
+  // (디자인 261124b) 예전 사용량 카드(링 + 통로별 막대)는 「현황」의 이번 주 사용량 칸(statMeterHtml · usageHtml)으로 바뀜
+  //  usageHtml(s, 표로 보기) 은 위 현황 묶음에 — 같은 글(요금제 5시간·주간 · 호출 · 금액은 대표만 · 한도 규칙 · 로컬 AI)을 그대로 보여 준다
 
   // (v1.4) 요금제 사용률 한 줄 — 5시간·주간 %(못 읽으면 "요금제 사용률 확인 불가")
   // (v1.8 · QA Q-7) 게이지·80% 배너는 실제 판단 값(limitRatio — 넘겨 계속 반영)으로
@@ -3224,7 +3934,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     return h+'<p class="s12">누르면 확인창이 먼저 뜹니다. 이미 만든 파일은 그대로 남습니다(삭제·덮어쓰기 없음).'+(where!=='settings'?' 한 명만 쉬게 하려면 사무실 자리의 [퇴근시키기], 다시 부르려면 [출근시키기]를 누릅니다.':'')+'</p>';
   }
 
-  // ── 사무실 (평면도) ─────────────────────────────────────
+  // ── 직원(예전 사무실 평면도) — 오늘 한 일 · 지금 · 자리 단추 ─────────────
   function todayCount(p){
     var n=0,pass=0,rej=0,rt=0;
     st().jobs.forEach(function(j){
@@ -3279,23 +3989,6 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     var rv=st().routines, ps=rv&&rv.perStaff?rv.perStaff[p.id]:null;
     return '대기'+(ps&&ps.next&&isToday(ps.next.at)?' · '+hm(ps.next.at):'');
   }
-  function deskTask(p){
-    var k=pres(p);
-    if(k==='work'||k==='rev'){var j=p.jobId?jobById(p.jobId):null;return (j?j.id+' ':'')+(p.task||(j?j.title:''));}
-    if(k==='ask'){var q=questionOf(p.id);return q?q.firstLine:'대표님 답 기다림';}
-    if(k==='idle'){var nj=nextJobFor(p.id);return nj?'다음 '+nj.id+' '+nj.title:'할 일 없음';}
-    if(k===''&&p.task) return p.task;
-    return '';
-  }
-  function deskHtml(p,chief,mini){
-    var k=pres(p), off=status()==='off', sel=!mini&&ui.seat===p.id;
-    var mon='<span class="mon">'+(k==='work'?'<i></i><i></i><i></i>':k==='rev'?IC('i-review'):k==='ask'?IC('i-msg'):k==='stop'?IC('i-stop'):'')+'</span>';
-    var bub=k==='ask'?'<span class="bub a">?</span>':k==='rev'?'<span class="bub b">'+IC('i-review')+'</span>':k==='home'?'<span class="bub n">'+IC('i-moon')+'</span>':'';
-    var cls='dk'+(chief?' chief':'')+(k?' '+k:'')+(sel?' sel':'')+(off?' off':'');
-    var inner=bub+mon+av(p.id,chief?'s44':mini?'s32':'s40',k)+'<span class="nm">'+esc(chief?short(p.id):p.name)+'</span><span class="ss c-'+(k||'home')+'">'+esc(deskStatus(p))+'</span>'+(mini?'':'<span class="tk">'+txt(deskTask(p))+'</span>');
-    if(mini) return '<a class="'+cls+'" href="#office" data-seat-go="'+esc(p.id)+'" title="'+esc(p.title)+' · '+esc(p.state)+'">'+inner+'</a>';
-    return '<button type="button" class="'+cls+'" data-seat="'+esc(p.id)+'" aria-pressed="'+(sel?'true':'false')+'" title="'+esc(p.title)+' · '+esc(p.state)+'">'+inner+'</button>';
-  }
   function defaultSeat(){
     var a=st().staff; if(!a.length) return '';
     if(ui.seat&&staffById(ui.seat)) return ui.seat;
@@ -3303,52 +3996,106 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     for(var i=0;i<order.length;i++){var f=a.filter(function(p){return pres(p)===order[i]})[0];if(f)return f.id;}
     return L()||a[0].id;
   }
-  function selCardHtml(p){
-    var s=status(), k=pres(p), j=p.jobId?jobById(p.jobId):null, jj=j||nextJobFor(p.id), c=todayCount(p);
-    var rv=st().routines, ps=rv&&rv.perStaff?rv.perStaff[p.id]:null, nx=ps&&ps.next;
-    var h='<div class="cd sel-card" aria-live="polite">'+
-      '<div class="sc-h">'+av(p.id,'s44',k)+'<div><b>'+esc(p.title)+'</b><span>'+esc(DESC_(p.id)||p.role)+'</span></div>'+statePill(p)+'</div>'+
-      '<div class="sc-now">'+nowLine(p)+'</div>';
-    if(jj&&s!=='off') h+=colabHtml(jj)+stpHtml(jj,false);
-    h+='<div class="sc-meta"><div><b>'+c.n+(p.id===R()?'회':'건')+'</b><span>'+esc(c.lb)+'</span></div><div><b>'+esc(p.callsToday||0)+'/'+esc(p.dailyCallLimit||'—')+'</b><span>오늘 호출</span></div><div><b>'+(nx?esc((isToday(nx.at)?'':mdw(nx.at)+' ')+hm(nx.at)):'—')+'</b><span>다음 정기</span></div></div>';
-    if(p.id===L()){
-      var done=st().jobs.filter(function(x){return x.stage==='완료'&&isToday(x.doneAt)}).length, pre=st().jobs.filter(function(x){return x.stage==='접수'||x.stage==='배분중'}).length;
-      h+='<div class="chief4"><div><b>'+done+'</b><span>오늘 완료</span></div><div><b>'+pre+'</b><span>배분 전 지시</span></div><div><b>'+pendingApprovals().length+'·'+openQuestions().length+'</b><span>결재·질문</span></div><div><b>'+esc(p.callsToday||0)+'/'+esc(p.dailyCallLimit||'—')+'</b><span>호출</span></div></div>';
-    }
-    h+=routineLine(p.id)+'<p class="s12 mut" style="margin-top:8px;line-height:1.5">'+esc(todayWork(p))+' · 마지막 움직임 '+esc(when(p.lastMoveAt)||'—')+(p.id===L()?' · 대표님을 대신해 결정하지 않고, 결정할 일은 결재로 올립니다':'')+'</p>';
-    h+='<div class="sc-btns">'+seatBtns(p)+'</div>';
-    return h+'</div>';
-  }
   function elapsedOf(p){
     var o=st().office, busy=o.busy&&o.busy.staffId===p.id?o.busy:null, k=pres(p);
     if(busy&&(k==='work'||k==='rev')) return durShort(busy.startedAt);
     if(k==='ask'){var q=questionOf(p.id);return q?durShort(q.at):'';}
     return '—';
   }
+  // ── (디자인 261124b) 직원 — 일하는 중 → 답 기다림 → 대기 → 정지 → 퇴근 순 목록 · 누르면 그 사람 자세히(#office/<직원> · 넓은 화면은 오른쪽 칸)
+  //  예전 평면도 자리 · 평면도 그림만 빠지고 상태 · 지금 하는 일 · 진행 단계 · 오늘 · 출근·퇴근·지시 단추 · 긴급정지 · 사무실 소식은 그대로
+  var SF_ORD={work:0,rev:0,ask:1,idle:2,stop:3,home:4};
+  function staffSorted(){
+    var a=st().staff.slice(), ix={}, o=function(p){var k=pres(p);return Object.prototype.hasOwnProperty.call(SF_ORD,k)?SF_ORD[k]:5};
+    a.forEach(function(p,i){ix[p.id]=i;});
+    return a.sort(function(x,y){return (o(x)-o(y))||(ix[x.id]-ix[y.id]);});
+  }
+  // 목록 둘째 줄 — 지금 하는 일 한 줄(하는 중이면 진하게)
+  function staffLine(p){
+    var k=pres(p), sj=staffJob(p);
+    if(status()==='off') return '마지막: '+esc(p.state)+(p.task?' — '+txt(p.task):'');
+    if(k==='stop') return '정지 — '+txt(st().office.reason||'사무실 정지 중');
+    if(k==='home') return '퇴근 중 — 출근시키면 이어서 해요';
+    if(sj&&sj.ask){var q=questionOf(p.id);return txt(q?(q.lead||q.firstLine):sj.j.title);}
+    if(sj&&sj.now) return txt(sj.j.title);
+    if(sj) return '다음: '+txt(sj.j.title);
+    return '할 일 없음 — 사용량이 나가지 않아요';
+  }
+  function staffRow(p,on){
+    var k=pres(p), wk=k==='work'||k==='rev', q=k==='ask', sj=staffJob(p), i=sj&&sj.now?step4Of(sj.j):-1;
+    var right=i>=0?dots4(i,q)+'<span class="sf-w'+(q?' q':'')+'">'+esc(q?'답 기다림':STEP4[i])+'</span>':'<span class="sf-w n">'+esc(staffWord(p))+'</span>';
+    return '<a class="sf-row'+(on?' on':'')+'" href="#office/'+enc(p.id)+'" data-seat-go="'+esc(p.id)+'"'+(on?' aria-current="true"':'')+'>'+avw(p.id,'s44',wk?'':k,wk)+
+      '<span class="sf-b"><span class="sf-t"><b>'+esc(short(p.id))+'</b><span>'+esc(p.role||'')+'</span></span><span class="sf-j'+(wk?' wk':'')+'">'+staffLine(p)+'</span>'+
+      '<span class="sf-m">'+esc(week7Txt(p))+'</span></span><span class="sf-x">'+right+'</span></a>';
+  }
+  // 최근 7일 한 일 — 검수 담당은 검수 횟수(이 화면이 받은 일감 기준) · 그 밖은 끝낸 일(stats 또는 일감)
+  function rev7(id){var ks=dayKeys(7),n=0;st().jobs.forEach(function(j){(j.reviews||[]).forEach(function(r){var k=r&&r.by===id?kp(r.at):null;if(k&&ks.indexOf(k.key)>=0)n++;});});return n}
+  function week7Txt(p){return p.id===R()?'최근 7일 검수 '+rev7(p.id)+'회':'최근 7일 끝낸 일 '+done7(p.id)+'건'}
+  // 「지금 하는 일」 칸 아래 한 줄 — 일감 제목은 바로 위에 있으니 하는 일·걸린 시간만(그 밖 상태는 예전 nowLine 그대로)
+  function staffNote(p){
+    var o=st().office, busy=o.busy&&o.busy.staffId===p.id?o.busy:null;
+    if(status()!=='off'&&(p.state==='작업중'||p.state==='검수중')) return '<b>지금</b>'+txt(p.task||p.state)+(busy?' · '+esc(durText(now()-new Date(busy.startedAt))):'');
+    return nowLine(p);
+  }
+  // 오늘 부른 횟수 — 칸 하나 = 한 번(하루 상한만큼)
+  function callsHtml(p){
+    var n=Math.max(0,+p.callsToday||0), lim=Math.max(0,+p.dailyCallLimit||0);
+    if(!lim) return '<p class="sf-calls"><b>'+n+'</b>번 불렀어요</p>';
+    var m=Math.min(lim,40), c='';for(var i=0;i<m;i++)c+='<i'+(i<n?' class="on"':'')+'></i>';
+    return '<p class="sf-calls"><b>'+n+'</b>번 · 하루 '+lim+'번까지</p><div class="sf-cells" style="--n:'+m+'" role="img" aria-label="'+esc('오늘 부른 횟수 '+n+'번 · 하루 '+lim+'번까지')+'">'+c+'</div>';
+  }
+  // 최근 끝낸 일 5 — 검수 담당은 최근 검수 · 팀장은 배분도 함께
+  function recentHtml(p){
+    var it=[];
+    if(p.id===R()) st().jobs.forEach(function(j){(j.reviews||[]).forEach(function(r){if(r&&r.by===p.id&&r.at)it.push({at:r.at,t:j.title,x:r.verdict||''});});});
+    else{
+      doneJobsOf(p.id).forEach(function(j){it.push({at:j.doneAt,t:j.title,x:''});});
+      if(p.id===L()) st().jobs.forEach(function(j){(j.history||[]).forEach(function(e){if(e&&e.by===p.id&&/^배분 →/.test(e.note||''))it.push({at:e.at,t:j.title,x:'배분'});});});
+    }
+    it.sort(function(a,b){return String(a.at)<String(b.at)?1:-1;});
+    it=it.slice(0,5);
+    return it.length?'<div class="sf-done">'+it.map(function(x){return '<p>'+(x.x==='반려'?'<svg class="ic no" aria-hidden="true"><use href="#i-x"/></svg>':IC('i-check'))+'<span>'+txt(x.t)+'</span><time>'+esc(tkWhen(x.at))+(x.x?' · '+esc(x.x):'')+'</time></p>'}).join('')+'</div>':'<p class="sf-none">아직 없어요</p>';
+  }
+  // 자세히 — 사람 · 1:1 대화 · 출근·퇴근·지시(예전 단추 그대로) · 지금 하는 일(4칸) · 오늘 · 최근 끝낸 일 · (팀장) 한눈에
+  function staffDetail(p){
+    var s=status(), k=pres(p), wk=k==='work'||k==='rev', q=k==='ask', sj=staffJob(p), j=sj&&sj.j, i=j&&s!=='off'?step4Of(j):-1, room=staffRoom(p.id);
+    var rv=st().routines, ps=rv&&rv.perStaff?rv.perStaff[p.id]:null, nx=ps&&ps.next, el=elapsedOf(p);
+    var h='<div class="sf-hero">'+avw(p.id,'s52',wk?'':k,wk)+'<div class="sf-ht"><h2>'+esc(p.title||short(p.id))+'</h2><p>'+esc(DESC_(p.id)||p.role||'')+'</p><p class="sf-hs">'+statePill(p)+(el&&el!=='—'?'<span class="mut">'+esc(el)+'째</span>':'')+'</p></div></div>';
+    h+='<div class="sf-btns">'+(room?'<a class="btn btn-s btn-sm" href="'+tkHref(room.id)+'">'+IC('i-chat')+'1:1 대화</a>':'')+seatBtns(p)+'</div>';
+    var g='<section class="sf-c wide"><h3>'+(sj&&!sj.now?'다음 할 일':'지금 하는 일')+'<small>'+esc(staffWord(p))+'</small></h3>';
+    if(j&&s!=='off') g+='<p class="sf-jt">'+txt(j.title)+'</p>'+head4(i)+track4(i,q,String(p.avatar||'').charAt(0))+colabHtml(j);
+    g+='<p class="sf-note">'+(j&&s!=='off'&&sj.now?staffNote(p):nowLine(p))+'</p></section>';
+    var rl=routineLine(p.id);
+    g+='<section class="sf-c"><h3>오늘<small>'+esc(todayWork(p))+'</small></h3>'+callsHtml(p)+rl+'<p class="sf-sm">'+(rl?'':'다음 정기 '+(nx?esc((isToday(nx.at)?'':mdw(nx.at)+' ')+hm(nx.at))+' '+esc(nx.title||''):'없음')+' · ')+'마지막 움직임 '+esc(when(p.lastMoveAt)||'—')+'</p></section>';
+    g+='<section class="sf-c"><h3>'+(p.id===R()?'최근 검수':'최근 끝낸 일')+'<small>'+esc(week7Txt(p))+'</small></h3>'+recentHtml(p)+'</section>';
+    if(p.id===L()){
+      var done=st().jobs.filter(function(x){return x.stage==='완료'&&isToday(x.doneAt)}).length, pre=st().jobs.filter(function(x){return x.stage==='접수'||x.stage==='배분중'}).length;
+      g+='<section class="sf-c wide"><h3>팀장 한눈에<small>대표님을 대신해 결정하지 않고, 결정할 일은 결재로 올려요</small></h3><div class="chief4"><div><b>'+done+'</b><span>오늘 완료</span></div><div><b>'+pre+'</b><span>배분 전 지시</span></div><div><b>'+pendingApprovals().length+'·'+openQuestions().length+'</b><span>결재·질문</span></div><div><b>'+esc(p.callsToday||0)+'/'+esc(p.dailyCallLimit||'—')+'</b><span>호출</span></div></div></section>';
+    }
+    return '<div class="sf-d" aria-live="polite">'+h+'<div class="sf-gr">'+g+'</div></div>';
+  }
   function renderOffice(){
-    var s=status(), o=st().office, staff=st().staff;
-    var cst=countStates();
-    var lede={on:ws()==='standby'?'<a class="lk" href="#power">대기 중</a> — 지시는 받아 두었다가 근무로 바꾸면 처리 · 마지막 신호 '+sigSpan():'24시간 근무 · 근무 '+onDutyCount()+'/'+(staff.length||7)+(cst['퇴근']?'('+cst['퇴근']+'명 퇴근)':'')+' · 마지막 신호 '+sigSpan(),
+    var s=status(), o=st().office, staff=st().staff, cst=countStates();
+    var wk=staff.filter(function(p){var k=pres(p);return k==='work'||k==='rev'}).length;
+    var rest=[['질문대기','답 기다림'],['대기','대기'],['퇴근','퇴근'],['정지','정지']].filter(function(x){return cst[x[0]]}).map(function(x){return x[1]+' '+cst[x[0]]}).join(' · ');
+    var lede={on:ws()==='standby'?'<a class="lk" href="#power">대기 중</a> — 지시는 받아 두었다가 근무로 바꾸면 처리 · '+staff.length+'명':staff.length+'명 · 지금 <b>'+wk+'명</b> 일하는 중'+(rest?' · '+esc(rest):''),
       stopped:'<span style="color:var(--red-ink)">울타리 정지 — 확인 필요 · '+esc(hm(o.since))+' '+txt(o.reason||'')+' · [확인하고 출근]을 누르시면 다시 출근합니다</span>',
       limit:'한도 정지 — 확인 필요 · '+esc(hm(o.since))+' 사용량 한도',
       off:(ws()==='progoff'?'사무실 프로그램 꺼짐 — '+esc(offAtHm()):'PC 꺼짐 — '+(conn.lastOkAt?'마지막 신호 '+esc(hm(new Date(conn.lastOkAt))):'아직 연결 전'))+' · 아래는 마지막 상태'}[s];
     setHTML($('#officeLede'),lede);
-    var LG=[['작업중','work','작업'],['검수중','rev','검수'],['질문대기','ask','질문'],['대기','idle','대기'],['퇴근','home','퇴근'],['정지','stop','정지']];
-    setHTML($('#officeLegend'),LG.map(function(x){return '<span class="st st-'+x[1]+'"><span class="dt dt-'+x[1]+'"></span>'+x[2]+(s==='off'?'':' <span class="n">'+(cst[x[0]]||0)+'</span>')+'</span>'}).join(''));
     var sb=$('#officeStopBtn'); if(sb) sb.hidden=(s==='stopped'||s==='limit');
-    if(!staff.length){setHTML($('#officeFloor'),'<div class="rempty">직원 정보를 아직 받지 못했습니다.</div>');setHTML($('#officeSel'),'');setHTML($('#officeList'),'');}
+    // 고른 사람: 주소(#office/<직원>) → 없으면 넓은 화면에서만 지난번·일하는 사람(폰은 목록만)
+    var pick=ui.cur==='office'&&ui.id?ui.id:'', pp=pick?staffById(pick):null;
+    if(pp) ui.seat=pp.id;
+    if(!staff.length){setHTML($('#officeList'),'<div class="rempty">직원 정보를 아직 받지 못했습니다.</div>');setHTML($('#officeSel'),'');}
     else{
-      ui.seat=defaultSeat();
-      var chief=staffById(L()), rest=staff.filter(function(p){return p.id!==L()});
-      setHTML($('#officeFloor'),'<span class="plant" style="width:22px;height:22px;left:10px;bottom:8px;transform:rotate(-12deg)" aria-hidden="true"><svg class="clvi"><use href="#clover"/></svg></span>'+
-        (chief?'<div class="room"><span class="room-l">실장실</span><span class="win" aria-hidden="true"></span>'+deskHtml(chief,true)+'</div>':'')+
-        '<div class="desks">'+rest.map(function(p){return deskHtml(p,false)}).join('')+'</div>');
-      var sel=staffById(ui.seat);
-      setHTML($('#officeSel'),sel?selCardHtml(sel):'');
-      setHTML($('#officeList'),staff.map(function(p){return '<button type="button" class="li'+(ui.seat===p.id?' on':'')+'" data-seat="'+esc(p.id)+'">'+av(p.id,'s36',pres(p))+'<span class="lb"><b>'+esc(short(p.id))+(p.state&&p.state!=='대기'?' · '+esc(p.state):'')+'</b><span>'+nowLine(p)+'</span></span><span class="lr'+(pres(p)==='ask'?' c-ask':'')+'">'+esc(elapsedOf(p))+'</span></button>'}).join(''));
+      var sel=pp||staffById(defaultSeat()), mark=pp||(isDesk()?sel:null);
+      setHTML($('#officeList'),'<div class="sf-list">'+staffSorted().map(function(p){return staffRow(p,!!mark&&p.id===mark.id)}).join('')+'</div>');
+      setHTML($('#officeSel'),pick&&!pp?'<div class="rempty">없는 직원입니다: '+esc(pick)+'<span class="s12"><a class="lk" href="#office">직원 목록으로</a></span></div>':sel?staffDetail(sel):'');
     }
     setHTML($('#officeFeed'),newsTl(30,'아직 소식이 없습니다. 지시를 보내면 접수·배분·작업·검수 움직임이 여기에 쌓입니다.'));
     setHTML($('#officeCtl'),'<div class="ctl-h"><b>사무실 조작</b><span class="s12 mut" style="margin:0">대표 전용</span></div>'+stopCardHtml('office'));
+    splitState('office',!!pick);
   }
 
   // ── 지시하기 ─────────────────────────────────────────
@@ -3621,22 +4368,16 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
   // ── 보고함 (종류 거르기 · 읽음 표시) ─────────────────────
   var RT={'완료보고':['done','tg-o','완료보고'],'결재 요청':['approval','tg-a','결재 요청'],'질문':['question','tg-b','질문'],'긴급':['urgent','tg-r','긴급'],'12시 브리핑':['brief','tg-g','12시 브리핑'],'자정 업무일지':['log','tg-g','자정 업무일지'],'주간보고':['weekly','tg-g','주간보고']};
   function rtype(r){return RT[r.type]||['done','tg-n',r.type]}
-  var RF=[['all','전체'],['brief','브리핑'],['log','업무일지'],['weekly','주간'],['done','완료'],['approval','결재'],['question','질문'],['urgent','긴급']];
+  // (디자인 261124b) 보고서 거르기 — 전체 · 할 일(대표님 차례: 풀리지 않은 긴급 · 결재 대기 · 답할 질문 · 안 읽은 연락 정리 = 오늘 화면과 같은 목록) · 완료 · 브리핑 · 질문 · 연락
+  var RF=[['all','전체'],['todo','할 일'],['done','완료'],['brief','브리핑'],['question','질문'],['contact','연락']];
+  // 줄 왼쪽 종류 칩(글자 · 색 이름은 이 표에서만 — 서버 글을 class 에 넣지 않음)
+  var RV_K={'결재 요청':['결재','ap'],'질문':['질문','q'],'완료보고':['완료','dn'],'12시 브리핑':['브리핑','rt'],'자정 업무일지':['일지','rt'],'주간보고':['주간','rt'],'연락 정리':['연락','ct'],'리마인드':['알림','ct'],'긴급':['긴급','ur'],'개발 보고':['개발','rt']};
   // 예전 기록 중 '적용 완료' 태그가 붙었지만 실제로는 기록만 남긴 승인(결재 종류가 적용 대상이 아님)을 바르게 보이게
   function repTagText(r){
     if(r.tag==='적용 완료'&&r.jobId){var j=jobById(r.jobId),a=j&&j.approvalId?aprById(j.approvalId):null;if(a&&a.applyState==='기록만')return '승인 기록만(적용 없음)';}
     return r.tag;
   }
-  function repTags(r){
-    var t='', tg=repTagText(r);
-    if(r.channel==='정기'||r.channel==='제안') t+=laneTag({lane:r.channel}); // (260929) 일감 통로
-    if(r.agentTrial) t+=trialTag(r); // (v1.6 · Codex B-9) 일감-1 사실 표시 — 보고에도
-    if(tg) t+='<span class="tg '+(tg==='적용 완료'?'tg-g':'tg-n')+'">'+esc(tg)+'</span>';
-    if(r.type==='질문') t+=r.open?'<span class="tg tg-a">답 기다림</span>':'<span class="tg tg-o">답함</span>';
-    if(r.type==='결재 요청'){var a=aprById(r.id); if(a) t+=a.status==='대기'?'<span class="tg tg-a">결재 대기</span>':'<span class="tg tg-o">'+esc(a.status==='수정지시'?'수정 지시':a.status)+'</span>';}
-    if(r.phone) t+=phoneTag(r);
-    return t;
-  }
+  // (디자인 261124b) 예전 보고함 줄의 꼬리표 묶음(repTags)은 새 줄(rvRow · 상태 한 마디 rvChip · 일감-1 사실 표시)로 바뀌어 뺌
   // (261117 보고함 결론) 결론 한 줄(사무실이 올린 lead · 자기소개 뗀 첫 문장) + 나머지(leadMore, 흐리게). 옛 사무실이면 첫 줄 그대로
   function repLeadHtml(r,cls,tag,href){
     var tg=tag==='div'?'div':tag==='a'?'a':'p', L=r&&typeof r.lead==='string'?r.lead:'', M=r&&typeof r.leadMore==='string'?r.leadMore:'';
@@ -3644,41 +4385,86 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     if(!L) return open+txt(r?r.firstLine:'')+'</'+tg+'>';
     return open+'<span class="ld-b">'+txt(L)+'</span>'+(M?' <span class="ld-m">'+txt(M)+'</span>':'')+'</'+tg+'>';
   }
-  function repRow(r){
-    var t=rtype(r), fromTxt=r.from==='office'?'사무실 프로그램':short(r.from), un=isUnread(r), act=ui.cur==='reports'&&ui.id===r.id;
-    return '<a class="rr'+(un?' un':'')+(act?' act':'')+(r.type==='긴급'?' urg':'')+'" href="#reports/'+enc(r.id)+'" data-lid="'+esc(r.id)+'" data-type="'+t[0]+'">'+av(r.from,'s36')+
-      '<div class="rb"><div class="rm"><span class="tg '+t[1]+'">'+esc(t[2])+'</span><span class="rm-f">'+esc(fromTxt)+(r.assignee&&r.assignee!==r.from?' · 담당 '+esc(short(r.assignee)):'')+(r.jobId?' · '+esc(r.jobId):'')+'</span><time>'+esc(hm(r.at))+'</time></div>'+
-      repLeadHtml(r,'rt')+'<div class="rtags">'+repTags(r)+'</div>'+
-      (r.type==='질문'&&r.open?'<span class="btn btn-s btn-sm own rr-q">'+IC('i-msg')+'답하기</span>':'')+'</div></a>';
+  // ── (디자인 261124b) 보고서 목록 — 찾기 · 거르기 · 대표님 차례(맨 위 · 결재 줄은 결재함으로) · 날짜 묶음(오늘 · 어제 · 11월 22일 (토)) · 안 읽음 점 ──
+  //  결재 대기는 결재 줄로(누르면 결재함 그 카드 #approvals/<번호>) — 보고·결재 자료는 합치지 않는다. 읽음 표시는 예전 그대로(go 에서 연 보고를 읽음으로)
+  var INTRO_RE=/^([^.!?\n]{0,16}?)\s*(담당|실장|비서|매니저|팀장)\s*([가-힣A-Za-z]{1,8})입니다\.\s*/; // 서버 report-html.js 의 자기소개 규칙과 같음
+  function rvK(r){return RV_K[r&&r.type]||[String((r&&r.type)||'보고').slice(0,2),'rt']}
+  function rvCat(r){var t=r.type;return t==='완료보고'?'done':BRIEF_TYPES.indexOf(t)>=0?'brief':t==='질문'?'question':(t==='연락 정리'||t==='리마인드')?'contact':''}
+  // 결론 한 줄 — 사무실이 올린 lead · 옛 보고는 첫 줄에서 자기소개(「운영 담당 ○○입니다.」)를 뗀 첫 문장
+  function rvLine(r){
+    if(r&&typeof r.lead==='string'&&r.lead) return r.lead;
+    var t=String((r&&r.firstLine)||'').replace(/\s+/g,' ').trim(), m=INTRO_RE.exec(t);
+    var rest=m?t.slice(m[0].length).trim():t.replace(/^사무실 프로그램(?:\s*긴급)?\s*알림입니다\.\s*/,''), f=/^(.+?[.!?])(?:\s+|$)/.exec(rest);
+    return (f?f[1]:rest)||t;
+  }
+  // 줄 제목 — 완료보고·결재 요청은 일감 제목 · 그 밖(질문 · 브리핑 · 긴급 · 연락)은 결론 한 줄
+  function rvTitle(r){var j=r.jobId&&(r.type==='완료보고'||r.type==='결재 요청')?jobById(r.jobId):null;return j&&j.title?String(j.title):rvLine(r)}
+  function rvWho(r){return r.from==='office'?'사무실':(nameOf(r.from)||r.fromTitle||'')}
+  // 찾기 — 제목 · 결론 · 첫 줄 · 나머지 글 · 보낸 사람 · 종류 · 번호(띄어 쓴 낱말이 모두 들어 있으면)
+  function rvFind(r){return [rvTitle(r),r.firstLine,r.lead,r.leadMore,rvWho(r),r.fromTitle,rvK(r)[0],r.type,r.jobId,r.id].join(' ').toLowerCase()}
+  function rvChip(r){
+    if(r.type==='질문') return r.open?'<span class="rv-chip du">답 기다림</span>':'<span class="rv-chip ok">'+IC('i-check')+'답함</span>';
+    if(r.type==='결재 요청'){var a=aprById(r.id);if(!a)return '';if(a.status==='대기'){var d=aprDeadline(a);return '<span class="rv-chip du">'+IC('i-clock')+(d?'기한 '+txt(d):'결재 대기')+'</span>';}
+      return a.status==='승인'?'<span class="rv-chip ok">'+IC('i-check')+'승인'+(a.option?' '+esc(a.option):'')+'</span>':'<span class="rv-chip nt">'+esc(a.status==='수정지시'?'수정 지시':a.status)+'</span>';}
+    if(r.type==='긴급') return activeUrgent().indexOf(r)>=0?'<span class="rv-chip ur">확인 필요</span>':'';
+    if(r.type==='연락 정리'){var n=r.data&&+r.data.todoCount>0?+r.data.todoCount:0;return n?'<span class="rv-chip du">처리할 것 '+n+'건</span>':'';}
+    return '';
+  }
+  function rvItem(r,full){var k=rvK(r);return {h:'#reports/'+enc(r.id),id:r.id,kc:k[1],kl:k[0],t:txt(rvTitle(r)),w:rvWho(r),at:full?when(r.at):hm(r.at),c:rvChip(r),un:isUnread(r),act:ui.cur==='reports'&&ui.id===r.id,tg:(r.agentTrial?trialTag(r):'')+rvPhone(r),q:rvFind(r)}}
+  // (261124b 점검) 폰 알림을 못 보낸 보고만 표시(실패 · 미발송 · 대기)
+  function rvPhone(r){var t=r&&r.phone?phoneTag(r):'';return t&&t.indexOf('폰 알림 보냄')<0?t:''}
+  function rvRow(o){
+    return '<a class="rv-row'+(o.un?' un':' rd')+(o.act?' act':'')+'" href="'+o.h+'" data-lid="'+esc(o.id)+'" data-k="'+o.kc+'"><span class="rv-kb rv-'+o.kc+'">'+esc(o.kl)+'</span>'+
+      '<span class="rv-m"><span class="rv-t">'+o.t+'</span><span class="rv-s"><span class="rv-who">'+esc(o.w)+'</span><i class="sep" aria-hidden="true">·</i><time>'+esc(o.at)+'</time>'+(o.c||'')+'</span>'+(o.tg?'<span class="rv-tags">'+o.tg+'</span>':'')+'</span>'+
+      (o.un?'<i class="rv-ud" aria-hidden="true"></i>':'')+'</a>';
+  }
+  // 대표님 차례 — 오늘 화면과 같은 차례(풀리지 않은 긴급 → 결재 대기(오래된 것부터) → 답할 질문 → 안 읽은 연락 정리)
+  function rvTurns(){
+    var out=[], kA=RV_K['결재 요청'];
+    activeUrgent().forEach(function(r){var o=rvItem(r,true);o.c='<span class="rv-chip ur">확인 필요</span>';out.push(o);});
+    pendingSorted().forEach(function(a){
+      var r=repById(a.id), d=aprDeadline(a);
+      out.push({h:'#approvals/'+enc(a.id),id:a.id,kc:kA[1],kl:kA[0],t:txt(aprTitle(a)),w:r&&r.assignee?nameOf(r.assignee):nameOf(L()),at:when(a.createdAt),
+        c:'<span class="rv-chip du">'+IC('i-clock')+(d?'기한 '+txt(d):'결재 대기')+'</span>',un:!!r&&isUnread(r),act:false,tg:a.agentTrial?trialTag(a):'',q:[aprTitle(a),a.kind,kA[0],a.id,r?rvFind(r):''].join(' ').toLowerCase()});
+    });
+    openQuestions().forEach(function(r){out.push(rvItem(r,true));});
+    contactUnread().forEach(function(r){out.push(rvItem(r,true));});
+    return out;
   }
   function renderReports(){
-    var all=st().reports, cnt={};
-    all.forEach(function(r){var k=rtype(r)[0];cnt[k]=(cnt[k]||0)+1});
-    var badge={question:openQuestions().length,approval:pendingApprovals().length,urgent:activeUrgent().length};
-    setHTML($('#repChips'),RF.map(function(f){var n=f[0]==='all'?all.length:(badge[f[0]]!=null?badge[f[0]]:cnt[f[0]]||0);return '<button type="button" class="chip'+(ui.rf===f[0]?' on':'')+'" data-rf="'+f[0]+'">'+esc(f[1])+(n?' <span class="n">'+n+'</span>':'')+'</button>'}).join(''));
-    var unread=all.filter(isUnread).length;
-    setHTML($('#repLede'),(ui.role?'안 읽음 '+unread+' · ':'')+'12:00·00:00 모아서 + 월요일 주간 · 폰은 결재·긴급·개발 소식·연락 정리·리마인드·PC 다시 켜짐만 울려요. '+(srvRead()?'읽음은 폰·맥북 어디서 읽어도 같이 줄어듭니다.':'읽음 표시는 이 기기에만 남습니다.'));
-    var list=all.filter(function(r){return ui.rf==='all'||rtype(r)[0]===ui.rf});
-    // 맨 위 최신 브리핑 고정
-    var pin=['all','brief','log','weekly'].indexOf(ui.rf)>=0?list.filter(function(x){return BRIEF_TYPES.indexOf(x.type)>=0})[0]:null;
-    var EN={'12시 브리핑':'Daily Briefing','자정 업무일지':'Daily Log','주간보고':'Weekly Report'};
-    setHTML($('#repPin'),pin?'<a class="rp-pin'+(ui.cur==='reports'&&ui.id===pin.id?' act':'')+'" href="#reports/'+enc(pin.id)+'"><div class="row nw"><span class="eyen">'+esc(EN[pin.type]||'Briefing')+'</span>'+(isUnread(pin)?'<span class="tg tg-g">새 보고</span>':'')+'<span class="tg tg-g ml">'+IC('i-pin')+'고정</span></div>'+repLeadHtml(pin,'br-lead','p')+'<p class="s12 mut" style="margin-top:4px">'+esc(pin.fromTitle||short(pin.from))+' · '+esc(when(pin.at))+' · '+esc(pin.type)+'</p></a>':'');
-    var h='', lastKey='';
-    list.filter(function(r){return r!==pin}).forEach(function(r){
-      var k=kp(r.at), key=k?k.key:'';
-      if(key!==lastKey){lastKey=key;if(h)h+='</div>';h+='<p class="rgp">'+(isToday(r.at)?'오늘 · ':'')+esc(k?k.M+'월 '+k.D+'일 '+k.dow+'요일':'')+'</p><div class="cd">';}
-      h+=repRow(r);
-    });
-    if(h) h+='</div>';
-    if(!list.length){
-      var demo=['brief','log','weekly'].indexOf(ui.rf)>=0;
-      h='<div class="rempty" style="margin-top:12px">'+(all.length?'이 종류의 보고는 아직 없습니다.':'아직 보고가 없습니다.<span class="s12">지시가 한 바퀴 돌면 완료보고·결재 요청·질문이 여기에 쌓입니다.</span>')+(demo?'<span class="s12">팀장이 정기업무로 씁니다 — 12시 브리핑(11:20 취합 → 12:00) · 자정 업무일지(23:20 → 00:00) · 월요일 주간보고(08:40 → 09:00).</span>':'')+'</div>';
+    var all=st().reports, owner=ui.role==='owner', on=ownerNm();
+    if(!RF.some(function(f){return f[0]===ui.rf})) ui.rf='all';
+    var T=rvTurns(), seen={}; T.forEach(function(x){seen[x.id]=1;});
+    var day={all:[],done:[],brief:[],question:[],contact:[]};
+    all.forEach(function(r){var c=rvCat(r);if(!seen[r.id])day.all.push(r);if(c)day[c].push(r);});
+    var cnt={all:T.length+day.all.length,todo:T.length,done:day.done.length,brief:day.brief.length,question:day.question.length,contact:day.contact.length};
+    setHTML($('#repChips'),RF.map(function(f){var sel=ui.rf===f[0];return '<button type="button" data-rf="'+f[0]+'" aria-pressed="'+(sel?'true':'false')+'"'+(sel?' class="on"':'')+'>'+esc(f[1])+(cnt[f[0]]?'<span class="n">'+cnt[f[0]]+'</span>':'')+'</button>'}).join(''));
+    setHTML($('#repLede'),'읽지 않은 보고 <b>'+all.filter(isUnread).length+'건</b> · '+esc(on)+'님 차례 <b>'+T.length+'건</b>');
+    // 찾기 — 띄어 쓴 낱말이 모두 들어 있는 줄만(대표님 차례 · 날짜 묶음 모두)
+    var rq=String(ui.rq||'').trim(), terms=rq?rq.toLowerCase().split(/\s+/):[], hit=function(x){for(var i=0;i<terms.length;i++)if(x.q.indexOf(terms[i])<0)return false;return true};
+    var sx=$('.rv-search .rv-sx'); if(sx) sx.hidden=!String(ui.rq||'');
+    var f=ui.rf, h='';
+    var turns=(f==='all'||f==='todo')?T.filter(hit):[];
+    if(turns.length) h+='<section class="rv-turn" aria-label="'+esc(on+'님 차례')+'"><div class="rv-th"><b>'+esc(on)+'님 차례</b><small>'+turns.length+'건'+(owner?' · 눌러서 바로 처리':'')+'</small></div>'+turns.map(rvRow).join('')+'</section>';
+    if(f!=='todo'){
+      var tk0=kp(now()), yk=kp(new Date(now().getTime()-864e5)), groups=[], gk={};
+      (day[f]||[]).forEach(function(r){var it=rvItem(r,false);if(!hit(it))return;var k=kp(r.at),key=k?k.key:'?';if(!gk[key]){gk[key]={k:k,a:[]};groups.push(gk[key]);}gk[key].a.push(it);});
+      groups.forEach(function(g){var k=g.k, lb=!k?'날짜 모름':tk0&&k.key===tk0.key?'오늘':yk&&k.key===yk.key?'어제':k.M+'월 '+k.D+'일 ('+k.dow+')';
+        h+='<section class="rv-day" aria-label="'+esc(lb)+'"><div class="rv-dhd"><h2>'+esc(lb)+'</h2><span>'+g.a.length+'건</span></div><div class="rv-card">'+g.a.map(rvRow).join('')+'</div></section>';});
     }
+    if(!h){
+      if(terms.length) h='<p class="rv-none">「'+esc(rq)+'」에 맞는 보고가 없어요.<button type="button" data-rep-clear>찾는 글 지우기</button></p>';
+      else if(f==='todo') h='<p class="rv-none">'+(owner?'지금 정하실 일은 없어요 — 결재·질문이 오면 여기에 먼저 보여요.':'지금 '+esc(on)+'님 차례인 일은 없어요.')+'</p>';
+      else if(!all.length) h='<div class="rempty" style="margin-top:14px">아직 보고가 없습니다.<span class="s12">지시가 한 바퀴 돌면 완료보고·결재 요청·질문이 여기에 쌓입니다.</span></div>';
+      else h='<p class="rv-none">이 종류의 보고는 아직 없어요.'+(f==='brief'?' 팀장이 정기업무로 씁니다 — 12시 브리핑(11:20 취합 → 12:00) · 자정 업무일지(23:20 → 00:00) · 월요일 주간보고(08:40 → 09:00).':'')+'</p>';
+    }
+    h+='<p class="rv-foot">보고는 모아서 하루 두 번(12:00 브리핑 · 00:00 업무일지) + 월요일 주간보고. 폰은 결재·긴급·개발 소식·연락 정리·리마인드·PC 다시 켜짐만 울려요(연락 정리는 밤이면 아침에). '+(srvRead()?'읽음은 폰·맥북 어디서 읽어도 같이 줄어듭니다.':'읽음 표시는 이 기기에만 남습니다.')+'</p>';
     setHTML($('#rlist'),h);
-    // 상세
+    // 연 보고
     var r=ui.cur==='reports'&&ui.id?repById(ui.id):null;
     $('#repPh').hidden=!!r;
-    setHTML($('#repDetail'),r?repDoc(r):(ui.cur==='reports'&&ui.id?'<div class="rempty">없는 보고입니다: '+esc(ui.id)+'</div>':''));
+    if(r) renderRepDoc(r);
+    else setHTML($('#repDetail'),ui.cur==='reports'&&ui.id?'<div class="rempty">없는 보고입니다: '+esc(ui.id)+'</div>':'');
     setHTML($('#repAct'),actHtml(r&&r.jobId?jobById(r.jobId):null,r?relLinks(r.jobId?jobById(r.jobId):null,r.id):''));
     splitState('reports',!!(ui.id&&ui.cur==='reports'));
   }
@@ -3704,33 +4490,54 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     if(!r.phone) return '';
     return '<div class="pushline">'+IC('i-bell')+'<span>폰 알림 문구: "'+txt(r.phone.pushText||r.phone.text)+'" <span class="mut">('+txt(phoneState(r))+' · 이름·장소·연락처·금액은 넣지 않음)</span></span></div>';
   }
+  // (디자인 261124b) 사무실이 만든 보고서 HTML 이 없을 때(옛 사무실 · 보고서 HTML 을 만들지 않는 종류)의 보기 — 받은 자료로 그린다.
+  //  누가 보냈는지는 위 머리(renderRepDoc)에 · 답하기 · 결재하기 · 결과물 보기 · 일감 대장 단추는 아래 할 일 줄(repBarHtml)로 옮김
   function repDoc(r){
-    var t=rtype(r), fromNm=r.from==='office'?'사무실 프로그램 (자동 알림)':esc(r.fromTitle)+(r.assigneeTitle&&r.assignee!==r.from?' · 담당 '+esc(r.assigneeTitle):'');
-    var h='<article class="doc"><div class="meta"><span class="tg '+(r.tag&&repTagText(r)!=='적용 완료'?'tg-n':t[1])+'">'+esc(repTagText(r)||r.type)+'</span><span>'+esc(r.id)+'</span><span class="sep">·</span><span>'+esc(r.atLabel||when(r.at))+'</span>'+(r.workId?'<span class="sep">·</span><span>'+esc(r.workId)+'</span>':'')+(r.jobId?'<span class="sep">·</span><span>'+esc(r.jobId)+'</span>':'')+'</div>'+
-      '<div class="from">'+av(r.from,'s36')+'<div><div class="nm">'+fromNm+'</div><div class="s12 mut">'+(r.phone?'결재·긴급은 폰이 울리는 보고 · '+txt(phoneState(r)):'폰 알림 없음 · 허브에 쌓임')+'</div></div></div>'+
+    var t=rtype(r), dam=r.from!=='office'&&r.assigneeTitle&&r.assignee!==r.from?'담당 '+r.assigneeTitle:'';
+    var h='<article class="doc"><div class="meta"><span class="tg '+(r.tag&&repTagText(r)!=='적용 완료'?'tg-n':t[1])+'">'+esc(repTagText(r)||r.type)+'</span><span>'+esc(r.id)+'</span><span class="sep">·</span><span>'+esc(r.atLabel||when(r.at))+'</span>'+(dam?'<span class="sep">·</span><span>'+esc(dam)+'</span>':'')+(r.workId?'<span class="sep">·</span><span>'+esc(r.workId)+'</span>':'')+(r.jobId?'<span class="sep">·</span><span>'+esc(r.jobId)+'</span>':'')+'</div>'+
       repLeadHtml(r,'lead','div')+sectionsHtml(r.sections)+(r.ownerLines&&r.ownerLines.length?'<div class="blk own"><h4>금액 (대표님만 — 열람 화면에는 없음)</h4><ul>'+r.ownerLines.map(function(l){return '<li>'+txt(l)+'</li>'}).join('')+'</ul></div>':'');
-    if(r.type==='질문'){
-      if(r.open){
-        h+='<div class="own"><div class="fld"><span class="lb">답하기 (한 줄) — '+esc(short(r.from))+'에게 전달되고 '+esc(r.jobId||'일감')+'에 붙습니다</span>'+
-          '<form class="quick" data-answer="'+esc(r.id)+'"><input class="inp" data-keep="ans-'+esc(r.id)+'" maxlength="2000" placeholder="예) 반려 이유대로 줄여서 다시 해 줘" aria-label="답하기"><button type="submit" class="btn btn-p">답하기</button></form></div></div>'+
-          '<div class="ro sub">'+IC('i-eye')+'열람 전용 — 답은 대표님만 할 수 있습니다</div>';
-      } else if(r.answered){
-        h+='<div class="blk"><h4>대표님 답</h4><p>'+txt(r.answered.text)+' <span class="mut s12">('+esc(when(r.answered.at))+')</span></p></div>';
-      }
-    }
-    if(r.type==='결재 요청'){
-      if(r.decision) h+='<div class="blk"><h4>결재</h4><p class="stampline">'+stampOf(r.decision.status)+esc(r.decision.status==='수정지시'?'수정 지시':r.decision.status)+' '+esc(r.decision.option||'')+esc(whoLabel(r.decision.status,r.decision.via))+' · '+esc(when(r.decision.at))+'</p>'+(r.decision.memo?'<p class="s12 mut" style="margin-top:4px">메모: '+txt(r.decision.memo)+'</p>':'')+'</div>';
-      h+='<div class="acts"><a class="btn btn-p" href="#approvals/'+enc(r.id)+'">'+IC('i-stamp')+'결재함에서 열기</a></div>';
-    }
+    if(r.type==='질문'&&!r.open&&r.answered) h+='<div class="blk"><h4>대표님 답</h4><p>'+txt(r.answered.text)+' <span class="mut s12">('+esc(when(r.answered.at))+')</span></p></div>';
+    if(r.type==='결재 요청'&&r.decision) h+='<div class="blk"><h4>결재</h4><p class="stampline">'+stampOf(r.decision.status)+esc(r.decision.status==='수정지시'?'수정 지시':r.decision.status)+' '+esc(r.decision.option||'')+esc(whoLabel(r.decision.status,r.decision.via))+' · '+esc(when(r.decision.at))+'</p>'+(r.decision.memo?'<p class="s12 mut" style="margin-top:4px">메모: '+txt(r.decision.memo)+'</p>':'')+'</div>';
     h+=phoneHtml(r);
-    var links='';
-    if(r.data&&r.data.resultPath) links+='<a class="btn btn-s btn-sm" href="#preview/'+enc(r.data.resultPath)+'">'+IC('i-eye')+'결과물 미리보기</a>';
-    if(r.data&&r.data.finalRelPath) links+='<a class="btn btn-s btn-sm" href="#preview/'+enc(r.data.finalRelPath)+'">'+IC('i-file')+'새 최종본 보기</a>';
-    if(r.type==='긴급'&&(status()==='stopped'||status()==='limit')) links+='<button type="button" class="btn btn-p btn-sm own" data-office-start>'+IC('i-power')+'확인하고 출근</button><a class="btn btn-s btn-sm" href="#office">사무실 보기</a>';
-    if(r.jobId) links+='<a class="btn btn-s btn-sm" href="#ledger">'+IC('i-board')+'일감 대장</a>';
-    if(links&&r.type!=='결재 요청') h+='<div class="acts">'+links+'</div>';
     if(r.type!=='질문') h+='<div class="ro sub">'+IC('i-eye')+'열람 전용 — 결재·답하기·조작은 대표님만 할 수 있습니다</div>';
     return h+'</article>';
+  }
+  // (디자인 261124b) 연 보고 — 머리(종류 · 보낸 사람 · 제목 · 파일 받기) · 대표님만 금액 줄 · 보고서 틀 · 아래 할 일 줄
+  //  보고서 HTML 은 톡과 같은 길(tkLoadHtml 로 한 번 읽어 tk.html 에 두고 tkFrameSet 의 sandbox="" 틀에) — HTML 이 없으면 예전처럼 자료로 그린 보기(repDoc)
+  //  보고서 HTML 이 없다고 확인한 보고(질문 · 긴급 등)는 1분 안에 다시 열면 다시 읽지 않고, 다시 읽는 동안에도 자료 보기를 그대로(읽기 횟수 · 깜빡임 줄임)
+  var rvNoHtml={};
+  function rvNoHtmlFresh(id){return !!rvNoHtml[id]&&Date.now()-rvNoHtml[id]<60000}
+  function renderRepDoc(r){
+    var id=r.id, owner=ui.role==='owner', k=rvK(r), hs=tk.html[id]||{};
+    if(hs.obj) delete rvNoHtml[id]; else if(hs.none&&!rvNoHtml[id]) rvNoHtml[id]=Date.now();
+    setHTML($('#repDetail'),'<div class="rv-doc" data-rv="'+esc(id)+'"><div class="rv-dh" id="repHead"></div><div id="repOwn"></div><div id="repNote"></div><div class="rv-frame" id="repFrame"></div><div class="rv-bar" id="repBar"></div></div>');
+    setHTML($('#repHead'),av(r.from,'s36')+'<div class="rv-dt"><b>'+esc(k[0]+' · '+(r.from==='office'?'사무실 프로그램':(r.fromTitle||short(r.from))))+'</b><small>'+txt(rvTitle(r))+'</small></div>'+
+      (hs.obj?'<button type="button" class="rv-dl" data-rep-dl="'+esc(id)+'" aria-label="보고서 파일 받기" title="파일 받기">'+IC('i-share')+'</button>':''));
+    setHTML($('#repOwn'),owner&&hs.obj&&Array.isArray(r.ownerLines)&&r.ownerLines.length?'<div class="rv-own own">대표님만 · '+r.ownerLines.slice(0,3).map(txt).join(' · ')+'</div>':'');
+    setHTML($('#repNote'),hs.obj&&hs.obj.truncated?'<div class="rv-note">보고서가 길어 뒷부분을 줄였습니다 — 전문은 PC 허브·드라이브 파일에서</div>':'');
+    var box=$('#repFrame'); if(!box) return;
+    if(hs.obj){box.className='rv-frame is-ifr';tkFrameSet(box,hs.obj.html,'rep|'+id+'|'+String(hs.obj.v||''));}
+    else if(hs.loading&&!rvNoHtml[id]){box.className='rv-frame is-wait';box._k='msg';setHTML(box,'<div class="rempty"><span class="spin"></span> 보고서를 여는 중…</div>');}
+    else{box.className='rv-frame is-doc';box._k='doc';setHTML(box,repDoc(r));}
+    setHTML($('#repBar'),repBarHtml(r));
+  }
+  // 아래 할 일 줄 — 질문: 답하기(예전 답하기 칸 그대로 · 대표) · 결재 대기: 결재하기(결재함 그 카드) · 결과물 보기 · 긴급 정지: 확인하고 출근 · 일감 대장
+  //  답장 초안 복사는 이 허브에 원래 없는 기능이라 만들지 않음 · 열람 계정은 보기 단추만
+  function repBarHtml(r){
+    var owner=ui.role==='owner', h='', j=r.jobId?jobById(r.jobId):null, a=aprById(r.id), s=status();
+    var oap=a&&a.status==='대기'?a:null;
+    if(!oap&&j&&j.approvalId){var a1=aprById(j.approvalId);if(a1&&a1.status==='대기')oap=a1;}
+    if(!oap&&r.jobId) oap=st().approvals.filter(function(x){return x&&x.jobId===r.jobId&&x.status==='대기'})[0]||null;
+    //  보기 단추가 먼저(왼쪽) · 결재하기 · 확인하고 출근 · 답하기 칸은 맨 끝(오른쪽 · 아래 — 손이 닿는 쪽)
+    var fin=r.data&&r.data.finalRelPath, outs=j?(j.outputs||[]).filter(function(o){return o&&o.relPath}):[], out=(r.data&&r.data.resultPath)||(j&&j.finalRelPath)||(outs.length?outs[outs.length-1].relPath:'');
+    if(r.jobId) h+='<a class="rv-b" href="#ledger">'+IC('i-board')+'일감 대장</a>';
+    if(fin) h+='<a class="rv-b" href="#preview/'+enc(fin)+'">'+IC('i-file')+'새 최종본 보기</a>';
+    if(out&&out!==fin) h+='<a class="rv-b" href="#preview/'+enc(out)+'">'+IC('i-eye')+'결과물 보기</a>';
+    if(r.type==='긴급'&&(s==='stopped'||s==='limit')) h+='<a class="rv-b" href="#office">직원 보기</a>'+(owner?'<button type="button" class="rv-b p own" data-office-start>'+IC('i-power')+'확인하고 출근</button>':'');
+    if(oap) h+=owner?'<a class="rv-b p own" href="#approvals/'+enc(oap.id)+'">'+IC('i-stamp')+'결재하기</a>':'<a class="rv-b" href="#approvals/'+enc(oap.id)+'">'+IC('i-stamp')+'결재 보기</a>';
+    else if(r.type==='결재 요청'&&a) h+='<a class="rv-b" href="#approvals/'+enc(r.id)+'">'+IC('i-stamp')+'결재 보기</a>';
+    if(r.type==='질문'&&r.open) h+=owner?'<form class="quick rv-ans own" data-answer="'+esc(r.id)+'"><input class="inp" data-keep="ans-'+esc(r.id)+'" maxlength="2000" placeholder="한 줄로 답하기" aria-label="'+esc('답하기 — '+short(r.from)+'에게 전달되고 '+(r.jobId||'일감')+'에 붙습니다')+'"><button type="submit" class="rv-b p">'+IC('i-msg')+'답하기</button></form>':'<p class="rv-ro">열람 전용 — 답은 '+esc(ownerNm())+'님만 할 수 있습니다</p>';
+    return h;
   }
   function splitState(route,has){var sec=$('section[data-route="'+route+'"]'),sp=sec&&$('.split',sec);if(sp)sp.classList.toggle('has-d',has)}
   // 활동 칸(맥 3단 오른쪽) — 이 일감이 걸어온 길 / 없으면 사무실 소식
@@ -3964,19 +4771,24 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     $$('[data-tab]',wrap).forEach(function(b){if(b.closest('[data-pane]'))return;b.classList.toggle('on',b.getAttribute('data-tab')===name)});
     $$('[data-pane]',wrap).forEach(function(p){p.hidden=(p.getAttribute('data-pane')!==name)});
   }
+  // (디자인 261124b) 아래 탭에 없는 화면 — 결재함은 「오늘」 · 결과물 미리보기는 「보고서」 · 근무·대기는 「톡」에 불을 켠다(그 밖은 탭 불 없음).
+  //  넓은 화면 왼쪽 메뉴는 예전처럼 제 줄에 불을 켠다
+  var TAB_OF={power:'talk',approvals:'home',preview:'reports'};
   function navState(){
-    var s=ui.cur==='power'?'talk':ui.cur;
-    $$('[data-nav]').forEach(function(a){var on=a.getAttribute('data-nav')===s;var nt=a.getAttribute('data-navtab');if(on&&nt)on=nt==='prop'?ui.ltab==='prop':ui.ltab!=='prop';a.classList.toggle('on',on)});
+    var s=ui.cur==='power'?'talk':ui.cur, t=TAB_OF[ui.cur]||ui.cur;
+    $$('[data-nav]').forEach(function(a){var tb=!!a.closest('.tabbar');var on=a.getAttribute('data-nav')===(tb?t:s);var nt=a.getAttribute('data-navtab');if(on&&nt)on=nt==='prop'?ui.ltab==='prop':ui.ltab!=='prop';a.classList.toggle('on',on);if(tb){if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');}});
   }
   function go(){
     var raw=location.hash.replace(/^#/,''), h=raw;
     try{h=decodeURIComponent(h)}catch(e){}
     var q='',i=h.indexOf('?'); if(i>=0){q=h.slice(i+1);h=h.slice(0,i);}
-    // (1-10 · 261001 대표님 결정) 첫 화면 = 톡 목록
-    var k=h.indexOf('/'), s=(k<0?h:h.slice(0,k))||'talk', id=k<0?'':h.slice(k+1);
-    // 로그인 전에는 로그인 화면만(알림으로 열린 화면 주소는 기억했다가 로그인 뒤 연다) · 로그인 뒤 로그인 화면은 톡으로
-    if(!session.user||!session.checked){if(s!=='login'&&raw)session.after='#'+raw;s='login';id='';}else if(s==='login'){s='talk';id='';}
-    if(ROUTES.indexOf(s)<0){toast('없는 화면입니다 — 톡으로 이동합니다','info');s='talk';id='';}
+    // (디자인 261124b) 첫 화면 = 오늘(#home) — 예전(1-10 · 261001)은 톡 목록
+    var k=h.indexOf('/'), s=(k<0?h:h.slice(0,k))||'home', id=k<0?'':h.slice(k+1);
+    // (디자인 261124b) 다른 이름 #today → #home · #staff → #office — 뒤의 번호·물음(?)은 그대로 두고 주소만 진짜 이름으로 바로잡는다(새 기록을 남기지 않음)
+    if(Object.prototype.hasOwnProperty.call(ROUTE_ALIAS,s)){s=ROUTE_ALIAS[s];raw=raw.replace(/^[^\/?]*/,s);try{history.replaceState(history.state,'','#'+raw);}catch(e){}}
+    // 로그인 전에는 로그인 화면만(알림으로 열린 화면 주소는 기억했다가 로그인 뒤 연다) · 로그인 뒤 로그인 화면은 오늘로
+    if(!session.user||!session.checked){if(s!=='login'&&raw)session.after='#'+raw;s='login';id='';}else if(s==='login'){s='home';id='';}
+    if(ROUTES.indexOf(s)<0){toast('없는 화면입니다 — 오늘로 이동합니다','info');s='home';id='';}
     if(s==='preview'&&id) delete fileCache[id];   // 열 때마다 새로 읽음(최종본 교체 반영)
     if(s==='ledger'){if(['all','prop','stall'].indexOf(id)>=0)ui.ltab=id;id='';}
     // 톡 주소는 조각마다 따로 풀어 읽는다 — #talk/<방> · #talk/<방>/m/<메시지> · #talk/<방>/r/<보고번호> (조각은 enc 로 만든 주소)
@@ -4000,6 +4812,8 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     setTab($('section[data-route="ledger"]'),ui.ltab);
     if((s==='reports'||s==='approvals')&&id) markRead(id);
     if(sec==='talk'&&tk.sub==='r'&&tk.subId) markRead(tk.subId); // (261117) 톡에서 보고서를 열어도 보고함에서 읽음
+    // (디자인 261124b) 보고서 화면에서 연 보고도 톡과 같은 보고서 HTML(report_html)을 열 때 한 번 읽어 sandbox 틀에(없으면 자료로 그린 보기)
+    if(s==='reports'&&id&&session.checked&&(id!==prevId||prevS!==s||!tk.html[id])&&!rvNoHtmlFresh(id)) tkLoadHtml(id);
     if(s==='order') loadWorkIds();
     if(sec==='talk'&&tk.room) tkSubRoom(tk.room); else tkUnsubRoom();
     if(sec==='talk'&&tk.sub==='r'&&tk.subId&&session.checked&&(tk.sub+'|'+tk.subId!==prevSub||prevS!==s||!tk.html[tk.subId])) tkLoadHtml(tk.subId);
@@ -4708,7 +5522,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
   }
   // (261120 「불편해요」) 보던 화면 이름(메뉴 아래에 있던 화면)
   function gripeWhere(){
-    var L={talk:'톡',home:'현황판',office:'평면도',approvals:'결재함',reports:'보고함',order:'지시하기',ledger:'일감 대장',preview:'결과물 미리보기',rules:'설정 · 규칙',power:'근무·대기'};
+    var L={talk:'톡',home:'오늘',stat:'현황',office:'직원',approvals:'결재함',reports:'보고서',order:'지시하기',ledger:'일감 대장',preview:'결과물 미리보기',rules:'설정 · 규칙',power:'근무·대기'}; // (디자인 261124b) 새 화면 이름
     var w=L[ui.cur]||'사무실';
     if(ui.cur==='talk'&&tk.room){var r=roomById(tk.room);if(r&&r.title)w+=' · '+String(r.title).slice(0,20);if(tk.sub==='r')w+=' · 보고서';else if(tk.sub==='v')w+=' · 시안';else if(tk.sub==='o')w+=' · 결과물';}
     return w;
@@ -4732,7 +5546,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     var prev=tk.html[id]&&tk.html[id].obj;
     tk.html[id]={loading:true,obj:prev||null};
     getDoc(doc(db,ROOT[0],ROOT[1],'report_html',id)).then(function(d){var o=d.exists()?parseJson(d):null;tk.html[id]=o&&typeof o.html==='string'?{obj:o}:{none:true};})
-      .catch(function(e){tk.html[id]={err:errText(e)};}).then(function(){if(tk.sub==='r'&&tk.subId===id)renderDoc();});
+      .catch(function(e){tk.html[id]={err:errText(e)};}).then(function(){if(tk.sub==='r'&&tk.subId===id)renderDoc();if(ui.cur==='reports'&&ui.id===id)renderReports();}); // (디자인 261124b) 보고서 화면에서 연 보고도 같은 틀로
   }
   // (261117 채팅창 안에서 보기) 시안 문서(report_html/{개발-N}.view) — 「시안 보기」를 누를 때만 한 번 읽음
   function tkLoadView(id){
@@ -5185,6 +5999,15 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     el=t.closest('[data-tab]'); if(el){var wrap=el.closest('[data-tabwrap]');var nm=el.getAttribute('data-tab');if(el.tagName==='A')e.preventDefault();if(wrap&&wrap.closest('section[data-route="approvals"]'))ui.aprTab=nm;if(wrap&&wrap.getAttribute('data-route')==='ledger'){ui.ltab=nm;navState();}setTab(wrap,nm);return;}
     el=t.closest('[data-rf]'); if(el){ui.rf=el.getAttribute('data-rf');renderReports();return;}
     el=t.closest('[data-mark-read]'); if(el){var sv0=srvRead();markAllRead();renderChrome();renderReports();renderHome();toast(sv0?'모두 읽음으로 표시했습니다 — 폰·맥북 모두':'모두 읽음으로 표시했습니다(이 기기)');return;}
+    // (디자인 261124b) 현황 — 기간(7일·30일) · 표로 보기 · 직원 모두 보기 · 막대를 누르면 숫자 띠(다른 곳을 누르면 닫힘)
+    if(hsHot&&!t.closest('.hs-col,.hs-hr')) hsTipOff();
+    el=t.closest('[data-hs-p]'); if(el){ui.sp=el.getAttribute('data-hs-p')==='30'?30:7;renderStat();return;}
+    el=t.closest('[data-hs-tbl]'); if(el){var hk=el.getAttribute('data-hs-tbl');if(['days','staff','use'].indexOf(hk)>=0){ui.stb[hk]=!ui.stb[hk];renderStat();}return;}
+    el=t.closest('[data-hs-all]'); if(el){ui.sAll=el.getAttribute('data-hs-all')==='1';renderStat();return;}
+    el=t.closest('.hs-col,.hs-hr'); if(el){hsTipOn(el);return;}
+    // (디자인 261124b) 보고서 — 찾는 글 지우기 · 연 보고 파일 받기(톡 보고서와 같은 tkDownload)
+    el=t.closest('[data-rep-clear]'); if(el){e.preventDefault();ui.rq='';var rqi=$('#repQ');if(rqi){rqi.value='';try{rqi.focus()}catch(_){}}renderReports();return;}
+    el=t.closest('[data-rep-dl]'); if(el){tkDownload(el.getAttribute('data-rep-dl'));return;}
     el=t.closest('[data-lf]'); if(el){ui.lf=el.getAttribute('data-lf');renderLedger();return;}
     el=t.closest('[data-lview]'); if(el){ui.lview=el.getAttribute('data-lview');renderLedger();return;}
     el=t.closest('[data-pf]'); if(el){ui.pf=el.getAttribute('data-pf');renderPreview();return;}
@@ -5210,7 +6033,13 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     var x=e.target;
     if(x.id==='ordwid') ui.workId=x.value;
   });
-  document.addEventListener('input',function(e){var x=e.target;if(!x)return;if(x.id==='ordtxt')renderOrderRec();else if(x.id==='tkTxt'){tk.lastIn=Date.now();tkGrow(x);draftSoon(tk.room,x.value);}else if(x.id==='tkSearch'){tk.q=x.value;renderTalkList();}});
+  document.addEventListener('input',function(e){var x=e.target;if(!x)return;if(x.id==='ordtxt')renderOrderRec();else if(x.id==='tkTxt'){tk.lastIn=Date.now();tkGrow(x);draftSoon(tk.room,x.value);}else if(x.id==='tkSearch'){tk.q=x.value;renderTalkList();}else if(x.id==='repQ'){ui.rq=String(x.value||'').slice(0,40);renderReports();}}); // (디자인 261124b) 보고서 찾기 — 치는 대로 거름
+  // (디자인 261124b) 현황 막대 — 마우스를 올리거나 키보드로 고르면 숫자 띠 · 마우스가 나가거나 초점이 빠지거나 스크롤하면 닫힘
+  document.addEventListener('pointerover',function(e){if(e.pointerType!=='mouse')return;var el=e.target&&e.target.closest?e.target.closest('.hs-col,.hs-hr'):null;if(el&&el!==hsHot)hsTipOn(el);});
+  document.addEventListener('pointerout',function(e){if(e.pointerType!=='mouse'||!hsHot)return;var el=e.target&&e.target.closest?e.target.closest('.hs-col,.hs-hr'):null;if(el&&!(e.relatedTarget&&el.contains(e.relatedTarget)))hsTipOff();});
+  document.addEventListener('focusin',function(e){var el=e.target&&e.target.closest?e.target.closest('.hs-col,.hs-hr'):null;if(el)hsTipOn(el);});
+  document.addEventListener('focusout',function(e){if(hsHot&&e.target===hsHot)hsTipOff();});
+  document.addEventListener('scroll',function(){if(hsHot)hsTipOff();},true);
   // 대화를 위로 올려 보다가 맨 아래로 내려오면 그때 읽음(대표: 3초 묶음 · 열람: 이 기기)
   document.addEventListener('scroll',function(e){var x=e.target;if(!x||x.id!=='tkScroll'||!tk.room)return;tk.atBottom=x.scrollHeight-x.scrollTop-x.clientHeight<80;if(x.scrollHeight-x.scrollTop-x.clientHeight<80){tkRead(tk.room,false);tkViewerSeen(tk.room);}},true);
   document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'&&ui.cur==='talk'&&tk.room){var sc=$('#tkScroll');if(sc&&sc.scrollHeight-sc.scrollTop-sc.clientHeight<80)tkRead(tk.room,false);}});
