@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <!-- (261005 배포전검토2 C4-3) 화면 판 — 배포할 때마다 바꾼다. 아이폰 메뉴 「다시 불러오기」 줄과 배포 파일 확인에 쓴다(README 21-6c 9-③④) -->
-<meta name="mdo-hub-build" content="261124b">
+<meta name="mdo-hub-build" content="261124c">
 <meta name="theme-color" content="#F4F3EE">
 <title>maydly 사무실</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -2236,6 +2236,9 @@ section[data-route="stat"].on .hs-o4,section[data-route="stat"].on .hs-o5,sectio
 .rv-sx[hidden]{display:none}
 .rv-seg{display:flex;gap:0;margin-top:10px;padding:4px;border-radius:999px;background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 1px var(--line-2);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .rv-seg::-webkit-scrollbar{display:none}
+.rv-seg.fr{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 32px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 32px),transparent)}
+.rv-seg.fl{-webkit-mask-image:linear-gradient(90deg,transparent,#000 32px);mask-image:linear-gradient(90deg,transparent,#000 32px)}
+.rv-seg.fl.fr{-webkit-mask-image:linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent);mask-image:linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent)}
 .rv-seg button{flex:1 0 auto;height:36px;padding:0 9px;border-radius:999px;font-size:14px;font-weight:500;color:var(--ink-2);white-space:nowrap;transition:background var(--t-mid) var(--e-out),box-shadow var(--t-mid) var(--e-out),color var(--t-mid) ease}
 .rv-seg button.on{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 0 0 .5px rgba(23,33,29,.08),0 6px 14px -8px rgba(23,33,29,.22)}
 .rv-seg .n{margin-left:3px;font-size:12px;font-weight:500;color:var(--ink-3);font-variant-numeric:tabular-nums}
@@ -2828,7 +2831,7 @@ section[data-route="reports"].on .rv-doc{animation:v6fade var(--t-mid) var(--e-o
       <li><a href="#rules"><svg class="ic"><use href="#i-bulb"/></svg>여기서 할 수 있는 일<span class="small">직원마다 무엇을 맡길 수 있는지</span></a></li>
       <li class="own"><a href="#" data-gripe><svg class="ic"><use href="#i-pen"/></svg>불편해요<span class="small">보던 화면과 함께 Claude에게 바로</span></a></li>
       <li><a href="#rules"><svg class="ic"><use href="#i-sliders"/></svg>설정 · 규칙<span class="small">읽기 전용</span></a></li>
-      <li><a href="#" data-reload><svg class="ic"><use href="#i-refresh"/></svg>다시 불러오기<span class="small">새 화면 받기 · 화면 판 261124b</span></a></li>
+      <li><a href="#" data-reload><svg class="ic"><use href="#i-refresh"/></svg>다시 불러오기<span class="small">새 화면 받기 · 화면 판 261124c</span></a></li>
       <li><a href="#login" data-logout><svg class="ic"><use href="#i-logout"/></svg>로그아웃</a></li>
     </ul>
     <p class="note" style="margin-top:12px">로그인한 구글 계정으로 대표·열람이 정해집니다. 화면의 자료는 사무실 PC 가 올린 것이고, 조작은 사무실 PC 가 가져가 처리합니다.</p>
@@ -4413,6 +4416,10 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
   function rvItem(r,full){var k=rvK(r);return {h:'#reports/'+enc(r.id),id:r.id,kc:k[1],kl:k[0],t:txt(rvTitle(r)),w:rvWho(r),at:full?when(r.at):hm(r.at),c:rvChip(r),un:isUnread(r),act:ui.cur==='reports'&&ui.id===r.id,tg:(r.agentTrial?trialTag(r):'')+rvPhone(r),q:rvFind(r)}}
   // (261124b 점검) 폰 알림을 못 보낸 보고만 표시(실패 · 미발송 · 대기)
   function rvPhone(r){var t=r&&r.phone?phoneTag(r):'';return t&&t.indexOf('폰 알림 보냄')<0?t:''}
+  // (261124b 실제 화면 점검) 거르기 줄이 넘치면 넘친 쪽 끝을 흐리게(fl 왼쪽 · fr 오른쪽) — 옆으로 밀 수 있다는 표시
+  function segFade(el){if(!el)return;var w=el.clientWidth,l=el.scrollLeft>2,r=w>0&&el.scrollLeft+w<el.scrollWidth-2;el.classList.toggle('fl',l);el.classList.toggle('fr',r);}
+  document.addEventListener('scroll',function(e){var t=e.target;if(t&&t.id==='repChips')segFade(t);},{capture:true,passive:true});
+  window.addEventListener('resize',function(){segFade($('#repChips'));});
   function rvRow(o){
     return '<a class="rv-row'+(o.un?' un':' rd')+(o.act?' act':'')+'" href="'+o.h+'" data-lid="'+esc(o.id)+'" data-k="'+o.kc+'"><span class="rv-kb rv-'+o.kc+'">'+esc(o.kl)+'</span>'+
       '<span class="rv-m"><span class="rv-t">'+o.t+'</span><span class="rv-s"><span class="rv-who">'+esc(o.w)+'</span><i class="sep" aria-hidden="true">·</i><time>'+esc(o.at)+'</time>'+(o.c||'')+'</span>'+(o.tg?'<span class="rv-tags">'+o.tg+'</span>':'')+'</span>'+
@@ -4438,7 +4445,7 @@ import { getFirestore, doc, collection, query, where, orderBy, limit, onSnapshot
     var day={all:[],done:[],brief:[],question:[],contact:[]};
     all.forEach(function(r){var c=rvCat(r);if(!seen[r.id])day.all.push(r);if(c)day[c].push(r);});
     var cnt={all:T.length+day.all.length,todo:T.length,done:day.done.length,brief:day.brief.length,question:day.question.length,contact:day.contact.length};
-    setHTML($('#repChips'),RF.map(function(f){var sel=ui.rf===f[0];return '<button type="button" data-rf="'+f[0]+'" aria-pressed="'+(sel?'true':'false')+'"'+(sel?' class="on"':'')+'>'+esc(f[1])+(cnt[f[0]]?'<span class="n">'+cnt[f[0]]+'</span>':'')+'</button>'}).join(''));
+    setHTML($('#repChips'),RF.map(function(f){var sel=ui.rf===f[0];return '<button type="button" data-rf="'+f[0]+'" aria-pressed="'+(sel?'true':'false')+'"'+(sel?' class="on"':'')+'>'+esc(f[1])+(cnt[f[0]]?'<span class="n">'+cnt[f[0]]+'</span>':'')+'</button>'}).join(''));segFade($('#repChips'));
     setHTML($('#repLede'),'읽지 않은 보고 <b>'+all.filter(isUnread).length+'건</b> · '+esc(on)+'님 차례 <b>'+T.length+'건</b>');
     // 찾기 — 띄어 쓴 낱말이 모두 들어 있는 줄만(대표님 차례 · 날짜 묶음 모두)
     var rq=String(ui.rq||'').trim(), terms=rq?rq.toLowerCase().split(/\s+/):[], hit=function(x){for(var i=0;i<terms.length;i++)if(x.q.indexOf(terms[i])<0)return false;return true};
