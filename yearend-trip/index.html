@@ -217,6 +217,7 @@ details li{font-size:15px;line-height:1.55;margin:5px 0}
 .mlg .sdot{margin-right:0}
 .nr{display:block;font-size:14px;line-height:1.5;padding:3px 0}.nr b{font-size:14px!important;font-weight:800}.nr a{display:inline-block;padding:6px 2px;margin:-6px 0}
 .nh{font-size:12.5px;color:#5f6a63}
+.leaflet-popup-content a.spgo{display:inline-block;font-weight:700;padding:8px 0;margin:-2px 0}
 .shm2 summary{min-height:40px;font-size:14.5px;font-weight:700;color:var(--gd);padding-top:8px;cursor:pointer}.shm2 .nr{padding:4px 0;border-top:1px dashed var(--line)}.shm2 .nr:first-of-type{border-top:0}
 .how2{margin-top:6px}.how2 a{color:var(--gd);font-weight:700}
 .mhint{font-size:14px;color:var(--sub);line-height:1.6;margin:10px 4px 0}.mhint b{color:var(--ink);font-weight:700}
@@ -304,7 +305,7 @@ function goList(){if(history.state&&history.state.fromList){history.back()}else{
 function mapFocus(k){sessionStorage.setItem('p7focus',k);history.pushState({fromDetail:k},'','#map');route()}
 function renderMap(from){
  let x=headHTML('map')+`<div class="mapw"><div id="bigmap" class="nolab"></div><div class="mzb"><button onclick="mz(0)">세토·규슈</button><button onclick="mz(1)">일본 전체</button></div><div class="selc" id="selc" hidden></div></div>`+
- `<p class="mhint"><b>지도의 빈 곳을 누르면 그 자리에서 가장 가까운 2nd STREET·스탠다드가 떠요.</b> 공항·일몰·일출 명소를 눌러도 나와요. 작은 점은 일본 전체 매장이에요(2nd STREET 계열 ${N_SS}곳 · 스탠다드 ${N_SP}곳).</p>`+
+ `<p class="mhint"><b>지도의 빈 곳을 누르면 그 자리에서 가장 가까운 2nd STREET·스탠다드가 떠요.</b> 공항을 눌러도 나와요. 일몰·일출 명소를 누르면 그 자리가 나와요. 작은 점은 일본 전체 매장이에요(2nd STREET 계열 ${N_SS}곳 · 스탠다드 ${N_SP}곳).</p>`+
  `<p class="mlg"><span><i class="pin p-neco"></i>네코노시마</span><span><i class="pin p-bal"></i>경치에 가게·교통도</span><span><i class="pin p-ex"></i>명진이 보낸 집</span><span><i class="pin p-old"></i>점수 주신 집</span><span><i class="pin p-hold"></i>가고시마(이번엔 패스할 듯)</span><span><i class="pin p-mini"></i>짧게 본 곳</span><span><i class="apin"></i>공항</span><span><i class="sunm sunset" style="font-size:11px">일몰</i><i class="sunm sunrise" style="font-size:11px">일출</i> 명소(넓히면 이름)</span><span><i class="shm ss">2nd</i><i class="shm sp">스탠다드</i> 집마다 가까운 매장</span><span><i class="sdot ss"></i><i class="sdot sp"></i> 그 밖의 매장 전부</span></p>`+
  `<p class="grp">번호로 찾기</p><div class="list">${H.map(h=>`<a class="lrow" href="#h=${h.key}" data-m="${h.key}"><i class="pin ${PCLS[h.grp]}">${h.i+1}</i><span class="ln">${esc(h.name)}</span><small>${esc(h.region)}</small></a>`).join('')}</div>`+
  `<p class="src">핀을 누르면 그 집 카드가 떠요. 핀이 겹친 곳은 누르면 그 자리로 커져요. 더 넓히면(두 손가락) 이름과 공항이 보여요.<br>숙소 위치는 에어비앤비가 보여 주는 대략 위치예요(몇백 m 차이 날 수 있어요). 지바·삿포로는 ‘일본 전체’를 누르면 보여요.</p>`;
@@ -389,13 +390,14 @@ function spotsHTML(h){const ks=new Set((h.spots||[]).map(([id])=>SP[id].kind));c
  if(h.spots&&h.spots.length){x+=h.spots.map(([id,kmv])=>{const p=SP[id];const mine=p.nearest_key===h.key;const base=byKey[p.nearest_key];
   return `<div class="spot"><p class="sn"><span class="sk2 ${p.kind}">${KIND[p.kind]} ·</span> ${esc(p.name_ko)} <small>${esc(p.name_ja)}</small></p>`+
   `<p class="sa">${mine?esc(p.access_ko):`직선 약 ${kmv}km · ${esc(p.access_ko)}${base?`(${esc(base.sn)} 기준)`:''}`}</p><p class="sw">${esc(p.what_ko)}</p>`+
-  (p.yearend_ko?`<p class="sy">${esc(p.yearend_ko)}</p>`:'')+`<p class="ss">${p.sources.slice(0,2).map((u,i)=>`<a href="${esc(u)}" target="_blank" rel="noopener">출처${p.sources.length>1?' '+(i+1):''}</a>`).join(' · ')}</p></div>`}).join('')}
+  (p.yearend_ko?`<p class="sy">${esc(p.yearend_ko)}</p>`:'')+`<p class="ss"><a href="${spQ(p)}" target="_blank" rel="noopener">구글 지도에서 보기</a> · ${p.sources.slice(0,2).map((u,i)=>`<a href="${esc(u)}" target="_blank" rel="noopener">출처${p.sources.length>1?' '+(i+1):''}</a>`).join(' · ')}</p></div>`}).join('')}
  else x+=`<p style="font-size:15px">이 근처에서는 찾지 못했어요</p>`;
  if(h.scau&&h.scau.length)x+=`<p class="note">${h.scau.map(esc).join('<br>')}</p>`;
  return x+`</div>`}
 function sunIcon(k){return L.divIcon({className:'sunw',html:`<i class="sunm ${k}">${KIND[k]}</i>`,iconSize:[48,22],iconAnchor:[24,11]})}
+function spQ(p){return 'https://www.google.com/maps/search/?api=1&query='+p.lat+','+p.lng}
 function spotPop(p){const b=byKey[p.nearest_key];return `<b>${esc(p.name_ko)}</b> <span style="color:#5f6a63">${esc(p.name_ja)}</span><br><span class="sk2 ${p.kind}">${KIND[p.kind]} ·</span> ${esc(p.what_ko)}<br>${esc(p.access_ko)}${b?` (${esc(b.sn)} 기준)`:''}`+
- (p.yearend_ko?`<br>${esc(p.yearend_ko)}`:'')+`<br><span class="nh">가까운 매장 · 직선거리</span>${nearHTML([p.lat,p.lng],1)}<br>${p.sources.slice(0,2).map((u,i)=>`<a href="${esc(u)}" target="_blank" rel="noopener">출처${p.sources.length>1?' '+(i+1):''}</a>`).join(' · ')}`}
+ (p.yearend_ko?`<br>${esc(p.yearend_ko)}`:'')+`<br><a class="spgo" href="${spQ(p)}" target="_blank" rel="noopener">구글 지도에서 이 자리 보기</a><br>${p.sources.slice(0,2).map((u,i)=>`<a href="${esc(u)}" target="_blank" rel="noopener">출처${p.sources.length>1?' '+(i+1):''}</a>`).join(' · ')}`}
 function toggleMini(){miniOpen=!miniOpen;sessionStorage.setItem('p7mini',miniOpen?'1':'0');const L=$('#minilist'),b=$('#minibtn');if(L)L.hidden=!miniOpen;if(b)b.textContent=miniOpen?'접기 ▴':H.filter(h=>h.grp==='mini').length+'곳 펼치기 ▾'}
 function datesHTML(h){return `<div class="card"><h3>묵을 수 있는 날 <small>${esc(h.datesAsOf)}</small></h3>`+h.dates.map(([d,w,c,t])=>`<div class="dr"><span class="d1">${esc(d)}</span><span class="d2 ${c}">${esc(w)}</span><span class="d3">${esc(t)}</span></div>`).join('')+(h.datesNote?`<p class="note">${esc(h.datesNote)}</p>`:'')+`</div>`}
 function waysHTML(h){return `<div class="card"><h3>갈 수 있는 길</h3>`+(h.waysNote?`<p class="wn">${esc(h.waysNote)}</p>`:'')+h.ways.map(w=>`<div class="spot"><p class="sn">${esc(w.t)}</p><p class="sa">${esc(w.d)}</p>${w.n?`<p class="sw">${esc(w.n)}</p>`:''}</div>`).join('')+(h.book&&h.book.length?`<details><summary>예약하는 법</summary><ul>${h.book.map(b=>`<li>${esc(b)}</li>`).join('')}</ul></details>`:'')+`</div>`}
