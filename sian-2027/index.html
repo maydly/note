@@ -24,7 +24,7 @@
 })(document, window);
 </script>
 <script id="mock-fold">document.documentElement.classList.add("sian-fold");</script>
-<title>[목업·내년 두 갈래 v8.0] maydly — 너를 담는 순간, 세상이 반하다</title>
+<title>[목업·내년 두 갈래 v8.1] maydly — 너를 담는 순간, 세상이 반하다</title>
 <meta name="description" content="지금의 나를 바라보고 기록하는 촬영">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="maydly">
@@ -1326,10 +1326,29 @@ html.t2-long.th-c .t2-s::before{bottom:28px}
 
 /* ═══ v8.0 — 2번 책 차례 10펼침: 펼침마다 왼쪽 쪽·오른쪽 쪽(명진 «글·정리 구조·디자인 개선» → «완료될때까지 전부 다», 261124) ═══ */
 @media (min-width:1024px){
-  /* 쪽 높이: 위 막대 79 · 책 위 틈 16 · 책 아래 틈 12 · 단추 띠 81 = 188 (목업 표시줄 높이 --mockH 는 목업 JS가 잼 — 실제 배포에선 0이라 쪽이 그만큼 더 높음) */
-  html.th-c .t2-s, html.th-c .t2-s.cover{padding-top:16px; padding-bottom:93px}
+  /* v8.1 쪽 높이: 위 막대 한 줄 56 · 책 위 틈 22 · 책 아래 틈 20 · 단추 띠 72 = 170 (목업 표시줄 높이 --mockH 는 목업 JS가 잼 — 실제 배포에선 0)
+     + 책 비율 상한 812px(쪽 520의 1.56배) — 큰 화면에선 막대·책·단추가 한 덩어리로 가운데(남는 높이를 위아래로) */
+  html.th-c #t2app{--bkL:max(0px, calc(100vh - var(--mockH, 0px) - 170px - var(--bkCap, 812px)))}
+  html.th-c .t2-s, html.th-c .t2-s.cover{padding-top:22px; padding-bottom:92px}
+  html.th-c #t2app .t2-col{padding-top:calc(var(--bkL) / 2); box-sizing:border-box}
+  html.th-c #t2app .t2-foot{bottom:calc(var(--bkL) / 2)}
+  html.th-c #t2app .t2-foot .in{padding:6px 40px 18px !important}
+  /* 위 막대 한 줄: 뒤로 · 로고 · 가운데 장 번호 1~8(차례 겸 바로 가기 — 진행 칸 9개 대신) */
+  html.th-c #t2app .t2-top{padding-bottom:0}
+  html.th-c #t2app .t2-bar{position:relative; height:56px}
+  html.th-c #t2app .t2-prog{display:none}
+  html.th-c #t2app .t2-toc{display:flex; position:absolute; left:50%; top:8px; transform:translateX(-50%); gap:2px}
+  html.th-c #t2app .t2-toc button{position:relative; width:40px; height:40px; display:flex; align-items:center; justify-content:center; padding:0; border:0; border-radius:0; background:none; cursor:pointer; font:400 15px/1 'Bodoni Moda','Bodoni 72',Didot,Georgia,serif; font-variation-settings:'opsz' 14; font-variant-numeric:lining-nums; color:#8c8c8c; transition:color .18s ease}
+  html.th-c #t2app .t2-toc button.past{color:#5e5e5e}
+  html.th-c #t2app .t2-toc button.cur{color:#262626}
+  html.th-c #t2app .t2-toc button.cur::after{content:''; position:absolute; left:50%; bottom:7px; width:12px; height:1px; margin-left:-6px; background:#262626}
+  html.th-c #t2app .t2-toc button:hover, html.th-c #t2app .t2-toc button:focus-visible{color:#262626}
+  html.th-c #t2app .t2-toc button:focus-visible{outline:1px solid #8a8a8a; outline-offset:-6px}
+  html.th-c #t2app .t2-toc .nm{position:absolute; top:40px; left:50%; transform:translateX(-50%); white-space:nowrap; font:400 11.5px/1 'MB','Noto Serif KR',serif; letter-spacing:.08em; color:#6b6b6b; opacity:0; transition:opacity .18s ease; pointer-events:none}
+  html.th-c #t2app .t2-toc button:hover .nm, html.th-c #t2app .t2-toc button:focus-visible .nm{opacity:1}
+  html.th-c #t2app .t2-bar.is-cover .t2-toc{visibility:hidden}
   html.th-c .t2-col{min-height:calc(100vh - var(--mockH, 0px))}   /* 목업 표시줄만큼 문서가 길어져 책이 밀리던 것 */
-  html.th-c .t2-in{display:block; column-count:2; column-gap:var(--bk-gap, 96px); column-fill:auto; height:calc(100vh - 188px - var(--mockH, 0px)); min-height:0}
+  html.th-c .t2-in{display:block; column-count:2; column-gap:var(--bk-gap, 96px); column-fill:auto; height:min(calc(100vh - 170px - var(--mockH, 0px)), var(--bkCap, 812px)); min-height:0}
   html.th-c .t2-in > .t2-doc, html.th-c .t2-in > .t2-head, html.th-c .t2-in > .t2-body{display:block; grid-column:auto; grid-row:auto}
   html.th-c .t2-in > .t2-body{margin:0 !important}
   html.th-c .t2-in .t2-part2{break-before:column; -webkit-column-break-before:always; margin-top:0}
@@ -1341,9 +1360,15 @@ html.t2-long.th-c .t2-s::before{bottom:28px}
   html.th-c .t2-in .t2-head{break-inside:avoid; -webkit-column-break-inside:avoid}
   html.th-c .t2-in :is(li, .t2-fg, .t2-hours, .t2-pv, .t2-amt, .t2-endclv, .t2-sheet, .t2-cam, .t2-go, .t2-say, dl.fee > div){break-inside:avoid}
 }
-@media (max-width:1023.98px){ html.th-c .t2-part2{margin-top:34px} }
+@media (min-width:1024px) and (max-height:799.98px){
+  html.th-c #t2app .t2-bar{height:48px} html.th-c #t2app .t2-toc{top:4px} html.th-c #t2app .t2-toc .nm{top:37px}
+  html.th-c .t2-s, html.th-c .t2-s.cover{padding-top:14px; padding-bottom:78px}
+  html.th-c #t2app .t2-foot .in{padding:4px 40px 12px !important}
+  html.th-c .t2-in{height:min(calc(100vh - 140px - var(--mockH, 0px)), var(--bkCap, 812px))}
+}
+@media (max-width:1023.98px){ html.th-c .t2-part2{margin-top:34px} html.th-c #t2app .t2-toc{display:none} html.th-c #t2app .t2-prog i:nth-child(8){display:none} }   /* v8.1 폰: 진행 칸 8개 = 장 1~8(필독 둘째 펼침은 7장 칸 그대로) */
 
-/* ═══ v8.0 쪽 지면 — 방향 A «문고판 소설 지면»: 글이 주인공인 읽는 책 (261124) ═══
+/* ═══ v8.1 쪽 지면 다듬기(261127 명진 «이제 더 디자인적으로 설계적으로 잘 다듬어줘») 위에 · 바탕 v8.0 쪽 지면 — 방향 A «문고판 소설 지면»: 글이 주인공인 읽는 책 (261124) ═══
    명진 «책방향은 좋고 이제 보여지는 글과 정리 구조와 디자인 개선 필요해» → «이어서 진행 전부 해 완료될때까지 전부 다»
    세 갈래(A 문고판 · B 도록 · C 편지 책자)를 그려 보고, 새 10펼침(왼쪽 쪽·오른쪽 쪽 모두 글)과 가장 맞는 A로 정함.
    글자 4단계 — 장 제목 MB 300 · 본문 MB 400(1.75) · 작은 글 Pretendard 400 · 쪽 머리글·쪽 번호 11.5~12.5px
@@ -1552,20 +1577,24 @@ html.th-c #t2app .t2-alt{font:400 14px/1.4 var(--aP); color:var(--a2)}
 
 /* ═══ PC(1024px↑) 펼친 책 ═══ */
 @media (min-width:1024px){
-  #t2app{--aF:16.5px; --aT:clamp(22px, 2.35vh, 26px); --aT2:clamp(19.5px, 2vh, 22px); --aCN:clamp(30px, 3.6vh, 40px); --aSink:clamp(10px, calc(9vh - 50px), 60px); --aPT:clamp(34px, calc(10.4vh - 52px), 64px); --aPB:clamp(40px, calc(10.4vh - 44px), 72px)}
+  #t2app{--bkCap:812px; --vhE:min(1vh, calc((var(--bkCap) + 170px + var(--mockH, 0px)) / 100));
+    --aF:16.5px; --aT:clamp(22px, calc(2.35 * var(--vhE)), 26px); --aT2:clamp(19.5px, calc(2 * var(--vhE)), 22px);
+    --aCN:clamp(34px, calc(8 * var(--vhE) - 34px), 58px);   /* v8.1: 장 번호 한 단계 크게(본문의 약 3배) */
+    --aSink:calc(clamp(10px, calc(9 * var(--vhE) - 50px), 60px) + clamp(0px, calc(30 * var(--vhE) - 270px), 70px));   /* v8.1: 큰 화면일수록 장 여는 쪽을 깊게(문고판 장 시작) */
+    --aPT:clamp(34px, calc(10.4 * var(--vhE) - 52px), 64px); --aPB:clamp(40px, calc(10.4 * var(--vhE) - 44px), 72px)}
   /* 장 여는 쪽: 장 번호를 판면 윗줄에서 조금 내려(싱크) 장 표제처럼 */
   html.th-c #t2app .t2-head[data-ch]{padding-top:var(--aSink)}
   /* 판면: 위 64 · 바깥 64 · 아래 72 · 두 쪽 사이 112(안쪽 여백 56씩) — 화면이 낮으면 위아래만 줄임 · 줄을 가운데로 띄우지 않음 */
   html.th-c #t2app .t2-in{padding:var(--aPT) 64px var(--aPB); --bk-gap:112px}
   /* 쪽 번호: 아래 여백 안에서 글과 늘 띄움 */
-  html.th-c #t2app :is(.t2-head, .t2-body)[data-pg]::after{bottom:clamp(14px, calc(10.4vh - 76px), 26px)}
-  /* 오른쪽 쪽 제목은 왼쪽 장 제목과 같은 줄(장 번호 높이만큼 내림) */
-  html.th-c #t2app .t2-in:not(.t2-bkfree) .t2-part2 > .t2-tt:first-child{padding-top:calc(var(--aSink) + var(--aCN) + 14px)}
+  html.th-c #t2app :is(.t2-head, .t2-body)[data-pg]::after{bottom:clamp(14px, calc(10.4 * var(--vhE) - 76px), 26px)}
+  /* v8.1: 마주 보는 오른쪽 쪽은 언제나 판면 윗줄에서 시작(제목으로 열든 글로 열든 한 규칙 — 장 여는 왼쪽 쪽만 깊게) */
+  html.th-c #t2app .t2-part2 > .t2-tt:first-child{padding-top:0}
 
   /* 쪽 머리글(오른쪽 쪽 위 바깥, 장 이름) — 쪽 안 로고는 표지에만 */
   html.th-c #t2app .t2-in > .t2-doc{position:absolute; inset:0; display:block; margin:0; padding:0; border:0; background:none; pointer-events:none; z-index:2; column-span:none}
   html.th-c #t2app .t2-in > .t2-doc > span{display:none}
-  html.th-c #t2app .t2-s:not(.cover) .t2-in > .t2-doc[data-name]::after{content:attr(data-name); position:absolute; top:calc(var(--aPT) - 30px); right:64px; font:400 11.5px/1 var(--aP); letter-spacing:.06em; color:var(--a3)}
+  html.th-c #t2app .t2-s:not(.cover) .t2-in > .t2-doc[data-name]::after{content:attr(data-name); position:absolute; top:calc(var(--aPT) - 30px); right:64px; font:400 12px/1 var(--aM); letter-spacing:.14em; color:#858585}
 
   /* 표지 펼침: 왼쪽 = 속표지(제목 · 펴낸 곳 로고는 쪽 아래) · 오른쪽 = 차례식 점선 이음 */
   html.th-c #t2app .t2-s.cover .t2-in{display:grid; grid-template-columns:1fr 1fr; column-gap:112px; column-count:auto; align-items:start}
@@ -1576,8 +1605,10 @@ html.th-c #t2app .t2-alt{font:400 14px/1.4 var(--aP); color:var(--a2)}
   html.th-c #t2app .t2-s.cover .t2-sb{margin-top:calc(var(--aL) * 1.1); color:var(--a2) !important}
   html.th-c #t2app .t2-s.cover .t2-part2{padding-top:calc(var(--aSink) + var(--aCN) + 14px + 10px)}
   /* 문의(PC): 끝 줄(mad about you · …)은 펴낸 곳 줄처럼 오른쪽 쪽 아래 여백에 · 입력 칸은 높이 고정(쓰는 동안 쪽이 넘치지 않게) · 미리보기의 분위기 줄은 화면에서만 한 줄 */
-  html.th-c #t2app .t2-s[data-id="cta"] .t2-sign{position:absolute; left:calc(50% + 56px); right:110px; bottom:clamp(14px, calc(10.4vh - 76px), 26px); margin:0; line-height:13px; z-index:1}
+  html.th-c #t2app .t2-s[data-id="cta"] .t2-sign{position:absolute; left:calc(50% + 56px); right:110px; bottom:clamp(14px, calc(10.4 * var(--vhE) - 76px), 26px); margin:0; line-height:13px; z-index:1}
   html.th-c #t2app .t2-s[data-id="cta"] .t2-sign a{min-height:0; line-height:inherit}
+  /* 문의 끝 줄은 늘 한 줄(좁은 PC에서 두 줄로 꺾여 본문에 겹치던 것) · 쪽 번호와 띄움 */
+  html.th-c #t2app .t2-s[data-id="cta"] .t2-sign{display:flex; flex-wrap:nowrap; align-items:baseline; column-gap:.35em; height:14px; white-space:nowrap; right:calc(64px + 2.4em)}
   /* 문의 쪽 오른쪽(세 칸 + 미리보기 + 안내 두 줄)은 한 단계 촘촘히 */
   html.th-c #t2app .t2-s[data-id="cta"] .t2-fg{margin-bottom:12px}
   html.th-c #t2app .t2-s[data-id="cta"] .t2-fg .hp{font-size:12.5px; line-height:1.45}
@@ -1611,7 +1642,7 @@ html.th-c #t2app .t2-alt{font:400 14px/1.4 var(--aP); color:var(--a2)}
   html.th-c #t2app .t2-in{padding:50px 22px 58px 26px}
   html.th-c #t2app .t2-s:not(.cover) .t2-in > .t2-doc{position:absolute; inset:0; display:block; margin:0; padding:0; border:0; pointer-events:none}
   html.th-c #t2app .t2-s:not(.cover) .t2-in > .t2-doc > span{display:none}
-  html.th-c #t2app .t2-s:not(.cover) .t2-in > .t2-doc[data-name]::after{content:attr(data-name); position:absolute; top:22px; right:22px; font:400 11.5px/1 var(--aP); letter-spacing:.06em; color:var(--a3)}
+  html.th-c #t2app .t2-s:not(.cover) .t2-in > .t2-doc[data-name]::after{content:attr(data-name); position:absolute; top:22px; right:22px; font:400 12px/1 var(--aM); letter-spacing:.12em; color:#858585}
   html.th-c #t2app .t2-s.cover .t2-in{padding-top:26px}
   html.th-c #t2app .t2-head{padding-top:18px}
   html.th-c #t2app .t2-s.cover .t2-head{padding-top:42px}
@@ -1642,8 +1673,66 @@ html.th-c #t2app .t2-sign .sg{white-space:nowrap}
 
 /* 낮은 PC 화면(높이 940px 아래): 쪽 머리글을 오른쪽 쪽 아래 «쪽 번호 옆»으로 — 위 여백이 좁아져 첫 줄에 붙지 않게 */
 @media (min-width:1024px) and (max-height:940px){
-  html.th-c #t2app .t2-s:not(.cover) .t2-in > .t2-doc[data-name]::after{top:auto; bottom:clamp(14px, calc(10.4vh - 76px), 26px); right:calc(64px + 2.2em)}
+  html.th-c #t2app .t2-s:not(.cover) .t2-in > .t2-doc[data-name]::after{top:auto; bottom:clamp(14px, calc(10.4 * var(--vhE) - 76px), 26px); right:calc(64px + 2.4em)}
   html.th-c #t2app .t2-s[data-id="cta"] .t2-in > .t2-doc[data-name]::after{content:none}   /* 문의 쪽 아래 여백엔 끝 줄(mad about you · …)이 있음 */
+}
+
+/* ═══ v8.1 다듬기(261127) — 판면·조판 · 펼침 구성 · 설계(새 검토 3갈래를 한 판으로) ═══ */
+/* 숫자는 바로 선 Bodoni 한 결(쪽 번호·필독 번호) — 이탤릭은 서명·로고에만 */
+html.th-c #t2app :is(.t2-head, .t2-body)[data-pg]::after, html.th-c #t2app .t2-body[data-pm]::after{font-style:normal; font-size:12.5px; color:#8f8f8f; letter-spacing:.08em; font-variant-numeric:lining-nums tabular-nums}
+html.th-c #t2app .t2-nth .n{font-style:normal; font-variant-numeric:lining-nums tabular-nums}
+html.th-c #t2app .t2-head[data-ch]::before{font-variation-settings:'opsz' 14; letter-spacing:0}
+/* 여는 따옴표 내어 달기(따옴글·고민 세 줄 — 생성기가 따옴표로 여는 덩이에 t2-hq) */
+html.th-c #t2app :is(.t2-say, .t2-worry li).t2-hq{text-indent:-.42em}
+/* 진행 순서: 본문 줄 박자 그대로(항목 사이 틈 없앰) · 같은 폭 숫자 */
+html.th-c #t2app .t2-flow li{margin:0}
+html.th-c #t2app .t2-flow li::before{font-variant-numeric:lining-nums tabular-nums}
+html.th-c #t2app :is(.t2-small, .t2-note, .t2-go small){text-wrap:pretty}
+@media (min-width:1024px){
+  /* PC 본문은 반듯한 네모 판면: 양끝 맞춤 + 음절 단위 줄바꿈(한국 단행본·전자책 조판) — 따옴글·제목·짧은 줄은 그대로 */
+  html.th-c #t2app :is(.t2-tx p, p.t2-tx, .t2-sec p, .t2-amt, .t2-rows li, .t2-nt .in p){text-align:justify; word-break:normal; line-break:strict}
+  html.th-c #t2app .t2-rows p{word-break:normal; line-break:strict}
+  html.th-c #t2app .t2-s:not([data-id^="notice"]):not([data-id="cta"]) :is(.t2-small, .t2-note){text-align:justify; word-break:normal; line-break:strict}
+  /* 필독 번호·작은 표시(·, –)는 판면 밖으로 내어 달기 — 조항 제목·목록 글자가 본문 선과 한 줄 */
+  html.th-c #t2app .t2-nth{display:block}
+  html.th-c #t2app .t2-nth .n{display:inline-block; width:2.1em; margin-left:-2.1em}
+  html.th-c #t2app .t2-nt .in ul li{padding-left:0}
+  html.th-c #t2app .t2-nt .in ul li::before{left:-.8em}
+  html.th-c #t2app .t2-dash li{padding-left:0}
+  html.th-c #t2app .t2-dash li::before{left:-1.05em}
+  /* 표지: 속표지 제목 크게 · 왼쪽 쪽(시안 한 장·안내)은 판권면처럼 쪽 아래에 — 끝 클로버 아랫선 = 펴낸 곳 로고 아랫선 */
+  html.th-c #t2app .t2-s.cover .t2-tt{font-size:clamp(34px, calc(5.2 * var(--vhE) - 12px), 46px) !important; line-height:1.36 !important}
+  html.th-c #t2app .t2-s.cover .t2-in{grid-template-rows:minmax(0, 1fr); align-items:stretch}
+  html.th-c #t2app .t2-s.cover .t2-in > .t2-head{align-self:start}
+  html.th-c #t2app .t2-s.cover .t2-in > .t2-body{display:flex; flex-direction:column; justify-content:flex-end; min-height:0; margin-bottom:calc(40px - var(--aPB)) !important}
+  html.th-c #t2app .t2-s.cover .t2-part2{padding-top:0}
+  /* 비하인드: 캠코더 선 그림은 왼쪽 쪽 아래 판면선에 앉힌 도판(제목은 위 · 그림은 아래) */
+  html.th-c #t2app .t2-s[data-id="behind"] .t2-in:not(.t2-bkgrow) .t2-cam{position:absolute; left:64px; width:calc((100% - 240px) / 2); bottom:calc(var(--aPB) + 6px); margin:0}
+  /* 필독 둘째 펼침(03·04): 책 뒤 부록처럼 이어 짜기 — 03 뒤에 04가 흐르고 두 쪽 높이를 고르게(문단은 쪽 사이에서 쪼개지 않음) */
+  html.th-c #t2app .t2-s[data-id="notice2"] .t2-in{column-fill:balance}
+  html.th-c #t2app .t2-s[data-id="notice2"] .t2-in .t2-part2{break-before:auto; -webkit-column-break-before:auto; margin-top:calc(var(--aL) * 1.1) !important}
+  html.th-c #t2app .t2-s[data-id="notice2"] .t2-nth{break-after:avoid}
+  html.th-c #t2app .t2-s[data-id="notice2"] .t2-nt .in p{break-inside:avoid}
+  /* 끝 클로버: 책 전체에서 한 자리 — 그 쪽의 바깥쪽(쪽 번호와 같은 쪽) · 기울기는 펼침마다 그대로 */
+  html.th-c #t2app .t2-endclv{justify-content:flex-end !important}
+  html.th-c #t2app .t2-s.cover .t2-endclv{justify-content:flex-start !important}
+}
+
+@media (min-width:1024px) and (max-width:1059.98px){ html.th-c #t2app .t2-s[data-id="cta"] .t2-sign{font-size:12px; letter-spacing:0} }
+@media (min-width:1024px) and (max-height:799.98px){ #t2app{--aPT:30px; --aPB:38px} }   /* 낮은 PC 화면: 판면 위아래 여백 한 단계 줄임(fit_v81 의 막대·띠 줄임과 짝) */
+
+/* ═══ v8.1 검증 반영(261127 06:40) ═══ */
+/* 쪽 번호·필독 번호: 두 자리가 «1 4»처럼 벌어지지 않게(비례 숫자) */
+html.th-c #t2app :is(.t2-head, .t2-body)[data-pg]::after, html.th-c #t2app .t2-body[data-pm]::after, html.th-c #t2app .t2-nth .n{font-variant-numeric:lining-nums proportional-nums; letter-spacing:.02em}
+@media (min-width:1024px){
+  /* 장 시작 깊이가 두 줄(56px)이 안 되는 낮은 화면에선 0 — 왼쪽 장 번호 윗선 = 오른쪽 첫 줄 윗선(어긋나 보이지 않게) */
+  #t2app{--aSinkRaw:calc(clamp(10px, calc(9 * var(--vhE) - 50px), 60px) + clamp(0px, calc(30 * var(--vhE) - 270px), 70px)); --aSink:min(var(--aSinkRaw), max(0px, calc((var(--aSinkRaw) - 56px) * 1000)))}
+  /* 촬영 구성 01·02 설명도 양끝 맞춤(같은 판면) */
+  html.th-c #t2app .t2-rows p{text-align:justify}
+  /* 표지: 시안 한 장 표는 제목 윗선에 · 안내 네 줄과 클로버만 판권면처럼 쪽 아래(로고 아랫선) — 두 쪽이 «위 덩어리 + 아래 한 줄»로 거울처럼 */
+  html.th-c #t2app .t2-s.cover .t2-in > .t2-body{justify-content:flex-start}
+  html.th-c #t2app .t2-s.cover .t2-part2{flex:1 1 auto; display:flex; flex-direction:column; padding-top:calc(var(--aSink) + var(--aCN) + 14px + 5px)}
+  html.th-c #t2app .t2-s.cover .t2-part2 > .t2-note{margin-top:auto !important}
 }
 </style>
 </head>
@@ -1671,7 +1760,7 @@ html.th-c #t2app .t2-sign .sg{white-space:nowrap}
 
 <svg style="display:none"><symbol id="clover" viewBox="0 0 40 40"><g fill="currentColor"><path d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(90 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(180 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/><path transform="rotate(270 20 20)" d="M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z"/></g></symbol></svg>
 
-<div class="mock-pill">목업 · 저장 안 됨 · 내년 시안 두 갈래 v8.0<button type="button" id="mock-reset">처음 화면</button><a href="board.html" style="color:#5a4515;font:600 12px/32px 'Pretendard Variable',Pretendard,sans-serif;text-decoration:underline;text-underline-offset:2px;padding:0 4px">글 고치기판</a></div>
+<div class="mock-pill">목업 · 저장 안 됨 · 내년 시안 두 갈래 v8.1<button type="button" id="mock-reset">처음 화면</button><a href="board.html" style="color:#5a4515;font:600 12px/32px 'Pretendard Variable',Pretendard,sans-serif;text-decoration:underline;text-underline-offset:2px;padding:0 4px">글 고치기판</a></div>
 <div class="nav" id="nav"><div class="wrap in">
   <div class="brand">maydly <svg class="clv" width="17" height="17" style="color:var(--accent)"><use href="#clover"/></svg></div>
   <button type="button" class="tp-switch" id="tp-switch">2번 ‘맡겨 볼게요’로 보기</button>
@@ -1960,7 +2049,7 @@ html.th-c #t2app .t2-sign .sg{white-space:nowrap}
   </div>
 <div class="t2-s cover" data-id="cover" data-name="표지" aria-label="표지"><div class="t2-in"><div class="t2-doc" aria-hidden="true" data-name="표지"><span class="lg">maydly <svg><use href="#clover"/></svg></span><span></span></div><div class="t2-head"><svg class="t2-hclv" aria-hidden="true"><use href="#clover"/></svg><h2 class="t2-tt" tabindex="-1">너를 보고,<br>시안을 정하다</h2><p class="t2-sb">비주얼 디자이너 수빈님 제안으로 진행하는,<br>지금의 나를 바라보고 기록하는 촬영.</p><p class="t2-byline">MyoungJin Kim · <a href="https://instagram.com/maydly_u" target="_blank" rel="noopener">@maydly_u</a></p></div><div class="t2-body"><div class="t2-part t2-part2 t2-cont"><div class="t2-sheet" role="img" aria-label="원하는 분위기는 모델님이 알려 주시고, 시안은 저희가 정하고, 준비할 것은 저희가 알려 드려요"><div class="row"><span class="k">원하는 분위기</span><span class="v">모델님이 알려 주세요</span></div><div class="row"><span class="k">시안</span><span class="v pt">저희가 정해요</span></div><div class="row"><span class="k">준비할 것</span><span class="v pt">저희가 알려 드려요</span></div></div><p class="t2-note">이번 디자이너님 요청을 토대로 촬영 진행 내용을 정리했어요.<br>천천히 확인해 주시고, 마지막 화면 문의 양식에<br>몇 가지를 작성해서 보내 주셔야 해요.<br>궁금한 부분이 있다면 그때 함께 질문해 주세요.</p></div><div class="t2-endclv" style="--j:flex-start; --r1:-14deg; --r2:8deg" aria-hidden="true"><svg><use href="#clover"/></svg><svg><use href="#clover"/></svg></div></div></div></div>
 <div class="t2-s" data-id="direction" data-name="촬영 방향" aria-label="촬영 방향"><div class="t2-in"><div class="t2-doc" aria-hidden="true" data-name="촬영 방향"><span class="lg">maydly <svg><use href="#clover"/></svg></span><span>1 / 9</span></div><div class="t2-head" data-ch="1"><svg class="t2-hclv" aria-hidden="true"><use href="#clover"/></svg><h2 class="t2-tt" tabindex="-1">안녕하세요!</h2><p class="t2-sb">수빈님과 이번 촬영을 함께 준비하는<br>촬영에 대한 가치관을 먼저 공유드리려고 해요.</p></div><div class="t2-body"><div class="t2-tx"><p>요즘 사진이 단순히 예쁘게 나오는 걸 넘어서, ‘지금의 나’를 남기는 하나의 기록으로 받아들여지는 경우가 많죠. 저 역시 그런 촬영을 지향하고 있어요.</p><p>저는 촬영을 통해 모델님이 가진 분위기, 감정, 그리고 지금 보여주고 싶은 모습을 호리존에서 자연스럽고 편안하게 담아내고 싶어요.</p></div><p class="t2-say">단순히 ‘예쁘게 나오는 컷’이 아니라,<br>시간이 지나도 내가 고스란히 느껴지는 사진.<br>그게 제가 지향하는 촬영이에요.</p><div class="t2-part t2-part2"><h2 class="t2-tt" tabindex="-1">수빈님과 제가<br>각자, 또 같이 찍어요</h2><div class="t2-tx"><p>그리고 이 모든 과정은 혼자 만드는 게 아니에요. 이번 촬영을 제안하고 모델님께 먼저 연락드린 비주얼 디자이너 <b>수빈</b>님과 시안 방향부터 스타일링까지 도움이 필요하신 부분들을 모델님과 함께 준비해요.</p><p>“촬영 경험이 없으신 경우 더 좋습니다.”</p><p>촬영은 두 사람이 각자, 또 같이 진행해요. 수빈님은 모델님이 원하시는 방향으로, 저는 모델님께 어울리는 추가적인 방향이나 새로운 방향으로 촬영해요. 구상과 세팅·디렉팅도 도와드려요.</p><p>두 사람의 시선이 더해지는 만큼, 모델님께 맞는 방향을 더 섬세하게 잡아갈 수 있어요</p><p>이 촬영은 사진을 찍는 것을 넘어, <b>지금의 나를 바라보고 기록하는 과정</b>에 가까워요.</p></div><p class="t2-signame">— MyoungJin Kim</p></div><div class="t2-endclv" style="--j:flex-end; --r1:12deg; --r2:6deg" aria-hidden="true"><svg><use href="#clover"/></svg><svg><use href="#clover"/></svg></div></div></div></div>
-<div class="t2-s" data-id="core" data-name="핵심 안내 · 시안 방향" aria-label="핵심 안내 · 시안 방향"><div class="t2-in"><div class="t2-doc" aria-hidden="true" data-name="핵심 안내 · 시안 방향"><span class="lg">maydly <svg><use href="#clover"/></svg></span><span>2 / 9</span></div><div class="t2-head" data-ch="2"><svg class="t2-hclv" aria-hidden="true"><use href="#clover"/></svg><h2 class="t2-tt" tabindex="-1">이 촬영에서 제일 중요한 건<br>딱 하나예요</h2></div><div class="t2-body"><p class="t2-say t2-big">“어떤 분위기의 나로<br>남고 싶은지”</p><div class="t2-tx"><p>예쁘게, 멋있게 남기고 싶은 마음은 당연해요. 다만 <b>요즘의 나는 어떤 분위기인지</b>, 한 번만 더 생각해 주시면 충분해요.</p></div><p class="t2-say"><b>“잘 해야 한다”</b>는 생각은 내려두셔도 괜찮아요.<br><b>난데 뭐 어때</b> — 그 마음으로 와주시면 돼요.<br>나다운 게 아름다운 거고,<br>아름다운 게 나다운 거니까요.</p><div class="t2-tx"><p>처음이어도 괜찮아요. 오히려 더 솔직한 모습이 나오는 경우가 많아요.</p></div><div class="t2-part t2-part2"><h2 class="t2-tt" tabindex="-1">준비할 때 제일 많이 나오는<br>고민이요</h2><ul class="t2-worry"><li>“뭘 입어야 하지?”</li><li>“뭘 들고 가야 하지?”</li><li>“어떤 느낌으로 해야 하지?”</li></ul><div class="t2-tx"><p>그래서 이번 촬영은 모델님이 <b>원하는 분위기</b>만 알려 주시면, 그 분위기에 맞춰 지금의 모델님 이미지를 살펴보고 시안과 준비할 것을 정해 드리는 방식으로 정리했어요.</p></div><p class="t2-cap">어떻게 찍히고 싶은지 아직 모르겠다면, 여기부터</p><p class="t2-small">마음에 드는 단어를 골라가며 ‘오늘의 나’를 정리해보는 2~3분짜리 과정이에요. 끝까지 가면 다섯 단어로 지금의 결이 정리되고, 그걸 보고 제가 어떤 빛과 표정으로 담을지 미리 잡아둘게요.</p><a class="t2-go" href="https://maydly.github.io/maydly-hub/word-journey/" target="_blank" rel="noopener"><span class="t"><b>단어 여정 체험하기</b><small>클릭하면 새 창에서 열려요 · 2~3분이면 충분해요 · 정답은 없어요</small></span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 4.5l5.5 5.5-5.5 5.5"/></svg></a></div><div class="t2-endclv" style="--j:center; --r1:16deg; --r2:-2deg" aria-hidden="true"><svg><use href="#clover"/></svg><svg><use href="#clover"/></svg></div></div></div></div>
+<div class="t2-s" data-id="core" data-name="핵심 안내 · 시안 방향" aria-label="핵심 안내 · 시안 방향"><div class="t2-in"><div class="t2-doc" aria-hidden="true" data-name="핵심 안내 · 시안 방향"><span class="lg">maydly <svg><use href="#clover"/></svg></span><span>2 / 9</span></div><div class="t2-head" data-ch="2"><svg class="t2-hclv" aria-hidden="true"><use href="#clover"/></svg><h2 class="t2-tt" tabindex="-1">이 촬영에서 제일 중요한 건<br>딱 하나예요</h2></div><div class="t2-body"><p class="t2-say t2-big t2-hq">“어떤 분위기의 나로<br>남고 싶은지”</p><div class="t2-tx"><p>예쁘게, 멋있게 남기고 싶은 마음은 당연해요. 다만 <b>요즘의 나는 어떤 분위기인지</b>, 한 번만 더 생각해 주시면 충분해요.</p></div><p class="t2-say t2-hq"><b>“잘 해야 한다”</b>는 생각은 내려두셔도 괜찮아요.<br><b>난데 뭐 어때</b> — 그 마음으로 와주시면 돼요.<br>나다운 게 아름다운 거고,<br>아름다운 게 나다운 거니까요.</p><div class="t2-tx"><p>처음이어도 괜찮아요. 오히려 더 솔직한 모습이 나오는 경우가 많아요.</p></div><div class="t2-part t2-part2"><h2 class="t2-tt" tabindex="-1">준비할 때 제일 많이 나오는<br>고민이요</h2><ul class="t2-worry"><li class="t2-hq">“뭘 입어야 하지?”</li><li class="t2-hq">“뭘 들고 가야 하지?”</li><li class="t2-hq">“어떤 느낌으로 해야 하지?”</li></ul><div class="t2-tx"><p>그래서 이번 촬영은 모델님이 <b>원하는 분위기</b>만 알려 주시면, 그 분위기에 맞춰 지금의 모델님 이미지를 살펴보고 시안과 준비할 것을 정해 드리는 방식으로 정리했어요.</p></div><p class="t2-cap">어떻게 찍히고 싶은지 아직 모르겠다면, 여기부터</p><p class="t2-small">마음에 드는 단어를 골라가며 ‘오늘의 나’를 정리해보는 2~3분짜리 과정이에요. 끝까지 가면 다섯 단어로 지금의 결이 정리되고, 그걸 보고 제가 어떤 빛과 표정으로 담을지 미리 잡아둘게요.</p><a class="t2-go" href="https://maydly.github.io/maydly-hub/word-journey/" target="_blank" rel="noopener"><span class="t"><b>단어 여정 체험하기</b><small>클릭하면 새 창에서 열려요 · 2~3분이면 충분해요 · 정답은 없어요</small></span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 4.5l5.5 5.5-5.5 5.5"/></svg></a></div><div class="t2-endclv" style="--j:center; --r1:16deg; --r2:-2deg" aria-hidden="true"><svg><use href="#clover"/></svg><svg><use href="#clover"/></svg></div></div></div></div>
 <div class="t2-s" data-id="process" data-name="촬영 구성 · 진행 흐름" aria-label="촬영 구성 · 진행 흐름"><div class="t2-in"><div class="t2-doc" aria-hidden="true" data-name="촬영 구성 · 진행 흐름"><span class="lg">maydly <svg><use href="#clover"/></svg></span><span>3 / 9</span></div><div class="t2-head" data-ch="3"><svg class="t2-hclv" aria-hidden="true"><use href="#clover"/></svg><h2 class="t2-tt" tabindex="-1">촬영은 총 2컨셉으로<br>2시간 정도로 진행돼요</h2><p class="t2-sb">촬영 + 셀렉까지 포함된 시간이에요</p></div><div class="t2-body"><ul class="t2-rows"><li><h4>메인 촬영</h4><p>내 모습을 담기 원하시는 분위기 기준으로 저희가 방향 잡아서 진행해요.</p></li><li><h4>서브 촬영</h4><p>메인에서 잡힌 분위기를 바탕으로, 원하시는 분위기를 참고해 어울릴 것 같은 메인과 다른 결의 방향을 하나 제안드려요. 같이 상의하면서 맞춰가는 방식이라 편하게 생각해주셔도 돼요.</p></li></ul><p class="t2-small">결과물 장수·전달 방식·원본 등<br>뒤의 <b>필독 공지사항</b>에 안내 정리해뒀어요.</p><div class="t2-part t2-part2"><h2 class="t2-tt" tabindex="-1">프로젝트 진행 계획<br>안내 순서</h2><p class="t2-sb">촬영 일정은 사전 협의를 통해 확정되며,<br>확정된 일정은 촬영 진행을 기준으로 유지됩니다.</p><ol class="t2-flow"><li>시안 공유 및 촬영 방향 상의</li><li>촬영 날짜 협의</li><li>대관료 입금 및 예약 확정</li><li>스타일링 및 촬영 준비</li><li>촬영 전 준비내용 공유 소통</li><li>촬영 및 사진 셀렉</li><li>보정본 전달</li></ol></div><div class="t2-endclv" style="--j:flex-end; --r1:-12deg; --r2:4deg" aria-hidden="true"><svg><use href="#clover"/></svg><svg><use href="#clover"/></svg></div></div></div></div>
 <div class="t2-s" data-id="guide" data-name="준비 참고" aria-label="준비 참고"><div class="t2-in"><div class="t2-doc" aria-hidden="true" data-name="준비 참고"><span class="lg">maydly <svg><use href="#clover"/></svg></span><span>4 / 9</span></div><div class="t2-head" data-ch="4"><svg class="t2-hclv" aria-hidden="true"><use href="#clover"/></svg><h2 class="t2-tt" tabindex="-1">촬영 5일 전까지<br>함께 확인해요</h2><p class="t2-sb">아래 내용은 <b>촬영일 5일 전까지</b> 확인하고 공유해 주세요.<br>함께 상의하면서 방향을 맞춰 갈 내용들이에요.</p></div><div class="t2-body"><div class="t2-secs"><div class="t2-sec"><h3>헤어 / 메이크업</h3><p><b>헤어/메이크업은 촬영에 포함되어 있지 않습니다.</b><br>직접 준비 혹은 원하시는 경우 샵에서 받고 오셔도 괜찮습니다.</p><p>다만 샵 이용 예정이시거나 헤어/메이크업 방향이 크게 달라지는 경우에는, 촬영 시안과 잘 맞는지 미리 한 번만 공유해주시면 감사하겠습니다.</p><p>메이크업은 <b>매트한 피부 표현</b>으로 준비해주시면 좋겠어요. 스튜디오 조명이 강하게 들어가는 편이라, 매트한 쪽을 추천드리며, 제 생각에 훨씬 잘 나오는 편이에요.</p></div></div><div class="t2-part t2-part2 t2-cont"><div class="t2-secs"><div class="t2-sec"><h3>의상</h3><p>예약이 확정되면 의상 준비 관련해서 별도로 안내 드릴게요</p><p>일정 확정 후 준비 내용 공유하실 때 <b>요즘 좋아하는 노래 2~3곡</b>도 같이 알려주세요. 모델님의 ‘지금’의 분위기를 이해하는 데 참고가 돼요.</p></div><div class="t2-sec"><h3>소품</h3><p>스튜디오에는 제 소유의 다양한 소품과 배경지 등을 보관, 보유하고 있어요. 다만 촬영마다 사용 상황이 달라 모두 정리해서 미리 목록을 드리기가 어렵고, 컨셉 상의 시 필요한 것들이 있다면 먼저 가능한 부분 말씀 드릴게요!</p><p>당일 현장에서 함께 확인하면서 활용하는 방식도 괜찮아요.</p><p>원하시는 이미지나 시안에 <b>꼭 필요한 소모성 및 개인 소품은 반드시 직접 준비</b>해 오시길 부탁드려요</p></div></div></div><div class="t2-endclv" style="--j:center; --r1:-16deg; --r2:12deg" aria-hidden="true"><svg><use href="#clover"/></svg><svg><use href="#clover"/></svg></div></div></div></div>
 <div class="t2-s" data-id="behind" data-name="비하인드 촬영" aria-label="비하인드 촬영"><div class="t2-in"><div class="t2-doc" aria-hidden="true" data-name="비하인드 촬영"><span class="lg">maydly <svg><use href="#clover"/></svg></span><span>5 / 9</span></div><div class="t2-head" data-ch="5"><svg class="t2-hclv" aria-hidden="true"><use href="#clover"/></svg><h2 class="t2-tt" tabindex="-1">촬영은 결과물뿐만 아니라<br>찍는 동안의 내 모습까지<br>함께 담겨요</h2></div><div class="t2-body"><div class="t2-cam" aria-hidden="true"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span><span class="rec"><i></i>REC</span><span class="bat"><i></i><i></i><i></i></span><span class="tc">00:00:07</span><span class="dt"></span><svg class="clv"><use href="#clover"/></svg></div><div class="t2-part t2-part2 t2-cont"><div class="t2-tx"><p>촬영 중 자연스럽게 나오는 표정이나 움직임, 그날의 공기감 같은 것들을 <b>빈티지 캠코더</b>로 함께 기록해드리고 있어요</p><p>사진으로 남는 모습과는 또 다르게, 촬영하는 동안의 나를 그대로 담아볼 수 있어서 나중에 보면 그때의 느낌이나 분위기가 조금 더 생생하게 기억나는 기록이 되기도 해요.</p><p>나의 촬영 기록을 담길 원하시는 경우 예약 확정 후 카카오 채널로 알려 주세요.</p></div><span class="t2-free">비용은 무료예요.</span><p class="t2-tx t2-mini"><b>폴라로이드 · 빈티지 디카</b>는 촬영 상황에 따라 기념으로 함께 기록해 드려요.</p><span class="t2-free">빈티지 디카는 비용이 무료예요.</span></div><div class="t2-endclv" style="--j:center; --r1:10deg; --r2:10deg" aria-hidden="true"><svg><use href="#clover"/></svg><svg><use href="#clover"/></svg></div></div></div></div>
@@ -2355,7 +2444,7 @@ html.th-c #t2app .t2-sign .sg{white-space:nowrap}
 })();
 </script>
 <script id="t2-app">
-/* 2번 «맡겨 볼게요» 단계 화면(목업 v8.0 · C 책장 넘김(책 차례 10펼침 · 쪽 지면 개선)(둥글게 말려 넘어가는 도톰한 종이 · 끌어서 넘기기 · 천 표지·종이 결 · PC 펼침 화면 맞춤) · 2번 색 자두 — v7.2 바탕) — 다음/뒤로 · 휴대폰 뒤로 가기(주소로 판단은 mock-track) · 캠코더 시간·날짜 · 문의 복사 · 포인트 색 바꿔 보기 */
+/* 2번 «맡겨 볼게요» 단계 화면(목업 v8.1 · C 책장 넘김(책 차례 10펼침 · 쪽 지면 다듬기)(둥글게 말려 넘어가는 도톰한 종이 · 끌어서 넘기기 · 천 표지·종이 결 · PC 펼침 화면 맞춤) · 2번 색 자두 — v7.2 바탕) — 다음/뒤로 · 휴대폰 뒤로 가기(주소로 판단은 mock-track) · 캠코더 시간·날짜 · 문의 복사 · 포인트 색 바꿔 보기 */
 (function(){
   var de = document.documentElement, app = document.getElementById('t2app');
   if (!app) return;
@@ -2733,7 +2822,7 @@ html.th-c #t2app .t2-sign .sg{white-space:nowrap}
     screens.forEach(function(s){ var L = need(s), g = grp(s); if (L > G[g]) G[g] = L; });
     for (var g in G) if (G[g] > LV.length - 1) G[g] = LV.length - 1;
     lvOf = G;
-    screens.forEach(function(s){ if (!s.classList.contains('on')) applyLv(s); });
+    screens.forEach(function(s){ if (!s.classList.contains('on')){ applyLv(s); fixWidows(s); } });
   }
   function applyLv(s){   // 무리 단계를 붙이고, 그래도 넘치면 이 펼침만 클로버 빼기 → 쪽 나눔 풀기 → 쪽 늘림
     var pe = s && s.querySelector('.t2-in'); if (!pe) return;
@@ -2747,10 +2836,29 @@ html.th-c #t2app .t2-sign .sg{white-space:nowrap}
       pe.classList.add('t2-bkgrow');   // 마지막 수단: 쪽을 늘림(쪽 나눔·제목 줄은 그대로 · 단추 띠는 그대로 아래 고정 — 남은 아래는 «다음»이 먼저 내려 줌)
     });
   }
+  function lastLine(p){   // 끝줄 글자 수(빈칸 뺌) — 한 줄짜리 문단이면 99
+    var w = document.createTreeWalker(p, NodeFilter.SHOW_TEXT), ns = [], n; while ((n = w.nextNode())) ns.push(n);
+    if (!ns.length) return 99;
+    var r = document.createRange(), top0 = null, last = null, cnt = 0, a, i, d, b;
+    for (a = 0; a < ns.length && top0 === null; a++){ d = ns[a].data; for (i = 0; i < d.length; i++){ if (!d[i].trim()) continue; r.setStart(ns[a], i); r.setEnd(ns[a], i + 1); b = r.getClientRects()[0]; if (b){ top0 = b.top; break; } } }
+    for (a = ns.length - 1; a >= 0; a--){ d = ns[a].data; for (i = d.length - 1; i >= 0; i--){ if (!d[i].trim()) continue; r.setStart(ns[a], i); r.setEnd(ns[a], i + 1); b = r.getClientRects()[0]; if (!b) continue;
+      if (last === null) last = b.top; if (Math.abs(b.top - last) > 4) return Math.abs(last - top0) < 4 ? 99 : cnt; cnt++; if (cnt > 6) return cnt; } }
+    return 99;
+  }
+  function fixWidows(s){
+    if (!pcBook() || !s) return;
+    withShown(s, function(){ [].forEach.call(s.querySelectorAll('.t2-in :is(.t2-tx p, p.t2-tx, .t2-sec p, .t2-amt, .t2-rows li, .t2-nt .in p, .t2-small, .t2-note)'), function(p){
+      p.style.letterSpacing = '';
+      if (getComputedStyle(p).textAlign !== 'justify' || lastLine(p) > 3) return;
+      if ([-.01, -.02, -.03, -.04, -.05].some(function(ls){ p.style.letterSpacing = ls + 'em'; return lastLine(p) > 3; })) return;
+      var pe = s.querySelector('.t2-in');   // 좁혀서 안 되면 조금 넓혀 끝줄을 채움 — 쪽이 넘치면 되돌림
+      if (![.01, .02, .03].some(function(ls){ p.style.letterSpacing = ls + 'em'; return lastLine(p) > 3 && !(pe && overOf(pe)); })) p.style.letterSpacing = '';
+    }); });
+  }
   function fitSpread(s){
     if (!s) return;
     if (lvKey !== vkey()) fitAll();
-    applyLv(s);
+    applyLv(s); fixWidows(s);
     if (s.classList.contains('on')) de.classList.toggle('t2-grown', !!s.querySelector('.t2-in.t2-bkgrow'));
   }
   var fitT = null;
@@ -2779,6 +2887,22 @@ html.th-c #t2app .t2-sign .sg{white-space:nowrap}
     window.scrollBy({top: d, behavior: RM ? 'auto' : 'smooth'});
     return true;
   }
+  // ── v8.1 PC 위 막대: 장 번호 1~8(차례 겸 바로 가기 — 지금 장 이름만 씀) ──
+  var toc = null, tocCh = [];
+  (function(){
+    if (!bar) return;
+    screens.forEach(function(s, i){ var h = s.querySelector('.t2-head[data-ch]'); if (h) tocCh.push({n:h.getAttribute('data-ch'), i:i, name:s.getAttribute('data-name') || ''}); });
+    if (!tocCh.length) return;
+    toc = document.createElement('nav'); toc.className = 't2-toc'; toc.setAttribute('aria-label', '장 바로 가기');
+    tocCh.forEach(function(c){
+      var b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', c.n + '장 ' + c.name);
+      b.innerHTML = '<span aria-hidden="true">' + c.n + '</span><span class="nm" aria-hidden="true">' + c.name + '</span>';
+      b.addEventListener('click', function(){ if (busy() || navWait()) return; settle(); if (c.i === cur) return; show(c.i, c.i > cur ? 1 : -1, true); });
+      toc.appendChild(b);
+    });
+    bar.appendChild(toc);
+  })();
+  function tocUpd(){ if (!toc) return; var k = -1; tocCh.forEach(function(c, j){ if (c.i <= cur) k = j; }); [].forEach.call(toc.children, function(b, j){ b.classList.toggle('cur', j === k); b.classList.toggle('past', j < k); if (j === k) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); }); }
   function labels(){   // 필독 둘째 펼침은 쪽 끝이 보일 때만 «확인했어요» · 문의는 미리보기 칸이 보일 때 «복사하고 카카오로»
     var s = screens[cur]; if (!s) return;
     var cover = cur === 0, last = cur === N - 1, notice = s.getAttribute('data-id') === 'notice2', end = restBelow() <= 0;
@@ -2813,6 +2937,7 @@ html.th-c #t2app .t2-sign .sg{white-space:nowrap}
     if (push){ depth++; try{ history.pushState({t2s:i, d:depth}, '', url(i)); }catch(e){} }
     cur = i;
     camClock(s);
+    tocUpd();
     if (last && window.renderT2){ renderT2(); grow(); }
     fitSpread(s);   // PC 책 펼침 맞춤(넘김 복사 전에)
     var ctl = doFlip ? flipPage(A, snap(s), dir < 0 ? -1 : 1, null) : null;
